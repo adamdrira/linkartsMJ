@@ -106,7 +106,6 @@ export class ThumbnailComicsComponent implements OnInit {
 
   show_icon=false;
   ngOnInit() {
-    //console.log(this.format)
     this.user_id = this.item.authorid
     this.file_name = this.item.name_coverpage
     this.title = this.item.title
@@ -119,8 +118,6 @@ export class ThumbnailComicsComponent implements OnInit {
     this.chaptersnumber = this.item.chaptersnumber
     this.date_upload = this.item.createdAt
     this.bd_id = this.item.bd_id
-    //console.log(this.file_name)
-
 
     if( this.thirdtag != null ) {
       this.cd.detectChanges();
@@ -277,13 +274,10 @@ export class ThumbnailComicsComponent implements OnInit {
   resize_comic() {
 
     if(this.width){
-      //console.log(this.width)
       this.rd.setStyle(this.comic_container.nativeElement, "width", this.get_comic_size1() + "px");
     }
     else if( $('.container-comics') ) {
-      //console.log($('.container-comics').width())
       this.rd.setStyle(this.comic_container.nativeElement, "width", this.get_comic_size() + "px");
-      //$('.comic-container').css({'width': this.get_comic_size() +'px'});
     }
   }
 
@@ -325,7 +319,6 @@ export class ThumbnailComicsComponent implements OnInit {
   
  
   loaded(){
-    //console.log("thumb laoded")
     this.imageloaded=true;
     this.send_loaded.emit(true);
     this.cd.detectChanges()

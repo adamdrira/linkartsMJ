@@ -22,18 +22,15 @@ export class ThumbnailSkeletonComponent implements OnInit {
   @Input() type_of_skeleton:string;
 
   ngOnInit(): void {
-    //console.log(this.type_of_skeleton)
   }
 
   ngAfterViewInit() {
     this.resize_skeleton();
   }
   
-  //Comic functions
   resize_skeleton() {
   
     if(this.show_other_one ){
-      console.log("show_other_one")
       this.get_skeleton_size2()
         
       $('.skeleton-container2').css({'width': this.get_skeleton_size2() +'px'});

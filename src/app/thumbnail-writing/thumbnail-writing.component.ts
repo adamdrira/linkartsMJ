@@ -5,9 +5,7 @@ import {Writing_Upload_Service} from '../services/writing.service';
 import {NotationService} from '../services/notation.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
-
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
-
 import { Router  } from '@angular/router';
 import { NavbarService } from '../services/navbar.service';
 
@@ -97,7 +95,6 @@ export class ThumbnailWritingComponent implements OnInit {
 
   show_icon=false;
   ngOnInit() {
-    //console.log(this.item)
     this.user_id = this.item.authorid;
     this.file_name = this.item.name_coverpage;
     this.total_pages=this.item.total_pages;
@@ -232,12 +229,9 @@ export class ThumbnailWritingComponent implements OnInit {
   resize_writing() {
 
     if(this.width){
-      //console.log(this.width)
-      //$('.comic-container').css({'width': this.get_comic_size1() +'px'});
       this.rd.setStyle(this.writing_container.nativeElement, "width", this.get_writing_size1() + "px");
     }
     else if( $('.container-writings') ) {
-      //$('.writing-container').css({'width': this.get_writing_size() +'px'});
       this.rd.setStyle(this.writing_container.nativeElement, "width", this.get_writing_size() + "px");
     }
 

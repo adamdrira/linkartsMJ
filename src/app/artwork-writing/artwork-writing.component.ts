@@ -111,7 +111,6 @@ export class ArtworkWritingComponent implements OnInit {
 
   @HostListener('window:popstate', ['$event'])
   onPopState(event) {
-    console.log('Back button pressed');
     this.add_time_of_view();
   }
   
@@ -253,7 +252,6 @@ export class ArtworkWritingComponent implements OnInit {
       if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
         if(this.number_of_comments_to_show<this.commentariesnumber){
           this.number_of_comments_to_show+=10;
-          console.log(this.number_of_comments_to_show)
         }
       }
     },3000)
@@ -280,7 +278,6 @@ export class ArtworkWritingComponent implements OnInit {
     this.Writing_Upload_Service.retrieve_writing_information_by_id2(this.writing_id).subscribe(m => {
       if(m[0]){
         let r=m[0].data;
-        console.log(r[0]);
         if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
           if(r[0] && r[0].status=="deleted"){
             this.navbar.delete_research_from_navbar("Writing","unknown",this.writing_id).subscribe(r=>{
@@ -476,7 +473,6 @@ export class ArtworkWritingComponent implements OnInit {
 
   get_author_recommendations(){
     this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
-      console.log(e[0].list_to_send)
       if(e[0].list_to_send.length>0){
         for(let j=0;j<e[0].list_to_send.length;j++){
           if(e[0].list_to_send[j].length>0){
@@ -516,9 +512,6 @@ export class ArtworkWritingComponent implements OnInit {
 
   check_recommendations(){
     if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
-      console.log( this.list_of_author_recommendations_comics)
-      console.log( this.list_of_author_recommendations_drawings)
-      console.log( this.list_of_author_recommendations_writings)
       this.list_of_author_recommendations_retrieved=true;
     }
   }
@@ -532,10 +525,8 @@ export class ArtworkWritingComponent implements OnInit {
     
     this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.firsttag,6).subscribe(u=>{
       if(u[0].length>0){
-        console.log(u[0])
         let list_of_first_propositions=u[0];
         this.first_propositions=u[0];
-        console.log(list_of_first_propositions)
         if(list_of_first_propositions.length<6 && this.secondtag){
           this.first_propositions_retrieved=true;
           check_all(this);
@@ -554,7 +545,6 @@ export class ArtworkWritingComponent implements OnInit {
       
       this.second_propositions_retrieved=true;
       this.second_propositions=r[0];
-      console.log(this.second_propositions)
       check_all(this)
     
     })
@@ -568,14 +558,12 @@ export class ArtworkWritingComponent implements OnInit {
           let len=THIS.first_propositions.length;
           for(let j=0;j<THIS.second_propositions.length;j++){
             let ok=true;
-            console.log(j)
             for(let k=0;k<len;k++){
               if(THIS.first_propositions[k].format==THIS.second_propositions[j].format && THIS.first_propositions[k].target_id==THIS.second_propositions[j].target_id){
                 ok=false;
               }
             }
             if(ok){
-              console.log("push")
               THIS.first_propositions.push(THIS.second_propositions[j])
             }
           }
@@ -593,13 +581,11 @@ export class ArtworkWritingComponent implements OnInit {
 
   get_recommendations_by_tags_contents(list_of_first_propositions){
     let len=list_of_first_propositions.length;
-    console.log(list_of_first_propositions)
     for(let i=0;i<len;i++){
       if(list_of_first_propositions[len-i-1].format=="unknown" && list_of_first_propositions[len-i-1].target_id==this.writing_id){
         list_of_first_propositions.splice(len-i-1,1);
       }
     }
-    console.log(list_of_first_propositions)
     let compteur_propositions=0;
     if(list_of_first_propositions.length>0){
       for(let i=0;i<list_of_first_propositions.length;i++){
@@ -609,7 +595,6 @@ export class ArtworkWritingComponent implements OnInit {
             }
             compteur_propositions++;
             if(compteur_propositions==list_of_first_propositions.length){
-              console.log(this.list_of_recommendations_by_tag);
               this.list_of_recommendations_by_tag_retrieved=true;
             }
           })
@@ -725,7 +710,6 @@ export class ArtworkWritingComponent implements OnInit {
     }
 
     if(this.slide ){
-      console.log("enter resize")
       this.first_page_rendered = false;
 
       let width=this.slide.nativeElement.offsetWidth-10;
@@ -734,14 +718,6 @@ export class ArtworkWritingComponent implements OnInit {
     }
   }
 
-  
-
- 
-
-  onPageChange(page: number) {
-    console.log('onPageChange');
-    console.log(page);
-  }
 
   see_description() {
     
@@ -1148,10 +1124,7 @@ export class ArtworkWritingComponent implements OnInit {
       if(!this.already_subscribed){
         this.already_subscribed=true;
         this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
-          
-          console.log(information)
           if(information[0].subscribtion){
-        
             this.loading_subscribtion=false;
             this.cd.detectChanges();
           }
@@ -1184,8 +1157,6 @@ export class ArtworkWritingComponent implements OnInit {
       else{
         this.already_subscribed=false;
         this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
-         
-          console.log(information)
           this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
@@ -1249,7 +1220,6 @@ export class ArtworkWritingComponent implements OnInit {
     }
     this.checking_report=true;
     this.Reports_service.check_if_content_reported('writing',this.writing_id,"unknown",0).subscribe(r=>{
-      console.log(r[0])
       if(r[0].nothing){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1272,7 +1242,6 @@ export class ArtworkWritingComponent implements OnInit {
 
     let id=this.writing_id
     this.Reports_service.cancel_report("writing",id,this.writing_id).subscribe(r=>{
-      console.log(r)
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id)>=0){
         let i=this.list_of_reporters.indexOf(this.visitor_id)
         this.list_of_reporters.splice(i,1)
@@ -1329,7 +1298,6 @@ export class ArtworkWritingComponent implements OnInit {
 writing_retrieved=false;
 first_page_rendered=false;
 afterLoadComplete(pdf: PDFDocumentProxy) {
-  console.log(pdf)
   this.total_pages = pdf.numPages;
   this.cd.detectChanges();
  
@@ -1357,15 +1325,10 @@ pageRendered(e:any) {
 
 }
 
-pdf_is_loaded(){
-  console.log("laod compelte");
-}
-
 
  /******************************************************************** */
   /****FONCTIONS D'EDITION******************************** */
   /******************************************************************** */
-  //visible : true ou privé : false
  
   edit_information() {
     
@@ -1423,7 +1386,6 @@ pdf_is_loaded(){
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,0,"private").subscribe(r=>{
-          console.log(r);
           this.Writing_Upload_Service.change_writing_status(this.writing_id,"private").subscribe(r=>{
             this.status="private";
             this.archive_loading=false;
@@ -1448,7 +1410,6 @@ pdf_is_loaded(){
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,0,"ok").subscribe(r=>{
-          console.log(r);
           this.Writing_Upload_Service.change_writing_status(this.writing_id,"public").subscribe(r=>{
             this.status="public";
             this.archive_loading=false;
@@ -1473,9 +1434,6 @@ pdf_is_loaded(){
     this.archive_loading=true;
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
-        console.log(this.writing_id);
-        
-
         this.navbar.delete_publication_from_research("Writing","unknown",this.writing_id).subscribe(r=>{
           this.Writing_Upload_Service.Remove_writing(this.writing_id).subscribe(r=>{
             this.NotificationsService.remove_notification('add_publication','writing','unknown',this.writing_id,0,false,0).subscribe(l=>{
@@ -1513,7 +1471,6 @@ pdf_is_loaded(){
 
   
   first_comment_received(e){
-    console.log(e);
     this.first_comment=e.comment.commentary;
     this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).subscribe(p=> {
       let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);

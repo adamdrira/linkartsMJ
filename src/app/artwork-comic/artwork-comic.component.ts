@@ -120,7 +120,6 @@ export class ArtworkComicComponent implements OnInit {
 
   @HostListener('window:popstate', ['$event'])
   onPopState(event) {
-    console.log('Back button pressed');
     this.add_time_of_view();
   }
 
@@ -277,7 +276,6 @@ export class ArtworkComicComponent implements OnInit {
       if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
         if(this.number_of_comments_to_show<this.commentariesnumber){
           this.number_of_comments_to_show+=10;
-          console.log(this.number_of_comments_to_show)
         }
       }
     },3000)
@@ -328,16 +326,13 @@ export class ArtworkComicComponent implements OnInit {
       
      
       this.active_section = this.route.snapshot.data['section'];
-      console.log(this.active_section)
       if(this.active_section==2){
         this.current_chapter= parseInt(this.activatedRoute.snapshot.paramMap.get('chapter_number')) -1;
-        console.log(this.current_chapter);
       }
       this.BdSerieService.retrieve_bd_by_id2(this.bd_id).subscribe(m => { 
         
         if(m[0]){
           let r=m[0].data;
-          console.log(r[0]);
           if(!r[0] || r[0].chaptersnumber<this.current_chapter+1 || this.type!='serie' || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
             if(r[0] && r[0].status=="deleted"){
               this.navbar.delete_research_from_navbar("Comic",this.type,this.bd_id).subscribe(r=>{
@@ -396,10 +391,7 @@ export class ArtworkComicComponent implements OnInit {
                 }
                 this.emphasized_contend_retrieved=true;
               });
-              
-              console.log( this.monetization)
               this.bd_serie_calls();
-
               this.get_author_recommendations();
               this.get_recommendations_by_tag();
               
@@ -416,15 +408,12 @@ export class ArtworkComicComponent implements OnInit {
     
   }
 
-  
-
   /********************************************** RECOMMENDATIONS **************************************/
   /********************************************** RECOMMENDATIONS **************************************/
   /********************************************** RECOMMENDATIONS **************************************/
 
   get_author_recommendations(){
     this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,this.bd_id).subscribe(e=>{
-      console.log(e[0].list_to_send)
       if(e[0].list_to_send.length>0){
         for(let j=0;j<e[0].list_to_send.length;j++){
           if(e[0].list_to_send[j].length>0){
@@ -474,10 +463,6 @@ export class ArtworkComicComponent implements OnInit {
 
   check_author_recommendations(){
     if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
-      console.log( this.list_of_author_recommendations_comics)
-      console.log( this.list_of_author_recommendations_drawings)
-      console.log( this.list_of_author_recommendations_writings)
-
       this.list_of_author_recommendations_retrieved=true;
     }
   }
@@ -487,10 +472,8 @@ export class ArtworkComicComponent implements OnInit {
     
     this.Community_recommendation.get_artwork_recommendations_by_tag('Comic',this.type,this.bd_id,this.style,this.firsttag,6).subscribe(u=>{
       if(u[0].length>0){
-        console.log(u[0])
         let list_of_first_propositions=u[0];
         this.first_propositions=u[0];
-        console.log(list_of_first_propositions)
         if(list_of_first_propositions.length<6 && this.secondtag){
           this.first_propositions_retrieved=true;
           check_all(this);
@@ -509,7 +492,6 @@ export class ArtworkComicComponent implements OnInit {
       
       this.second_propositions_retrieved=true;
       this.second_propositions=r[0];
-      console.log(this.second_propositions)
       check_all(this)
     
     })
@@ -523,14 +505,12 @@ export class ArtworkComicComponent implements OnInit {
           let len=THIS.first_propositions.length;
           for(let j=0;j<THIS.second_propositions.length;j++){
             let ok=true;
-            console.log(j)
             for(let k=0;k<len;k++){
               if(THIS.first_propositions[k].format==THIS.second_propositions[j].format && THIS.first_propositions[k].target_id==THIS.second_propositions[j].target_id){
                 ok=false;
               }
             }
             if(ok){
-              console.log("push")
               THIS.first_propositions.push(THIS.second_propositions[j])
             }
           }
@@ -550,9 +530,6 @@ export class ArtworkComicComponent implements OnInit {
 
   get_recommendations_by_tags_contents(list_of_first_propositions){
     let len=list_of_first_propositions.length;
-    console.log(list_of_first_propositions)
-    console.log(this.type)
-    console.log(this.bd_id)
     for(let i=0;i<len;i++){
       if(list_of_first_propositions[len-i-1].format==this.type && list_of_first_propositions[len-i-1].target_id==this.bd_id){
         list_of_first_propositions.splice(len-i-1,1);
@@ -569,7 +546,6 @@ export class ArtworkComicComponent implements OnInit {
             }
             compteur_propositions++;
             if(compteur_propositions==list_of_first_propositions.length){
-              console.log(this.list_of_recommendations_by_tag)
               this.list_of_recommendations_by_tag_retrieved=true;
             }
           })
@@ -581,7 +557,6 @@ export class ArtworkComicComponent implements OnInit {
             }
             compteur_propositions++;
             if(compteur_propositions==list_of_first_propositions.length){
-              console.log(this.list_of_recommendations_by_tag)
               this.list_of_recommendations_by_tag_retrieved=true;
             }
           })
@@ -590,14 +565,12 @@ export class ArtworkComicComponent implements OnInit {
       }
     }
     else{
-      console.log(this.list_of_recommendations_by_tag)
       this.list_of_recommendations_by_tag_retrieved=true;
     }
   }
 
   check_archive(){
     this.Subscribing_service.check_if_publication_archived( "comic",this.type ,this.bd_id).subscribe(r=>{
-      console.log(r[0]);
       if(r[0].value){
         this.content_archived=true;
       }
@@ -610,7 +583,6 @@ export class ArtworkComicComponent implements OnInit {
     this.BdOneShotService.retrieve_bd_by_id2(this.bd_id).subscribe(m => {
       if(m[0]){
         let r=m[0].data;
-        console.log(r[0]);
         if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
           if(r[0] && r[0].status=="deleted"){
             this.navbar.delete_research_from_navbar("Comic",this.type,this.bd_id).subscribe(r=>{
@@ -690,12 +662,8 @@ export class ArtworkComicComponent implements OnInit {
             
   
             this.NotationService.get_content_marks("comic", 'one-shot', this.bd_id,0).subscribe(r=>{
-  
-              //views and comments
-              console.log(r[0])
               this.commentariesnumber=r[0].list_of_comments.length;
               this.viewsnumber= r[0].list_of_views.length;
-              //loves
               this.list_of_loves= r[0].list_of_loves;
               this.lovesnumber=this.list_of_loves.length;
               this.list_of_users_ids_loves[0]=[]
@@ -707,9 +675,6 @@ export class ArtworkComicComponent implements OnInit {
               else{
                 this.list_of_users_ids_loves_retrieved=true;
               }
-  
-              //likes
-              //let list_of_likes= r[0].list_of_likes;
               this.list_of_likes=r[0].list_of_likes;
               this.likesnumber=this.list_of_likes.length;
               this.list_of_users_ids_likes[0]=[];
@@ -746,7 +711,6 @@ export class ArtworkComicComponent implements OnInit {
     
     for( var i=0; i< total_pages; i++ ) {
       this.BdOneShotService.retrieve_bd_page(bd_id,i).subscribe(r=>{
-        console.log(r[0])
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         if(this.style=="Manga"){
@@ -800,8 +764,6 @@ export class ArtworkComicComponent implements OnInit {
       else{
         this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).subscribe();
         this.NotationService.add_view("comic", 'one-shot',  this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-          console.log("view added")
-          console.log(r[0])
           this.id_view_created = r[0].id;
           if(r[0].id>0){
             this.Community_recommendation.delete_recommendations_cookies();
@@ -833,7 +795,6 @@ export class ArtworkComicComponent implements OnInit {
     this.BdSerieService.retrieve_chapters_by_id(this.bd_id).subscribe(r => {
       this.current_chapter_title=r[0][this.current_chapter].title;
       this.chapterList=r[0];
-      console.log( this.chapterList)
       if(this.chapterList.length/2<(this.current_chapter+1)){
         this.chapter_filter_bottom_to_top=false;
       }
@@ -841,7 +802,6 @@ export class ArtworkComicComponent implements OnInit {
         this.chapter_filter_bottom_to_top=true;
       }
       this.chapter_name_to_show=`Chapitre ${this.chapterList[this.current_chapter].chapter_number} : ${this.chapterList[this.current_chapter].title}`
-      console.log( this.chapter_name_to_show)
       $('.chapterSelector').attr("placeholder",this.chapter_name_to_show);
       this.initialize_chapter_selector();
 
@@ -867,10 +827,6 @@ export class ArtworkComicComponent implements OnInit {
       for( var i=1; i< this.chapterList.length; i++ ) {
         this.list_of_pages_by_chapter.push(['']);
       };
-      console.log("getting pages by chapter")
-      console.log(r[0])
-
-     
       this.get_comic_serie_chapter_pages(this.bd_id,this.current_chapter+1,r[0][this.current_chapter].pagesnumber);
       this.item_retrieved=true;
     
@@ -881,16 +837,10 @@ export class ArtworkComicComponent implements OnInit {
 
   get_comic_serie_chapter_pages(bd_id,chapter_number,total_pages) {
     this.pagesnumber=total_pages;
-    console.log("get_comic_serie_chapter_pages")
-    console.log(chapter_number);
-    console.log(total_pages);
     this.list_of_users_ids_loves_retrieved=false;
     this.list_of_users_ids_likes_retrieved=false;
     this.chapter_to_check_for_view=chapter_number;
     this.NotationService.get_content_marks("comic", 'serie', this.bd_id,chapter_number).subscribe(r=>{
-
-      //views and comments
-      console.log(r[0])
       this.commentariesnumber=r[0].list_of_comments.length;
       this.viewsnumber= r[0].list_of_views.length;
       this.chapterList[chapter_number-1].viewnumber= this.viewsnumber;
@@ -929,7 +879,6 @@ export class ArtworkComicComponent implements OnInit {
         let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         if(this.style=="Manga"){
           this.list_of_pages_by_chapter[chapter_number-1][total_pages-r[1]-1]=(SafeURL);
-          console.log(this.list_of_pages_by_chapter[chapter_number-1])
         }
         else{
           this.list_of_pages_by_chapter[chapter_number-1][r[1]]=(SafeURL);
@@ -948,9 +897,7 @@ export class ArtworkComicComponent implements OnInit {
 
 
   check_likes_after_current_serie(){
-    console.log("check_likes_after_current_serie")
     if(this.current_user_retrieved && this.likes_retrieved_but_not_checked){
-      console.log("in if check likes")
       for (let i=0;i< this.list_of_likes.length;i++){
         this.list_of_users_ids_likes[this.chapter_to_check_for_view-1].push( this.list_of_likes[i].author_id_who_likes);
         if ( this.list_of_likes[i].author_id_who_likes == this.visitor_id){
@@ -958,7 +905,6 @@ export class ArtworkComicComponent implements OnInit {
         }
       }
       this.list_of_users_ids_likes_retrieved=true;
-      console.log(this.list_of_users_ids_likes)
     }
   }
 
@@ -990,8 +936,6 @@ export class ArtworkComicComponent implements OnInit {
         this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).subscribe(l=>{});
         this.NotationService.add_view("comic", 'serie',  this.style, this.bd_id,1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
           this.id_view_created = r[0].id;
-          console.log("view added")
-          console.log(r[0])
           if(r[0].id>0){
             this.Community_recommendation.delete_recommendations_cookies();
             this.Community_recommendation.generate_recommendations().subscribe(r=>{})
@@ -1127,7 +1071,6 @@ export class ArtworkComicComponent implements OnInit {
       return;
     }
 
-    console.log(this.pagesnumber-1)
     this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
       speed: 500,
       spaceBetween: 100,
@@ -1159,7 +1102,6 @@ export class ArtworkComicComponent implements OnInit {
       },
     });
     
-    console.log(this.swiper)
     
     this.refresh_swiper_pagination();
     $(".top-container .pages-controller-container input").keydown(function (e){
@@ -1182,14 +1124,11 @@ export class ArtworkComicComponent implements OnInit {
         else{
           $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
         }
-        
-        //$(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
       }
     }
   }
 
   setSlide(i : any) {
-    console.log("set slide")
     if( isNaN(i) ) {
       this.refresh_swiper_pagination();
       return;
@@ -1231,7 +1170,6 @@ export class ArtworkComicComponent implements OnInit {
 
 
   initialize_thumbnails() {
-    console.log("initialize_thumbnails")
     this.thumbnails_links=[];
     if( this.type =='one-shot' ) {
       for( var i=0; i< this.list_bd_pages.length; i++ ) {
@@ -1239,7 +1177,6 @@ export class ArtworkComicComponent implements OnInit {
       }
     }
     else if( this.type=='serie' ) {
-      console.log(this.list_of_pages_by_chapter[this.current_chapter])
       for( var i=0; i< this.list_of_pages_by_chapter[this.current_chapter].length; i++ ) {
         this.thumbnails_links[i]=( this.list_of_pages_by_chapter[this.current_chapter][i] );
         if(i==this.list_of_pages_by_chapter[this.current_chapter].length-1){
@@ -1403,8 +1340,6 @@ export class ArtworkComicComponent implements OnInit {
     THIS.liked = false;
     THIS.loved = false;
     if( THIS.list_of_pages_by_chapter[chapter_number][0]==''){
-      console.log("chargement des nouvelles pages");
-      console.log(THIS.list_of_pages_by_chapter[chapter_number]);
       THIS.list_of_pages_by_chapter[chapter_number].pop();
       THIS.get_comic_serie_chapter_pages(THIS.bd_id,(chapter_number + 1),THIS.chapterList[chapter_number].pagesnumber);
     }
@@ -1423,7 +1358,6 @@ export class ArtworkComicComponent implements OnInit {
       THIS.commentariesnumber = THIS.chapterList[chapter_number].commentarynumbers;
       THIS.likesnumber =THIS.chapterList[chapter_number].likesnumber ;
       THIS.lovesnumber =THIS.chapterList[chapter_number].lovesnumber ;
-      console.log("pages déjà existantes")
       THIS.initialize_thumbnails();
     }
     THIS.pagesnumber=THIS.chapterList[chapter_number].pagesnumber;
@@ -1493,8 +1427,6 @@ export class ArtworkComicComponent implements OnInit {
     THIS.liked = false;
     THIS.loved = false;
     if( THIS.list_of_pages_by_chapter[chapter_number][0]==''){
-      console.log("chargement des nouvelles pages");
-      console.log(THIS.list_of_pages_by_chapter[chapter_number]);
       THIS.list_of_pages_by_chapter[chapter_number].pop();
       THIS.get_comic_serie_chapter_pages(THIS.bd_id,(chapter_number + 1),THIS.chapterList[chapter_number].pagesnumber);
     }
@@ -1513,7 +1445,6 @@ export class ArtworkComicComponent implements OnInit {
       THIS.commentariesnumber = THIS.chapterList[chapter_number].commentarynumbers;
       THIS.likesnumber =THIS.chapterList[chapter_number].likesnumber ;
       THIS.lovesnumber =THIS.chapterList[chapter_number].lovesnumber ;
-      console.log("pages déjà existantes")
       THIS.initialize_thumbnails();
     }
     THIS.pagesnumber=THIS.chapterList[chapter_number].pagesnumber;
@@ -1531,30 +1462,21 @@ export class ArtworkComicComponent implements OnInit {
   initialize_chapter_selector(){
     let THIS = this;
 
-   console.log("initializing chapter selectors")
-
     $(document).ready(function () {
       $('.chapterSelector').SumoSelect({});
-      console.log("sumo ready")
       THIS.sumo_ready=true;
     });
 
     $('.chapterSelector').change(function(){
-
-      console.log("change sumo")
       if(parseInt($(".chapterSelector").val())==THIS.current_chapter){
         return
       }
       THIS.display_comics_pages=[];
       THIS.display_pages=false;
       
-      console.log( $(".chapterSelector").val())
       let chapter_number = $(".chapterSelector").val();
       let last_chapter = THIS.current_chapter;
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
-      
-
-      console.log(parseInt(chapter_number))
       THIS.current_chapter= parseInt(chapter_number);// le chapitre 1 vaut 0 
       if((THIS.current_chapter+1)>THIS.chapterList.length/2){
         THIS.chapter_filter_bottom_to_top=false;
@@ -1562,11 +1484,6 @@ export class ArtworkComicComponent implements OnInit {
       else{
         THIS.chapter_filter_bottom_to_top=true;
       }
-      
-     
-
-     
-
       THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
       THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
       THIS.chapter_name_control.reset();
@@ -1575,8 +1492,6 @@ export class ArtworkComicComponent implements OnInit {
       
       $('.chapterSelector')[0].sumo.reload();
       THIS.cd.detectChanges();
-      console.log(THIS.current_chapter_title);
-      console.log(THIS.chapter_name_to_show)
       if (THIS.mode_visiteur){
         THIS.NotationService.add_view_time(ending_time_of_view, THIS.id_view_created).subscribe();
         THIS.NotationService.add_view("comic", 'serie',THIS.style, THIS.bd_id,(parseInt(chapter_number) + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).subscribe(r=>{
@@ -1588,16 +1503,10 @@ export class ArtworkComicComponent implements OnInit {
       THIS.liked = false;
       THIS.loved = false;
       if( THIS.list_of_pages_by_chapter[parseInt(chapter_number)][0]==''){
-        console.log("chargement des nouvelles pages");
-        console.log(THIS.list_of_pages_by_chapter[parseInt(chapter_number)]);
         THIS.list_of_pages_by_chapter[parseInt(chapter_number)].pop();
         THIS.get_comic_serie_chapter_pages(THIS.bd_id,(parseInt(chapter_number) + 1),THIS.chapterList[parseInt(chapter_number)].pagesnumber);
       }
       else{
-        
-        console.log("pages déjà existantes");
-        console.log(THIS.list_of_users_ids_likes)
-        console.log(THIS.list_of_users_ids_likes[THIS.current_chapter])
         for (let i=0;i<THIS.list_of_users_ids_likes[THIS.current_chapter].length;i++){
           if (THIS.list_of_users_ids_likes[THIS.current_chapter][i] == THIS.visitor_id){
             THIS.liked = true;
@@ -1638,7 +1547,6 @@ export class ArtworkComicComponent implements OnInit {
   from_like=false;
   from_love=false;
   click_like() {
-    console.log("click like")
     if(this.type_of_account=="account"){
       if(this.like_in_progress  ||this.love_in_progress){
         return
@@ -1650,10 +1558,8 @@ export class ArtworkComicComponent implements OnInit {
         return;
       }
       if(this.list_of_users_ids_likes_retrieved){
-        console.log("list_of_users_ids_likes_retrieved")
         this.like_in_progress=true;
-        if(this.liked) {  
-          console.log("remove like")  
+        if(this.liked) {   
           this.liked=false;
           this.likesnumber-=1;
           if(this.type=='one-shot'){
@@ -2058,8 +1964,6 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   show_likes(){
-    console.log(this.current_chapter)
-    console.log(this.list_of_users_ids_likes)
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes[this.current_chapter],visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
@@ -2113,8 +2017,6 @@ export class ArtworkComicComponent implements OnInit {
       if(!this.already_subscribed){
         this.already_subscribed=true;
         this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
-          
-          console.log(information)
           if(information[0].subscribtion){
             this.loading_subscribtion=false;
             this.cd.detectChanges();
@@ -2149,8 +2051,6 @@ export class ArtworkComicComponent implements OnInit {
       else{
         this.already_subscribed=false;
         this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
-         
-          console.log(information)
           this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
@@ -2214,7 +2114,6 @@ export class ArtworkComicComponent implements OnInit {
     }
     this.checking_report=true;
     this.Reports_service.check_if_content_reported('comic',this.bd_id,this.type,(this.type=='serie')?(this.current_chapter+1):0).subscribe(r=>{
-      console.log(r[0])
       if(r[0].nothing){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -2235,7 +2134,6 @@ export class ArtworkComicComponent implements OnInit {
 
     let id=this.bd_id
     this.Reports_service.cancel_report("comic",id,this.type).subscribe(r=>{
-      console.log(r)
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id)>=0){
         let i=this.list_of_reporters.indexOf(this.visitor_id)
         this.list_of_reporters.splice(i,1)
@@ -2252,14 +2150,12 @@ export class ArtworkComicComponent implements OnInit {
     this.archive_loading=true;
     if(this.type=="serie"){
       this.Emphasize_service.emphasize_content( "comic",this.type,this.bd_id,this.current_chapter + 1).subscribe(t=>{
-        console.log(t[0])
         this.content_emphasized=true;
         this.archive_loading=false;
       });
     }
     else{
       this.Emphasize_service.emphasize_content( "comic",this.type,this.bd_id,0).subscribe(r=>{
-        console.log(r[0])
         this.content_emphasized=true;
         this.archive_loading=false;
       });
@@ -2299,7 +2195,6 @@ export class ArtworkComicComponent implements OnInit {
     if( this.compteur_recom_others_comics==this.list_of_recommendations_by_tag.length){
       this.display_comics_recommendations_others=true;
       this.compteur_recom_others_comics=0;
-      console.log("display recom comics others")
     }
   }
 
@@ -2309,8 +2204,6 @@ export class ArtworkComicComponent implements OnInit {
     
     let compt=0;
     if(this.type=='serie'){
-      console.log(this.list_of_pages_by_chapter[this.current_chapter].length)
-      console.log(this.display_comics_pages)
       for(let j=0;j<this.list_of_pages_by_chapter[this.current_chapter].length;j++){
         if(this.display_comics_pages[i]){
           compt+=1;
@@ -2416,7 +2309,6 @@ export class ArtworkComicComponent implements OnInit {
       if( result ) {
         if(this.type=="one-shot"){
           this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,0,"private").subscribe(r=>{
-            console.log(r)
             this.BdOneShotService.change_oneshot_comic_status(this.bd_id,"private").subscribe(r=>{
               this.status="private";
               this.archive_loading=false;
@@ -2554,7 +2446,6 @@ export class ArtworkComicComponent implements OnInit {
 
 
   first_comment_received(e){
-    console.log(e);
     this.first_comment=e.comment.commentary;
     this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).subscribe(p=> {
       let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);

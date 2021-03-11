@@ -96,8 +96,6 @@ export class ThumbnailDrawingComponent implements OnInit {
       this.resize_drawing();
     }
     else{
-      console.log("width thumb draw")
-      console.log(this.width)
       if(this.width<640){
         this.small_thumbnail=true;
         let width=(140*(this.width/640)>110)?140*(this.width/640):110
@@ -123,10 +121,7 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if(this.final_thumbnail && changes.prevent_shiny){
-      console.log("change prev")
-      console.log(this.prevent_shiny)
       if(!this.prevent_shiny ){
-        console.log("in first if")
         this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "0px 0px 20px 3px #3055812e");
         if( this.for_news == "yes" ) {
           this.rd.setStyle(this.final_thumbnail.nativeElement, "height", "100%");
@@ -136,7 +131,6 @@ export class ThumbnailDrawingComponent implements OnInit {
         }
       }
       else{
-        console.log("in else prev")
         this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "unset");
       }
   

@@ -118,7 +118,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
   @HostListener('window:popstate', ['$event'])
   onPopState(event) {
-    console.log('Back button pressed');
     this.add_time_of_view();
   }
  
@@ -257,7 +256,6 @@ export class ArtworkDrawingComponent implements OnInit {
       if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
         if(this.number_of_comments_to_show<this.commentariesnumber){
           this.number_of_comments_to_show+=10;
-          console.log(this.number_of_comments_to_show)
         }
       }
     },3000)
@@ -267,8 +265,6 @@ export class ArtworkDrawingComponent implements OnInit {
       this.page_not_found=true;
       return
     }
-
-    console.log(this.type);
     this.drawing_id = parseInt(this.activatedRoute.snapshot.paramMap.get('drawing_id'));
     if(!(this.drawing_id>0)){
       this.page_not_found=true;
@@ -299,7 +295,6 @@ export class ArtworkDrawingComponent implements OnInit {
       this.Drawings_Onepage_Service.retrieve_drawing_information_by_id2(this.drawing_id).subscribe(m => {
         if(m[0]){
           let r=m[0].data;
-          console.log(r[0]);
           if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
             if(r[0] && r[0].status=="deleted"){
               this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).subscribe(r=>{
@@ -335,7 +330,6 @@ export class ArtworkDrawingComponent implements OnInit {
       this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id2(this.drawing_id).subscribe(m => {
         if(m[0]){
           let r=m[0].data;
-          console.log(r[0]);
           if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
             if(r[0] && r[0].status=="deleted"){
               this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).subscribe(r=>{
@@ -379,7 +373,6 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   drawing_one_shot_calls(r){
-   console.log("one shot call")
       let drawing_name=r[0].drawing_name;
       this.authorid= r[0].authorid;
       this.list_of_reporters=r[0].list_of_reporters;
@@ -497,12 +490,9 @@ export class ArtworkDrawingComponent implements OnInit {
         })
       }
       else{
-        console.log("adding view")
         this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).subscribe();
         this.NotationService.add_view('drawing', 'one-shot',this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
           this.id_view_created = r[0].id;
-          console.log("id view created")
-          console.log(this.id_view_created)
           if(r[0].id>0){
             this.Community_recommendation.delete_recommendations_cookies();
             this.Community_recommendation.generate_recommendations().subscribe(r=>{})
@@ -525,7 +515,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
 
   drawing_artbook_calls(r){
-   console.log("drawing artbook call")
       this.authorid= r[0].authorid;
       
 
@@ -660,7 +649,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
   artbook_check_view_after_current(){
     if(this.current_user_retrieved && this.ready_to_check_view){
-      console.log("getting current user")
         if (this.authorid == this.visitor_id){
           this.mode_visiteur = false;
           
@@ -671,7 +659,6 @@ export class ArtworkDrawingComponent implements OnInit {
             })
         }
         else{
-          console.log("else and add view")
           this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).subscribe();
           this.NotationService.add_view('drawing', 'artbook',this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
             this.id_view_created = r[0].id;
@@ -696,7 +683,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
   get_author_recommendations(){
     this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
-      console.log(e[0].list_to_send)
       if(e[0].list_to_send.length>0){
         for(let j=0;j<e[0].list_to_send.length;j++){
           if(e[0].list_to_send[j].length>0){
@@ -738,9 +724,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
   check_recommendations(){
     if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
-      console.log( this.list_of_author_recommendations_comics)
-      console.log( this.list_of_author_recommendations_drawings)
-      console.log( this.list_of_author_recommendations_writings)
       this.list_of_author_recommendations_retrieved=true;
     }
   }
@@ -754,10 +737,8 @@ export class ArtworkDrawingComponent implements OnInit {
     
     this.Community_recommendation.get_artwork_recommendations_by_tag('Drawing',this.type,this.drawing_id,this.style,this.firsttag,6).subscribe(u=>{
       if(u[0].length>0){
-        console.log(u[0])
         let list_of_first_propositions=u[0];
         this.first_propositions=u[0];
-        console.log(list_of_first_propositions)
         if(list_of_first_propositions.length<6 && this.secondtag){
           this.first_propositions_retrieved=true;
           check_all(this);
@@ -776,7 +757,6 @@ export class ArtworkDrawingComponent implements OnInit {
       
       this.second_propositions_retrieved=true;
       this.second_propositions=r[0];
-      console.log(this.second_propositions)
       check_all(this)
     
     })
@@ -790,14 +770,12 @@ export class ArtworkDrawingComponent implements OnInit {
           let len=THIS.first_propositions.length;
           for(let j=0;j<THIS.second_propositions.length;j++){
             let ok=true;
-            console.log(j)
             for(let k=0;k<len;k++){
               if(THIS.first_propositions[k].format==THIS.second_propositions[j].format && THIS.first_propositions[k].target_id==THIS.second_propositions[j].target_id){
                 ok=false;
               }
             }
             if(ok){
-              console.log("push")
               THIS.first_propositions.push(THIS.second_propositions[j])
             }
           }
@@ -815,7 +793,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
   get_recommendations_by_tags_contents(list_of_first_propositions){
     let len=list_of_first_propositions.length;
-    console.log(list_of_first_propositions)
     for(let i=0;i<len;i++){
       if(list_of_first_propositions[len-i-1].format==this.type && list_of_first_propositions[len-i-1].target_id==this.drawing_id){
         list_of_first_propositions.splice(len-i-1,1);
@@ -832,7 +809,6 @@ export class ArtworkDrawingComponent implements OnInit {
             }
             compteur_propositions++;
             if(compteur_propositions==list_of_first_propositions.length){
-              console.log(this.list_of_recommendations_by_tag);
               this.list_of_recommendations_by_tag_retrieved=true;
             }
           })
@@ -844,7 +820,6 @@ export class ArtworkDrawingComponent implements OnInit {
             }
             compteur_propositions++;
             if(compteur_propositions==list_of_first_propositions.length){
-              console.log(this.list_of_recommendations_by_tag);
               this.list_of_recommendations_by_tag_retrieved=true;
             }
           })
@@ -874,9 +849,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
 
   /******************************************************* */
-  /******************************************************* */
   /******************* LEFT CONTROLLER ******************* */
-  /******************************************************* */
   /******************************************************* */
 
  
@@ -1628,15 +1601,12 @@ export class ArtworkDrawingComponent implements OnInit {
   
   add_time_of_view(){
     if(this.mode_visiteur){
-      console.log("add view time")
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
       if(this.type=='one-shot' && ending_time_of_view>3){
-        console.log("one shot and id : " + this.id_view_created)
         this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
         });
       }
       if(this.type=='artbook' && ending_time_of_view>3){
-        console.log("artbook and id : " + this.id_view_created)
         this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
         });
       }
@@ -1654,10 +1624,7 @@ export class ArtworkDrawingComponent implements OnInit {
       if(!this.already_subscribed){
         this.already_subscribed=true;
         this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
-          
-          console.log(information)
           if(information[0].subscribtion){
-        
             this.loading_subscribtion=false;
             this.cd.detectChanges();
           }
@@ -1690,8 +1657,6 @@ export class ArtworkDrawingComponent implements OnInit {
       else{
         this.already_subscribed=false;
         this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
-         
-          console.log(information)
           this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
@@ -1755,7 +1720,6 @@ export class ArtworkDrawingComponent implements OnInit {
     }
     this.checking_report=true;
     this.Reports_service.check_if_content_reported('drawing',this.drawing_id,this.type,0).subscribe(r=>{
-      console.log(r[0])
       if(r[0].nothing){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1776,7 +1740,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
     let id=this.drawing_id
     this.Reports_service.cancel_report("drawing",id,this.type).subscribe(r=>{
-      console.log(r)
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id)>=0){
         let i=this.list_of_reporters.indexOf(this.visitor_id)
         this.list_of_reporters.splice(i,1)
@@ -1807,52 +1770,9 @@ export class ArtworkDrawingComponent implements OnInit {
     });
   }
 
-  /******************************************DISPLAY IMAGES ****************************************/
-
   profile_picture_loaded(){
     this.pp_loaded=true;
   }
-
-  /*compteur_recom_writings=0;
-  sendLoadedWriting(event){
-    this.compteur_recom_writings+=1;
-    if( this.compteur_recom_writings==this.list_of_author_recommendations_writings.length){
-      this.display_writings_recommendations=true;
-      this.compteur_recom_writings=0;
-      console.log("display recom writi")
-    }
-  }
-
-  compteur_recom_comics=0;
-  sendLoadedComic(event){
-    this.compteur_recom_comics+=1;
-    if( this.compteur_recom_comics==this.list_of_author_recommendations_comics.length){
-      this.display_comics_recommendations=true;
-      this.compteur_recom_comics=0;
-      console.log("display recom comics")
-    }
-  }
-
-  compteur_recom_drawings=0;
-  sendLoadedDrawing(event){
-    this.compteur_recom_drawings+=1;
-    if( this.compteur_recom_drawings==this.list_of_author_recommendations_drawings.length){
-      this.display_drawings_recommendations=true;
-      this.compteur_recom_drawings=0;
-      console.log("display recom draw")
-    }
-   
-  }
-
-  compteur_recom_others_drawings=0
-  sendLoadedDrawingOthers(event){
-    this.compteur_recom_others_drawings+=1;
-    if( this.compteur_recom_others_drawings==this.list_of_recommendations_by_tag.length){
-      this.display_drawings_recommendations_others=true;
-      this.compteur_recom_others_drawings=0;
-      console.log("display recom draw others")
-    }
-  }*/
 
   a_drawing_is_loaded(i){
     this.display_drawings[i]=true;
@@ -1935,7 +1855,6 @@ export class ArtworkDrawingComponent implements OnInit {
         if( result ) {
           if(this.type=="one-shot"){
             this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"private").subscribe(r=>{
-              console.log(r)
               this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"private").subscribe(r=>{
                 this.status="private";
                 this.archive_loading=false;
@@ -1945,7 +1864,6 @@ export class ArtworkDrawingComponent implements OnInit {
           }
           else{
             this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"private").subscribe(r=>{
-              console.log(r)
               this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"private").subscribe(r=>{
                 this.status="private";
                 this.archive_loading=false;
@@ -1975,7 +1893,6 @@ export class ArtworkDrawingComponent implements OnInit {
       if( result ) {
         if(this.type=="one-shot"){
           this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"ok").subscribe(r=>{
-            console.log(r)
             this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"public").subscribe(r=>{
               this.status="public";
               this.archive_loading=false;
@@ -1985,7 +1902,6 @@ export class ArtworkDrawingComponent implements OnInit {
         }
         else{
           this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"ok").subscribe(r=>{
-            console.log(r)
             this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"public").subscribe(r=>{
               this.status="public";
               this.archive_loading=false;
@@ -2013,7 +1929,6 @@ export class ArtworkDrawingComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
-          console.log("suppression en cours");
           this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
             this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(r=>{
               this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).subscribe(l=>{
@@ -2042,8 +1957,6 @@ export class ArtworkDrawingComponent implements OnInit {
           
         }
         else{
-          console.log("suppression en cours");
-          
           this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
             this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(r=>{
               this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).subscribe(l=>{
@@ -2081,7 +1994,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
   
   first_comment_received(e){
-    console.log(e);
     this.first_comment=e.comment.commentary;
     this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).subscribe(p=> {
       let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);

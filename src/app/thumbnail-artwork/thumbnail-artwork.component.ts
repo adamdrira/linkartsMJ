@@ -136,7 +136,6 @@ export class ThumbnailArtworkComponent implements OnInit {
   pseudo:string='';
   type_of_profile:string;
   author_id:number;
-  /*Inputs*/
   drawing_name:string//drawing one shot
   file_name: string;
   title: string;
@@ -177,10 +176,6 @@ export class ThumbnailArtworkComponent implements OnInit {
     if( !this.skeleton ) {
       
       if(this.emphasized){
-        //emphasized
-
-        console.log("in if")
-        console.log(this.item)
         this.type_of_thumbnail=0;
         this.category=this.item.publication_category;
         this.subscribing_category=this.item.publication_category;
@@ -350,14 +345,12 @@ export class ThumbnailArtworkComponent implements OnInit {
           }
           else{
             this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.publication_id).subscribe(r=>{
-              console.log(r[0])
               this.file_name = r[0].name_coverpage
               this.title = r[0].title
               this.style = r[0].category
               this.highlight = r[0].highlight.slice(0,290)
               this.list_of_reporters=r[0].list_of_reporters
               this.short_highlight = this.highlight.slice(0,70);
-
               this.firsttag = r[0].firsttag
               this.secondtag = r[0].secondtag
               this.thirdtag = r[0].thirdtag
@@ -394,13 +387,11 @@ export class ThumbnailArtworkComponent implements OnInit {
         if(this.category=="writing"){
           
             this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.publication_id).subscribe(r=>{
-              console.log(r[0])
               this.file_name = r[0].name_coverpage
               this.title = r[0].title
               this.style = r[0].category
               this.highlight = r[0].highlight.slice(0,290)
               this.total_pages_for_writing=r[0].total_pages;
-              //console.log(this.total_pages_for_writing)
               this.short_highlight = this.highlight.slice(0,70);
               this.list_of_reporters=r[0].list_of_reporters
               this.firsttag = r[0].firsttag
@@ -440,9 +431,6 @@ export class ThumbnailArtworkComponent implements OnInit {
         }
       }
       else{
-        //console.log("in else")
-        //trendings and subscribings
-        console.log(this.item)
         this.type_of_thumbnail=1;
         this.category=this.subscribing_category;
         this.format=this.subscribing_format;
@@ -453,8 +441,6 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.pseudo = r[0].nickname;
           this.type_of_profile=r[0].status;
           if(r[0].id==this.item.authorid){
-            
-            //console.log(this.user_id)
             this.visitor_mode=false;
             
           }
@@ -595,7 +581,6 @@ export class ThumbnailArtworkComponent implements OnInit {
               });
           }
           else{
-            console.log(this.item)
             this.content_id=this.item.drawing_id;
               this.file_name = this.item.name_coverpage
               this.title = this.item.title
@@ -701,12 +686,9 @@ export class ThumbnailArtworkComponent implements OnInit {
   };
 
   load_thumbnail(){
-    //console.log("thumbnail_is_loaded")
     this.thumbnail_is_loaded=true;
     this.cd.detectChanges();
-
     this.update_image_size();
-    //this.initialize_swiper();
   };
 
   load_pp(){
@@ -757,10 +739,6 @@ export class ThumbnailArtworkComponent implements OnInit {
   @ViewChild("swiperThumbnails") swiperThumbnails:ElementRef;
   swiper_initialized=false;
   initialize_swiper() {
-      //console.log("swiper initialized " + this.item.publication_id + ' ' + this.chaptersnumber )
-      let THIS = this;
-
-
       this.cd.detectChanges();
       if( this.subscribing_category!='writing' && this.swiperArtworkPreview && !this.swiper_initialized ) {
         this.swiper = new Swiper( this.swiperArtworkPreview.nativeElement, {
@@ -776,7 +754,6 @@ export class ThumbnailArtworkComponent implements OnInit {
         })
         this.swiper_initialized=true;
         this.cd.detectChanges()
-        ////console.log("swiper initialized for " + this.item.bd_id + ' ' + this.item.chaptersnumber)
       };
       
 
@@ -788,16 +765,13 @@ export class ThumbnailArtworkComponent implements OnInit {
   subscription: Subscription;
   swiper_launched=false;
   launch_swiper() {
-    //console.log("launch swipr " + this.item.bd_id + ' ' + this.item.chaptersnumber )
     if(!this.list_of_images_to_show_retrieved || !this.swiperArtworkPreview){
       return;
     }
     if(this.swiperArtworkPreview && !this.swiper_initialized){
       this.initialize_swiper();
     }
-    //console.log(this.swiperArtworkPreview )
     this.swiper.slideTo(0);
-    let THIS = this;
     this.subscription = this.timeout.subscribe( val => {
       if( this.swiper.isEnd ) {
         this.swiper.slideTo(0);
@@ -807,10 +781,8 @@ export class ThumbnailArtworkComponent implements OnInit {
       }
     });
     this.swiper_launched=true;
-    //console.log("swiper launched " + this.item.bd_id + ' ' + this.item.chaptersnumber )
   };
   stop_swiper() {
-    //console.log("stop swiper " + this.item.bd_id + ' ' + this.item.chaptersnumber )
     if(this.list_of_images_to_show_retrieved && this.swiper_launched){
       this.subscription.unsubscribe();
       this.swiper.slideTo(0);
@@ -874,16 +846,10 @@ export class ThumbnailArtworkComponent implements OnInit {
   }
 
   get_images_to_show(){
-    console.log("get_images_to_show")
-    console.log(this.category)
-    console.log(this.format)
-    //console.log(this.format)
     if(this.category=="comic"){
       let bd_id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
-
       if(this.format=="serie"){
         this.BdSerieService.retrieve_chapters_by_id(bd_id).subscribe(s => {
-          //console.log(s[0])
           let last_week=new Date();
           last_week.setDate(last_week.getDate() - 7);
           let num_last_week= Math.trunc( last_week.getTime()/1000);
@@ -902,11 +868,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.list_of_images_to_show[r[1]]=SafeURL;
               compteur++;
               if(compteur==total_pages){
-                //this.list_of_images_to_show_mobile=[0].concat( this.list_of_images_to_show)
                 this.list_of_images_to_show_retrieved=true;
                 this.cd.detectChanges();
-                //console.log(this.list_of_images_to_show)
-                //console.log("list_of_images_to_show_retrieved" + bd_id + ' serie')
                 this.initialize_swiper();
                
               }
@@ -926,13 +889,9 @@ export class ThumbnailArtworkComponent implements OnInit {
             this.list_of_images_to_show[r[1]]=SafeURL;
             compteur++;
             if(compteur==total_pages){
-              //this.list_of_images_to_show_mobile=[0].concat( this.list_of_images_to_show)
               this.list_of_images_to_show_retrieved=true;
               this.cd.detectChanges();
-              //console.log(this.list_of_images_to_show)
-              ////console.log("list_of_images_to_show_retrieved" + bd_id + ' one shot')
-                this.initialize_swiper();
-
+              this.initialize_swiper();
             }
           });
         };
@@ -943,8 +902,6 @@ export class ThumbnailArtworkComponent implements OnInit {
       if(this.format=="artbook"){
         let compteur=0;
         let total_pages=(this.pagesnumber<=3)?this.pagesnumber:3;
-        console.log(this.pagesnumber)
-        console.log(total_pages)
         for( var i=0; i< total_pages; i++ ) {
           this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
@@ -955,9 +912,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.list_of_images_to_show_mobile=[0].concat( this.list_of_images_to_show)
               this.list_of_images_to_show_retrieved=true;
               this.cd.detectChanges();
-                this.initialize_swiper();
-              ////console.log("list_of_images_to_show_retrieved" + drawing_id)
-              ////console.log(this.list_of_images_to_show)
+              this.initialize_swiper();
             }
           });
         };
@@ -1005,7 +960,6 @@ export class ThumbnailArtworkComponent implements OnInit {
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id
     }
     this.Subscribing_service.check_if_publication_archived(this.category,this.format ,id).subscribe(r=>{
-      //console.log(r[0]);
       if(r[0].value){
         this.content_archived=true;
       }
@@ -1052,18 +1006,17 @@ export class ThumbnailArtworkComponent implements OnInit {
 
       const dialogRef = this.dialog.open(PopupEditCoverComponent, {
         data: {type:"edit_comic_thumbnail",
-          format:this.format,
-          bd_id: (this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,
-          title: this.title,
-          style:this.style, 
-          firsttag:this.firsttag,
-          author_name: this.user_name,
-          primary_description: this.primary_description, 
-          profile_picture: this.profile_picture,
-          thumbnail_picture:this.file_name,
-          category:"comic",
-        },
-        panelClass: "popupReportClass",
+        format:this.format,
+        bd_id: (this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,
+        title: this.title,
+        style:this.style, 
+        firsttag:this.firsttag,
+        author_name: this.user_name,
+        primary_description: this.primary_description, 
+        profile_picture: this.profile_picture,
+        thumbnail_picture:this.file_name,
+        category:"comic",
+      },
       });
     }
     else if(this.category=="writing"){
@@ -1077,8 +1030,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         primary_description: this.primary_description, 
         profile_picture: this.profile_picture,
         thumbnail_picture:this.thumbnail_picture,
-        category:"writing",
-        panelClass: "popupReportClass",
+        category:"writing"
       },
       }); 
     }
@@ -1092,12 +1044,8 @@ export class ThumbnailArtworkComponent implements OnInit {
       return
     }
     this.loading_report=true;
-    console.log("reporting")
-    console.log(this.category)
-    console.log(this.user_id)
     if(this.category=="comic"){
       this.Reports_service.check_if_content_reported('comic',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,this.format,0).subscribe(r=>{
-        console.log(r[0])
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1107,14 +1055,12 @@ export class ThumbnailArtworkComponent implements OnInit {
         else{
           const dialogRef = this.dialog.open(PopupReportComponent, {
             data: {from_account:false,id_receiver:this.author_id,publication_category:'comic',publication_id:(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,format:this.format,chapter_number:0},
-            panelClass: "popupReportClass",
           });
         }
       })
     }
     else if(this.category=="drawing"){
       this.Reports_service.check_if_content_reported('drawing',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id,this.format,0).subscribe(r=>{
-        console.log(r[0])
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1124,14 +1070,12 @@ export class ThumbnailArtworkComponent implements OnInit {
         else{
           const dialogRef = this.dialog.open(PopupReportComponent, {
             data: {from_account:false,id_receiver:this.author_id,publication_category:'drawing',publication_id:(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id,format:this.format,chapter_number:0},
-            panelClass: "popupReportClass",
           });
         }
       })
     }
     else{
       this.Reports_service.check_if_content_reported('writing',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id,"unknown",0).subscribe(r=>{
-        console.log(r[0])
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1141,7 +1085,6 @@ export class ThumbnailArtworkComponent implements OnInit {
         else{
           const dialogRef = this.dialog.open(PopupReportComponent, {
             data: {from_account:false,id_receiver:this.author_id,publication_category:'writing',publication_id:(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id,format:"unknown",chapter_number:0},
-            panelClass: "popupReportClass",
           });
         }
       })
@@ -1163,7 +1106,6 @@ export class ThumbnailArtworkComponent implements OnInit {
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id
     }
     this.Reports_service.cancel_report(this.category,id,this.format).subscribe(r=>{
-      //console.log(r)
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.user_id)>=0){
         let i=this.list_of_reporters.indexOf(this.user_id)
         this.list_of_reporters.splice(i,1)
@@ -1173,7 +1115,6 @@ export class ThumbnailArtworkComponent implements OnInit {
   }
 
   see_reported_content(){
-    //console.log("see reported content")
     this.display_evenif_reported=true;
     this.cd.detectChanges();
   }

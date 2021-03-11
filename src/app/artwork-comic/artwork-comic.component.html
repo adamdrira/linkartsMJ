@@ -492,10 +492,10 @@
             
             <div class="likes-and-loves-numbers">
                 <div class="d2-likes" (click)="show_likes()">
-                    <span >{{likesnumber}}</span>
+                    <span [ngClass]="{'invisible': !list_of_users_ids_likes_retrieved }" >{{likesnumber}}</span>
                 </div>
                 <div class="d2-loves" (click)="show_loves()">
-                    <span >{{lovesnumber}}</span>
+                    <span [ngClass]="{'invisible': !list_of_users_ids_loves_retrieved }" >{{lovesnumber}}</span>
                 </div>
             </div>
 
