@@ -1969,7 +1969,7 @@ export class AccountComponent implements OnInit {
   check_if_onepage_public(item){
     for(let i=0;i<this.list_drawings_onepage.length;i++){
       if(this.list_drawings_onepage[i].drawing_id==item.drawing_id){
-        item.title=this.list_drawings_artbook[i].title;
+        item.title=this.list_drawings_onepage[i].title;
         return true;
       }
       else if(i==this.list_drawings_onepage.length-1){
@@ -1993,7 +1993,7 @@ export class AccountComponent implements OnInit {
   check_if_oneshot_public(item){
     for(let i=0;i<this.list_bd_oneshot.length;i++){
       if(this.list_bd_oneshot[i].bd_id==item.bd_id){
-        item.title=this.list_bd_series[i].title;
+        item.title=this.list_bd_oneshot[i].title;
         return true;
       }
       else if(i==this.list_bd_oneshot.length-1){
