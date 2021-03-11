@@ -356,17 +356,6 @@
                         <div class="length-indicator">{{registerForm1.controls['training'].value?.length || 0}}/100</div>
                     </mat-form-field>
                 </div>
-                <!--<div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'
-                    [matTooltip]="( training==undefined || training=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-label *ngIf="!( training==undefined || training=='' )">{{training}}</mat-label>
-                        <mat-label *ngIf=" ( training==undefined || training=='' )"><i>Non renseignées</i></mat-label>
-                        <input matInput readonly>
-                    </mat-form-field>
-                </div>-->
                 <div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
                     <mat-form-field floatLabel='never'
                     [matTooltip]="( training==undefined || training=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
@@ -802,7 +791,7 @@
                         <mat-datepicker-toggle matSuffix [for]="picker">
                         <mat-icon [ngClass]="{'invisible': !show_icon }" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
                         </mat-datepicker-toggle>
-                        <mat-error *ngIf="registerForm3.controls['birthday'].invalid">Veuillez saisir une date de naissance valide</mat-error>
+                        <mat-error *ngIf="registerForm3.controls['birthday'].invalid">Exemple valide : 24/12/1996</mat-error>
                         <mat-datepicker #picker disabled="false" panelClass="account-about-datepicker" startView="multi-year"></mat-datepicker>
                     </mat-form-field>
                 </div>
@@ -947,7 +936,7 @@
                         [showYAxisLabel]="showYAxisLabel"
                         [xAxisLabel]="xAxis_trendings_1"
                         [yAxisLabel]="yAxis_trendings_1"
-                        (select)="onSelect($event)">
+                        >
                         </ngx-charts-line-chart>
                     </div>
 
@@ -964,7 +953,7 @@
                         [showYAxisLabel]="showYAxisLabel"
                         [xAxisLabel]="xAxis_trendings_2"
                         [yAxisLabel]="yAxis_trendings_2"
-                        (select)="onSelect($event)">
+                        >
                         </ngx-charts-line-chart>
                     </div>
                 </div>
@@ -1099,7 +1088,7 @@
                             [showYAxisLabel]="showYAxisLabel"
                             [xAxisLabel]="xAxis_profile_stats_nb_visitors"
                             [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                            (select)="onSelect($event)">
+                            >
                             </ngx-charts-line-chart>
                         </div>
 
@@ -1233,7 +1222,7 @@
                         [showYAxisLabel]="showYAxisLabel"
                         [xAxisLabel]="xAxis_profile_stats_nb_visitors"
                         [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                        (select)="onSelect($event)">
+                        >
                         </ngx-charts-line-chart>
                     </div>
 
@@ -1367,7 +1356,7 @@
                             [showYAxisLabel]="showYAxisLabel"
                             [xAxisLabel]="xAxis_profile_stats_nb_visitors"
                             [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                            (select)="onSelect($event)">
+                            >
                             </ngx-charts-line-chart>
                         </div>
 
@@ -1504,7 +1493,7 @@
                         [showYAxisLabel]="showYAxisLabel"
                         [xAxisLabel]="xAxis_profile_stats_nb_visitors"
                         [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                        (select)="onSelect($event)">
+                        >
                         </ngx-charts-line-chart>
                     </div>
 
@@ -1601,7 +1590,7 @@
                             [showYAxisLabel]="showYAxisLabel"
                             [xAxisLabel]="xAxis_profile_stats_nb_visitors"
                             [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                            (select)="onSelect($event)">
+                            >
                             </ngx-charts-line-chart>
                         </div>
                     </ng-container>
@@ -1621,7 +1610,7 @@
                             [legendPosition]="legend_position"
                             [labels]="showLabels"
                             [doughnut]="isDoughnut_viewers_stats"
-                            (select)="onSelect($event)"
+                            
                             >
                             </ngx-charts-pie-chart>
                         </div>
@@ -1642,7 +1631,7 @@
                             [legendPosition]="legend_position"
                             [labels]="showLabels"
                             [doughnut]="isDoughnut_viewers_stats"
-                            (select)="onSelect($event)"
+                            
                             >
                             </ngx-charts-pie-chart>
                         </div>
@@ -1663,7 +1652,7 @@
                             [legendPosition]="legend_position"
                             [labels]="showLabels"
                             [doughnut]="isDoughnut_viewers_stats"
-                            (select)="onSelect($event)"
+                            
                             >
                             </ngx-charts-pie-chart>
                         </div>
@@ -1684,7 +1673,7 @@
                             [legendPosition]="legend_position"
                             [labels]="showLabels"
                             [doughnut]="isDoughnut_viewers_stats"
-                            (select)="onSelect($event)"
+                            
                             >
                             </ngx-charts-pie-chart>
                         </div>

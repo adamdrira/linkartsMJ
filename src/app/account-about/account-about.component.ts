@@ -1,22 +1,15 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener, Input } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild} from '@angular/core';
-import { AuthenticationService } from '../services/authentication.service';
-import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 import { Trending_service } from '../services/trending.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { NotationService } from '../services/notation.service';
 import { NavbarService } from '../services/navbar.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
-import { Subscribing_service } from '../services/subscribing.service';
-import { Albums_service } from '../services/albums.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-import { Story_service } from '../services/story.service';
 import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -27,8 +20,6 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { convert_timestamp_to_number, date_in_seconds, get_date_to_show } from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
-
-
 import { normalize_to_nfc } from '../helpers/patterns';
 
 
@@ -39,8 +30,6 @@ declare var $: any;
   templateUrl: './account-about.component.html',
   styleUrls: ['./account-about.component.scss'],
   providers: [
-    // The locale would typically be provided on the root module of your application. We do it at
-    // the component level here, due to limitations of our example generation script.
     {provide: MAT_DATE_LOCALE, useValue: 'fr'},
     {
       provide: DateAdapter,
@@ -105,7 +94,6 @@ export class AccountAboutComponent implements OnInit {
   date_format_comics=3;
   date_format_drawings=3;
   date_format_writings=3;
-  //date_format_contents=3;
   date_format_profile=3;
   
 
@@ -189,15 +177,8 @@ export class AccountAboutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
-    let THIS=this;
-
-      console.log(this.id_user);
-      console.log("open accout about");
       const currentYear = moment().year();
       this.maxDate = moment([currentYear - 7, 11, 31]);
-      console.log(this.author)
-      
       this.siret=this.author.siret;
       this.firstName = this.author.firstname;
       this.lastName =this.author.lastname;
@@ -229,14 +210,12 @@ export class AccountAboutComponent implements OnInit {
       
       //open_category=0
       this.Profile_Edition_Service.retrieve_profile_data_links(this.id_user).subscribe(l=>{
-        console.log(l[0]);
         if(l[0].length>0){
           for(let i=0;i<l[0].length;i++){
             this.links_titles[i]=l[0][i].link_title;
             this.links[i]=l[0][i].link;
           }
         }
-        console.log( this.links)
         this.links_retrieved=true;
         this.cd.detectChanges();
       })
@@ -273,23 +252,14 @@ export class AccountAboutComponent implements OnInit {
         if(this.list_of_privacy[6]=='private'){
           this.trendings_private=true;
         }
-        console.log(compt)
-        console.log( this.all_stats_private)
-       
-        console.log("information_privacy_retrieved")
         this.cd.detectChanges();
       })
 
-      //open_category=1
       this.Trending_service.check_if_user_has_trendings(this.id_user).subscribe(r=>{
-        console.log(r[0])
         if(r[0].found){
           this.number_of_comics_trendings=Object.keys(r[0].list_of_comics).length;
           this.number_of_drawings_trendings=Object.keys(r[0].list_of_drawings).length;
           this.number_of_writings_trendings=Object.keys(r[0].list_of_writings).length;
-          console.log( this.number_of_comics_trendings)
-          console.log(  this.number_of_drawings_trendings)
-          console.log( this.number_of_writings_trendings)
           this.get_trendings();
           this.trendings_found=true;
         }
@@ -402,18 +372,12 @@ export class AccountAboutComponent implements OnInit {
       $(".Sumo_comics_stats").SumoSelect({});
       $(".Sumo_drawings_stats").SumoSelect({});
       $(".Sumo_writings_stats").SumoSelect({});
-     
-      /*$(".SelectBox2").SumoSelect({
-      });  */ 
       THIS.sumo_ready=true;
       THIS.cd.detectChanges();
       window.dispatchEvent(new Event('resize'))
-      console.log("sumo ready")
     });
 
     $(".Sumo_trendings").change(function(){
-      console.log("sumo change")
-      console.log($(this).val());
       let old_date=THIS.date_format_trendings;
       if($(this).val()=="Depuis 1 mois"){
         THIS.date_format_trendings=1;
@@ -435,7 +399,6 @@ export class AccountAboutComponent implements OnInit {
     });
 
     $(".Sumo_profile_stats").change(function(){
-      console.log($(this).val());
       let old_date=THIS.date_format_profile;
       if($(this).val()=="Depuis 1 mois"){
       THIS.date_format_profile=1;
@@ -457,7 +420,6 @@ export class AccountAboutComponent implements OnInit {
    });
 
     $(".Sumo_ads_stats").change(function(){
-      console.log($(this).val());
       let old_date=THIS.date_format_ads;
       if($(this).val()=="Depuis 1 mois"){
       THIS.date_format_ads=1;
@@ -479,7 +441,6 @@ export class AccountAboutComponent implements OnInit {
     });
 
     $(".Sumo_comics_stats").change(function(){
-      console.log($(this).val());
       let old_date=THIS.date_format_comics;
       if($(this).val()=="Depuis 1 mois"){
       THIS.date_format_comics=1;
@@ -495,14 +456,12 @@ export class AccountAboutComponent implements OnInit {
       }
       THIS.cd.detectChanges();
       if(old_date!=THIS.date_format_comics){
-        console.log("get_comics_stats")
         THIS.get_comics_stats();
       }
       
     });
 
     $(".Sumo_drawings_stats").change(function(){
-      console.log($(this).val());
       let old_date=THIS.date_format_drawings;
       if($(this).val()=="Depuis 1 mois"){
       THIS.date_format_drawings=1;
@@ -524,7 +483,6 @@ export class AccountAboutComponent implements OnInit {
     });
 
     $(".Sumo_writings_stats").change(function(){
-      console.log($(this).val());
       let old_date=THIS.date_format_writings;
       if($(this).val()=="Depuis 1 mois"){
       THIS.date_format_writings=1;
@@ -558,11 +516,9 @@ export class AccountAboutComponent implements OnInit {
       THIS.selector_for_ads_initialized=true;
       
       THIS.cd.detectChanges();
-      console.log("sumo_for_ads_ready")
     });
 
     $(".Sumo_for_ads_2").change(function(){
-      console.log($(this).val())
       let index =THIS.list_of_ads_names.indexOf($(this).val() )
       THIS.get_stats_for_an_ad(index);
     });
@@ -577,13 +533,10 @@ export class AccountAboutComponent implements OnInit {
         THIS.sumo_for_comics_ready=true;
       }
       THIS.selector_for_comics_initialized=true;
-      
       THIS.cd.detectChanges();
-      console.log("Sumo_for_comics_2 ready")
     });
 
     $(".Sumo_for_comics_2").change(function(){
-      console.log($(this).val())
       let index =THIS.list_of_comics_names.indexOf($(this).val() )
       THIS.get_stats_for_a_comic(index);
     });
@@ -591,7 +544,6 @@ export class AccountAboutComponent implements OnInit {
 
 
   initialize_selectors_for_drawings(){
-    console.log("ini selector for drawings")
     let THIS=this;
   
     $(document).ready(function () {
@@ -600,13 +552,10 @@ export class AccountAboutComponent implements OnInit {
         THIS.sumo_for_drawings_ready=true;
       }
       THIS.selector_for_drawings_initialized=true;
-      
       THIS.cd.detectChanges();
-      console.log("Sumo_for_drawings_2 ready")
     });
 
     $(".Sumo_for_drawings_2").change(function(){
-      console.log($(this).val())
       let index =THIS.list_of_drawings_names.indexOf($(this).val() )
       THIS.get_stats_for_a_drawing(index);
     });
@@ -621,13 +570,10 @@ export class AccountAboutComponent implements OnInit {
         THIS.sumo_for_writings_ready=true;
       }
       THIS.selector_for_writings_initialized=true;
-      
       THIS.cd.detectChanges();
-      console.log("Sumo_for_writings_2 ready")
     });
 
     $(".Sumo_for_writings_2").change(function(){
-      console.log($(this).val())
       let index =THIS.list_of_writings_names.indexOf($(this).val() )
       THIS.get_stats_for_a_writing(index);
     });
@@ -665,14 +611,10 @@ export class AccountAboutComponent implements OnInit {
   number_of_writings_trendings=0;
 
   get_trendings(){
-    //faire fonction pour vérifir s'il y a des trendings, sinon ne pas afficher la section
-    console.log("getting trendings")
     this.compteur_trendings++;
     this.trendings_loaded=false;
     this.trendings_found=false;
     this.Trending_service.get_all_trendings_by_user(this.date_format_trendings,this.id_user,this.compteur_trendings).subscribe(r=>{
-      console.log(r[0][0])
-
       if(r[1]== this.compteur_trendings){
         if(Object.keys(r[0][0].list_of_contents).length>0){
 
@@ -862,8 +804,6 @@ export class AccountAboutComponent implements OnInit {
             
           }
           
-          console.log(this.multi_trendings_1)
-          console.log(this.multi_trendings_2)
           this.trendings_found=true;
         }
         else{
@@ -872,13 +812,9 @@ export class AccountAboutComponent implements OnInit {
           this.number_of_writings_trendings=0;
           this.trendings_found=false;
         }
-        
         this.trendings_loaded=true;
         
       }
-      
-      console.log(this.trendings_found)
-      console.log( this.trendings_loaded)
       this.cd.detectChanges()
     })
   
@@ -903,24 +839,18 @@ export class AccountAboutComponent implements OnInit {
   comments_loaded=false;
   views_loaded=false;
   get_ads_stats(){
-    console.log("get_number_of_ads_and_responses")
     this.compteur_ads_stats++;
-
     this.list_of_ads_retrieved=false;
     this.list_of_ads_loaded=false;
-
     this.comments_loaded=false;
     this.views_loaded=false;
 
     this.Ads_service.get_number_of_ads_and_responses(this.id_user,this.date_format_ads,this.compteur_ads_stats).subscribe(r=>{
-      console.log(r[0][0])
       if(r[1]==this.compteur_ads_stats){
         this.number_of_ads=r[0][0].number_of_ads ;
         this.number_of_ads_answers=r[0][0].number_of_ads_answers;
         if(r[0][0].list_of_ads_ids){
           this.NotationService.get_number_of_ads_comments(r[0][0].list_of_ads_ids).subscribe(l=>{
-            //console.log("contents_stats ads")
-            console.log(l[0])
             if(r[1]==this.compteur_ads_stats){
               this.number_of_ads_comments=l[0].number_of_comments;
               this.comments_loaded=true;
@@ -930,7 +860,6 @@ export class AccountAboutComponent implements OnInit {
               }
             }
             this.NavbarService.get_number_of_clicked_on_ads(r[0][0].list_of_ads_ids,this.id_user).subscribe(p=>{
-              console.log(p[0]);
               if(r[1]==this.compteur_ads_stats){
                 this.number_of_ads_views=p[0].number_of_views;
                 this.views_loaded=true;
@@ -944,8 +873,6 @@ export class AccountAboutComponent implements OnInit {
         }
         else{
           this.list_of_ads_retrieved=true;
-          console.log(this.list_of_ads_loaded)
-          console.log(this.list_of_ads_retrieved)
         }
       }
       
@@ -957,7 +884,6 @@ export class AccountAboutComponent implements OnInit {
   list_of_ads_ids=[];
   list_of_ads_names=[];
   get_ads_names_by_ids(list_of_ads_ids,compteur){
-    console.log("get_ads_names_by_ids")
     this.list_of_ads_ids=list_of_ads_ids;
     let compt=0;
     for(let i=0;i<list_of_ads_ids.length;i++){
@@ -978,9 +904,7 @@ export class AccountAboutComponent implements OnInit {
             else{
               this.initialize_selectors_for_ads()
             }
-            this.get_stats_for_an_ad(0)
-            console.log(this.list_of_ads_ids)
-            console.log(this.list_of_ads_names)
+            this.get_stats_for_an_ad(0);
             this.cd.detectChanges()
           }
         }
@@ -998,19 +922,13 @@ export class AccountAboutComponent implements OnInit {
   single_ad_stats_retrieved=false;
   multi_ad_stats=[];
   get_stats_for_an_ad(i){
-    console.log("gets_stats_for_an_ad")
-    console.log(this.list_of_ads_ids[i]);
     let target_id=this.list_of_ads_ids[i]
     this.compteur_get_single_ad_stats++;
-    console.log("get profile stats");
     this.single_ad_stats_retrieved=false;
     this.NavbarService.get_number_of_viewers_by_ad(target_id,this.id_user,this.date_format_ads,this.compteur_get_single_ad_stats).subscribe(r=>{
-      
-      console.log(r[0][0])
       if(r[1]==this.compteur_get_single_ad_stats){
         if(r[0][0]){
           if(this.date_format_ads==0){
-            console.log("format 1")
             let today=new Date();
             let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
             this.multi_ad_stats=[{
@@ -1035,7 +953,6 @@ export class AccountAboutComponent implements OnInit {
           }
 
           if(this.date_format_ads==1){
-            console.log("format 1")
             let today=new Date();
             let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
             this.multi_ad_stats=[{
@@ -1060,7 +977,6 @@ export class AccountAboutComponent implements OnInit {
           }
 
           if(this.date_format_ads==2){
-            console.log("format 2")
             let today=new Date();
             let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
             this.multi_ad_stats=[{
@@ -1085,7 +1001,6 @@ export class AccountAboutComponent implements OnInit {
           }
 
           if(this.date_format_ads==3){
-            console.log("format 3")
             let date1 = new Date('08/01/2019');
             let date2 = new Date();
             let difference = date2.getTime() - date1.getTime();
@@ -1116,7 +1031,6 @@ export class AccountAboutComponent implements OnInit {
           }
         }
         this.single_ad_stats_retrieved=true;
-        console.log(this.multi_ad_stats)
       }
       this.cd.detectChanges()
     });
@@ -1157,14 +1071,9 @@ export class AccountAboutComponent implements OnInit {
     this.list_of_comics_retrieved=false;
     
     this.BdSerieService.get_number_of_bd_series(this.id_user,this.date_format_comics, this.compteur_comics_stats).subscribe(r=>{
-      console.log(r[0][0])
-      console.log("list of ids bd series")
-      console.log(r[0][0].list_of_ids)
       if(r[0][0].number_of_bd_series>0 && r[1]==this.compteur_comics_stats){
         list_of_comics_series=r[0][0].list_of_comics;
         this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"comic","serie").subscribe(s=>{
-          
-          console.log(s[0]);
           list_of_notations_series=s[0];
           if(r[1]==this.compteur_comics_stats){
             this.comics_series_loaded=true;
@@ -1186,15 +1095,9 @@ export class AccountAboutComponent implements OnInit {
       }
     });
     this.BdOneShotService.get_number_of_bd_oneshot(this.id_user,this.date_format_comics,this.compteur_comics_stats).subscribe(r=>{
-      //console.log("contents_stats bd")
-      console.log(r[0][0]);
-      console.log("list of ids bd one shot")
-      console.log(r[0][0].list_of_ids)
       if(r[0][0].number_of_bd_oneshot>0 && r[1]==this.compteur_comics_stats){
         list_of_comics_one_shot=r[0][0].list_of_comics;
         this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"comic","one-shot").subscribe(s=>{
-          //console.log("contents_stats bd")
-          console.log(s[0]);
           list_of_notations_one_shot=s[0];
           if(r[1]==this.compteur_comics_stats){
             this.comics_one_shot_loaded=true;
@@ -1218,11 +1121,6 @@ export class AccountAboutComponent implements OnInit {
 
   sort_list_of_comics(list_of_comics_series,list_of_comics_one_shot,list_of_notations_series,list_of_notations_one_shot){
     let sort=false;
-    console.log(list_of_comics_series)
-    console.log(list_of_comics_one_shot)
-    console.log( list_of_notations_series)
-    console.log( list_of_notations_one_shot)
-    
     if(list_of_comics_series.length>0 && list_of_comics_one_shot.length>0 ){
       this.list_of_comics=list_of_comics_series.concat(list_of_comics_one_shot);
       this.number_of_comics_views=list_of_notations_series.number_of_views+list_of_notations_one_shot.number_of_views;
@@ -1250,7 +1148,6 @@ export class AccountAboutComponent implements OnInit {
     else if(list_of_comics_series.length==0 && list_of_comics_one_shot.length==0 ){
       this.list_of_comics_retrieved=true;
     }
-    console.log(this.list_of_comics)
     this.number_of_comics= this.list_of_comics.length;
     
 
@@ -1273,7 +1170,6 @@ export class AccountAboutComponent implements OnInit {
               for(let k=0;k<this.list_of_comics.length;k++){
                 this.list_of_comics_names[k]= this.list_of_comics[k].title + ' (' + get_date_to_show( date_in_seconds( this.now_in_seconds, this.list_of_comics[k].createdAt ) ) + ')';
               }
-              console.log(this.list_of_comics_names)
               this.list_of_comics_loaded=true;
               this.list_of_comics_retrieved=true;
               this.sumo_for_comics_ready=false;
@@ -1335,8 +1231,6 @@ export class AccountAboutComponent implements OnInit {
   multi_comics_contents=[];
   compteur_get_single_comic=0;
   get_stats_for_a_comic(i){
-    console.log("get_stats_for_a_comic")
-    console.log(this.list_of_comics[i]);
     this.single_comics_stats_retrieved=false;
     let publication_id=0;
     let format='';
@@ -1368,16 +1262,12 @@ export class AccountAboutComponent implements OnInit {
     let category="comic"
    
     this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_comics,compteur).subscribe(r=>{
-      
-      console.log(r[0][0])
       let notations=r[0][0];
       if(r[1]==compteur){
         if(r[0][0]){
             this.get_multi_comics(notations)
-            console.log(this.multi_comics_contents)
         }
         this.single_ad_stats_retrieved=true;
-        console.log(this.multi_ad_stats)
       }
       this.cd.detectChanges()
     });
@@ -1421,7 +1311,6 @@ export class AccountAboutComponent implements OnInit {
     }
 
     if(this.date_format_comics==1){
-      console.log("format 1")
       for(let i=0;i<30;i++){
         let date_i=new Date();
         date_i.setDate(date_i.getDate() - i);
@@ -1455,7 +1344,6 @@ export class AccountAboutComponent implements OnInit {
     }
 
     if(this.date_format_comics==2){
-      console.log("format 2")
       for(let i=0;i<53;i++){
         let date_i=new Date();
         date_i.setDate(date_i.getDate() - 7*i);
@@ -1489,7 +1377,6 @@ export class AccountAboutComponent implements OnInit {
     }
 
     if(this.date_format_comics==3){
-      console.log("format 3")
       let date1 = new Date('08/01/2019');
       let date2 = new Date();
       let difference = date2.getTime() - date1.getTime();
@@ -1528,7 +1415,6 @@ export class AccountAboutComponent implements OnInit {
       }
       
     }
-    console.log(this.multi_comics_contents)
     this.single_comics_stats_retrieved=true;
   }
   /***************************************** DRAWINGS STATS  *********************************/
@@ -1570,20 +1456,13 @@ export class AccountAboutComponent implements OnInit {
     this.list_of_drawings_retrieved=false;
     
     this.Drawings_Artbook_Service.get_number_of_drawings_artbook(this.id_user,this.date_format_drawings, this.compteur_drawings_stats).subscribe(r=>{
-      console.log(r[0][0])
-      console.log("list of ids artbook")
-      console.log(r[0][0].list_of_ids)
       if(r[0][0].number_of_drawings_artbook>0 && r[1]==this.compteur_drawings_stats){
         list_of_drawings_artbook=r[0][0].list_of_drawings;
         this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"drawing","artbook").subscribe(s=>{
-          
-          console.log(s[0]);
           list_of_notations_artbook=s[0];
           if(r[1]==this.compteur_drawings_stats){
             this.drawings_artbook_loaded=true;
-            console.log("artbooks loaded")
             if( this.drawings_artbook_loaded &&  this.drawings_one_shot_loaded){
-              console.log("ready to sort")
               this.sort_list_of_drawings(list_of_drawings_artbook,list_of_drawings_one_shot,list_of_notations_artbook,list_of_notations_one_shot)
             }
           }
@@ -1593,33 +1472,20 @@ export class AccountAboutComponent implements OnInit {
       else if(r[0][0].number_of_drawings_artbook<=0){
         if(r[1]==this.compteur_drawings_stats){
           this.drawings_artbook_loaded=true;
-          console.log("artbooks loaded")
           if( this.drawings_artbook_loaded &&  this.drawings_one_shot_loaded){
-            console.log("ready to sort")
             this.sort_list_of_drawings(list_of_drawings_artbook,list_of_drawings_one_shot,list_of_notations_artbook,list_of_notations_one_shot)
           }
         }
       }
     });
     this.Drawings_Onepage_Service.get_number_of_drawings_oneshot(this.id_user,this.date_format_drawings,this.compteur_drawings_stats).subscribe(r=>{
-      //console.log("contents_stats drawing")
-      console.log(r);
-      console.log(this.compteur_drawings_stats)
-      console.log("list of ids drawings one shot")
-      console.log(r[0][0].list_of_ids)
       if(r[0][0].number_of_drawings_oneshot>0 && r[1]==this.compteur_drawings_stats){
         list_of_drawings_one_shot=r[0][0].list_of_drawings;
         this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"drawing","one-shot").subscribe(s=>{
-          //console.log("contents_stats drawing")
-          console.log(s[0]);
           list_of_notations_one_shot=s[0];
-          console.log(r[1])
-          console.log(this.compteur_drawings_stats)
           if(r[1]==this.compteur_drawings_stats){
             this.drawings_one_shot_loaded=true;
-            console.log("drawings_one_shot_loaded loaded")
             if( this.drawings_artbook_loaded &&  this.drawings_one_shot_loaded){
-              console.log("ready to sort")
               this.sort_list_of_drawings(list_of_drawings_artbook,list_of_drawings_one_shot,list_of_notations_artbook,list_of_notations_one_shot)
             }
           }
@@ -1628,9 +1494,7 @@ export class AccountAboutComponent implements OnInit {
       else if(r[0][0].number_of_drawings_oneshot<=0){
         if(r[1]==this.compteur_drawings_stats){
           this.drawings_one_shot_loaded=true;
-          console.log("drawings_one_shot_loaded loaded")
           if( this.drawings_artbook_loaded &&  this.drawings_one_shot_loaded){
-            console.log("ready to sort")
             this.sort_list_of_drawings(list_of_drawings_artbook,list_of_drawings_one_shot,list_of_notations_artbook,list_of_notations_one_shot)
           }
         }
@@ -1641,12 +1505,6 @@ export class AccountAboutComponent implements OnInit {
 
   sort_list_of_drawings(list_of_drawings_artbook,list_of_drawings_one_shot,list_of_notations_artbook,list_of_notations_one_shot){
     let sort=false;
-    console.log("sort_list_of_drawings")
-    console.log(list_of_drawings_artbook)
-    console.log(list_of_drawings_one_shot)
-    console.log( list_of_notations_artbook)
-    console.log( list_of_notations_one_shot)
-    
     if(list_of_drawings_artbook.length>0 && list_of_drawings_one_shot.length>0 ){
       this.list_of_drawings=list_of_drawings_artbook.concat(list_of_drawings_one_shot);
       this.number_of_drawings_views=list_of_notations_artbook.number_of_views+list_of_notations_one_shot.number_of_views;
@@ -1674,7 +1532,6 @@ export class AccountAboutComponent implements OnInit {
     else if(list_of_drawings_artbook.length==0 && list_of_drawings_one_shot.length==0 ){
       this.list_of_drawings_retrieved=true;
     }
-    console.log(this.list_of_drawings)
     this.number_of_drawings= this.list_of_drawings.length;
     
 
@@ -1691,7 +1548,6 @@ export class AccountAboutComponent implements OnInit {
               for(let k=0;k<this.list_of_drawings.length;k++){
                 this.list_of_drawings_names[k]= this.list_of_drawings[k].title + ' (' + get_date_to_show( date_in_seconds( this.now_in_seconds, this.list_of_drawings[k].createdAt ) ) + ')';
               }
-              console.log(this.list_of_drawings_names)
               this.list_of_drawings_loaded=true;
               this.list_of_drawings_retrieved=true;
               this.sumo_for_drawings_ready=false;
@@ -1756,8 +1612,6 @@ export class AccountAboutComponent implements OnInit {
   multi_drawings_contents=[];
   compteur_get_single_drawing=0;
   get_stats_for_a_drawing(i){
-    console.log("get_stats_for_a_drawing")
-    console.log(this.list_of_drawings[i]);
     this.single_drawings_stats_retrieved=false;
     let publication_id=0;
     let format='';
@@ -1790,15 +1644,12 @@ export class AccountAboutComponent implements OnInit {
    
     this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_drawings,compteur).subscribe(r=>{
       
-      console.log(r[0][0])
       let notations=r[0][0];
       if(r[1]==compteur){
         if(r[0][0]){
             this.get_multi_drawings(notations)
-            console.log(this.multi_drawings_contents)
         }
         this.single_ad_stats_retrieved=true;
-        console.log(this.multi_ad_stats)
       }
       this.cd.detectChanges()
     });
@@ -1842,7 +1693,6 @@ export class AccountAboutComponent implements OnInit {
     }
 
     if(this.date_format_drawings==1){
-      console.log("format 1")
       for(let i=0;i<30;i++){
         let date_i=new Date();
         date_i.setDate(date_i.getDate() - i);
@@ -1876,7 +1726,6 @@ export class AccountAboutComponent implements OnInit {
     }
 
     if(this.date_format_drawings==2){
-      console.log("format 2")
       for(let i=0;i<53;i++){
         let date_i=new Date();
         date_i.setDate(date_i.getDate() - 7*i);
@@ -1910,7 +1759,6 @@ export class AccountAboutComponent implements OnInit {
     }
 
     if(this.date_format_drawings==3){
-      console.log("format 3")
       let date1 = new Date('08/01/2019');
       let date2 = new Date();
       let difference = date2.getTime() - date1.getTime();
@@ -1949,7 +1797,6 @@ export class AccountAboutComponent implements OnInit {
       }
       
     }
-    console.log(this.multi_drawings_contents)
     this.single_drawings_stats_retrieved=true;
   }
 
@@ -1988,14 +1835,9 @@ export class AccountAboutComponent implements OnInit {
     this.list_of_writings_retrieved=false;
     
     this.Writing_Upload_Service.get_number_of_writings(this.id_user,this.date_format_writings, this.compteur_writings_stats).subscribe(r=>{
-      console.log(r[0][0])
-      console.log("list of ids writings")
-      console.log(r[0][0].list_of_ids)
       if(r[0][0].number_of_writings>0 && r[1]==this.compteur_writings_stats){
         list_of_writings=r[0][0].list_of_writings;
         this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"writing","unknown").subscribe(s=>{
-          
-          console.log(s[0]);
           list_of_notations_writings=s[0];
           if(r[1]==this.compteur_writings_stats){
             this.writings_loaded=true;
@@ -2019,10 +1861,6 @@ export class AccountAboutComponent implements OnInit {
 
   sort_list_of_writings(list_of_writings,list_of_notations_writings){
     let sort=false;
-    console.log("sort_list_of_writings")
-    console.log(list_of_writings)
-    console.log(list_of_notations_writings)
-    
     if(list_of_writings.length>0 ){
       this.list_of_writings=list_of_writings;
       this.number_of_writings_views=list_of_notations_writings.number_of_views;
@@ -2034,7 +1872,6 @@ export class AccountAboutComponent implements OnInit {
     else {
       this.list_of_writings_retrieved=true;
     }
-    console.log(this.list_of_writings)
     this.number_of_writings= this.list_of_writings.length;
     
 
@@ -2051,7 +1888,6 @@ export class AccountAboutComponent implements OnInit {
               for(let k=0;k<this.list_of_writings.length;k++){
                 this.list_of_writings_names[k]= this.list_of_writings[k].title + ' (' + get_date_to_show( date_in_seconds( this.now_in_seconds, this.list_of_writings[k].createdAt ) ) + ')';
               }
-              console.log(this.list_of_writings_names)
               this.list_of_writings_loaded=true;
               this.list_of_writings_retrieved=true;
               this.sumo_for_writings_ready=false;
@@ -2115,8 +1951,6 @@ export class AccountAboutComponent implements OnInit {
   multi_writings_contents=[];
   compteur_get_single_writing=0;
   get_stats_for_a_writing(i){
-    console.log("get_stats_for_a_writing")
-    console.log(this.list_of_writings[i]);
     this.single_writings_stats_retrieved=false;
     let publication_id=0;
     let format='unknown';
@@ -2147,16 +1981,13 @@ export class AccountAboutComponent implements OnInit {
     let category="writing"
    
     this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_writings,compteur).subscribe(r=>{
-      
-      console.log(r[0][0])
+
       let notations=r[0][0];
       if(r[1]==compteur){
         if(r[0][0]){
             this.get_multi_writings(notations)
-            console.log(this.multi_writings_contents)
         }
         this.single_ad_stats_retrieved=true;
-        console.log(this.multi_ad_stats)
       }
       this.cd.detectChanges()
     });
@@ -2200,7 +2031,6 @@ export class AccountAboutComponent implements OnInit {
     }
 
     if(this.date_format_writings==1){
-      console.log("format 1")
       for(let i=0;i<30;i++){
         let date_i=new Date();
         date_i.setDate(date_i.getDate() - i);
@@ -2234,7 +2064,6 @@ export class AccountAboutComponent implements OnInit {
     }
 
     if(this.date_format_writings==2){
-      console.log("format 2")
       for(let i=0;i<53;i++){
         let date_i=new Date();
         date_i.setDate(date_i.getDate() - 7*i);
@@ -2268,7 +2097,6 @@ export class AccountAboutComponent implements OnInit {
     }
 
     if(this.date_format_writings==3){
-      console.log("format 3")
       let date1 = new Date('08/01/2019');
       let date2 = new Date();
       let difference = date2.getTime() - date1.getTime();
@@ -2307,7 +2135,6 @@ export class AccountAboutComponent implements OnInit {
       }
       
     }
-    console.log(this.multi_writings_contents)
     this.single_writings_stats_retrieved=true;
   }
 
@@ -2349,20 +2176,14 @@ export class AccountAboutComponent implements OnInit {
   profile_and_account_stats_zero=false;
   age_and_locations_stats_zero=false;
   get_profile_stats(){
-
-    /*************************************** Number of viewers  ************************************/
-    /*************************************** Number of viewers  ************************************/
     this.compteur_get_profile_stats++;
-    console.log("get profile stats");
     this.profile_stats_number_of_viewers_retrieved=false;
     this.profile_stats_nb_visitors_found=false;
     this.NavbarService.get_number_of_viewers_by_profile(this.id_user,this.date_format_profile,this.compteur_get_profile_stats).subscribe(r=>{
       
-      console.log(r[0][0])
       if(r[1]==this.compteur_get_profile_stats){
         if(r[0][0]){
           if(this.date_format_profile==0){
-            console.log("format 1")
             let today=new Date();
             let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
             this.multi_profile_stats_nb_visitors=[{
@@ -2387,7 +2208,6 @@ export class AccountAboutComponent implements OnInit {
           }
 
           if(this.date_format_profile==1){
-            console.log("format 1")
             let today=new Date();
             let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
             this.multi_profile_stats_nb_visitors=[{
@@ -2412,7 +2232,6 @@ export class AccountAboutComponent implements OnInit {
           }
 
           if(this.date_format_profile==2){
-            console.log("format 2")
             let today=new Date();
             let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
             this.multi_profile_stats_nb_visitors=[{
@@ -2437,7 +2256,6 @@ export class AccountAboutComponent implements OnInit {
           }
 
           if(this.date_format_profile==3){
-            console.log("format 3")
             let date1 = new Date('08/01/2019');
             let date2 = new Date();
             let difference = date2.getTime() - date1.getTime();
@@ -2502,8 +2320,6 @@ export class AccountAboutComponent implements OnInit {
       "value": 0
     }]
     this.NavbarService.get_last_100_viewers(this.id_user).subscribe(r=>{
-      console.log("get_last_100_viewers")
-      console.log(r[0].list_of_viewers);
       if(Object.keys(r[0].list_of_viewers).length>0){
         for(let i=0;i<Object.keys(r[0].list_of_viewers).length;i++){
           if( r[0].list_of_viewers[i].gender){
@@ -2523,10 +2339,8 @@ export class AccountAboutComponent implements OnInit {
             }
           }
           else{
-            console.log("visiteur")
             this.single_viewers_profiles_stats[3].value++;
-            let index_account = this.single_viewers_accounts_stats.findIndex(x => x.name === "Visiteurs")
-            console.log(index_account)
+            let index_account = this.single_viewers_accounts_stats.findIndex(x => x.name === "Visiteurs");
             if(index_account>=0){
               this.single_viewers_accounts_stats[index_account].value++;
             }
@@ -2543,22 +2357,16 @@ export class AccountAboutComponent implements OnInit {
       else{
         this.profile_and_account_stats_zero=true;
       }
-      console.log(this.single_viewers_profiles_stats)
-      console.log(this.single_viewers_accounts_stats)
       this.viewers_stats_1_retrieved=true;
       this.cd.detectChanges()
     })
 
     /*************************************** Age and locations of viewers  ************************************/
-    /*************************************** Age and locations   of viewers ************************************/
-
     this.NavbarService.get_last_100_account_viewers(this.id_user).subscribe(r=>{
-      console.log(r[0].list_of_viewers);
       if(Object.keys(r[0].list_of_viewers).length>0){
         for(let i=0;i<Object.keys(r[0].list_of_viewers).length;i++){
           let age=this.find_age2(r[0].list_of_viewers[i].birthday);
-          let index_age = this.single_viewers_age_stats.findIndex(x => x.name === age)
-          console.log(index_age)
+          let index_age = this.single_viewers_age_stats.findIndex(x => x.name === age);
           if(index_age>=0){
             this.single_viewers_age_stats[index_age].value++;
           }
@@ -2600,30 +2408,14 @@ export class AccountAboutComponent implements OnInit {
       else{
         this.age_and_locations_stats_zero=true;
       }
-      
-      console.log(this.single_viewers_age_stats)
-      console.log(this.single_viewers_locations_stats)
       this.viewers_stats_retrieved=true;
       this.cd.detectChanges()
     })
-    /*
-    this.NotationService.get_age_of_viewers_for_profile(date_format_age);
-    this.NotationService.get_top_100_viewers_locations_for_profile(date_format_age);*/
-  }
-
-  
-    
-
-  onSelect(data): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
   }
 
 
-
-  /********************************************************************************************** */
   /********************************************************************************************** */
   /*******************************************FORM 1********************************************* */
-  /********************************************************************************************** */
   /********************************************************************************************** */
 
   build_form_1() {
@@ -2667,25 +2459,7 @@ export class AccountAboutComponent implements OnInit {
           Validators.maxLength(100),
           Validators.pattern(pattern("text")),
         ]),
-      ],
-      /*city:['', 
-        Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(30),
-          Validators.pattern(pattern("name")),
-        ]),
-      ],
-      country:['', 
-        Validators.compose([
-        ]),
-      ]*/
-      /*primary_description_extended:['', 
-        Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(1000),
-          Validators.pattern(pattern("text")),
-        ]),
-      ],*/
+      ]
     });
   }
 
@@ -2696,15 +2470,13 @@ export class AccountAboutComponent implements OnInit {
 
   loading_validation_form_1=false;
   validate_form_1(){
-    //fonction backend
-    console.log()
     if(this.loading_validation_form_1){
       return
     }
     if(this.registerForm1.invalid){
       this.display_error_validator_1=true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet'},
+        data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
         panelClass: "popupConfirmationClass",
       });
       return
@@ -2714,24 +2486,22 @@ export class AccountAboutComponent implements OnInit {
     this.display_error_validator_1=false;
     let form =this.registerForm1.value;
     if (this.registerForm1.value.type_of_account.includes('professionnel')){
-      console.log(!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<14))
+   
       if(!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<14)){
-        console.log("in else if false")
+
         this.display_error_validator_1=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incomplet'},
+          data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
           panelClass: "popupConfirmationClass",
         });
         this.loading_validation_form_1=false;
       }
       else{
-        console.log("in else if ok")
         this.display_error_validator_1=false;
         let siret = form.siret
         let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
         let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
         this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,siret,primary ,secondary,form.job,form.training).subscribe(l=>{
-          console.log(l);
           this.type_of_account=form.type_of_account;
           this.primary_description=primary;
           this.primary_description_extended=secondary;
@@ -2745,12 +2515,10 @@ export class AccountAboutComponent implements OnInit {
   
     }
     else{
-      //this.loading_validation_form_1=false;
       this.display_error_validator_1=false;
       let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
-        let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
+      let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
       this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,null,primary,secondary,form.job,form.training).subscribe(l=>{
-        console.log(l);
         this.type_of_account=form.type_of_account;
         this.primary_description=primary;
         this.primary_description_extended=secondary;
@@ -2761,7 +2529,6 @@ export class AccountAboutComponent implements OnInit {
         this.cd.detectChanges();
       })
       
-      console.log(" in else ok")
     }
   }
   cancel_form_1(){
@@ -2812,25 +2579,20 @@ export class AccountAboutComponent implements OnInit {
         ]),
       ],
     });
-    console.log(this.registerForm2.value)
   }
-
-  //primary description 
   loading_validation_form_2=false;
   edit_form_2(){
     this.registerForm2_activated=true;
   }
 
   validate_form_2(){
-    //fonction backend
-    console.log()
     if(this.loading_validation_form_2){
       return
     }
     if(this.registerForm2.invalid ){
       this.display_error_validator_2=true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet'},
+        data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
         panelClass: "popupConfirmationClass",
       });
       return 
@@ -2890,12 +2652,9 @@ export class AccountAboutComponent implements OnInit {
     if ( this.registerForm2.controls['link_title'].value == "" || this.registerForm2.controls['link'].value == "" ) {
       return;
     }
-    
     this.links_titles.push(this.registerForm2.value.link_title);
     this.links.push(this.registerForm2.value.link);
-
     this.Profile_Edition_Service.add_link(this.id_user,this.registerForm2.value.link_title,this.registerForm2.value.link).subscribe(l=>{
-      console.log(l[0])
       this.registerForm2.controls['link'].setValue("");
       this.registerForm2.controls['link_title'].setValue("");
       this.cd.detectChanges();
@@ -2905,7 +2664,6 @@ export class AccountAboutComponent implements OnInit {
   remove_link(i){
    
     this.Profile_Edition_Service.remove_link(this.id_user, this.links_titles[i] , this.links[i] ).subscribe(l=>{
-      console.log(l[0])
       this.links.splice(i,1);
       this.links_titles.splice(i,1);
       this.cd.detectChanges();
@@ -2977,14 +2735,14 @@ export class AccountAboutComponent implements OnInit {
   loading_validation_form_3=false;
   validate_form_3(){
     //fonction backend
-    console.log()
+    
     if(this.loading_validation_form_3){
       return
     }
     if(this.registerForm3.invalid ){
       this.display_error_validator_3=true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet'},
+        data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
         panelClass: "popupConfirmationClass",
       });
       return 
@@ -2992,19 +2750,18 @@ export class AccountAboutComponent implements OnInit {
     this.loading_validation_form_3=true;
     this.display_error_validator_3=false;
     let form =this.registerForm3.value;
-    console.log(this.registerForm3)
-    let birthday;
+    let birthday='';
     if(this.registerForm3.controls['birthday'] && this.registerForm3.controls['birthday'].valid){
-      console.log(this.registerForm3.value.birthday._i.date)
       if(this.registerForm3.value.birthday._i.date){
         birthday = this.registerForm3.value.birthday._i.date  + '-' + this.registerForm3.value.birthday._i.month  + '-' + this.registerForm3.value.birthday._i.year ;
       }
-      else{
-        birthday = this.registerForm3.value.birthday._i;
-        birthday = birthday.replace(/\//g, "-");
-        
+      else if(typeof(this.registerForm3.value.birthday._i)=='string'){
+        birthday=this.registerForm3.value.birthday._i;
+        birthday=birthday.replace(/\//g, "-");
       }
-     
+      else{
+        birthday = this.registerForm3.value.birthday._i[2] + '-'+ this.registerForm3.value.birthday._i[1] +'-'+ this.registerForm3.value.birthday._i[0];
+      }
     }
     this.Profile_Edition_Service.edit_account_about_3(form.firstName,form.lastName,birthday).subscribe(l=>{
       this.firstName=form.firstName;
@@ -3022,53 +2779,6 @@ export class AccountAboutComponent implements OnInit {
     this.loading_validation_form_3=false;
     this.display_error_validator_3=false;
   }
-
-
-
-  /*
-  //informations
-
-  edit_information(){
-    this.registerForm3_activated=true;
-  }
-
-  validate_edit_information(){
-    //this.registerForm3_activated=false;
-    console.log(this.registerForm3)
-    console.log(this.registerForm3.value.birthday)
-    if(this.registerForm3.invalid){
-      this.display_error_validator_3=true;
-    }
-    else{
-      let email=this.registerForm3.value.email;
-      let job =this.registerForm3.value.job;
-      let training =this.registerForm3.value.training;
-      let birthday ="";
-      if(this.registerForm3.value.birthday._i.date){
-        birthday= this.registerForm3.value.birthday._i.date  + '-' + this.registerForm3.value.birthday._i.month  + '-' + this.registerForm3.value.birthday._i.year ;
-      }
-      else{
-        birthday = this.registerForm3.value.birthday._i[2]  + '-' + this.registerForm3.value.birthday._i[1]  + '-' + this.registerForm3.value.birthday._i[0] ;
-      }
-      console.log(birthday)
-      this.Profile_Edition_Service.edit_profile_information(this.id_user,email,birthday,job,training).subscribe(l=>{
-        this.email=email;
-        this.job=job;
-        this.training=training;
-        this.birthday=this.find_age(birthday) ;
-        this.display_error_validator_3=false;
-        this.registerForm3_activated=false;
-      })
-      
-    }
-  }
-
-  cancel_edit_information(){
-    this.display_error_validator_3=false;
-    this.registerForm3_activated=false;
-  }
-
-  */
 
   find_age(birthday){
     var values=birthday.split('-');
@@ -3410,14 +3120,12 @@ export class AccountAboutComponent implements OnInit {
 
   adding_city(){
     if(this.registerForm2.value.city && this.registerForm2.value.city.length>0){
-      console.log("required")
       this.registerForm2.controls['country'].setValidators([
         Validators.required,
       ]);
       this.registerForm2.controls['country'].markAsTouched();
     }
     else if(!this.registerForm2.value.country || this.registerForm2.value.country.length==0){
-      console.log("initi")
         this.registerForm2.controls['country'].setValidators([
         ]);
         this.registerForm2.controls['city'].setValidators([
@@ -3524,9 +3232,7 @@ adding_country(){
   @HostListener('document:click', ['$event.target'])
   clickout(btn) {
     if(this.show_emojis){
-      console.log("emoji shown");
       if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
-        console.log('on est ailleurs');
         this.rd.setStyle(this.emojisSpinner.nativeElement, 'visibility', 'hidden');
         this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
         this.show_emojis=false;
