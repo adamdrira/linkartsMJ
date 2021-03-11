@@ -16,7 +16,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         };
 
     router.post('/add_to_archive', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -38,13 +38,13 @@ console.log("checking current: " + req.headers['authorization'] );
                 "publication_category":publication_category,
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(archives=>{res.status(200).send([archives])})     
     });
 
     router.post('/unarchive', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -68,7 +68,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(archives=>{
 
@@ -84,7 +84,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.get('/check_if_publication_archived/:publication_category/:format/:publication_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -112,7 +112,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(archives =>  {
             if(archives.length>0){
@@ -126,7 +126,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/list_of_archives_comics', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -149,7 +149,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(archives =>  {
             res.status(200).send([archives])
@@ -158,7 +158,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/list_of_archives_drawings', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -181,7 +181,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(archives =>  {
             res.status(200).send([archives])
@@ -190,7 +190,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/list_of_archives_writings', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -213,7 +213,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(archives =>  {
             res.status(200).send([archives])
@@ -222,7 +222,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/list_of_archives_ads', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -245,7 +245,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(archives =>  {
             res.status(200).send([archives])
@@ -253,7 +253,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
   
     router.post('/subscribe_to_a_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -264,7 +264,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("subscribe_to_a_user")
         let current_user = get_current_user(req.cookies.currentUser);
         const id_user_to_subscribe = req.body.id_user_to_subscribe;
         list_of_users.findOne({
@@ -272,7 +271,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id:id_user_to_subscribe,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us=>{
             
@@ -285,16 +284,14 @@ console.log("checking current: " + req.headers['authorization'] );
                     }
                     
                 }).catch(err => {
-                    //console.log(err);	
+                    	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(sub=>{
                     
                     if(sub){
-                        console.log(" found")
                         res.status(200).send([{"subscribtion":"already sbscribed 0"}])  
                     }
                     else{
-                        console.log(" create_sub")
                         create_sub()
                     }
                 })
@@ -306,16 +303,15 @@ console.log("checking current: " + req.headers['authorization'] );
                         "id_user_subscribed_to":id_user_to_subscribe,
                     })
                     .catch(err => {
-                        //console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(subscribings=>{
-                        console.log("created sub")
                         list_of_users.findOne({
                             where:{
                                 id:id_user_to_subscribe,
                             }
                         }).catch(err => {
-                            //console.log(err);	
+                            	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(user=>{
                             let list = user.subscribers;
@@ -327,7 +323,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     'subscribers_number':number,
                                 })
                                 .catch(err => {
-                                    //console.log(err);	
+                                    	
                                     res.status(500).json({msg: "error", details: err});		
                                 }).then(user=>{
                                     list_of_users.findOne({
@@ -335,7 +331,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                             id:current_user,
                                         }
                                     }).catch(err => {
-                                        //console.log(err);	
+                                        	
                                         res.status(500).json({msg: "error", details: err});		
                                     }).then(user1=>{
                                         let list1 = user1.subscribings;
@@ -350,7 +346,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                                 'subscribings_number':number1,
                                             },
                                             ).catch(err => {
-                                                //console.log(err);	
+                                                	
                                                 res.status(500).json({msg: "error", details: err});		
                                             }).then(m=>{
                                                 res.status(200).send([subscribings])
@@ -366,7 +362,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         id:current_user,
                                     }
                                 }).catch(err => {
-                                    //console.log(err);	
+                                    	
                                     res.status(500).json({msg: "error", details: err});		
                                 }).then(user1=>{
                                     let list1 = user1.subscribings;
@@ -381,7 +377,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                             'subscribings_number':number1,
                                         },
                                         ).catch(err => {
-                                            //console.log(err);	
+                                            	
                                             res.status(500).json({msg: "error", details: err});		
                                         }).then(m=>{
                                             res.status(200).send([subscribings])
@@ -408,7 +404,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.delete('/remove_subscribtion/:id_user_subscribed_to', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -431,14 +427,14 @@ console.log("checking current: " + req.headers['authorization'] );
             },
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(subscribings=>{
             if(subscribings){
                 subscribings.destroy({
                     truncate: false
                 }).catch(err => {
-                        //console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                 }).then(subscribings=>{
                     list_of_users.findOne({
@@ -446,7 +442,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             id:id_user_subscribed_to,
                         }
                     }).catch(err => {
-                        //console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(user=>{
                         let number=user.subscribers_number -1;
@@ -454,7 +450,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             'subscribers': Sequelize.fn('array_remove', Sequelize.col('subscribers'), current_user),
                             'subscribers_number':number,
                         }).catch(err => {
-                                //console.log(err);	
+                                	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(user=>{
                             list_of_users.findOne({
@@ -462,7 +458,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     id:current_user,
                                 }
                             }).catch(err => {
-                                //console.log(err);	
+                                	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(user1=>{
                                 let number1=user1.subscribings_number -1;
@@ -471,7 +467,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     'subscribings_number':number1,
                                 },
                                     ).catch(err => {
-                                    //console.log(err);	
+                                    	
                                     res.status(500).json({msg: "error", details: err});		
                                 }).then(m=>{
                                     res.status(200).send([subscribings])
@@ -490,7 +486,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/get_all_subscribings_by_user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -513,7 +509,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
         }).then(users =>  {
             res.status(200).send([users])
@@ -523,7 +519,7 @@ console.log("checking current: " + req.headers['authorization'] );
     })
 
     router.get('/get_all_users_subscribed_to_today/:id_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -549,7 +545,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(users_subscribed_to =>  {
             res.status(200).send([users_subscribed_to])
@@ -558,7 +554,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.get('/get_all_users_subscribed_to/:id_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -584,7 +580,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(users_subscribed_to =>  {
             res.status(200).send([users_subscribed_to])
@@ -592,7 +588,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_all_subscribed_users/:id_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -614,7 +610,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(users_subscribed_to =>  {
             res.status(200).send([users_subscribed_to])
@@ -622,31 +618,56 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/check_if_visitor_susbcribed/:id_user_to_check', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
         }
-      }
+        else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+            return res.status(401).json({msg: "error"});
+            }
+        }
         let current_user = get_current_user(req.cookies.currentUser);
-
-        //console.log("check_if_visitor_susbcribed")
-        const id_user_to_check = req.params.id_user_to_check;
-        //console.log(current_user)
-        //console.log(id_user_to_check)
-
+        const id_user_to_check = parseInt(req.params.id_user_to_check);
         list_of_subscribings.findOne({
             where: {
                 id_user:current_user,
                 id_user_subscribed_to:id_user_to_check
             },
         }).catch(err => {
-			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribtion=>{
+            if(subscribtion){
+                res.status(200).send([{"value":true}])
+            }
+            else{
+                res.status(200).send([{"value":false}])
+            }
+        })
+            
+    
+    });
+
+    router.get('/check_if_susbcribed_to_visitor/:id_user_to_check', function (req, res) {
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
+        }
+        else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+            return res.status(401).json({msg: "error"});
+            }
+        }
+        let current_user = get_current_user(req.cookies.currentUser);
+        const id_user_to_check = parseInt(req.params.id_user_to_check);
+        list_of_subscribings.findOne({
+            where: {
+                id_user:id_user_to_check,
+                id_user_subscribed_to:current_user
+            },
+        }).catch(err => {
 			res.status(500).json({msg: "error", details: err});		
 		}).then(subscribtion=>{
             if(subscribtion){
@@ -661,7 +682,6 @@ console.log("checking current: " + req.headers['authorization'] );
     });
     
     router.post('/add_content', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -687,7 +707,6 @@ console.log("checking current: " + req.headers['authorization'] );
         
         })
         .catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(contents => {res.status(200).send([contents])})
 
@@ -696,7 +715,6 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/validate_content', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -722,7 +740,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 chapter_number: chapter_number
             },
         }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content=>{
             if(content){
@@ -730,7 +747,6 @@ console.log("checking current: " + req.headers['authorization'] );
                     "status":"ok",
                     "real_date":today
                 }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content => {res.status(200).send([content])})
             }
@@ -744,7 +760,6 @@ console.log("checking current: " + req.headers['authorization'] );
                     "status":"ok",
                     "real_date":today
                 }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content => {res.status(200).send([content])})
             }
@@ -754,7 +769,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/extend_serie_and_update_content', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -768,9 +783,6 @@ console.log("checking current: " + req.headers['authorization'] );
         let current_user = get_current_user(req.cookies.currentUser); 
         const number_of_chapters = req.body.number_of_chapters;
         const bd_id = req.body.bd_id;
-        //console.log("extend_serie_and_update_content")
-        //console.log(bd_id)
-        //console.log(number_of_chapters)
         var today = new Date();
         list_of_contents.findOne({
             where: {
@@ -780,19 +792,15 @@ console.log("checking current: " + req.headers['authorization'] );
                 publication_id: bd_id,
             },
         }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content=>{
             if(content){
-                //console.log(content.createdAt)
                 content.update({
                     "real_date":today,
                     "chapter_number":number_of_chapters,
                 }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(cont => {
-                    //console.log(cont.createdAt)
                     res.status(200).send([cont])
                 })
             }
@@ -807,7 +815,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/change_content_status', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -833,18 +841,14 @@ console.log("checking current: " + req.headers['authorization'] );
                 chapter_number: chapter_number
             },
         }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(first_content=>{
             first_content.update({
                 "status":status
             }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content => {
                 let cat=(category=="writing")?"Writing":(category=="drawing")?"Drawing":"Comic";
-                //console.log("catcat")
-                //console.log(cat)
                 list_of_navbar.findAll({
                     where: {
                         publication_category:cat,
@@ -852,9 +856,8 @@ console.log("checking current: " + req.headers['authorization'] );
                         target_id: publication_id,
                     },
                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(research=>{
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(research=>{
                     if(research.length>0){
                         for(let i=0;i<research.length;i++){
                             if(status=="private"){
@@ -862,9 +865,8 @@ console.log("checking current: " + req.headers['authorization'] );
                                 research[i].update({
                                     "status":stat,
                                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(l=>{
+                                    res.status(500).json({msg: "error", details: err});		
+                                }).then(l=>{
                                     if(i==research.length-1){
                                         res.status(200).send([content])
                                     }
@@ -875,9 +877,8 @@ console.log("checking current: " + req.headers['authorization'] );
                                 research[i].update({
                                     "status":stat,
                                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(l=>{
+                                    res.status(500).json({msg: "error", details: err});		
+                                }).then(l=>{
                                     if(i==research.length-1){
                                         res.status(200).send([content])
                                     }
@@ -897,7 +898,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.delete('/remove_content/:category/:format/:publication_id/:chapter_number', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -926,7 +927,6 @@ console.log("checking current: " + req.headers['authorization'] );
             },
         })
         .catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(contents=>{
             contents.destroy({
@@ -939,7 +939,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/get_all_subscribings_contents', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -964,7 +964,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 limit: 15,
             })
             .catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(contents =>  {
                 res.status(200).send([contents])
@@ -973,7 +972,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_last_contents_of_a_subscribing/:id_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -998,7 +997,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 limit: 5,
             })
             .catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(contents =>  {
                 res.status(200).send([contents])
@@ -1008,7 +1006,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/see_more_contents', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1036,7 +1034,7 @@ console.log("checking current: " + req.headers['authorization'] );
             limit: 5,
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(contents =>  {
             res.status(200).send([contents])
@@ -1046,7 +1044,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/emphasize_content', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1064,19 +1062,13 @@ console.log("checking current: " + req.headers['authorization'] );
         const format = req.body.format;
         const publication_id = parseInt(req.body.publication_id);
         const chapter_number = req.body.chapter_number;
-        console.log("emphasize contant")
-        console.log(current_user)
-        console.log(category)
-        console.log(publication_id)
-        console.log(format)
-        console.log(chapter_number)
         list_of_contents.findOne({
             where: {
                 id_user:current_user,
                 emphasize:"yes"
             },
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content=>{
             if(content){
@@ -1095,7 +1087,7 @@ console.log("checking current: " + req.headers['authorization'] );
                          status:"ok"
                      },
                  }).catch(err => {
-                     //console.log(err);	
+                     	
                      res.status(500).json({msg: "error", details: err});		
                  }).then(content => {res.status(200).send([content])})
             }
@@ -1111,7 +1103,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         status:"ok"
                     },
                 }).catch(err => {
-                    //console.log(err);	
+                    	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(content => {res.status(200).send([content])})
             }
@@ -1124,7 +1116,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/remove_emphasizing', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1151,13 +1143,13 @@ console.log("checking current: " + req.headers['authorization'] );
                 emphasize:"yes"
             },
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content=>{
             content.update({
                 "emphasize":"no"
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content => {res.status(200).send([content])})
         })
@@ -1165,7 +1157,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_emphasized_content/:id_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1185,7 +1177,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 status:"ok",
             },
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content => {
             res.status(200).send([content])
@@ -1194,7 +1186,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_new_comic_contents/:id_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1218,14 +1210,14 @@ console.log("checking current: " + req.headers['authorization'] );
                 ],
                 limit: 6,
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content => {res.status(200).send([content])})
            
     });
 
     router.get('/get_new_writing_contents/:id_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1249,14 +1241,14 @@ console.log("checking current: " + req.headers['authorization'] );
                 ],
                 limit: 6,
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content => {res.status(200).send([content])})
        
     });
 
     router.get('/get_new_drawing_contents/:id_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1280,7 +1272,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ],
                 limit: 6,
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content => {res.status(200).send([content])})
           
@@ -1290,7 +1282,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/remove_all_subscribtions_both_sides', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1311,14 +1303,14 @@ console.log("checking current: " + req.headers['authorization'] );
             },
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(subscribings=>{
             if(subscribings){
                 subscribings.destroy({
                     truncate: false
                     }).catch(err => {
-                    //console.log(err);	
+                    	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(subscribings=>{
                     list_of_users.findOne({
@@ -1326,7 +1318,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             id:id_friend,
                         }
                     }).catch(err => {
-                        //console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(user=>{
                         let number=user.subscribers_number;
@@ -1340,7 +1332,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             'subscribers':subscribers,
                             'subscribers_number':number,
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                             list_of_users.findOne({
@@ -1348,7 +1340,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     id:current_user,
                                 }
                             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user1=>{
                                 let number1=user1.subscribings_number;
@@ -1362,7 +1354,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     'subscribings': subscribings,
                                     'subscribings_number':number1,
                                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(m=>{
                                         delete_other_subscribtion()
@@ -1386,14 +1378,14 @@ console.log("checking current: " + req.headers['authorization'] );
                 },
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(subscribings=>{
                 if(subscribings){
                     subscribings.destroy({
                         truncate: false
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(subscribings=>{
                         list_of_users.findOne({
@@ -1401,7 +1393,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 id:current_user,
                             }
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                             let number=user.subscribers_number;
@@ -1415,7 +1407,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 'subscribers': subscribers,
                                 'subscribers_number':number,
                             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                                 list_of_users.findOne({
@@ -1423,7 +1415,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         id:id_friend,
                                     }
                                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user1=>{
                                     let number1=user1.subscribings_number;
@@ -1437,7 +1429,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         'subscribings': subscribings,
                                         'subscribings_number':number1,
                                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(m=>{
                                         res.status(200).send([subscribings])
