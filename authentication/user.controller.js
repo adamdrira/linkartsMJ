@@ -27,8 +27,6 @@ var geoip = require('geoip-lite');
 
 // Post a User
 exports.create = (req, res) => {
-	// Save to PostgreSQL database
-	console.log("checking current: " + req.headers['authorization'] );
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -73,8 +71,6 @@ exports.create = (req, res) => {
 				iv: iv.toString('hex'),
 				content: encrypted.toString('hex')
 			}
-			console.log("encrypted pass");
-			console.log(password)
 			if(req.body.id_admin){
 				User.create({
 					"id_admin":req.body.id_admin,
@@ -110,7 +106,6 @@ exports.create = (req, res) => {
 					"cover_pic_file_name":"default_cover_picture.png",
 					"status":"account",
 				}).catch(err => {
-					console.log(err);	
 					res.status(500).json({msg: "error registering the user", details: err});		
 				}).then( r=>{
 					User_passwords.create({
@@ -154,7 +149,6 @@ exports.create = (req, res) => {
 					"cover_pic_file_name":"default_cover_picture.png",
 					"status":"account",
 				}).catch(err => {
-					console.log(err);	
 					res.status(500).json({msg: "error registering the user", details: err});		
 				}).then( r=>{
 					User_passwords.create({
@@ -172,7 +166,7 @@ exports.create = (req, res) => {
 					"id_user":r.id,
 					"agreement":true,
 				}).catch(err => {
-					console.log(err);	
+						
 					res.status(500).json({msg: "error", details: err});		
 				}).then(
 					users_information_privacy.create({
@@ -190,7 +184,7 @@ exports.create = (req, res) => {
 						"trendings_stats":"private",
 						"ads_stats":"private",
 					}).catch(err => {
-						console.log(err);	
+							
 						res.status(500).json({msg: "error", details: err});		
 					})
 				).then(
@@ -200,7 +194,7 @@ exports.create = (req, res) => {
 						"album_category":"comics",
 						"status":"standard"
 					}).catch(err => {
-						console.log(err);	
+							
 						res.status(500).json({msg: "error", details: err});		
 					})
 				)
@@ -210,7 +204,7 @@ exports.create = (req, res) => {
 						"album_category":"comics",
 						"status":"standard"
 					}).catch(err => {
-						console.log(err);	
+							
 						res.status(500).json({msg: "error", details: err});		
 					})
 				})
@@ -220,7 +214,7 @@ exports.create = (req, res) => {
 							"album_category":"drawings",
 							"status":"standard"
 					}).catch(err => {
-						console.log(err);	
+							
 						res.status(500).json({msg: "error", details: err});		
 					})
 				})
@@ -230,7 +224,7 @@ exports.create = (req, res) => {
 							"album_category":"drawings",
 							"status":"standard"
 					}).catch(err => {
-						console.log(err);	
+							
 						res.status(500).json({msg: "error", details: err});		
 					})
 				})
@@ -240,7 +234,7 @@ exports.create = (req, res) => {
 							"album_category":"writings",
 							"status":"standard"
 					}).catch(err => {
-						console.log(err);	
+							
 						res.status(500).json({msg: "error", details: err});		
 					})
 				})
@@ -262,7 +256,7 @@ exports.create = (req, res) => {
 									"is_a_group_chat":false,
 									"date":now,
 								}).catch(err => {
-									console.log(err);	
+										
 									res.status(500).json({msg: "error", details: err});		
 								}).then(()=>{
 									chat_seq.list_of_messages.create({
@@ -282,7 +276,7 @@ exports.create = (req, res) => {
 										"is_a_group_chat":false,
 										"status":'received',
 									}).catch(err => {
-										console.log(err);	
+											
 										res.status(500).json({msg: "error", details: err});		
 									}).then(
 										List_of_subscribings.create({
@@ -291,7 +285,7 @@ exports.create = (req, res) => {
 											"id_user_subscribed_to":first_user[0].id,
 										})
 										).catch(err => {
-											console.log(err);	
+												
 											res.status(500).json({msg: "error", details: err});		
 										}).then(()=>{
 											res.status(200).json([{msg: "creation ok",id_user:r.id}])
@@ -324,7 +318,7 @@ function get_current_user(token){
 
 //decrypt password
 exports.decrypt_password = (req, res) => {
-	console.log("checking current: " + req.headers['authorization'] );
+	
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -335,7 +329,6 @@ exports.decrypt_password = (req, res) => {
           return res.status(401).json({msg: "error"});
         }
       }
-	console.log("decrypt_password")
 	let id_user= get_current_user(req.cookies.currentUser)
 
 	User_passwords.findAll({
@@ -347,7 +340,7 @@ exports.decrypt_password = (req, res) => {
 			['createdAt', 'DESC']
 		],
 	}).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
 		
@@ -367,7 +360,7 @@ exports.decrypt_password = (req, res) => {
 
 // reset_password
 exports.reset_password = (req, res) => {
-	console.log("checking current: " + req.headers['authorization'] );
+	
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -378,7 +371,6 @@ exports.reset_password = (req, res) => {
           return res.status(401).json({msg: "error"});
         }
       }
-	console.log("reset_password")
 	let email=req.body.email;
 
 	User.findOne({
@@ -386,13 +378,11 @@ exports.reset_password = (req, res) => {
 			email:email,
 		}
 	}).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user_found=>{
 		if(user_found){
 			let password_registration=generate_random_id(user_found.id);
-			console.log(user_found.email)
-			console.log(password_registration)
 			var pass= Math.random().toString(36).slice(-8) + "@8=(AM" + Math.random().toString(36).slice(-8) + "@$=)G";
 			var password;
 			bcrypt.hash(pass,10,function(err,hash){
@@ -404,8 +394,6 @@ exports.reset_password = (req, res) => {
 					iv: iv.toString('hex'),
 					content: encrypted.toString('hex')
 				}
-				console.log("encrypted pass");
-				console.log(password_hash)
 				user_found.update({
 					"password":password,
 					"password_registration":password_registration,
@@ -461,10 +449,8 @@ exports.reset_password = (req, res) => {
 				};
 				transport.sendMail(mailOptions, (error, info) => {
 					if (error) {
-						console.log('Error while sending mail: ' + error);
 						res.status(200).send([{error:error}])
 					} else {
-						console.log('Message sent: %s', info.messageId);
 						res.status(200).send([{sent:'Message sent ' + info.messageId}])
 					}
 					
@@ -493,14 +479,13 @@ exports.reset_password = (req, res) => {
 					['createdAt', 'DESC']
 				],
 			}).catch(err => {
-				console.log(err);	
+					
 				res.status(500).json({msg: "error", details: err});		
 			}).then(user=>{
 				if(user.length>0){
 					const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(user[0].iv, 'hex'));
 					const decrypted = Buffer.concat([decipher.update(Buffer.from(user[0].content, 'hex')), decipher.final()]);
-					console.log(user_found.email)
-					console.log(decrypted.toString())
+			
 					const transport = nodemailer.createTransport({
 						host: "pro2.mail.ovh.net",
 						port: 587,
@@ -545,10 +530,8 @@ exports.reset_password = (req, res) => {
 					
 					transport.sendMail(mailOptions, (error, info) => {
 						if (error) {
-							console.log('Error while sending mail: ' + error);
 							res.status(200).send([{error:error}])
 						} else {
-							console.log('Message sent: %s', info.messageId);
 							res.status(200).send([{sent:'Message sent ' + info.messageId}])
 						}
 						
@@ -571,7 +554,7 @@ exports.reset_password = (req, res) => {
 
 //modify password
 exports.edit_password = (req, res) => {
-	console.log("checking current: " + req.headers['authorization'] );
+	
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -582,7 +565,6 @@ exports.edit_password = (req, res) => {
           return res.status(401).json({msg: "error"});
         }
       }
-	console.log("modify_password")
 	let id_user= get_current_user(req.cookies.currentUser)
 	var passwordhash;
 
@@ -595,8 +577,6 @@ exports.edit_password = (req, res) => {
 			iv: iv.toString('hex'),
 			content: encrypted.toString('hex')
 		}
-		console.log("encrypted pass");
-		console.log(password_hash)
 		User.update({
 			"password":passwordhash},
 			{where:{
@@ -604,7 +584,7 @@ exports.edit_password = (req, res) => {
 			}
 			
 		}).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
 			User_passwords.create({
@@ -612,7 +592,7 @@ exports.edit_password = (req, res) => {
 				"iv":password_hash.iv,
 				"content":password_hash.content,
 			}).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(pass=>{
 				res.status(200).json([pass])
@@ -624,7 +604,7 @@ exports.edit_password = (req, res) => {
 
 //modify password
 exports.edit_email = (req, res) => {
-	console.log("checking current: " + req.headers['authorization'] );
+	
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -635,7 +615,6 @@ exports.edit_email = (req, res) => {
           return res.status(401).json({msg: "error"});
         }
       }
-	console.log("edit_email")
 	let id_user= get_current_user(req.cookies.currentUser);
 	User.update({
 		"email":req.boy.email},
@@ -644,7 +623,7 @@ exports.edit_email = (req, res) => {
 		}
 		
 	}).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
 			res.status(200).json([user])
@@ -653,7 +632,7 @@ exports.edit_email = (req, res) => {
 };
 // Post a add_link
 exports.add_link = (req, res) => {
-	console.log("checking current: " + req.headers['authorization'] );
+	
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -664,20 +643,17 @@ exports.add_link = (req, res) => {
           return res.status(401).json({msg: "error"});
         }
       }
-	// Save to PostgreSQL database
-		console.log("add_link")
 		User_links.create({
 			"id_user": req.body.id_user,
 			"link_title": req.body.link_title,
 			"link": req.body.link, 
 		}).catch(err => {
-			console.log(err);	
+				
 			res.status(200).json({msg: "error registering the user", details: err});		
 		}).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(link=>{
-			console.log(link)
 			res.status(200).json([{msg: "creation ok"}])
 		});
 	
@@ -687,7 +663,7 @@ exports.add_link = (req, res) => {
 
 // Post a User
 exports.remove_link = (req, res) => {
-	console.log("checking current: " + req.headers['authorization'] );
+	
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -698,8 +674,6 @@ exports.remove_link = (req, res) => {
           return res.status(401).json({msg: "error"});
         }
       }
-	// Save to PostgreSQL database
-		console.log("remove_link")
 
 		User_links.destroy({
 			where:{
@@ -709,10 +683,10 @@ exports.remove_link = (req, res) => {
 			}
 		  },{truncate:false})
 		  .catch(err => {
-			console.log(err);	
+				
 			res.status(200).json({msg: "error registering the user", details: err});		
 		}).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
 			res.status(200).json([{msg: "deletion ok"}])
@@ -724,7 +698,6 @@ exports.remove_link = (req, res) => {
 
 
 exports.check_pseudo=(req,res)=>{
-	console.log("check_pseudo")
 	let pseudo = req.body.pseudo;
 	const Op = Sequelize.Op;
 	User.findAll({
@@ -733,10 +706,9 @@ exports.check_pseudo=(req,res)=>{
 			nickname:pseudo,
 		}
 	}).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(pseudos=>{
-		console.log(pseudos)
 		if(pseudos.length==0){
 			res.status(200).send([{msg: "ok"}]);		
 		}
@@ -748,7 +720,6 @@ exports.check_pseudo=(req,res)=>{
 
 
 exports.check_email=(req,res)=>{
-	console.log("check_email")
 	let user = req.body.user;
 	let email = (user.email).toLowerCase();
 	const Op = Sequelize.Op;
@@ -762,10 +733,9 @@ exports.check_email=(req,res)=>{
 				email:{[Op.iLike]: email},
 			}
 			}).catch(err => {
-				console.log(err);	
+					
 				res.status(500).json({msg: "error", details: err});		
 			}).then(user=>{
-				console.log(user.email)
 				if(user.length==0){
 					res.status(200).send([{msg: "ok"}]);		
 				}
@@ -781,10 +751,9 @@ exports.check_email=(req,res)=>{
 				email:{[Op.iLike]: email},
 			}
 		}).catch(err => {
-				console.log(err);	
+					
 				res.status(500).json({msg: "error", details: err});		
 			}).then(user=>{
-			console.log(user.email)
 			if(user.length==0){
 				res.status(200).send([{msg: "ok"}]);		
 			}
@@ -801,16 +770,13 @@ exports.check_email=(req,res)=>{
 
 
 exports.create_visitor = (req, res) => {
-		console.log("creation visitor");
 		User.create({
 			"nickname":"visitor",
 			"status":"visitor",
 		}).catch(err => {
-			console.log(err);	
+				
 			res.status(200).json({msg: "error registering the visitor", details: err});		
 		}).then(user=>{
-			console.log("user created")
-			console.log(user)
 			const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
 			return res.status(200).json( { token:token } );
 		})
@@ -831,8 +797,6 @@ exports.login = async (req, res) => {
 	let ip;
 	/*if( req.rawHeaders && req.rawHeaders[1]){
 			ip=req.rawHeaders[1]
-			console.log("her is the ip")
-			console.log(ip)
 	}*/
 
 	const users = await User.findAll( {
@@ -858,70 +822,10 @@ exports.login = async (req, res) => {
 			}
 		}
 	}
-
-	/*const user = await User.findOne( {
-		 where: { 
-			gender:{[Op.ne]: "Groupe"},
-			[Op.or]:[{status:"account"},{status:"suspended"}],
-			email:{[Op.iLike]: req.body.mail_or_username},
-			} 
-		});
-	const passwordCorrect = (user === null) ? false : await bcrypt.compare( String(req.body.password), String(user.password)  );
-	
-	if( !user || !passwordCorrect ) {
-		
-		if(user){
-			//vérifier que le mdp n'est pas un ancier mdp et informer l'utilisateur
-			const Op = Sequelize.Op;
-			var last_year = new Date();
-        	last_year.setDate(last_year.getDate() - 365);
-			User_passwords.findAll( {
-				where: { 
-					id_user:user.id,
-					createdAt: {[Op.gte]: last_year}
-				} ,
-				order: [
-					['createdAt', 'DESC']
-				],
-				}).catch(err => {
-					console.log(err);	
-					res.status(500).json({msg: "error", details: err});		
-				}).then(pass=>{
-					if(pass.length>0){
-						let exist=false;
-						for(let i=0;i<pass.length;i++){
-							let decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(pass[i].iv, 'hex'));
-							let decrypted = Buffer.concat([decipher.update(Buffer.from(pass[i].content, 'hex')), decipher.final()]);
-							console.log("")
-							if(decrypted.toString()==req.body.password){
-								exist=true
-							}
-						}
-						if(exist){
-							return res.status(200).json({msg: "error_old_value"});
-						}
-						else{
-							return res.status(200).json({msg: "error"});
-						}
-						
-					}
-					else{
-						return res.status(200).json({msg: "error"});
-					}
-				})
-		}
-		else{
-			
-			return res.status(200).json({msg: "error"});
-		}
-		
-		
-	}*/
 	if(indice_found<0){
 		return res.status(200).json({msg: "error"});
 	}
 	else{
-		console.log("check login")
 		if(user.gender=="Groupe" && user.type_of_account.includes("Artiste")){
 			if(!user.list_of_members_validations){
 					return res.status(200).json({msg: "error_group"});
@@ -944,26 +848,20 @@ exports.login = async (req, res) => {
 
 		}
 		else{
-			//console.log(user.list_of_ips)
 			var geo;
 			
 			if(ip && !ip.includes("linkarts")){
 					geo = geoip.lookup(ip);
-					console.log(geo)
-
 			}
 			else{
 					ip=null;
 			}
-
-			console.log(ip)
-
-
 			let now = new Date();
 			let connexion_time = now.toString();
 			db.users_connexions.create({
 					"id_user":user.id,
 					"connexion_time":connexion_time,
+					"status":"usual",
 					"ip":ip?ip:null,
 			})
 
@@ -971,10 +869,7 @@ exports.login = async (req, res) => {
 					id_user:user.id
 			}}).then(user_ips=>{
 					if(user_ips){
-							console.log("in first if")
 							if(ip && user_ips.list_of_ips.indexOf(ip)<0){
-									// send email with geo
-									console.log("in second if " + ip)
 									let list_of_ips =user_ips.list_of_ips;
 									let list_of_latitudes =user_ips.list_of_latitudes;
 									let list_of_longitudes =user_ips.list_of_longitudes;
@@ -984,20 +879,13 @@ exports.login = async (req, res) => {
 
 									let lat=Number(list_of_latitudes[list_of_latitudes.length-1])
 									let long =Number(list_of_longitudes[list_of_longitudes.length-1])
-
-
 									let distance =calcCrow(geo.ll[0],geo.ll[1],lat,long);
-
-									console.log("first list of ips")
-									console.log(list_of_ips)
 									list_of_ips.push(ip);
 									list_of_latitudes.push(geo.ll[0].toString());
 									list_of_longitudes.push(geo.ll[1].toString());
 									list_of_areas.push(geo.area.toString());
 									list_of_countries.push(geo.country);
 									list_of_regions.push(geo.region);
-									console.log(list_of_ips)
-
 									db.users_ips.update({
 											"list_of_ips":list_of_ips,
 											"list_of_latitudes":list_of_latitudes,
@@ -1009,12 +897,7 @@ exports.login = async (req, res) => {
 											id_user:user.id,
 									}});
 
-									db.users_ips.findOne({where:{
-										id_user:user.id,
-									}}).then(r=>{
-										console.log("fin myrooooooo")
-										console.log(r)
-									});
+								
 									if(distance>100){
 										const transport = nodemailer.createTransport({
 												host: "pro2.mail.ovh.net",
@@ -1066,11 +949,9 @@ exports.login = async (req, res) => {
 
 										transport.sendMail(mailOptions, (error, info) => {
 												if (error) {
-														console.log('Error while sending mail: ' + error);
 														const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } )
 														return res.status(200).json( { token:token,user:user } );
 												} else {
-														console.log('Message sent: %s', info.messageId);
 														const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } )
 														return res.status(200).json( { token:token,user:user } );
 												}
@@ -1091,8 +972,6 @@ exports.login = async (req, res) => {
 						}
 				}
 				else{
-					console.log("in other else pb")
-
 					db.users_ips.create({
 							"id_user":user.id,
 							"list_of_ips":ip?[ip]:null,
@@ -1136,32 +1015,24 @@ exports.login = async (req, res) => {
 
 exports.logout = (req,res) =>{
 	let value = req.cookies;
-	console.log("deconnexion")
 	jwt.verify(value.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
 		if(err){
 			return res.status(200).json({msg: "error"});
 		}
 		else{
-			console.log(decoded.id)
-			db.users_connexions.findAll({
-				where: {
+			let now = new Date();
+			let deconnexion_time = now.toString();
+			db.users_connexions.update(
+				{
+				"deconnexion_time":deconnexion_time
+			  },{
+				where:{
 				  id_user:decoded.id,
-				},
-				order: [
-				  ['createdAt', 'DESC']
-				],
-				limit:1,
-			  }).then(user1=>{
-				
-				if(user1.length>0){
-				  let now = new Date();
-				  let deconnexion_time = now.toString();
-				  user1[0].update({
-					"deconnexion_time":deconnexion_time,
-				  })
+				  status:"usual",
 				}
+			  }).then(dec=>{
 				return res.status(200).json( { deconnexion:"ok" } );
-			  })
+			})
 		}
 	})
 
@@ -1262,14 +1133,10 @@ exports.check_email_checked = async (req, res) => {
 		return res.status(200).json({msg: "error"});
 	}
 	else{
-		console.log("check login")
-		console.log(user.gender=='Groupe')
-		console.log(user.type_of_account.includes('Artiste'))
 		if(user.email_checked){
 			return res.status(200).json({user: user});
 		}
 		else if (user.gender=='Groupe' && user.type_of_account.includes('Artiste')){
-			console.log( "in else if")
 			user.email_checked=true;
 			return res.status(200).json({user: user});
 		}
@@ -1286,10 +1153,8 @@ exports.check_email_checked = async (req, res) => {
 
 //for invited users
 exports.encrypt_data= async(req,res)=>{
-	console.log("encrypt_data")
 	var passwordCorrect =false;
 	var mailCorrect =false;
-	
 	for(let i=0;i<list_of_invited_mails.length;i++){
 		if( String(req.body.mail)==list_of_invited_mails[i] && String(req.body.password)==list_of_invited_passwords[i]){
 
@@ -1310,15 +1175,11 @@ exports.encrypt_data= async(req,res)=>{
 
 
 exports.check_invited_user =async(req,res)=>{
-	console.log("check_invited_user");
 	jwt.verify(req.cookies.inviteduser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
 		if(err){
-			console.log("error check_invited_user");
+			res.status(200).send([{"msg": "TOKEN_UNKNOWN"}])
 		}
 		else{
-			console.log(list_of_invited_mails);
-			console.log(list_of_invited_passwords)
-			console.log(decoded)
 			let invited_user_found=false;
 			for(let i=0;i<list_of_invited_mails.length;i++){
 				if(decoded.mail==list_of_invited_mails[i] && decoded.password==list_of_invited_passwords[i]){
@@ -1326,17 +1187,14 @@ exports.check_invited_user =async(req,res)=>{
 				}
 			}
 			if (!invited_user_found) {
-				console.log("token unknown")
 				res.status(200).send([{"msg": "TOKEN_UNKNOWN"}]);
 			}
 
 			else if (decoded.exp < new Date().getTime()/1000) {
-				console.log("token refresh")
 				const refreshed_token = jwt.sign( {mail: decoded.mail, password: decoded.password}, SECRET_TOKEN, {expiresIn: 60*15  });
 				return res.status(200).json( { msg: "TOKEN_REFRESH", token: refreshed_token} );
 			}
 			else {
-				console.log("token ok")
 				return res.status(200).json( { msg: "TOKEN_OK"} );
 		}
 		}
@@ -1348,7 +1206,7 @@ exports.check_invited_user =async(req,res)=>{
 // to have current user's identifications
 exports.getCurrentUser = async (req, res) => {
 
-	console.log("checking current: " + req.headers['authorization'] );
+	
 	let value = req.cookies;
 	
 	if( ! req.headers['authorization'] ) {
@@ -1373,7 +1231,7 @@ exports.getCurrentUser = async (req, res) => {
 				where: { id : decoded.id} 
 			} )
 			.catch(err => {
-				console.log(err);	
+					
 				res.status(500).json({msg: "error", details: err});		
 			}).then(user=>{
 				res.send([user]);
@@ -1397,7 +1255,7 @@ exports.getCurrentUser = async (req, res) => {
 				where: { id : decoded.id} 
 			} )
 			.catch(err => {
-				console.log(err);	
+					
 				res.status(500).json({msg: "error", details: err});		
 			}).then(user=>{
 				User_cookies.findOne({
@@ -1405,7 +1263,7 @@ exports.getCurrentUser = async (req, res) => {
 						id_user:decoded.id
 					}
 				}).catch(err => {
-					console.log(err);	
+						
 					res.status(500).json({msg: "error", details: err});		
 				}).then(cookies=>{
 					res.send([{user:[user],cookies:cookies}]);
@@ -1423,28 +1281,13 @@ exports.getCurrentUser = async (req, res) => {
 //request : token.
 exports.checkToken = async (req, res) => {
 
-	/*console.log("checking : " + req.headers['authorization'] );
-
-	if( ! req.headers['authorization'] ) {
-		return res.status(401).json({msg: "error"});
-	}
-	
-	req.headers['authorization'].replace(/^Bearer\s/, '')*/
-	console.log("req.cookies.currentUser")
-	console.log(req.cookies.currentUser)
-	/*if( !req.cookies.currentUser) {
-
-		console.log("creation visitor 139");
-		
-	}*/
 	jwt.verify(req.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
 		if(err){
-			console.log("error but ok");
 			User.create({
 				"nickname":"visitor",
 				"status":"visitor",
 			}).catch(err => {
-				console.log(err);	
+					
 				res.status(500).json({msg: "error registering the visitor", details: err});		
 			}).then(user=>{
 				const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30  } );
@@ -1452,24 +1295,19 @@ exports.checkToken = async (req, res) => {
 			})
 		}
 		else{
-			console.log("else");
 			const user = await User.findOne( { where: { id : decoded.id} } );
 			if (user === null) {
-				console.log("token unknown")
 				res.status(200).send([{"msg": "TOKEN_UNKNOWN"}]);
 			}
 	
 			else if (err) {
-				console.log(req.headers);
 				return res.status(401).json({msg: "TOKEN_ERROR"});
 			}
 			else if (decoded.exp < new Date().getTime()/1000) {
-				console.log(req.headers);
 				const refreshed_token = jwt.sign( {nickname: decoded.nickname, id: decoded.id}, SECRET_TOKEN, {expiresIn: 60*15 /*expires in 15 minutes*/ });
 				return res.status(200).json( { msg: "TOKEN_REFRESH", token: refreshed_token,"status": user.status} );
 			}
 			else if (!err) {
-				console.log("token ok");
 				return res.status(200).json( { msg: "TOKEN_OK","status": user.status } );
 		}
 		}
@@ -1482,11 +1320,8 @@ exports.checkToken = async (req, res) => {
 
 
 exports.checkMail = (req, res) => {
-
-	console.log("checking : " + req.body.mail );
-	
 	User.findOne( { where: { email : req.body.mail} } ).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then( user => {
 

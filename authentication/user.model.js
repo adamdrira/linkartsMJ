@@ -114,12 +114,14 @@ module.exports = (sequelize, Sequelize) => {
 		id_user:{type: Sequelize.INTEGER},
 		connexion_time:{type: Sequelize.STRING},
 		deconnexion_time:{type: Sequelize.STRING},
+		status:{type: Sequelize.STRING},
 		ip:{type: Sequelize.STRING},
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,
 		//timestamps: false,
 	});
+
 
 	const users_ips = sequelize.define('users_ips', {
 		id_user:{type: Sequelize.INTEGER},
