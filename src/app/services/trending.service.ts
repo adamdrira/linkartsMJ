@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, tap, map, delay } from 'rxjs/operators';
-import { CookieService } from 'ngx-cookie-service';
+import {  map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-
-const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
-};
 
 
 @Injectable({
@@ -67,7 +62,6 @@ export class Trending_service {
 
 
   get_date_of_trendings(){
-    console.log("get_date_of_trendings")
     return this.httpClient.post('routes/get_date_of_trendings',{}).pipe(map((information)=>{
         return information;
       }));
