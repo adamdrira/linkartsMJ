@@ -61,7 +61,7 @@ wss.on('connection', (ws, req)=>{
   db.users_connexions.create({
     "id_user":userID,
     "connexion_time":connexion_time,
-    "deconnexion_time":"websocket",
+    "status":"websocket",
   })
  
   ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
@@ -73,10 +73,14 @@ wss.on('connection', (ws, req)=>{
     var messageArray = JSON.parse(message);
     let date = new Date();
     let speed_limit=10;
-    if(date_of_webSockets_last_message[userID] && (date.getTime() - date_of_webSockets_last_message[userID].getTime())<speed_limit){
-      return false;
+    
+    if(messageArray.status!="not-writing"){
+      if(date_of_webSockets_last_message[userID] && (date.getTime() - date_of_webSockets_last_message[userID].getTime())<speed_limit){
+        return false;
+      }
+      date_of_webSockets_last_message[userID]=date;
     }
-    date_of_webSockets_last_message[userID]=date;
+    
     console.log("messageArray")
     ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
     if(messageArray.for_notifications){
@@ -884,7 +888,6 @@ wss.on('connection', (ws, req)=>{
 
 
   ws.on('close', function () {
-    console.log("websocket close")
     date_of_webSockets_last_connection[userID]=new Date();
     if(webSockets[userID] && webSockets[userID].length>0){
       let index=-1;
@@ -895,13 +898,22 @@ wss.on('connection', (ws, req)=>{
       }
       webSockets[userID].splice(index,1);
       if(webSockets[userID].length==0){
+        let now = new Date();
+	      let deconnexion_time = now.toString();
+        db.users_connexions.update(
+          {
+          "deconnexion_time":deconnexion_time
+        },{
+          where:{
+            id_user:userID,
+            status:"websocket",
+          }
+        })
         delete webSockets[userID];
         
       }
     }
     clearInterval(interval);
-    //delete webSockets[userID];
-    console.log('deleted: ' + userID);
     if(webSockets[userID]){
       console.log(webSockets[userID].length)
     }
@@ -913,19 +925,14 @@ wss.on('connection', (ws, req)=>{
     wss.clients.forEach((ws) => {
         
         if (!ws.isAlive){
-          //console.log(getKeyByValue(webSockets),ws);
-          console.log("déconnexion")
           return ws.terminate();
         } 
-        //ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
         ws.isAlive = false;
         ws.ping(null, false, (err)=>{});
     });
   }, 30000);
 
-  function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
-  }
+
   
 });
 
@@ -957,23 +964,39 @@ app.post('/get_users_connected_in_the_chat', function(req, res) {
     send_web=true
    
   }
-  
   let list_of_friends=req.body.list_of_friends
   let list_of_users_connected=[];
+  let list_of_users_connected_only=[]
   for(let i=0;i<list_of_friends.length;i++){
     if(webSockets[(list_of_friends[i]).toString()]){
       list_of_users_connected[i]=true;
+      list_of_users_connected_only.push(list_of_friends[i])
     }
     else{
       list_of_users_connected[i]=false;
     }
   }
-  if(send_web){
-    res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection,list:Object.keys(webSockets)}])
-  }
-  else{
-    res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection}])
-  }
+  const Op = Sequelize.Op;
+  db.users_connexions.findAll({
+    attributes: [
+        [Sequelize.fn('MAX', Sequelize.col('createdAt')), 'max'],'id_user','status','deconnexion_time',
+      
+    ],
+    group:['id_user','status','deconnexion_time'],
+    where:{
+      [Op.and]:[{id_user: list_of_friends},{id_user:{[Op.notIn]: list_of_users_connected_only}}],
+      status:"websocket",
+      deconnexion_time:{[Op.not]: null}
+    }
+  }).then(friends=>{
+    if(send_web){
+      res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection,list:Object.keys(webSockets),deconnected_friends:friends}])
+    }
+    else{
+      res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection,deconnected_friends:friends}])
+    }
+  })
+  
  
 })
 
