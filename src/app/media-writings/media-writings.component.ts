@@ -120,16 +120,12 @@ export class MediaWritingsComponent implements OnInit {
 
   
   get_history_recommendation(){
-    console.log("get history recommendation writin")
-    
     this.last_consulted_writings_retrieved=false;
     this.number_of_skeletons_per_line=this.number_of_writings_to_show;
     this.can_show_more_history=true;
     this.last_consulted_writings=[];
     this.number_of_writings_for_history= this.number_of_writings_to_show;
     this.navbar.get_last_researched_navbar_for_recommendations("Writing",0,this.number_of_writings_for_history).subscribe(m=>{
-      console.log("result consulteds researched writings")
-      console.log(m[0]);
       if(m[0].length>0){
         let list=m[0];
         let compteur=0;
@@ -157,13 +153,10 @@ export class MediaWritingsComponent implements OnInit {
   number_of_skeletons_per_line = 1;
   type_of_skeleton:string="writing";
   send_number_of_skeletons(object) {
-    console.log("skeleton resp")
-    console.log(object.number)
     this.number_of_skeletons_per_line=object.number;
     this.cd.detectChanges();
   }
 
- //Other
  see_more(item) {
    
     let index = this.sorted_style_list.indexOf(item);
@@ -205,21 +198,13 @@ export class MediaWritingsComponent implements OnInit {
   can_show_more_history=true;
   new_last_consulted_writings=[];
   show_more_history(){
-    console.log("start show more history")
-    console.log(this.last_consulted_writings)
-    console.log(this.offset)
-    
     if(this.show_more_loading){
       return
     }
     this.show_more_loading=true;
-    
     this.new_last_consulted_writings=[];
-    
     this.offset+=this.number_of_writings_for_history;
     this.navbar.get_last_researched_navbar_for_recommendations("Writing",this.offset,this.number_of_writings_for_history).subscribe(m=>{
-      console.log("result new consulteds researched writings")
-      console.log(m[0]);
       if(m[0].length>0){
         let list=m[0];
         let compteur=0;
@@ -260,8 +245,6 @@ export class MediaWritingsComponent implements OnInit {
         list.splice(len-i-1,1);
       }
     }
-    console.log("show new last consulted after all")
-    console.log(list);
   }
 
 }

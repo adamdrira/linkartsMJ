@@ -78,7 +78,6 @@ export class HomeLinkartsComponent implements OnInit {
         
       this.change_profile_number++;
       this.category_index = this.route.snapshot.data['category'];
-      console.log(this.category_index)
       this.status[this.category_index]=true;
       this.categories_to_load[this.category_index]=true;
       this.cd.detectChanges()
@@ -89,14 +88,9 @@ export class HomeLinkartsComponent implements OnInit {
       }
       
       if(this.category_index==4){
-        //après le click du lien envoyé par mail pour confirmer inscription
         let id = parseInt(this.route.snapshot.paramMap.get('id'));
         let password = this.route.snapshot.paramMap.get('password');
-        console.log(id)
-        console.log(password)
-        
         this.Profile_Edition_Service.check_password_for_registration(id,password).subscribe(r=>{
-          console.log(r[0])
           this.category_index=0;
           if(r[0].user_found){
             this.location.go('/recommendations')
@@ -134,7 +128,6 @@ export class HomeLinkartsComponent implements OnInit {
   
  
   open_category(i : number) {
-    console.log("open cate")
     if( i==0 ) {
       this.category_index = 0;
       this.location.go('/recommendations');
@@ -185,8 +178,6 @@ export class HomeLinkartsComponent implements OnInit {
   }
 
   swipe_to(i){
-    console.log("swipe to " + i)
-    console.log(this.swiper.length);
     this.swiper.slideTo(i,false,false);
   }
 

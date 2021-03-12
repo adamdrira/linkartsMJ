@@ -39,8 +39,6 @@ export class MediaComicsComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if( changes.width) {
-      console.log("change width")
-      console.log(this.width)
       if(this.width>0){
         var n = Math.floor(this.width/250);
         if(n>3){
@@ -49,8 +47,6 @@ export class MediaComicsComponent implements OnInit {
         else{
           this.number_of_comics_to_show=6;
         }
-        console.log("number of comics to show")
-        console.log(this.number_of_comics_to_show)
         if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
           this.get_history_recommendation();
         }
@@ -65,8 +61,6 @@ export class MediaComicsComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     if(this.width>0){
-      console.log("resize width")
-      console.log(this.width)
       var n = Math.floor(this.width/250);
       if(n>3){
         this.number_of_comics_to_show=(n<6)?n:6;
@@ -74,9 +68,6 @@ export class MediaComicsComponent implements OnInit {
       else{
         this.number_of_comics_to_show=6;
       }
-      console.log("number of comics to show")
-      console.log(this.number_of_comics_to_show)
-      
       if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
         this.get_history_recommendation();
       }
@@ -131,16 +122,12 @@ export class MediaComicsComponent implements OnInit {
   }
 
   get_history_recommendation(){
-    console.log("get history recommendation")
-    console.log(this.number_of_comics_to_show)
     this.number_of_skeletons_per_line=this.number_of_comics_to_show;
     this.can_show_more_history=true;
     this.last_consulted_comics_retrieved=false;
     this.last_consulted_comics=[];
     this.number_of_comics_for_history= this.number_of_comics_to_show;
     this.navbar.get_last_researched_navbar_for_recommendations("Comic",0,this.number_of_comics_for_history).subscribe(m=>{
-      console.log("result consulteds researched comics")
-      console.log(m[0]);
       if(m[0].length>0){
         let list=m[0];
         let compteur=0;
@@ -218,10 +205,6 @@ export class MediaComicsComponent implements OnInit {
   can_show_more_history=true;
   new_last_consulted_comics=[];
   show_more_history(){
-    console.log("start show more history")
-    console.log(this.last_consulted_comics)
-    console.log(this.offset)
-    
     if(this.show_more_loading){
       return
     }
@@ -231,8 +214,6 @@ export class MediaComicsComponent implements OnInit {
     this.new_last_consulted_comics=[];
     this.offset+=this.number_of_comics_for_history;
     this.navbar.get_last_researched_navbar_for_recommendations("Comic",this.offset,this.number_of_comics_for_history).subscribe(m=>{
-      console.log("result new consulteds researched comics")
-      console.log(m[0]);
       if(m[0].length>0){
         let list=m[0];
         let compteur=0;
@@ -294,16 +275,12 @@ export class MediaComicsComponent implements OnInit {
         list.splice(len-i-1,1);
       }
     }
-    console.log("show new last consulted after all")
-    console.log(list);
   }
 
   skeleton_array = Array(6);
   number_of_skeletons_per_line = 1;
   type_of_skeleton:string="comic";
   send_number_of_skeletons(object) {
-    console.log("skeleton resp")
-    console.log(object.number)
     this.number_of_skeletons_per_line=object.number;
     this.cd.detectChanges();
   }

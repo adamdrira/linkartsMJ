@@ -50,8 +50,6 @@ export class MediaSeeMoreWritingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("init see more")
-    console.log(this.style)
     if(this.style=="Article"){
       this.Community_recommendation.see_more_recommendations_writings("Article").subscribe(r=>{
         for (let i=0;i<Object.keys(r[0].list_to_send).length;i++){
@@ -126,8 +124,6 @@ export class MediaSeeMoreWritingsComponent implements OnInit {
 
     if(this.style=="Roman illustré"){
       this.Community_recommendation.see_more_recommendations_writings("Illustrated novel").subscribe(r=>{
-        console.log("réponse roman")
-        console.log(r)
         for (let i=0;i<Object.keys(r[0].list_to_send).length;i++){
               let check = JSON.stringify(this.sorted_artpieces_illustrated_novel).includes(JSON.stringify(r[0].list_to_send[i][0]));
               if (!check){

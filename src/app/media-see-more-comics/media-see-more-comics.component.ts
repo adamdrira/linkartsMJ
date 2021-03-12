@@ -50,10 +50,8 @@ export class MediaSeeMoreComicsComponent implements OnInit {
   }
   
   ngOnInit() {
-    console.log("init see more")
     if(this.style=="Manga"){
       this.Community_recommendation.see_more_recommendations_bd("Manga").subscribe(r=>{
-        console.log(r[0].list_to_send)
         for (let i=0;i<Object.keys(r[0].list_to_send).length;i++){
             let format ="";
             if(r[0].list_to_send[i][0].chaptersnumber>=0){
@@ -67,23 +65,16 @@ export class MediaSeeMoreComicsComponent implements OnInit {
               this.new_sorted_artpieces.push(r[0].list_to_send[i][0]);
               this.list_of_formats.push(format);
               if(i==Object.keys(r[0].list_to_send).length-1){
-                console.log(this.new_sorted_artpieces)
-                console.log(this.list_of_formats);
                 this.number_of_thumbnails=this.new_sorted_artpieces.length;
                 this.new_sorted_artpieces_added=true;
                 
               }
             }
             else if(i==Object.keys(r[0].list_to_send).length-1){
-              console.log(this.new_sorted_artpieces)
-              console.log(this.list_of_formats);
               this.number_of_thumbnails=this.new_sorted_artpieces.length;
               this.new_sorted_artpieces_added=true;
-              
             }
-              
         }
-        console.log(this.new_sorted_artpieces_added)
       })
       
     }
@@ -167,54 +158,12 @@ export class MediaSeeMoreComicsComponent implements OnInit {
                 this.new_sorted_artpieces_added=true;
                 this.number_of_thumbnails=this.new_sorted_artpieces.length;
               }
-              
             }
-            console.log(this.new_sorted_artpieces_added)
       })
     }
    
     
   }
-
-  
-
- 
-  /*send_loaded(object){
-    console.log("loaded")
-    this.number_of_loaded++;
-    console.log(this.number_of_thumbnails);
-    if(this.number_of_loaded==this.number_of_thumbnails){
-      console.log("updating_list")
-      this.update_lists(this.number_of_comics_to_show);
-    }
-  }*/
-
-  update_lists(number){
-    if( number== 1 ) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
-    }
-    else if( number== 2) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","none");
-    }
-    else if( number== 3) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","none");
-    }
-    else if( number== 4 ) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","none");
-    }
-    else if( number== 5) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(6)").css("display","none");
-    }
-    else if( number== 6) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
-    }
-    this.send_put_more_visible.emit(true)
-  }
-
   
 
 
