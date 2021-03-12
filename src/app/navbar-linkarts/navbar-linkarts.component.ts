@@ -2080,13 +2080,16 @@ get_connections_status(){
         let id=this.list_of_friends_ids[i]
         let index=this.list_of_friends_users_only.indexOf(id);
         this.list_of_friends_connected[i]=r[0].list_of_users_connected[index];
-        if(r[0].date_of_webSockets_last_connection[id]){
-          let now=Math.trunc( new Date().getTime()/1000);
-          let date=r[0].date_of_webSockets_last_connection[id];
-          date = date.replace("Z",'');
-          date=date.slice(0,19)
-          let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
-          this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
+        if(!r[0].list_of_users_connected[index]){
+          let index_user= r[0].deconnected_friends.findIndex(x => x.id_user === id);
+          if(index_user>=0){
+            let now=Math.trunc( new Date().getTime()/1000);
+            let date=r[0].deconnected_friends[index_user].max;
+            date = date.replace("Z",'');
+            date=date.slice(0,19)
+            let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
+            this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
+          }
         }
         compt++;
         if(compt==this.list_of_friends_types.length){
