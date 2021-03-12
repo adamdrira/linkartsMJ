@@ -10,22 +10,22 @@ var fastcsv = require("fast-csv");
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});
+});*/
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
-});*/
+});
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -50,7 +50,6 @@ pool.connect((err, client, release) => {
 
 
 const generate_recommendations = (request, response) => {
-  console.log("checking current: " + request.headers['authorization'] );
   if( ! request.headers['authorization'] ) {
     return res.status(401).json({msg: "error"});
   }
@@ -77,7 +76,7 @@ const generate_recommendations = (request, response) => {
 
   pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1  AND "createdAt" ::date <=$2 AND "createdAt" ::date >= $3 limit 100', [user,_today,last_week], (error, results) => {
     if (error) {
-      console.log(error)
+      
       return response.status(500).send([{"error":error}]);
     }
     let jsonData = JSON.parse(JSON.stringify(results.rows));
@@ -85,24 +84,19 @@ const generate_recommendations = (request, response) => {
     let ws = fs.createWriteStream(`./data_and_routes/routes/csvfiles_for_python/classement_python-${user}.csv`);
     fast.pipe(ws)
     .on('error', function(e){
-     // console.log(e)
     })
     .on("finish", function() {
-        console.log("raady to load " + jsonData.length);
         if(jsonData.length>=1){
           
           //pour ubuntu
-          //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
-          
-          //pour angular
-          const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
+          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);r
+          //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
           pythonProcess.stderr.pipe(process.stderr);
           pythonProcess.stdout.on('data', (data) => {
            // console.log("python res")
             //console.log(data.toString())
           });
           pythonProcess.stdout.on("end", (data) => {
-           // console.log("end received data python: ");
             fs.access(__dirname + `/csvfiles_for_python/classement_python-${user}.csv`, fs.F_OK, (err) => {
               if(err){
                 console.log(err)
@@ -169,7 +163,6 @@ const generate_recommendations = (request, response) => {
             } 
             fs.writeFile(PATH2, JSON.stringify(array_to_convert_in_json), (err) => {
               if (err){
-                console.log(err)
                 response.status(500).send([{error:err}])
               } 
               else{
@@ -177,7 +170,7 @@ const generate_recommendations = (request, response) => {
                 var list_bd_serie_to_send=[];
                 let compteur_os=0;
                 let compteur_serie=0;
-                //os
+                
                 complete_recommendation_bd([],response,user,'Manga',"one-shot", (req)=>{
                   sort_os_styles(req[0])
                 })
@@ -261,8 +254,6 @@ const generate_recommendations = (request, response) => {
 } 
 
 const get_first_recommendation_bd_os_for_user = (request, response) => {
-  console.log("get first recommendations bd")
-  console.log("checking current: " + request.headers['authorization'] );
   if( ! request.headers['authorization'] ) {
     return res.status(401).json({msg: "error"});
   }
@@ -285,8 +276,6 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
   var test;
   fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
     if(err){
-      console.log(err)
-      console.log("not found")
       response.status(200).send([{reset:true}])
     }  
     else{
@@ -328,7 +317,7 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
         // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
           pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid=(SELECT authorid FROM liste_bd_one_shot WHERE bd_id = $4) AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$1) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$1) AND bd_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"comic","one-shot",list_bd_os[item][0]], (error, results) => {
             if (error) {
-              console.log(error)
+              
               response.status(500).send([{"error":error}]);
             }
             else{
@@ -375,8 +364,6 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
                       if(req[1]){
                         styles_with_contents_already_seen[1]=true;
                       }
-                      console.log("other comics to complete")
-                      console.log(req[0])
                       sort_os_styles(req[0])
                     })
                   }
@@ -502,8 +489,6 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
 }
 
 const get_first_recommendation_bd_serie_for_user = (request, response) => {
-  console.log("get first recommendations serie")
-  console.log("checking current: " + request.headers['authorization'] );
   if( ! request.headers['authorization'] ) {
     return res.status(401).json({msg: "error"});
   }
@@ -526,8 +511,6 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
   var test;
   fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
     if(err){
-      console.log(err)
-      console.log("not found")
       response.status(200).send([{reset:true}])
     }  
     else{
@@ -566,7 +549,7 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
           list_of_bd_serie_already_seen.push(list_bd[item][0])
           pool.query('SELECT * FROM liste_bd_serie WHERE authorid=(SELECT authorid FROM liste_bd_serie WHERE bd_id = $4) AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$1) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$1) AND bd_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"comic","serie",list_bd[item][0]], (error, results) => {
             if (error) {
-              console.log(error)
+              
               response.status(500).send([{"error":error}]);
             }
             else{
@@ -741,7 +724,7 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
 }
 
 const get_first_recommendation_drawing_artbook_for_user = (request, response) => {
-  console.log("checking current: " + request.headers['authorization'] );
+  
   if( ! request.headers['authorization'] ) {
     return res.status(401).json({msg: "error"});
   }
@@ -795,7 +778,7 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
           list_artbooks_already_seen.push(list_drawing_artbook[item][0])
           pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid=(SELECT authorid FROM liste_drawings_artbook WHERE drawing_id = $4) AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$1) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$1) AND drawing_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"drawing","artbook",list_drawing_artbook[item][0]], (error, results) => {
             if (error) {
-              console.log(error)
+              
               response.status(500).send([{"error":error}]);
             }
             else{
@@ -922,7 +905,7 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
 }
 
 const get_first_recommendation_drawing_os_for_user = (request, response) => {
-  console.log("checking current: " + request.headers['authorization'] );
+  
   if( ! request.headers['authorization'] ) {
     return res.status(401).json({msg: "error"});
   }
@@ -975,7 +958,7 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
         // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
           pool.query('SELECT * FROM liste_drawings_one_page WHERE authorid=(SELECT authorid FROM liste_drawings_one_page WHERE drawing_id = $4) AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$1) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$1) AND drawing_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"drawing","one-shot",list_drawing_os[item][0]], (error, results) => {
             if (error) {
-              console.log(error)
+              
               response.status(500).send([{"error":error}]);
             }
             else{
@@ -1105,7 +1088,7 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
 }
 
 const get_first_recommendation_writings_for_user = (request, response) => {
-  console.log("checking current: " + request.headers['authorization'] );
+  
   if( ! request.headers['authorization'] ) {
     return res.status(401).json({msg: "error"});
   }
@@ -1152,7 +1135,7 @@ const get_first_recommendation_writings_for_user = (request, response) => {
         // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
           pool.query('SELECT * FROM liste_writings WHERE authorid=(SELECT authorid FROM liste_writings WHERE writing_id = $3) AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$1) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$1) AND writing_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 ) ORDER BY viewnumber DESC limit 1', [user,"writing",list_writing[item][0]], (error, results) => {
             if (error) {
-              console.log(error)
+              
               response.status(500).send([{"error":error}]);
             }
             else{
@@ -1345,16 +1328,14 @@ const get_first_recommendation_writings_for_user = (request, response) => {
 
 
 function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,format,callback){
-
-  console.log("compelte reacommendation bddddddddddddd")  
   var _today = new Date();
   var last_week = new Date();
   last_week.setDate(last_week.getDate() - 350);
   let list_to_send=[];
  
-  pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1  AND view_time is not null AND style=$2 AND format=$5 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,format], (error, results1) => {
+  pool.query('SELECT publication_category,format, style, publication_id, count(*) occurences FROM (SELECT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1  AND view_time is not null AND style=$2 AND format=$3  AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,format,last_week], (error, results1) => {
       if (error) {
-        console.log(error)
+        
         response.status(500).send([{"error":error}]);
       }
       else{
@@ -1364,7 +1345,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
           for (let item of result1){
             pool.query('SELECT * FROM liste_bd_one_shot WHERE bd_id = $1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_bd_one_shot WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3 AND publication_category=$4))', [item.publication_id,user,'one-shot','comic'], (error, results2) => {
               if (error) {
-                console.log(error)
+                
                 response.status(500).send([{"error":error}]);
               }
               else {
@@ -1412,7 +1393,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
           for (let item of result1){
             pool.query('SELECT * FROM liste_bd_serie WHERE bd_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_bd_serie WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3 AND publication_category=$4))', [item.publication_id,user,'serie','comic'], (error, results2) => {
               if (error) {
-                console.log(error)
+                
                 response.status(500).send([{"error":error}]);
               }
               else {
@@ -1467,7 +1448,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   }
 
   const see_more_recommendations_bd = (request, response) => {
-    console.log("checking current: " + request.headers['authorization'] );
+    
     if( ! request.headers['authorization'] ) {
       return res.status(401).json({msg: "error"});
     }
@@ -1492,9 +1473,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   
     let list_to_send=[];
    
-    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND publication_category=$5 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,'comic'], (error, results1) => {
+    pool.query('SELECT * FROM (SELECT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND publication_category=$4 AND style=$2 AND "createdAt" ::date >= $3 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,last_week,'comic'], (error, results1) => {
         if (error) {
-          console.log(error)
+          
           response.status(500).send([{"error":error}]);
         }
         else{
@@ -1505,7 +1486,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
               if(item.format=="one-shot"){
                   pool.query('SELECT * FROM liste_bd_one_shot WHERE bd_id = $1 AND authorid != $2 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid NOT IN (SELECT authorid FROM liste_bd_one_shot WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'one-shot'], (error, results2) => {
                     if (error) {
-                      console.log(error)
+                      
                       response.status(500).send([{"error":error}]);
                     }
                     else {
@@ -1529,7 +1510,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
               else if(item.format=="serie" && result1.length!=0){
                 pool.query('SELECT * FROM liste_bd_serie WHERE bd_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_bd_serie WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'serie'], (error, results2) => {
                   if (error) {
-                    console.log(error)
+                    
                     response.status(500).send([{"error":error}]);
                   }
                   else {
@@ -1569,9 +1550,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   
     let list_to_send=[];
    
-    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$5 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,format], (error, results1) => {
+    pool.query('SELECT * FROM (SELECT  publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$4 AND "createdAt" ::date >= $3 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,last_week,format], (error, results1) => {
         if (error) {
-          console.log(error)
+          
           response.status(500).send([{"error":error}]);
         }
         else{
@@ -1581,9 +1562,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
 
           if(format=="one-shot" && result1.length!=0){
             for (let item of result1){
-              pool.query('SELECT * FROM liste_drawings_one_page WHERE drawing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_drawings_one_page WHERE drawing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'one-shot'], (error, results2) => {
+              pool.query('SELECT * FROM liste_drawings_one_page WHERE drawing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_drawings_one_page WHERE drawing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3 AND publication_category=$4))', [item.publication_id,user,'one-shot','drawing'], (error, results2) => {
                 if (error) {
-                  console.log(error)
+                  
                   response.status(500).send([{"error":error}]);
                 }
                 else {
@@ -1628,9 +1609,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
            }
            else if(format=="artbook" && result1.length!=0){
             for (let item of result1){
-              pool.query('SELECT * FROM liste_drawings_artbook WHERE drawing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_drawings_artbook WHERE drawing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3)) ', [item.publication_id,user,'artbook'], (error, results2) => {
+              pool.query('SELECT * FROM liste_drawings_artbook WHERE drawing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_drawings_artbook WHERE drawing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3 )) ', [item.publication_id,user,'artbook'], (error, results2) => {
                 if (error) {
-                  console.log(error)
+                  
                   response.status(500).send([{"error":error}]);
                 }
                 else {
@@ -1681,7 +1662,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
  }
 
  const see_more_recommendations_drawings = (request, response) => {
-  console.log("checking current: " + request.headers['authorization'] );
+  
   if( ! request.headers['authorization'] ) {
     return res.status(401).json({msg: "error"});
   }
@@ -1706,9 +1687,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
 
   let list_to_send=[];
  
-  pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND publication_category=$5 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,'drawing'], (error, results1) => {
+  pool.query('SELECT * FROM (SELECT  publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND publication_category=$4 AND style=$2 AND  "createdAt" ::date >= $3 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,last_week,'drawing'], (error, results1) => {
       if (error) {
-        console.log(error)
+        
         response.status(500).send([{"error":error}]);
       }
       else{
@@ -1717,9 +1698,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
         if(result1.length!=0){
           for (let item of result1){
             if(item.format=="one-shot"){
-                pool.query('SELECT * FROM liste_drawings_one_page WHERE drawing_id = $1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_drawings_one_page WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'one-shot'], (error, results2) => {
+                pool.query('SELECT * FROM liste_drawings_one_page WHERE drawing_id = $1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_drawings_one_page WHERE drawing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'one-shot'], (error, results2) => {
                   if (error) {
-                    console.log(error)
+                    
                       response.status(500).send([{"error":error}]);
                   }
                   else {
@@ -1741,9 +1722,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                 })
             }
             else if(item.format=="artbook" && result1.length!=0){
-                pool.query('SELECT * FROM liste_drawings_artbook WHERE drawing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_drawings_artbook WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'serie'], (error, results2) => {
+                pool.query('SELECT * FROM liste_drawings_artbook WHERE drawing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_drawings_artbook WHERE drawing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'artbook'], (error, results2) => {
                   if (error) {
-                    console.log(error)
+                    
                     response.status(500).send([{"error":error}]);
                   }
                   else {
@@ -1775,16 +1756,14 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   }
 
  function complete_recommendation_writing(list_of_writings_already_seen,response,user,style,callback){
-  console.log("complete_recommendation_writing")
   var _today = new Date();
   var last_week = new Date();
   last_week.setDate(last_week.getDate() - 350);
-  console.log(style)
   let list_to_send=[];
  
-  pool.query('SELECT * FROM (SELECT DISTINCT publication_category, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week], (error, results1) => {
+  pool.query('SELECT * FROM (SELECT  publication_category, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND "createdAt" ::date >= $3 ) as t GROUP BY t.publication_category, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,last_week], (error, results1) => {
       if (error) {
-        console.log(error)
+        
         response.status(500).send([{"error":error}]);
       }
       else{
@@ -1792,9 +1771,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
         let i=0;
         if(result1.length!=0){
           for (let item of result1){
-            pool.query('SELECT * FROM liste_writings WHERE writing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_writings WHERE writing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2)) ', [item.publication_id,user], (error, results2) => {
+            pool.query('SELECT * FROM liste_writings WHERE writing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_writings WHERE writing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND publication_category=$3))', [item.publication_id,user,'writing'], (error, results2) => {
               if (error) {
-                console.log(error)
+                
                 response.status(500).send([{"error":error}]);
               }
               else {
@@ -1852,7 +1831,6 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
       user=decoded.id;
     })
     let style = request.body.style;
-    
     var _today = new Date();
     var last_week = new Date();
     last_week.setDate(last_week.getDate() - 350);
@@ -1860,9 +1838,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   
     let list_to_send=[];
    
-    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND publication_category=$5 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,'comic'], (error, results1) => {
+    pool.query('SELECT * FROM (SELECT  publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND publication_category=$4 AND style=$2 AND "createdAt" ::date >= $3 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,last_week,'writing'], (error, results1) => {
         if (error) {
-          console.log(error)
+          
           response.status(500).send([{"error":error}]);
         }
         else{
@@ -1870,9 +1848,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
           let i=0;
           if(result1.length!=0){
             for (let item of result1){
-                  pool.query('SELECT * FROM liste_writings WHERE writing_id = $1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_writings WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'one-shot'], (error, results2) => {
+                  pool.query('SELECT * FROM liste_writings WHERE writing_id = $1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_writings WHERE writing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND publication_category=$3))', [item.publication_id,user,'writing'], (error, results2) => {
                     if (error) {
-                      console.log(error)
+                      
                       response.status(500).send([{"error":error}]);
                     }
                     else{
