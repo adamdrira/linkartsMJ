@@ -1,14 +1,6 @@
-import { Component, OnInit,ChangeDetectorRef } from '@angular/core';
-import { Renderer2} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../services/chat.service';
-import { Community_recommendation } from '../services/recommendations.service';
-import { BdOneShotService } from '../services/comics_one_shot.service';
-import { BdSerieService } from '../services/comics_serie.service';
-import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
-import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-import { Writing_Upload_Service } from '../services/writing.service';
 import { NotificationsService } from '../services/notifications.service';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Trending_service } from '../services/trending.service';
 import { Favorites_service } from '../services/favorites.service';
 import { ActivatedRoute } from '@angular/router';
@@ -49,12 +41,9 @@ export class FavoritesComponent implements OnInit {
   list_of_users=[];
   favorites_retrieved=false;
   skeleton:boolean=true;
-  //explication_favorites="Bienvenue dans la section Coups de cœur ! Vous trouverez ici la liste des meilleurs nouveaux artistes du jour. Chaque premier jour du mois une rémunération bonus est attribuée aux 15 premiers artistes de ce classement. Si vous êtres un arites et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faie parti de ce classement !"
-
   ngOnInit() {
 
     this.Favorites_service.generate_or_get_favorites().subscribe(info=>{
-      console.log(info[0])
       if(info[0].favorites){
         for(let i=0;i<info[0].favorites.length;i++){
           this.list_of_users[i]=info[0].favorites[i]
@@ -62,14 +51,10 @@ export class FavoritesComponent implements OnInit {
           let format=(this.list_of_users[i].shares)?'group':'user';
           this.send_notification(this.list_of_users[i].id, this.list_of_users[i].rank,format)
         }
-        console.log(this.list_of_users)
         this.favorites_retrieved=true;
       }
       else if(info[0].list_of_users){
-        
         this.list_of_users=info[0].list_of_users;
-        console.log(info[0].list_of_rankings)
-        console.log(this.list_of_users)
         this.delete_empty_elements(this.list_of_users,info[0].list_of_rankings)
       }
       
@@ -78,8 +63,6 @@ export class FavoritesComponent implements OnInit {
 
 
   delete_empty_elements(list,list_of_rankings){
-    console.log(list)
-    console.log(list_of_rankings)
     let length1=list.length;
     if(list.length>0){
       for(let i=0;i<length1;i++){
@@ -89,15 +72,14 @@ export class FavoritesComponent implements OnInit {
       }
       
       let length2=list.length
-      if(length2>=15){
-        for(let j=15;j<length2;j++){
+      if(length2>=30){
+        for(let j=30;j<length2;j++){
           list.splice(list.length-1,1)
         }
       }
       this.favorites_retrieved=true;
       for(let j=0;j<list.length;j++){
         let format=(list[j].gender=='Groupe')?'group':'user';
-        console.log(list[j])
         this.send_notification(list[j].id, list_of_rankings[j],format)
       }
        
@@ -109,8 +91,6 @@ export class FavoritesComponent implements OnInit {
   }
 
   send_notification(id,rank,format){
-   
-    console.log(id)
     this.Trending_service.get_date_of_trendings().subscribe(d=>{
 
       let date = d[0].date;
@@ -121,7 +101,7 @@ export class FavoritesComponent implements OnInit {
             for_notifications:true,
             type:"favorites",
             id_user_name:'Linkarts',
-            id_user:1, // id de linkarts
+            id_user:1, 
             id_receiver:id,
             publication_category:"favorites",
             publication_name:"favorites",

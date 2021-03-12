@@ -114,8 +114,6 @@ export class RecommendationsComponent implements OnInit {
   ngOnInit() {
 
     this.navbar.check_if_contents_clicked().subscribe(r=>{
-      console.log("check uf contents clicke")
-      console.log(r[0]);
       if(r[0].list_of_comics && r[0].list_of_comics.length>0){
         this.check_comics_history=true;
       }
@@ -129,24 +127,17 @@ export class RecommendationsComponent implements OnInit {
     
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     let recommendations_string = this.CookieService.get('recommendations');
-    console.log(recommendations_string)
     if(recommendations_string){
-      //recommendations_string=recommendations_string.substring(2);
       let recommendations= JSON.parse(recommendations_string);
       let info=recommendations[0].sorted_list_category;
       let information=recommendations[0].styles_recommendation;
-      console.log("ici infoooooooooo")
-      console.log(info)
-      console.log(information)
       if(info && information){
         this.manage_styles_recommendation(info,information)
       }
       else{
         this.Community_recommendation.generate_recommendations().subscribe(r=>{
-          console.log(r[0])
           if(r[0].sorted_list_category){
             // normallement on entre ici que la première fois ou navigation privée première fois
-            console.log("ne pas enter")
             let info=r[0].sorted_list_category;
             let information=r[0].styles_recommendation;
             this.manage_styles_recommendation(info,information)
@@ -158,18 +149,11 @@ export class RecommendationsComponent implements OnInit {
     
         })
       }
-      
-      
-      
-     
     }
     else{
-      console.log("generate recommendation")
       this.Community_recommendation.generate_recommendations().subscribe(r=>{
-        console.log(r[0])
         if(r[0].sorted_list_category){
           // normallement on entre ici que la première fois ou navigation privée première fois
-          console.log("ne pas enter")
           let info=r[0].sorted_list_category;
           let information=r[0].styles_recommendation;
           this.manage_styles_recommendation(info,information)
@@ -196,7 +180,6 @@ export class RecommendationsComponent implements OnInit {
   media_visibility=false;
   manage_styles_recommendation(info,information){
     if(info){
-      console.log("manage_styles_recommendation")
       this.index_bd= info.comic;
       this.index_drawing= info.drawing;
       this.index_writing= info.writing;
@@ -279,7 +262,6 @@ export class RecommendationsComponent implements OnInit {
       return;
     }
     else if(this.sorted_category_retrieved){
-      console.log("open new subategory " + i)
       if(i==0){
         this.subcategory=i;
         this.type_of_skeleton="comic";
@@ -325,9 +307,6 @@ export class RecommendationsComponent implements OnInit {
   
 
   manage_bd_recommendations(list_bd_os,list_bd_serie){
-    console.log("manage_bd_recommendations")
-    console.log(list_bd_os)
-    console.log(list_bd_serie)
     if(list_bd_os.length>0){
       for (let i=0; i<list_bd_os.length;i++){
         if(list_bd_os[i][0]){
@@ -452,13 +431,8 @@ export class RecommendationsComponent implements OnInit {
 
 
   load_bd_recommendations(){
-    console.log("load bd comic")
     this.comics_loading=true;
     this.Community_recommendation.get_first_recommendation_bd_os_for_user(this.index_bd).subscribe(information=>{
-     
-      console.log("answer")
-      console.log(information)
-      console.log(list_bd_os)
       if(information[0].list_bd_os_to_send){
         var list_bd_os = information[0].list_bd_os_to_send;
         this.styles_with_contents_already_seen_comics_os=information[0].styles_with_contents_already_seen;
@@ -521,13 +495,9 @@ export class RecommendationsComponent implements OnInit {
         }
       }
       else{
-        console.log("in else ready to generate")
         this.Community_recommendation.generate_recommendations().subscribe(r=>{
-          console.log("response to generate")
-          console.log(r[0])
           if(r[0].sorted_list_category){
             // normallement on entre ici que la première fois ou navigation privée première fois
-            console.log("ne pas enter")
             let info=r[0].sorted_list_category;
             let information=r[0].styles_recommendation;
             this.manage_styles_recommendation(info,information)
@@ -543,12 +513,9 @@ export class RecommendationsComponent implements OnInit {
     });
 
     this.Community_recommendation.get_first_recommendation_bd_serie_for_user(this.index_bd).subscribe(information=>{
-      console.log(information)
-      console.log("respone serie get first")
       if(information[0].list_bd_serie_to_send){
         this.styles_with_contents_already_seen_comics_serie=information[0].styles_with_contents_already_seen;
         var list_bd_serie= information[0].list_bd_serie_to_send;
-        console.log(list_bd_serie)
         if(list_bd_serie.length>0){
           for (let i=0; i<list_bd_serie.length;i++){
               if(list_bd_serie[i][0]){
@@ -618,13 +585,6 @@ export class RecommendationsComponent implements OnInit {
   can_see_more_comics=[true,true,true,true]; // Manga,comics,bd,webtoon
 
   load_all_comics(j){
-    console.log(j);
-    console.log(this.bd_os_is_loaded)
-    console.log(this.bd_serie_is_loaded)
-    console.log(this.sorted_artpieces_manga)
-    console.log(this.sorted_artpieces_comics)
-    console.log(this.sorted_artpieces_bd)
-    console.log(this.sorted_artpieces_webtoon)
     if(this.bd_os_is_loaded && this.bd_serie_is_loaded){
       if(j==0){
         if(this.sorted_artpieces_manga.length<7){
@@ -644,33 +604,23 @@ export class RecommendationsComponent implements OnInit {
         for( let i=0;i<4;i++){
           if(this.styles_with_contents_already_seen_comics_serie && this.styles_with_contents_already_seen_comics_os[i]==0){
             this.can_see_more_comics[i]=false;
-            console.log(-1)
           }
           if(i==0 && this.sorted_artpieces_manga.length<7){
               this.can_see_more_comics[i]=false;
-              console.log(0)
           }
           if(i==1 && this.sorted_artpieces_comics.length<7){
             this.can_see_more_comics[i]=false;
-            console.log(1)
           }
           if(i==2 && this.sorted_artpieces_bd.length<7){
             this.can_see_more_comics[i]=false;
-            console.log(2)
           }
           if(i==3 && this.sorted_artpieces_webtoon.length<7){
             this.can_see_more_comics[i]=false;
-            console.log(3)
           }
         }
       }
-      console.log(this.can_see_more_comics)
-    
-      
-      console.log("in if")
       this.bd_is_loaded=true;
       this.cd.detectChanges()
-      console.log($('.media-container').width())
     }
   }
 
@@ -682,8 +632,6 @@ export class RecommendationsComponent implements OnInit {
         list.splice(len-i-1,1);
       }
     }
-    console.log("show last consulted after all")
-    console.log(list);
   }
 
 
@@ -718,12 +666,9 @@ export class RecommendationsComponent implements OnInit {
     this.Community_recommendation.get_first_recommendation_drawing_artbook_for_user(this.index_drawing)
           .subscribe(information=>{
             var list_artbook= information[0].list_artbook_to_send;
-            //console.log(list_artbook);
-            //console.log("on entre dans artbook")
             this.compare_to_compteur_drawing= this.compare_to_compteur_drawing + list_artbook.length;
             if(list_artbook.length>0){
               for (let i=0;i<list_artbook.length;i++){
-                //console.log(list_artbook[i].length);
                 if (list_artbook[i].length>0){
                   if(list_artbook[i][0].category =="Traditionnel"){
                     if(  list_artbook[i][0].status=='public'){
@@ -747,7 +692,6 @@ export class RecommendationsComponent implements OnInit {
                   }
                 }
                 else{
-                  //console.log("on est dans le else if")
                   if(i==list_artbook.length-1){
                     this.drawing_artbook_is_loaded=true;
                     this.load_all_drawing()
@@ -766,12 +710,9 @@ export class RecommendationsComponent implements OnInit {
           this.Community_recommendation.get_first_recommendation_drawing_os_for_user(this.index_drawing)
           .subscribe(information=>{
             var list_drawing_os= information[0].list_drawing_os_to_send;
-            //console.log(list_drawing_os);
-            //console.log("on entre dans onpage")
             this.compare_to_compteur_drawing= this.compare_to_compteur_drawing + list_drawing_os.length;
             if(list_drawing_os.length>0){
               for (let i=0;i<list_drawing_os.length;i++){
-                //console.log(list_drawing_os[i][0]);
                 if (list_drawing_os[i].length>0){
                   if(list_drawing_os[i][0].category =="Traditionnel"){
                     if(  list_drawing_os[i][0].status=='public'){
@@ -813,9 +754,7 @@ export class RecommendationsComponent implements OnInit {
   
 
   load_all_drawing(){
-    console.log("laod all drawing")
     if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-      console.log("drawing is loaded")
       this.drawing_is_loaded=true;
       this.cd.detectChanges()
     }
@@ -838,13 +777,11 @@ export class RecommendationsComponent implements OnInit {
   load_writing_recommendations(){
     this.writings_loading=true;
     this.Community_recommendation.get_first_recommendation_writings_for_user(this.index_writing).subscribe(information=>{
-      console.log(information)
       var list_writings_to_send= information[0].list_writings_to_send;
       this.styles_with_contents_already_seen_writings=information[0].styles_with_contents_already_seen
       this.compare_to_compteur_writing+= list_writings_to_send.length;
       if(list_writings_to_send[0] && list_writings_to_send[0].length>0 ){
         for (let i=0;i<list_writings_to_send.length;i++){
-          ////console.log(list_writings_to_send[i][0])
           if (list_writings_to_send[i].length>0){
             
             if(list_writings_to_send[i][0].category =="Illustrated novel"){
@@ -942,7 +879,6 @@ export class RecommendationsComponent implements OnInit {
           this.can_see_more_writings[i]=false;
         }
       }
-      console.log(this.can_see_more_writings)
 
       
   }
@@ -966,8 +902,6 @@ export class RecommendationsComponent implements OnInit {
   }
 
   list_of_drawings_retrieved_receiver(object){
-    console.log("list_of_drawings_retrieved_receiver")
-    console.log(this.show_media_drawing)
     if( this.subcategory==1){
       this.show_media_drawing=true;
       this.cd.detectChanges();

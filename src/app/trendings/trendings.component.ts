@@ -79,7 +79,6 @@ export class TrendingsComponent implements OnInit {
   @Input('status') status: any;
   ngOnChanges(changes: SimpleChanges) {
     if( changes.status) {
-      console.log(this.status)
       this.cd.detectChanges();
     }
   }
@@ -90,12 +89,12 @@ export class TrendingsComponent implements OnInit {
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       if(r[0].id==1){
         this.Trending_service.get_trendings_for_tomorrow().subscribe(r=>{
+          console.log("trendings for tommorow")
           console.log(r)
         })
       }
     })
 
-    console.log(this.route.snapshot.data['section'])
     this.subcategory = (this.route.snapshot.data['section'])?this.route.snapshot.data['section']:0;
     this.section_chosen=true;
     this.Trending_service.send_rankings_and_get_trendings_comics().subscribe(info=>{
@@ -191,10 +190,7 @@ export class TrendingsComponent implements OnInit {
 
  
   load_comics_trendings(info){
-    console.log("trendings comics")
-    console.log(info)
     let compteur=0;
-    
     this.comics_trendings_length= Object.keys(info[0].comics_trendings.format).length;
     if(this.comics_trendings_length>0){
       let length=(this.comics_trendings_length<30)?this.comics_trendings_length:30;
@@ -262,9 +258,6 @@ export class TrendingsComponent implements OnInit {
         }     
       };
     }
-    else{
-      console.log("no comics trendings")
-    }
         
   }
 
@@ -330,9 +323,6 @@ export class TrendingsComponent implements OnInit {
         }
       }
     }
-    else{
-      console.log("no drawings trends")
-    }
   }
 
   load_writing_trendings(info){
@@ -368,9 +358,6 @@ export class TrendingsComponent implements OnInit {
         }) 
       }
     }
-    else{
-      console.log("no writings trends")
-    }
     
   }
 
@@ -397,7 +384,6 @@ export class TrendingsComponent implements OnInit {
             for(let j=0;j<list.length;j++){
               this.send_notification("comic",list[j],j+1)
             }
-            console.log(this.comics_trendings_sorted);
           }
           if(type=="drawings"){
             this.drawings_trendings_sorted_confirmation=true;
@@ -405,7 +391,6 @@ export class TrendingsComponent implements OnInit {
             for(let j=0;j<list.length;j++){
               this.send_notification("drawing",list[j],j+1)
             }
-            console.log(this.drawings_trendings_sorted);
           }
           if(type=="writings"){
             this.writings_trendings_sorted_confirmation=true;
@@ -413,7 +398,6 @@ export class TrendingsComponent implements OnInit {
             for(let j=0;j<list.length;j++){
               this.send_notification("writing",list[j],j+1)
             }
-            console.log(this.writings_trendings_sorted);
           }
           
         }
