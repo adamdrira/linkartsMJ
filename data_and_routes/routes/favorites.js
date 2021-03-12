@@ -1,33 +1,27 @@
-const category = require('../../comics_one_shot_and_cover/controllers/controller');
-const fetch = require("node-fetch");
-var {spawn} = require("child_process")
-const usercontroller = require('../../authentication/user.controller');
-var Request = require('request');
+
+var {spawn} = require("child_process");
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const authentification = require('../../authentication/db.config');
-const trendings_seq= require('../../p_trendings/model/sequelize');
 const favorites_seq= require('../../favorites/model/sequelize');
 var nodemailer = require('nodemailer');
-const Sequelize = require('sequelize');
 const Pool = require('pg').Pool;
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});
+});*/
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
-  //dialect: 'postgres'
-});*/
+});
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -52,7 +46,6 @@ function get_current_user(token){
 
 
   const generate_or_get_favorites = (request, response) => {
-    console.log("checking current: " + request.headers['authorization'] );
     if( ! request.headers['authorization'] ) {
       return res.status(401).json({msg: "error"});
     }
@@ -63,20 +56,15 @@ function get_current_user(token){
         return res.status(401).json({msg: "error"});
       }
     }
-    console.log("stat generating favorites")
     var today = new Date();
-  
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth()+1).padStart(2, '0'); 
     var yyyy = today.getFullYear();
-    console.log(Number(dd))
+    let day = today.getDay();
     const date = yyyy.toString() + '-' +  mm  + '-' + dd;
     
     var six_months = new Date();
     six_months.setDate(six_months.getDate() - 180);
-
-  
-    console.log(date)
     favorites_seq.favorites.findAll({
       where:{
         date: date
@@ -84,12 +72,11 @@ function get_current_user(token){
       order: [
           ['rank', 'ASC']
         ],
+      limit: 30,
     }).catch(err => {
-			console.log(err);	
 			response.status(500).json({msg: "error", details: err});		
 		}).then(resu=>{
       if(resu[0]){
-        console.log("result favo ok")
         return response.status(200).send([{favorites:resu}]);
       }
       else{
@@ -100,41 +87,32 @@ function get_current_user(token){
    
 
     function generate_favorites(){
-      console.log("generate favorites")
       pool.query(' SELECT * FROM users WHERE type_of_account=$1 OR type_of_account=$2 OR type_of_account=$3 OR type_of_account=$4 OR type_of_account=$5 AND "createdAt" ::date >= $6 ORDER BY subscribings_number DESC',["Artiste","Artistes","Artiste professionnel","Artiste professionnelle","Artistes professionnels",six_months], (error, results) => {
         if (error) {
-          console.log(err)
           response.status(500).send([{error:err}])
         }
         else{
             let fastcsv = require("fast-csv");
             let Path1=`/csvfiles_for_python/favorites_ranking-${date}.csv`;
             let ws = fs.createWriteStream('./data_and_routes/routes' + Path1);
-
             let json_view = JSON.parse(JSON.stringify(results.rows));
-            console.log("favorites ")
             fastcsv.write(json_view, { headers: true })
             .pipe(ws)
             .on('error', function(e){
                 console.log(e)
             })
             .on("finish", function() {
-              //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
-                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
-                //console.log(pythonProcess)
+                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
+                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
                 pythonProcess.stderr.pipe(process.stderr);
                 pythonProcess.stdout.on('data', (data) => {
-                  console.log("python res")
-                  console.log(data.toString())
+                  //console.log("python res")
+                  //console.log(data.toString())
                 });
                 pythonProcess.stdout.on("end", (data) => {
-                  console.log("end received data python: ");
-                  console.log(__dirname + `/python_files/favorites_ranking-${date}.json`)
-                  let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/favorites_ranking-${date}.json`))
-                  console.log(json)
+                  let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/favorites_ranking-${date}.json`));
                   fs.access(__dirname + Path1, fs.F_OK, (err) => {
                     if(err){
-                      console.log('suppression already done for first path'); 
                         add_favorites(json,date);
                     }  
                     else{
@@ -161,9 +139,6 @@ function get_current_user(token){
     function add_favorites(json,date){
       var list_of_users_for_email=[];
       var list_of_users_for_email_final=[];
-      console.log("add_favorites")
-      console.log(json)
-      console.log(Object.keys(json.id).length)
       let obj=Object.keys(json.id);
       let compt=0;
       let list_of_users=[]
@@ -175,7 +150,7 @@ function get_current_user(token){
             status:"account",
           }
         }).catch(err => {
-          console.log(err);	
+          
           response.status(500).json({msg: "error", details: err});		
         }).then(user=>{
           if(user){
@@ -199,8 +174,6 @@ function get_current_user(token){
      
       function add_to_date(){
         let compteur_done=0;
-        console.log("add_to_data")
-        console.log(list_of_users.length)
         for(let i=0;i<list_of_users.length;i++){
 
           if(list_of_users[i] && list_of_users_for_email.indexOf(list_of_users[i].id)<0){
@@ -215,10 +188,10 @@ function get_current_user(token){
           let ranking=get_ranking(i);
           list_of_rankings[i]=ranking;
           let remuneration= '0'
-          if(Number(dd)!=1 && Number(mm)<3){
+          if( Number(mm)<4){
             remuneration="0";
           }
-          else if(list_of_users[i]){
+          else if(list_of_users[i] && day==1){
             remuneration= get_remuneration(list_of_users[i].subscribers.length,ranking);
           }
 
@@ -233,7 +206,7 @@ function get_current_user(token){
               "remuneration":remuneration,
               "type_of_account":list_of_users[i].type_of_account
             }).catch(err => {
-              console.log(err);	
+              
               response.status(500).json({msg: "error", details: err});		
             }).then(favorites=>{
               compteur_done++;
@@ -269,17 +242,30 @@ function get_current_user(token){
           if(ranking>15){
             return '0'
           }
-          if(number<1000){
-            let num = 3*(1/2+ (1/3)*(1/ranking)*((1/80)*number + 12.5));
+          if(number<100){
+            let num = (1/3)*(1/ranking)*((1/80)*number + 5);
             
             return num.toFixed(2)
           }
           if(number<1000){
-            let num = 3*(2/5+ (1/3)*(1/ranking)*((3/1000)*number + 20));
+            let num = 1/2+ (1/3)*(1/ranking)*((2/1000)*number + 6.05);
+            
+            return num.toFixed(2)
+          }
+          if(number<10000){
+            let num = 2/5+ (1/3)*(1/ranking)*((3/10000)*number + 7.75);
             return num.toFixed(2)
           }
           if(number<100000){
-            let num = 3*(1 + (1/3)*(1/ranking)*((6/10000)*number + 40));
+            let num = 1 + (1/3)*(1/ranking)*((6/1000000)*number + 6);
+            return num.toFixed(2)
+          }
+          if(number<1000000){
+            let num = 1 + (1/3)*(1/ranking)*((12/10000000)*number + 8);
+            return num.toFixed(2)
+          }
+          else{
+            let num = 1 + (1/3)*(1/ranking)*((24/100000000)*number + 6);
             return num.toFixed(2)
           }
         }
@@ -299,16 +285,14 @@ function get_current_user(token){
               id_group:user.id,
             }
           }).catch(err => {
-            console.log(err);	
+            
             response.status(500).json({msg: "error", details: err});		
           }).then(members=>{
             
             if(members[0]){
-              console.log("members_found")
               for(let j=0;j<members.length;j++){
                 shares[members[j].id_user]=members[j].share;
               }
-              console.log(shares)
               favorites_seq.favorites.create({
                 "id_user": list_of_users[i].id,
                 "date":date,
@@ -317,7 +301,7 @@ function get_current_user(token){
                 "type_of_account":list_of_users[i].type_of_account,
                 "shares":[shares],
               }).catch(err => {
-                console.log(err);	
+                
                 response.status(500).json({msg: "error", details: err});		
               }).then(favorites=>{
                 compteur_done++;
@@ -336,7 +320,7 @@ function get_current_user(token){
                 "remuneration":remuneration,
                 "type_of_account":list_of_users[i].type_of_account,
               }).catch(err => {
-                console.log(err);	
+                
                 response.status(500).json({msg: "error", details: err});		
               }).then(favorites=>{
                 compteur_done++;
@@ -353,12 +337,8 @@ function get_current_user(token){
         }
   
         function send_email_to_users(list_of_users){
-          console.log("send_email_to_users")
-          console.log(list_of_users)
           for(let i=0;i<list_of_users.length;i++){
             if(list_of_users[i]){
-
-              console.log("send email")
               const transport = nodemailer.createTransport({
                 host: "pro2.mail.ovh.net",
                 port: 587,
@@ -393,18 +373,13 @@ function get_current_user(token){
               var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
                   to:  list_of_users[i].email, 
-                  //cc:"adam.drira@etu.emse.fr",
                   subject: `Top Coups de coeur !`, // Subject line
-                  //text: 'plain text', // plain text body
                   html:  html,
-                  // attachments: params.attachments
               };
         
              transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
-                  } else {
-                      console.log('Message sent: %s', info.messageId);
                   }
               })
             }
