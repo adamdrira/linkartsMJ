@@ -21,6 +21,7 @@ const pool = new Pool({
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
+  //dialect: 'postgres'
 });
 
 pool.connect((err, client, release) => {
@@ -102,7 +103,8 @@ function get_current_user(token){
                 console.log(e)
             })
             .on("finish", function() {
-                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
+                //pour ubuntu  
+              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
                 //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
                 pythonProcess.stderr.pipe(process.stderr);
                 pythonProcess.stdout.on('data', (data) => {
@@ -180,14 +182,15 @@ function get_current_user(token){
             list_of_users_for_email.push(list_of_users[i].id)
             list_of_users_for_email_final.push(list_of_users[i])
           }
-          if(i==list_of_users.length-1){
-            send_email_to_users(list_of_users_for_email_final)
-          }
+          
 
 
           let ranking=get_ranking(i);
           list_of_rankings[i]=ranking;
-          let remuneration= '0'
+          if(i==list_of_users.length-1){
+            send_email_to_users(list_of_users_for_email_final,list_of_rankings)
+          }
+          let remuneration= '0';
           if( Number(mm)<4){
             remuneration="0";
           }
@@ -336,7 +339,7 @@ function get_current_user(token){
           })
         }
   
-        function send_email_to_users(list_of_users){
+        function send_email_to_users(list_of_users, list_of_rankings){
           for(let i=0;i<list_of_users.length;i++){
             if(list_of_users[i]){
               const transport = nodemailer.createTransport({
@@ -352,24 +355,29 @@ function get_current_user(token){
                 }
               });
         
-              let html=''
-              if(Number(dd)==1){
-                html = `<p> Félicitation ${list_of_users[i].firstname} !</p>
-                <p> Vous avez atteint le top <b>coups de cœur</b> du jour. Et puisque nous sommes le 1er du mois vous recevrai un gain bonus ! Le montant de ce gain est disponible dans la section "rémunération" de votre compte</p>
-                  
+              let html='';
+              if(Number(mm)<4 ||parseInt(list_of_rankings[i])>30){
+                return
+              }
+
+              html = `<p> Félicitation ${list_of_users[i].firstname} !</p>`
+              if(day==1 && parseInt(list_of_rankings[i])<=15){
+                html+=`<p> Vous avez atteint le top ${list_of_rankings[i]} des <b>Coups de cœur</b> du jour. Et puisque nous sommes lundi vous recevez une rémunération bonus ! Le montant de cette rémunération est disponible dans la section "rémunération" de votre compte</p>`
+              }
+              else if(parseInt(list_of_rankings[i])>15){
+                html+=`<p> Vous avez atteint le top ${list_of_rankings[i]} des <b>Coups de cœur</b> du jour. Continuez ainsi afin d'atteindre le top 15 le prochain lundi et obtenir une rémunération !</p>`
+              }
+              else if(day!=1 && parseInt(list_of_rankings[i])<=15){
+                html+=`<p> Vous avez atteint le top ${list_of_rankings[i]} des <b>Coups de cœur</b> du jour. Continuez ainsi afin d'obtenir une rémunération le prochain lundi !</p>`
+              }
+
+              html+=`
                 <ul>
-										<li><a href="https://linkarts.fr/favorites"> Cliquer ici</a> pour voir le top <b>coups de cœur</b> du jour</li>
-										<li><a href="https://linkarts.fr/account/${list_of_users[i].nickname}/${list_of_users[i].id}/my_account"> Cliquer ici</a> pour consuler mon compte.</li>
+                    <li><a href="https://linkarts.fr/favorites"> Cliquer ici</a> pour voir le top 30 des <b>Coups de cœur</b> du jour</li>
+                    <li><a href="https://linkarts.fr/account/${list_of_users[i].nickname}/${list_of_users[i].id}/my_account"> Cliquer ici</a> pour consuler votre compte.</li>
                 </ul>
-                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>
-                  <p>L'équipe de LinkArts.</p>`
-              }
-              else{
-                html = `<p> Félicitation ${list_of_users[i].firstname} !</p>
-                 <p>Vous avez atteint le top <b>coups de cœur</b> du jour. Si vous atteignez ce top le premier du mois vous en serez recevrez un gain bonus. Continuez ainsi !</p>
-                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>
-                  <p>L'équipe de LinkArts.</p>`
-              }
+                <p>L'équipe de LinkArts.</p>`
+
               var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
                   to:  list_of_users[i].email, 
@@ -377,11 +385,11 @@ function get_current_user(token){
                   html:  html,
               };
         
-             transport.sendMail(mailOptions, (error, info) => {
+             /*transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   }
-              })
+              })*/
             }
           }
          
