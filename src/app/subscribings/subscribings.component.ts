@@ -85,7 +85,14 @@ export class SubscribingsComponent implements OnInit {
       }
     }
     if(this.list_of_new_contents_sorted && this.list_of_new_contents.length>0 && this.number_of_new_contents_to_show<this.list_of_new_contents.length){
-      this.number_of_new_contents_to_show+=10;
+     
+      let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
+      let max = document.documentElement.scrollHeight;
+      let sup=max*0.1;
+      if(pos>= max - sup )   {
+        this.number_of_new_contents_to_show+=10;
+        this.cd.detectChanges();
+      }
     }
     
   }
@@ -110,7 +117,6 @@ export class SubscribingsComponent implements OnInit {
 
   get_all_users_subscribed_to_today(){
     this.Subscribing_service.get_all_users_subscribed_to_today(this.user_id).subscribe(info=>{
-      //console.log(info)
       if(info[0].length>0){
         for (let i=0; i< info[0].length;i++){         
           this.list_of_new_users.push(info[0][i].id_user_subscribed_to);        
@@ -118,7 +124,6 @@ export class SubscribingsComponent implements OnInit {
             let compteur_user=0;
             for (let k=0;k<this.list_of_new_users.length;k++){
               this.Subscribing_service.get_last_contents_of_a_subscribing(this.list_of_new_users[k]).subscribe(r=>{
-                  //console.log(r);
                   let new_contents=[];
                   if(r[0].length>0){
                     let compt=0;
@@ -140,7 +145,6 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                  //console.log(this.list_of_new_contents);
                                   this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
@@ -162,7 +166,6 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                 // console.log(this.list_of_new_contents);
                                   this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
@@ -186,7 +189,6 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                  //console.log(this.list_of_new_contents);
                                   this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
@@ -207,7 +209,6 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                  //console.log(this.list_of_new_contents);
                                   this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
@@ -230,7 +231,6 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                  //console.log(this.list_of_new_contents);
                                   this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
@@ -252,7 +252,6 @@ export class SubscribingsComponent implements OnInit {
                                 this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                               }
                               if(compteur_user==this.list_of_new_users.length){
-                                //console.log(this.list_of_new_contents);
                                 this.sort_list_of_contents(this.list_of_new_contents,'new');
                               }
                             }
@@ -263,7 +262,6 @@ export class SubscribingsComponent implements OnInit {
                   else{
                     compteur_user++;
                     if(compteur_user==this.list_of_new_users.length){
-                      //console.log(this.list_of_new_contents);
                       this.sort_list_of_contents(this.list_of_new_contents,'new');
                     }
                   }
@@ -281,122 +279,118 @@ export class SubscribingsComponent implements OnInit {
 
   get_all_users_subscribed_to_before_today(){
     this.Subscribing_service.get_all_users_subscribed_to_before_today(this.user_id).subscribe(info=>{
-      //console.log(info)
       if(info[0].length>0){
         for (let i=0; i< info[0].length;i++){         
-          this.list_of_users.push(info[0][i].id_user_subscribed_to);         
-          if(i==info[0].length-1){
-            this.Subscribing_service.get_all_subscribings_contents(this.list_of_users).subscribe(r=>{  
-              //console.log(r[0])
-              let compt=0; 
-              if(r[0].length>0){
-                for (let j=0; j< r[0].length;j++){
-                  if(r[0][j].publication_category=="comic"){
-                    if(r[0][j].format=="one-shot"){
-                      this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
-                        if(info[0].status="public"){
-                          this.list_of_contents.push(info[0]);
-                          compt++;
-                        }
-                        else{
-                          compt++
-                        }
-                        if(compt == r[0].length){
-                          this.sort_list_of_contents(this.list_of_contents,'old');
-                        }
-                      })
-                    }
-                    if(r[0][j].format=="serie"){
-                      this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
-                        if(info[0].status="public"){
-                          this.list_of_contents.push(info[0]);
-                          compt++;
-                        }
-                        else{
-                          compt++;
-                        }
-                        if(compt== r[0].length){
-                          this.sort_list_of_contents(this.list_of_contents,'old');
-                        }
-                      })
-                    }
-                  }
-  
-                  if(r[0][j].publication_category=="drawing"){
-                    if(r[0][j].format=="one-shot"){
-                      this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
-                        if(info[0].status="public"){
-                          this.list_of_contents.push(info[0]);
-                          compt++;
-                        }
-                        else{
-                          compt++
-                        }
-                        if(compt== r[0].length){
-                          this.sort_list_of_contents(this.list_of_contents,'old');
-                        }
-                      })
-                    }
-                    if(r[0][j].format=="artbook"){
-                      this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
-                        if(info[0].status="public"){
-                          this.list_of_contents.push(info[0]);
-                          compt++
-                        }
-                        else{
-                          compt++
-                        }
-                        if(compt== r[0].length){
-                          this.sort_list_of_contents(this.list_of_contents,'old');
-                        }
-                      })
-                    }
-                  }
-  
-                  if(r[0][j].publication_category=="writing"){
-                    this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+          this.list_of_users.push(info[0][i].id_user_subscribed_to);        
+        } 
+        if(this.list_of_users.length>0){
+          this.Subscribing_service.get_all_subscribings_contents(this.list_of_users).subscribe(r=>{  
+            let compt=0; 
+            if(r[0].length>0){
+              for (let j=0; j< r[0].length;j++){
+                if(r[0][j].publication_category=="comic"){
+                  if(r[0][j].format=="one-shot"){
+                    this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
                       if(info[0].status="public"){
                         this.list_of_contents.push(info[0]);
-                        compt++
+                        compt++;
                       }
                       else{
                         compt++
+                      }
+                      if(compt == r[0].length){
+                        this.sort_list_of_contents(this.list_of_contents,'old');
+                      }
+                    })
+                  }
+                  if(r[0][j].format=="serie"){
+                    this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        this.list_of_contents.push(info[0]);
+                        compt++;
+                      }
+                      else{
+                        compt++;
                       }
                       if(compt== r[0].length){
                         this.sort_list_of_contents(this.list_of_contents,'old');
                       }
                     })
-                  }    
-                  
-                  if(r[0][j].publication_category=="ad"){
-                    this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).subscribe(info=>{
-                      if(info[0].status="public"){
-                        this.list_of_contents.push(info[0]);
-                        compt++
-                      }
-                      else{
-                        compt++
-                      }
-                      if(compt== r[0].length){
-                        this.sort_list_of_contents(this.list_of_contents,'old');
-                      }
-                    })
-                  }   
+                  }
                 }
-              } 
-              else{
-                //console.log("no contents")
-              }      
-              
 
-            });
-          }
+                if(r[0][j].publication_category=="drawing"){
+                  if(r[0][j].format=="one-shot"){
+                    this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        this.list_of_contents.push(info[0]);
+                        compt++;
+                      }
+                      else{
+                        compt++
+                      }
+                      if(compt== r[0].length){
+                        this.sort_list_of_contents(this.list_of_contents,'old');
+                      }
+                    })
+                  }
+                  if(r[0][j].format=="artbook"){
+                    this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        this.list_of_contents.push(info[0]);
+                        compt++
+                      }
+                      else{
+                        compt++
+                      }
+                      if(compt== r[0].length){
+                        this.sort_list_of_contents(this.list_of_contents,'old');
+                      }
+                    })
+                  }
+                }
+
+                if(r[0][j].publication_category=="writing"){
+                  this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+                    if(info[0].status="public"){
+                      this.list_of_contents.push(info[0]);
+                      compt++
+                    }
+                    else{
+                      compt++
+                    }
+                    if(compt== r[0].length){
+                      this.sort_list_of_contents(this.list_of_contents,'old');
+                    }
+                  })
+                }    
+                
+                if(r[0][j].publication_category=="ad"){
+                  this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).subscribe(info=>{
+                    if(info[0].status="public"){
+                      this.list_of_contents.push(info[0]);
+                      compt++
+                    }
+                    else{
+                      compt++
+                    }
+                    if(compt== r[0].length){
+                      this.sort_list_of_contents(this.list_of_contents,'old');
+                    }
+                  })
+                }   
+              }
+            }  
+            else{
+              this.sort_list_of_contents(this.list_of_contents,'old');
+            }   
+            
+
+          });
         }
       }
       else{
-        //console.log("put a message to say they need to subscribe to someone")
         this.sort_list_of_contents(this.list_of_contents,'old');
-       
       }
       
     })
@@ -416,25 +410,13 @@ export class SubscribingsComponent implements OnInit {
           
         }
       }
-      if(period=='old'){
-        this.list_of_contents_sorted=true;
-        //this.last_timestamp=list[list.length-1].createdAt;
-        
-      }
-      if(period=='new'){
-        this.list_of_new_contents_sorted=true;
-        //this.last_timestamp=list[list.length-1].createdAt;
-      }
     }
-    else{
-      if(period=='old'){
-        this.list_of_contents_sorted=true;
-        
-      }
-      if(period=='new'){
-        this.list_of_new_contents_sorted=true;
-       
-      }
+    
+    if(period=='old'){
+      this.list_of_contents_sorted=true;
+    }
+    if(period=='new'){
+      this.list_of_new_contents_sorted=true;
     }
 
     if(this.list_of_contents_sorted && this.list_of_new_contents_sorted){
@@ -443,7 +425,6 @@ export class SubscribingsComponent implements OnInit {
       }
       else if(this.list_of_new_contents.length>0){
         this.can_show_more=false;
-        //this.last_timestamp=this.list_of_new_contents[this.list_of_new_contents.length-1].createdAt;
       }
       else{
         this.can_show_more=false;
