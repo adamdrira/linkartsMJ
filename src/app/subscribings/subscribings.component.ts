@@ -67,6 +67,8 @@ export class SubscribingsComponent implements OnInit {
   now_in_seconds:number;
   can_show_more=true;
   last_timestamp:string;
+
+  number_of_new_contents_to_show=10;
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
     if(this.can_show_more && ((this.list_of_new_contents_sorted && this.list_of_new_contents.length>0) || (this.list_of_contents_sorted && this.list_of_contents.length>0))){
@@ -81,6 +83,9 @@ export class SubscribingsComponent implements OnInit {
         this.show_more=true;
         this.cd.detectChanges();
       }
+    }
+    if(this.list_of_new_contents_sorted && this.list_of_new_contents.length>0 && this.number_of_new_contents_to_show<this.list_of_new_contents.length){
+      this.number_of_new_contents_to_show+=10;
     }
     
   }
@@ -413,25 +418,12 @@ export class SubscribingsComponent implements OnInit {
       }
       if(period=='old'){
         this.list_of_contents_sorted=true;
-        this.last_timestamp=list[list.length-1].createdAt;
+        //this.last_timestamp=list[list.length-1].createdAt;
+        
       }
       if(period=='new'){
         this.list_of_new_contents_sorted=true;
-        this.last_timestamp=list[list.length-1].createdAt;
-      }
-
-      if(this.list_of_contents_sorted && this.list_of_new_contents_sorted){
-        if(this.list_of_contents.length>0){
-          this.last_timestamp=this.list_of_contents[this.list_of_contents.length-1].createdAt;
-        }
-        else if(this.list_of_new_contents.length>0){
-          this.last_timestamp=this.list_of_new_contents[this.list_of_new_contents.length-1].createdAt;
-        }
-        else{
-          this.display_nothing_found=true;
-        }
-        this.display_contents=true;
-        this.cd.detectChanges();
+        //this.last_timestamp=list[list.length-1].createdAt;
       }
     }
     else{
@@ -443,19 +435,22 @@ export class SubscribingsComponent implements OnInit {
         this.list_of_new_contents_sorted=true;
        
       }
-      if(this.list_of_contents_sorted && this.list_of_new_contents_sorted){
-        if(this.list_of_contents.length>0){
-          this.last_timestamp=this.list_of_contents[this.list_of_contents.length-1].createdAt;
-        }
-        else if(this.list_of_new_contents.length>0){
-          this.last_timestamp=this.list_of_new_contents[this.list_of_new_contents.length-1].createdAt;
-        }
-        else{
-          this.display_nothing_found=true;
-        }
-        this.display_contents=true;
-        this.cd.detectChanges();
+    }
+
+    if(this.list_of_contents_sorted && this.list_of_new_contents_sorted){
+      if(this.list_of_contents.length>0){
+        this.last_timestamp=this.list_of_contents[this.list_of_contents.length-1].createdAt;
       }
+      else if(this.list_of_new_contents.length>0){
+        this.can_show_more=false;
+        //this.last_timestamp=this.list_of_new_contents[this.list_of_new_contents.length-1].createdAt;
+      }
+      else{
+        this.can_show_more=false;
+        this.display_nothing_found=true;
+      }
+      this.display_contents=true;
+      this.cd.detectChanges();
     }
 
   }

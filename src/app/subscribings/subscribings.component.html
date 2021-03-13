@@ -22,8 +22,8 @@
         </div>
     </ng-container>
 
-    <div *ngIf="display_contents">
-        <div *ngFor="let item of list_of_new_contents; let i = index" >
+    <div *ngIf="display_contents && list_of_new_contents.length>0">
+        <div *ngFor="let item of list_of_new_contents.slice(0,number_of_new_contents_to_show); let i = index" >
             <div *ngIf="item.bd_id">
                 <div *ngIf="item.chaptersnumber > 0 ">
                     <div class="highlighted_artwork">
@@ -99,7 +99,7 @@
     
     </div>
     
-    <div *ngIf="display_contents " >
+    <div *ngIf="display_contents && list_of_contents.length>0" >
         <div *ngFor="let item of list_of_contents; let i = index">
             <div *ngIf="item.bd_id">
                 <div *ngIf="item.chaptersnumber > 0 ">
@@ -182,7 +182,7 @@
             <app-subscribings-see-more
                 [list_of_users]=list_of_users
                 [now_in_seconds]=now_in_seconds
-                [last_timestamp]=last_timestamp
+                [last_timestamp]= fd
                 (manage_show_more)="show_more_managed($event);"
                 ></app-subscribings-see-more>
         </ng-container>
