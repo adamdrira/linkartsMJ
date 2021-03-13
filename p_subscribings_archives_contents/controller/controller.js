@@ -542,7 +542,8 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             },
             order: [
                 ['createdAt', 'DESC']
-            ]
+            ],
+            limit:15
         })
         .catch(err => {
 				
