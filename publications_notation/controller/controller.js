@@ -40,9 +40,7 @@ module.exports = (router,
       }
 
 
-  //on poste les premières informations du formulaire et on récupère l'id de la bd
   router.post('/add_like/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_liked', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -64,8 +62,6 @@ console.log("checking current: " + req.headers['authorization'] );
             const secondtag=req.params.secondtag;
             const thirdtag=req.params.thirdtag;
             const author_id_liked=parseInt(req.params.author_id_liked);
-            //console.log(firsttag);
-
             Liste_of_loves.findOne({
                 where:{
                     author_id_who_loves: current_user,
@@ -75,7 +71,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number: chapter_number,
                 }
             }).catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
             }).then(love=>{
                 if(!love){
@@ -89,7 +85,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             author_id_liked:author_id_liked,
                         }
                     }).catch(err => {
-                        //console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(like=>{
                         if(!like){
@@ -114,7 +110,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-                            //console.log(err);	
+                            	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(bd =>  {
                             const likes = bd.likesnumber + 1;
@@ -122,7 +118,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "likesnumber":likes,
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(create(bd))
                         }); 
@@ -137,7 +133,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {                      
                             const likes = chapter.likesnumber + 1;
@@ -145,7 +141,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "likesnumber":likes,
                             }) 
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  { 
                                     Liste_Bd_Serie.findOne({
@@ -154,14 +150,14 @@ console.log("checking current: " + req.headers['authorization'] );
                                         }
                                     })
                                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_serie =>  {  
                                         const likes = bd_serie.likesnumber + 1;
                                         bd_serie.update({
                                         "likesnumber":likes,
                                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_serie=>{create(bd_serie)})
                                     })                   
@@ -181,7 +177,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                             const likes = drawing.likesnumber + 1;
@@ -189,7 +185,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "likesnumber":likes,
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(create(drawing))
                         }); 
@@ -202,7 +198,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                             const likes = drawing.likesnumber + 1;
@@ -210,7 +206,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "likesnumber":likes,
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(create(drawing))
                         }); 
@@ -224,7 +220,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
                         const likes = writing.likesnumber + 1;
@@ -232,7 +228,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         "likesnumber":likes,
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(create(writing))
                     }); 
@@ -241,7 +237,6 @@ console.log("checking current: " + req.headers['authorization'] );
             }
             
             function create(content){
-                //console.log('ajout de like ok');
                 Liste_of_likes.create({
                         "status":"public",
                         "author_id_who_likes": current_user,
@@ -256,7 +251,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         "author_id_liked":author_id_liked,
                         "monetization":content.monetization,
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes=>{
                     User.findOne({
@@ -264,7 +259,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             id:content.authorid
                         }
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                         let number_of_likes=(user.number_of_likes)?(user.number_of_likes+1):1;
@@ -281,7 +276,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.delete('/remove_like/:category/:format/:style/:publication_id/:chapter_number', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -308,7 +303,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number:chapter_number,
                 }
             }).catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
             }).then(like=>{
                 if(like){
@@ -331,7 +326,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
                             const likes = bd.likesnumber - 1;
@@ -339,7 +334,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "likesnumber":(likes>=0)?likes:0,
                             })
                             .catch(err => {
-                                //console.log(err);	
+                                	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(destroy(bd))
                         }); 
@@ -354,7 +349,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {
        
@@ -363,7 +358,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "likesnumber":(likes>=0)?likes:0,
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {  
                                 Liste_Bd_Serie.findOne({
@@ -372,7 +367,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     }
                                 })
                                 .catch(err => {
-                                    //console.log(err);	
+                                    	
                                     res.status(500).json({msg: "error", details: err});		
                                 }).then(bd_serie =>  {  
                                     const likes = bd_serie.likesnumber - 1;
@@ -398,7 +393,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                             const likes = drawing.likesnumber - 1;
@@ -406,7 +401,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "likesnumber":(likes>=0)?likes:0,
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(destroy(drawing))
                         }); 
@@ -419,7 +414,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                             const likes = drawing.likesnumber - 1;
@@ -427,7 +422,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "likesnumber":(likes>=0)?likes:0,
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(destroy(drawing))
                         }); 
@@ -441,7 +436,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
                         const likes = writing.likesnumber - 1;
@@ -449,7 +444,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         "likesnumber":(likes>=0)?likes:0,
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(destroy(writing))
                     }); 
@@ -463,7 +458,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         id:content.authorid
                     }
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                     let number_of_likes=(user.number_of_likes && user.number_of_likes>0)?(user.number_of_likes-1):0;
@@ -479,7 +474,7 @@ console.log("checking current: " + req.headers['authorization'] );
         
 
     router.post('/add_love/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_loved', function (req, res) {
-        console.log("checking current: " + req.headers['authorization'] );
+        
         if( ! req.headers['authorization'] ) {
             return res.status(401).json({msg: "error"});
         }
@@ -511,7 +506,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number: chapter_number,
                 }
             }).catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
             }).then(like=>{
                 if(!like){
@@ -525,7 +520,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             author_id_loved:author_id_loved,
                         }
                     }).catch(err => {
-                        //console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(love=>{
                         if(!love){
@@ -552,7 +547,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                             })
                             .catch(err => {
-                                //console.log(err);	
+                                	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(bd =>  {
                             const loves = bd.lovesnumber + 1;
@@ -560,7 +555,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 "lovesnumber":loves,
                             })
                             .catch(err => {
-                                //console.log(err);	
+                                	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(create(bd))
                             }); 
@@ -575,7 +570,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                             })
                             .catch(err => {
-                                //console.log(err);	
+                                	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(chapter =>  {
                             const loves = chapter.lovesnumber + 1;
@@ -583,7 +578,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 "lovesnumber":loves,
                             })
                             .catch(err => {
-                                //console.log(err);	
+                                	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(chapter =>  { 
                             
@@ -593,14 +588,14 @@ console.log("checking current: " + req.headers['authorization'] );
                                         }
                                     })
                                     .catch(err => {
-                                            //console.log(err);	
+                                            	
                                             res.status(500).json({msg: "error", details: err});		
                                     }).then(bd_serie =>  {  
                                         const loves = bd_serie.lovesnumber + 1;
                                         bd_serie.update({
                                         "lovesnumber":loves,
                                         }).catch(err => {
-                                            //console.log(err);	
+                                            	
                                             res.status(500).json({msg: "error", details: err});		
                                         }).then(bd_serie=>{create(bd_serie)})
                                     })                   
@@ -620,7 +615,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-                            //console.log(err);	
+                            	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(drawing =>  {
                             const loves = drawing.lovesnumber + 1;
@@ -628,7 +623,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "lovesnumber":loves,
                             })
                             .catch(err => {
-                                //console.log(err);	
+                                	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(create(drawing))
                                             }); 
@@ -641,7 +636,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-                            //console.log(err);	
+                            	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(drawing =>  {
                             const loves = drawing.lovesnumber + 1;
@@ -649,7 +644,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "lovesnumber":loves,
                             })
                             .catch(err => {
-                            //console.log(err);	
+                            	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(create(drawing))
                         }); 
@@ -663,7 +658,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                     })
                     .catch(err => {
-                        //console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(writing =>  {
                         const loves = writing.lovesnumber + 1;
@@ -671,7 +666,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         "lovesnumber":loves,
                         })
                         .catch(err => {
-                            //console.log(err);	
+                            	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(create(writing))
                     }); 
@@ -694,7 +689,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         "author_id_loved":author_id_loved,
                         "monetization":content.monetization,
                     }) .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(love=>{
                         User.findOne({
@@ -702,7 +697,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 id:content.authorid
                             }
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                             let number_of_loves=(user.number_of_loves)?(user.number_of_loves+1):1;
@@ -719,7 +714,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.delete('/remove_love/:category/:format/:style/:publication_id/:chapter_number', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -749,7 +744,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 chapter_number:chapter_number,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(love=>{
             if(love){
@@ -772,7 +767,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
                         const loves = bd.lovesnumber - 1;
@@ -780,7 +775,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "lovesnumber":(loves>=0)?loves:0,
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(destroy(bd))
                         }); 
@@ -795,7 +790,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {
                         const loves = chapter.lovesnumber - 1;
@@ -803,7 +798,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "lovesnumber":(loves>=0)?loves:0,
                         }) 
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {  
                             Liste_Bd_Serie.findOne({
@@ -812,7 +807,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     }
                                 })
                                 .catch(err => {
-                                    //console.log(err);	
+                                    	
                                     res.status(500).json({msg: "error", details: err});		
                                 }).then(bd_serie =>  {  
                                     const loves = bd_serie.lovesnumber - 1;
@@ -836,7 +831,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                             const loves = drawing.lovesnumber - 1;
@@ -844,7 +839,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "lovesnumber":(loves>=0)?loves:0,
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(destroy(drawing))
                         }); 
@@ -857,7 +852,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                             const loves = drawing.lovesnumber - 1;
@@ -865,7 +860,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "lovesnumber":(loves>=0)?loves:0,
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(destroy(drawing))
                         }); 
@@ -879,7 +874,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     }
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
                     const loves = writing.lovesnumber - 1;
@@ -887,7 +882,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     "lovesnumber":(loves>=0)?loves:0,
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(destroy(writing))
                 }); }
@@ -902,7 +897,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     id:content.authorid
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                 let number_of_loves=(user.number_of_loves && user.number_of_loves>0)?(user.number_of_loves-1):0;
@@ -919,7 +914,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/add_view/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_viewed', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -931,7 +926,6 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
         let current_user = get_current_user(req.cookies.currentUser);
-        console.log("add_view")
         const category = req.params.category;
         const format = req.params.format;
         const style = req.params.style;
@@ -941,13 +935,6 @@ console.log("checking current: " + req.headers['authorization'] );
         const secondtag=req.params.secondtag;
         const thirdtag=req.params.thirdtag;
         const author_id_viewed=parseInt(req.params.author_id_viewed);
-        console.log(category)
-        console.log(format)
-        console.log(publication_id)
-        console.log(chapter_number)
-
-        
-
         List_of_views.findAll({
             where:{
                 status:"public",
@@ -962,20 +949,13 @@ console.log("checking current: " + req.headers['authorization'] );
             order: [['createdAt', 'DESC']]
             
         }).catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
         }).then(view_found => {
             if(view_found[0]){
-                console.log("start add view check time")
                 let now_in_seconds= Math.trunc( new Date().getTime()/1000);
-                
                 let time =(view_found[0].createdAt).toString();
                 let uploaded_date_in_second = new Date(time).getTime()/1000;
-                console.log("time view")
-                console.log(view_found[0].createdAt)
-                console.log(uploaded_date_in_second)
-                console.log(now_in_seconds)
-                console.log(now_in_seconds - uploaded_date_in_second)
                 if((now_in_seconds - uploaded_date_in_second)>120){
                     add_view()
                 }
@@ -1003,7 +983,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 "author_id_viewed":author_id_viewed
             })
             .catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
             }).then(list_of_view => {
                 List_of_contents.findOne({
@@ -1013,22 +993,18 @@ console.log("checking current: " + req.headers['authorization'] );
                          format : format,
                     }
                 }).catch(err => {
-                    //console.log(err);	
+                    	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(content=>{
-                    console.log("content found and is  from ")
-                    console.log(content.id_user)
                     if(content){
                         User.findOne({
                             where:{
                                 id:content.id_user
                             }
                         }).catch(err => {
-                            //console.log(err);	
+                            	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(user=>{
-                            //console.log("user view");
-                            //console.log(user.nickname)
                             let number_of_views=(user.number_of_views)?(user.number_of_views+1):1;
                             user.update({
                                 number_of_views:number_of_views,
@@ -1051,7 +1027,7 @@ console.log("checking current: " + req.headers['authorization'] );
         });
 
     router.post('/add_view_time', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1062,12 +1038,9 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log(" adding add_view_time")
         let current_user = get_current_user(req.cookies.currentUser);
         const id_view_created = req.body.id_view_created;
         const view_time = req.body.view_time;
-        console.log(id_view_created)
-        console.log(view_time)
         if(id_view_created>0){
             List_of_views.findOne({
                 where: {
@@ -1075,7 +1048,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
             })
             .catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
             }).then(view =>  {
                 if(view){
@@ -1088,7 +1061,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     }
                                     })
                                     .catch(err => {
-                                        //console.log(err);	
+                                        	
                                         res.status(500).json({msg: "error", details: err});		
                                     }).then(bd =>  {
                                         const views = bd.viewnumber + 1;
@@ -1104,7 +1077,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                                     "view_time":view_time,
                                                     "monetization":bd.monetization,
                                                 }).catch(err => {
-                                                    //console.log(err);	
+                                                    	
                                                     res.status(500).json({msg: "error", details: err});		
                                                 }).then(view=>{
                                                     res.status(200).send([view])
@@ -1124,7 +1097,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                                     "view_time":view_time,
                                                     "monetization":bd.monetization,
                                                 }).catch(err => {
-                                                    //console.log(err);	
+                                                    	
                                                     res.status(500).json({msg: "error", details: err});		
                                                 }).then(view=>{
                                                     res.status(200).send([view])
@@ -1136,7 +1109,6 @@ console.log("checking current: " + req.headers['authorization'] );
                                             } 
                                         }
                                         else{
-                                            console.log("adding view time")
                                             view.update({
                                                 "view_time":view_time,
                                                 "monetization":bd.monetization,
@@ -1156,7 +1128,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     }
                                     })
                                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {
                                         const views = chapter.viewnumber + 1;
@@ -1164,21 +1136,19 @@ console.log("checking current: " + req.headers['authorization'] );
                                             "viewnumber":views,
                                         })
                                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {  
-                                            //console.log("la boucle de vue est dans l'ajout de like bd serie " + chapter.bd_id);
-                                    
+                                            
                                             Liste_Bd_Serie.findOne({
                                                 where: {
                                                 bd_id: chapter.bd_id,
                                                 }
                                             })
                                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
-                                                //console.log(bd.viewnumber);
                                                 const viewnumber = bd.viewnumber + 1;
                                                 bd.update({
                                                     "viewnumber":viewnumber,
@@ -1238,7 +1208,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     }
                                 })
                                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                                     const views = drawing.viewnumber + 1;
@@ -1249,7 +1219,6 @@ console.log("checking current: " + req.headers['authorization'] );
                                     || drawing.secondtag=='Romantique' || drawing.secondtag=='Shojo' || drawing.secondtag=='Yuri' || drawing.secondtag=='Yaoi' || drawing.secondtag=='Josei' 
                                     || drawing.thirdtag=='Romantique' || drawing.thirdtag=='Shojo' || drawing.thirdtag=='Yuri' || drawing.thirdtag=='Yaoi' || drawing.thirdtag=='Josei'){
                                         if(getRandomInt(5)==0){
-                                            //console.log("pass")
                                             view.update({
                                                 "view_time":view_time,
                                                 "monetization":drawing.monetization,
@@ -1265,7 +1234,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     || drawing.secondtag=='Caricatural' || drawing.secondtag=='Religion' 
                                     || drawing.thirdtag=='Caricatural' || drawing.thirdtag=='Religion' ){
                                         if(getRandomInt(20)==0){
-                                            //console.log("pass")
+                                            
                                             view.update({
                                                 "view_time":view_time,
                                                 "monetization":drawing.monetization,
@@ -1278,7 +1247,6 @@ console.log("checking current: " + req.headers['authorization'] );
                                         } 
                                     }
                                     else{
-                                        //console.log("no pass")
                                         view.update({
                                             "view_time":view_time,
                                             "monetization":drawing.monetization,
@@ -1295,7 +1263,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     }
                                 })
                                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                                     const views = drawing.viewnumber + 1;
@@ -1344,14 +1312,13 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         }
                         else if (view.publication_category === "writing" ) {
-                            //console.log("ajout vu pour writing");
                             Liste_Writings.findOne({
                                 where: {
                                     writing_id: view.publication_id,
                                 }
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
                                 
@@ -1359,7 +1326,6 @@ console.log("checking current: " + req.headers['authorization'] );
                                 writing.update({
                                     "viewnumber":views,
                                 })
-                                //console.log(writing)
                                 if(writing.firsttag=='Romantique' || writing.firsttag=='Shojo' || writing.firsttag=='Yuri' || writing.firsttag=='Yaoi' || writing.firsttag=='Josei' 
                                 || writing.secondtag=='Romantique' || writing.secondtag=='Shojo' || writing.secondtag=='Yuri' || writing.secondtag=='Yaoi' || writing.secondtag=='Josei' 
                                 || writing.thirdtag=='Romantique' || writing.thirdtag=='Shojo' || writing.thirdtag=='Yuri' || writing.thirdtag=='Yaoi' || writing.thirdtag=='Josei'){
@@ -1419,7 +1385,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
         
     router.post('/get_content_marks', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1430,7 +1396,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("get_content_marks")
         let current_user = get_current_user(req.cookies.currentUser);
         
         const category = req.body.category;
@@ -1440,11 +1405,7 @@ console.log("checking current: " + req.headers['authorization'] );
         let list_of_likes=[];
         let list_of_comments=[];
         let list_of_views=[];
-        let list_of_loves=[]
-        console.log(category)
-        console.log(format)
-        console.log(publication_id)
-        console.log(chapter_number)
+        let list_of_loves=[];
         const Op = Sequelize.Op;
         Liste_of_likes.findAll({
             where: {
@@ -1459,7 +1420,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ],
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes =>  {
             list_of_likes=likes;
@@ -1476,7 +1437,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ],
             })
             .catch(err => {
-                console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
             }).then(loves =>  {
                 list_of_loves=loves;
@@ -1493,7 +1454,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     ],
                 })
                 .catch(err => {
-                        //console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(views =>  {
                     list_of_views=views;
@@ -1510,7 +1471,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         ],
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
                         list_of_comments=comments;
@@ -1523,7 +1484,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_likes/:category/:format/:style/:publication_id/:chapter_number', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1554,7 +1515,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes =>  {
             res.status(200).send([likes])
@@ -1563,7 +1524,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_loves/:category/:format/:style/:publication_id/:chapter_number', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1581,7 +1542,6 @@ console.log("checking current: " + req.headers['authorization'] );
         const style = req.params.style;
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
-        //console.log("get loves")
         Liste_of_loves.findAll({
             where: {
                 publication_category:category,
@@ -1594,10 +1554,9 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves =>  {
-            //console.log("result loves")
             res.status(200).send([loves])
         }); 
      })();     
@@ -1606,7 +1565,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/add_commentary', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1619,7 +1578,6 @@ console.log("checking current: " + req.headers['authorization'] );
       }
         let current_user = get_current_user(req.cookies.currentUser);
         
-        //console.log("adding comment")
         const category = req.body.category;
         const format = req.body.format;
         const style = req.body.style;
@@ -1635,7 +1593,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     }
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
                     const number = bd.commentarynumbers + 1;
@@ -1647,9 +1605,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 
             }
             else if (format === "serie"){
-                console.log("comment serie")
-                console.log(publication_id)
-                console.log(chapter_number)
                 Chapters_Bd_Serie.findOne({
                         where: {
                             bd_id: publication_id,
@@ -1657,7 +1612,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {
                     const number = chapter.commentarynumbers + 1;
@@ -1665,7 +1620,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         "commentarynumbers":number,
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  { 
                             Liste_Bd_Serie.findOne({
@@ -1674,7 +1629,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 }
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_serie =>  {  
                                 const number = bd_serie.commentarynumbers + 1;
@@ -1697,7 +1652,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     }
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                     const number = drawing.commentarynumbers + 1;
@@ -1715,7 +1670,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     }
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                     const number = drawing.commentarynumbers + 1;
@@ -1733,7 +1688,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
                 const number = writing.commentarynumbers + 1;
@@ -1745,14 +1700,13 @@ console.log("checking current: " + req.headers['authorization'] );
             
         }
         else if(category=="ad"){
-                //console.log("looking for ad")
                 list_of_ads.findOne({
                     where: {
                         id: publication_id,
                     }
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad =>  {
                     let number=0;
@@ -1782,7 +1736,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 "status":"public",
                 "commentary":commentary
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comment=>{
                 User.findOne({
@@ -1790,7 +1744,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         id:id
                     }
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                     let number_of_comments=(user.number_of_comments)?(user.number_of_comments+1):1;
@@ -1807,7 +1761,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.delete('/remove_commentary/:category/:format/:style/:publication_id/:chapter_number/:comment_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1827,14 +1781,12 @@ console.log("checking current: " + req.headers['authorization'] );
         const style = req.params.style;
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
-
-        //console.log('suppression de commentaire ok');
         List_of_comments.findOne({
             where: {
                 id:comment_id,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comment=>{
             if(comment){
@@ -1844,7 +1796,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     publication_id:publication_id,
                     chapter_number:chapter_number,
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content=>{
                     if(content){
@@ -1855,7 +1807,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         },
                                 truncate: false
                             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then( remove_comment(comment))
                            
@@ -1885,7 +1837,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
                             const commentarynumbers = bd.commentarynumbers - 1;
@@ -1905,7 +1857,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {
                         const commentarynumbers = chapter.commentarynumbers - 1;
@@ -1913,7 +1865,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             "commentarynumbers":(commentarynumbers>=0)?commentarynumbers:0,
                         }) 
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {  
                             Liste_Bd_Serie.findOne({
@@ -1922,7 +1874,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     }
                                 })
                                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_serie =>  {  
                                     const commentarynumbers = bd_serie.commentarynumbers - 1;
@@ -1944,7 +1896,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                         const commentarynumbers = drawing.commentarynumbers - 1;
@@ -1962,7 +1914,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
                         const commentarynumbers = drawing.commentarynumbers - 1;
@@ -1980,7 +1932,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     }
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
                     const commentarynumbers = writing.commentarynumbers - 1;
@@ -1998,7 +1950,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad =>  {
                         const commentariesnumber = ad.commentariesnumber - 1;
@@ -2017,7 +1969,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     id:id
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                 let number_of_comments=(user.number_of_comments && user.number_of_comments>0)?(user.number_of_comments-1):0;
@@ -2036,7 +1988,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/modify_commentary', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2066,13 +2018,13 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number:chapter_number,
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                 comments.update({
                     "commentary":commentary
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     res.status(200).send([comments]);
@@ -2082,7 +2034,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/add_like_on_commentary', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2111,7 +2063,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number:chapter_number,
                 }
             }).catch(err => {
-                    //console.log(err);	
+                    	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(like=>{
                 if(!like){
@@ -2132,14 +2084,14 @@ console.log("checking current: " + req.headers['authorization'] );
                         chapter_number:chapter_number,
                     }
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     let number_of_likes=comments.number_of_likes+1;
                     comments.update({
                         "number_of_likes":number_of_likes
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                         List_of_comments_likes.create({
@@ -2162,7 +2114,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/add_answer_on_commentary', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2191,14 +2143,14 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number:chapter_number,
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                 let number_of_answers=comments.number_of_answers+1;
                 comments.update({
                     "number_of_answers":number_of_answers
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     List_of_comments_answers.create({
@@ -2208,7 +2160,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         "comment_id": comments.id,
                         "commentary":commentary,
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(answer=>{res.status(200).send([answer])});
                     
@@ -2221,7 +2173,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/edit_answer_on_commentary', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2241,13 +2193,13 @@ console.log("checking current: " + req.headers['authorization'] );
                     id:id,
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     comments.update({
                         "commentary":commentary,
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(answer=>{res.status(200).send([answer])});
                     
@@ -2256,7 +2208,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/edit_commentary', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2276,13 +2228,13 @@ console.log("checking current: " + req.headers['authorization'] );
                     id:id,
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     comments.update({
                         "commentary":commentary,
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
             }).then(answer=>{
                 res.status(200).send([answer])
@@ -2295,7 +2247,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/add_like_on_commentary_answer', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2315,7 +2267,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 comment_answer_id:comment_answer_id
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(like=>{
             if(!like){
@@ -2332,14 +2284,14 @@ console.log("checking current: " + req.headers['authorization'] );
                     id:comment_answer_id,
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                 let number_of_likes=comments.number_of_likes+1;
                 comments.update({
                     "number_of_likes":number_of_likes
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     List_of_comments_answers_likes.create({
@@ -2359,7 +2311,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
     router.delete('/remove_like_on_commentary_answer/:comment_answer_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2379,7 +2331,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 comment_answer_id:comment_answer_id,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(like=>{
             if(like){
@@ -2399,14 +2351,14 @@ console.log("checking current: " + req.headers['authorization'] );
                     id:comment_answer_id,
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                 let number_of_likes=comments.number_of_likes-1;
                 comments.update({
                     "number_of_likes":(number_of_likes>=0)?number_of_likes:0,
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     List_of_comments_answers_likes.destroy({
@@ -2425,7 +2377,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_commentary_information_by_id/:id/:category/:format/:style/:publication_id/:chapter_number', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2453,7 +2405,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number:chapter_number,
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     res.status(200).send([comments]);
@@ -2462,7 +2414,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_commentary_likes_by_id/:comment_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2484,7 +2436,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     ['createdAt', 'DESC']
                   ],
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     res.status(200).send([comments]);
@@ -2493,7 +2445,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_commentary_answers_by_id/:comment_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2515,7 +2467,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     ['createdAt', 'DESC']
                   ],
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     res.status(200).send([comments]);
@@ -2524,7 +2476,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_commentary_answers_likes_by_id/:comment_answer_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2546,7 +2498,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ['createdAt', 'DESC']
                 ],
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                 res.status(200).send([comments]);
@@ -2555,7 +2507,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/remove_like_on_commentary', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2583,7 +2535,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 chapter_number:chapter_number,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(like=>{
             if(like){
@@ -2607,14 +2559,14 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number:chapter_number,
                 }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                 let number_of_likes=comments.number_of_likes-1;
                 comments.update({
                     "number_of_likes":(number_of_likes>=0)?number_of_likes:0,
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                     List_of_comments_likes.destroy({
@@ -2641,7 +2593,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.delete('/remove_commentary_answer/:category/:format/:style/:publication_id/:chapter_number/:comment_anwser_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2668,7 +2620,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 chapter_number:chapter_number,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comment=>{
             if(comment){
@@ -2676,7 +2628,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 comment.update({
                     "number_of_answers":(number_of_answers>=0)?number_of_answers:0,
                 }).catch(err => {
-                    //console.log(err);	
+                    	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(comments=>{
                     List_of_comments_answers.findOne({
@@ -2684,7 +2636,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             id:comment_anwser_id,
                             }
                     }).catch(err => {
-                        //console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(comment_answer=>{
                         if(comment_answer){
@@ -2696,7 +2648,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     chapter_number:chapter_number,
                                 }
                             }).catch(err => {
-                                //console.log(err);	
+                                	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(content=>{
                                 if(content){
@@ -2736,7 +2688,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_my_commentaries/:category/:format/:publication_id/:chapter_number', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2753,13 +2705,6 @@ console.log("checking current: " + req.headers['authorization'] );
         const format = req.params.format;
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
-
-        console.log("get_my_commentaries")
-        console.log(publication_id)
-        console.log(category)
-        console.log(format)
-        console.log(chapter_number)
-
         List_of_comments.findAll({
             where: {
                 status:"public",
@@ -2774,7 +2719,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
         })
         .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
             res.status(200).send([comments])
@@ -2784,7 +2729,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.get('/get_commentaries/:category/:format/:publication_id/:chapter_number', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2802,11 +2747,6 @@ console.log("checking current: " + req.headers['authorization'] );
         const format = req.params.format;
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
-        console.log("get_commentaries")
-        console.log(publication_id)
-        console.log(category)
-        console.log(format)
-        console.log(chapter_number)
         List_of_comments.findAll({
             where: {
                 status:"public",
@@ -2821,7 +2761,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
         })
         .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
             res.status(200).send([comments])
@@ -2834,7 +2774,7 @@ console.log("checking current: " + req.headers['authorization'] );
    
 
     router.post('/get_number_of_ads_comments', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2845,7 +2785,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("get_number_of_ads_comments")
         let list_of_ads_ids = req.body.list_of_ads_ids;
         let number_of_comments=0
         let compt=0
@@ -2857,13 +2796,12 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
                 number_of_comments+=comments.length
                 compt++;
                 if(compt==list_of_ads_ids.length){
-                    //console.log("return comments ads info ")
                     res.status(200).send([{number_of_comments:number_of_comments}])
                 }
             }); 
@@ -2872,7 +2810,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/get_number_of_notations', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2883,7 +2821,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("get_number_of_notations")
         let list_of_ids = req.body.list_of_ids;
         let publication_category = req.body.publication_category;
         let format = req.body.format;
@@ -2901,10 +2838,9 @@ console.log("checking current: " + req.headers['authorization'] );
                 },
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views =>  {
-                //console.log("views found get_number_of_notations")
                 number_of_views+=views.length
                 Liste_of_likes.findAll({
                     where: {
@@ -2914,10 +2850,9 @@ console.log("checking current: " + req.headers['authorization'] );
                     },
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes =>  {
-                    //console.log("likes found get_number_of_notations")
                     number_of_likes+=likes.length
                     Liste_of_loves.findAll({
                         where: {
@@ -2927,11 +2862,10 @@ console.log("checking current: " + req.headers['authorization'] );
                         },
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves =>  {
                         number_of_loves+=loves.length;
-                        //console.log("getting comments notations")
                         List_of_comments.findAll({
                             where: {
                                 publication_category:publication_category,
@@ -2940,13 +2874,12 @@ console.log("checking current: " + req.headers['authorization'] );
                             },
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
                             number_of_comments+=comments.length
                             compt++;
                             if(compt==list_of_ids.length){
-                                //console.log("get_number_of_notations done")
                                 res.status(200).send([{number_of_views:number_of_views,number_of_likes:number_of_likes,number_of_loves:number_of_loves,number_of_comments:number_of_comments}])
                             }
                         }); 
@@ -2961,7 +2894,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
     router.post('/get_notations_for_a_content', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2972,7 +2905,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("get_notations_for_a_content")
         let publication_id = req.body.publication_id;
         let publication_category = req.body.publication_category;
         let date_format = req.body.date_format;
@@ -2986,7 +2918,6 @@ console.log("checking current: " + req.headers['authorization'] );
 
         if(date_format==0){
             let today=new Date();
-            //console.log("day_compteur ")
             for(let i=0;i<8;i++){
                 let day_i=new Date();
                 day_i.setDate(day_i.getDate() - i);
@@ -3002,7 +2933,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     },
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views =>  {
                     list_of_views[i]=views.length
@@ -3015,7 +2946,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         },
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes =>  {
                         list_of_likes[i]=likes.length
@@ -3028,7 +2959,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             },
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves =>  {
                             list_of_loves[i]=loves.length;
@@ -3041,7 +2972,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 },
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
                                 list_of_comments[i]=comments.length
@@ -3062,7 +2993,6 @@ console.log("checking current: " + req.headers['authorization'] );
 
         if(date_format==1){
             let today=new Date();
-            //console.log("week_compteur ")
             for(let i=0;i<30;i++){
                 let day_i=new Date();
                 day_i.setDate(day_i.getDate() - i);
@@ -3078,7 +3008,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     },
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views =>  {
                     list_of_views[i]=views.length
@@ -3091,7 +3021,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         },
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes =>  {
                         list_of_likes[i]=likes.length
@@ -3104,7 +3034,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             },
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves =>  {
                             list_of_loves[i]=loves.length;
@@ -3117,7 +3047,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 },
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
                                 list_of_comments[i]=comments.length
@@ -3136,7 +3066,6 @@ console.log("checking current: " + req.headers['authorization'] );
         }
      
         if(date_format==2){
-            //console.log("week_compteur last year ")
             for(let i=0;i<53;i++){
                 let week_i=new Date();
                 week_i.setDate(week_i.getDate() - 7*i);
@@ -3152,7 +3081,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     },
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views =>  {
                     list_of_views[i]=views.length
@@ -3165,7 +3094,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         },
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes =>  {
                         list_of_likes[i]=likes.length
@@ -3178,7 +3107,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             },
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves =>  {
                             list_of_loves[i]=loves.length;
@@ -3191,7 +3120,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 },
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
                                 list_of_comments[i]=comments.length
@@ -3211,7 +3140,6 @@ console.log("checking current: " + req.headers['authorization'] );
         }
 
         if(date_format==3){
-            //console.log("depuis toujours")
             var date1 = new Date('08/01/2019');
             var date2 = new Date();
             var difference = date2.getTime() - date1.getTime();
@@ -3232,7 +3160,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     },
                 })
                 .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views =>  {
                     list_of_views[i]=views.length
@@ -3245,7 +3173,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         },
                     })
                     .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes =>  {
                         list_of_likes[i]=likes.length
@@ -3258,7 +3186,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             },
                         })
                         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves =>  {
                             list_of_loves[i]=loves.length;
@@ -3271,7 +3199,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 },
                             })
                             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
                                 list_of_comments[i]=comments.length
@@ -3295,7 +3223,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/update_marks', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3306,7 +3234,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("update_marks")
         let id = req.body.id;
         
 
@@ -3324,7 +3251,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 authorid:id,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(series=>{
             if(series[0]){
@@ -3338,7 +3265,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             publication_id: series[i].bd_id,
                         }
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes=>{
                         number_of_likes+=likes.length;
@@ -3350,7 +3277,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 publication_id: series[i].bd_id,
                             }
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves=>{
                             number_of_loves+=loves.length;
@@ -3362,7 +3289,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     publication_id: series[i].bd_id,
                                 }
                             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views=>{
                                 number_of_views+=views.length;
@@ -3374,7 +3301,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         publication_id: series[i].bd_id,
                                     }
                                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                                     number_of_comments+=comments.length;
@@ -3401,7 +3328,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 authorid:id,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(series=>{
             if(series[0]){
@@ -3415,7 +3342,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             publication_id: series[i].bd_id,
                         }
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes=>{
                         number_of_likes+=likes.length;
@@ -3427,7 +3354,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 publication_id: series[i].bd_id,
                             }
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves=>{
                             number_of_loves+=loves.length;
@@ -3439,7 +3366,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     publication_id: series[i].bd_id,
                                 }
                             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views=>{
                                 number_of_views+=views.length;
@@ -3451,7 +3378,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         publication_id: series[i].bd_id,
                                     }
                                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                                     number_of_comments+=comments.length;
@@ -3478,7 +3405,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 authorid:id,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(series=>{
             if(series[0]){
@@ -3492,7 +3419,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             publication_id: series[i].drawing_id,
                         }
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes=>{
                         number_of_likes+=likes.length;
@@ -3504,7 +3431,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             publication_id: series[i].drawing_id,
                             }
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves=>{
                             number_of_loves+=loves.length;
@@ -3516,7 +3443,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             publication_id: series[i].drawing_id,
                                 }
                             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views=>{
                                 number_of_views+=views.length;
@@ -3528,7 +3455,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             publication_id: series[i].drawing_id,
                                     }
                                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                                     number_of_comments+=comments.length;
@@ -3555,7 +3482,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 authorid:id,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(series=>{
             if(series[0]){
@@ -3569,7 +3496,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             publication_id: series[i].drawing_id,
                         }
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes=>{
                         number_of_likes+=likes.length;
@@ -3581,7 +3508,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 publication_id: series[i].drawing_id,
                             }
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves=>{
                             number_of_loves+=loves.length;
@@ -3593,7 +3520,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     publication_id: series[i].drawing_id,
                                 }
                             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views=>{
                                 number_of_views+=views.length;
@@ -3605,7 +3532,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         publication_id: series[i].drawing_id,
                                     }
                                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                                     number_of_comments+=comments.length;
@@ -3632,7 +3559,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 authorid:id,
             }
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(series=>{
             if(series[0]){
@@ -3645,7 +3572,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             publication_id: series[i].writing_id,
                         }
                     }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(likes=>{
                         number_of_likes+=likes.length;
@@ -3656,7 +3583,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 publication_id: series[i].writing_id,
                             }
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(loves=>{
                             number_of_loves+=loves.length;
@@ -3667,7 +3594,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     publication_id: series[i].writing_id,
                                 }
                             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views=>{
                                 number_of_views+=views.length;
@@ -3678,7 +3605,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         publication_id: series[i].writing_id,
                                     }
                                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments=>{
                                     number_of_comments+=comments.length;
@@ -3701,20 +3628,13 @@ console.log("checking current: " + req.headers['authorization'] );
         })
 
         function check_compteur_category(){
-            //console.log("check_compteur_category")
-            //console.log(compteur_category)
             if(compteur_category==5){
-                //console.log(number_of_likes)
-                //console.log(number_of_loves)
-                //console.log(number_of_views)
-                //console.log(number_of_comments);
-
                 User.findOne({
                     where:{
                         id:id
                     }
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                     if(user){
