@@ -1,7 +1,7 @@
 
 <div *ngFor="let style of sorted_style_list; index as i1" >
 
-    <ng-container *ngIf="(style==='Roman illustré' && sorted_artpieces_illustrated_novel.length>0)||(style==='Poésie' && sorted_artpieces_poetry.length>0)
+    <ng-container *ngIf="(style==='Poésie' && sorted_artpieces_poetry.length>0)
         ||(style==='Roman' && sorted_artpieces_roman.length>0)||(style==='Scénario' && sorted_artpieces_scenario.length>0)||(style==='Article' && sorted_artpieces_article.length>0)">
 
         <div class="category">
