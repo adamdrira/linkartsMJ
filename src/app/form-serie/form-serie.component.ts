@@ -104,10 +104,6 @@ value:string="add";
   ngOnInit() {
     let THIS=this;
     window.scroll(0,0);
-    console.log("on init form serie")
-    console.log(this.form_number);
-    console.log(this.list_of_chapters);
-    console.log(this.bd_id)
     if(this.form_number==1){
       this.current_chapter==this.list_of_chapters[this.list_of_chapters.length-1].chapter_number-1;
       this.bd_id= this.bd_id_add_comics
@@ -168,16 +164,8 @@ value:string="add";
 
   set_edit_name(i: number, value:string) {
     this.value=value;
-    console.log("edition nom");
     this.edit_name = i;
     this.cd.detectChanges();
-
-    /*let THIS = this;
-    window.setTimeout(function () {
-      (<HTMLInputElement>document.getElementById("changeName")).value = THIS.componentRef[i].name;
-      document.getElementById('changeName').focus(); 
-    }, 0); */
-
     if(this.form_number==0){
       this.display_swiper=false;
       this.changeName.nativeElement.value= this.componentRef[i].name;
@@ -203,9 +191,6 @@ value:string="add";
   validate_name(i: number) {
 
     this.cd.detectChanges();
-    console.log("validation nom");
-    console.log(this.value);
-
     if( (<FormArray>this.form.get('chapters')).controls[i].valid && this.form_number==0) {
 
       this.componentRef[i].name = this.changeName.nativeElement.value;
@@ -215,7 +200,6 @@ value:string="add";
 
 
       if (this.value=="modify") {
-        console.log("on est en modification pour le chapitre " + (i+1) );
         this.bdSerieService.modify_chapter_bd_serie(this.bd_id,i+1,this.componentRef[i].name).subscribe(r=>{
           this.display_swiper=true;
           return true;
@@ -223,7 +207,6 @@ value:string="add";
         
       }
       else if (this.value=="add") {
-        console.log("on est en ajout de chapitre pour le chapitre " + (i+1) );
         this.bdSerieService.add_chapter_bd_serie(this.bd_id, i+1 , this.componentRef[i].name).subscribe(r=>{
           this.display_swiper=true;
           return false;
@@ -233,15 +216,9 @@ value:string="add";
     }
     else if(this.form_number==1 && (<FormArray>this.form.get('chapters')).controls[i].valid){
 
-      
-
-      console.log((<FormArray>this.form.get('chapters')).controls[i].value);
       this.edit_name = -1;
       if (this.value=="modify") {
-        console.log("modify chapter name")
-        
         this.bdSerieService.modify_chapter_bd_serie2(this.list_of_chapters[i].bd_id,this.list_of_chapters[i].chapter_number,(<FormArray>this.form.get('chapters')).controls[i].value).subscribe(r=>{
-          console.log(r);
           this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value;
           this.cd.detectChanges();
           this.display_swiper=true;
@@ -250,10 +227,7 @@ value:string="add";
         
       }
       else if (this.value=="add") {
-        
-        console.log("on est en ajout de chapitre pour le chapitre " + (i+1) );
         this.bdSerieService.add_chapter_bd_serie2(this.list_of_chapters[0].bd_id, i+1 , (<FormArray>this.form.get('chapters')).controls[i].value).subscribe(r=>{
-          console.log(r);
           this.new_chapter_added=true;
           this.number_of_new_chapters+=1;
           this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value;
@@ -281,7 +255,6 @@ value:string="add";
 
 
   add_series_chapter() {
-    console.log("add chapitre");
     if( (this.form_number==0 && this.componentRef.length==100) || (this.form_number==1 && this.list_of_chapters.length==100) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:"Vous ne pouvez pas ajouter plus de 100 chapitres"},
@@ -299,12 +272,8 @@ value:string="add";
       this.current_chapter = this.componentRef.length;
       this.createComponent( this.componentRef.length );
       this.set_edit_name( this.componentRef.length - 1, 'add');
-
-      console.log("on ajoute le fichier : "  + this.componentRef.length );
-      console.log("on ajoute le fichier : "  + (this.componentRef.length -1) );
     }
     else if(this.form_number==1){
-        console.log(this.list_of_chapters.length);
         this.chapter_creation_in_progress=true;
         this.current_chapter = this.list_of_chapters.length;
         this.list_of_chapters.push({title:"",chapter_number:this.current_chapter+1,bd_id:this.list_of_chapters[0].bd_id})
@@ -436,8 +405,6 @@ value:string="add";
       this.current_chapter = i;
     }
     else{
-      console.log(this.list_of_new_chapters);
-      console.log(i);
       if(this.list_of_new_chapters[i]){
         this.current_chapter = i;
       }
@@ -509,7 +476,6 @@ value:string="add";
         
         this.display_loading=true;
         this.bdSerieService.validate_bd_serie(this.bd_id,this.componentRef.length).subscribe(r=>{
-          console.log(r);
            this.Subscribing_service.validate_content("comic","serie",r[0],r[1]).subscribe(l=>{
             this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length,"add",false,0).subscribe(l=>{
               let message_to_send ={
@@ -563,13 +529,11 @@ value:string="add";
         this.display_loading=true;
         let type="extend_publication";
         let compt=0;
-        console.log(this.list_of_new_chapters)
         for(let i=0;i<this.list_of_new_chapters.length;i++){
           if(this.list_of_new_chapters[i]){
             compt+=1;
           }
         }
-        console.log(compt)
         if(compt==0){
           
           this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
@@ -577,7 +541,6 @@ value:string="add";
         }
         else{
           this.Subscribing_service.extend_serie_and_update_content(this.bd_id,this.list_of_chapters.length).subscribe(u=>{
-            console.log(u);
             this.NotificationsService.add_notification(type,this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,compt,"add",false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,

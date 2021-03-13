@@ -530,27 +530,17 @@ export class ArchivesComponent implements OnInit {
                 const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
                 THIS.list_of_stories[i]=SafeURL;
             }
-
-            //let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
-            //const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            //this.list_of_stories[i]=SafeURL;
           });
-
-          console.log(r[0][i])
-          console.log(r[0][i].id_user_who_looks)
           this.Story_service.get_list_of_viewers_for_story(r[0][i].id).subscribe(m=>{
             this.number_of_views_by_story[i]=m[0].length;
-            console.log(m[0])
             if(m[0].length>0){
               this.list_of_viewers_by_story[i]=[];
               let compt=0;
               for (let j=0;j<m[0].length;j++){
-                console.log(m[0][j].id_user_who_looks)
                 this.Profile_Edition_Service.retrieve_profile_data(m[0][j].id_user_who_looks).subscribe(l=>{
                   this.list_of_viewers_by_story[i][j]=l[0];
                   compt++;
                   if(compt==m[0].length){
-                    console.log()
                     this.list_of_viewers_by_story_found[i]=true;
                   }
                 })
@@ -564,10 +554,6 @@ export class ArchivesComponent implements OnInit {
           })
           
         }
-        console.log(this.list_of_stories)
-        console.log(this.number_of_views_by_story)
-        console.log( this.list_of_viewers_by_story_found)
-        console.log( this.list_of_viewers_by_story)
         this.list_of_stories_received=true;
       }
       else {
@@ -710,8 +696,6 @@ export class ArchivesComponent implements OnInit {
 
   show_stories(indice){
     if(this.number_of_views_by_story){
-      console.log(indice)
-      console.log(this.list_of_stories)
       const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
         data: {list_of_pictures:this.list_of_stories,index_of_picture:indice},
         panelClass: "popupDocumentClass",

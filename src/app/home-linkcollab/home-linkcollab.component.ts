@@ -1,10 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, ViewChild } from '@angular/core';
 import {ElementRef, Renderer2} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import { Ads_service } from '../services/ads.service';
-
 import { MatDialog } from '@angular/material/dialog';
-
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupLinkcollabFiltersComponent } from '../popup-linkcollab-filters/popup-linkcollab-filters.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -500,30 +498,19 @@ export class HomeLinkcollabComponent implements OnInit {
   current_page=1;
   number_of_results=0;
   get_sorted_ads(){
-    console.log("get sorteds ads")
     this.offset_ads = (this.current_page-1)*5;
-    console.log(this.offset_ads)
     this.compteur_ads++;
     this.loading_ads=true;
     this.number_of_pages=1;
     this.display_no_propositions=false;
     this.show_propositions=false;
     this.number_of_results=0;
-    //this.number_of_ads_to_show=10;
     this.list_of_ads_received=false;
     this.list_of_ads=[];
-    console.log(this.target)
-
     this.Ads_service.get_sorted_ads_linkcollab(this.type_of_project,this.author,this.target,this.remuneration,this.service,this.type_of_remuneration,this.type_of_service,this.offer_or_demand,this.sorting,this.offset_ads,this.compteur_ads).subscribe(r=>{
-      console.log("get sorted ads")
-      console.log(r);
-      console.log(r[0][0]);
       this.number_of_results=r[0][0].number_of_ads;
-      console.log(this.number_of_results)
       this.number_of_pages=Math.trunc(parseInt(r[0][0].number_of_ads)/5)+1;
-      console.log(this.number_of_pages)
-      let results=r[0][0].results
-      console.log(results)
+      let results=r[0][0].results;
       if(r[0]=this.compteur_ads){
         this.loading_ads=false;
         this.list_of_ads_received=true;
@@ -538,9 +525,6 @@ export class HomeLinkcollabComponent implements OnInit {
           this.display_no_propositions=true;
         }
       }
-      console.log(this.display_no_propositions)
-      console.log(this.list_of_ads)
-  
       
     })
   }

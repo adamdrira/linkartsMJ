@@ -91,16 +91,10 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     let THIS=this;
     window.scroll(0,0);
-    console.log(this.usage)
     if(this.usage=="rest_pass" || this.usage=="registration"){
-      console.log("ready to log")
       this.loading=true;
       this.authenticationService.login(this.data.email, this.data.temp_pass).subscribe( data => {
-        console.log("data received")
-        console.log(data)
         if(data.token){
-          console.log("login done")
-          console.log(data.user)
           this.Community_recommendation.delete_recommendations_cookies();
           this.Community_recommendation.generate_recommendations().subscribe(r=>{
             location.reload();
@@ -180,7 +174,6 @@ export class LoginComponent implements OnInit {
       this.loading=true;
 
       this.authenticationService.reset_password(this.g.mail_recuperation.value).subscribe(r=>{
-        //console.log(r[0])
         if(r[0].sent){
           this.password_reset_sent=true;
           this.password_reset_problem=false;
@@ -267,14 +260,9 @@ export class LoginComponent implements OnInit {
     // check email_checked
     
     this.authenticationService.check_email_checked(this.f.username.value, this.f.password.value).subscribe( data => {
-        //console.log(data)
         if(data.user  && data.user.email_checked ){
-          //console.log('first if')
             this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
-          
-          
               if(data.token){
-                //console.log(data.user)
                 this.display_email_not_checked=false;
                 this.Community_recommendation.delete_recommendations_cookies();
                 this.Community_recommendation.generate_recommendations().subscribe(r=>{
@@ -289,15 +277,12 @@ export class LoginComponent implements OnInit {
                 this.display_email_not_checked=false;
                 this.loading=false;
                 if(data.msg=="error"){
-                  //console.log("error");
                   this.display_wrong_data=true;
                 }
                 if(data.msg=="error_old_value"){
-                  //console.log("error_old_value");
                   this.display_old_password=true;
                 }
                 if(data.msg=="error_group"){
-                  //console.log("error_group");
                   this.display_error_group=true;
                 }
               }
@@ -309,7 +294,6 @@ export class LoginComponent implements OnInit {
           
         }
         else if(data.error){
-          //console.log("not checked")
           this.loading=false;
           this.display_email_not_checked=true;
           this.cd.detectChanges()
@@ -340,7 +324,6 @@ export class LoginComponent implements OnInit {
         
         }
         else {
-          //console.log("error");
           this.loading=false
           this.display_wrong_data=true;
         }
@@ -369,7 +352,6 @@ export class LoginComponent implements OnInit {
 
         if(data[0].found && data[0].user.id==this.data.id_user){
             this.Profile_Edition_Service.suspend_account(this.selected_motif).subscribe(r=>{
-              //console.log(r[0])
               this.loading=false
               this.authenticationService.logout().subscribe(r=>{
                 this.location.go('/')
@@ -379,7 +361,6 @@ export class LoginComponent implements OnInit {
             })
         }
         else {
-            //console.log("error");
             this.loading=false
             this.display_wrong_data=true;
         }
@@ -395,7 +376,6 @@ export class LoginComponent implements OnInit {
       this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
             if(data[0].found && data[0].user.id==this.data.id_user){
                 this.Profile_Edition_Service.delete_account(this.selected_motif).subscribe(r=>{
-                  //console.log(r[0])
                   this.loading=false
                   this.authenticationService.logout().subscribe(r=>{
                     this.location.go('/')
@@ -404,7 +384,6 @@ export class LoginComponent implements OnInit {
                 })
             }
             else{
-                //console.log("error");
                 this.loading=false
                 this.display_wrong_data=true;
             }
