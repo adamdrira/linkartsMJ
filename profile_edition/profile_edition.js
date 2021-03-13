@@ -68,8 +68,6 @@ function genere_random_id(id){
 
 
 router.post('/add_profile_pic', function (req, res) {
-
-  //console.log("adding pp")
     let current_user = get_current_user(req.cookies.currentUser);
     if(!current_user){
       return res.status(401).json({msg: "error"});
@@ -119,13 +117,13 @@ router.post('/add_profile_pic', function (req, res) {
                 }
               })
               .catch(err => {
-                //console.log(err);	
+                
                 res.status(500).json({msg: "error", details: err});		
               }).then(User =>  {
                 User.update({
                   "profile_pic_file_name":filename,
                 }).catch(err => {
-                  //console.log(err);	
+                  
                   res.status(500).json({msg: "error", details: err});		
                 }).then(res.status(200).send(([{ "profile_pic_name": filename}])))
               }); 
@@ -188,13 +186,13 @@ router.post('/add_cover_pic', function (req, res) {
                 }
               })
               .catch(err => {
-                //console.log(err);	
+                
                 res.status(500).json({msg: "error", details: err});		
               }).then(User =>  {
                   User.update({
                     "cover_pic_file_name":filename,
                   }).catch(err => {
-                    //console.log(err);	
+                    
                        res.status(500).json({msg: "error", details: err});		
                     })
                     .then(res.status(200).send(([{ "cover_pic_file_name": filename}])))
@@ -207,7 +205,7 @@ router.post('/add_cover_pic', function (req, res) {
 
 
 router.get('/retrieve_profile_picture/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -228,7 +226,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
       if(User && User.profile_pic_file_name){
@@ -262,7 +260,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
 router.post('/retrieve_my_profile_picture', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -282,7 +280,7 @@ console.log("checking current: " + req.headers['authorization'] );
     }
   })
   .catch(err => {
-    //console.log(err);	
+    
     res.status(500).json({msg: "error", details: err});		
   }).then(User =>  {
     if(User && User.profile_pic_file_name){
@@ -315,7 +313,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
 router.get('/retrieve_cover_picture/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -335,7 +333,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
       if(User && User.cover_pic_file_name  ){
@@ -367,7 +365,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/agree_on_cookies', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -378,16 +376,14 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("agree_on_cookies")
     const user_id = get_current_user(req.cookies.currentUser);
-    console.log(user_id)
     users_cookies.findOne({
       where: {
         id_user: user_id,
       }
     })
     .catch(err => {
-      console.log(err);	
+      	
       res.status(500).json({msg: "error", details: err});		
     }).then(user_found =>  {
       if(user_found){
@@ -398,7 +394,7 @@ console.log("checking current: " + req.headers['authorization'] );
           "id_user":user_id,
           "agreement":true,
         }).catch(err => {
-          console.log(err);	
+          	
           res.status(500).json({msg: "error", details: err});		
         }).then(user=>{
           res.status(200).send([user])
@@ -411,7 +407,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/retrieve_my_cover_picture', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -431,7 +427,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-      //console.log(err);	
+      
       res.status(500).json({msg: "error", details: err});		
     }).then(User =>  {
       if(User && User.cover_pic_file_name  ){
@@ -463,7 +459,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/get_my_remuneration', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -486,7 +482,7 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       })
       .catch(err => {
-        //console.log(err);	
+        
         res.status(500).json({msg: "error", details: err});		
       }).then(User_found =>  {
         if(User_found){
@@ -511,7 +507,7 @@ console.log("checking current: " + req.headers['authorization'] );
 });
 
 router.get('/retrieve_profile_data/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -530,7 +526,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
         res.status(200).send([User]);
@@ -538,7 +534,7 @@ console.log("checking current: " + req.headers['authorization'] );
 });
 
 router.get('/retrieve_profile_data_and_check_visitor/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -558,7 +554,7 @@ console.log("checking current: " + req.headers['authorization'] );
     }
   })
   .catch(err => {
-    //console.log(err);	
+    
     res.status(500).json({msg: "error", details: err});		
   }).then(user =>  {
     users.findOne({
@@ -567,7 +563,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-      //console.log(err);	
+      
       res.status(500).json({msg: "error", details: err});		
     }).then(visitor =>  {
   
@@ -579,7 +575,7 @@ console.log("checking current: " + req.headers['authorization'] );
 });
 
 router.post('/retrieve_number_of_contents', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -602,7 +598,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
       if(User){
@@ -612,7 +608,7 @@ console.log("checking current: " + req.headers['authorization'] );
             status:"public"
           }
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_serie=>{
           number_of_comics+=bd_serie.length;
@@ -622,7 +618,7 @@ console.log("checking current: " + req.headers['authorization'] );
               status:"public"
             }
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_os=>{
             number_of_comics+=bd_os.length;
@@ -632,7 +628,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 status:"public"
               }
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawings_os=>{
               number_of_drawings+=drawings_os.length;
@@ -642,7 +638,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   status:"public"
                 }
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawings_at=>{
                 number_of_drawings+=drawings_at.length;
@@ -652,7 +648,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     status:"public"
                   }
                 }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writings=>{
                   number_of_writings+=writings.length;
@@ -662,7 +658,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       status:"public"
                     }
                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ads=>{
                     number_of_ads+=ads.length;
@@ -683,7 +679,7 @@ console.log("checking current: " + req.headers['authorization'] );
 });
 
 router.get('/retrieve_profile_data_links/:id_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -706,7 +702,7 @@ console.log("checking current: " + req.headers['authorization'] );
       ],
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(links =>  {
         res.status(200).send([links]);
@@ -716,7 +712,7 @@ console.log("checking current: " + req.headers['authorization'] );
 });
 
 router.get('/get_user_id_by_pseudo/:pseudo', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -736,7 +732,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
         res.status(200).send([User]);
@@ -746,7 +742,7 @@ console.log("checking current: " + req.headers['authorization'] );
 });
 
 router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -766,7 +762,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
         res.status(200).send([User]);
@@ -782,7 +778,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
   //
   router.post('/edit_account_about_1', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -807,7 +803,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
       User.update({
@@ -818,7 +814,7 @@ console.log("checking current: " + req.headers['authorization'] );
         "primary_description":primary_description,
         "job":job,
       }).catch(err => {
-        //console.log(err);	
+        
         res.status(500).json({msg: "error", details: err});		
       }).then(res.status(200).send([User]))
     }); 
@@ -827,7 +823,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.post('/edit_account_about_2', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -848,14 +844,14 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
       User.update({
         "email_about":email_about,
         "location":location,
       }).catch(err => {
-        //console.log(err);	
+        
         res.status(500).json({msg: "error", details: err});		
       }).then(res.status(200).send([User]))
     }); 
@@ -864,7 +860,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.post('/edit_account_about_3', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -886,7 +882,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
       User.update({
@@ -894,7 +890,7 @@ console.log("checking current: " + req.headers['authorization'] );
         "lastname":lastname,
         "birthday":birthday,
       }).catch(err => {
-        //console.log(err);	
+        
         res.status(500).json({msg: "error", details: err});		
       }).then(res.status(200).send([User]))
     }); 
@@ -904,7 +900,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/block_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -916,9 +912,7 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
     let current_user = get_current_user(req.cookies.currentUser);
-    //console.log("block_user");
     var date = req.body.date;
-    //console.log(date)
     const id_user_blocked= req.body.id_user_blocked;
     let final_date=new Date();
     if(date){
@@ -926,15 +920,14 @@ console.log("checking current: " + req.headers['authorization'] );
       date = date.replace("T",' ');
       date = date.replace("-",'/').replace("-",'/');
       final_date= new Date(date + ' GMT');
-    }
-    //console.log(final_date);
+    };
     
     users_blocked.create({
       "id_user":current_user,
       "id_user_blocked":id_user_blocked,
       "date":date?final_date:null,
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
       res.status(200).send([user])
@@ -943,7 +936,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/get_list_of_users_blocked', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -964,7 +957,7 @@ console.log("checking current: " + req.headers['authorization'] );
         ['createdAt', 'DESC']
       ],
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(users=>{
       if(users.length>0){
@@ -980,7 +973,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
   
   router.post('/check_if_user_blocked', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -991,17 +984,15 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("check_if_user_blocked")
     let current_user = get_current_user(req.cookies.currentUser);
     const id_user=req.body.id_user;
-    console.log(id_user)
     const Op = Sequelize.Op;
     users_blocked.findOne({
       where:{
         [Op.or]:[{[Op.and]:[{id_user: current_user},{id_user_blocked:id_user}]},{[Op.and]:[{id_user: id_user},{id_user_blocked:current_user}]}],
       }
     }).catch(err => {
-      console.log(err);	
+      	
       throw err;
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
@@ -1018,7 +1009,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
   
   router.post('/unblock_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1029,7 +1020,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("unblock user")
     let current_user = get_current_user(req.cookies.currentUser);
     const id_user=req.body.id_user;
     const Op = Sequelize.Op;
@@ -1038,11 +1028,10 @@ console.log("checking current: " + req.headers['authorization'] );
         [Op.or]:[{[Op.and]:[{id_user: current_user},{id_user_blocked:id_user}]},{[Op.and]:[{id_user: id_user},{id_user_blocked:current_user}]}],
       }
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
       let date=user.date;
-      //console.log(date)
       user.destroy({
         truncate: false
       })
@@ -1057,7 +1046,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
   router.post('/get_pseudos_who_match_for_signup', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1068,7 +1057,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("get_pseudos_who_match_for_signup")
     let pseudo = req.body.pseudo;
     const Op = Sequelize.Op;
     users.findOne({
@@ -1079,18 +1067,13 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
-      console.log("result one")
-      
-     
       if(User){
-        console.log(User.nickname + ' - ' + User.email)
         res.status(200).send([User])
       }
       else{
-        console.log("in else")
         users.findOne({
           where: {
             nickname:{[Op.iLike]:'%'+ pseudo + '%'},
@@ -1099,11 +1082,9 @@ console.log("checking current: " + req.headers['authorization'] );
             gender:{[Op.ne]:'Groupe'}
           }
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User=>{
-          //console.log("result two")
-          //console.log(User)
           if(User){
             res.status(200).send([User])
           }
@@ -1122,7 +1103,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/edit_primary_description_extended', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1133,27 +1114,23 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("edit_primary_description_extended")
     const id_user = req.body.id_user;
     const primary_description_extended = req.body.primary_description_extended;
-    //console.log(primary_description_extended)
     users.findOne({
       where: {
         id:id_user,
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user =>  {
-      //console.log(user.primary_description_extended)
         user.update({
           "primary_description_extended":primary_description_extended,
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us=>{
-          //console.log(us.primary_description_extended);
           res.status(200).send([us])}
           
         )
@@ -1165,7 +1142,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
   router.post('/edit_profile_information', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1176,7 +1153,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("edit_profile_information")
     const id_user = req.body.id_user;
     const email = req.body.email;
     const birthday = req.body.birthday;
@@ -1188,7 +1164,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user =>  {
         user.update({
@@ -1197,7 +1173,7 @@ console.log("checking current: " + req.headers['authorization'] );
           "job":job,
           "training":training
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us=>{res.status(200).send([us])}
         )
@@ -1210,7 +1186,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
   router.post('/get_information_privacy', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1221,16 +1197,14 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("get_information_privacy")
     let id_user = req.body.id_user;
-    //console.log(id_user)
     users_information_privacy.findOne({
       where: {
         id_user:id_user,
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
       if(User){
@@ -1253,11 +1227,9 @@ console.log("checking current: " + req.headers['authorization'] );
           "profile_stats":"private",
 
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User=>{
-          //console.log("result two")
-          //console.log(User)
           res.status(200).send([User])
         })
        
@@ -1270,7 +1242,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/change_information_privacy_public', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1281,7 +1253,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("change_information_privacy_public")
     let id_user = req.body.id_user;
     let indice = req.body.indice;
     users_information_privacy.findOne({
@@ -1290,7 +1261,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
         if(indice==0){
@@ -1363,7 +1334,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.post('/change_information_privacy_private', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1374,7 +1345,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("change_information_privacy_private")
     let id_user = req.body.id_user;
     let indice = req.body.indice;
     users_information_privacy.findOne({
@@ -1383,7 +1353,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
         if(indice==0){
@@ -1458,7 +1428,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
   router.post('/get_my_list_of_groups_from_users', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1469,7 +1439,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("get_my_list_of_groups_from_users")
     let current_user = req.body.id_user;
     const Op = Sequelize.Op;
     users.findAll({
@@ -1483,7 +1452,7 @@ console.log("checking current: " + req.headers['authorization'] );
       ],
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us =>  {
        res.status(200).send([us])
@@ -1494,7 +1463,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/get_group_information_by_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1505,8 +1474,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("get_group_information_by_id")
-    let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group
     const Op = Sequelize.Op;
     users_groups_managment.findAll({
@@ -1518,7 +1485,7 @@ console.log("checking current: " + req.headers['authorization'] );
       ],
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(users =>  {
       if(users[0]){
@@ -1536,7 +1503,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
   router.post('/add_artist_in_a_group', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1547,14 +1514,9 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    let current_user = get_current_user(req.cookies.currentUser);
-    console.log("add_artist_in_a_group")
     const list_of_ids=req.body.list_of_ids
     const id_group = req.body.id_group;
     const list_of_shares=req.body.list_of_shares;
-    console.log(list_of_ids)
-    console.log(id_group)
-    console.log(list_of_shares)
     let compt=0;
     users.findOne({
       where:{
@@ -1566,8 +1528,6 @@ console.log("checking current: " + req.headers['authorization'] );
       if(user){
         let list_of_members=user.list_of_members;
         list_of_members= list_of_members.concat(list_of_ids)
-        console.log("see members")
-        console.log(list_of_members)
         user.update({
           "list_of_members":list_of_members
         });
@@ -1579,7 +1539,7 @@ console.log("checking current: " + req.headers['authorization'] );
               id_user:list_of_members[i],
             }
           }).catch(err => {
-            //console.log(err);	
+            
             res.status(500).json({msg: "error", details: err});		
           }).then(user_found=>{
             if(user_found){
@@ -1609,7 +1569,7 @@ console.log("checking current: " + req.headers['authorization'] );
   })
   
   router.post('/validate_group_creation_and_shares', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1620,7 +1580,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("validate_group_creation_and_shares")
     let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group;
     let list_of_ids=req.body.list_of_ids;
@@ -1632,7 +1591,7 @@ console.log("checking current: " + req.headers['authorization'] );
         list_of_members: { [Op.contains]: [current_user] },
       }
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
       if(user){
@@ -1644,7 +1603,6 @@ console.log("checking current: " + req.headers['authorization'] );
         }
 
         if(list_of_members_validations.indexOf(current_user)<0 ||  created_list){
-          console.log("first if validation group")
           if(list_of_members_validations.indexOf(current_user)<0){
             list_of_members_validations.push(current_user);
           }
@@ -1664,7 +1622,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id_user:list_of_ids[i],
               }
             }).catch(err => {
-              //console.log(err);	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(user_found=>{
               if(user_found){
@@ -1698,7 +1656,6 @@ console.log("checking current: " + req.headers['authorization'] );
           }
         }
         else if(user.id_admin==current_user){
-          //console.log(list_of_ids)
           let compt=0;
           for( let i=0;i<list_of_ids.length;i++){
             users_groups_managment.findOne({
@@ -1707,7 +1664,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id_user:list_of_ids[i]
               },
             }).catch(err => {
-              //console.log(err);	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(user_of_group=>{
               if(user_of_group && user_of_group.id_user==current_user){
@@ -1752,7 +1709,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.post('/abort_group_creation', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1763,7 +1720,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("abort_group_creation")
     let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group;
     const Op = Sequelize.Op;
@@ -1774,7 +1730,7 @@ console.log("checking current: " + req.headers['authorization'] );
         list_of_members: { [Op.contains]: [current_user] },
       } 
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
       if(user){
@@ -1794,7 +1750,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.post('/exit_group', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1805,7 +1761,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("exit_group")
     let id_user=req.body.id_user;
     let id_group=req.body.id_group;
     const Op = Sequelize.Op;
@@ -1816,7 +1771,7 @@ console.log("checking current: " + req.headers['authorization'] );
         list_of_members: { [Op.contains]: [id_user] },
       } 
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
       if(user){
@@ -1829,7 +1784,7 @@ console.log("checking current: " + req.headers['authorization'] );
               id_user:list_of_members[i]
             },
           }).catch(err => {
-            //console.log(err);	
+            
             res.status(500).json({msg: "error", details: err});		
           }).then(user_of_group=>{
             let num=list_of_members.length-1;
@@ -1876,7 +1831,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
   router.post('/delete_account', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1887,7 +1842,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("delete_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     let motif=req.body.motif;
@@ -1897,7 +1851,7 @@ console.log("checking current: " + req.headers['authorization'] );
         status:"account",
       } 
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
       if(user){
@@ -1911,7 +1865,7 @@ console.log("checking current: " + req.headers['authorization'] );
           "profile_pic_file_name":"default_profile_picture.png",
 					"cover_pic_file_name":"default_cover_picture.png",
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
           List_of_loves.update({
@@ -1922,7 +1876,7 @@ console.log("checking current: " + req.headers['authorization'] );
               author_id_who_loves:current_user
             }
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
             List_of_likes.update({
@@ -1933,7 +1887,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 author_id_who_likes:current_user
               }
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
               List_of_comments.update({
@@ -1944,7 +1898,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   author_id_who_comments:current_user
                 }
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                 List_of_comments_answers.update({
@@ -1955,7 +1909,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     author_id_who_replies:current_user
                   }
                 }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                   List_of_comments_answers_likes.update({
@@ -1966,7 +1920,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       author_id_who_likes:current_user
                     }
                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                     List_of_comments_likes.update({
@@ -1977,7 +1931,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         author_id_who_likes:current_user
                       }
                     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                       List_of_subscribings.update({
@@ -1988,7 +1942,7 @@ console.log("checking current: " + req.headers['authorization'] );
                           [Op.or]:[{id_user: current_user},{id_user_subscribed_to:current_user}],
                         }
                       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                         list_of_ads.update({
@@ -1999,7 +1953,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             id_user: current_user,
                           }
                         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                           list_of_ads_responses.update({
@@ -2010,7 +1964,7 @@ console.log("checking current: " + req.headers['authorization'] );
                               id_user: current_user,
                             }
                           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                             List_of_stories.update({
@@ -2021,7 +1975,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 id_user: current_user,
                               }
                             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                               List_of_stories_views.update({
@@ -2032,7 +1986,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                   authorid: current_user,
                                 }
                               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                 List_of_contents.update({
@@ -2043,7 +1997,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     id_user: current_user,
                                   }
                                 }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                   Liste_Bd_Serie.update({
@@ -2054,7 +2008,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                       authorid: current_user,
                                     }
                                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                      List_comics_one_shot.update({
@@ -2065,7 +2019,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         authorid:current_user
                                       }
                                     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                       Drawings_one_page.update({
@@ -2076,7 +2030,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                           authorid: current_user,
                                         }
                                       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                         Liste_Drawings_Artbook.update({
@@ -2087,7 +2041,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                             authorid: current_user,
                                           }
                                         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                           Liste_Writings.update({
@@ -2098,7 +2052,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                               authorid: current_user,
                                             }
                                           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                             List_of_notifications.update({
@@ -2109,7 +2063,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                                 id_user: current_user,
                                               }
                                             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                               res.status(200).send([user])
@@ -2145,7 +2099,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/suspend_account', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2156,7 +2110,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("suspend_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     let motif=req.body.motif;
@@ -2166,7 +2119,7 @@ console.log("checking current: " + req.headers['authorization'] );
         status:"account",
       } 
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
       if(user){
@@ -2174,7 +2127,7 @@ console.log("checking current: " + req.headers['authorization'] );
           "status":"suspended",
           "reason":motif,
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
           List_of_loves.update({
@@ -2185,7 +2138,7 @@ console.log("checking current: " + req.headers['authorization'] );
               author_id_who_loves:current_user
             }
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
             List_of_likes.update({
@@ -2196,7 +2149,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 author_id_who_likes:current_user
               }
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
               List_of_comments.update({
@@ -2207,7 +2160,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   author_id_who_comments:current_user
                 }
               },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                 List_of_comments_answers.update({
@@ -2218,7 +2171,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     author_id_who_replies:current_user
                   }
                 },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                   List_of_comments_answers_likes.update({
@@ -2229,7 +2182,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       author_id_who_likes:current_user
                     }
                   },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                     List_of_comments_likes.update({
@@ -2240,7 +2193,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         author_id_who_likes:current_user
                       }
                     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                       List_of_subscribings.update({
@@ -2251,7 +2204,7 @@ console.log("checking current: " + req.headers['authorization'] );
                           [Op.or]:[{id_user: current_user},{id_user_subscribed_to:current_user}],
                         }
                       },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                         list_of_ads.update({
@@ -2262,7 +2215,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             id_user: current_user,
                           }
                         },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                           list_of_ads_responses.update({
@@ -2273,7 +2226,7 @@ console.log("checking current: " + req.headers['authorization'] );
                               id_user: current_user,
                             }
                           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                             List_of_stories.update({
@@ -2284,7 +2237,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 id_user: current_user,
                               }
                             },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                               List_of_stories_views.update({
@@ -2295,7 +2248,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                   authorid: current_user,
                                 }
                               },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                 List_of_contents.update({
@@ -2306,7 +2259,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     id_user: current_user,
                                   }
                                 },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                   Liste_Bd_Serie.update({
@@ -2317,7 +2270,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                       authorid: current_user,
                                     }
                                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                      List_comics_one_shot.update({
@@ -2328,7 +2281,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         authorid:current_user
                                       }
                                     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                       Drawings_one_page.update({
@@ -2339,7 +2292,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                           authorid: current_user,
                                         }
                                       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                         Liste_Drawings_Artbook.update({
@@ -2350,7 +2303,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                             authorid: current_user,
                                           }
                                         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                           Liste_Writings.update({
@@ -2361,7 +2314,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                               authorid: current_user,
                                             }
                                           },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                             List_of_notifications.update({
@@ -2372,7 +2325,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                                 id_user: current_user,
                                               }
                                             },).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
                                               res.status(200).send([user])
@@ -2408,7 +2361,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/get_back_suspended_account', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2419,7 +2372,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("get_back_suspended_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     
@@ -2429,18 +2381,16 @@ console.log("checking current: " + req.headers['authorization'] );
         status:"suspended",
       } 
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
       if(user){
-        //console.log("get_back_suspended_account user found")
         user.update({
           "status":"account",
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(()=>{
-          //console.log("love update")
           List_of_loves.update({
             "status":"public"
           },
@@ -2450,7 +2400,6 @@ console.log("checking current: " + req.headers['authorization'] );
               status:"suspended"
             }
           });
-          //console.log("like update")
           List_of_likes.update(
           
           {
@@ -2622,7 +2571,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
   
   router.post('/change_mailing_managment', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2633,7 +2582,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("change_mailing_managment")
     let current_user = get_current_user(req.cookies.currentUser);
     let value=req.body.value
     const Op = Sequelize.Op;
@@ -2643,14 +2591,14 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user =>  {
       if(user){
         user.update({
           "agreement":value,
         }).catch(err => {
-          //console.log(err);	
+          
           res.status(500).json({msg: "error", details: err});		
         }).then(mailing=>{
           res.status(200).send([mailing])
@@ -2662,7 +2610,7 @@ console.log("checking current: " + req.headers['authorization'] );
             id:current_user
           }
         }).catch(err => {
-          //console.log(err);	
+          
           res.status(500).json({msg: "error", details: err});		
         }).then(real_user=>{
           if(real_user && real_user.status=='account'){
@@ -2670,7 +2618,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "id_user":current_user,
               "agreement":value,
             }).catch(err => {
-              //console.log(err);	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(mailing=>{
               res.status(200).send([mailing])
@@ -2692,7 +2640,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/get_mailing_managment', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2703,7 +2651,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("get_mailing_managment")
     let current_user = get_current_user(req.cookies.currentUser);
 
     const Op = Sequelize.Op;
@@ -2713,7 +2660,7 @@ console.log("checking current: " + req.headers['authorization'] );
       }
     })
     .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user =>  {
       if(user){
@@ -2731,7 +2678,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
   router.post('/check_password_for_registration', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2742,12 +2689,9 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("check_password_for_registration")
     let id = req.body.id;
     let password= req.body.password;
     let pass='';
-    console.log(id);
-    console.log(password);
     users.findOne({
       where:{
         id:id
@@ -2755,8 +2699,6 @@ console.log("checking current: " + req.headers['authorization'] );
     }).then(user=>{
       if(user){
         if(user.password_registration==password){
-          console.log("match")
-          console.log(user.password_registration)
           user.update({
             "email_checked":true,
             "password_registration":null,
@@ -2770,18 +2712,12 @@ console.log("checking current: " + req.headers['authorization'] );
               ['createdAt', 'DESC']
             ],
           }).catch(err => {
-            console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(user_found=>{
             if(user_found.length>0){
               const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(user_found[0].iv, 'hex'));
               const decrypted = Buffer.concat([decipher.update(Buffer.from(user_found[0].content, 'hex')), decipher.final()]);
-              console.log(user.email)
-              console.log("check_password_for_registration 2")
-              console.log(user_found[0])
-              console.log(decrypted.toString())
-              console.log(user_found[0].iv)
-              console.log(user_found[0].content)
               pass=decrypted.toString();
               res.status(200).send([{user_found:user,pass:pass}])
             }
@@ -2804,7 +2740,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/check_password_for_registration2', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2815,12 +2751,9 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("check_password_for_registration2")
     let id = req.body.id;
     let password= req.body.password;
     let pass='';
-    console.log(id);
-    console.log(password);
     users.findOne({
       where:{
         id:id
@@ -2828,8 +2761,6 @@ console.log("checking current: " + req.headers['authorization'] );
     }).then(user=>{
       if(user){
         if(user.password_registration==password){
-          console.log("match")
-          console.log(user.password_registration)
           pass=user.temp_pass;
           user.update({
             "password_registration":null,
@@ -2851,7 +2782,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/send_email_for_account_creation', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2862,30 +2793,17 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("send_email_for_account_creation")
     let id = req.body.id;
-    console.log(id)
     users.findOne({
       where:{
         id:id
       }
     }).then(user=>{
       if(user){
-          /*user.update({
-            email_checked:true
-          })
-          res.status(200).send([{sent:'Message sent '}])*/
-          
-
-          
           let password=genere_random_id(user.id);
-          console.log(user.email)
-          console.log(password)
           user.update({
             "password_registration":password
           })
-
-          console.log("user found sending email")
           let mail_to_send='';
           let name = user.firstname + ' ' + user.lastname;
           if(user.gender=="Homme"){
@@ -2970,10 +2888,8 @@ console.log("checking current: " + req.headers['authorization'] );
     
         transport.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log('Error while sending mail: ' + error);
                 res.status(200).send([{error:error}])
             } else {
-                console.log('Message sent: %s', info.messageId);
                 res.status(200).send([{sent:'Message sent ' + info.messageId}])
             }
             
@@ -2990,7 +2906,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.post('/send_email_for_group_edition', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3001,7 +2917,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("send_email_for_group_edition")
     let id =req.body.id;
     const list_of_ids=req.body.list_of_ids;
     const transport = nodemailer.createTransport({
@@ -3058,26 +2973,20 @@ console.log("checking current: " + req.headers['authorization'] );
               var mailOptions = {
                 from: 'Linkarts <services@linkarts.fr>', // sender address
                 to: user_found.email, // my mail
-                // to:"appaloosa-adam@hotmail.fr",
-                //cc:"adam.drira@etu.emse.fr",
                 subject: `Adhésion à un groupe`, // Subject line
-                //text: 'plain text', // plain text body
                 html: mail_to_send , // html body
-                // attachments: params.attachments
               };
               
              
 
               transport.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log('Error while sending mail: ' + error);
                     compt++;
                     if(compt==list_of_ids.length){
                       res.status(200).send([{error:error}])
                     }
                    
                 } else {
-                    console.log('Message sent: %s', info.messageId);
                     compt++;
                     if(compt==list_of_ids.length){
                       res.status(200).send([{sent:'Message sent ' + info.messageId}])
@@ -3099,7 +3008,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
   
   router.post('/send_email_for_group_creation', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3110,7 +3019,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("send_email_for_group_creation")
     let id =req.body.id;
     let admin_name='';
     const transport = nodemailer.createTransport({
@@ -3173,14 +3081,12 @@ console.log("checking current: " + req.headers['authorization'] );
 
             transport.sendMail(mailOptions, (error, info) => {
               if (error) {
-                  console.log('Error while sending mail: ' + error);
                   compt++;
                   if(compt==list_of_members.length){
                     res.status(200).send([{error:error}])
                   }
                  
               } else {
-                  console.log('Message sent: %s', info.messageId);
                   compt++;
                   if(compt==list_of_members.length){
                     res.status(200).send([{sent:'Message sent ' + info.messageId}])
@@ -3217,24 +3123,19 @@ console.log("checking current: " + req.headers['authorization'] );
                 var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
                   to: user_found.email, // my mail
-                  //to:"appaloosa-adam@hotmail.fr",
                   subject: `Création de groupe`, // Subject line
-                  //text: 'plain text', // plain text body
                   html:  mail_to_send, // html body
-                  // attachments: params.attachments
                 };
                
   
                 transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
-                      console.log('Error while sending mail: ' + error);
                       compt++;
                       if(compt==list_of_members.length){
                         res.status(200).send([{error:error}])
                       }
                      
                   } else {
-                      console.log('Message sent: %s', info.messageId);
                       compt++;
                       if(compt==list_of_members.length){
                         res.status(200).send([{sent:'Message sent ' + info.messageId}])
