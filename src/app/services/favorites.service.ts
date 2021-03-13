@@ -24,7 +24,6 @@ export class Favorites_service {
  
 
   generate_or_get_favorites(){
-    console.log("generate favorite")
     return this.httpClient.post('routes/generate_or_get_favorites', {}).pipe(map((information)=>{
             return information;
         
