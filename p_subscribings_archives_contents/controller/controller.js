@@ -994,7 +994,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 order: [
                     ['real_date', 'DESC']
                 ],
-                limit: 5,
+                limit: 3,
             })
             .catch(err => {
 			res.status(500).json({msg: "error", details: err});		
