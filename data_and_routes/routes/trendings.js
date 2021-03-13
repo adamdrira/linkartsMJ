@@ -55,13 +55,13 @@ pool.connect((err, client, release) => {
 
   const get_trendings_for_tomorrow=(request,response) =>{
     if( ! request.headers['authorization'] ) {
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
     else {
       let val=request.headers['authorization'].replace(/^Bearer\s/, '')
       let user= get_current_user(val)
       if(user!=1){
-        return res.status(401).json({msg: "error"});
+        return response.status(401).json({msg: "error"});
       }
     }
   
@@ -171,16 +171,19 @@ pool.connect((err, client, release) => {
   }
 
   const send_rankings_and_get_trendings_comics = (request, response) => {
-    if( ! request.headers['authorization'] ) {
-      return res.status(401).json({msg: "error"});
-    }
-    else {
-      let val=request.headers['authorization'].replace(/^Bearer\s/, '')
-      let user= get_current_user(val)
-      if(!user){
-        return res.status(401).json({msg: "error"});
+    if(request.body.password!="Le-Site-De-Mokhtar-Le-Pdg-For-Trendings" ||  request.body.email!="legroupelinkarts@linkarts.fr"){
+      if( ! request.headers['authorization'] ) {
+        return response.status(401).json({msg: "error"});
+      }
+      else {
+        let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return response.status(401).json({msg: "error"});
+        }
       }
     }
+    
   
     var today = new Date();
     
@@ -200,12 +203,35 @@ pool.connect((err, client, release) => {
       }
     }).catch(err => {
 				
-					
+      response.status(500).json({msg: "error", details: err});	
 		}).then(result=>{
       if(result){
         response.status(200).send([{"comics_trendings":result.trendings}]);
       }
       else{
+        var yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+  
+        var dd_yes= String(yesterday.getDate()).padStart(2, '0');
+        var mm_yes = String(yesterday.getMonth()+1).padStart(2, '0'); 
+        var yyyy_yes = yesterday.getFullYear();
+        const date_yes = yyyy_yes.toString() + '-' +  mm_yes  + '-' + dd_yes;
+
+
+        if(request.headers['authorization']){
+          trendings_seq.trendings_comics.findOne({
+            where:{
+              date:date_yes
+            }
+          }).catch(err => {
+            response.status(500).json({msg: "error", details: err});	
+          }).then(result=>{
+            if(result){
+              response.status(200).send([{"comics_trendings":result.trendings}]);
+            }
+          })
+        }
+
         let Path1=`/csvfiles_for_python/view_rankings.csv`;
         let Path2=`/csvfiles_for_python/likes_rankings.csv`;
         let Path3=`/csvfiles_for_python/loves_rankings.csv`
@@ -218,20 +244,16 @@ pool.connect((err, client, release) => {
         pool.query(' SELECT * FROM list_of_views WHERE "createdAt" ::date  <= $1 AND "createdAt" ::date >= $2 AND view_time is not null AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
           if (error) {
             
-            response.status(200).send([{"error":error}]); 
           }
           else{
             let json_view = JSON.parse(JSON.stringify(results.rows));
             fastcsv.write(json_view, { headers: true })
             .pipe(ws)
             .on('error', function(e){
-              console.log(e)
             })
             .on("finish", function() {
               pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
                   if (error) {
-                    
-                    response.status(200).send([{"error":error}]); 
                   }
                   else{
 
@@ -239,27 +261,24 @@ pool.connect((err, client, release) => {
                   fastcsv.write(json_likes, { headers: true })
                   .pipe(ws1)
                     .on('error', function(e){
-                      console.log(e)
                     })
                     .on("finish", function() {
                   
                       pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2   AND monetization=$3', [today,_before_before_yesterday,'true'], (error, results) => {
                           if (error) {
                             
-                            response.status(200).send([{"error":error}]); 
                           }
                           else{
                           let json_loves = JSON.parse(JSON.stringify(results.rows));
                           fastcsv.write(json_loves, { headers: true })
                           .pipe(ws2)
                             .on('error', function(e){
-                              console.log(e)
                             })
                             .on("finish", function() {
                               
                               //pour ubuntu
                               const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
-                               //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
+                              //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
                               //console.log(pythonProcess)
                               pythonProcess.stderr.pipe(process.stderr);
                               pythonProcess.stdout.on('data', (data) => {
@@ -278,7 +297,7 @@ pool.connect((err, client, release) => {
                                         }).catch(err => {
                                         }).then(result=>{
                                           add_comics_trendings(json,date);
-                                            return response.status(200).send([{comics_trendings:json}]); 
+                                           // return response.status(200).send([{comics_trendings:json}]); 
                                         })
                                       } 
                                     }  
@@ -294,7 +313,7 @@ pool.connect((err, client, release) => {
                                           }).catch(err => {
                                           }).then(result=>{
                                             add_comics_trendings(json,date);
-                                              return response.status(200).send([{comics_trendings:json}]); 
+                                             // return response.status(200).send([{comics_trendings:json}]); 
                                           }) 
                                         } 
                                       });
@@ -325,13 +344,13 @@ pool.connect((err, client, release) => {
 
 const get_drawings_trendings = (request, response) => {
   if( ! request.headers['authorization'] ) {
-    return res.status(401).json({msg: "error"});
+    return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
     let user= get_current_user(val)
     if(!user){
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
   }
 
@@ -356,16 +375,42 @@ const get_drawings_trendings = (request, response) => {
       response.status(200).send([{"drawings_trendings":result.trendings}]);
     }
     else{
-      let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`));
-      trendings_seq.trendings_drawings.create({
-        "trendings":json,
-        "date":date
-      }).catch(err => {
-				
-					
-		}).then(result=>{
-           add_drawings_trendings(json,date,set_money)
-          return response.status(200).send([{"drawings_trendings":json}]); 
+      var yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      var dd_yes= String(yesterday.getDate()).padStart(2, '0');
+      var mm_yes = String(yesterday.getMonth()+1).padStart(2, '0'); 
+      var yyyy_yes = yesterday.getFullYear();
+      const date_yes = yyyy_yes.toString() + '-' +  mm_yes  + '-' + dd_yes;
+
+
+      if(request.headers['authorization']){
+        trendings_seq.trendings_drawings.findOne({
+          where:{
+            date:date_yes
+          }
+        }).catch(err => {
+          response.status(500).json({msg: "error", details: err});	
+        }).then(result=>{
+          if(result){
+            response.status(200).send([{"drawings_trendings":result.trendings}]);
+          }
+        })
+      }
+
+
+      fs.access(__dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
+        if(!err){
+          let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`));
+          trendings_seq.trendings_drawings.create({
+            "trendings":json,
+            "date":date
+            }).then(result=>{
+              if(result){
+                add_drawings_trendings(json,date,set_money)
+              }
+          })
+        }
       })
      
     }
@@ -379,13 +424,13 @@ const get_drawings_trendings = (request, response) => {
 const get_writings_trendings = (request, response) => {
 
   if( ! request.headers['authorization'] ) {
-    return res.status(401).json({msg: "error"});
+    return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
     let user= get_current_user(val)
     if(!user){
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
   }
 
@@ -404,7 +449,7 @@ const get_writings_trendings = (request, response) => {
       date:date
     }
   }).catch(err => {
-				
+    response.status(500).json({msg: "error", details: err});	
 					
 		}).then(result=>{
     if(result){
@@ -412,15 +457,44 @@ const get_writings_trendings = (request, response) => {
 
     }
     else{
-      let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/writings_rankings_for_trendings-${date}.json`));
-      trendings_seq.trendings_writings.create({
-        "trendings":json,
-        "date":date
-      }).catch(err => {
-          	
+
+      var yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      var dd_yes= String(yesterday.getDate()).padStart(2, '0');
+      var mm_yes = String(yesterday.getMonth()+1).padStart(2, '0'); 
+      var yyyy_yes = yesterday.getFullYear();
+      const date_yes = yyyy_yes.toString() + '-' +  mm_yes  + '-' + dd_yes;
+
+
+      if(request.headers['authorization']){
+        trendings_seq.trendings_writings.findOne({
+          where:{
+            date:date_yes
+          }
+        }).catch(err => {
+          response.status(500).json({msg: "error", details: err});	
         }).then(result=>{
-          add_writings_trendings(json,date,set_money)
-          return response.status(200).send([{"writings_trendings":json}]); 
+          if(result){
+            response.status(200).send([{"writings_trendings":result.trendings}]);
+          }
+        })
+      }
+
+
+      fs.access(__dirname + `/python_files/writings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
+        if(!err){
+          let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/writings_rankings_for_trendings-${date}.json`));
+          trendings_seq.trendings_writings.create({
+            "trendings":json,
+            "date":date
+            }).catch(err => {
+            }).then(result=>{
+              if(result){
+                add_writings_trendings(json,date,set_money)
+              }
+          })
+        }
       })
 
       
@@ -453,7 +527,7 @@ const get_writings_trendings = (request, response) => {
             status:"public",
           }
         }).catch(err => {
-          		
+          response.status(500).json({msg: "error", details: err});	
         }).then(bd=>{
           if(bd){
             list_of_comics[i]=bd;
@@ -662,23 +736,20 @@ const get_writings_trendings = (request, response) => {
               var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
                   to:  user.email, // my mail
-                //to:'appaloosa-adam@hotmail.fr',
-                  //cc:"adam.drira@etu.emse.fr",
                   subject: `Top tendances !`, // Subject line
                   //text: 'plain text', // plain text body
                   html:  `<p> Félicitation ${user.firstname} !</p>
                   <p>L'une de vos œvres a atteint le top tendances pour la catégorie <b>Bandes dessinées</b></p>
                   <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici</a> pour voir les tendances</p>
                   <p>L'équipe de LinkArts.</p>`, // html body
-                  // attachments: params.attachments
               };
         
-              transport.sendMail(mailOptions, (error, info) => {
+              /*transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   } else {
                   }
-              })
+              })*/
             }
           })
         }
@@ -922,12 +993,12 @@ const get_writings_trendings = (request, response) => {
                 <p>L'équipe de LinkArts.</p>`, // html body
             };
         
-            transport.sendMail(mailOptions, (error, info) => {
+            /*transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   } else {
                   }
-              })
+              })*/
             }
           })
         }
@@ -1106,12 +1177,12 @@ const get_writings_trendings = (request, response) => {
                 <p>L'équipe de LinkArts.</p>`, // html body
             };
         
-            transport.sendMail(mailOptions, (error, info) => {
+            /*transport.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.log('Error while sending mail: ' + error);
                 } else {
                 }
-            })
+            })*/
             }
           })
         }

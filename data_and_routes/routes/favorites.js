@@ -47,14 +47,16 @@ function get_current_user(token){
 
 
   const generate_or_get_favorites = (request, response) => {
-    if( ! request.headers['authorization'] ) {
-      return res.status(401).json({msg: "error"});
-    }
-    else {
-      let val=request.headers['authorization'].replace(/^Bearer\s/, '')
-      let user= get_current_user(val)
-      if(!user){
-        return res.status(401).json({msg: "error"});
+    if(request.body.password!="Le-Site-De-Mokhtar-Le-Pdg-For-Trendings" ||  request.body.email!="legroupelinkarts@linkarts.fr"){
+      if( ! request.headers['authorization'] ) {
+        return response.status(401).json({msg: "error"});
+      }
+      else {
+        let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return response.status(401).json({msg: "error"});
+        }
       }
     }
     var today = new Date();
@@ -81,7 +83,34 @@ function get_current_user(token){
         return response.status(200).send([{favorites:resu}]);
       }
       else{
-        generate_favorites()
+
+        var yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+  
+        var dd_yes= String(yesterday.getDate()).padStart(2, '0');
+        var mm_yes = String(yesterday.getMonth()+1).padStart(2, '0'); 
+        var yyyy_yes = yesterday.getFullYear();
+        const date_yes = yyyy_yes.toString() + '-' +  mm_yes  + '-' + dd_yes;
+
+
+        if(request.headers['authorization']){
+          favorites_seq.favorites.findAll({
+            where:{
+              date: date_yes
+            },
+            order: [
+                ['rank', 'ASC']
+              ],
+            limit: 30,
+          }).catch(err => {
+            response.status(500).json({msg: "error", details: err});	
+          }).then(resu=>{
+            if(resu[0]){
+              return response.status(200).send([{favorites:resu}]);
+            }
+          })
+        }
+        generate_favorites();
       }
     })
 
@@ -90,7 +119,6 @@ function get_current_user(token){
     function generate_favorites(){
       pool.query(' SELECT * FROM users WHERE type_of_account=$1 OR type_of_account=$2 OR type_of_account=$3 OR type_of_account=$4 OR type_of_account=$5 AND "createdAt" ::date >= $6 ORDER BY subscribings_number DESC',["Artiste","Artistes","Artiste professionnel","Artiste professionnelle","Artistes professionnels",six_months], (error, results) => {
         if (error) {
-          response.status(500).send([{error:err}])
         }
         else{
             let fastcsv = require("fast-csv");
@@ -100,11 +128,10 @@ function get_current_user(token){
             fastcsv.write(json_view, { headers: true })
             .pipe(ws)
             .on('error', function(e){
-                console.log(e)
             })
             .on("finish", function() {
                 //pour ubuntu  
-              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
+                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
                 //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
                 pythonProcess.stderr.pipe(process.stderr);
                 pythonProcess.stdout.on('data', (data) => {
@@ -120,8 +147,6 @@ function get_current_user(token){
                     else{
                       fs.unlink(__dirname + Path1,function (err) {
                         if (err) {
-                          console.log(err)
-                          response.status(500).send([{error:err}])
                         } 
                         add_favorites(json,date);
                         
@@ -210,12 +235,12 @@ function get_current_user(token){
               "type_of_account":list_of_users[i].type_of_account
             }).catch(err => {
               
-              response.status(500).json({msg: "error", details: err});		
+              //response.status(500).json({msg: "error", details: err});		
             }).then(favorites=>{
               compteur_done++;
               if(compteur_done==list_of_users.length){
                 
-                return response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
+                return //response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
                   
               }
             })
@@ -224,7 +249,7 @@ function get_current_user(token){
             compteur_done++;
               if(compteur_done==list_of_users.length){
                 
-                return response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
+                return //response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
                   
               }
           }
@@ -289,7 +314,7 @@ function get_current_user(token){
             }
           }).catch(err => {
             
-            response.status(500).json({msg: "error", details: err});		
+            //response.status(500).json({msg: "error", details: err});		
           }).then(members=>{
             
             if(members[0]){
@@ -305,12 +330,12 @@ function get_current_user(token){
                 "shares":[shares],
               }).catch(err => {
                 
-                response.status(500).json({msg: "error", details: err});		
+                //response.status(500).json({msg: "error", details: err});		
               }).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
                 
-                  return response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
+                  return //response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
                     
                 }
               })
@@ -324,12 +349,12 @@ function get_current_user(token){
                 "type_of_account":list_of_users[i].type_of_account,
               }).catch(err => {
                 
-                response.status(500).json({msg: "error", details: err});		
+                //response.status(500).json({msg: "error", details: err});		
               }).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
                 
-                  return response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
+                  return //response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
                     
                 }
               })

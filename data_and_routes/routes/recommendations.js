@@ -51,13 +51,13 @@ pool.connect((err, client, release) => {
 
 const generate_recommendations = (request, response) => {
   if( ! request.headers['authorization'] ) {
-    return res.status(401).json({msg: "error"});
+    return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
     let user= get_current_user(val)
     if(!user){
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
   }
 
@@ -255,13 +255,13 @@ const generate_recommendations = (request, response) => {
 
 const get_first_recommendation_bd_os_for_user = (request, response) => {
   if( ! request.headers['authorization'] ) {
-    return res.status(401).json({msg: "error"});
+    return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
     let user= get_current_user(val)
     if(!user){
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
   }
 
@@ -490,13 +490,13 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
 
 const get_first_recommendation_bd_serie_for_user = (request, response) => {
   if( ! request.headers['authorization'] ) {
-    return res.status(401).json({msg: "error"});
+    return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
     let user= get_current_user(val)
     if(!user){
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
   }
 
@@ -726,13 +726,13 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
 const get_first_recommendation_drawing_artbook_for_user = (request, response) => {
   
   if( ! request.headers['authorization'] ) {
-    return res.status(401).json({msg: "error"});
+    return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
     let user= get_current_user(val)
     if(!user){
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
   }
 
@@ -907,13 +907,13 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
 const get_first_recommendation_drawing_os_for_user = (request, response) => {
   
   if( ! request.headers['authorization'] ) {
-    return res.status(401).json({msg: "error"});
+    return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
     let user= get_current_user(val)
     if(!user){
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
   }
 
@@ -1090,13 +1090,13 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
 const get_first_recommendation_writings_for_user = (request, response) => {
   
   if( ! request.headers['authorization'] ) {
-    return res.status(401).json({msg: "error"});
+    return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
     let user= get_current_user(val)
     if(!user){
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
   }
 
@@ -1450,13 +1450,13 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   const see_more_recommendations_bd = (request, response) => {
     
     if( ! request.headers['authorization'] ) {
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
     else {
       let val=request.headers['authorization'].replace(/^Bearer\s/, '')
       let user= get_current_user(val)
       if(!user){
-        return res.status(401).json({msg: "error"});
+        return response.status(401).json({msg: "error"});
       }
     }
   
@@ -1664,13 +1664,13 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
  const see_more_recommendations_drawings = (request, response) => {
   
   if( ! request.headers['authorization'] ) {
-    return res.status(401).json({msg: "error"});
+    return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
     let user= get_current_user(val)
     if(!user){
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
   }
 

@@ -2,22 +2,22 @@ const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 
-  /*const pool = new Pool({
-    port: 5432,
-    database: 'linkarts',
-    user: 'postgres',
-    password: 'test',
-    host: 'localhost',
-  });*/
-  
+/*const pool = new Pool({
+  port: 5432,
+  database: 'linkarts',
+  user: 'postgres',
+  password: 'test',
+  host: 'localhost',
+});*/
+
 const pool = new Pool({
-    port: 5432,
-    database: 'linkarts',
-    user: 'adamdrira',
-    password: 'E273adamZ9Qvps',
-    host: 'localhost',
-    //dialect: 'postgres'
-  });
+  port: 5432,
+  database: 'linkarts',
+  user: 'adamdrira',
+  password: 'E273adamZ9Qvps',
+  host: 'localhost',
+  //dialect: 'postgres'
+});
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -43,13 +43,13 @@ pool.connect((err, client, release) => {
 
 const get_comics_recommendations_by_author = (request, response) => {
     if( ! request.headers['authorization'] ) {
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
     else {
       let val=request.headers['authorization'].replace(/^Bearer\s/, '')
       let user= get_current_user(val)
       if(!user){
-        return res.status(401).json({msg: "error"});
+        return response.status(401).json({msg: "error"});
       }
     }
   
@@ -110,13 +110,13 @@ const get_comics_recommendations_by_author = (request, response) => {
 
 const get_drawings_recommendations_by_author = (request, response) => {
     if( ! request.headers['authorization'] ) {
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
     else {
       let val=request.headers['authorization'].replace(/^Bearer\s/, '')
       let user= get_current_user(val)
       if(!user){
-        return res.status(401).json({msg: "error"});
+        return response.status(401).json({msg: "error"});
       }
     }
   
@@ -179,13 +179,13 @@ const get_drawings_recommendations_by_author = (request, response) => {
 
   const get_writings_recommendations_by_author = (request, response) => {
     if( ! request.headers['authorization'] ) {
-      return res.status(401).json({msg: "error"});
+      return response.status(401).json({msg: "error"});
     }
     else {
       let val=request.headers['authorization'].replace(/^Bearer\s/, '')
       let user= get_current_user(val)
       if(!user){
-        return res.status(401).json({msg: "error"});
+        return response.status(401).json({msg: "error"});
       }
     }
   
@@ -232,13 +232,13 @@ const get_drawings_recommendations_by_author = (request, response) => {
 
     const get_artwork_recommendations_by_tag = (req, res) => {
         if( ! req.headers['authorization'] ) {
-            return res.status(401).json({msg: "error"});
+            return response.status(401).json({msg: "error"});
         }
         else {
             let val=req.headers['authorization'].replace(/^Bearer\s/, '')
             let user= get_current_user(val)
             if(!user){
-                return res.status(401).json({msg: "error"});
+                return response.status(401).json({msg: "error"});
             }
         }
         status="clicked";
@@ -270,14 +270,14 @@ const get_drawings_recommendations_by_author = (request, response) => {
                             if(result2.length>0){
                                 result=result.concat(result2);
                             }
-                            res.status(200).send([result]);
+                            response.status(200).send([result]);
                             
                         }
                     })
                 }
                 else{
                     let result = JSON.parse(JSON.stringify(results.rows));
-                    res.status(200).send([result]);
+                    response.status(200).send([result]);
                 }
                 
             }
