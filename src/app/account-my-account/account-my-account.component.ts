@@ -271,7 +271,6 @@ export class AccountMyAccountComponent implements OnInit {
 
     this.registerForm.controls['email'].setValue(this.email);
     this.Profile_Edition_Service.decrypt_password().subscribe(r=>{
-      console.log(r)
       if(r[0].password){
         this.password=r[0].password
         this.registerForm1.controls['password'].setValue(r[0].password)
@@ -281,18 +280,13 @@ export class AccountMyAccountComponent implements OnInit {
         this.registerForm1.controls['password'].setValue("adamdrira")
         this.registerForm1.controls['old_password_real_value'].setValue("adamdrira")
       }
-      console.log("password retrieved")
       this.password_retrieved=true;
     })
 
     if(this.type_of_account!="Passionné" && this.type_of_account!="Passionnée"){
       this.Profile_Edition_Service.get_mailing_managment().subscribe(r=>{
-        console.log(r[0])
         this.email_agreement=r[0].agreement?r[0].agreement:false;
-    
         this.mailing_retrieved=true;
-        console.log("mail retrieved")
-        
       })
     }
     else{
@@ -323,7 +317,6 @@ export class AccountMyAccountComponent implements OnInit {
   checking_password=false;
   loading_new_pass=false;
   validate_edit_password(){
-    console.log(this.registerForm1)
     if(this.registerForm1.invalid || this.checking_password){
       return
     }
@@ -331,8 +324,6 @@ export class AccountMyAccountComponent implements OnInit {
       this.checking_password=true;
       this.Profile_Edition_Service.check_password(this.email, this.registerForm1.value.password).subscribe(data => {
         if(data.token){
-
-          console.log("current password");
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Votre mot de passe doit être différent du mot de passe actuel'},
             panelClass: "popupConfirmationClass",
@@ -340,9 +331,7 @@ export class AccountMyAccountComponent implements OnInit {
           this.checking_password=false;
         }
         if(data.msg=="error"){
-          // le mot de passe n'est ni ancien ni existant
           this.Profile_Edition_Service.edit_password(this.registerForm1.value.password).subscribe(r=>{
-            console.log(r);
             this.password=this.registerForm1.value.password;
             this.registerForm1.controls['confirmPassword'].setValue('')
             this.registerForm1.controls['old_password'].setValue('')
@@ -386,7 +375,6 @@ export class AccountMyAccountComponent implements OnInit {
     }
     else{
       this.Profile_Edition_Service.edit_password(this.registerForm1.value.password).subscribe(r=>{
-        console.log(r);
         this.password=this.registerForm1.value.password;
         this.registerForm1.controls['confirmPassword'].setValue('')
         this.registerForm1.controls['old_password'].setValue('')
@@ -411,14 +399,9 @@ export class AccountMyAccountComponent implements OnInit {
   loading_email_changes=false;
   change_mailing_agreement(){
     this.loading_email_changes=true;
-    let value=false;
-   
     this.Profile_Edition_Service.change_mailing_managment(!this.email_agreement).subscribe(r=>{
-      console.log(r[0]);
       this.email_agreement=!this.email_agreement;
       this.loading_email_changes=false;
-      
- 
     })
   }
 
@@ -427,12 +410,10 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
   validate_edit_email(){
-    console.log(this.registerForm)
     if(this.registerForm.invalid){
     }
     else{
       this.Profile_Edition_Service.edit_email(this.registerForm.value.email).subscribe(r=>{
-        console.log(r);
         this.registerForm_activated=false;
         this.cd.detectChanges();
       })
@@ -470,24 +451,18 @@ export class AccountMyAccountComponent implements OnInit {
   get_my_list_of_groups_from_users(){
 
     if(this.type_of_account.includes("Artiste")){
-      console.log("getting tren 2")
       this.get_trendings();
       this.get_favorites();
       this.get_total_gains();
 
       if(this.gender!="Groupe"){
         this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.id_user).subscribe(r=>{
-          console.log(r[0])
-         
-          
           if(r[0].length>0){
             for(let i=0;i<r[0].length;i++){
-              console.log(r[0][i])
               this.list_of_groups_names.push(r[0][i].nickname)
               this.list_of_groups_ids.push(r[0][i].id)
-              this.list_of_groups_admins_ids.push(r[0][i].id_admin)
-              this.list_of_members_ids_by_group[r[0][i].id]=r[0][i].list_of_members
-              console.log(this.list_of_members_ids_by_group)
+              this.list_of_groups_admins_ids.push(r[0][i].id_admin);
+              this.list_of_members_ids_by_group[r[0][i].id]=r[0][i].list_of_members;
               if(!r[0][i].list_of_members_validations || (r[0][i].list_of_members_validations && r[0][i].list_of_members_validations.length!=r[0][i].list_of_members.length)){
                 this.list_of_groups_status.push(false)
               }
@@ -499,9 +474,7 @@ export class AccountMyAccountComponent implements OnInit {
             this.current_id_group=this.list_of_groups_ids[0];
             this.get_trendings_for_a_group( this.list_of_groups_ids[0])
             this.get_favorites_for_a_group(this.list_of_groups_ids[0])
-            this.get_total_group_gains()
-            console.log(this.list_of_groups_names)
-            
+            this.get_total_group_gains();
             this.user_is_in_a_group=true;
           }
           this.show_group_managment=true;
@@ -511,15 +484,11 @@ export class AccountMyAccountComponent implements OnInit {
       else{ 
         this.list_of_groups_names.push(this.pseudo)
         this.list_of_groups_ids.push(this.id_user)
-        this.list_of_members_ids_by_group[this.id_user]=this.list_of_members
-        console.log( this.list_of_groups_names)
-        console.log( this.list_of_groups_ids)
-        console.log(this.list_of_members_ids_by_group)
+        this.list_of_members_ids_by_group[this.id_user]=this.list_of_members;
         this.current_id_group=this.list_of_groups_ids[0];
         this.manage_group(0);
         this.show_list_of_members=true;
         this.groups_owned_found=true;
-        console.log("group ok")
       }
 
       
@@ -535,17 +504,14 @@ export class AccountMyAccountComponent implements OnInit {
     
     
     let id_group=  this.list_of_groups_ids[i];
-    console.log(id_group)
     if(this.list_of_members_ids_by_group[id_group] && this.list_of_members_names_by_group[id_group] && this.list_of_members_ids_by_group[id_group].length== this.list_of_members_names_by_group[id_group].length){
       this.manage_group_loading[i]=false;
       this.manage_group_activated[i]=true;
-      console.log("already load")
       this.cd.detectChanges();
     }
     else{
       this.manage_group_loading[i]=true;
       this.Profile_Edition_Service.get_group_information_by_id(id_group).subscribe(users=>{
-        console.log(users[0])
         if(users[0].error){
           let compt=0;
           for(let k=0;k<this.list_of_members_ids_by_group[id_group].length;k++){
@@ -565,7 +531,6 @@ export class AccountMyAccountComponent implements OnInit {
                 this.list_of_members_status_by_group[id_group][k] = "En attente";
                 this.list_of_members_shares_by_group[id_group][k]  = (100/this.list_of_members_ids_by_group[id_group].length).toFixed(2);
                 compt++;
-                console.log( compt + ' / ' +this.list_of_members_ids_by_group[id_group].length)
                 if(compt==this.list_of_members_ids_by_group[id_group].length){
                   this.manage_group_loading[i]=false;
                   this.manage_group_activated[i]=true;
@@ -600,7 +565,6 @@ export class AccountMyAccountComponent implements OnInit {
                 this.list_of_members_names_by_group[id_group][k]  = l[0].firstname + ' ' + l[0].lastname;
                 this.list_of_members_pseudos_by_group[id_group][k] = l[0].nickname;
                 compt++;
-                console.log( compt + ' / ' +this.list_of_members_ids_by_group[id_group].length)
                 if(compt==this.list_of_members_ids_by_group[id_group].length){
                   this.manage_group_loading[i]=false;
                   this.manage_group_activated[i]=true;
@@ -661,8 +625,6 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
   validate_share(id_group,index){
-    console.log(this.registerForm2.value.share)
-    console.log(this.registerForm2.controls['share'])
     if(this.registerForm2.invalid){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Veuillez saisir une répartition valide (au moins 2 chiffres)'},
@@ -682,7 +644,6 @@ export class AccountMyAccountComponent implements OnInit {
 
   validation_all=false;
   validate_all(id_group){
-    console.log(id_group)
     if(this.validation_all){
       return
     }
@@ -702,8 +663,6 @@ export class AccountMyAccountComponent implements OnInit {
       
       compt+=(this.list_of_members_shares_by_group[id_group][i])?Number(this.list_of_members_shares_by_group[id_group][i]):0;
     }
-    console.log(compt);
-
     if(compt!=100){
       this.validation_all=false;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -738,7 +697,6 @@ export class AccountMyAccountComponent implements OnInit {
             
           }
           else{
-            console.log(r[0])
             let index=this.list_of_groups_ids.indexOf(id_group);
             let user_index= (this.list_of_members_ids_by_group[id_group]).indexOf(this.id_user)
             this.list_of_members_status_by_group[id_group][user_index]="validated";
@@ -752,10 +710,7 @@ export class AccountMyAccountComponent implements OnInit {
             list_of_receivers.splice(user_index,1)
             let user_name=this.list_of_members_names_by_group[id_group][user_index]
             let name=this.list_of_groups_names[index];
-            console.log(this.list_of_members_ids_by_group[id_group])
-            console.log(list_of_receivers)
             this.NotificationsService.add_notification_for_group_creation('group_validation',this.id_user,user_name, list_of_receivers,'group_validation',name,'unknown',id_group,0,(r[0].loop=="second")?"add_and_shares":"add",false,0).subscribe(l=>{
-              console.log("notification added")
               let message_to_send ={
                 for_notifications:true,
                 type:"group_validation",
@@ -775,15 +730,11 @@ export class AccountMyAccountComponent implements OnInit {
               this.ChatService.messages.next(message_to_send);
               this.cd.detectChanges()
             })
-            console.log(  this.list_of_members_status_by_group[id_group])
-            console.log( this.list_of_groups_status)
           }
           this.validation_all=false;
         });
         
     }
-    console.log(this.list_of_members_shares_by_group[id_group])
-    console.log(id_group)
   }
 
 
@@ -910,8 +861,7 @@ export class AccountMyAccountComponent implements OnInit {
             this.manage_group_loading.splice(index,1);
             let index_user=this.list_of_members_ids_by_group[id_group].indexOf(this.id_user);
             let user_name=this.list_of_members_pseudos_by_group[id_group][index_user];
-            this.list_of_members_ids_by_group[id_group].splice(index_user,1)
-            console.log(name)
+            this.list_of_members_ids_by_group[id_group].splice(index_user,1);
             this.NotificationsService.add_notification_for_group_creation('group_exit',this.id_user,user_name, this.list_of_members_ids_by_group[id_group],'group_exit',name,'unknown',id_group,0,"add",false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
@@ -955,7 +905,6 @@ export class AccountMyAccountComponent implements OnInit {
       if(result){
         this.loading_add_artist=true;
         this.Profile_Edition_Service.exit_group(id_group,exit_user).subscribe(r=>{
-          console.log("exit 1")
           this.loading_add_artist=true;
           let index = this.list_of_groups_ids.indexOf(id_group);
           this.list_of_groups_status[index]=false;
@@ -971,8 +920,6 @@ export class AccountMyAccountComponent implements OnInit {
   loading_add_artist=false;
 
   add_artist(i,index){
-    console.log(i);
-    console.log(this.list_of_members_ids_by_group[i])
     if(10>this.list_of_members_ids_by_group[i].length){
       const dialogRef = this.dialog.open(PopupFormComponent, {
         data: {type:"add_artist",id_group:i,members:this.list_of_members_ids_by_group[i],id_admin:this.id_user,pseudo:this.pseudo,group_name:this.list_of_groups_names[index]},
@@ -985,22 +932,18 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
   reset_groups(){
-    console.log("rest")
     this.list_of_groups_names=[];
     this.list_of_groups_ids=[];
     this.list_of_groups_admins_ids=[];
     this.list_of_members_ids_by_group={};
     this.list_of_groups_status=[];
     this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.id_user).subscribe(r=>{
-      console.log(r[0])
       if(r[0].length>0){
         for(let i=0;i<r[0].length;i++){
-          console.log(r[0][i])
           this.list_of_groups_names.push(r[0][i].nickname)
           this.list_of_groups_ids.push(r[0][i].id)
           this.list_of_groups_admins_ids.push(r[0][i].id_admin)
-          this.list_of_members_ids_by_group[r[0][i].id]=r[0][i].list_of_members
-          console.log(this.list_of_members_ids_by_group)
+          this.list_of_members_ids_by_group[r[0][i].id]=r[0][i].list_of_members;
           if(!r[0][i].list_of_members_validations || (r[0][i].list_of_members_validations && r[0][i].list_of_members_validations.length!=r[0][i].list_of_members.length)){
             this.list_of_groups_status.push(false)
           }
@@ -1020,12 +963,6 @@ export class AccountMyAccountComponent implements OnInit {
     });
   }
 
-
-
-  /******************************************** MAIL SETTINGS **********************************/
-  save_setting(i){
-    console.log(this.registerForm3.value.trending_mail)
-  }
 
 
  /****************************************** ACCOUNT SETTINGS **********************************/
@@ -1062,11 +999,8 @@ export class AccountMyAccountComponent implements OnInit {
  }
 
  get_back_suspended_account(){
-   console.log("get_back_suspended_account")
-
     this.deletion_loading=true;
     this.Profile_Edition_Service.get_back_suspended_account().subscribe(r=>{
-      console.log(r[0])
       this.deletion_loading=false;
       location.reload();
     })
@@ -1127,12 +1061,9 @@ export class AccountMyAccountComponent implements OnInit {
 
       THIS.sumo_ready=true;
       THIS.cd.detectChanges();
-      console.log("sumo ready")
     });
 
     $(".Sumo_trendings").change(function(){
-      console.log("sumo change")
-      console.log($(this).val());
       let old_date=THIS.date_format_trendings;
       if($(this).val()=="Depuis 1 mois"){
         THIS.date_format_trendings=1;
@@ -1148,7 +1079,6 @@ export class AccountMyAccountComponent implements OnInit {
       }
       THIS.cd.detectChanges();
       if(old_date!=THIS.date_format_trendings){
-        console.log("getting tren 1")
         THIS.get_trendings();
       }
         
@@ -1157,8 +1087,6 @@ export class AccountMyAccountComponent implements OnInit {
   
 
     $(".Sumo_trendings_groups").change(function(){
-      console.log("sumo change")
-      console.log($(this).val());
       let old_date=THIS.date_format_trendings_groups;
       if($(this).val()=="Depuis 1 mois"){
         THIS.date_format_trendings_groups=1;
@@ -1180,8 +1108,6 @@ export class AccountMyAccountComponent implements OnInit {
     });
 
     $(".Sumo_trendings_chose_group").change(function(){
-      console.log("sumo change")
-      console.log($(this).val());
       let index =THIS.list_of_groups_names.indexOf($(this).val() )
       THIS.get_trendings_for_a_group(THIS.list_of_groups_ids[index]);
         
@@ -1189,8 +1115,6 @@ export class AccountMyAccountComponent implements OnInit {
   
 
     $(".Sumo_favorites").change(function(){
-      console.log("sumo change")
-      console.log($(this).val());
       let old_date=THIS.date_format_favorites;
       if($(this).val()=="Depuis 1 mois"){
         THIS.date_format_favorites=0;
@@ -1206,8 +1130,6 @@ export class AccountMyAccountComponent implements OnInit {
     });
 
     $(".Sumo_favorites_groups").change(function(){
-      console.log("sumo change")
-      console.log($(this).val());
       let old_date=THIS.date_format_favorites_groups;
       if($(this).val()=="Depuis 1 mois"){
         THIS.date_format_favorites_groups=0;
@@ -1223,8 +1145,6 @@ export class AccountMyAccountComponent implements OnInit {
     });
 
     $(".Sumo_favorites_chose_group").change(function(){
-      console.log("sumo change")
-      console.log($(this).val());
       let index =THIS.list_of_groups_names.indexOf($(this).val() )
       THIS.get_favorites_for_a_group(THIS.list_of_groups_ids[index]);
         
@@ -1265,16 +1185,11 @@ export class AccountMyAccountComponent implements OnInit {
 
   
   get_trendings(){
-    //faire fonction pour vérifir s'il y a des trendings, sinon ne pas afficher la section
-    console.log("getting trendings")
     this.compteur_trendings++;
     this.trendings_loaded=false;
     this.trendings_found=false;
     this.Trending_service.get_all_trendings_by_user(this.date_format_trendings,this.id_user,this.compteur_trendings).subscribe(r=>{
-      console.log(r[0][0])
 
-     
-      
       if(r[1]== this.compteur_trendings){
         if(Object.keys(r[0][0].list_of_contents).length>0){
           this.total_gains_trendings=0;
@@ -1311,15 +1226,7 @@ export class AccountMyAccountComponent implements OnInit {
               let timestamp= r[0][0].list_of_contents[i].createdAt
               let rank=r[0][0].list_of_contents[i].rank;
               let gain = Number(r[0][0].list_of_contents[i].remuneration);
-            
               this.total_gains_trendings+=gain;
-              /*if(i<10){
-                console.log(i)
-                console.log(r[0][0].list_of_contents[i].remuneration)
-                console.log(gain)
-                console.log(this.total_gains_trendings)
-              }*/
-           
               let uploaded_date = timestamp.substring(0,timestamp.length - 5);
               uploaded_date = uploaded_date.replace("T",' ');
               uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
@@ -1474,13 +1381,8 @@ export class AccountMyAccountComponent implements OnInit {
                     }
                   )
                 }
-                
               }
-            
           }
-          
-          console.log(this.multi_trendings_1)
-          console.log(this.multi_trendings_2)
           this.trendings_found=true;
         }
         else{
@@ -1490,8 +1392,6 @@ export class AccountMyAccountComponent implements OnInit {
         this.trendings_loaded=true;
       }
       
-      console.log(this.trendings_found)
-      console.log( this.trendings_loaded)
       this.cd.detectChanges()
     })
   
@@ -1521,19 +1421,12 @@ export class AccountMyAccountComponent implements OnInit {
 
 
   get_trendings_for_a_group(id_group){
-    //faire fonction pour vérifir s'il y a des trendings, sinon ne pas afficher la section
-    console.log(id_group)
-    console.log("getting group trendings")
     this.compteur_trendings_groups++;
     this.trendings_loaded_groups=false;
     this.trendings_found_groups=false;
     this.Trending_service.get_all_trendings_by_user(this.date_format_trendings_groups,id_group,this.compteur_trendings_groups).subscribe(r=>{
-      console.log(r[0][0])
-
-      
       if(r[1]== this.compteur_trendings_groups){
         if(Object.keys(r[0][0].list_of_contents).length>0){
-          console.log("starting new multi")
           this.total_gains_groups=0;
           this.number_of_comics_gains_groups=0;
           this.number_of_drawings_gains_groups=0;
@@ -1568,9 +1461,7 @@ export class AccountMyAccountComponent implements OnInit {
               let timestamp= r[0][0].list_of_contents[i].createdAt
               let rank=r[0][0].list_of_contents[i].rank;
               let gain = Number(r[0][0].list_of_contents[i].remuneration);
-              console.log(gain)
               let share=Number(r[0][0].list_of_contents[i].shares[0][this.id_user])/100;
-              console.log(share)
               this.total_gains_groups+=gain*share;
               let uploaded_date = timestamp.substring(0,timestamp.length - 5);
               uploaded_date = uploaded_date.replace("T",' ');
@@ -1730,9 +1621,6 @@ export class AccountMyAccountComponent implements OnInit {
               }
             
           }
-          
-          console.log(this.multi_trendings_groups_1)
-          console.log(this.multi_trendings_groups_2)
           this.trendings_found_groups=true;
         }
         else{
@@ -1741,9 +1629,6 @@ export class AccountMyAccountComponent implements OnInit {
         
         this.trendings_loaded_groups=true;
       }
-      
-      console.log(this.trendings_found_groups)
-      console.log( this.trendings_loaded_groups)
       this.cd.detectChanges()
     })
   
@@ -1771,16 +1656,10 @@ export class AccountMyAccountComponent implements OnInit {
   
 
   get_favorites(){
-    //faire fonction pour vérifir s'il y a des favorites, sinon ne pas afficher la section
-    console.log("getting favorites")
     this.compteur_favorites++;
     this.favorites_loaded=false;
     this.favorites_found=false;
     this.Favorites_service.get_all_favorites_by_user(this.date_format_favorites,this.id_user,this.compteur_favorites).subscribe(r=>{
-      console.log(r[0][0])
-
- 
-
       if(r[1]== this.compteur_favorites){
         if(Object.keys(r[0][0].list_of_favorites).length>0){
           this.total_gains_favorites=0;
@@ -1824,8 +1703,6 @@ export class AccountMyAccountComponent implements OnInit {
               }
             
           }
-          
-          console.log(this.multi_favorites_1)
           this.favorites_found=true;
         }
         else{
@@ -1834,9 +1711,6 @@ export class AccountMyAccountComponent implements OnInit {
         
         this.favorites_loaded=true;
       }
-      
-      console.log(this.favorites_found)
-      console.log( this.favorites_loaded)
       this.cd.detectChanges()
     })
   
@@ -1860,20 +1734,12 @@ export class AccountMyAccountComponent implements OnInit {
   favorites_found_groups=false;
 
   get_favorites_for_a_group(id_group){
-    //faire fonction pour vérifir s'il y a des favorites, sinon ne pas afficher la section
-    console.log(id_group)
-    console.log("getting favorites")
     this.compteur_favorites_groups++;
     this.favorites_loaded_groups=false;
     this.favorites_found_groups=false;
     this.Favorites_service.get_all_favorites_by_user(this.date_format_favorites_groups,id_group,this.compteur_favorites_groups).subscribe(r=>{
-      console.log(r[0][0])
-
-   
-
       if(r[1]== this.compteur_favorites_groups){
         if(Object.keys(r[0][0].list_of_favorites).length>0){
-          console.log("starting new multi")
           this.total_gains_groups_favorites=0;
           this.multi_favorites_groups_1=[{
             "name": "Classement",
@@ -1886,9 +1752,7 @@ export class AccountMyAccountComponent implements OnInit {
               let timestamp= r[0][0].list_of_favorites[i].createdAt
               let rank=r[0][0].list_of_favorites[i].rank;
               let gain = Number(r[0][0].list_of_favorites[i].remuneration);
-              console.log(gain)
               let share=Number(r[0][0].list_of_favorites[i].shares[0][this.id_user])/100;
-              console.log(share)
               this.total_gains_groups_favorites+=gain*share;
               let uploaded_date = timestamp.substring(0,timestamp.length - 5);
               uploaded_date = uploaded_date.replace("T",' ');
@@ -1914,8 +1778,6 @@ export class AccountMyAccountComponent implements OnInit {
               }
             
           }
-          
-          console.log(this.multi_favorites_groups_1)
           this.favorites_found_groups=true;
         }
         else{
@@ -1924,9 +1786,6 @@ export class AccountMyAccountComponent implements OnInit {
         
         this.favorites_loaded_groups=true;
       }
-      
-      console.log(this.favorites_found_groups)
-      console.log( this.favorites_loaded_groups)
       this.cd.detectChanges()
     })
   
@@ -1962,14 +1821,12 @@ export class AccountMyAccountComponent implements OnInit {
   display_all_gains=false;
   get_total_gains(){
     this.Favorites_service.get_total_favorites_gains_by_user().subscribe(r=>{
-      console.log(r[0])
       this.total_gains+=r[0].total;
       this.favorites_gains_retrieved=true;
       this.display_total_gains()
     })
 
     this.Trending_service.get_total_trendings_gains_by_user().subscribe(r=>{
-      console.log(r[0])
       this.total_gains+=r[0].total;
       this.trendings_gains_retrieved=true;
       this.display_total_gains()
@@ -1978,7 +1835,6 @@ export class AccountMyAccountComponent implements OnInit {
 
   get_total_group_gains(){
     this.Favorites_service.get_total_favorites_gains_by_users_group(this.list_of_groups_ids).subscribe(r=>{
-      console.log(r[0])
       this.total_gains+=r[0].total;
       this.favorites_group_gains_retrieved=true;
       this.display_total_gains()
@@ -1993,7 +1849,6 @@ export class AccountMyAccountComponent implements OnInit {
 
 
   display_total_gains(){
-    console.log("display total gains")
     if(this.user_is_in_a_group){
       if( this.trendings_group_gains_retrieved &&  this.favorites_group_gains_retrieved &&  this.trendings_gains_retrieved &&  this.favorites_gains_retrieved){
         this.display_all_gains=true;
@@ -2006,8 +1861,6 @@ export class AccountMyAccountComponent implements OnInit {
         this.cd.detectChanges();
       }
     }
-    console.log(this.total_gains);
-    console.log(this.display_all_gains)
   }
   
 
@@ -2018,7 +1871,6 @@ export class AccountMyAccountComponent implements OnInit {
     }
     this.loading_remuneration=true;
     this.Profile_Edition_Service.get_my_remuneration(this.total_gains).subscribe(r=>{
-      console.log(r[0])
       if(r[0].is_ok){
 
       }
