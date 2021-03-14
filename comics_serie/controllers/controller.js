@@ -22,7 +22,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
   };
 
   router.post('/setcookies_cover_bd_serie/:name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -40,7 +40,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.get('/get_cookies_cover_bd_serie', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -51,8 +51,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       } 
-    //console.log('get it')
-    //console.log(req.cookies)
     let value = req.cookies
     res.status(200).send([value]);
     }); 
@@ -60,7 +58,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
   //on poste les premières informations du formulaire et on récupère l'id de la bd
   router.post('/add_bd_serie', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -78,24 +76,13 @@ console.log("checking current: " + req.headers['authorization'] );
     const category = req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
-    /*for (let i = 0; i < Tags.length; i++){
-      if (Tags[i] !=null){
-        Tags[i] = Tags[i].substring(1);
-        while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
-            Tags[i] = Tags[i].substr(1);
-        }
-        Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-      }
-    }*/
 
       if (Object.keys(req.body).length === 0 ) {
-        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        //console.log('information uploaded correctly');
         Liste_bd_serie.create({
           "authorid": current_user,
           "title":title,
@@ -113,7 +100,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
       })
       .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
       bd_id=r.bd_id; // onr récupère l'id de la bd qu'on upload
@@ -124,9 +111,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
 
-     //on supprime le fichier de la base de donnée postgresql
-     router.delete('/remove_bd_serie/:bd_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+    router.delete('/remove_bd_serie/:bd_id', function (req, res) {
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -138,53 +123,76 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
       let current_user = get_current_user(req.cookies.currentUser);
-      (async () => {
-        const bd_id=req.params.bd_id
-        const bd = await Liste_bd_serie.findOne({
+
+        const bd_id=parseInt(req.params.bd_id);
+        Liste_bd_serie.findOne({
           where: {
             authorid: current_user,
             bd_id: bd_id,
           }
         }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd=>{
-          list_of_users.findOne({
-            where:{
-              id:current_user,
-            }
-          }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
-            if(bd.status=="public"){
-              let number_of_comics=user.number_of_comics-1;
-              user.update({
-                "number_of_comics":number_of_comics,
-              })
-            }
-            if(bd){
+          res.status(500).json({msg: "error", details: err});		
+        }).then(bd=>{
+          if(bd){
+            list_of_users.findOne({
+              where:{
+                id:current_user,
+              }
+            }).catch(err => {
+              res.status(500).json({msg: "error", details: err});		
+            }).then(user=>{
+              if(bd.status=="public"){
+                let number_of_comics=user.number_of_comics-1;
+                user.update({
+                  "number_of_comics":number_of_comics,
+                })
+              }
               bd.update({
                 "status": "deleted"
               });
               res.status(200).send([bd]);
+            })
+          }
+          else{
+            if(current_user==1){
+              Liste_bd_os.findOne({
+                where: {
+                  bd_id: bd_id,
+                }
+              }).then(bd_found=>{
+                if(bd_found && bd_found.status=="public"){
+                  bd_found.update({
+                    "status": "deleted",
+                  });
+                  list_of_users.findOne({
+                    where:{
+                      id:bd_found.authorid,
+                    }
+                  }).catch(err => {
+                    res.status(500).json({msg: "error", details: err});		
+                  }).then(user_found=>{
+                    let number_of_comics=user_found.number_of_comics-1;
+                    user_found.update({
+                      "number_of_comics":number_of_comics,
+                    })
+                    res.status(200).send([bd_found]);
+                  })
+                }
+              })
             }
-          })
-        })
-      
+            else{
+              res.status(200).send([{"err":"not found"}]);
+            }
+          }
+        }) 
         
-        
-          
-        
-
-      })();
     });
 
     
 
   //on modifie les informations du formulaire de la bd qu'on upload
   router.post('/modify_bd_serie', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -211,7 +219,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-            //console.log(err);	
+            
             res.status(500).json({msg: "error", details: err});		
           }).then(bd =>  {
             bd.update({
@@ -223,8 +231,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "thirdtag": Tags[2]?Tags[2]:null,
               "monetization":monetization,
             })
-            .catch(err => {
-              console.log(err);	
+            .catch(err => {	
               res.status(500).json({msg: "error", details: err});		
             }).then(bd=>{
               res.status(200).send([bd])
@@ -233,7 +240,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/modify_bd_serie2', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -250,7 +257,6 @@ console.log("checking current: " + req.headers['authorization'] );
       const highlight = req.body.highlight;
       const title = req.body.Title;
       const category = req.body.Category;
-      
       const Tags = req.body.Tags;
       const bd_id = req.body.bd_id;
       Liste_bd_serie.findOne({
@@ -260,7 +266,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-              //console.log(err);	
+              	
               res.status(500).json({msg: "error", details: err});		
             }).then(bd =>  {
               bd.update({
@@ -272,7 +278,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 "thirdtag": Tags[2]?Tags[2]:null,
               })
               .catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
               }).then(bd=>{
                 Navbar.list_of_navbar_researches.update({
@@ -334,7 +340,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
 
     router.post('/change_serie_comic_status', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -357,13 +363,13 @@ console.log("checking current: " + req.headers['authorization'] );
               },
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_os => {
               bd_os.update({
                     "status":status
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_os => {
                   res.status(200).send(bd_os)
@@ -376,7 +382,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     //on ajoute les infos du chapitre ajouté
     router.post('/add_chapter_bd_serie', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -388,15 +394,10 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
       let current_user = get_current_user(req.cookies.currentUser);
-      //console.log("add_chapter_bd_serie")
       const title = req.body.Title;
       const chapter_number = req.body.chapter_number;
       const bd_id = req.body.bd_id;
-      //console.log(bd_id)
-      //console.log("ajout de chapitre")
-  
         if (Object.keys(req.body).length === 0 ) {
-          //console.log("information isn't uploaded correctly");
           return res.send({
             success: false
           });
@@ -409,7 +410,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
             let chaptersnumber=bd.chaptersnumber+=1;
@@ -417,7 +418,6 @@ console.log("checking current: " + req.headers['authorization'] );
               "chaptersnumber":chaptersnumber
             })
           })
-          //console.log('on ajoute le chapitre');
           chapters_bd_serie.create({
             "author_id": current_user,
             "title":title,
@@ -425,10 +425,9 @@ console.log("checking current: " + req.headers['authorization'] );
             "chapter_number": chapter_number
         })
         .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
-        //console.log("chapitre ajouté numéro :" + chapter_number)
         res.status(200).send([r]);
         }); 
         }
@@ -437,7 +436,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
   //on modifie le nom du chapitre après modification
   router.post('/modify_chapter_bd_serie', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -453,7 +452,6 @@ console.log("checking current: " + req.headers['authorization'] );
   
     const title= req.body.Title;
     const number = req.body.chapter_number;
-    //console.log("modification de chapitre")
     const bd_id = req.body.bd_id;
     chapters_bd_serie.findOne({
             where: {
@@ -463,13 +461,13 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-            console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(chapter =>  {
             chapter.update({
               "title":title,
             }).catch(err => {
-              //console.log(err);	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(res.status(200).send([chapter]));
           });
@@ -480,7 +478,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/delete_chapter_bd_serie/:chapter_number/:bd_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -501,7 +499,7 @@ console.log("checking current: " + req.headers['authorization'] );
           }
         })
         .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
           let chaptersnumber=bd.chaptersnumber-=1;
@@ -509,7 +507,6 @@ console.log("checking current: " + req.headers['authorization'] );
             "chaptersnumber":chaptersnumber
           })
         })
-        //console.log( 'suppression en cours');
         chapters_bd_serie.destroy({
           where: {
             chapter_number: chapter_number,
@@ -529,7 +526,6 @@ console.log("checking current: " + req.headers['authorization'] );
         return res.status(401).json({msg: "error"});
       }
       var file_name ='';
-      //console.log("ici" + file_name);
 
       const PATH1= './data_and_routes/pages_bd_serie';
 
@@ -564,23 +560,19 @@ console.log("checking current: " + req.headers['authorization'] );
                 ]
               });
             })();
-            //console.log(bd_id)
           if (err) {
-            //console.log("erreur");
             return res.send({
               success: false
             });
         
           } else { 
-            //console.log("upload_page_bd_serie")
-            //console.log(page);
           chapters_bd_serie.findOne({
             where: {
               bd_id: bd_id,
               author_id: current_user,
             }
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter_bd => {
           pages_bd_serie.create({
@@ -592,7 +584,7 @@ console.log("checking current: " + req.headers['authorization'] );
             "file_name":file_name,
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
           res.send(r.get({plain:true}));
@@ -606,7 +598,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/remove_page_bdserie_from_data/:page/:chapter/:bd_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -617,22 +609,7 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        (async () => {
-          const pagebd = await pages_bd_serie.findOne({
-            where: {
-              chapter_number: req.params.chapter,
-              page_number: req.params.page,
-              bd_id: req.params.bd_id,
-            }
-          });
-          if(pagebd !== null){
-            res.json([pagebd]);
-          }
-          else {
-            //console.log("page not found")
-          }
-
-          //console.log( 'suppression en cours');
+ 
           const page  = req.params.page;
           pages_bd_serie.destroy({
             where: {
@@ -642,12 +619,12 @@ console.log("checking current: " + req.headers['authorization'] );
               },
             truncate: false
           })
-        })();
+          res.status(200).send([{done:"done"}])
       });
 
       //on supprime le fichier du dossier date/pages_bd_onshot
       router.delete('/remove_page_bdserie_from_folder/:name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -660,17 +637,14 @@ console.log("checking current: " + req.headers['authorization'] );
       }
         fs.access('./data_and_routes/pages_bd_serie' + req.params.name, fs.F_OK, (err) => {
           if(err){
-            //console.log('suppression already done');
             return res.status(200).send([{delete:'suppression done'}])
           }
-          //console.log( 'annulation en cours');
           const name  = req.params.name;
           fs.unlink('./data_and_routes/pages_bd_serie/' + name,  function (err) {
             if (err) {
-              throw err;
+              return res.status(200).send([{delete:'suppression done'}])
             }  
             else {
-              //console.log( 'fichier supprimé');
               return res.status(200).send([{delete:'suppression done'}])
             }
           });
@@ -680,7 +654,7 @@ console.log("checking current: " + req.headers['authorization'] );
       
       //on ajoute le nom de la coverpage dans la base de donnée
   router.post('/add_cover_bd_serie_todatabase', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -700,13 +674,11 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
       if (Object.keys(req.body).length === 0 ) {
-        //console.log("no inftly");
         return res.send({
           success: false
         });
         
       } else { 
-        //console.log('infctly');
          bd = await Liste_bd_serie.findOne({
             where: {
               bd_id: bd_id,
@@ -714,14 +686,14 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
             bd.update({
               "name_coverpage" :name
             })
             .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([bd]))
           }); 
@@ -731,7 +703,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/add_cover_bd_serie_todatabase2', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -752,13 +724,11 @@ console.log("checking current: " + req.headers['authorization'] );
   
   
         if (Object.keys(req.body).length === 0 ) {
-          //console.log("no inftly");
           return res.send({
             success: false
           });
           
         } else { 
-          //console.log('infctly');
            bd = await Liste_bd_serie.findOne({
               where: {
                 bd_id: bd_id,
@@ -766,7 +736,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
               bd.update({
@@ -774,7 +744,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 "thumbnail_color":thumbnail_color
               })
               .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([bd]))
             }); 
@@ -786,7 +756,7 @@ console.log("checking current: " + req.headers['authorization'] );
  
                   //on valide l'upload
   router.post('/validation_bd_upload_bd_serie', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -809,7 +779,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
             chapters_bd_serie.findAll({
@@ -822,7 +792,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
             })
             .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_chapters =>  {
               for(let step = 0; step < number_of_chapters; step++){
@@ -836,7 +806,7 @@ console.log("checking current: " + req.headers['authorization'] );
               authorid: current_user,
             }
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
             list_of_users.findOne({
@@ -844,7 +814,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id:current_user,
               }
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
               let number_of_comics=user.number_of_comics+1;
@@ -858,7 +828,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "pagesnumber": average_page_by_chapter,
             })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([bd]))
         }); 
@@ -867,7 +837,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/validation_chapter_upload_bd_serie', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -879,12 +849,9 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
       let current_user = get_current_user(req.cookies.currentUser);
-      //console.log("validation_chapter_upload_bd_serie")
-    
         const chapter_number=req.body.chapter_number + 1;
         const number_of_pages=req.body.number_of_pages;
         const bd_id= req.body.bd_id; 
-        //console.log(bd_id)
          chapters_bd_serie.findOne({
           where: {
             bd_id: bd_id,
@@ -893,7 +860,7 @@ console.log("checking current: " + req.headers['authorization'] );
           }
         })
         .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd_chapter =>  {
           bd_chapter.update({
@@ -905,7 +872,7 @@ console.log("checking current: " + req.headers['authorization'] );
             "commentarynumbers":0,
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([bd_chapter]))
         }); 
@@ -915,7 +882,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
                    //on valide l'upload
   router.get('/retrieve_bd_serie_by_user_id/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -937,7 +904,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ],
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
             
@@ -948,7 +915,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/get_number_of_bd_series', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -989,7 +956,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
          })
          .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
           if(bd.length>0){
@@ -1004,7 +971,7 @@ console.log("checking current: " + req.headers['authorization'] );
    });
 
     router.get('/retrieve_private_serie_bd', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1027,7 +994,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ],
             })
             .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
               res.status(200).send([bd]);
@@ -1036,7 +1003,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/retrieve_bd_serie_by_id/:bd_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1057,7 +1024,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-              //console.log(err);	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(bd =>  {
               if(bd){
@@ -1068,7 +1035,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     publication_id:bd.bd_id
                   }
                 }).catch(err => {
-                  //console.log(err);	
+                  
                   res.status(500).json({msg: "error", details: err});		
                 }).then(tren=>{
                   if(tren){
@@ -1105,7 +1072,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
  
     router.get('/retrieve_bd_serie_by_id2/:bd_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1126,7 +1093,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-              //console.log(err);	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(bd =>  {
               if(bd){
@@ -1137,7 +1104,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     publication_id:bd.bd_id
                   }
                 }).catch(err => {
-                  //console.log(err);	
+                  
                   res.status(500).json({msg: "error", details: err});		
                 }).then(tren=>{
                   if(tren){
@@ -1174,7 +1141,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
 
   router.get('/retrieve_chapters_by_id/:bd_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1198,7 +1165,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ],
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {          
             res.status(200).send([bd]);
@@ -1209,7 +1176,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.get('/retrieve_chapter_by_number/:bd_id/:chapter_number', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1220,8 +1187,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log('tentativee de récupération');
-
     (async () => {
 
       const bd_id = parseInt(req.params.bd_id);
@@ -1235,7 +1200,7 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       })
       .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chapter =>  {
           res.status(200).send([chapter]);
@@ -1245,7 +1210,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.get('/retrieve_bd_chapter_page/:bd_id/:chapter_number/:bd_page', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1271,7 +1236,7 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       })
       .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(page =>  {
   
@@ -1287,8 +1252,6 @@ console.log("checking current: " + req.headers['authorization'] );
             else{
               res.status(200).send(data);
             }
-            //console.log("bd page retrieved");
-            
           } );
         }
         else{
