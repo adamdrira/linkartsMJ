@@ -1,6 +1,6 @@
 
 
-<div *ngFor="let item of sorted_style_list; index as i1"   [@enterAnimation]>
+<div *ngFor="let item of sorted_style_list; index as i1" class="main-media-container"  [@enterAnimation]>
 
     <ng-container *ngIf="(item==='BD' && sorted_artpieces_bd.length>0)||(item==='Manga' && sorted_artpieces_manga.length>0)
         ||(item==='Comics' && sorted_artpieces_comics.length>0)||(item==='Webtoon' && sorted_artpieces_webtoon.length>0)">
@@ -92,7 +92,7 @@
 
 
 <ng-container *ngIf="check_comics_history">
-    <div *ngIf="!last_consulted_comics_retrieved">
+    <div *ngIf="!last_consulted_comics_retrieved" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
                 <span>Récemment consultés</span>
         </div>
@@ -110,7 +110,7 @@
         </div>
     </div>
     
-    <div *ngIf="last_consulted_comics_retrieved">
+    <div *ngIf="last_consulted_comics_retrieved" class="main-media-container" [@enterAnimation]>
             <div class="category no-cursor">
                     <span>Récemment consultés</span>
             </div>

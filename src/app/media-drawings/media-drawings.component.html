@@ -1,4 +1,4 @@
-<div *ngFor="let item of sorted_style_list; index as i1" >
+<div *ngFor="let item of sorted_style_list; index as i1" class="main-media-container" [@enterAnimation]>
 
     <ng-container *ngIf="(item==='Traditionnel' && sorted_artpieces_traditional.length>0)||(item==='Digital' && sorted_artpieces_digital.length>0)">
         
@@ -83,7 +83,7 @@
 
 
 <ng-container *ngIf="check_drawings_history">
-    <div *ngIf="!last_consulted_drawings_retrieved">
+    <div *ngIf="!last_consulted_drawings_retrieved" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
                 <span>Récemment consultés</span>
         </div>
@@ -103,7 +103,7 @@
     </div>
     
     
-    <div *ngIf="last_consulted_drawings_retrieved">
+    <div *ngIf="last_consulted_drawings_retrieved" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
                 <span>Récemment consultés</span>
         </div>

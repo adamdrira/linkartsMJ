@@ -11,6 +11,11 @@
     overflow:hidden;
   }
 
+  .main-media-container{
+    width:calc(100% + 1px);
+  }
+  
+  
   .center-spinner{
     margin: auto;
     display: flex;
