@@ -25,13 +25,9 @@ wss.on('connection', (ws, req)=>{
   ws.on('pong', () => {
       ws.isAlive = true;
   });
-  console.log("user is connected")
-  console.log(url.parse(req.url))
-  console.log(req.headers.origin )
   if(req.headers.origin !='http://localhost:4200'){
     return   ws.send(JSON.stringify([{not_allowed:"you are not allowed to connect here"}]));
   }
-  //console.log(req.headers.origin[0] )
   var userID = parseInt(url.parse(req.url).query.substring(3));
   let date1 = new Date();
   let speed_limit1=10;
@@ -40,23 +36,13 @@ wss.on('connection', (ws, req)=>{
   }
   date_of_webSockets_last_connection_ddos[userID]=date1;
   if(!webSockets[userID] || !(webSockets[userID].length>0) ){
-    console.log("create list and ws")
     webSockets[userID] = [ws];
     
   }
   else{
-    console.log("push ws")
     webSockets[userID].push(ws);
-    
-
-    
   }
-
-  console.log(Object.keys(webSockets))
-  //console.log(webSockets[userID])
-  
-  console.log('connected: ' + userID + ' number ' + webSockets[userID].length + ' in ' + Object.getOwnPropertyNames(webSockets));
-  let now = new Date();
+ let now = new Date();
 	let connexion_time = now.toString();
   db.users_connexions.create({
     "id_user":userID,
@@ -68,8 +54,6 @@ wss.on('connection', (ws, req)=>{
     
   ws.on('message', function incoming(message) {
 
-
-    console.log('received from ' + userID + ': ' + message)
     var messageArray = JSON.parse(message);
     let date = new Date();
     let speed_limit=10;
@@ -81,7 +65,6 @@ wss.on('connection', (ws, req)=>{
       date_of_webSockets_last_message[userID]=date;
     }
     
-    console.log("messageArray")
     ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
     if(messageArray.for_notifications){
 
@@ -91,15 +74,12 @@ wss.on('connection', (ws, req)=>{
       /***************************************** NOTIFICATIONS *************************/
       /***************************************** NOTIFICATIONS *************************/
 
-      console.log("sending notification for subscribers")
       //for groupe creation
       if(messageArray.list_of_receivers){
         for(let i=0;i<messageArray.list_of_receivers.length;i++){
           var toUserWebSocket = webSockets[messageArray.list_of_receivers[i]];
           if (toUserWebSocket && toUserWebSocket.length>0) {
-            console.log("sending notification group creation");
             for(let i=0;i<toUserWebSocket.length;i++){
-              console.log("notificaiton sent to " + messageArray.list_of_receivers[i])
               toUserWebSocket[i].send(JSON.stringify([messageArray]));
             }
           } 
@@ -108,9 +88,7 @@ wss.on('connection', (ws, req)=>{
       else if(messageArray.id_receiver){
           var toUserWebSocket = webSockets[messageArray.id_receiver];
           if (toUserWebSocket && toUserWebSocket.length>0) {
-            console.log("sending notification");
             for(let i=0;i<toUserWebSocket.length;i++){
-              console.log("notificaiton sent to " + messageArray.id_receiver)
               toUserWebSocket[i].send(JSON.stringify([messageArray]));
             }
           } 
@@ -123,12 +101,9 @@ wss.on('connection', (ws, req)=>{
         }).then(subscribers=>{
             if(subscribers.length>0){
               for(let i=0;i<subscribers.length;i++){
-                console.log(subscribers[i].id_user)
                 var toUserWebSocket = webSockets[subscribers[i].id_user];
                 if (toUserWebSocket && toUserWebSocket.length>0) {
-                  console.log("sending notification");
                   for(let i=0;i<toUserWebSocket.length;i++){
-                    console.log("notificaiton sent to " + subscribers[i].id_user)
                     toUserWebSocket[i].send(JSON.stringify([messageArray]));
                   }
                 } 
@@ -157,7 +132,6 @@ wss.on('connection', (ws, req)=>{
 
 
     if(!messageArray.is_a_group_chat && !messageArray.for_notifications){
-      console.log("SEND MESSAGE TO A USER")
        /*****************************************SEND MESSAGE TO A USER  *************************/
       /*****************************************SEND MESSAGE TO A USER  *************************/
       /*****************************************SEND MESSAGE TO A USER  *************************/
@@ -167,14 +141,11 @@ wss.on('connection', (ws, req)=>{
       var toUserWebSocket = webSockets[parseInt(messageArray.id_receiver)];
       
       
-      console.log("web here")
       const Op = Sequelize.Op;
       const id_user=messageArray.id_user;
       const id_friend=messageArray.id_receiver;
       if(messageArray.status=="writing" ){
-        console.log("send writing");
         if (toUserWebSocket && toUserWebSocket.length>0) {
-          console.log("sending writing");
           for(let i=0;i<toUserWebSocket.length;i++){
             toUserWebSocket[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend, is_from_server:true, server_message:'writing',message:messageArray.chat_section_name,id_user_writing:id_user}]));
           }
@@ -184,7 +155,6 @@ wss.on('connection', (ws, req)=>{
       
       else if(messageArray.status=='not-writing'){
         if (toUserWebSocket && toUserWebSocket.length>0) {
-          console.log("sending writing");
           for(let i=0;i<toUserWebSocket.length;i++){
             toUserWebSocket[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend, is_from_server:true, server_message:'not-writing',message:messageArray.chat_section_name,id_user_writing:id_user}]));
           }
@@ -192,25 +162,20 @@ wss.on('connection', (ws, req)=>{
       }
       else if(messageArray.status=='block'){
         if (toUserWebSocket && toUserWebSocket.length>0) {
-          console.log("sending writing");
           for(let i=0;i<toUserWebSocket.length;i++){
             toUserWebSocket[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend, is_from_server:true, server_message:'block',message:messageArray.chat_section_name,id_user_blocking:id_user}]));
           }
         }
       }
       else if(messageArray.status=='emoji'){
-        console.log("messageArray.status=='emoji 1'")
         if (toUserWebSocket && toUserWebSocket.length>0) {
-          console.log("sending writing");
           for(let i=0;i<toUserWebSocket.length;i++){
             toUserWebSocket[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend, is_from_server:true, server_message:'emoji',message:messageArray,real_id_user:id_user}]));
           }
         }
       }
       else if(messageArray.status=="delete_message" ){
-        console.log("send delete_message");
         if (toUserWebSocket && toUserWebSocket.length>0) {
-          console.log("sending delete_message");
           for(let i=0;i<toUserWebSocket.length;i++){
             toUserWebSocket[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend, is_from_server:true, server_message:'delete_message',message:messageArray,id_user_writing:id_user,id_message:messageArray.id_message}]));
           }
@@ -228,7 +193,6 @@ wss.on('connection', (ws, req)=>{
 
 
         function send_message_to_friend(){
-          console.log("send message to friend")
           chat_seq.list_of_messages.create({
             "id_user_name":messageArray.id_user_name,
             "id_receiver": messageArray.id_receiver,
@@ -253,19 +217,13 @@ wss.on('connection', (ws, req)=>{
                 [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],       
               }
             }).then(friend=>{
-              console.log("friend found");
-              
               var now = new Date();
               if(friend){
-                console.log(friend.date)
                 friend.update({
                   "date":now,
                 }).then(s=>{
-                  console.log(s.data)
                   if(messageArray.id_user!=messageArray.id_receiver){
                     if (toUserWebSocket && toUserWebSocket.length>0) {
-                      console.log("sending message to websocket open");
-                      console.log('sent to ' + messageArray.id_receiver + ': ' + JSON.stringify(messageArray))
                       for(let i=0;i<toUserWebSocket.length;i++){
                         toUserWebSocket[i].send(JSON.stringify([{
                           "id":r.id,
@@ -287,44 +245,25 @@ wss.on('connection', (ws, req)=>{
                       
                     }
                     if(!messageArray.is_from_server || messageArray.is_from_server==null){
-                      console.log("send back message with received")
-                      console.log(messageArray);
                       let toUserWebSocket1= webSockets[userID];
-                      console.log(toUserWebSocket1.length)
-                      //console.log(ws)
-                      let add_socket=true;
                       for(let i=0;i<toUserWebSocket1.length;i++){
-                        console.log(toUserWebSocket1[i]==ws)
-                        console.log("sending back to each one")
-                        //console.log(toUserWebSocket1[i])
                         toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                       }
-                      if(!add_socket){
-                        console.log("add socket")
-                        //webSockets[userID].push(ws);
-                        //ws.send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
-                      }
-                      
                       
                     }
                     if(messageArray.is_from_server){
                       // for new contacts
                       // pas de new for friends
-                      console.log("on renvoie un autre message");
-                      console.log(messageArray)
                       let toUserWebSocket1= webSockets[userID];
                       for(let i=0;i<toUserWebSocket1.length;i++){
-                        console.log("sending back to each one")
                         toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received_new', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                       }
                     }
                   }
                   else{
                     // pour moi meme
-                    console.log("for myself")
                     let toUserWebSocket1= webSockets[userID];
                     for(let i=0;i<toUserWebSocket1.length;i++){
-                      console.log("sending back to each one of myself")
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user,real_id_user:messageArray.id_user}]));
                     }
                    
@@ -333,7 +272,6 @@ wss.on('connection', (ws, req)=>{
                 })
               }
               else{
-                console.log("on créé l'ami")
                 chat_seq.list_of_chat_friends.create({
                   "id_user":messageArray.id_user,
                   "id_receiver":messageArray.id_receiver,
@@ -342,7 +280,6 @@ wss.on('connection', (ws, req)=>{
                 }).then(t=>{
                   if(messageArray.id_user!=messageArray.id_receiver){
                     if (toUserWebSocket  && toUserWebSocket.length>0) {
-                      console.log('sent to ' + messageArray.id_receiver + ': ' + JSON.stringify(messageArray));
                       for(let i=0;i<toUserWebSocket.length;i++){
                         toUserWebSocket[i].send(JSON.stringify([{
                           "chat_id":t.id,
@@ -365,20 +302,15 @@ wss.on('connection', (ws, req)=>{
                       
                     }
                     if(!messageArray.is_from_server || messageArray.is_from_server==null){
-                      console.log("send back message with received")
-                      console.log(messageArray);
                       let toUserWebSocket1= webSockets[userID];
                       for(let i=0;i<toUserWebSocket1.length;i++){
-                        console.log("sending back to each one")
                         toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                       }
                      
                     }
                     if(messageArray.is_from_server){
-                      console.log("nimp, pas de new for friends")
                       let toUserWebSocket1= webSockets[userID];
                       for(let i=0;i<toUserWebSocket1.length;i++){
-                        console.log("sending back to each one")
                         toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received_new', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                       }
                     }
@@ -386,7 +318,6 @@ wss.on('connection', (ws, req)=>{
                   else{
                     let toUserWebSocket1= webSockets[userID];
                     for(let i=0;i<toUserWebSocket1.length;i++){
-                      console.log("sending back to each one of myself")
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user,real_id_user:messageArray.id_user}]));
                     }
                   }
@@ -406,7 +337,6 @@ wss.on('connection', (ws, req)=>{
 
         
         function send_message_to_spam(){
-          console.log("send message to spam")
           chat_seq.list_of_messages.create({
             "id_user_name":messageArray.id_user_name,
             "id_receiver": messageArray.id_receiver,
@@ -440,7 +370,6 @@ wss.on('connection', (ws, req)=>{
                     })
                   }
                   if (toUserWebSocket && toUserWebSocket.length>0) {
-                    console.log('sent to ' + messageArray.id_receiver + ': ' + JSON.stringify(messageArray));
                     for(let i=0;i<toUserWebSocket.length;i++){
                       toUserWebSocket[i].send(JSON.stringify([{
                         "id":r.id,
@@ -462,11 +391,8 @@ wss.on('connection', (ws, req)=>{
                    
                   }
                   if(!messageArray.is_from_server){
-                    console.log("send back message with received")
-                    console.log(messageArray);
                     let toUserWebSocket1= webSockets[userID];
                     for(let i=0;i<toUserWebSocket1.length;i++){
-                      console.log("sending back to each one")
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                     }
                    
@@ -474,21 +400,18 @@ wss.on('connection', (ws, req)=>{
                   if(messageArray.is_from_server){
                     let toUserWebSocket1= webSockets[userID];
                     for(let i=0;i<toUserWebSocket1.length;i++){
-                      console.log("sending back to each one")
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received_new', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                     }
                   }
                 
               }
               else if(!messageArray.is_from_server){
-                console.log("creating spam")
                 chat_seq.list_of_chat_spams.create({
                   "id_user":messageArray.id_user,
                   "id_receiver":messageArray.id_receiver,
                   "date":now,
                 }).then(t=>{
                   if (toUserWebSocket && toUserWebSocket.length>0) {
-                    console.log('sent to ' + messageArray.id_receiver + ': ' + JSON.stringify(messageArray));
                     for(let i=0;i<toUserWebSocket.length;i++){
                       toUserWebSocket[i].send(JSON.stringify([{
                         "id":r.id,
@@ -510,11 +433,8 @@ wss.on('connection', (ws, req)=>{
                    
                   }
                   if(!messageArray.is_from_server || messageArray.is_from_server==null){
-                    console.log("send back message with received")
-                    console.log(messageArray);
                     let toUserWebSocket1= webSockets[userID];
                     for(let i=0;i<toUserWebSocket1.length;i++){
-                      console.log("sending back to each one")
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id}]));
                     }
                    
@@ -522,7 +442,6 @@ wss.on('connection', (ws, req)=>{
                   if(messageArray.is_from_server){
                     let toUserWebSocket1= webSockets[userID];
                     for(let i=0;i<toUserWebSocket1.length;i++){
-                      console.log("sending back to each one")
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received_new', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                     }
                   }
@@ -537,23 +456,16 @@ wss.on('connection', (ws, req)=>{
           send_message_to_friend();
         } 
         else{
-          console.log("check friends");
-          console.log(id_friend);
-          console.log(id_user)
           chat_seq.list_of_chat_friends.findOne({
             where: {
               is_a_group_chat:{[Op.not]: true},
               [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],           
             }
           }).then( friend=>{
-            console.log("here")
-            console.log("first friend found afte chat fiend search")
             if(friend){
-              console.log("true");
               send_message_to_friend();
             }
             else{
-              console.log("false");
               subscribings_seq.list_of_subscribings.findOne({
                 where:{
                   [Op.and]:[{[Op.or]:[{id_user: id_user},{id_user_subscribed_to:id_user}]},{[Op.or]:[{id_user: id_friend},{id_user_subscribed_to:id_friend}]}],
@@ -572,7 +484,6 @@ wss.on('connection', (ws, req)=>{
       }
       else{
         //for seen
-        console.log("sending seen or new")
         if(toUserWebSocket && toUserWebSocket.length>0){
           for(let i=0;i<toUserWebSocket.length;i++){
             toUserWebSocket[i].send(JSON.stringify([messageArray]));
@@ -608,17 +519,12 @@ wss.on('connection', (ws, req)=>{
             const Op = Sequelize.Op;
             const id_user=messageArray.id_user;
             const id_friend=(list_of_receivers[0]!=userID)?list_of_receivers[0]:list_of_receivers[1];
-            console.log("id friend");
-            console.log(list_of_receivers)
-            console.log(id_friend)
-            console.log(userID)
             if(messageArray.status=="writing" ){
               for(let k=0;k<list_of_receivers.length;k++){
                 if(list_of_receivers[k]!=userID){
                   var toUserWebSocket1 = webSockets[list_of_receivers[k]];
                   const id_friend1=list_of_receivers[k];
                   if (toUserWebSocket1 && toUserWebSocket1.length>0) {
-                    console.log("sending writing group");
                     for(let i=0;i<toUserWebSocket1.length;i++){
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend1, is_from_server:true, server_message:'writing',message:messageArray.chat_section_name,group_chat_id:messageArray.id_receiver,id_user_writing:id_user}]));
                     }
@@ -632,7 +538,6 @@ wss.on('connection', (ws, req)=>{
                   var toUserWebSocket1 = webSockets[list_of_receivers[k]];
                   const id_friend1=list_of_receivers[k];
                   if (toUserWebSocket1 && toUserWebSocket1.length>0) {
-                    console.log("sending not writing group ");
                     for(let i=0;i<toUserWebSocket1.length;i++){
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend1, is_from_server:true, server_message:'not-writing',message:messageArray.chat_section_name,group_chat_id:messageArray.id_receiver,id_user_writing:id_user}]));
                     }
@@ -642,13 +547,11 @@ wss.on('connection', (ws, req)=>{
               
             }
             else if(messageArray.status=='emoji'){
-              console.log("messageArray.status=='emoji'")
               for(let k=0;k<list_of_receivers.length;k++){
                 if(list_of_receivers[k]!=userID){
                   var toUserWebSocket1 = webSockets[list_of_receivers[k]];
                   const id_friend1=list_of_receivers[k];
                   if (toUserWebSocket1 && toUserWebSocket1.length>0) {
-                    console.log("sending emoji change ");
                     for(let i=0;i<toUserWebSocket1.length;i++){
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend1, is_from_server:true, server_message:'emoji',message:messageArray,group_chat_id:messageArray.id_receiver,id_message:messageArray.id_message}]));
                     }
@@ -662,7 +565,6 @@ wss.on('connection', (ws, req)=>{
                   var toUserWebSocket1 = webSockets[list_of_receivers[k]];
                   const id_friend1=list_of_receivers[k];
                   if (toUserWebSocket1 && toUserWebSocket1.length>0) {
-                    console.log("sending  delete_message ");
                     for(let i=0;i<toUserWebSocket1.length;i++){
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend1, is_from_server:true, server_message:'delete_message',message:messageArray,group_chat_id:messageArray.id_receiver,id_message:messageArray.id_message,id_user_writing:id_user}]));
                     }
@@ -672,11 +574,8 @@ wss.on('connection', (ws, req)=>{
             }
             else if(messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji'){
       
-              console.log("sending message not seen,writ")
-              console.log(messageArray)
-              
+             
                 var toUserWebSocket = webSockets[id_friend];
-                console.log("send_message_to_friends_of_group first")
                     chat_seq.list_of_messages.create({
                       "id_user_name":messageArray.id_user_name,
                       "id_receiver": id_group,
@@ -710,8 +609,6 @@ wss.on('connection', (ws, req)=>{
                             if (toUserWebSocket && toUserWebSocket.length>0) {
                               
                               for(let i=0;i<toUserWebSocket.length;i++){
-                                console.log("sending message to the first user now")
-                                console.log(id_friend)
                                 toUserWebSocket[i].send(JSON.stringify([{
                                   "id":r.id,
                                   "user_name":(messageArray.user_name)?messageArray.user_name:null,
@@ -735,16 +632,10 @@ wss.on('connection', (ws, req)=>{
                                   "group_name":(messageArray.group_name)?messageArray.group_name:null,
                                 }]));
                               }
-                              console.log(id_group)
-                              console.log("sending message to websocket open group");
-                              console.log('sent to ' + id_friend + ': ' + JSON.stringify(messageArray));
                             }
                             if(!messageArray.is_from_server){
-                              console.log("send back message with received")
-                              console.log(messageArray);
                               let toUserWebSocket1= webSockets[userID];
                               for(let i=0;i<toUserWebSocket1.length;i++){
-                                console.log("sending back to each one")
                                 toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id}]));
                               }
                              
@@ -752,23 +643,18 @@ wss.on('connection', (ws, req)=>{
                             if(messageArray.is_from_server && messageArray.message=='New'){
                               let toUserWebSocket1= webSockets[userID];
                               for(let i=0;i<toUserWebSocket1.length;i++){
-                                console.log("sending back to each one of the user")
                                 toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received_new', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                               }
                             }
                             if(messageArray.is_from_server && messageArray.message=='New_friend_in_the_group'){
-                              console.log("New_friend_in_the_group")
                               let toUserWebSocket1= webSockets[userID];
                               for(let i=0;i<toUserWebSocket1.length;i++){
-                                console.log("sending back to each one of the user")
                                 toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received_new_friend_in_the_group', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                               }
                             }
                             if(messageArray.is_from_server && messageArray.message=='new_section'){
-                              console.log("new_section")
                               let toUserWebSocket1= webSockets[userID];
                               for(let i=0;i<toUserWebSocket1.length;i++){
-                                console.log("sending back to each one of the user")
                                 toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'new_section', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                               }
                             }
@@ -779,8 +665,6 @@ wss.on('connection', (ws, req)=>{
                               if(list_of_receivers[k]!=userID && list_of_receivers[k]!=id_friend){
                                 const toUserWebSocket1 = webSockets[list_of_receivers[k]];
                                 const id_friend1=list_of_receivers[k];
-                                console.log("id_friend1 receiving message")
-                                console.log(id_friend1)
                                 send_message_to_friends_of_group1(toUserWebSocket1,id_friend1,k)
                               }
                             }
@@ -821,8 +705,6 @@ wss.on('connection', (ws, req)=>{
                             if (toUserWebSocket1 && toUserWebSocket1.length>0) {
                               
                               for(let i=0;i<toUserWebSocket1.length;i++){
-                                console.log("sending message to the other user")
-                                console.log(list_of_receivers[k])
                                 toUserWebSocket1[i].send(JSON.stringify([{
                                   "id":message.id,
                                   "id_receiver":id_friend1,
@@ -846,9 +728,6 @@ wss.on('connection', (ws, req)=>{
                                   "list_of_users_in_the_group":list_of_receivers,
                                 }]));
                               }
-                              console.log(id_group)
-                              console.log("sending message to websocket open group");
-                              console.log('sent to ' + id_friend1 + ': ' + JSON.stringify(messageArray));
                             }
                         })
                       })
@@ -860,11 +739,8 @@ wss.on('connection', (ws, req)=>{
           
             }
             else{
-              console.log("sending seen or new")
-              console.log(messageArray)
               for(let k=0;k<list_of_receivers.length;k++){
                 if(list_of_receivers[k]!=userID ){
-                  console.log(list_of_receivers[k])
                   const toUserWebSocket1 = webSockets[list_of_receivers[k]];
                   if(toUserWebSocket1 && toUserWebSocket1.length>0){
                     for(let i=0;i<toUserWebSocket1.length;i++){
@@ -914,9 +790,6 @@ wss.on('connection', (ws, req)=>{
       }
     }
     clearInterval(interval);
-    if(webSockets[userID]){
-      console.log(webSockets[userID].length)
-    }
     
   })
 
@@ -1003,7 +876,6 @@ app.post('/get_users_connected_in_the_chat', function(req, res) {
 
 //Ouverture du server
 const port = process.env.PORT || 4600;
-console.log(process.env.NODE_ENV)
 server.listen(port, (req,res)=> {
     console.log(`server http/ws running on port ${port} `);
  });
