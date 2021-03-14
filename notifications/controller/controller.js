@@ -40,7 +40,7 @@ module.exports = (router,
         };
 
     router.get('/get_list_of_notifications', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -51,8 +51,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("get_list_of_notifications")
-        //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const Op = Sequelize.Op;
         list_of_notifications.findAll({
@@ -68,14 +66,14 @@ console.log("checking current: " + req.headers['authorization'] );
             limit:150,
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(notifications=>{res.status(200).send([notifications])})     
     });
 
     
     router.post('/get_notifications_information', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -86,7 +84,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("get_notifications_information")
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
         const publication_category = req.body.publication_category;
@@ -113,7 +110,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ]
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(notifications=>{res.status(200).send([notifications])})     
     });
@@ -121,7 +118,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
     router.post('/add_notification', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -132,8 +129,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("add_notification")
-        //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
         const publication_name=req.body.publication_name;
@@ -147,17 +142,6 @@ console.log("checking current: " + req.headers['authorization'] );
         const chapter_number = req.body.chapter_number;
         const comment_id=req.body.comment_id;
         const Op = Sequelize.Op;
-        console.log(type)
-        console.log(publication_name)
-        console.log(id_receiver)
-        console.log(publication_category)
-        console.log(format)
-        console.log(publication_id)
-        console.log(information)
-        console.log(id_user_name)
-        console.log(is_comment_answer)
-        console.log(chapter_number)
-        console.log(comment_id)
         if(id_receiver){
             list_of_notifications.findOne({
                 where:{
@@ -177,7 +161,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
              
             }).catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
 		    }).then(notification_found=>{
                 if(notification_found){
@@ -200,7 +184,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         "status":"unchecked"
                     })
                     .catch(err => {
-                        console.log(err);	
+                        ;	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(notification=>{
                         res.status(200).send([notification])
@@ -217,7 +201,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     id:current_user,
                 }
             }).catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
             }).then(user=>{
                 let subscribers=user.subscribers;
@@ -239,7 +223,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                          
                         }).catch(err => {
-                            console.log(err);		
+                            ;		
                         }).then(notification_found=>{
                             if(notification_found){
                                 compt++;
@@ -262,7 +246,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     "status":"unchecked"
                                 })
                                 .catch(err => {
-                                    console.log(err);		
+                                    ;		
                                 }).then(notification=>{
                                     compt++;
                                     if(compt==subscribers.length){
@@ -289,7 +273,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/add_notification_trendings', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -300,7 +284,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("add_notification_trendings")
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
         const id_user = req.body.id_user;
@@ -327,7 +310,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
             
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(found=>{
             if(found){
@@ -349,10 +332,9 @@ console.log("checking current: " + req.headers['authorization'] );
                     "comment_id":comment_id,
                     "status":"unchecked"
                 }).catch(err => {
-                    console.log(err);	
+                    ;	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(notification=>{
-                    console.log("send notif")
                     res.status(200).send([notification])
                 })   
             }
@@ -370,7 +352,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/add_notification_for_group_creation', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -381,7 +363,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("add_notification_for_group_creation")
         const type = req.body.type;
         const id_user = req.body.id_user;
         const publication_name=req.body.publication_name;
@@ -391,15 +372,6 @@ console.log("checking current: " + req.headers['authorization'] );
         const id_user_name=req.body.id_user_name;
         const chapter_number = req.body.chapter_number;
         let list_of_receivers=req.body.list_of_receivers;
-        console.log(type)
-        console.log(id_user)
-        console.log(publication_category)
-        console.log(publication_name)
-        console.log(format)
-        console.log(publication_id)
-        console.log(id_user_name)
-        console.log(chapter_number)
-        console.log(list_of_receivers)
         let compt=0;
         for(let i=0;i<list_of_receivers.length;i++){
             list_of_notifications.create({
@@ -416,12 +388,10 @@ console.log("checking current: " + req.headers['authorization'] );
                 "status":"unchecked"
             })
             .catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(notification=>{
                 compt++;
                 if(compt==list_of_receivers.length){
-                    //console.log("notif sent")
                     res.status(200).send([notification])
                 }
                 
@@ -435,7 +405,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/remove_notification', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -446,8 +416,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("remove_notification")
-        //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const publication_category = req.body.publication_category;
         const type =req.body.type;
@@ -471,7 +439,7 @@ console.log("checking current: " + req.headers['authorization'] );
            
             },{truncate:false})
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(notifications=>{res.status(200).send([{suppression:"done"}])})     
     });
@@ -480,7 +448,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/change_all_notifications_status_to_checked', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -491,9 +459,7 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("change_all_notifications_status_to_checked");
         let current_user = req.body.user_id;
-        //console.log(current_user)
         const Op = Sequelize.Op;
         list_of_notifications.findAll({
                 where:{
@@ -501,7 +467,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(notifications=>{
                 let compt=0;
@@ -510,7 +476,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         notifications[i].update({
                             "status":"checked"
                         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(not=>{
                             compt+=1;
@@ -530,7 +496,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
     router.post('/change_notification_status_to_seen', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -541,8 +507,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        //console.log("change_notification_status_to_seen")
-        //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const id_user=req.body.id_user;
         const publication_category = req.body.publication_category;
@@ -562,7 +526,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number:chapter_number,
                  }
              }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(notif=>{
                 notif.update({
