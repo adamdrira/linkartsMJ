@@ -1370,7 +1370,7 @@ module.exports = (router,
                         }
                     }
                     else{
-                        res.status(200).send([view])
+                        res.status(200).send([{error:"already_added_view_time"}])
                     }
                 }
                 else{
