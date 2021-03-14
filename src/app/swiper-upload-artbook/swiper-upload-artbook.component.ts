@@ -483,6 +483,14 @@ export class SwiperUploadArtbookComponent implements OnInit {
   validateAll() {
     
 
+    if(this.componentRef.length<2){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Un artbook doit contenir au moins 2 pages.'},
+        panelClass: "popupConfirmationClass",
+      });
+      return
+    }
+
     this.validateButton.nativeElement.disabled = true;
 
     let errorMsg : string = "La ou les pages suivantes n'ont pas été téléchargées : "
