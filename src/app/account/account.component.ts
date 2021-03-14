@@ -1164,7 +1164,6 @@ export class AccountComponent implements OnInit {
     this.update_background_position(i);
     if(not_first){
       if(this.opened_category<0 && this.opened_section==1){
-        console.log("in there")
         let interval = setInterval(() => {
           if(this.number_of_comics>=this.number_of_drawings && this.number_of_comics>=this.number_of_writings && this.number_of_comics>0){
             this.open_category(0,false)
@@ -1214,11 +1213,9 @@ export class AccountComponent implements OnInit {
   category_to_load:boolean[]=[];
   add_album_to_load=[];
   open_category(i : number,first) {
-    console.log("open ct " + i)
     if( !first && this.opened_category == i || (i==0 && this.number_of_comics==0) || (i==1 && this.number_of_drawings==0) || (i==2 && this.number_of_writings==0) ) {
       return;
     }
-    this.contents_loading=false;
    
     if(this.opened_section==1){
 
@@ -1248,7 +1245,6 @@ export class AccountComponent implements OnInit {
     
   }
 
-  contents_loading=false;
   put_album_visible=[false]
   albums_to_show_comics=[false];
   albums_to_show_drawings=[false];
@@ -1270,27 +1266,27 @@ export class AccountComponent implements OnInit {
       return;
     }
 
-    if(this.opened_section==1){
-      this.contents_loading=true;
-    }
     
     if(!from_category && this.opened_category==1){
       this.list_visibility_albums_drawings=false;
       if($('.grid').masonry){
         $('.grid').masonry().masonry('destroy')
-      }
+      };
+
+      
     }
     
-  
-   
+    
     this.compteur_visibility_drawings=0;
     this.compteur_drawings_thumbnails=0; 
     
+    
+    this.opened_album=i;
+    this.opened_album_selector=i;
+
     this.reset_number_of_comics_to_show();
     this.reset_number_of_writings_to_show();
     this.reset_number_of_drawings_to_show();
-    this.opened_album=i;
-    this.opened_album_selector=i;
     this.cd.detectChanges();
    
    
@@ -1381,7 +1377,6 @@ export class AccountComponent implements OnInit {
         total+=1;
       }
       if(THIS.compteur_visibility_drawings==total){
-        THIS.contents_loading=false;
         THIS.list_visibility_albums_drawings=true;
       }
       
@@ -1650,7 +1645,7 @@ export class AccountComponent implements OnInit {
   reset_number_of_comics_to_show(){
     if(this.got_number_of_comics_to_show){
       if(this.opened_album>0){
-        this.compteur_number_of_comics= this.number_of_comics_variable*2;
+        this.compteur_number_of_comics= this.number_of_comics_variable*4;
       }
       else{
         this.compteur_number_of_comics=this.number_of_comics_variable;
@@ -1805,7 +1800,7 @@ export class AccountComponent implements OnInit {
     this.updating_drawings_for_zoom=false;
     if(this.got_number_of_drawings_to_show){
       if(this.opened_album>0){
-        this.compteur_number_of_drawings= this.number_of_drawings_variable*2;
+        this.compteur_number_of_drawings= this.number_of_drawings_variable*4;
       }
       else{
         this.compteur_number_of_drawings=this.number_of_drawings_variable;
@@ -1842,6 +1837,7 @@ export class AccountComponent implements OnInit {
         }
       }
       else{
+        
         if(this.opened_album==0){
           let total = this.list_drawings_onepage.slice(0,this.number_of_drawings_to_show_by_album[0]).length 
           + this.list_drawings_artbook.slice(0,this.number_of_drawings_to_show_by_album[1]).length
@@ -1949,7 +1945,7 @@ export class AccountComponent implements OnInit {
   reset_number_of_writings_to_show(){
     if(this.got_number_of_writings_to_show){
       if(this.opened_album>0){
-        this.compteur_number_of_writings= this.number_of_writings_variable*2;
+        this.compteur_number_of_writings= this.number_of_writings_variable*4;
       }
       else{
         this.compteur_number_of_writings=this.number_of_writings_variable;

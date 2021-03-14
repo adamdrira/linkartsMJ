@@ -310,7 +310,7 @@
                 </div>
 
 
-                <button *ngIf="!archive_loading && mode_visiteur_added && !mode_visiteur && archive_retrieved && type_of_account=='account'" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
+                <button *ngIf="!archive_loading && mode_visiteur_added && (!mode_visiteur || visitor_id==1)  && archive_retrieved && type_of_account=='account'" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
@@ -345,7 +345,7 @@
                 </mat-menu>
     
                 <!--options pour un visiteur -->
-                <button *ngIf="!archive_loading && mode_visiteur_added && mode_visiteur && archive_retrieved && type_of_account=='account'" class="optionsMenu" [matMenuTriggerFor]="artworkOptions02">
+                <button *ngIf="!archive_loading && mode_visiteur_added && mode_visiteur && visitor_id!=1 && archive_retrieved && type_of_account=='account'" class="optionsMenu" [matMenuTriggerFor]="artworkOptions02">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #artworkOptions02="matMenu" class="artwork-mat-menu">
