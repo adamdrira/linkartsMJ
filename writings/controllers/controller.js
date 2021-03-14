@@ -53,7 +53,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
   //on poste les premières informations du formulaire et on récupère l'id de la bd
   router.post('/add_writing', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -69,30 +69,16 @@ console.log("checking current: " + req.headers['authorization'] );
     const highlight = req.body.highlight;
     const title = req.body.Title;
     const total_pages=req.body.total_pages;
-    //const category = req.body.Category;
     const category = (req.body.Category === "Poésie") ? "Poetry": (req.body.Category === "Scénario") ? "Scenario" : (req.body.Category === "Roman illustré") ? "Illustrated novel" : req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
     const writing_name = req.body.writing_name;
-    /*for (let i = 0; i < Tags.length; i++){
-      if (Tags[i] !=null){
-        Tags[i] = Tags[i].substring(1);
-        while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
-            Tags[i] = Tags[i].substr(1);
-        }
-        Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-        //console.log(Tags[i]);
-      }
-    }*/
-
       if (Object.keys(req.body).length === 0 ) {
-        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        //console.log('information uploaded correctly');
         Liste_Writings.create({
                 "authorid": current_user,
                 "title":title,
@@ -112,7 +98,7 @@ console.log("checking current: " + req.headers['authorization'] );
             })
           
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
           res.status(200).send([r]);
@@ -123,7 +109,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/add_total_pages_for_writing', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -135,24 +121,21 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
       let current_user = get_current_user(req.cookies.currentUser);
-      //console.log("add_total_pages_for_writing")
       const writing_id = req.body.writing_id;
       const total_pages=req.body.total_pages;
-      //console.log(writing_id)
-      //console.log(total_pages)
       Liste_Writings.findOne({
         where:{
           writing_id:writing_id,
         }
       }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing=>{
         if(writing){
           writing.update({
             "total_pages":total_pages,
         }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
           res.status(200).send([writing]);
@@ -168,60 +151,87 @@ console.log("checking current: " + req.headers['authorization'] );
     
       });
       
-    
 
-    //on supprime le fichier de la base de donnée postgresql
-    router.delete('/remove_writing/:writing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
-      if( ! req.headers['authorization'] ) {
+
+
+  router.delete('/remove_writing/:writing_id', function (req, res) {
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
         return res.status(401).json({msg: "error"});
       }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
-        }
-      }
+    }
     let current_user = get_current_user(req.cookies.currentUser);
-    const writing_id=parseInt(req.params.writing_id);
+
+    let writing_id = parseInt(req.params.writing_id);
     Liste_Writings.findOne({
       where: {
-        authorid: current_user,
         writing_id: writing_id,
+          authorid: current_user,
       }
-    }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(writing=>{
-      list_of_users.findOne({
-        where:{
-          id:current_user,
-        }
       }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
-        if(writing.status=="public"){
-          let number_of_writings=user.number_of_writings-1;
-          user.update({
-            "number_of_writings":number_of_writings,
+        res.status(500).json({msg: "error", details: err});		
+      }).then(writing=>{
+        if(writing){
+          list_of_users.findOne({
+            where:{
+              id:current_user,
+            }
+          }).catch(err => {
+            res.status(500).json({msg: "error", details: err});		
+          }).then(user=>{
+            if(writing.status=="public"){
+              let number_of_writings=user.number_of_writings-1;
+              user.update({
+                "number_of_writings":number_of_writings,
+              })
+            }
+            writing.update({
+              "status": "deleted"
+            });
+            res.status(200).send([writing]);
           })
         }
-        writing.update({
-          status: "deleted"
-        })
-          res.json([writing]);
-      });
-    })
+        else{
+          if(current_user==1){
+            Liste_Writings.findOne({
+              where: {
+                writing_id: writing_id,
+              }
+            }).then(writing_found=>{
+              if(writing_found && writing_found.status=="public"){
+                writing_found.update({
+                  "status": "deleted",
+                });
+                list_of_users.findOne({
+                  where:{
+                    id:writing_found.authorid,
+                  }
+                }).catch(err => {
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(user_found=>{
+                  let number_of_writings=user_found.number_of_writings-1;
+                  user_found.update({
+                    "number_of_writings":number_of_writings,
+                  })
+                  res.status(200).send([writing_found]);
+                })
+              }
+            })
+          }
+          else{
+            res.status(200).send([{"err":"not found"}]);
+          }
+        }
+      }) 
       
   });
-
       
-
-  //on modifie les informations du formulaire de la bd qu'on upload
   router.post('/modify_writing', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -248,7 +258,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(writing =>  {
             writing.update({
@@ -260,7 +270,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 "thirdtag": Tags[2]?Tags[2]:null,
             })
             .catch(err => {
-              //console.log(err);	
+              	
               res.status(500).json({msg: "error", details: err});		
             }).then(writing=>{
               Navbar.list_of_navbar_researches.update({
@@ -371,11 +381,7 @@ console.log("checking current: " + req.headers['authorization'] );
         });
     });
 
-        //on ajoute la cover uploadée dans le dossier et on créer un cookie
     router.post('/upload_writing', function (req, res) {
-
-      //console.log(req.headers.type);
-      //console.log("pistache");
       let current_user = get_current_user(req.cookies.currentUser);
       if(!current_user){
         return res.status(401).json({msg: "error"});
@@ -390,7 +396,6 @@ console.log("checking current: " + req.headers['authorization'] );
         },
 
         filename: (req, file, cb) => {
-          //console.log(file);
           var today = new Date();
           var ss = String(today.getSeconds()).padStart(2, '0');
           var mi = String(today.getMinutes()).padStart(2, '0');
@@ -410,16 +415,12 @@ console.log("checking current: " + req.headers['authorization'] );
       }).any();
 
       upload(req, res, function(err) {
-        console.log("upload writing")
-        console.log(file_name)
         if (err) {
-          console.log("erreur");
           return res.send({
             success: false
           });
       
         } else { 
-          console.log(file_name)
           list_of_writings[current_user]=file_name;
             res.status(200).send([{file_name:file_name}]);
         }
@@ -428,7 +429,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/add_cover_writing_todatabase', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -443,8 +444,6 @@ console.log("checking current: " + req.headers['authorization'] );
       
       const name = req.body.name;
       const writing_id = req.body.writing_id;
-      //console.log("add_cover_writing_todatabase")
-      //console.log(name)
       Liste_Writings.findOne({
           where: {
             writing_id: writing_id,
@@ -452,14 +451,14 @@ console.log("checking current: " + req.headers['authorization'] );
           }
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
           writing.update({
             "name_coverpage" :name
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([writing]))
         }); 
@@ -468,7 +467,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
     router.post('/change_writing_status', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -491,13 +490,13 @@ console.log("checking current: " + req.headers['authorization'] );
               },
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writings => {
             writings.update({
                     "status":status
               }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writings => {
                   res.status(200).send([writings])
@@ -509,7 +508,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.get('/retrieve_private_writings', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -532,7 +531,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writings =>  {
             res.status(200).send([writings]);
@@ -542,7 +541,7 @@ console.log("checking current: " + req.headers['authorization'] );
  
   
   router.delete('/remove_writing_cover_from_folder/:name_writing', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -553,29 +552,24 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("remove_writing_cover_from_folder");
     fs.access('./data_and_routes/covers_writings/' + req.params.name_writing, fs.F_OK, (err) => {
       if(err){
-        //console.log('suppression already done');
         return res.status(200).send([{delete:'suppression done'}])
       }
-        //console.log( 'annulation en cours');
         const name_writing  = req.params.name_writing;
         fs.unlink('./data_and_routes/covers_writings/' + name_writing,  function (err) {
           if (err) {
-            throw err;
+            return res.status(200).send([{delete:'suppression done'}])
           }  
           else {
-            //console.log( 'fichier supprimé');
             return res.status(200).send([{delete:'suppression done'}])
           }
         });
       });
   });
 
-  //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
   router.delete('/remove_writing_from_folder/:name_writing', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -586,20 +580,16 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log('./data_and_routes/writings/' + req.params.name_writing);
     fs.access('./data_and_routes/writings/' + req.params.name_writing, fs.F_OK, (err) => {
       if(err){
-        //console.log('suppression already done');
         return res.status(200).send([{delete:'suppression done'}])
       }
-        //console.log( 'annulation en cours');
         const name_writing  = req.params.name_writing;
         fs.unlink('./data_and_routes/writings/' + name_writing,  function (err) {
           if (err) {
-            throw err;
+            return res.status(200).send([{delete:'suppression done'}])
           }  
           else {
-            //console.log( 'fichier supprimé');
             return res.status(200).send([{delete:'suppression done'}])
           }
         });
@@ -608,7 +598,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
                      //on valide l'upload
   router.post('/validation_upload_writing', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -630,7 +620,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
             list_of_users.findOne({
@@ -638,7 +628,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id:current_user,
               }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
               let number_of_writings=user.number_of_writings+1;
@@ -650,7 +640,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "status":"public",
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([writing]))
           }); 
@@ -659,7 +649,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
                      //récupère toutes les bd selon l'auteur
   router.get('/retrieve_writings_information_by_user_id/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -684,7 +674,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
             
@@ -694,7 +684,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/get_number_of_writings', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -705,7 +695,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-      //console.log("get_number_of_writings")
       const id_user= req.body.id_user;
       let date_format=req.body.date_format;
       const Op = Sequelize.Op;
@@ -736,7 +725,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ],
          })
          .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writings =>  {
           if(writings.length>0){
@@ -754,7 +743,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
  
     router.get('/retrieve_writing_information_by_id/:writing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -775,7 +764,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writing =>  {
               if(writing){
@@ -785,7 +774,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     publication_id:writing.writing_id
                   }
                 }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(tren=>{
                   if(tren){
@@ -822,7 +811,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
 
       router.get('/retrieve_writing_information_by_id2/:writing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -843,7 +832,7 @@ console.log("checking current: " + req.headers['authorization'] );
              }
            })
            .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(writing =>  {
              if(writing){
@@ -853,7 +842,7 @@ console.log("checking current: " + req.headers['authorization'] );
                    publication_id:writing.writing_id
                  }
                }).catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
               }).then(tren=>{
                  if(tren){
@@ -891,7 +880,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
       
   router.get('/retrieve_writing_by_name/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -924,7 +913,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
   router.get('/retrieve_writing_for_options/:index', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -935,8 +924,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("retrieve_writing_for_options")
-    
     //0 conditions d'utilisation
     //1 sécrurité et condit
     //2 qui sommes nous
@@ -951,7 +938,6 @@ console.log("checking current: " + req.headers['authorization'] );
     else if(index==5){
       filename += 'only_for_remuneration.pdf'
     }
-    console.log(path.join(process.cwd(),filename))
     fs.readFile( path.join(process.cwd(),filename), function(e,data){
      
 
@@ -969,7 +955,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.get('/retrieve_thumbnail_writing_picture/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1000,7 +986,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
    //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
    router.delete('/remove_last_cover_from_folder/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1015,19 +1001,15 @@ console.log("checking current: " + req.headers['authorization'] );
   
     const name_coverpage=req.params.file_name;
 
-    //console.log( 'tentative annulation');
     fs.access('./data_and_routes/covers_writings/' + name_coverpage, fs.F_OK, (err) => {
       if(err){
-        //console.log('suppression already done');
         return res.status(200)
       }
-        //console.log( 'annulation en cours');
         fs.unlink('./data_and_routes/covers_writings/' + name_coverpage,  function (err) {
           if (err) {
-            throw err;
+            return res.status(200).send([{delete:'suppression done'}])
           }  
           else {
-            //console.log( 'fichier supprimé');
             return res.status(200).send({"ok":"ok"})
           }
         });
