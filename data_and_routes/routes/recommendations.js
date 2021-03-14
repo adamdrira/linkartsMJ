@@ -1290,12 +1290,10 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                 i++;
                 if (result2.length!=0){
                   list_to_send.push(result2);
-                  if(i==result1.length){
-                    callback([list_to_send,false]);
-                  }
                 }
-                else if (result2.length==0){
-                  if(i==result1.length){
+                if(i==result1.length){
+                  let initial_length=list_to_send.length;
+                  if(list_to_send.length<10){
                     if(list_of_bd_already_seen.length>0){
                       comics_one_shot.list_comics_one_shot.findAll({
                         where:{
@@ -1313,21 +1311,27 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                           for(let j=0;j<bd.length;j++){
                             list_to_send.push([bd[j]]);
                           }
-                          callback([list_to_send,true]);
+                          if(initial_length>=6){
+                            callback([list_to_send,true]);
+                          }
+                          else{
+                            callback([list_to_send,false]);
+                          }
+                          
                         }
                         else{
                           callback([list_to_send,false]);
                         }
-                        
-                        
                       })
                     }
                     else{
                       callback([list_to_send,false]);
                     }
-                    
-                   
                   }
+                  else{
+                    callback([list_to_send,false]);
+                  }
+                  
                 }
   
               }
@@ -1347,14 +1351,10 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                 i++;
                 if (result2.length!=0){
                   list_to_send.push(result2);
-
-                  if(i==result1.length){
-                    callback([list_to_send,false]);
-                  }
                 }
-                else if (result2.length==0){
-                 
-                  if(i==result1.length){
+                if(i==result1.length){
+                  let initial_length=list_to_send.length;
+                  if(list_to_send.length<10){
                     if(list_of_bd_already_seen.length>0){
                       comics_serie.Liste_Bd_Serie.findAll({
                         where:{
@@ -1372,7 +1372,12 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                           for(let j=0;j<bd.length;j++){
                             list_to_send.push([bd[j]]);
                           }
-                          callback([list_to_send,true]);
+                          if(initial_length>=6){
+                            callback([list_to_send,true]);
+                          }
+                          else{
+                            callback([list_to_send,false]);
+                          }
                         }
                         else{
                           callback([list_to_send,false]);
@@ -1382,8 +1387,11 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                     else{
                       callback([list_to_send,false]);
                     }
-                    
                   }
+                  else{
+                    callback([list_to_send,false]);
+                  }
+                  
                 }
 
               }
@@ -1503,7 +1511,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   
     let list_to_send=[];
    
-    pool.query('SELECT * FROM (SELECT  publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$4 AND "createdAt" ::date >= $3 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,last_week,format], (error, results1) => {
+    pool.query('SELECT publication_category,format, style, publication_id, count(*) occurences FROM (SELECT  publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$4 AND "createdAt" ::date >= $3 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,last_week,format], (error, results1) => {
         if (error) {
           
           response.status(500).send([{"error":error}]);
@@ -1525,13 +1533,10 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                   i++;
                   if (result2.length!=0){
                     list_to_send.push(result2);
-   
-                    if(i==result1.length){
-                      callback([list_to_send,false]);
-                    }
                   }
-                  else if (result2.length==0){
-                    if(i==result1.length){
+                  if(i==result1.length){
+                    let initial_length=list_to_send.length;
+                    if(list_to_send.length<10){
                       if(list_of_drawings_already_seen.length>0){
                         drawings_one_shot.Drawings_one_page.findAll({
                           where:{
@@ -1549,7 +1554,12 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                             for(let j=0;j<bd.length;j++){
                               list_to_send.push([bd[j]]);
                             }
-                            callback([list_to_send,true]);
+                            if(initial_length>=6){
+                              callback([list_to_send,true]);
+                            }
+                            else{
+                              callback([list_to_send,false]);
+                            }
                           }
                           else{
                             callback([list_to_send,false]);
@@ -1559,8 +1569,11 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                       else{
                         callback([list_to_send,false]);
                       }
-                      
                     }
+                    else{
+                      callback([list_to_send,false]);
+                    }
+                    
                   }
                 }
               })
@@ -1579,13 +1592,10 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                   i++;
                   if (result2.length!=0){
                     list_to_send.push(result2);
-   
-                    if(i==result1.length){
-                      callback([list_to_send,false]);
-                    }
                   }
-                  else if (result2.length==0){
-                    if(i==result1.length){
+                  if(i==result1.length){
+                    let initial_length=list_to_send.length;
+                    if(list_to_send.length<10){
                       if(list_of_drawings_already_seen.length>0){
                         drawings_artbook.Liste_Drawings_Artbook.findAll({
                           where:{
@@ -1603,7 +1613,12 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                             for(let j=0;j<bd.length;j++){
                               list_to_send.push([bd[j]]);
                             }
-                            callback([list_to_send,true]);
+                            if(initial_length>=6){
+                              callback([list_to_send,true]);
+                            }
+                            else{
+                              callback([list_to_send,false]);
+                            }
                           }
                           else{
                             callback([list_to_send,false]);
@@ -1614,6 +1629,10 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                         callback([list_to_send,false]);
                       }
                     }
+                    else{
+                      callback([list_to_send,false]);
+                    }
+                    
                   }
                 }
               })           
@@ -1728,7 +1747,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   last_week.setDate(last_week.getDate() - 350);
   let list_to_send=[];
  
-  pool.query('SELECT * FROM (SELECT  publication_category, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND "createdAt" ::date >= $3 ) as t GROUP BY t.publication_category, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,last_week], (error, results1) => {
+  pool.query('SELECT publication_category, style, publication_id, count(*) occurences FROM (SELECT  publication_category, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND "createdAt" ::date >= $3 ) as t GROUP BY t.publication_category, t.style, t.publication_id ORDER BY Count(*) DESC limit 20', [user,style,last_week], (error, results1) => {
       if (error) {
         
         response.status(500).send([{"error":error}]);
@@ -1736,6 +1755,9 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
       else{
         const result1 = JSON.parse(JSON.stringify(results1.rows));
         let i=0;
+        console.log("recom_writings")
+        console.log(222)
+        console.log(result1)
         if(result1.length!=0){
           for (let item of result1){
             pool.query('SELECT * FROM liste_writings WHERE writing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_writings WHERE writing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND publication_category=$3))', [item.publication_id,user,'writing'], (error, results2) => {
@@ -1745,16 +1767,18 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
               }
               else {
                 result2 = JSON.parse(JSON.stringify(results2.rows));
+                if(item.publication_id==44){
+                  console.log("rest item")
+                  console.log(22)
+                  console.log(result2)
+                }
                 i++;
                 if (result2.length!=0){
                   list_to_send.push(result2);
- 
-                  if(i==result1.length){
-                    callback([list_to_send,false]);
-                  }
                 }
-                else if (result2.length==0){
-                  if(i==result1.length){
+                if(i==result1.length){
+                  let initial_length=list_to_send.length;
+                  if(list_to_send.length<10){
                     if(list_of_writings_already_seen.length>0){
                       writings.Liste_Writings.findAll({
                         where:{
@@ -1772,7 +1796,12 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                           for(let j=0;j<bd.length;j++){
                             list_to_send.push([bd[j]]);
                           }
-                          callback([list_to_send,true]);
+                          if(initial_length>=6){
+                            callback([list_to_send,true]);
+                          }
+                          else{
+                            callback([list_to_send,false]);
+                          }
                         }
                         else{
                           callback([list_to_send,false]);
@@ -1783,6 +1812,10 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                       callback([list_to_send,false]);
                     }
                   }
+                  else{
+                    callback([list_to_send,false]);
+                  }
+                  
                 }
 
               }
