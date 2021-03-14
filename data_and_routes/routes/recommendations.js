@@ -89,7 +89,7 @@ const generate_recommendations = (request, response) => {
         if(jsonData.length>=1){
           
           //pour ubuntu
-          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);r
+          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
           //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
           pythonProcess.stderr.pipe(process.stderr);
           pythonProcess.stdout.on('data', (data) => {
@@ -99,12 +99,10 @@ const generate_recommendations = (request, response) => {
           pythonProcess.stdout.on("end", (data) => {
             fs.access(__dirname + `/csvfiles_for_python/classement_python-${user}.csv`, fs.F_OK, (err) => {
               if(err){
-                console.log(err)
               }  
               else{
                 fs.unlink(__dirname + `/csvfiles_for_python/classement_python-${user}.csv`,function (err) {
                   if (err) {
-                    console.log(err)
                   } 
                 });
               } 
@@ -159,7 +157,6 @@ const generate_recommendations = (request, response) => {
 
           fs.writeFile(PATH, JSON.stringify(array_to_convert_in_json), (err) => {
             if (err){
-              console.log(err)
             } 
             fs.writeFile(PATH2, JSON.stringify(array_to_convert_in_json), (err) => {
               if (err){
@@ -345,7 +342,6 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
               k++;
               
               if(k == compt){
-
                   if(number_of_contents_by_category[0]<6){
                     complete_recommendation_bd(list_of_bd_os_already_seen,response,user,'Manga',"one-shot", (req)=>{
                       
@@ -1372,8 +1368,17 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                       }).catch(err => {
                         response.status(500).send([{"error":error}]);	
                       }).then(bd=>{
-                        list_to_send.push(bd);
-                        callback([list_to_send,true]);
+                        if(bd.length>0){
+                          for(let j=0;j<bd.length;j++){
+                            list_to_send.push([bd[j]]);
+                          }
+                          callback([list_to_send,true]);
+                        }
+                        else{
+                          callback([list_to_send,false]);
+                        }
+                        
+                        
                       })
                     }
                     else{
@@ -1422,8 +1427,15 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                       }).catch(err => {
                         response.status(500).send([{"error":error}]);	
                       }).then(bd=>{
-                        list_to_send.push(bd);
-                        callback([list_to_send,true]);
+                        if(bd.length>0){
+                          for(let j=0;j<bd.length;j++){
+                            list_to_send.push([bd[j]]);
+                          }
+                          callback([list_to_send,true]);
+                        }
+                        else{
+                          callback([list_to_send,false]);
+                        }
                       })
                     }
                     else{
@@ -1592,8 +1604,15 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                         }).catch(err => {
                           response.status(500).send([{"error":error}]);	
                         }).then(bd=>{
-                          list_to_send.push(bd);
-                          callback([list_to_send,true]);
+                          if(bd.length>0){
+                            for(let j=0;j<bd.length;j++){
+                              list_to_send.push([bd[j]]);
+                            }
+                            callback([list_to_send,true]);
+                          }
+                          else{
+                            callback([list_to_send,false]);
+                          }
                         })
                       }
                       else{
@@ -1639,8 +1658,15 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                         }).catch(err => {
                           response.status(500).send([{"error":error}]);	
                         }).then(bd=>{
-                          list_to_send.push(bd);
-                          callback([list_to_send,true]);
+                          if(bd.length>0){
+                            for(let j=0;j<bd.length;j++){
+                              list_to_send.push([bd[j]]);
+                            }
+                            callback([list_to_send,true]);
+                          }
+                          else{
+                            callback([list_to_send,false]);
+                          }
                         })
                       }
                       else{
@@ -1801,8 +1827,15 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
                       }).catch(err => {
                         response.status(500).send([{"error":error}]);	
                       }).then(bd=>{
-                        list_to_send.push(bd);
-                        callback([list_to_send,true]);
+                        if(bd.length>0){
+                          for(let j=0;j<bd.length;j++){
+                            list_to_send.push([bd[j]]);
+                          }
+                          callback([list_to_send,true]);
+                        }
+                        else{
+                          callback([list_to_send,false]);
+                        }
                       })
                     }
                     else{
