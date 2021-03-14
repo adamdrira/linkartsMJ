@@ -1369,6 +1369,9 @@ module.exports = (router,
                             
                         }
                     }
+                    else{
+                        res.status(200).send([view])
+                    }
                 }
                 else{
                     res.status(200).send([{error:"already_added_view_time"}])
