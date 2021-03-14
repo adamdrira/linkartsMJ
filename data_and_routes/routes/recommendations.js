@@ -24,7 +24,6 @@ const pool = new Pool({
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
-  //dialect: 'postgres'
 });
 
 pool.connect((err, client, release) => {
@@ -342,54 +341,36 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
               k++;
               
               if(k == compt){
-                  if(number_of_contents_by_category[0]<6){
-                    complete_recommendation_bd(list_of_bd_os_already_seen,response,user,'Manga',"one-shot", (req)=>{
-                      
-                      if(req[1]){
-                        styles_with_contents_already_seen[0]=true;
-                      }
-                      sort_os_styles(req[0])
-                    })
-                  }
-                  else{
-                    add_compteur()
-                  }
-
-                  if(number_of_contents_by_category[1]<6){
+                  complete_recommendation_bd(list_of_bd_os_already_seen,response,user,'Manga',"one-shot", (req)=>{
+                    
+                    if(req[1]){
+                      styles_with_contents_already_seen[0]=true;
+                    }
+                    sort_os_styles(req[0])
+                  })
+                 
                     complete_recommendation_bd(list_of_bd_os_already_seen,response,user,'Comics',"one-shot", (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[1]=true;
                       }
                       sort_os_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
+                  
 
-                  if(number_of_contents_by_category[2]<6){
                     complete_recommendation_bd(list_of_bd_os_already_seen,response,user,'BD',"one-shot", (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[2]=true;
                       }
                       sort_os_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
+                 
 
-                  if(number_of_contents_by_category[3]<6){
                     complete_recommendation_bd(list_of_bd_os_already_seen,response,user,'Webtoon',"one-shot", (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[3]=true;
                       }
                       sort_os_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
                   
                   
                   function add_compteur(){
@@ -574,53 +555,36 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
               k++;
               if(k == compt){
 
-                  if(number_of_contents_by_category[0]<6){
                     complete_recommendation_bd(list_of_bd_serie_already_seen, response,user,'Manga',"serie", (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[0]=true;
                       }
                       sort_serie_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
 
-                  if(number_of_contents_by_category[1]<6){
                     complete_recommendation_bd(list_of_bd_serie_already_seen,response,user,'Comics',"serie", (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[1]=true;
                       }
                       sort_serie_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
+                  
 
-                  if(number_of_contents_by_category[2]<6){
                     complete_recommendation_bd(list_of_bd_serie_already_seen,response,user,'BD',"serie", (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[2]=true;
                       }
                       sort_serie_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
+                  
   
-                  if(number_of_contents_by_category[3]<6){
                     complete_recommendation_bd(list_of_bd_serie_already_seen,response,user,'Webtoon',"serie", (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[3]=true;
                       }
                       sort_serie_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
+                  
                   
                   
                   function add_compteur(){
@@ -1161,65 +1125,42 @@ const get_first_recommendation_writings_for_user = (request, response) => {
               }
               k++;
               if(k == list_writing.length){
-                  if(number_of_contents_by_category[0]<6){
                     complete_recommendation_writing(list_of_writings_already_seen,response,user,'Article', (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[0]=true;
                       }
                       sort_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
+                  
 
-                  if(number_of_contents_by_category[1]<6){
                     complete_recommendation_writing(list_of_writings_already_seen,response,user,'Roman', (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[1]=true;
                       }
                       sort_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
 
-                  if(number_of_contents_by_category[2]<6){
                     complete_recommendation_writing(list_of_writings_already_seen,response,user,'Illustrated novel', (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[2]=true;
                       }
                       sort_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
 
-                  if(number_of_contents_by_category[3]<6){
                     complete_recommendation_writing(list_of_writings_already_seen,response,user,'Poetry', (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[3]=true;
                       }
                       sort_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
 
-                  if(number_of_contents_by_category[4]<6){
                     complete_recommendation_writing(list_of_writings_already_seen,response,user,'Scenario', (req)=>{
                       if(req[1]){
                         styles_with_contents_already_seen[4]=true;
                       }
                       sort_styles(req[0])
                     })
-                  }
-                  else{
-                    add_compteur()
-                  }
+                  
 
                   
   
