@@ -21,17 +21,13 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
   
 
   router.get('/get_cookies_cover_drawings', (req, res)=>{ 
-    //console.log('get it')
     let value = req.cookies
     res.status(200).send([value]);
     }); 
       
-
-  //var bd_id = 0; // il faut stocker cette valeur dans les cookiers et non ici !!!!!!
-
   //on poste les premières informations du formulaire et on récupère l'id de la bd
   router.post('/add_drawing_one_page', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -48,25 +44,12 @@ console.log("checking current: " + req.headers['authorization'] );
     const category = req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
-    /*for (let i = 0; i < Tags.length; i++){
-      if (Tags[i] !=null){
-        Tags[i] = Tags[i].substring(1);
-        while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
-            Tags[i] = Tags[i].substr(1);
-        }
-        Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-        //console.log(Tags[i]);
-      }
-    }*/
-
       if (Object.keys(req.body).length === 0 ) {
-        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        //console.log('information uploaded correctly');
         drawings_one_page.create({
                 "authorid": current_user,
                 "title":title,
@@ -83,7 +66,7 @@ console.log("checking current: " + req.headers['authorization'] );
             })
           
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
           res.status(200).send([r]);
@@ -95,7 +78,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
     router.post('/change_oneshot_drawing_status', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -117,13 +100,13 @@ console.log("checking current: " + req.headers['authorization'] );
               },
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing => {
             drawing.update({
                     "status":status
               }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing => {
                   res.status(200).send(drawing)
@@ -134,7 +117,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.get('/retrieve_private_oneshot_drawings', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -157,7 +140,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawings =>  {
             res.status(200).send([drawings]);
@@ -167,7 +150,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
   router.post('/update_filter_color_drawing_onepage', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -190,14 +173,14 @@ console.log("checking current: " + req.headers['authorization'] );
           }
         })
         .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
           drawing.update({
             "thumbnail_color": color
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([drawing]))
         }); 
@@ -209,7 +192,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
   //on modifie les informations du formulaire de la bd qu'on upload
   router.post('/modify_drawing_one_page', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -236,7 +219,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(drawing =>  {
             drawing.update({
@@ -249,7 +232,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "monetization":monetization,
             })
             .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(res.status(200).send([drawing]))
           }); 
@@ -257,7 +240,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/modify_drawing_one_page2', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -283,7 +266,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-              //console.log(err);	
+              	
               res.status(500).json({msg: "error", details: err});		
             }).then(drawing =>  {
               drawing.update({
@@ -295,7 +278,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 "thirdtag": Tags[2]?Tags[2]:null,
               })
               .catch(err => {
-              //console.log(err);	
+              	
               res.status(500).json({msg: "error", details: err});		
             }).then(drawing=>{
 
@@ -361,6 +344,7 @@ console.log("checking current: " + req.headers['authorization'] );
     //on post l'image uploadée
     router.post('/upload_drawing_onepage/:drawing_id',  function (req, res) {
 
+      
       let current_user = get_current_user(req.cookies.currentUser);
       if(!current_user){
         return res.status(401).json({msg: "error"});
@@ -392,7 +376,6 @@ console.log("checking current: " + req.headers['authorization'] );
       }).any();
 
       upload(req, res, function(err){
-        //console.log("ici on a le nom de l'oeuvre " + drawing_name + " pour l'id ");
           (async () => {
             const drawing_id = req.params.drawing_id;
             
@@ -415,19 +398,18 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
               });
               if(drawing !== null){
-                //console.log("drawing found");
                 drawing.update({
                     "drawing_name":drawing_name,
                 })
                 .catch(err => {
-                  //console.log(err);	
+                  	
                   res.status(500).json({msg: "error", details: err});		
                 }).then(r =>  {
                  res.send(r.get({plain:true}));
                 }); 
               }
               else {
-                //console.log("drawing not found")
+                res.status(500).json({msg: "error", details: err});	
               }
             
             
@@ -437,55 +419,89 @@ console.log("checking current: " + req.headers['authorization'] );
       });
 
 
-      //on supprime le fichier de la base de donnée postgresql
+      
+
+
       router.delete('/remove_drawing_from_data/:drawing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
+        if( ! req.headers['authorization'] ) {
           return res.status(401).json({msg: "error"});
         }
-      }
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
+        }
         let current_user = get_current_user(req.cookies.currentUser);
-        let drawing_id = req.params.drawing_id
+  
+        let drawing_id = parseInt(req.params.drawing_id);
         drawings_one_page.findOne({
           where: {
               drawing_id: drawing_id,
               authorid: current_user,
           }
-        }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawing=>{
-          list_of_users.findOne({
-            where:{
-              id:current_user,
-            }
           }).catch(err => {
-            //console.log(err);	
             res.status(500).json({msg: "error", details: err});		
-          }).then(user=>{
-            if(drawing.status=="public"){
-              let number_of_drawings=user.number_of_drawings-1;
-              user.update({
-                "number_of_drawings":number_of_drawings,
+          }).then(drawing=>{
+            if(drawing){
+              list_of_users.findOne({
+                where:{
+                  id:current_user,
+                }
+              }).catch(err => {
+                res.status(500).json({msg: "error", details: err});		
+              }).then(user=>{
+                if(drawing.status=="public"){
+                  let number_of_drawings=user.number_of_drawings-1;
+                  user.update({
+                    "number_of_drawings":number_of_drawings,
+                  })
+                }
+                drawing.update({
+                  "status": "deleted"
+                });
+                res.status(200).send([drawing]);
               })
             }
-            drawing.destroy({
-              "status":"deleted"
-            })
-            res.status(200).send([drawing]);
-          });
-        })
+            else{
+              if(current_user==1){
+                drawings_one_page.findOne({
+                  where: {
+                    drawing_id: drawing_id,
+                  }
+                }).then(bd_found=>{
+                  if(bd_found && bd_found.status=="public"){
+                    bd_found.update({
+                      "status": "deleted",
+                    });
+                    list_of_users.findOne({
+                      where:{
+                        id:bd_found.authorid,
+                      }
+                    }).catch(err => {
+                      res.status(500).json({msg: "error", details: err});		
+                    }).then(user_found=>{
+                      let number_of_drawings=user_found.number_of_drawings-1;
+                      user_found.update({
+                        "number_of_drawings":number_of_drawings,
+                      })
+                      res.status(200).send([bd_found]);
+                    })
+                  }
+                })
+              }
+              else{
+                res.status(200).send([{"err":"not found"}]);
+              }
+            }
+          }) 
+          
       });
 
       //on supprime le fichier du dossier date/pages_bd_onshot
       router.delete('/remove_drawing_onepage_from_folder/:drawing_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -498,17 +514,14 @@ console.log("checking current: " + req.headers['authorization'] );
       }
         fs.access('./data_and_routes/drawings_one_page' + req.params.name, fs.F_OK, (err) => {
           if(err){
-            //console.log('suppression already done');
             return res.status(200)
           }
-          //console.log( 'annulation en cours');
           const drawing_name  = req.params.drawing_name;
           fs.unlink('./data_and_routes/drawings_one_page/' + drawing_name,  function (err) {
             if (err) {
-              //console.log("erreur de suppression de drawing one page : " + drawing_name);
+              return res.status(200)
             }  
             else {
-              //console.log( 'fichier supprimé dans le folder');
               return res.status(200)
             }
           });
@@ -518,7 +531,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
       
     router.post('/send_drawing_height_one_shot', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -538,7 +551,7 @@ console.log("checking current: " + req.headers['authorization'] );
           authorid:current_user
         }
       }).catch(err => {
-        //console.log(err);	
+        	
         res.status(500).json({msg: "error", details: err});		
       }).then(drawing=>{
         if(drawing){
@@ -586,9 +599,7 @@ console.log("checking current: " + req.headers['authorization'] );
     }).any();
 
     upload(req, res, function(err) {
-      console.log(req.files)
         if (err) {
-            console.log("error uplaod");
             res.status(500).json({msg: "error", details: err});	
         } else {   
             let file_name = "./data_and_routes/covers_drawings/" + filename ;
@@ -601,7 +612,6 @@ console.log("checking current: " + req.headers['authorization'] );
                   })
                   ]
                 });
-                console.log("respond")
               res.status(200).send([{filename:filename}]);
             })();
         }
@@ -614,7 +624,7 @@ console.log("checking current: " + req.headers['authorization'] );
       
       //on ajoute le nom de la coverpage dans la base de donnée
   router.post('/add_cover_drawing_onepage_todatabase', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -628,21 +638,16 @@ console.log("checking current: " + req.headers['authorization'] );
     let current_user = get_current_user(req.cookies.currentUser);
 
     const name = req.body.name;
-    console.log("add_cover_drawing_onepage_todatabase ");
     const drawing_id = req.body.drawing_id;
-    console.log(drawing_id);
-
     (async () => {
 
 
       if (Object.keys(req.body).length === 0 ) {
-        //console.log("no inftly");
         return res.send({
           success: false
         });
         
       } else { 
-        //console.log('infctly');
          drawing = await drawings_one_page.findOne({
             where: {
               drawing_id: drawing_id,
@@ -650,7 +655,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(drawing =>  {
             drawing.update({
@@ -666,7 +671,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
       //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
       router.delete('/remove_cover_drawing_from_folder/:name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -679,17 +684,14 @@ console.log("checking current: " + req.headers['authorization'] );
       }
         fs.access('./data_and_routes/covers_drawings/' + req.params.name, fs.F_OK, (err) => {
           if(err){
-            //console.log('suppression already done');
             return res.status(200).send([{delete:'suppression done'}])
           }
-          //console.log( 'annulation en cours');
           const name  = req.params.name;
           fs.unlink('./data_and_routes/covers_drawings/' + name,  function (err) {
             if (err) {
-              throw err;
+              return res.status(200).send([{delete:'suppression done'}])
             }  
             else {
-              //console.log( 'fichier supprimé');
               return res.status(200).send([{delete:'suppression done'}])
             }
           });
@@ -701,7 +703,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
       //on valide l'upload
   router.post('/validation_upload_drawing_onepage', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -723,7 +725,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
             list_of_users.findOne({
@@ -731,7 +733,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id:current_user,
               }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
               let number_of_drawings=user.number_of_drawings+1;
@@ -743,7 +745,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "status":"public",
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([drawing]))
           }); 
@@ -753,7 +755,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
                    //on valide l'upload
   router.get('/retrieve_drawing_onepage_info_user_id/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -778,7 +780,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawings =>  {
             res.status(200).send([drawings]);
@@ -788,7 +790,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
    router.post('/get_number_of_drawings_oneshot', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -799,7 +801,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-     //console.log("get_number_of_drawings_oneshot")
     const id_user= req.body.id_user;
     let date_format=req.body.date_format;
     let list_of_drawings=[];
@@ -830,7 +831,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
        })
        .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawings =>  {
         if(drawings.length>0){
@@ -839,14 +840,13 @@ console.log("checking current: " + req.headers['authorization'] );
            list_of_drawings.push(drawings[j])
           }
         }
-        //console.log("get_number_of_drawings_oneshot")
          res.status(200).send([{number_of_drawings_oneshot:drawings.length,list_of_ids:list_of_ids,list_of_drawings:list_of_drawings}]);
        }); 
 
   });
  
     router.get('/retrieve_drawing_info_onepage_by_id/:drawing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -867,7 +867,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(drawing =>  {
               if(drawing){
@@ -879,7 +879,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     publication_id:drawing.drawing_id
                   }
                 }).catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
               }).then(tren=>{
                   if(tren){
@@ -918,7 +918,7 @@ console.log("checking current: " + req.headers['authorization'] );
       
 
     router.get('/retrieve_drawing_info_onepage_by_id2/:drawing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -939,7 +939,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(drawing =>  {
               if(drawing){
@@ -951,7 +951,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     publication_id:drawing.drawing_id
                   }
                 }).catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
               }).then(tren=>{
                   if(tren){
@@ -989,7 +989,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
     
   router.get('/retrieve_drawing_thumbnail_picture/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1017,7 +1017,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.get('/retrieve_drawing_onepage_by_name/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
