@@ -21,7 +21,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
   
 
   router.post('/add_drawings_artbook', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -39,25 +39,12 @@ console.log("checking current: " + req.headers['authorization'] );
     const category = req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
-    /*for (let i = 0; i < Tags.length; i++){
-      if (Tags[i] !=null){
-        Tags[i] = Tags[i].substring(1);
-        while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
-            Tags[i] = Tags[i].substr(1);
-        }
-        Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-        //console.log(Tags[i]);
-      }
-    }*/
-
       if (Object.keys(req.body).length === 0 ) {
-        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        //console.log('information uploaded correctly');
         Liste_artbook.create({
                 "authorid": current_user,
                 "title":title,
@@ -75,7 +62,7 @@ console.log("checking current: " + req.headers['authorization'] );
             })
           
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
           res.status(200).send([r]);
@@ -91,7 +78,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
   //on modifie les informations du formulaire de la  qu'on upload
   router.post('/modify_drawings_artbook', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -118,7 +105,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-          //console.log(err);	
+          	
           res.status(500).json({msg: "error", details: err});		
         }).then(drawing =>  {
             drawing.update({
@@ -131,7 +118,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "monetization":monetization,
             })
             .catch(err => {
-          //console.log(err);	
+          	
           res.status(500).json({msg: "error", details: err});		
         }).then(res.status(200).send([drawing]))
           }); 
@@ -139,7 +126,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/modify_drawings_artbook2', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -165,7 +152,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(drawing =>  {
               drawing.update({
@@ -177,7 +164,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "thirdtag": Tags[2]?Tags[2]:null,
               })
               .catch(err => {
-              //console.log(err);	
+              	
               res.status(500).json({msg: "error", details: err});		
             }).then(drawing=>{
 
@@ -240,7 +227,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
 
     router.post('/update_filter_color_drawing_artbook', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -263,70 +250,101 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(artbook =>  {
             artbook.update({
               "thumbnail_color": color
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([artbook]))
           }); 
       })();
       });
 
-    router.delete('/remove_drawings_artbook/:drawing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
+
+      router.delete('/remove_drawings_artbook/:drawing_id', function (req, res) {
+        if( ! req.headers['authorization'] ) {
           return res.status(401).json({msg: "error"});
         }
-      }
-      let current_user = get_current_user(req.cookies.currentUser);
-      let drawing_id=req.params.drawing_id;
-      Liste_artbook.findOne({
-        where: {
-          authorid: current_user,
-          drawing_id: drawing_id,
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
         }
-      }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(artbook=>{
-        list_of_users.findOne({
-          where:{
-            id:current_user,
+        let current_user = get_current_user(req.cookies.currentUser);
+  
+        let drawing_id = parseInt(req.params.drawing_id);
+        Liste_artbook.findOne({
+          where: {
+              drawing_id: drawing_id,
+              authorid: current_user,
           }
-        }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
-          if(artbook.status=="public"){
-            res.json([artbook]);
-            let number_of_drawings=user.number_of_drawings-1;
-            user.update({
-              "number_of_drawings":number_of_drawings,
-            })
-          }
-          artbook.update({
-            "status":"deleted"
-          })
-          res.status(200).send([artbook]);
+          }).catch(err => {
+            res.status(500).json({msg: "error", details: err});		
+          }).then(drawing=>{
+            if(drawing){
+              list_of_users.findOne({
+                where:{
+                  id:current_user,
+                }
+              }).catch(err => {
+                res.status(500).json({msg: "error", details: err});		
+              }).then(user=>{
+                if(drawing.status=="public"){
+                  let number_of_drawings=user.number_of_drawings-1;
+                  user.update({
+                    "number_of_drawings":number_of_drawings,
+                  })
+                }
+                drawing.update({
+                  "status": "deleted"
+                });
+                res.status(200).send([drawing]);
+              })
+            }
+            else{
+              if(current_user==1){
+                drawings_one_page.findOne({
+                  where: {
+                    drawing_id: drawing_id,
+                  }
+                }).then(bd_found=>{
+                  if(bd_found && bd_found.status=="public"){
+                    bd_found.update({
+                      "status": "deleted",
+                    });
+                    list_of_users.findOne({
+                      where:{
+                        id:bd_found.authorid,
+                      }
+                    }).catch(err => {
+                      res.status(500).json({msg: "error", details: err});		
+                    }).then(user_found=>{
+                      let number_of_drawings=user_found.number_of_drawings-1;
+                      user_found.update({
+                        "number_of_drawings":number_of_drawings,
+                      })
+                      res.status(200).send([bd_found]);
+                    })
+                  }
+                })
+              }
+              else{
+                res.status(200).send([{"err":"not found"}]);
+              }
+            }
+          }) 
           
-        });
-      })
-            
-        });
+      });
+
 
         router.post('/change_artbook_drawing_status', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -349,13 +367,13 @@ console.log("checking current: " + req.headers['authorization'] );
                   },
               })
               .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing => {
                 drawing.update({
                         "status":status
                   }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing => {
                       res.status(200).send(drawing)
@@ -366,7 +384,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
 
       router.get('/retrieve_private_artbook_drawings', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -389,7 +407,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   ],
               })
               .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(artbooks =>  {
                 res.status(200).send([artbooks]);
@@ -427,7 +445,6 @@ console.log("checking current: " + req.headers['authorization'] );
           (async () => {
             const page= req.params.page;
             const drawing_id = req.params.drawing_id;
-            //console.log('File is available!');   
             let filename = "./data_and_routes/drawings_pages_artbook/" + file_name ;
             const files = await imagemin([filename], {
               destination: './data_and_routes/drawings_pages_artbook',
@@ -438,18 +455,6 @@ console.log("checking current: " + req.headers['authorization'] );
               ]
             });
 
-            const drawing = await Liste_artbook.findOne({
-                where: {
-                  drawing_id: drawing_id,
-                  authorid: current_user,
-                }
-              });
-              if(drawing !== null){
-                //console.log(drawing.drawing_id);
-              }
-              else {
-                //console.log("drawing not found")
-              }
               pages_artbook.create({
                 "drawing_id": drawing_id,
                 "author_id": current_user,
@@ -457,7 +462,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 "page_number": page
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
             res.send(r.get({plain:true}));
@@ -471,7 +476,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/remove_artbook_page_from_data/:page/:drawing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -482,32 +487,19 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        (async () => {
-          const pageartbook = await pages_artbook.findOne({
-            where: {
-              page_number: req.params.page,
-              drawng_id: drawing_id,
-            }
-          });
-          if(pageartbook !== null){
-            res.json([pageartbook]);
-          }
-          else {
-            //console.log("page not found")
-          }
 
-          //console.log( 'suppression en cours');
-          const page  = req.params.page;
-          pages_artbook.destroy({
-            where: {page_number:page, drawing_id: drawing_id },
-            truncate: false
-          })
-        })();
+        const page  = req.params.page;
+        pages_artbook.destroy({
+          where: {page_number:page, drawing_id: drawing_id },
+          truncate: false
+        })
+
+        res.status(200).send([{done:"done"}])
       });
 
       //on supprime le fichier du dossier date/drawings_pages_artbook
       router.delete('/remove_artbook_page_from_folder/:name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -520,17 +512,14 @@ console.log("checking current: " + req.headers['authorization'] );
       }
         fs.access('./data_and_routes/drawings_pages_artbook' + req.params.name, fs.F_OK, (err) => {
           if(err){
-            //console.log('suppression already done');
             return res.status(200).send([{delete:'suppression done'}])
           }
-          //console.log( 'annulation en cours');
           const name  = req.params.name;
           fs.unlink('./data_and_routes/drawings_pages_artbook/' + name,  function (err) {
             if (err) {
-              throw err;
+              return res.status(200).send([{delete:'suppression done'}])
             }  
             else {
-              //console.log( 'fichier supprimé');
               return res.status(200).send([{delete:'suppression done'}])
             }
           });
@@ -540,7 +529,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
      //on ajoute le nom de la coverpage dans la base de donnée
       router.post('/add_cover_drawing_artbook_todatabase', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -552,10 +541,8 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
         let current_user = get_current_user(req.cookies.currentUser);
-        console.log("add_cover_drawing_artbook_todatabase")
         const name = req.body.name;
         const drawing_id = req.body.drawing_id;
-        console.log(drawing_id);
         Liste_artbook.findOne({
                 where: {
                   drawing_id: drawing_id,
@@ -563,14 +550,14 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
               })
               .catch(err => {
-                  //console.log(err);	
+                  	
                   res.status(500).json({msg: "error", details: err});		
                 }).then(drawing =>  {
                 drawing.update({
                   "name_coverpage" :name
                 })
                 .catch(err => {
-                  //console.log(err);	
+                  	
                   res.status(500).json({msg: "error", details: err});		
                 }).then(res.status(200).send([drawing]))
               }); 
@@ -580,7 +567,7 @@ console.log("checking current: " + req.headers['authorization'] );
  
 //on valide l'upload
   router.post('/validation_upload_drawing_artbook', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -595,7 +582,6 @@ console.log("checking current: " + req.headers['authorization'] );
 
     (async () => {
       const page_number=req.body.page_number;
-      //console.log(page_number);
        const drawing_id= req.body.drawing_id;
          drawing = await Liste_artbook.findOne({
             where: {
@@ -604,7 +590,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
            list_of_users.findOne({
@@ -612,7 +598,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id:current_user,
               }
             }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
               let number_of_drawings=user.number_of_drawings+1;
@@ -625,7 +611,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "pagesnumber":page_number,
             })
             .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([drawing]))
           }); 
@@ -636,7 +622,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.post('/send_drawing_height_artbook', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -647,7 +633,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-      console.log("send_drawing_height_artbook")
       let current_user = get_current_user(req.cookies.currentUser);
       let drawing_id=req.body.drawing_id;
       let height=req.body.height;
@@ -674,7 +659,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
   router.get('/retrieve_drawing_artbook_info_by_userid/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -696,7 +681,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawing =>  {
             
@@ -707,7 +692,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/get_number_of_drawings_artbook', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -748,7 +733,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ],
          })
          .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawings =>  {
           if(drawings.length>0){
@@ -765,7 +750,7 @@ console.log("checking current: " + req.headers['authorization'] );
  
  
     router.get('/retrieve_drawing_artbook_by_id/:drawing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -786,7 +771,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-            //console.log(err);	
+            	
             res.status(500).json({msg: "error", details: err});		
           }).then(drawing =>  {
               if(drawing){
@@ -798,7 +783,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     publication_id:drawing.drawing_id
                   }
                 }).catch(err => {
-                  //console.log(err);	
+                  	
                   res.status(500).json({msg: "error", details: err});		
                 }).then(tren=>{
                   if(tren){
@@ -834,7 +819,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
       
   router.get('/retrieve_drawing_artbook_by_id2/:drawing_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -855,7 +840,7 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-          //console.log(err);	
+          	
           res.status(500).json({msg: "error", details: err});		
         }).then(drawing =>  {
             if(drawing){
@@ -867,7 +852,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   publication_id:drawing.drawing_id
                 }
               }).catch(err => {
-                //console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
               }).then(tren=>{
                 if(tren){
@@ -903,7 +888,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
   router.get('/retrieve_drawing_page_ofartbook/:drawing_id/:drawing_page', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -927,14 +912,12 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       })
       .catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(page =>  {
         if(page && page.file_name){
           let filename = "./data_and_routes/drawings_pages_artbook/" + page.file_name;
           fs.readFile( path.join(process.cwd(),filename), function(e,data){
-            //blob = data.toBlob('application/image');
-            //console.log("drawing page retrieved");
             if(e){
               filename = "./data_and_routes/not-found-image.jpg";
               fs.readFile( path.join(process.cwd(),filename), function(e,data){
