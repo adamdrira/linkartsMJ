@@ -2877,8 +2877,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', // sender address
-            //to: user.email, // my mail
-            to:"appaloosa-adam@hotmail.fr",
+            to: user.email, // my mail
+            //to:"appaloosa-adam@hotmail.fr",
             subject: `Bienvenue sur LinkArts !`, // Subject line
             //text: 'plain text', // plain text body
             html:  mail_to_send,
