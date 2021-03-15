@@ -808,6 +808,12 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 }
               })
             }
+            else{
+              compt++;
+              if(compt==end){
+                delete_null_and_send(list_of_users_to_send)
+              }
+            }
           }
         }
         else{
