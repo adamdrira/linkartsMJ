@@ -775,11 +775,6 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           let compt=0;
           let end=friends.length;
           for(let j=0;j<friends.length;j++){
-            if(friends[j].id_user==id_user && friends[j].id_receiver==id_user){
-              end-=1;
-            }
-          }
-          for(let j=0;j<friends.length;j++){
             if(friends[j].id_user==id_user && friends[j].id_receiver!=id_user){
               list_of_users.findOne({
                 where:{
@@ -787,12 +782,12 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 }
               }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(l=>{
+                res.status(500).json({msg: "error", details: err});		
+              }).then(l=>{
                 list_of_users_to_send[j]=l;
                 compt++;
                 if(compt==end){
-                  res.status(200).send([{list:list_of_users_to_send}]);
+                  delete_null_and_send(list_of_users_to_send)
                 }
               })
             }
@@ -803,12 +798,13 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 }
               }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(l=>{
+                res.status(500).json({msg: "error", details: err});		
+              }).then(l=>{
                 list_of_users_to_send[j]=l;
                 compt++;
                 if(compt==end){
-                  res.status(200).send([{list:list_of_users_to_send}]);
+                  delete_null_and_send(list_of_users_to_send)
+                  
                 }
               })
             }
@@ -818,6 +814,15 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           res.status(200).send([{list:[]}]);
         }
         
+        function delete_null_and_send(list){
+          let len=list.length;
+          for(let i=0;i<len;i++){
+            if(!list[len-i-1]){
+              list.splice(len-i-1,1);
+            }
+          }
+          res.status(200).send([{list:list_of_users_to_send}]);
+        }
       }); 
       
    });
@@ -853,11 +858,11 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       if(searchs.length>0){
         let compt=0
         let end=searchs.length;
-        for(let i=0;i<searchs.length;i++){
+        /*for(let i=0;i<searchs.length;i++){
           if(searchs[i].id_receiver==id_user){
             end-=1;
           }
-        }
+        }*/
         for(let i=0;i<searchs.length;i++){
           if(searchs[i].id_receiver!=id_user){
             list_of_users.findOne({
@@ -867,19 +872,27 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             }).catch(err => {
                 
                 res.status(500).json({msg: "error", details: err});		
-              }).then(history=>{
+            }).then(history=>{
               list_of_history[i]=history;
-              compt++;
-              if(compt==end){
-                let len=list_of_history.length;
-                for(let i=0;i<len;i++){
-                  if(!list_of_history[len-i-1]){
-                    list_of_history.splice(len-i-1,1);
-                  }
-                }
-                res.status(200).send([{"list_of_history":list_of_history}]);
-              }
+              delete_and_send(list_of_history)
             })
+          }
+          else{
+            
+            delete_and_send(list_of_history);
+          }
+        }
+
+        function delete_and_send(list){
+          compt++;
+          if(compt==end){
+            let len=list.length;
+            for(let i=0;i<len;i++){
+              if(!list[len-i-1]){
+                list.splice(len-i-1,1);
+              }
+            }
+            res.status(200).send([{"list_of_history":list_of_history}]);
           }
         }
       }
