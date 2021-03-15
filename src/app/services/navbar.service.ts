@@ -85,7 +85,6 @@ export class NavbarService {
     get_using_chat(){ return this.using_chat}
 
     send_connextion_status(status){
-      console.log(status)
       this.connexion_status=status;
       this.connexionSubject.next(status);
       
@@ -99,7 +98,6 @@ export class NavbarService {
     /********************************************* NOTIFICATIONS **************************************/
 
     add_notification_from_chat(object){
-      console.log("add_notification_from_chat")
       this.notificationSubject.next(object);
     }
     
@@ -113,8 +111,6 @@ export class NavbarService {
 
 
     get_most_researched_navbar(category,compteur,status){
-      console.log(compteur);
-      console.log(status)
         return this.httpClient.get(`routes/get_most_researched_navbar/${category}/${status}`, {withCredentials:true}).pipe(map((information)=>{
           return [information,compteur];
         }));
