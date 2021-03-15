@@ -49,7 +49,10 @@ export class FavoritesComponent implements OnInit {
           this.list_of_users[i]=info[0].favorites[i]
           this.list_of_users[i].id= this.list_of_users[i].id_user;
           let format=(this.list_of_users[i].shares)?'group':'user';
-          this.send_notification(this.list_of_users[i].id, this.list_of_users[i].rank,format)
+          if(this.list_of_users[i].rank<=30){
+            this.send_notification(this.list_of_users[i].id, this.list_of_users[i].rank,format)
+          }
+          
         }
         this.favorites_retrieved=true;
       }
@@ -80,7 +83,10 @@ export class FavoritesComponent implements OnInit {
       this.favorites_retrieved=true;
       for(let j=0;j<list.length;j++){
         let format=(list[j].gender=='Groupe')?'group':'user';
-        this.send_notification(list[j].id, list_of_rankings[j],format)
+        if(list_of_rankings[j]<=30){
+          this.send_notification(list[j].id, list_of_rankings[j],format)
+        }
+        
       }
        
       

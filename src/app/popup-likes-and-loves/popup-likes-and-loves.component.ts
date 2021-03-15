@@ -1,7 +1,4 @@
 import { Component, OnInit, Renderer2,  ChangeDetectorRef, Inject } from '@angular/core';
-
-
-
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
@@ -12,8 +9,6 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-
-declare var $: any;
 
 @Component({
   selector: 'app-popup-likes-and-loves',
@@ -35,7 +30,6 @@ export class PopupLikesAndLovesComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<PopupLikesAndLovesComponent>,
     private cd:ChangeDetectorRef,
-    private rd:Renderer2,
     private NotificationsService:NotificationsService,
     private chatService:ChatService,
     private sanitizer:DomSanitizer,
@@ -46,7 +40,6 @@ export class PopupLikesAndLovesComponent implements OnInit {
     private navbar: NavbarService,
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
-      dialogRef.disableClose = true;
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;

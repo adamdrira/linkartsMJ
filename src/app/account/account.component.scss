@@ -771,17 +771,17 @@
         }
 
         scrollbar-width:thin;
-        scrollbar-color: #243b63 white;
+        scrollbar-color: #e4e4e4 white;
         &::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 4px;
+            height: 4px;
         }
         &::-webkit-scrollbar-track {
             border-radius: 10px;
             background-color: rgba(255, 255, 255, 0.1);
         }
         &::-webkit-scrollbar-thumb {
-            background: #243b63;
+            background: #e4e4e4;
             border-radius: 20px;
         }
       }
@@ -1016,7 +1016,7 @@
 }
 
 .bd-container {
-  width: 90%;
+  width: calc(90% + 1px);
   max-width: 1650px;
   margin-left: auto;
   margin-right: auto;
@@ -1441,7 +1441,7 @@
 
 .see-more {
   display: flex;
-  width: 90%;
+  width: calc(90% + 1px);
   height: 40px;
   border-radius: 4px 4px 0px 0px;
   border-top: unset;
@@ -1706,8 +1706,8 @@
     scrollbar-width:thin;
     scrollbar-color: rgba(12, 27, 61, 0.15) white;
     &::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 4px;
+      height: 4px;
     }
     &::-webkit-scrollbar-track {
         border-radius: 10px;

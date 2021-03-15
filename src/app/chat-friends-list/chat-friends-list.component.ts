@@ -1310,7 +1310,9 @@ change_message_status(event){
     this.compteur_research++;
     this.chatService.get_chat_first_propositions_add_friend(this.id_group_where_friends_are_added,this.compteur_research).subscribe(r=>{
       let compt=0;
+     
       if(r[0][0].list.length>0 && r[1]==this.compteur_research){
+        
         for(let i=0;i<r[0][0].list.length;i++){
           this.list_of_new_friends_names[i]=r[0][0].list[i].firstname + ' ' + r[0][0].list[i].lastname;
           this.list_of_new_friends_pseudos[i]=r[0][0].list[i].nickname;
@@ -1586,9 +1588,6 @@ change_message_status(event){
               if(this.compteur_first_propositions==m[1]){
                 this.list_of_contacts_pictures[i] = SafeURL;
               }
-              
-             
-    
             })
             compt ++;
             if(compt==r[0].list_of_history.length){
@@ -1768,7 +1767,6 @@ change_message_status(event){
           this.display_other_contacts=false;
           this.chatService.get_searching_propositions(this.fd.value.fdSearchbar,this.compteur_research,this.select_group_chat_contacts).subscribe(r=>{
             if(r[1]==this.compteur_research){
-              
               if(r[0][0].related_users.length>0){
                 let compt1=0;
                 for(let i=0;i<r[0][0].related_users.length;i++){
@@ -1965,7 +1963,7 @@ change_message_status(event){
     if(this.select_group_chat_contacts){
       return;
     }
-    //console.log(indice); // 1 first propositions, 2 historic researches, 3 related, 4 others
+    // 1 first propositions, 2 historic researches, 3 related, 4 others
     this.waiting_friend_type=this.friend_type
     this.waiting_friend_id=this.friend_id;
     this.waiting_friend_name=this.friend_name;
@@ -2197,7 +2195,7 @@ change_message_status(event){
             this.createFormAd();
             this.set_category(0,false);
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-              data: {showChoice:false, text:"Vous n'avez aucune invitation"},          
+              data: {showChoice:false, text:"Vous n'avez aucune invitation."},          
               panelClass: "popupConfirmationClass",
             });
           return false;
@@ -2463,7 +2461,7 @@ group_chat_creation_done(){
  }
  else{
   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-    data: {showChoice:false, text:"Veuillez inclure au moins un membre"},
+    data: {showChoice:false, text:"Veuillez inclure au moins un membre."},
     panelClass: "popupConfirmationClass",
   });
  }

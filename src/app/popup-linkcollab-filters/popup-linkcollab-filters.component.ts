@@ -23,13 +23,9 @@ export class PopupLinkcollabFiltersComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<PopupLinkcollabFiltersComponent>,
-    private cd:ChangeDetectorRef,
-    private rd:Renderer2,
     private navbar: NavbarService,
-    private sanitizer:DomSanitizer,
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-      dialogRef.disableClose = true;
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;

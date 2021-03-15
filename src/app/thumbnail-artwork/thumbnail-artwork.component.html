@@ -36,7 +36,7 @@
         <div class="right-container" *ngIf="data_retrieved">
 
 
-            <div *ngIf="type_of_profile=='account' && !(category=='drawing' && !visitor_mode)" class="absolute-selector"
+            <div *ngIf="type_of_profile=='account'" class="absolute-selector"
                 [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved}">
                 <button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options"
                     (click)="stop($event)">
@@ -63,7 +63,7 @@
                         <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                         <span>Annuler le signalement</span>
                     </button>
-                    <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
+                    <button *ngIf="!visitor_mode && category!='drawing'" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
                         (click)="edit_thumbnail()">
                         <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                         <span>Modifier la miniature</span>
@@ -103,7 +103,7 @@
                         <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                         <span>Annuler le signalement</span>
                     </button>
-                    <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
+                    <button *ngIf="!visitor_mode && category!='drawing'" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
                         (click)="edit_thumbnail()">
                         <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                         <span>Modifier la miniature</span>

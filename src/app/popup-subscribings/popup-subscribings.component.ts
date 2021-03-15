@@ -1,6 +1,4 @@
 import { Component, OnInit, Renderer2,  ChangeDetectorRef,  Inject } from '@angular/core';
-
-
 import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -11,8 +9,6 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-
-declare var $: any;
 
 @Component({
   selector: 'app-popup-subscribings',
@@ -34,7 +30,6 @@ export class PopupSubscribingsComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<PopupSubscribingsComponent>,
     private cd:ChangeDetectorRef,
-    private rd:Renderer2,
     private NotificationsService:NotificationsService,
     private chatService:ChatService,
     private sanitizer:DomSanitizer,
@@ -45,7 +40,6 @@ export class PopupSubscribingsComponent implements OnInit {
     private navbar: NavbarService,
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
-      dialogRef.disableClose = true;
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;

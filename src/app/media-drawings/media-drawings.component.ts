@@ -186,12 +186,9 @@ export class MediaDrawingsComponent implements OnInit {
   reload_masonry(){
     var $grid = $('.grid').masonry({
     itemSelector: '.grid-item',
-    //columnWidth: 200,
     gutter:10,
-    //isInitLayout:true,
     initLayout:false,
     fitWidth: true,
-    //horizontalOrder: true,
     
     });
   
@@ -205,12 +202,9 @@ export class MediaDrawingsComponent implements OnInit {
 
   var $grid = $('.grid').masonry({
     itemSelector: '.grid-item',
-    //columnWidth: 200,
     gutter:10,
-    //isInitLayout:true,
     initLayout:false,
     fitWidth: true,
-    //horizontalOrder: true,
     
   });
   
@@ -340,6 +334,8 @@ export class MediaDrawingsComponent implements OnInit {
       if(this.detect_new_compteur_drawings){
         $('.grid').masonry('reloadItems');
         this.cd.detectChanges;
+        this.reload_masonry();
+        this.cd.detectChanges();
         if(this.compteur_drawings_thumbnails==this.total_for_new_compteur){
           this.total_for_new_compteur=0;
           this.compteur_drawings_thumbnails=0;

@@ -594,14 +594,14 @@ export class ChatComponent implements OnInit  {
       if(this.uploader.queue.length==6){
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 fichiers'},          
+          data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 fichiers.'},          
           panelClass: "popupConfirmationClass",
         });
       }
       else if(Math.trunc(size)>10){
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:`Votre fichier est trop volumineux, choisissez un fichier de moins de 10Mo alors qu'il fait ${size}`},
+          data: {showChoice:false, text:`Votre fichier est trop volumineux, choisissez un fichier de moins de 10Mo alors qu'il fait ${size}.`},
           panelClass: "popupConfirmationClass",
         });
       }
@@ -1033,14 +1033,14 @@ export class ChatComponent implements OnInit  {
       let name=event.clipboardData.files[0].name;
       if(this.attachments.length==5){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Vous ne pouvez pas envoyer plus de 5 fichiers simultanément'},
+          data: {showChoice:false, text:'Vous ne pouvez pas envoyer plus de 5 fichiers simultanément.'},
           panelClass: "popupConfirmationClass",
         });
         return
       }
       if(Math.trunc(size)>5){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le fichier est trop volumineux'},
+          data: {showChoice:false, text:'Le fichier est trop volumineux.'},
           panelClass: "popupConfirmationClass",
         });
         return
@@ -1150,18 +1150,20 @@ export class ChatComponent implements OnInit  {
 
   
   send_message(){
+    
+
+    if( this.message_group.value.message.length > 1500 ) {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Ce message est trop long (> 1500 caractères).'},
+        panelClass: "popupConfirmationClass",
+      });
+      return;
+    }
+
     if(this.attachments.length>0){
       for(let i=0;i<this.attachments.length;i++){
         this.send_attachment_or_picture(i);
       }
-    }
-
-    if( this.message_group.value.message.length > 1500 ) {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Ce message est trop long (> 1500 caractères), il n\'a pas été envoyé'},
-        panelClass: "popupConfirmationClass",
-      });
-      return;
     }
 
     this.message_one ={
@@ -2063,13 +2065,13 @@ add_chat_section_name(e: any){
     else{
       if(r[0].cause=="already"){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Cette conversation existe déjà'},
+          data: {showChoice:false, text:'Cette discussion existe déjà.'},
           panelClass: "popupConfirmationClass",
         });
       }
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Vous ne pouvez pas crééer plus de 15 conversations'},
+          data: {showChoice:false, text:'Vous ne pouvez pas crééer plus de 15 discussions.'},
           panelClass: "popupConfirmationClass",
         });
       }
@@ -2100,7 +2102,7 @@ delete_chat_section(){
   else{
     
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer la discussion ainsi que tous les messages concernés ?'},
+      data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer la discussion ? Cette action entrainera la perte définitive des messages concernés.'},
       panelClass: "popupConfirmationClass",
     });
 
@@ -2115,7 +2117,7 @@ delete_chat_section(){
           }
           else{
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-              data: {showChoice:false, text:"Vous ne pouvez pas supprimer une discussion dont vous n'êtes pas le créateur"},
+              data: {showChoice:false, text:"Vous ne pouvez pas supprimer une discussion dont vous n'êtes pas le créateur."},
               panelClass: "popupConfirmationClass",
             });
             this.deleting_chat_section=false;

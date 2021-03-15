@@ -41,8 +41,6 @@ export class PopupSubscribersComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private navbar: NavbarService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-      dialogRef.disableClose = true;
-    
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;

@@ -3,13 +3,13 @@ import { Component, OnInit, Input, ElementRef, ChangeDetectorRef, ViewChild, Sim
 import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { NavbarService } from '../services/navbar.service';
 import { ChatService} from '../services/chat.service';
-import { Profile_Edition_Service} from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ChatComponent } from '../chat/chat.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 
 @Component({
@@ -72,12 +72,10 @@ export class ChatRightContainerComponent implements OnInit {
 
   constructor(private chatService:ChatService,
     private ChatComponent:ChatComponent,
-    private FormBuilder:FormBuilder,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     public navbar: NavbarService, 
-    private Profile_Edition_Service:Profile_Edition_Service,
     private cd: ChangeDetectorRef
     ) { 
       navbar.visibility_observer_font.subscribe(font=>{
@@ -396,6 +394,7 @@ export class ChatRightContainerComponent implements OnInit {
   chat_section_name_added: FormControl;
   chat_section_group:FormGroup;
 
+
   add_chat_section() {
     this.addChatSection.emit();
   }
@@ -403,8 +402,25 @@ export class ChatRightContainerComponent implements OnInit {
     this.deletedChatSection.emit();
   }
   add_chat_section_name() {
-    this.addChatSectionName.emit( this.chat_section_group.value.chat_section_name_added );
-    this.chat_section_group.reset();
+    if(this.chat_section_group.valid){
+      if(this.chat_section_group.value.chat_section_name_added.replace(/\s/g, '').length>0 ){
+        this.addChatSectionName.emit( this.chat_section_group.value.chat_section_name_added );
+        this.chat_section_group.reset();
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Veuillez saisir un titre valide."},          
+          panelClass: "popupConfirmationClass",
+        });
+      }
+    }
+    else{
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Veuillez saisir un titre valide."},          
+        panelClass: "popupConfirmationClass",
+      });
+    }
+    
   }
   cancel_add_section() {
     this.chat_section_group.reset();

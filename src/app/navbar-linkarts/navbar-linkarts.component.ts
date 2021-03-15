@@ -2073,6 +2073,9 @@ load_friends_pp(i){
 
 get_connections_status(){
   this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
+    if(this.user_id<4){
+      console.log(r[0])
+    }
     let compt=0
     for(let i=0;i<this.list_of_friends_types.length;i++){
       

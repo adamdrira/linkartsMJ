@@ -58,7 +58,7 @@
             outline: none;
             border: none;
             display: flex;
-            right: 0px;
+            right: -10px;
             padding: 5px;
             position: absolute;
             border-radius: 50px;
@@ -77,6 +77,21 @@
         max-height: 400px;
         overflow-y: auto;
         padding: 0px 10px 0px 10px;
+
+        scrollbar-width:thin;
+        scrollbar-color: #e4e4e4 white;
+        &::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        &::-webkit-scrollbar-track {
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        &::-webkit-scrollbar-thumb {
+            background: #e4e4e4;
+            border-radius: 20px;
+        }
     }
 
     .subscriber-card-skeleton {
