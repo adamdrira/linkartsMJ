@@ -246,7 +246,7 @@ export class MediaDrawingsComponent implements OnInit {
       }
       
       this.got_number_of_drawings_to_show=true;
-      this.number_of_lines_drawings=1;
+      this.number_of_lines_drawings=2;
 
       this.compteur_number_of_drawings= this.number_of_drawings_variable*this.number_of_lines_drawings;
       this.number_of_drawings_to_show_by_category[0]=this.compteur_number_of_drawings;
