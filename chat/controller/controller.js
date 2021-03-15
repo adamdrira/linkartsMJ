@@ -858,11 +858,6 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       if(searchs.length>0){
         let compt=0
         let end=searchs.length;
-        /*for(let i=0;i<searchs.length;i++){
-          if(searchs[i].id_receiver==id_user){
-            end-=1;
-          }
-        }*/
         for(let i=0;i<searchs.length;i++){
           if(searchs[i].id_receiver!=id_user){
             list_of_users.findOne({
