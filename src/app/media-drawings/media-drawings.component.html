@@ -31,14 +31,13 @@
                         ></app-thumbnail-drawing>
                     </div>
                 </div>
-                <div *ngIf="sorted_artpieces_traditional.length>number_of_drawings_to_show_by_category[0]" 
+                <div *ngIf="sorted_artpieces_traditional.length>number_of_drawings_to_show_by_category[0] && !(detect_new_compteur_drawings && category_clicked_for_see_more==0)" 
                     class="see-more" (click)="see_more_drawings(0)" [ngClass]="{'invisible':!all_drawings_loaded}">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon" *ngIf="!(detect_new_compteur_drawings && category_clicked_for_see_more==0)">expand_more</mat-icon>
-                    <mat-spinner diameter="20" style="margin: auto;" *ngIf="detect_new_compteur_drawings && category_clicked_for_see_more==0"></mat-spinner>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon" >expand_more</mat-icon>
                 </div>
-                <div *ngIf="!(sorted_artpieces_traditional.length>number_of_drawings_to_show_by_category[0]) && category_clicked_for_see_more==0" 
+                <div *ngIf="detect_new_compteur_drawings && category_clicked_for_see_more==0" 
                     class="see-more"  [ngClass]="{'invisible':!all_drawings_loaded}">
-                    <mat-spinner diameter="20" style="margin: auto;" *ngIf="detect_new_compteur_drawings"></mat-spinner>
+                    <mat-spinner diameter="20" style="margin: auto;" ></mat-spinner>
                 </div>
             </ng-container>
 
@@ -64,14 +63,13 @@
                         ></app-thumbnail-drawing>
                     </div>
                 </div>
-                <div *ngIf="sorted_artpieces_digital.length>number_of_drawings_to_show_by_category[1]" 
+                <div *ngIf="sorted_artpieces_digital.length>number_of_drawings_to_show_by_category[1] && !(detect_new_compteur_drawings && category_clicked_for_see_more==1)" 
                     class="see-more" (click)="see_more_drawings(1)" [ngClass]="{'invisible':!all_drawings_loaded}">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon" *ngIf="!(detect_new_compteur_drawings && category_clicked_for_see_more==1)">expand_more</mat-icon>
-                    <mat-spinner diameter="20" style="margin: auto;" *ngIf="detect_new_compteur_drawings && category_clicked_for_see_more==1"></mat-spinner>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon" >expand_more</mat-icon>
                 </div>
-                <div *ngIf="!(sorted_artpieces_traditional.length>number_of_drawings_to_show_by_category[1]) && category_clicked_for_see_more==1" 
+                <div *ngIf="detect_new_compteur_drawings && category_clicked_for_see_more==1" 
                     class="see-more"  [ngClass]="{'invisible':!all_drawings_loaded}">
-                    <mat-spinner diameter="20" style="margin: auto;" *ngIf="detect_new_compteur_drawings"></mat-spinner>
+                    <mat-spinner diameter="20" style="margin: auto;" ></mat-spinner>
                 </div>
             </ng-container>
 

@@ -383,7 +383,7 @@ export class MediaDrawingsComponent implements OnInit {
       this.prevent_shiny=true;
       this.new_contents_loading=true;
       let num=this.number_of_drawings_to_show_by_category[category_number];
-      this.number_of_drawings_to_show_by_category[category_number]+=this.number_of_drawings_variable*4;
+      this.number_of_drawings_to_show_by_category[category_number]+=this.number_of_drawings_variable*3;
       this.detect_new_compteur_drawings=true;
       if(category_number==0){
         if(this.number_of_drawings_to_show_by_category[0]>this.sorted_artpieces_traditional.length){
