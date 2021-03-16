@@ -73,7 +73,7 @@ export class ThumbnailDrawingComponent implements OnInit {
   profile_picture: SafeUrl;  
   date_upload: string;
   date_upload_to_show: string;
-  drawing_id: string;
+  drawing_id: number;
   height:string;
   @Input() item:any;
   @Input() for_news:any;
@@ -92,48 +92,19 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    if( this.for_news == "yes" ) {
-      this.resize_drawing();
-    }
-    else{
-      if(this.width<640){
-        this.small_thumbnail=true;
-        let width=(140*(this.width/640)>110)?140*(this.width/640):110
-        this.rd.setStyle(this.final_thumbnail.nativeElement, "width", width + "px");
-        if( this.height) {
-          let height = Number(this.height)*(width/200);
-          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", height + "px");
-        }
-      }
-      else{
-        this.small_thumbnail=false;
-        this.rd.setStyle(this.final_thumbnail.nativeElement, "width", 200 + "px");
-        if(this.height ) {
-          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
-        }
-      }
-    }
-
-    
-    
-    
+    this.change_size_for_news();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if(this.final_thumbnail && changes.prevent_shiny){
       if(!this.prevent_shiny ){
         this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "0px 0px 20px 3px #3055812e");
-        if( this.for_news == "yes" ) {
-          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", "100%");
-        }
-        else if(this.height){
-          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
-        }
       }
       else{
         this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "unset");
       }
-  
+
+      this.change_size_for_news()
     }
     
 
@@ -209,22 +180,17 @@ export class ThumbnailDrawingComponent implements OnInit {
  
   ngAfterViewInit() {
 
-
-
-    if(!this.prevent_shiny){
-
-      if( this.for_news == "yes" ) {
-        this.rd.setStyle(this.final_thumbnail.nativeElement, "height", "100%");
-      }
-      else if(this.height){
-        this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
-      }
-    }
-    else{
+    if(this.prevent_shiny){
       this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "unset");
     }
+    this.change_size_for_news();
+  }
 
+
+
+  change_size_for_news(){
     if( this.for_news == "yes" ) {
+      this.rd.setStyle(this.final_thumbnail.nativeElement, "height", "100%"); //add
       this.resize_drawing();
     }
     else{
@@ -238,13 +204,17 @@ export class ThumbnailDrawingComponent implements OnInit {
         }
         
       }
+      else{
+        this.small_thumbnail=false;
+        this.rd.setStyle(this.final_thumbnail.nativeElement, "width", 200 + "px");
+        if(this.height){
+          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
+        }
+      }
+    
+      
     }
-  
-   
   }
-
-
-
 
   showDrawingDetails:boolean = false;
   showDetails() {
