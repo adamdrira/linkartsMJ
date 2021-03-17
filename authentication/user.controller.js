@@ -360,22 +360,22 @@ exports.decrypt_password = (req, res) => {
 
 // reset_password
 exports.reset_password = (req, res) => {
-	
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
-        }
-      }
-	let email=req.body.email;
 
+	if( ! req.headers['authorization'] ) {
+	return res.status(401).json({msg: "error"});
+	}
+	else {
+	let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+	let user= get_current_user(val)
+	if(!user){
+		return res.status(401).json({msg: "error"});
+	}
+	}
+	let email=req.body.email;
+	const Op = Sequelize.Op;
 	User.findOne({
 		where:{
-			email:email,
+			email:{[Op.iLike]: email},
 		}
 	}).catch(err => {
 				
@@ -698,6 +698,16 @@ exports.remove_link = (req, res) => {
 
 
 exports.check_pseudo=(req,res)=>{
+	if( ! req.headers['authorization'] ) {
+		return res.status(401).json({msg: "error"});
+		}
+		else {
+		let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+		let user= get_current_user(val)
+		if(!user){
+			return res.status(401).json({msg: "error"});
+		}
+		}
 	let pseudo = req.body.pseudo;
 	const Op = Sequelize.Op;
 	User.findAll({
@@ -720,6 +730,16 @@ exports.check_pseudo=(req,res)=>{
 
 
 exports.check_email=(req,res)=>{
+	if( ! req.headers['authorization'] ) {
+		return res.status(401).json({msg: "error"});
+		}
+		else {
+		let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+		let user= get_current_user(val)
+		if(!user){
+			return res.status(401).json({msg: "error"});
+		}
+		}
 	let user = req.body.user;
 	let email = (user.email).toLowerCase();
 	const Op = Sequelize.Op;
@@ -862,6 +882,7 @@ exports.login = async (req, res) => {
 					"id_user":user.id,
 					"connexion_time":connexion_time,
 					"status":"usual",
+					"nickname":user.nickname,
 					"ip":ip?ip:null,
 			})
 
@@ -1014,6 +1035,16 @@ exports.login = async (req, res) => {
 };
 
 exports.logout = (req,res) =>{
+	if( ! req.headers['authorization'] ) {
+		return res.status(401).json({msg: "error"});
+		}
+		else {
+		let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+		let user= get_current_user(val)
+		if(!user){
+			return res.status(401).json({msg: "error"});
+		}
+	}
 	let value = req.cookies;
 	jwt.verify(value.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
 		if(err){
@@ -1076,12 +1107,6 @@ exports.check_email_and_password = async (req, res) => {
 
 
 	if( indice_found<0) {
-		/*if(user && !passwordCorrect){
-			return res.status(200).json({ok: "ok_to_signup",email:"just_email_match"});
-		}
-		else {
-			return res.status(200).json({ok: "ok_to_signup"});
-		}*/
 		return res.status(200).json({ok: "ok_to_signup",email:"just_email_match"});
 	}
 	else{
@@ -1093,6 +1118,7 @@ exports.check_email_and_password = async (req, res) => {
 };
 
 exports.check_email_checked = async (req, res) => {
+	
 	if( ! req.headers['authorization'] ) {
 		return res.status(401).json({msg: "error"});
 	}
@@ -1246,6 +1272,16 @@ exports.getCurrentUser = async (req, res) => {
  exports.getCurrentUser_and_cookies = async (req, res) => {
 	let value = req.cookies;
 
+	if( ! req.headers['authorization'] ) {
+		return res.status(401).json({msg: "error"});
+		}
+		else {
+		let val=req.headers['authorization'].replace(/^Bearer\s/, '');
+		let user= get_current_user(val);
+		if(!user){
+			return res.status(401).json({msg: "error"});
+		}
+	};
 	jwt.verify(value.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
 		if(err){
 			return res.status(200).json({msg: "error"});
@@ -1319,24 +1355,3 @@ exports.checkToken = async (req, res) => {
 };
 
 
-exports.checkMail = (req, res) => {
-	User.findOne( { where: { email : req.body.mail} } ).catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then( user => {
-
-		if( user == null ) {
-			return res.json( {msg: "EMAIL_NOT_FOUND", email: req.body.mail} );
-		}
-		else {
-			
-			const token = jwt.sign( {email: user.dataValues.email}, user.dataValues.password, {expiresIn: 30 /*expires in 30 seconds*/ } );
-			return res.json( {msg: "EMAIL_FOUND_TOKEN_SEND", token: token} );
-
-
-		}
-	});
-
-	
-
-};

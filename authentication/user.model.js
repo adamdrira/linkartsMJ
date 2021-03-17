@@ -115,6 +115,7 @@ module.exports = (sequelize, Sequelize) => {
 		connexion_time:{type: Sequelize.STRING},
 		deconnexion_time:{type: Sequelize.STRING},
 		status:{type: Sequelize.STRING},
+		nickname:{type: Sequelize.STRING},
 		ip:{type: Sequelize.STRING},
 	},
 	{

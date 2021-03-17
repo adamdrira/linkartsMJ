@@ -36,19 +36,10 @@ module.exports = function(app) {
     app.post('/api/users/check_pseudo', users.check_pseudo);
     app.post('/api/users/check_email', users.check_email);
     app.post('/api/users/check_email_checked',users.check_email_checked)
-    app.post('/api/users/check_email_and_password',users.check_email_and_password)
-
-    
+    app.post('/api/users/check_email_and_password',users.check_email_and_password);
     app.post('/api/users/create_visitor', users.create_visitor);
-    
-    // 
     app.post('/api/users/checkToken', users.checkToken);
- 
-    // 
-    app.post('/api/users/checkMail', users.checkMail);
 
-
-    //for test
     app.post('/api/users/encrypt_data', users.encrypt_data);
     app.post('/api/users/check_invited_user', users.check_invited_user);
 
