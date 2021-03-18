@@ -129,7 +129,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Nouveau mot de passe</mat-label>
                     <input matInput formControlName="password" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off">
-                    <mat-error *ngIf="registerForm1.controls['password'].invalid ">Mot de passe incorrect
+                    <mat-error *ngIf="registerForm1.controls['password'].invalid ">Minimum : 8 caractères, une minuscule, une majuscule et un chiffre
                     </mat-error>
                     <div class="length-indicator">
                         <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>

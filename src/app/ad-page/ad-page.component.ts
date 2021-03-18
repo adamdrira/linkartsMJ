@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, Inject, Input, EventEmitter, Output } from '@angular/core';
 import {ElementRef, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
@@ -13,21 +13,17 @@ import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures
 import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupAdWriteResponsesComponent } from '../popup-ad-write-responses/popup-ad-write-responses.component';
 import { ActivatedRoute,Router } from '@angular/router';
-import { AuthenticationService } from '../services/authentication.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import {get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
-
+import { Location } from '@angular/common';
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { LoginComponent } from '../login/login.component';
-
-
-import { NoopScrollStrategy } from '@angular/cdk/overlay';
 import { DOCUMENT } from '@angular/common';
 
 declare var $: any
@@ -95,6 +91,7 @@ export class AdPageComponent implements OnInit {
     private Reports_service:Reports_service,
     private chatService:ChatService,
     private router:Router,
+    private location:Location,
     private NotificationsService:NotificationsService,
     public route: ActivatedRoute, 
     private activatedRoute: ActivatedRoute,
@@ -104,7 +101,6 @@ export class AdPageComponent implements OnInit {
     private Subscribing_service:Subscribing_service,
     private Ads_service:Ads_service,
     private Profile_Edition_Service:Profile_Edition_Service,
-    private AuthenticationService:AuthenticationService,
     @Inject(DOCUMENT) private document: Document,
     private cd:ChangeDetectorRef,
     ) { 
@@ -213,10 +209,14 @@ export class AdPageComponent implements OnInit {
   loves_retrieved_but_not_checked=false;
   current_user_retrieved=false;
 
+  can_check_clickout=false;
+  @Input() ad_id_input: number;
+  @Input() ad_title_input: string;
+  @Output() emit_close = new EventEmitter<boolean>();
+  @Output() emit_close_click = new EventEmitter<boolean>();
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-      console.log(window.innerWidth)
       if( window.innerWidth<=1000 ) {
         this.for_ad_page=false;
       }
@@ -224,9 +224,40 @@ export class AdPageComponent implements OnInit {
         this.for_ad_page=true;
       }
   }
-  /******************************************************* */
-  /******************** AFTER VIEW CHECKED *************** */
-  /******************************************************* */
+
+  @ViewChild('artwork') artwork:ElementRef;
+  @ViewChild('close') close:ElementRef;
+
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.ad_id_input){
+      if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
+        console.log("btn")
+        console.log(btn)
+        console.log(btn.className)
+        console.log(this.artwork.nativeElement.contains(btn))
+        if(this.ad_id_input && btn.className.includes("cdk-overlay-dark-backdrop")){
+          console.log("includes back")
+          this.emit_close_click.emit(true);
+        }
+         
+      }
+      this.can_check_clickout=true;
+    }
+      
+  }
+
+
+  close_popup(){
+    if(this.ad_id_input){
+      this.emit_close.emit(true);
+    }
+  }
+
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    this.emit_close.emit(true);
+  }
+
   ngAfterViewChecked() {
     this.initialize_heights();
   }
@@ -252,13 +283,12 @@ export class AdPageComponent implements OnInit {
       if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
         if(this.number_of_comments_to_show<this.commentariesnumber){
           this.number_of_comments_to_show+=10;
-          console.log(this.number_of_comments_to_show)
         }
       }
     },3000)
 
-    this.ad_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    let title = this.activatedRoute.snapshot.paramMap.get('title');
+    this.ad_id = this.ad_id_input?this.ad_id_input:parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    let title = this.ad_title_input?this.ad_title_input:this.activatedRoute.snapshot.paramMap.get('title');
 
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
       this.visitor_id = l[0].id;
@@ -271,8 +301,6 @@ export class AdPageComponent implements OnInit {
 
 
     this.Ads_service.retrieve_ad_by_id(this.ad_id).subscribe(m=>{
-      console.log(m[0]);
-      console.log(title)
       var re = /(?:\.([^.]+))?$/;
       if(m[0].number_of_attachments>0){
         for(let i=0;i<m[0].number_of_attachments;i++){
@@ -296,8 +324,9 @@ export class AdPageComponent implements OnInit {
           }
         }
       }
-      console.log(this.number_of_pictures)
       this.item=m[0];
+      this.navbar.add_page_visited_to_history(`/ad-page/${this.item.title}/${this.ad_id}`).subscribe();
+      this.location.go(`/ad-page/${this.item.title}/${this.ad_id}`);
       this.list_of_reporters=this.item.list_of_reporters
       if(!m[0] || title!=m[0].title || m[0].status=="deleted" || m[0].status=="suspended"){
         if(m[0] && m[0].status=="deleted"){
@@ -319,8 +348,6 @@ export class AdPageComponent implements OnInit {
         this.navbar.get_number_of_clicked("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
           this.number_of_views=r[0].number
         })
-        console.log(this.item);
-        console.log(this.item.title)
         this.ready_to_check_view=true;
         this.check_view_after_current();
         this.check_archive();
@@ -342,7 +369,6 @@ export class AdPageComponent implements OnInit {
         });
   
         this.Subscribing_service.check_if_visitor_susbcribed(this.item.id_user).subscribe(information=>{
-          console.log(information)
           if(information[0].value){
             this.already_subscribed=true;
           }
@@ -353,7 +379,6 @@ export class AdPageComponent implements OnInit {
         this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          console.log(SafeURL);
           this.thumbnail_picture = SafeURL;
         });
   
@@ -380,7 +405,6 @@ export class AdPageComponent implements OnInit {
   check_view_after_current(){
   
     if(this.current_user_retrieved && this.ready_to_check_view){
-      console.log("check_view_after_current")
       if(this.visitor_id==this.item.id_user){
         this.visitor_mode=false;
         this.navbar.check_if_research_exists("Ad",null,this.item.id,this.item.title,"clicked").subscribe(p=>{
@@ -394,10 +418,6 @@ export class AdPageComponent implements OnInit {
         this.navbar.add_main_research_to_history("Ad",null ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,this.type_of_account).subscribe();
       }
       this.visitor_mode_added=true;
-      console.log(this.visitor_mode_added)
-      console.log(this.visitor_mode)
-      console.log(this.type_of_account)
-
     }
 
    
@@ -407,8 +427,6 @@ export class AdPageComponent implements OnInit {
 
   get_recommendations(){
     this.Ads_service.get_ads_by_user_id(this.item.id_user).subscribe(l=>{
-      console.log(l[0])
-
        for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
          if(l[0][i].id!=this.item.id){
            this.list_of_author_ads.push(l[0][i])
@@ -421,7 +439,6 @@ export class AdPageComponent implements OnInit {
        else{
          this.display_author_ads=true;
        }
-       console.log(this.list_of_author_ads)
        this.list_of_author_ads_retrieved=true;
 
      })
@@ -429,21 +446,13 @@ export class AdPageComponent implements OnInit {
      let offer_or_demand=(this.item.offer_or_demand!='')?this.item.offer_or_demand:"none";
      let type_of_remuneration=(this.item.price_type!='')?this.item.price_type:"none";
      let type_of_service=(this.item.price_type_service!='')?this.item.price_type_service:"none";
-     console.log(this.item.price_type)
-     console.log(this.item.price_type_service)
-     console.log(type_of_remuneration)
-     console.log(type_of_service)
      if(this.item.target_two){
        let firt_retrieved=false;
        let second_retrieved=false;
 
        this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",0,0).subscribe(r=>{
-         console.log(r);
-         console.log(r[0][0]);
          let number_of_results=r[0][0].number_of_ads;
-         let results=r[0][0].results
-         console.log(results)
-         
+         let results=r[0][0].results;
          if (number_of_results>0){
            for (let i=0;i<results.length;i++){
              if(results[i].id!=this.item.id){
@@ -456,11 +465,8 @@ export class AdPageComponent implements OnInit {
          
        })
        this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_two,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",5,0).subscribe(r=>{
-         console.log(r[0][0]);
          let number_of_results=r[0][0].number_of_ads;
-         let results=r[0][0].results
-         console.log(results)
-         
+         let results=r[0][0].results;
          if (number_of_results>0){
            for (let i=0;i<results.length;i++){
              if(results[i].id!=this.item.id){
@@ -482,18 +488,13 @@ export class AdPageComponent implements OnInit {
              THIS.display_other_ads=false;
            }
            THIS.list_of_other_ads_retrieved=true;
-           console.log(THIS.list_of_other_ads)
          }
        }
      }
      else{
        this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",0,0).subscribe(r=>{
-         console.log(r);
-         console.log(r[0][0]);
          let number_of_results=r[0][0].number_of_ads;
-         let results=r[0][0].results
-         console.log(results)
-         
+         let results=r[0][0].results;
          if (number_of_results>0){
            for (let i=0;i<results.length;i++){
              if(results[i].id!=this.item.id){
@@ -508,8 +509,6 @@ export class AdPageComponent implements OnInit {
          else{
            this.display_other_ads=false;
          }
-         console.log( this.list_of_other_ads)
-         console.log( this.display_other_ads)
          this.list_of_other_ads_retrieved=true;
        })
      }
@@ -528,10 +527,6 @@ export class AdPageComponent implements OnInit {
 
   show_icon=false;
   ngAfterViewInit() {
-
-    
-
-    console.log(window.innerWidth)
     if( window.innerWidth<=1000 ) {
       this.for_ad_page=false;
     }
@@ -609,10 +604,8 @@ export class AdPageComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.Ads_service.delete_ad(this.item.id).subscribe(l=>{
-          console.log(l);
           this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
-            console.log(r)
-            alert("done")
+            this.close_popup();
             this.router.navigateByUrl( `/account/${this.pseudo}/${this.visitor_id}`);
             return;
           })
@@ -631,7 +624,6 @@ export class AdPageComponent implements OnInit {
   
   check_archive(){
     this.Subscribing_service.check_if_publication_archived("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
-      console.log(r[0]);
       if(r[0].value){
         this.ad_archived=true;
       }
@@ -662,12 +654,9 @@ export class AdPageComponent implements OnInit {
   get_ad_contents(item){
     let u=0;
     var re = /(?:\.([^.]+))?$/;
-    console.log(item);
     if(item.number_of_attachments>0){
       for(let i=0;i<item.number_of_attachments;i++){
-        console.log(i)
         if(i==0){
-          console.log(re.exec(item.attachment_name_one)[1]);
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_one;
             this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
@@ -691,7 +680,6 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             });
           }
@@ -716,23 +704,19 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             });
           }
           
         }
         if(i==1){
-          console.log(re.exec(item.attachment_name_two)[1]);
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_two;
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
-              u++
-              console.log(u);
-              console.log(item.number_of_attachments)
+              u++;
               if(u==item.number_of_attachments){
                 let length1=this.list_of_pictures.length;
                 for(let j=0;j<length1;j++){
@@ -749,7 +733,6 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             });
           }
@@ -774,14 +757,12 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             });
           }
           
         }
         if(i==2){
-          console.log(re.exec(item.attachment_name_three)[1]);
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_three;
             this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
@@ -805,7 +786,6 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             });
           }
@@ -830,14 +810,12 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             });
           }
           
         };
         if(i==3){
-          console.log(re.exec(item.attachment_name_four)[1]);
           if(re.exec(item.attachment_name_four)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_four;
             this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
@@ -861,7 +839,6 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             })
           }
@@ -886,14 +863,12 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             })
           }
           
         };
         if(i==4){
-          console.log(re.exec(item.attachment_name_five)[1]);
           if(re.exec(item.attachment_name_five)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_five;
             this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
@@ -917,7 +892,6 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             })
           }
@@ -942,13 +916,11 @@ export class AdPageComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
-                console.log("attachments_retrieved true")
               }
             })
           }
           
         }
-        console.log(this.attachments_retrieved)
       }
     }
     else{
@@ -963,14 +935,6 @@ export class AdPageComponent implements OnInit {
 
 
   open_left_container_category(i : number) {
-    /*if(i==1){
-      this.display_author_ads=false;
-      this.display_other_ads=true;
-    }
-    else{
-      this.display_author_ads=true;
-      this.display_other_ads=false;
-    }*/
     if(this.left_container_category_index==i){
       return
     }
@@ -993,8 +957,6 @@ export class AdPageComponent implements OnInit {
       if(!this.already_subscribed){
         this.already_subscribed=true;
         this.Subscribing_service.subscribe_to_a_user(this.item.id_user).subscribe(information=>{
-          
-          console.log(information)
           if(information[0].subscribtion){
         
             this.loading_subscribtion=false;
@@ -1029,8 +991,6 @@ export class AdPageComponent implements OnInit {
       else{
         this.already_subscribed=false;
         this.Subscribing_service.remove_subscribtion(this.item.id_user).subscribe(information=>{
-         
-          console.log(information)
           this.NotificationsService.remove_notification('subscribtion',this.item.id_user.toString(),'none',this.visitor_id,0,false,0).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
@@ -1071,7 +1031,6 @@ export class AdPageComponent implements OnInit {
   }
 
   first_comment_received(e){
-    console.log(e);
     this.first_comment=e.comment.commentary;
     this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).subscribe(p=> {
       let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
@@ -1098,14 +1057,31 @@ export class AdPageComponent implements OnInit {
   /********************************************RESPONSE MANAGMENT ************************* */
 
 
+  checking_response=false;
   respond(){
-    console.log("tentative de reponse")
-
     if(this.type_of_account=='account') {
-      const dialogRef = this.dialog.open(PopupAdWriteResponsesComponent, {
-        data: {item:this.item},
-        panelClass: 'popupAdWriteReponsesClass',
-      });
+      if(this.checking_response){
+        return
+      }
+      this.checking_response=true;
+      this.Ads_service.check_if_response_sent(this.item.id).subscribe(r=>{
+        
+        if(r[0].response){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Vous avez déjà répondu à cette annonce'},
+            panelClass: "popupConfirmationClass",
+          });
+          
+        }
+        else{
+          const dialogRef = this.dialog.open(PopupAdWriteResponsesComponent, {
+            data: {item:this.item},
+            panelClass: 'popupAdWriteReponsesClass',
+          });
+        }
+        this.checking_response=false;
+      })
+      
     }
     else {
       const dialogRef = this.dialog.open(LoginComponent, {
@@ -1123,7 +1099,6 @@ export class AdPageComponent implements OnInit {
     
     this.see_responses=1;
     this.Ads_service.get_all_responses(this.item.id).subscribe(r=>{
-      console.log(r[0])
       this.list_of_responses=r[0];
       if (r[0]!=null){
         let compt=0
@@ -1170,14 +1145,11 @@ export class AdPageComponent implements OnInit {
     this.response_list_of_pictures_names=[]
     this.response_list_of_attachments=[];
     this.response_list_of_attachments_type=[];
-    console.log(item);
     if(item.number_of_attachments>0){
       for(let i=0;i<item.number_of_attachments;i++){
         if(i==0){
-          console.log(re.exec(item.attachment_name_one)[1]);
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_one;
-            console.log(this.response_list_of_attachments_name)
             this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1230,10 +1202,8 @@ export class AdPageComponent implements OnInit {
           
         }
         if(i==1){
-          console.log(re.exec(item.attachment_name_two)[1]);
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_two;
-            console.log(this.response_list_of_attachments_name[i])
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1260,11 +1230,8 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.response_list_of_attachments_name[i] = item.attachment_real_name_two;
-            console.log(this.response_list_of_attachments_name[i])
-            console.log(this.response_list_of_attachments_name)
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
               this.response_list_of_attachments[l[1]] = l[0];
-              console.log(this.response_list_of_attachments)
               u++
               if(u==item.number_of_attachments){
                 let length1=this.response_list_of_pictures.length
@@ -1288,7 +1255,6 @@ export class AdPageComponent implements OnInit {
           
         }
         if(i==2){
-          console.log(re.exec(item.attachment_name_three)[1]);
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_three;
             this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
@@ -1448,7 +1414,6 @@ export class AdPageComponent implements OnInit {
     }
     this.checking_report=true;
     this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).subscribe(r=>{
-      console.log(r[0])
       if(r[0].nothing){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1469,7 +1434,6 @@ export class AdPageComponent implements OnInit {
 
 
     this.Reports_service.cancel_report("ad", this.item.id, this.item.type_of_project).subscribe(r => {
-      console.log(r)
       if (this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id) >= 0) {
         let i = this.list_of_reporters.indexOf(this.visitor_id)
         this.list_of_reporters.splice(i, 1)
@@ -1503,7 +1467,6 @@ export class AdPageComponent implements OnInit {
 
   open_account() {
     return "/account/" + this.pseudo + "/" + this.item.id_user;
-    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
   };
 
   
@@ -1517,5 +1480,9 @@ export class AdPageComponent implements OnInit {
   picture_loaded=[];
   load_picture(i){
     this.picture_loaded[i]=true;
+  }
+
+  after_click_comment(event){
+    this.close_popup();
   }
 }

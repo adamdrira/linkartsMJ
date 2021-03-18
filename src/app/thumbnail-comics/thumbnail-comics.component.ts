@@ -7,10 +7,9 @@ import {NotationService} from '../services/notation.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
-
-
-import { Router  } from '@angular/router';
+import {PopupArtworkComponent} from '../popup-artwork/popup-artwork.component';
 import { NavbarService } from '../services/navbar.service';
+import { MatDialog } from '@angular/material/dialog';
 
 
 declare var Swiper: any;
@@ -31,8 +30,8 @@ export class ThumbnailComicsComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private BdSerieService: BdSerieService,
     private rd:Renderer2,
+    public dialog: MatDialog,
     private NotationService:NotationService,
-    private router:Router,
     private cd:ChangeDetectorRef,
     private navbar: NavbarService,
 
@@ -372,6 +371,16 @@ export class ThumbnailComicsComponent implements OnInit {
     return number
   }
   
-
+  open_popup(){
+    this.dialog.open(PopupArtworkComponent, {
+      data: {
+        format_input:this.format,
+        id_input:this.bd_id,
+        title_input:this.title,
+        category:'comic',
+      }, 
+      panelClass:"popupArtworkClass",
+    });
+  }
 
 }

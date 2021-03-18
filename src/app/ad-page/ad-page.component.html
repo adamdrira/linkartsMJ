@@ -1,8 +1,12 @@
-<div class="artwork" *ngIf="page_not_found">
+<div class="artwork" *ngIf="page_not_found" #artwork>
     <app-page-not-found></app-page-not-found>
 </div>
 
-<div class="artwork" *ngIf="!page_not_found">
+<button (click)="close_popup()" class="close-popup" *ngIf="ad_id_input" #close>
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+</button>
+
+<div class="artwork" *ngIf="!page_not_found" #artwork>
 
 
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
@@ -266,7 +270,7 @@
                                 <!--Author container-->
                                 <!--********************-->
                                 <div class="subscriber">
-                                    <a [routerLink]=get_response_author_link(i) class="user-container">
+                                    <a [routerLink]=get_response_author_link(i) class="user-container"   (click)="stop($event);close_popup()">
                                         <div class="left-container">
                                             <img [src]="list_of_profile_pictures[i]">
                                         </div>
@@ -274,7 +278,7 @@
                                         
                                         <div class="right-container">
                                             <span class="author-name" *ngIf="list_of_authors_name[i]!=''">
-                                                <a [routerLink]=get_response_author_link(i) (click)="stop($event)" matTooltip="Voir le profil"
+                                                <a [routerLink]=get_response_author_link(i) (click)="stop($event);close_popup()" matTooltip="Voir le profil"
                                                     matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
                                                     
                                                     <div>{{list_of_authors_name[i]}}</div>
@@ -431,8 +435,8 @@
             <!--********************-->
             <div *ngIf="list_of_author_ads_retrieved"  [ngClass]="{'really-invisible': left_container_category_index!=0 }">
                 <div class="recommendation-group" *ngIf=" display_author_ads ">
-                    <div class="thumbnail-container" *ngFor="let item of list_of_author_ads; let i=index">
-                        <app-thumbnail-ad [for_ad_page]="for_ad_page" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                    <div class="thumbnail-container" *ngFor="let item of list_of_author_ads; let i=index" >
+                        <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [for_ad_page]="for_ad_page" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                     </div>
                 </div>
                 
@@ -451,8 +455,8 @@
             <!--******************-->
             <div *ngIf="list_of_other_ads_retrieved" [ngClass]="{'really-invisible': left_container_category_index!=1 }">
                 <div class="recommendation-group" *ngIf=" display_other_ads">
-                    <div class="thumbnail-container" *ngFor="let item of list_of_other_ads; let i=index">
-                        <app-thumbnail-ad [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                    <div class="thumbnail-container" *ngFor="let item of list_of_other_ads; let i=index" >
+                        <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                     </div>
                 </div>
                 <div class="recommendation-group" *ngIf=" !display_other_ads">
@@ -530,8 +534,9 @@
                 <!--********************-->
                 <!--Author container-->
                 <!--********************-->
+                
                 <div class="author-container">
-                    <a [routerLink]=open_account() (click)="stop($event)" class="left-container" matTooltip="Voir le profil"
+                    <a [routerLink]=open_account()   (click)="stop($event);close_popup()" class="left-container" matTooltip="Voir le profil"
                         matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
                         <img [src]="profile_picture" (load)="profile_picture_loaded()"
                             [ngClass]="{'really-invisible':!profile_picture_is_loaded}">
@@ -539,7 +544,7 @@
                     </a>
                     <div class="right-container">
                         <span class="author-name" *ngIf="author_name!=''">
-                            <a [routerLink]=open_account() (click)="stop($event)" matTooltip="Voir le profil"
+                            <a [routerLink]=open_account()   (click)="stop($event);close_popup()" matTooltip="Voir le profil"
                                 matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
                                 {{author_name}}
                             </a>
@@ -550,6 +555,86 @@
             
                         </span>
                         <span class="author-description" *ngIf="pseudo!=''">@{{pseudo}}</span>
+                        
+                       
+                    </div>
+            
+                    <div *ngIf="visitor_mode_added && visitor_mode" class="subscribing-container">
+                        <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="already_subscribed"
+                            [@enterAnimation] class="opened" tabIndex="-1">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active </mat-icon>
+                            <span>Abonné(e)</span>
+                        </button>
+                        <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="!already_subscribed"
+                            [@enterAnimation] tabIndex="-1">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
+                            <span>S'abonner</span>
+                        </button>
+                    </div>
+                </div>
+            
+            
+                <div class="view-and-date-numbers">
+                    <span class="first-span">
+                        <ng-container *ngIf="number_of_views == 0">Aucune vue</ng-container>
+                        <ng-container *ngIf="number_of_views == 1">1 vue</ng-container>
+                        <ng-container *ngIf="number_of_views > 1">{{number_of_views}} vues</ng-container>
+                        •
+                        <span *ngIf="item.number_of_responses == 0">Aucune réponse</span>
+                        <span *ngIf="item.number_of_responses == 1">1 réponse</span>
+                        <span *ngIf="item.number_of_responses > 1">{{item.number_of_responses}} réponses</span>
+                    </span>
+            
+                    <span class="second-span">{{date_to_show}}</span>
+                </div>
+
+                <div class="view-and-date-numbers">
+                    <div >
+                        <button mat-icon-button
+                        style="outline: none !important;"
+                        shareButton="facebook"
+                        #fbBtn="shareButton"
+                        [style.color]="fbBtn?.color">
+                        <fa-icon *ngIf="fbBtn" [icon]="fbBtn.icon" size="lg"></fa-icon>
+                        </button>
+                        <button mat-icon-button
+                        style="outline: none !important;"
+                                shareButton="twitter"
+                                #twtBtn="shareButton"
+                                [style.color]="twtBtn?.color">
+                        <fa-icon *ngIf="twtBtn" [icon]="twtBtn.icon" size="lg"></fa-icon>
+                        </button>
+                        <button mat-icon-button
+                        style="outline: none !important;"
+                                shareButton="pinterest"
+                                #pinBtn="shareButton"
+                                [style.color]="pinBtn?.color">
+                        <fa-icon *ngIf="pinBtn" [icon]="pinBtn.icon" size="lg"></fa-icon>
+                        </button>
+                        <button mat-icon-button
+                        style="outline: none !important;"
+                                shareButton="whatsapp"
+                                #whaBtn="shareButton"
+                                [style.color]="whaBtn?.color">
+                        <fa-icon *ngIf="whaBtn" [icon]="whaBtn.icon" size="lg"></fa-icon>
+                        </button>
+                        <button mat-icon-button
+                        style="outline: none !important;"
+                                shareButton="linkedin"
+                                #msgBtn="shareButton"
+                                [style.color]="msgBtn?.color">
+                        <fa-icon *ngIf="msgBtn" [icon]="msgBtn.icon" size="lg"></fa-icon>
+                        </button>
+                        <button mat-icon-button
+                        style="outline: none !important;"
+                                shareButton="copy"
+                                #insBtn="shareButton"
+                                [style.color]="insBtn?.color">
+                        <fa-icon *ngIf="insBtn" [icon]="insBtn.icon" size="lg"></fa-icon>
+                        </button>
+                    </div>
+
+                    <div class="right-part" >
                         <div class="options-buttons">
                 
                             <button *ngIf="visitor_mode_added && visitor_mode  && type_of_account=='account' && archive_retrieved" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
@@ -588,51 +673,24 @@
                                 </button>
                             </mat-menu>
                         </div>
-                       
                     </div>
-            
-                    <div *ngIf="visitor_mode_added && visitor_mode" class="subscribing-container">
-                        <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="already_subscribed"
-                            [@enterAnimation] class="opened" tabIndex="-1">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active </mat-icon>
-                            <span>Abonné(e)</span>
-                        </button>
-                        <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="!already_subscribed"
-                            [@enterAnimation] tabIndex="-1">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
-                            <span>S'abonner</span>
-                        </button>
-                    </div>
-                </div>
-            
-            
-                <div class="view-and-date-numbers">
-                    <span>
-                        <ng-container *ngIf="number_of_views == 0">Aucune vue</ng-container>
-                        <ng-container *ngIf="number_of_views == 1">1 vue</ng-container>
-                        <ng-container *ngIf="number_of_views > 1">{{number_of_views}} vues</ng-container>
-                        •
-                        <span *ngIf="item.number_of_responses == 0">Aucune réponse</span>
-                        <span *ngIf="item.number_of_responses == 1">1 réponse</span>
-                        <span *ngIf="item.number_of_responses > 1">{{item.number_of_responses}} réponses</span>
-                    </span>
-            
-                    <span class="second-span">{{date_to_show}}</span>
+                    
+                    
                 </div>
             </div>
     
     
             <div class="comment-container" (click)="see_comments();">
-                <div class="number-of-comments" *ngIf="commentariesnumber">
+                <div class="number-of-comments" *ngIf="commentariesnumber>0">
                     <span>Commentaires</span>
-                    <span class="second-span">&nbsp; ({{commentariesnumber}})</span>
+                    <span class="second-span" >&nbsp; ({{commentariesnumber}})</span>
                 </div>
-                <div class="number-of-comments" *ngIf="!commentariesnumber ">
+                <div class="number-of-comments" *ngIf="!(commentariesnumber>0)">
                     <span>Soyez le premier à ajouter un commentaire !</span>
                 </div>
                
                 
-                <div class="first-comment-container" *ngIf="commentariesnumber && first_comment_retrieved">
+                <div class="first-comment-container" *ngIf="commentariesnumber>0 && first_comment_retrieved">
                     <div class="profile-picture " [ngClass]="{'dark-shiny': !first_comment_pp_loaded }">
                         <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }">
                     </div>
@@ -640,7 +698,7 @@
                         {{first_comment}}
                     </div>
                 </div>
-                <div class="first-comment-container loading9 dark-shiny" *ngIf="commentariesnumber && !first_comment_retrieved">
+                <div class="first-comment-container loading9 dark-shiny" *ngIf="commentariesnumber>0 && !first_comment_retrieved">
                 </div>
             </div>
             
@@ -661,8 +719,8 @@
             <div class="description-and-comments">
                 <div class="categories">
                     <div class="title">
-                        <!--<mat-icon [ngClass]="{'invisible': !show_icon }">comment</mat-icon>-->
-                        <span>Commentaires ({{commentariesnumber}})</span>
+                        <span *ngIf="commentariesnumber>0">Commentaires ({{commentariesnumber}})</span>
+                        <span *ngIf="!(commentariesnumber>0)">Commentaires</span>
                     </div>
                 </div>
 
@@ -682,7 +740,8 @@
                 [commentariesnumber]=commentariesnumber
                 (first_comment)="first_comment_received($event)"
                 (new_comment)="new_comment();" 
-                (removed_comment)="removed_comment();"></app-comments>
+                (removed_comment)="removed_comment();"
+                (click_on_user)="after_click_comment($event);"></app-comments>
             </div>
             
             <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
@@ -712,8 +771,8 @@
                 <!--********************-->
                 <div *ngIf="list_of_author_ads_retrieved"  [ngClass]="{'really-invisible': left_container_category_index!=0 }">
                     <div class="recommendation-group" *ngIf=" display_author_ads ">
-                        <div class="thumbnail-container" *ngFor="let item of list_of_author_ads; let i=index">
-                            <app-thumbnail-ad [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                        <div class="thumbnail-container" *ngFor="let item of list_of_author_ads; let i=index" >
+                            <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                         </div>
                     </div>
                     
@@ -732,8 +791,8 @@
                 <!--******************-->
                 <div *ngIf="list_of_other_ads_retrieved" [ngClass]="{'really-invisible': left_container_category_index!=1 }">
                     <div class="recommendation-group" *ngIf=" display_other_ads">
-                        <div class="thumbnail-container" *ngFor="let item of list_of_other_ads; let i=index">
-                            <app-thumbnail-ad [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                        <div class="thumbnail-container" *ngFor="let item of list_of_other_ads; let i=index" >
+                            <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                         </div>
                     </div>
                     <div class="recommendation-group" *ngIf="!display_other_ads">

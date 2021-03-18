@@ -9,8 +9,6 @@ import {date_in_seconds} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
-declare var $:any;
-
 export interface reponses {
   author_id:number;
   comment:string;
@@ -894,6 +892,11 @@ export class CommentElementComponent implements OnInit {
 
   open_response_account(i:number) {
     return "/account/"+this.pseudo_list[i]+"/"+this.responses_list[i].authorid;
+  }
+
+  @Output() click_on_user2 = new EventEmitter<boolean>();
+  send_click(){
+    this.click_on_user2.emit(true)
   }
 
 }

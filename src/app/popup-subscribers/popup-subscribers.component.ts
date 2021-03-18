@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, ChangeDetectorRef, Inject } from '@angular/core';
+import { Component, OnInit, Renderer2, ChangeDetectorRef, Inject, ViewChild, ElementRef } from '@angular/core';
 
 
 import { NotificationsService } from '../services/notifications.service';
@@ -59,17 +59,60 @@ export class PopupSubscribersComponent implements OnInit {
   author_gender=this.data.author_gender;
   show_icon=false;
 
+  list_of_data_retrieved=[];
+  list_of_sub_retrieved=[];
+  list_of_all_retrieved=[];
+  first_check=false;
+  number_of_subs_to_show=10;
+  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   ngOnInit() {
+    let int = setInterval(() => {
+
+      if(this.number_of_subs_to_show<this.list_of_subscribers.length){
+        let len = this.list_of_subscribers.length - this.number_of_subs_to_show;
+        let see_more=false;
+        if(len>10){
+          let compt =0
+          for(let i=0;i<10;i++){           
+            if(this.list_of_all_retrieved[ this.number_of_subs_to_show +i]){
+              compt++;
+            }
+          }
+          if(compt==10){
+            see_more=true;
+          }
+        }
+        else{
+          let compt =0
+          for(let i=0;i<len;i++){
+            if(this.list_of_all_retrieved[ this.number_of_subs_to_show +i]){
+              compt++;
+            }
+          }
+          if(compt==len){
+            see_more=true;
+          }
+        }
+        if(  see_more && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+          this.number_of_subs_to_show+=10;
+        }
+
+      }
+      else if( this.number_of_subs_to_show>=this.list_of_subscribers.length){
+        clearInterval(int)
+      }
+      
+     
+    },10000)
+
     let n=this.list_of_subscribers.length;
     let compt=0;
     if(n>0){
       for (let i=0;i<n;i++){
-        let  sub_retrieved=false;
-        let data_retrieved=false;
         this.Profile_Edition_Service.retrieve_profile_data(this.list_of_subscribers[i].id_user).subscribe(r=>{
           this.list_of_subscribers_information[i]=r[0];
-          data_retrieved=true;
-          check_all(this)
+          this.list_of_data_retrieved[i]=true;
+          check_all(this,i)
         })
 
         this.Subscribing_service.check_if_visitor_susbcribed(this.list_of_subscribers[i].id_user).subscribe(information=>{
@@ -79,19 +122,33 @@ export class PopupSubscribersComponent implements OnInit {
           else{
             this.list_of_check_subscribtion[i]=false;
           }
-          sub_retrieved=true;
-          check_all(this);
+          this.list_of_sub_retrieved[i]=true;
+          check_all(this,i);
         });
         this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_subscribers[i].id_user).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.list_of_profile_pictures[i] = SafeURL;
         });
-        function check_all(THIS){
-          if(sub_retrieved && data_retrieved){
+        function check_all(THIS,i){
+          if(THIS.list_of_data_retrieved[i] && THIS.list_of_sub_retrieved[i]){
             compt++;
+            THIS.list_of_all_retrieved[i]=true;
+            if(THIS.list_of_subscribers.length>10){
+              let compt1 =0
+              for(let j=0;j<10;j++){
+                if(THIS.list_of_all_retrieved[j]){
+                  compt1++;
+                }
+              }
+              if(compt1==10){
+                THIS.first_check=true;
+              }
+            }
+          
             if(compt==n){
               THIS.subscribtion_info_added=true;
+              THIS.first_check=true;
               THIS.cd.detectChanges()
             }
           }
@@ -180,7 +237,7 @@ export class PopupSubscribersComponent implements OnInit {
     if(this.list_of_subscribers_information[i]){
       return "/account/"+ this.list_of_subscribers_information[i].nickname +"/"+ this.list_of_subscribers_information[i].id;
     }
-    return "/"
+    return false
   }
   pp_is_loaded=[];
   load_pp(i){

@@ -1,16 +1,15 @@
-import { Component, OnInit, Renderer2, ViewChild, ElementRef, ViewChildren, QueryList, Sanitizer, ChangeDetectorRef, Input, HostListener } from '@angular/core';
+import { Component, OnInit, Renderer2, ViewChild, ElementRef, ViewChildren, QueryList, Sanitizer, ChangeDetectorRef, Input, HostListener, EventEmitter, Output } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { NavbarService } from '../services/navbar.service';
-import { ActivatedRoute, Router, Scroll } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Reports_service } from '../services/reports.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { NotationService } from '../services/notation.service';
 import { Emphasize_service } from '../services/emphasize.service';
-import { AuthenticationService } from '../services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormWritingComponent } from '../popup-form-writing/popup-form-writing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -28,7 +27,6 @@ import { PopupCommentsComponent } from '../popup-comments/popup-comments.compone
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-declare var Swiper: any;
 declare var $: any;
 
 
@@ -78,7 +76,6 @@ export class ArtworkWritingComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private sanitizer:DomSanitizer,
     private cd: ChangeDetectorRef,
-    private AuthenticationService:AuthenticationService,
     private router:Router,
     private Writing_Upload_Service:Writing_Upload_Service,
     private Profile_Edition_Service:Profile_Edition_Service,
@@ -113,6 +110,39 @@ export class ArtworkWritingComponent implements OnInit {
   onPopState(event) {
     this.add_time_of_view();
   }
+ 
+
+  @ViewChild('artwork') artwork:ElementRef;
+  @ViewChild('close') close:ElementRef;
+
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.writing_id_input){
+      if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
+        if(this.writing_id_input && btn.className.includes("cdk-overlay-dark-backdrop")){
+          console.log("includes back")
+          this.add_time_of_view();
+          this.emit_close_click.emit(true);
+        }
+         
+      }
+      this.can_check_clickout=true;
+    }
+    
+  }
+
+
+
+  close_popup(){
+    if(this.writing_id_input){
+      this.emit_close.emit(true);
+    }
+  }
+
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    this.add_time_of_view();
+    this.emit_close.emit(true);
+  }
   
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChildren('swiperSlide') swiperSlides:QueryList<ElementRef>;
@@ -125,8 +155,6 @@ export class ArtworkWritingComponent implements OnInit {
   pp_loaded=false;
   display_pages=false;
   display_writings_recommendations=false;
-  display_comics_recommendations=false;
-  display_drawings_recommendations=false;
   display_writing=false;
   display_writings_recommendations_others=false;
   //if user doesn't have an account
@@ -191,10 +219,6 @@ export class ArtworkWritingComponent implements OnInit {
   id_view_created:number;
   already_subscribed:boolean=false;
 
-  list_of_author_recommendations_comics:any[]=[];
-  list_of_author_recommendations_comics_retrieved=false;
-  list_of_author_recommendations_drawings:any[]=[];
-  list_of_author_recommendations_drawings_retrieved=false;
   list_of_author_recommendations_writings:any[]=[];
   list_of_author_recommendations_writings_retrieved=false;
   list_of_author_recommendations_retrieved=false;
@@ -241,11 +265,16 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   item_retrieved=false;
+
+  can_check_clickout=false;
+  @Input() writing_id_input: number;
+  @Input() writing_title_input: string;
+  @Output() emit_close = new EventEmitter<boolean>();
+  @Output() emit_close_click = new EventEmitter<boolean>();
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
   ngOnInit() {
-    let THIS=this;
     window.scroll(0,0);
     setInterval(() => {
 
@@ -254,9 +283,9 @@ export class ArtworkWritingComponent implements OnInit {
           this.number_of_comments_to_show+=10;
         }
       }
-    },3000)
+    },1000)
 
-    this.writing_id  = parseInt(this.activatedRoute.snapshot.paramMap.get('writing_id'));
+    this.writing_id  = this.writing_id_input?this.writing_id_input:parseInt(this.activatedRoute.snapshot.paramMap.get('writing_id'));
     if(!(this.writing_id>0)){
       this.page_not_found=true;
       return
@@ -275,6 +304,7 @@ export class ArtworkWritingComponent implements OnInit {
      
     }) 
 
+   
     this.Writing_Upload_Service.retrieve_writing_information_by_id2(this.writing_id).subscribe(m => {
       if(m[0]){
         let r=m[0].data;
@@ -293,7 +323,8 @@ export class ArtworkWritingComponent implements OnInit {
           }
         }
         else{
-          let title =this.activatedRoute.snapshot.paramMap.get('title');
+          let title =this.writing_title_input?this.writing_title_input:this.activatedRoute.snapshot.paramMap.get('title');
+         
           if(r[0].title !=title ){
             this.page_not_found=true;
             return;
@@ -313,6 +344,8 @@ export class ArtworkWritingComponent implements OnInit {
             this.lovesnumber =r[0].lovesnumber ;
             this.status=r[0].status;
             this.thumbnail_picture=r[0].name_coverpage ;
+            this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`).subscribe();
+            this.location.go(`/artwork-writing/${this.title}/${this.writing_id}`);
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
             this.thumbnail_picture_retrieved=true;
   
@@ -472,29 +505,7 @@ export class ArtworkWritingComponent implements OnInit {
   /********************************************** RECOMMENDATIONS **************************************/
 
   get_author_recommendations(){
-    this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
-      if(e[0].list_to_send.length>0){
-        for(let j=0;j<e[0].list_to_send.length;j++){
-          if(e[0].list_to_send[j].length>0){
-            this.list_of_author_recommendations_comics.push(e[0].list_to_send[j])
-          }
-        } 
-      }
-      this.list_of_author_recommendations_comics_retrieved=true;
-      this.check_recommendations();
-    })
-    this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,0).subscribe(e=>{
-      if(e[0].list_to_send.length >0){
-        for(let j=0;j<e[0].list_to_send.length;j++){
-          if(e[0].list_to_send[j].length>0){
-            this.list_of_author_recommendations_drawings.push(e[0].list_to_send[j])
-          }
-        }
-        
-      }
-      this.list_of_author_recommendations_drawings_retrieved=true;
-      this.check_recommendations();
-    })
+
     this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,this.writing_id).subscribe(e=>{
       if(e[0].list_to_send.length >0){
         for(let j=0;j<e[0].list_to_send.length;j++){
@@ -505,15 +516,8 @@ export class ArtworkWritingComponent implements OnInit {
       
       }
       this.list_of_author_recommendations_writings_retrieved=true;
-      
-      this.check_recommendations();
-    })
-  }
-
-  check_recommendations(){
-    if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
       this.list_of_author_recommendations_retrieved=true;
-    }
+    })
   }
 
   first_propositions_retrieved=false;
@@ -657,7 +661,6 @@ export class ArtworkWritingComponent implements OnInit {
 
   open_account() {
     return "/account/"+this.pseudo+"/"+this.authorid;
-    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
   };
 
   
@@ -720,7 +723,7 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   see_description() {
-    
+    this.add_time_of_view()
     this.dialog.open(PopupArtworkDataComponent, {
       data: {
         title:this.title,
@@ -738,7 +741,7 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   see_comments() {
-    
+    this.add_time_of_view()
     this.dialog.open(PopupCommentsComponent, {
       data: {
         visitor_id:this.visitor_id,
@@ -760,6 +763,8 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   open_chat_link() {
+    this.add_time_of_view()
+    this.close_popup();
     this.router.navigateByUrl('/chat/'+ this.pseudo +'/'+ this.authorid);
   }
 
@@ -771,7 +776,6 @@ export class ArtworkWritingComponent implements OnInit {
     
     if(event.code.includes("Enter")){
       let page=Number(this.input.nativeElement.value)
-      console.log(page)
       if(page && page>=1 && page<=this.total_pages){
         this.page_height = document.getElementsByClassName('page')[0].clientHeight;
         document.getElementsByClassName('swiper-slide-writing')[0].scrollTop=this.page_height*page-this.page_height + 10*page +1;
@@ -789,9 +793,7 @@ export class ArtworkWritingComponent implements OnInit {
   left_container_category_index: number = 0;
   open_left_container_category(i : number) {
     if(i==1){
-      this.display_drawings_recommendations=false;
-      this.display_comics_recommendations=false;
-      this.display_comics_recommendations=false;
+      this.display_writings_recommendations=false;
     }
     else{
       this.display_writings_recommendations_others=false;
@@ -1273,6 +1275,7 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   show_likes(){
+    this.add_time_of_view()
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
@@ -1281,6 +1284,7 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   show_loves(){
+    this.add_time_of_view()
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
@@ -1454,6 +1458,7 @@ pageRendered(e:any) {
               }
               this.archive_loading=false;
               this.chatService.messages.next(message_to_send);
+              this.close_popup();
               this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
               return;
             })
@@ -1483,6 +1488,11 @@ pageRendered(e:any) {
   first_comment_pp_loaded=false;
   load_first_comment_pp(){
     this.first_comment_pp_loaded=true;
+  }
+
+  after_click_comment(event){
+    this.add_time_of_view()
+    this.close_popup();
   }
 }
 

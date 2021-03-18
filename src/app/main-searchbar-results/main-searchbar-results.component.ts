@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {ElementRef, ViewChild} from '@angular/core';
-import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -18,7 +17,6 @@ import { ConstantsService } from '../services/constants.service';
 
 
 declare var Swiper: any;
-declare var $: any;
 
 @Component({
   selector: 'app-main-searchbar-results',
@@ -141,17 +139,11 @@ export class MainSearchbarResultsComponent implements OnInit {
   ngOnInit(): void {
     window.scroll(0,0);
     this.opened_section = this.route.snapshot.data['section'];
-    console.log( this.opened_section )
-    console.log(parseInt(this.route.snapshot.paramMap.get('page')))
-    //alert("Debut")
     if(this.opened_section<2){
-      console.log(this.route.snapshot.paramMap.get('text'));
       this.current_page=parseInt(this.route.snapshot.paramMap.get('page'));
       this.research_string=this.route.snapshot.paramMap.get('text');
       this.category=this.route.snapshot.paramMap.get('category');
-      //alert("debut 2")
       if(this.list_of_real_categories.indexOf(this.category)<0 && this.category!='All'){
-        //alert("pb 1")
         this.location.go('/');
         location.reload();
         return;
@@ -159,8 +151,6 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.first_filter=(this.route.snapshot.paramMap.get('first_filter'))?this.route.snapshot.paramMap.get('first_filter'):"all";
       this.second_filter=(this.route.snapshot.paramMap.get('second_filter'))?this.route.snapshot.paramMap.get('second_filter'):"all";
       this.display_title=true;
-      console.log( this.first_filter)
-      console.log(this.second_filter)
       this.get_number_of_results_by_category();
 
     }
@@ -171,27 +161,18 @@ export class MainSearchbarResultsComponent implements OnInit {
         this.first_filters.splice(0,1)
         this.second_filters.splice(0,1)
       }
-      console.log( this.list_of_categories)
-      console.log(this.list_of_real_categories)
       this.current_page=parseInt(this.route.snapshot.paramMap.get('page'));
       this.category=this.route.snapshot.paramMap.get('category');
       this.first_filter=this.route.snapshot.paramMap.get('first_filter');
       this.second_filter=this.route.snapshot.paramMap.get('second_filter');
-      console.log(this.category)
       this.indice_title_selected=this.list_of_real_categories.indexOf(this.category);
       this.category_to_show = this.list_of_categories[this.indice_title_selected];
-      console.log(this.indice_title_selected)
-      console.log(this.category)
-      console.log(this.first_filter)
-      console.log(this.second_filter)
-      console.log(  this.category_to_show)
       if(this.indice_title_selected<0){
         this.location.go('/');
         location.reload();
         return;
       }
       let index1=this.first_filters[this.indice_title_selected].indexOf(this.first_filter)
-      console.log(index1)
       if(index1<0){
         this.location.go('/');
         location.reload();
@@ -200,7 +181,6 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.first_filter_selected=index1;
       let index2=this.second_filters[this.indice_title_selected].indexOf(this.second_filter);
       if(index1<0 &&  this.second_filter!="all"){
-        alert("pb 3");
         this.location.go('/');
         location.reload();
         return;
@@ -209,15 +189,9 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.display_title_style_and_tags=true;
       this.display_results=true;
       this.show_tags=true;
-     
-
       this.cd.detectChanges();
       this.initialize_swiper();
-      
       this.manage_sections_sg();
-      console.log( this.category)
-      console.log( this.first_filter)
-      console.log( this.second_filter)
     }
     
   }
@@ -271,8 +245,6 @@ export class MainSearchbarResultsComponent implements OnInit {
 
 
   change_indice_title_selected(i){
-    console.log("change indice title selected")
-
     if(this.indice_title_selected==i){
       return;
     }
@@ -297,12 +269,9 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.manage_sections();
     }
     else{
-      console.log(this.display_title_style_and_tags)
       this.first_filter=this.first_filters[i][0];
       this.second_filter="all";
       this.first_filter_selected=0;
-      console.log(this.first_filter)
-      console.log(this.second_filter)
       this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
       this.cd.detectChanges();
       this.initialize_swiper()
@@ -317,7 +286,6 @@ export class MainSearchbarResultsComponent implements OnInit {
 
 
   change_first_filter_selected(i){
-    console.log("change first filter selected")
     this.number_of_page_retrieved=false;
     if(this.first_filter_selected==i){
       this.first_filter_selected=-1;
@@ -345,7 +313,6 @@ export class MainSearchbarResultsComponent implements OnInit {
     else{
       this.type_of_target="Cible"
     }
-    console.log(this.second_filter_selected)
     this.manage_sections();
     this.cd.detectChanges();
   }
@@ -375,9 +342,7 @@ export class MainSearchbarResultsComponent implements OnInit {
 
   list_for_styles_and_tags:any;
   get_number_of_results_by_category(){
-    console.log("get_number_of_results_by_category")
     this.navbar.get_number_of_results_for_categories(this.research_string).subscribe(r=>{
-      console.log(r[0])
       if(r[0].result){
         this.list_for_styles_and_tags=r[0].result2;
         for(let i=0;i<r[0].result.length;i++){
@@ -395,8 +360,6 @@ export class MainSearchbarResultsComponent implements OnInit {
                 this.first_filters.splice(this.first_filters.length-1,1);
                 this.second_filters.splice(this.second_filters.length-1,1);
                 if(j==this.list_of_real_categories.length-1){
-                  console.log(this.list_of_real_categories);
-                  console.log(this.category)
                   if(this.category=="All"){
                     this.category=this.list_of_real_categories[0];
                     this.display_results=true;
@@ -413,13 +376,11 @@ export class MainSearchbarResultsComponent implements OnInit {
                     }
   
                     else{
-                      console.log("else ok")
                       this.indice_title_selected=this.list_of_real_categories.indexOf(this.category);
                       this.display_results=true;
                       this.sort_tags_and_styles(r[0].result2,this.indice_title_selected)
                       this.cd.detectChanges();
                       this.initialize_swiper();
-                      
                       this.manage_sections();
                     }
                   }
@@ -429,7 +390,6 @@ export class MainSearchbarResultsComponent implements OnInit {
               }
             }
             else{
-              console.log(this.list_of_real_categories);
               if(this.category=="All"){
                 this.category=this.list_of_real_categories[0];
                 this.display_results=true;
@@ -463,13 +423,6 @@ export class MainSearchbarResultsComponent implements OnInit {
   
   show_tags=false;
   sort_tags_and_styles(result,index_category){
-    console.log("sort tags")
-    console.log(result)
-    console.log(index_category)
-    console.log(this.list_of_real_categories[index_category])
-    console.log(this.first_filters[index_category])
-    console.log(this.second_filters[index_category])
-    
       let len=this.first_filters[index_category].length;
       for(let j=0;j<len;j++){
         let first_filter=this.first_filters[index_category][len-j-1]
@@ -509,31 +462,23 @@ export class MainSearchbarResultsComponent implements OnInit {
   }
   
   manage_sections(){
-    console.log("manage section")
-    console.log(this.first_filter_selected)
-    console.log(this.second_filter_selected)
     if(this.opened_section==1){
-      console.log(this.first_filter)
       if(this.first_filter=="all"){
         this.first_filter_selected=-1;
       }
       else{
         let indice= this.first_filters[this.indice_title_selected].indexOf(this.first_filter)
-        console.log(this.first_filters[this.indice_title_selected])
         if(indice<0){
           this.display_no_propositions=true;
           return
         }
         this.first_filter_selected=this.first_filters[this.indice_title_selected].indexOf(this.first_filter)
       }
-
-      console.log(this.second_filter)
       if(this.second_filter=="all"){
         this.second_filter_selected=-1;
       }
       else{
         let indice= this.second_filters[this.indice_title_selected].indexOf(this.second_filter)
-        console.log(this.second_filters[this.indice_title_selected])
         if(indice<0){
           this.display_no_propositions=true;
           return
@@ -542,23 +487,15 @@ export class MainSearchbarResultsComponent implements OnInit {
       }
 
       if(this.first_filter=="all" && this.second_filter=="all"){
-        console.log(0);
         this.get_number_of_pages();
       }
       if(this.first_filter!="all" && this.second_filter=="all"){
-        console.log(1);
-        console.log(this.first_filters[this.indice_title_selected][this.first_filter_selected])
         this.get_number_of_pages1();
       }
       if(this.first_filter=="all" && this.second_filter!="all"){
-        console.log(2);
-        console.log(this.second_filters[this.indice_title_selected][this.second_filter_selected])
         this.get_number_of_pages2();
       }
       if(this.first_filter!="all" && this.second_filter!="all"){
-        console.log(3);
-        console.log(this.first_filters[this.indice_title_selected][this.first_filter_selected]);
-        console.log(this.second_filters[this.indice_title_selected][this.second_filter_selected]);
         this.get_number_of_pages3();
       }
       
@@ -577,10 +514,8 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
       this.navbar.get_number_of_results_by_category(this.category,this.research_string,this.compteur_research).subscribe(r=>{
-        console.log(r[0][0]);
         this.number_of_results=r[0][0][0].number_of_results;
         this.number_of_pages=Math.trunc(parseInt(r[0][0][0].number_of_results)/5)+1;
-        console.log(this.number_of_pages);
         this.number_of_page_retrieved=true;
         if(this.current_page>this.number_of_pages){
           this.display_no_propositions=true;
@@ -603,10 +538,8 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
       this.navbar.get_number_of_results_by_category1(this.category,this.research_string,this.first_filter,this.compteur_research).subscribe(r=>{
-        console.log(r[0][0]);
         this.number_of_results=r[0][0][0].number_of_results;
         this.number_of_pages=Math.trunc(parseInt(r[0][0][0].number_of_results)/5)+1;
-        console.log(this.number_of_pages);
         this.number_of_page_retrieved=true;
         if(this.current_page>this.number_of_pages){
           this.display_no_propositions=true;
@@ -629,10 +562,8 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
       this.navbar.get_number_of_results_by_category2(this.category,this.research_string,this.second_filter,this.compteur_research,this.type_of_target).subscribe(r=>{
-        console.log(r[0][0]);
         this.number_of_results=r[0][0][0].number_of_results;
         this.number_of_pages=Math.trunc(parseInt(r[0][0][0].number_of_results)/5)+1;
-        console.log(this.number_of_pages);
         this.number_of_page_retrieved=true;
         if(this.current_page>this.number_of_pages){
           this.display_no_propositions=true;
@@ -655,7 +586,6 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
       this.navbar.get_number_of_results_by_category3(this.category,this.research_string,this.first_filter,this.second_filter,this.compteur_research,this.type_of_target).subscribe(r=>{
-        console.log(r[0][0]);
         if(r[0][0][0].number_of_results==0){
           this.show_propositions=false;
           this.display_no_propositions=true;
@@ -664,7 +594,6 @@ export class MainSearchbarResultsComponent implements OnInit {
           this.display_no_propositions=false;
           this.number_of_results=r[0][0][0].number_of_results;
           this.number_of_pages=Math.trunc(parseInt(r[0][0][0].number_of_results)/5)+1;
-          console.log(this.number_of_pages);
           this.number_of_page_retrieved=true;
           if(this.current_page>this.number_of_pages){
             this.display_no_propositions=true;
@@ -689,7 +618,6 @@ export class MainSearchbarResultsComponent implements OnInit {
   
 
   get_research_propositions(compteur,i){
-    console.log(" get_research_propositions " + i)
     let offset = (this.current_page-1)*5;
     this.loading_propositions=true;
     this.display_no_propositions=false;
@@ -699,7 +627,6 @@ export class MainSearchbarResultsComponent implements OnInit {
         if(r[0][0].length>0){
           if(r[1]==this.compteur_research){
             this.list_of_first_propositions=r[0][0];
-            console.log( this.list_of_first_propositions );
             for(let i=0;i<this.list_of_first_propositions.length;i++){
               this.get_propositions(i,r[1]);
             }
@@ -714,8 +641,6 @@ export class MainSearchbarResultsComponent implements OnInit {
     }
     if(i==1){
       this.navbar.get_propositions_after_research_navbar1(this.category,this.first_filter,this.research_string,5,offset,compteur).subscribe(r=>{
-        console.log(r[0])
-        console.log(r[0][0].length)
         if(r[0][0].length>0){
           if(r[1]==this.compteur_research){
             this.list_of_first_propositions=r[0][0];
@@ -773,8 +698,6 @@ export class MainSearchbarResultsComponent implements OnInit {
 
   get_propositions(i,compteur){
     this.compteur_propositions=0;
-    console.log("get proposition " + i + ' /' + this.list_of_first_propositions.length)
-    console.log(" compteur " + compteur + ' and compteur research ' + this.compteur_research)
     if(this.list_of_first_propositions[i].publication_category=="Account"){
       this.Profile_Edition_Service.retrieve_profile_picture(this.list_of_first_propositions[i].target_id).subscribe(t=> {
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
@@ -787,8 +710,6 @@ export class MainSearchbarResultsComponent implements OnInit {
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=profile[0];
           this.compteur_propositions++;
-          console.log(this.compteur_propositions)
-          console.log(this.list_of_first_propositions)
           if(this.compteur_propositions==this.list_of_first_propositions.length){
             this.propositions_done("account","")
           }
@@ -878,17 +799,11 @@ export class MainSearchbarResultsComponent implements OnInit {
 
  
   propositions_done(category,format){
-    console.log(category + ' ' + format)
-    console.log(this.list_of_last_propositions);
-    console.log(this.number_of_pages)
     this.show_propositions=true;
     this.loading_propositions=false;
     this.cd.detectChanges();
   }
     
-  /****************************************** RECHERCHE PAR STYLE ET PAR GENRE ***************** */
-  /****************************************** RECHERCHE PAR STYLE ET PAR GENRE ***************** */
-  /****************************************** RECHERCHE PAR STYLE ET PAR GENRE ***************** */
   /****************************************** RECHERCHE PAR STYLE ET PAR GENRE ***************** */
   /****************************************** RECHERCHE PAR STYLE ET PAR GENRE ***************** */
   /****************************************** RECHERCHE PAR STYLE ET PAR GENRE ***************** */
@@ -930,13 +845,11 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.get_number_of_pages_sg();
     }
     if(this.second_filter!="all"){
-      console.log(2);
       this.get_number_of_pages_sg1();
     }
   }
 
   get_number_of_pages_sg(){
-    console.log("get_number_of_pages_sg")
     this.list_of_first_propositions=[];
     this.list_of_last_propositions=[];
     this.list_of_thumbnails=[];
@@ -944,7 +857,6 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
       this.navbar.get_number_of_results_by_category_sg(this.category,this.first_filter,this.compteur_research).subscribe(r=>{
-        console.log(r[0][0]);
         if(r[0][0][0].number_of_results==0){
           this.show_propositions=false;
           this.display_no_propositions=true;
@@ -953,7 +865,6 @@ export class MainSearchbarResultsComponent implements OnInit {
           this.display_no_propositions=false;
           this.number_of_results=r[0][0][0].number_of_results;
           this.number_of_pages=Math.trunc(parseInt(r[0][0][0].number_of_results)/5)+1;
-          console.log(this.number_of_pages);
           this.number_of_page_retrieved=true;
           if(this.current_page>this.number_of_pages){
             this.display_no_propositions=true;
@@ -979,7 +890,6 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
       this.navbar.get_number_of_results_by_category_sg1(this.category,this.first_filter,this.second_filter,this.compteur_research,this.type_of_target).subscribe(r=>{
-        console.log(r[0][0]);
         if(r[0][0][0].number_of_results==0){
           this.show_propositions=false;
           this.display_no_propositions=true;
@@ -988,7 +898,6 @@ export class MainSearchbarResultsComponent implements OnInit {
           this.display_no_propositions=false;
           this.number_of_results=r[0][0][0].number_of_results;
           this.number_of_pages=Math.trunc(parseInt(r[0][0][0].number_of_results)/5)+1;
-          console.log(this.number_of_pages);
           this.number_of_page_retrieved=true;
           if(this.current_page>this.number_of_pages){
             this.display_no_propositions=true;
@@ -1128,12 +1037,9 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.get_number_of_pages_sg();
     }
     if(this.second_filter!="all"){
-      console.log(2);
       this.get_number_of_pages_sg1();
     }
   }
-  console.log("ici on change paaaaaaaaaaage")
-  console.log(this.opened_section)
   if(this.opened_section==2 ){
     this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
   }

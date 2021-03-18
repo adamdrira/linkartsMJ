@@ -4,13 +4,10 @@ import { NotationService } from '../services/notation.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { ChatService } from '../services/chat.service';
 import { NotificationsService } from '../services/notifications.service';
-import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { convert_timestamp_to_number } from '../helpers/dates';
 import { SignupComponent } from '../signup/signup.component';
-import {get_date_to_show} from '../helpers/dates';
-import {date_in_seconds} from '../helpers/dates';
 import { MatDialog } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
 
@@ -66,7 +63,8 @@ export class CommentsComponent implements OnInit {
   @Output() first_comment = new EventEmitter<any>();
   @Output() new_comment = new EventEmitter<any>();
   @Output() removed_comment = new EventEmitter<any>();
-  
+  @Output() emit_close_click = new EventEmitter<boolean>();
+
   @ViewChild('commentary') commentary:ElementRef;
   comment: FormControl;
   comment_container: FormGroup;
@@ -461,6 +459,11 @@ export class CommentsComponent implements OnInit {
       data:{for_group_creation:false},
       panelClass:"signupComponentClass"
     });
+  }
+
+  @Output() click_on_user = new EventEmitter<boolean>();
+  after_click_comment2(event){
+    this.click_on_user.emit(true)
   }
 
 }

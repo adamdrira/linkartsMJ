@@ -161,14 +161,12 @@ export class AccountMyAccountComponent implements OnInit {
       return;
     }
     if(i==0){
-
-      
-        this.opened_category=i;
-        this.cd.detectChanges();
-      
-     
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-my-account/account`).subscribe();
+      this.opened_category=i;
+      this.cd.detectChanges();
     }
     if(i==1){
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/remuneration`).subscribe();
       this.sumo_ready=false;
       this.opened_category=i;
       this.cd.detectChanges();

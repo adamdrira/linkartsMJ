@@ -65,7 +65,7 @@ span {
 div.data-container {
     padding-top:50px !important;
     .options-buttons {
-        top:5px !important;
+        top:48px !important;
     }
     @media (max-width: 1000px) {
         padding-top:36px !important;
@@ -290,9 +290,9 @@ div.data-container {
         }
 
         > .first {
-            /*max-width: 50%;
-            padding: 10px 10px 10px 0px;*/
-            width: fit-content;
+            max-width: 50%;
+            padding: 10px 10px 10px 0px;
+            //width: fit-content;
             img {
                 max-width: 95%;
                 /* width: unset; */
@@ -300,9 +300,9 @@ div.data-container {
             }
         }
         > .second {
-            /*max-width: 50%;
-            padding: 10px 0px 10px 10px;*/
-            width: fit-content;
+            max-width: 50%;
+            padding: 10px 0px 10px 10px;
+            //width: fit-content;
             img {
                 max-width: 95%;
                 /* width: unset; */
@@ -679,6 +679,15 @@ div.data-container {
     display: flex;
     .second-span {
         margin-left: auto;
+        margin-right: 10px;
     }
+    .first-span{
+        margin-left: 10px;
+    }
+
+    .right-part{
+        margin: auto 0px auto auto !important;
+    }
+
 }
 

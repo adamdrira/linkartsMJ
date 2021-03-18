@@ -287,7 +287,7 @@ export class AccountAboutComponent implements OnInit {
       return;
     }
     if(i==1){
-      
+      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/stats`).subscribe();
       this.sumo_ready=false;
       this.sumo_for_ads_ready=false;
       this.opened_category=i;
@@ -332,6 +332,7 @@ export class AccountAboutComponent implements OnInit {
       this.cd.detectChanges();
     }
     else{
+      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/about`).subscribe();
       this.opened_category=i;
       this.cd.detectChanges();
     }

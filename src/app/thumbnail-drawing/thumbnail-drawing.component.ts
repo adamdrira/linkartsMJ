@@ -9,6 +9,8 @@ import {date_in_seconds} from '../helpers/dates';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
+import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-thumbnail-drawing',
@@ -33,6 +35,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
+    public dialog: MatDialog,
     private NotationService:NotationService,
     private navbar: NavbarService,
     ) {
@@ -268,6 +271,21 @@ export class ThumbnailDrawingComponent implements OnInit {
     else if(this.width>0){
       return n;
     }
+  }
+
+
+  open_popup(){
+    console.log(this.drawing_id)
+    console.log(this.title)
+    this.dialog.open(PopupArtworkComponent, {
+      data: {
+        format_input:this.format,
+        id_input:this.drawing_id,
+        title_input:this.title,
+        category:'drawing',
+      }, 
+      panelClass:"popupArtworkClass",
+    });
   }
 
 }

@@ -15,7 +15,7 @@
     <div class="right-container">
 
         <div class="comment">
-            <a [routerLink]=open_account()>{{user_name}}</a>
+            <a [routerLink]=open_account() (click)="send_click()">{{user_name}}</a>
 
 
             <textarea matInput cdkTextareaAutosize #textareaREAD 
@@ -54,18 +54,7 @@
             </span>
         </div>
 
-        <!--<ng-container *ngIf="answers_retrieved">
-
-            <button class="answers-button" (click)="show_responses();" *ngIf="!responses_list.length && !see_responses" [@enterAnimation]>
-                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
-                <span>Répondre <ng-container *ngIf="responses_list.length>0">({{responses_list.length}})</ng-container></span>
-            </button>
-
-            <button class="answers-button" (click)="show_less_responses();" *ngIf="see_responses" [@enterAnimation]>
-                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_less</mat-icon>
-                <span>Voir moins</span>
-            </button>
-        </ng-container>-->
+     
         
 
 
@@ -83,7 +72,7 @@
                     
                     <div class="comment-container">
                         <div class="comment">
-                            <a [routerLink]=open_response_account(i)>{{author_name_list[i]}}</a>
+                            <a [routerLink]=open_response_account(i) (click)="send_click()">{{author_name_list[i]}}</a>
 
                             <textarea matInput cdkTextareaAutosize #textareaRESPONSE 
                             type="text" 

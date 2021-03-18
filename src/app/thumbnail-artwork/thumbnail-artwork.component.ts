@@ -18,9 +18,10 @@ import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
-
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { NavbarService } from '../services/navbar.service';
+import { Router } from '@angular/router';
+import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
 
 declare var Swiper:any;
 @Component({
@@ -63,6 +64,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     public dialog: MatDialog,
     private rd:Renderer2,
+    private router:Router,
     private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
     private navbar: NavbarService,
@@ -110,6 +112,8 @@ export class ThumbnailArtworkComponent implements OnInit {
       
     }
   }
+
+  @Input() in_artwork: any;
 
   @Input() item: any;
   @Input() skeleton: boolean;
@@ -707,6 +711,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
   };
 
+  
   open_account() {
     return "/account/"+this.author_pseudo+"/"+this.item.authorid;
     //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
@@ -1117,5 +1122,35 @@ export class ThumbnailArtworkComponent implements OnInit {
   see_reported_content(){
     this.display_evenif_reported=true;
     this.cd.detectChanges();
+  }
+
+  open_popup(){
+    let id=0;
+    
+    if(this.category=="comic"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id
+    }
+    else if(this.category=="drawing"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id
+    }
+    else{
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id
+    }
+
+    if(this.in_artwork){
+      this.router.navigate([this.get_artwork()]);
+    }
+    else{
+      this.dialog.open(PopupArtworkComponent, {
+        data: {
+          format_input:this.format,
+          id_input:id,
+          title_input:this.title,
+          category:this.category,
+        }, 
+        panelClass:"popupArtworkClass",
+      });
+     
+    }
   }
 }

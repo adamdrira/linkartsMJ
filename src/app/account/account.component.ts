@@ -1180,14 +1180,30 @@ export class AccountComponent implements OnInit {
       
       
 
-      if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}`); }
+      if( (i == 0) ) { 
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}`).subscribe();
+        this.location.go(`/account/${this.pseudo}/${this.user_id}`); 
+      }
       else if( i == 1 ) { 
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks`).subscribe();
         this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); 
       }
-      else if( i == 2 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); }
-      else if( i == 5 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); }
-      else if( i == 6 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); }
-      else if( i == 7 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/my_account`); }
+      else if( i == 2 ) { 
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/ads`).subscribe();
+        this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); 
+      }
+      else if( i == 5 ) { 
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about`).subscribe();
+        this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); 
+    }
+      else if( i == 6 ) { 
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/archives`).subscribe();
+        this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); 
+      }
+      else if( i == 7 ) {
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/my_account`).subscribe(); 
+        this.location.go(`/account/${this.pseudo}/${this.user_id}/my_account`); 
+      }
     }
     
    
@@ -1236,9 +1252,18 @@ export class AccountComponent implements OnInit {
     this.category_to_load[i]=true;
     this.add_album_to_load[0]=true;
     this.opened_category=i;
-    if( this.opened_category==0 && this.opened_section==1) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/comics`); }
-    else if(this.opened_category==1 && this.opened_section==1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`); }
-    else if( this.opened_category==2 && this.opened_section==1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/writings`); }
+    if( this.opened_category==0 && this.opened_section==1) { 
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/comics`).subscribe();
+      this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/comics`); 
+    }
+    else if(this.opened_category==1 && this.opened_section==1 ) { 
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`).subscribe();
+      this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`); 
+    }
+    else if( this.opened_category==2 && this.opened_section==1 ) { 
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/writings`).subscribe();
+      this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/writings`); 
+    }
     this.add_album=-1;
     this.opened_album=-1;
     this.open_album( 0,true);

@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [@enterAnimation]>
+    <div style="cursor:pointer" *ngIf="thumbnail_picture_received" class="global-container" (click)="open_popup()" [@enterAnimation]>
 
 
         <div *ngIf="type_of_profile=='account' " class="absolute-selector" [ngClass]="{'invisible':!archive_retrieved}">
@@ -223,5 +223,5 @@
 
         </div>
 
-    </a>
+    </div>
 </div>

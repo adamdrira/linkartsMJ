@@ -263,6 +263,7 @@ export class RecommendationsComponent implements OnInit {
     }
     else if(this.sorted_category_retrieved){
       if(i==0){
+        this.navbar.add_page_visited_to_history(`/recommendations/comic`).subscribe();
         this.subcategory=i;
         this.type_of_skeleton="comic";
         window.dispatchEvent(new Event('resize'));
@@ -273,6 +274,7 @@ export class RecommendationsComponent implements OnInit {
       }
       else if(i==1){
         this.subcategory=i;  
+        this.navbar.add_page_visited_to_history(`/recommendations/drawing`).subscribe();
         this.type_of_skeleton="drawing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
@@ -283,6 +285,7 @@ export class RecommendationsComponent implements OnInit {
       }
       else if(i==2){
         this.subcategory=i;
+        this.navbar.add_page_visited_to_history(`/recommendations/writing`).subscribe();
         this.type_of_skeleton="writing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
@@ -513,6 +516,7 @@ export class RecommendationsComponent implements OnInit {
     });
 
     this.Community_recommendation.get_first_recommendation_bd_serie_for_user(this.index_bd).subscribe(information=>{
+      
       if(information[0].list_bd_serie_to_send){
         this.styles_with_contents_already_seen_comics_serie=information[0].styles_with_contents_already_seen;
         var list_bd_serie= information[0].list_bd_serie_to_send;
@@ -707,8 +711,7 @@ export class RecommendationsComponent implements OnInit {
             
           });
 
-          this.Community_recommendation.get_first_recommendation_drawing_os_for_user(this.index_drawing)
-          .subscribe(information=>{
+          this.Community_recommendation.get_first_recommendation_drawing_os_for_user(this.index_drawing).subscribe(information=>{
             var list_drawing_os= information[0].list_drawing_os_to_send;
             this.compare_to_compteur_drawing= this.compare_to_compteur_drawing + list_drawing_os.length;
             if(list_drawing_os.length>0){
@@ -780,6 +783,9 @@ export class RecommendationsComponent implements OnInit {
       var list_writings_to_send= information[0].list_writings_to_send;
       this.styles_with_contents_already_seen_writings=information[0].styles_with_contents_already_seen
       this.compare_to_compteur_writing+= list_writings_to_send.length;
+      
+      console.log("recom writings")
+      console.log(information)
       if(list_writings_to_send[0] && list_writings_to_send[0].length>0 ){
         for (let i=0;i<list_writings_to_send.length;i++){
           if (list_writings_to_send[i].length>0){

@@ -76,7 +76,8 @@
                     (changed)="comment_changed();"
                     [comment_id]=0
                     [now_in_seconds]=now_in_seconds
-                    [comment_information]=comments_list[0]>
+                    [comment_information]=comments_list[0]
+                    (click_on_user2)="after_click_comment2($event);">
                 </app-comment-element>
             </div>
 
@@ -118,7 +119,8 @@
                     [comment_id]=i
                     [editable_comment]=editable_comment
                     [now_in_seconds]=now_in_seconds
-                    [comment_information]=item>
+                    [comment_information]=item
+                    (click_on_user2)="after_click_comment2($event);">
                 </app-comment-element>
             </div>
             
@@ -154,7 +156,8 @@
                     (changed)="comment_changed();"
                     [comment_id]=i
                     [now_in_seconds]=now_in_seconds
-                    [comment_information]=item>
+                    [comment_information]=item
+                    (click_on_user2)="after_click_comment2($event);">
                 </app-comment-element>
             </div>
             

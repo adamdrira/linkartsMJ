@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2,  ChangeDetectorRef,  Inject } from '@angular/core';
+import { Component, OnInit, Renderer2,  ChangeDetectorRef,  Inject, ElementRef, ViewChild } from '@angular/core';
 import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -58,34 +58,74 @@ export class PopupSubscribingsComponent implements OnInit {
   author_id=this.data.author_id;
   visitor_name=this.data.visitor_name;
   show_icon=false;
+
+  list_of_data_retrieved=[];
+  list_of_sub_retrieved=[];
+  list_of_all_retrieved=[];
+  first_check=false;
+  number_of_subs_to_show=10;
+  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   ngOnInit() {
+    let int = setInterval(() => {
+
+      if(this.number_of_subs_to_show<this.list_of_subscribings.length){
+        let len = this.list_of_subscribings.length - this.number_of_subs_to_show;
+        let see_more=false;
+        if(len>10){
+          let compt =0
+          for(let i=0;i<10;i++){
+            if(this.list_of_all_retrieved[ this.number_of_subs_to_show +i]){
+              compt++;
+            }
+          }
+          if(compt==10){
+            see_more=true;
+          }
+        }
+        else{
+          let compt =0
+          for(let i=0;i<len;i++){
+            if(this.list_of_all_retrieved[ this.number_of_subs_to_show +i]){
+              compt++;
+            }
+          }
+          if(compt==len){
+            see_more=true;
+          }
+        }
+      
+       
+        if(  see_more && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+          this.number_of_subs_to_show+=10;
+        }
+
+      }
+      else if( this.number_of_subs_to_show>=this.list_of_subscribings.length){
+        clearInterval(int)
+      }
+      
+     
+    },1000)
+    
     let n=this.list_of_subscribings.length;
     let compt=0;
     if(n>0){
       for (let i=0;i<n;i++){
 
-        let  sub_retrieved=false;
-        let data_retrieved=false;
-
         this.Profile_Edition_Service.retrieve_profile_data(this.list_of_subscribings[i].id_user_subscribed_to).subscribe(r=>{
           this.list_of_subscribings_information[i]=r[0];
-          console.log("user info")
-          console.log(this.list_of_subscribings_information)
-          data_retrieved=true;
-          check_all(this);
+          this.list_of_data_retrieved[i]=true;
+          check_all(this,i);
         })
         this.Subscribing_service.check_if_susbcribed_to_visitor(this.list_of_subscribings[i].id_user_subscribed_to).subscribe(information=>{
-          console.log("res check")
-          console.log(information)
-          console.log(this.list_of_subscribings[i])
           if(information[0].value){
             this.list_of_check_subscribtion[i]=true;
           }
           else{
             this.list_of_check_subscribtion[i]=false;
           }
-          sub_retrieved=true;
-          check_all(this);
+          this.list_of_sub_retrieved[i]=true;
+          check_all(this,i);
           
         });
 
@@ -97,11 +137,25 @@ export class PopupSubscribingsComponent implements OnInit {
           
         });
 
-        function check_all(THIS){
-          if(sub_retrieved && data_retrieved){
+        function check_all(THIS,i){
+          if(THIS.list_of_data_retrieved[i] && THIS.list_of_sub_retrieved[i]){
             compt++;
+            THIS.list_of_all_retrieved[i]=true;
+            if(THIS.list_of_subscribings.length>10){
+              let compt1 =0
+              for(let j=0;j<10;j++){
+                if(THIS.list_of_all_retrieved[j]){
+                  compt1++;
+                }
+              }
+              if(compt1==10){
+                THIS.first_check=true;
+              }
+            }
+          
             if(compt==n){
               THIS.subscribtion_info_added=true;
+              THIS.first_check=true;
               THIS.cd.detectChanges()
             }
           }
@@ -198,7 +252,13 @@ export class PopupSubscribingsComponent implements OnInit {
     this.pp_is_loaded[i]=true;
   }
   get_user_link(i:number) {
-    return "/account/"+ this.list_of_subscribings_information[i].nickname +"/"+ this.list_of_subscribings_information[i].id;
+    if(this.list_of_subscribings_information[i]){
+      return "/account/"+ this.list_of_subscribings_information[i].nickname +"/"+ this.list_of_subscribings_information[i].id;
+    }
+    else{
+      return false
+    }
+    
   }
   close_dialog() {
     this.dialogRef.close();

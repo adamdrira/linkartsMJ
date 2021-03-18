@@ -1,0 +1,26 @@
+
+<app-artwork-comic *ngIf="category=='comic'"
+[bd_format_input]="format_input" 
+[bd_id_input]="id_input"
+[bd_title_input]="title_input"
+(emit_close)="remove_popup_artwork($event);"
+(emit_close_click)="remove_popup_artwork_click($event);"></app-artwork-comic>
+
+<app-artwork-drawing *ngIf="category=='drawing'"
+[drawing_format_input]="format_input" 
+[drawing_id_input]="id_input"
+[drawing_title_input]="title_input"
+(emit_close)="remove_popup_artwork($event);"
+(emit_close_click)="remove_popup_artwork_click($event);"></app-artwork-drawing>
+
+<app-artwork-writing *ngIf="category=='writing'"
+[writing_id_input]="id_input"
+[writing_title_input]="title_input"
+(emit_close)="remove_popup_artwork($event);"
+(emit_close_click)="remove_popup_artwork_click($event);"></app-artwork-writing>
+
+<app-ad-page *ngIf="category=='ad'"
+[ad_id_input]="id_input"
+[ad_title_input]="title_input"
+(emit_close)="remove_popup_artwork($event);"
+(emit_close_click)="remove_popup_artwork_click($event);"></app-ad-page>

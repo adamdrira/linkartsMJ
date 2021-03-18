@@ -1029,6 +1029,24 @@
                           </div>
                         </a>
                       </ng-container>
+                      <!-- ---------------------------Ad response----------------------------------->
+                      <!-- ---------------------------Ad response----------------------------------->
+                      <ng-container *ngIf="notif.type=='ad_response'">
+                          <a (click)="open_ad(notif)" [routerLink]="get_ad(notif)">
+                            <div class="left-container">
+                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                                [ngClass]="{'invisible':!notification_loaded[i]}">
+                              <div class="notification-icon ad">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">post_add</mat-icon>
+                              </div>
+                            </div>
+                            <div class="right-container">
+                              <span><b>{{notif.id_user_name}}</b> a répondu à votre annonce :
+                                <b>"{{notif.publication_name}}"</b></span>
+                              <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                            </div>
+                          </a>
+                      </ng-container>
                       <!-- ---------------------------Publication add----------------------------------->
                       <!-- ---------------------------Publication add----------------------------------->
                       <ng-container *ngIf="notif.type=='add_publication'">

@@ -64,8 +64,6 @@ export class PopupAdWriteResponsesComponent implements OnInit {
   all_attachments_uploaded( event: boolean) {
     this.attachments_uploaded = event;
     this.Profile_Edition_Service.get_current_user().subscribe(s=>{
-      console.log(this.data.item.id_user);
-      console.log(this.data.item)
       let visitor_name=s[0].firstname + ' ' + s[0].lastname;
       this.NotificationsService.add_notification('ad_response',s[0].id,visitor_name,this.data.item.id_user,'ad',this.data.item.title,this.data.item.type_of_project,this.data.item.id,0,null,false,null).subscribe(l=>{
         let message_to_send ={
@@ -85,10 +83,7 @@ export class PopupAdWriteResponsesComponent implements OnInit {
           comment_id:null,
         }
         this.chatService.messages.next(message_to_send);
-        console.log("response sent");
-        console.log(message_to_send)
         this.Ads_service.send_email_for_ad_answer(visitor_name,this.data.item.id,this.data.item.id_user,this.data.item.title).subscribe(l=>{
-          console.log(l);
           this.display_loading=false;
           location.reload();
         })
@@ -101,7 +96,7 @@ export class PopupAdWriteResponsesComponent implements OnInit {
 
   send_response(){
 
-    if( !this.response_group.valid ) {
+    if( !this.response_group.valid || this.display_loading) {
       return;
     }
     

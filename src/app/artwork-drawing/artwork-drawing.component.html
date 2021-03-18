@@ -1,7 +1,13 @@
-<div class="artwork white-background" *ngIf="page_not_found">
+<div class="artwork white-background" *ngIf="page_not_found"  #artwork>
     <app-page-not-found></app-page-not-found>
 </div>
-<div class="artwork" *ngIf="!page_not_found">
+
+<button (click)="add_time_of_view();close_popup()" class="close-popup" *ngIf="drawing_id_input" #close>
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+</button>
+
+
+<div class="artwork" *ngIf="!page_not_found"  #artwork>
     
 
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
@@ -10,7 +16,7 @@
     <div #leftContainer class="artwork-container">
 
 
-        <ng-container *ngIf="!item_retrieved || !mode_visiteur_added">
+        <ng-container *ngIf="!item_retrieved ">
             <div class="top-container">
 
                 <div class="dark-shiny loading10b ">
@@ -26,7 +32,7 @@
             </div>
         </ng-container>
 
-        <div class="top-container" [ngClass]="{'really-invisible': !item_retrieved || !mode_visiteur_added}">
+        <div class="top-container" [ngClass]="{'really-invisible': !item_retrieved }">
             
             <div class="buttons-container">
 
@@ -85,7 +91,7 @@
         </div>
 
 
-        <div class="content-container" [ngClass]="{'really-invisible': !item_retrieved || !mode_visiteur_added}">
+        <div class="content-container" [ngClass]="{'really-invisible': !item_retrieved }">
             <div class="thumbnails-container" *ngIf="thumbnails==true" [@enterFromLeft]>
                 <div class="thumbnails-name">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="thumbnails-icon">apps</mat-icon>
@@ -175,10 +181,10 @@
                     <div class="title">Dessins</div>
                     <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_drawings; let i=index">
 
-                        <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0"  [item]=item[0] page='subscribings'
+                        <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0"  in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item[0] page='subscribings'
                             now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='artbook'>
                         </app-thumbnail-artwork>
-                        <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null"  [item]=item[0] page='subscribings'
+                        <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null" in_artwork=true   (click)="stop($event);add_time_of_view();close_popup()" [item]=item[0] page='subscribings'
                             now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='one-shot'>
                         </app-thumbnail-artwork>
                     </div>
@@ -204,10 +210,10 @@
                 <div class="recommendation-group" *ngIf="list_of_recommendations_by_tag.length>0">
                     <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
 
-                        <app-thumbnail-artwork *ngIf="item.pagesnumber >=0"  [item]=item page='subscribings'
+                        <app-thumbnail-artwork *ngIf="item.pagesnumber >=0"  in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
                             now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='artbook'>
                         </app-thumbnail-artwork>
-                        <app-thumbnail-artwork *ngIf="item.pagesnumber == null"  [item]=item page='subscribings'
+                        <app-thumbnail-artwork *ngIf="item.pagesnumber == null" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
                             now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='one-shot'>
                         </app-thumbnail-artwork>
         
@@ -303,76 +309,7 @@
            
             </div>
             
-            <div class="options-buttons options-buttons-artwork">
-
-                <div *ngIf="archive_loading" class="archive-loading"> 
-                    <mat-spinner diameter="18"  ></mat-spinner>
-                </div>
-
-
-                <button *ngIf="!archive_loading && mode_visiteur_added && (!mode_visiteur || visitor_id==1)  && archive_retrieved && type_of_account=='account'" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
-                </button>
-                <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
-                    <button class="artwork-button-menu-item" mat-menu-item (click)="edit_information();">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-                        <span>Modifier les informations</span>
-                    </button>
-                    <button *ngIf="!content_emphasized && status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="emphasize()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">trending_up</mat-icon>
-                        <span>Mettre l'oeuvre en avant</span>
-                    </button>
-                    <button *ngIf="content_emphasized && status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="remove_emphasizing()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">trending_down</mat-icon>
-                        <span>Annuler la mise en avant</span>
-                    </button>
-                    <button *ngIf="status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="set_private();">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
-                        <span>Archiver</span>
-                    </button>
-                    <button *ngIf="status=='private'" class="artwork-button-menu-item" mat-menu-item (click)="set_public();">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
-                        <span>Désarchiver</span>
-                    </button>
-                    <button class="artwork-button-menu-item" mat-menu-item (click)="remove_artwork();">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">clear</mat-icon>
-                        <span>Supprimer</span>
-                    </button>
-                    <button class="artwork-button-menu-item" mat-menu-item *ngIf="monetization=='true' && status=='public'" disabled>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
-                        <span>Œuvre monétisée</span>
-                    </button>
-                </mat-menu>
-    
-                <!--options pour un visiteur -->
-                <button *ngIf="!archive_loading && mode_visiteur_added && mode_visiteur && visitor_id!=1 && archive_retrieved && type_of_account=='account'" class="optionsMenu" [matMenuTriggerFor]="artworkOptions02">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
-                </button>
-                <mat-menu #artworkOptions02="matMenu" class="artwork-mat-menu">
-                    <button *ngIf="mode_visiteur && !(list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)"
-                        class="artwork-button-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
-                        <span>Signaler</span>
-                    </button>
-                    <button *ngIf="mode_visiteur && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)"
-                        class="artwork-button-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
-                        <span>Annuler le signalement</span>
-                    </button>
-                    <button (click)="archive()" class="artwork-button-menu-item" mat-menu-item *ngIf="!content_archived">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
-                        <span>Archiver</span>
-                    </button>
-                    <button (click)="unarchive()" class="artwork-button-menu-item" mat-menu-item *ngIf="content_archived">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
-                        <span>Désarchiver</span>
-                    </button>
-                    <button class="artwork-button-menu-item" mat-menu-item (click)="open_chat_link()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">create</mat-icon>
-                        <span>Écrire</span>
-                    </button>
-                </mat-menu>
-            </div>
+            
             
         </div>
 
@@ -410,6 +347,128 @@
                      • {{date_upload_to_show}}
                 </span>
             </div>
+
+            <div class="view-and-date-numbers">
+                <div >
+                    <button mat-icon-button
+                        style="outline: none !important;"
+                    shareButton="facebook"
+                    #fbBtn="shareButton"
+                    [style.color]="fbBtn?.color">
+                    <fa-icon *ngIf="fbBtn" [icon]="fbBtn.icon" size="lg"></fa-icon>
+                    </button>
+                    <button mat-icon-button
+                        style="outline: none !important;"
+                            shareButton="twitter"
+                            #twtBtn="shareButton"
+                            [style.color]="twtBtn?.color">
+                    <fa-icon *ngIf="twtBtn" [icon]="twtBtn.icon" size="lg"></fa-icon>
+                    </button>
+                    <button mat-icon-button
+                        style="outline: none !important;"
+                            shareButton="pinterest"
+                            #pinBtn="shareButton"
+                            [style.color]="pinBtn?.color">
+                    <fa-icon *ngIf="pinBtn" [icon]="pinBtn.icon" size="lg"></fa-icon>
+                    </button>
+                    <button mat-icon-button
+                        style="outline: none !important;"
+                            shareButton="whatsapp"
+                            #whaBtn="shareButton"
+                            [style.color]="whaBtn?.color">
+                    <fa-icon *ngIf="whaBtn" [icon]="whaBtn.icon" size="lg"></fa-icon>
+                    </button>
+                    <button mat-icon-button
+                        style="outline: none !important;"
+                            shareButton="linkedin"
+                            #msgBtn="shareButton"
+                            [style.color]="msgBtn?.color">
+                    <fa-icon *ngIf="msgBtn" [icon]="msgBtn.icon" size="lg"></fa-icon>
+                    </button>
+                    <button mat-icon-button
+                        style="outline: none !important;"
+                            shareButton="copy"
+                            #insBtn="shareButton"
+                            [style.color]="insBtn?.color">
+                    <fa-icon *ngIf="insBtn" [icon]="insBtn.icon" size="lg"></fa-icon>
+                    </button>
+                </div>
+
+                <div class="right-part" >
+                    <div class="options-buttons options-buttons-artwork">
+
+                        <div *ngIf="archive_loading" class="archive-loading"> 
+                            <mat-spinner diameter="18"  ></mat-spinner>
+                        </div>
+        
+        
+                        <button *ngIf="!archive_loading && mode_visiteur_added && (!mode_visiteur || visitor_id==1)  && archive_retrieved && type_of_account=='account'" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
+                        </button>
+                        <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
+                            <button class="artwork-button-menu-item" mat-menu-item (click)="edit_information();">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                <span>Modifier les informations</span>
+                            </button>
+                            <button *ngIf="!content_emphasized && status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="emphasize()">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">trending_up</mat-icon>
+                                <span>Mettre l'oeuvre en avant</span>
+                            </button>
+                            <button *ngIf="content_emphasized && status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="remove_emphasizing()">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">trending_down</mat-icon>
+                                <span>Annuler la mise en avant</span>
+                            </button>
+                            <button *ngIf="status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="set_private();">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
+                                <span>Archiver</span>
+                            </button>
+                            <button *ngIf="status=='private'" class="artwork-button-menu-item" mat-menu-item (click)="set_public();">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
+                                <span>Désarchiver</span>
+                            </button>
+                            <button class="artwork-button-menu-item" mat-menu-item (click)="remove_artwork();">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">clear</mat-icon>
+                                <span>Supprimer</span>
+                            </button>
+                            <button class="artwork-button-menu-item" mat-menu-item *ngIf="monetization=='true' && status=='public'" disabled>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                                <span>Œuvre monétisée</span>
+                            </button>
+                        </mat-menu>
+            
+                        <!--options pour un visiteur -->
+                        <button *ngIf="!archive_loading && mode_visiteur_added && mode_visiteur && visitor_id!=1 && archive_retrieved && type_of_account=='account'" class="optionsMenu" [matMenuTriggerFor]="artworkOptions02">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
+                        </button>
+                        <mat-menu #artworkOptions02="matMenu" class="artwork-mat-menu">
+                            <button *ngIf="mode_visiteur && !(list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)"
+                                class="artwork-button-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
+                                <span>Signaler</span>
+                            </button>
+                            <button *ngIf="mode_visiteur && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)"
+                                class="artwork-button-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
+                                <span>Annuler le signalement</span>
+                            </button>
+                            <button (click)="archive()" class="artwork-button-menu-item" mat-menu-item *ngIf="!content_archived">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
+                                <span>Archiver</span>
+                            </button>
+                            <button (click)="unarchive()" class="artwork-button-menu-item" mat-menu-item *ngIf="content_archived">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
+                                <span>Désarchiver</span>
+                            </button>
+                            <button class="artwork-button-menu-item" mat-menu-item (click)="open_chat_link()">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">create</mat-icon>
+                                <span>Écrire</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+                
+                
+            </div>
             
         </div>
 
@@ -417,7 +476,7 @@
         <!--Author container-->
         <!--********************-->
         <div class="author-container" [ngClass]="{'really-invisible': !archive_retrieved || !mode_visiteur_added || !subscribtion_retrieved}">
-            <a [routerLink]=open_account() (click)="stop($event);add_time_of_view()" class="left-container"
+            <a [routerLink]=open_account() (click)="stop($event);add_time_of_view();close_popup()" class="left-container"
             matTooltip="Voir le profil"
             matTooltipClass='linkarts-tooltip' 
             [matTooltipPosition]="'below'"
@@ -427,7 +486,7 @@
             </a>
             <div class="right-container">
                 <span class="author-name" *ngIf="user_name!=''">
-                    <a [routerLink]=open_account() (click)="stop($event);add_time_of_view()"
+                    <a [routerLink]=open_account() (click)="stop($event);add_time_of_view();close_popup()"
                     matTooltip="Voir le profil"
                     matTooltipClass='linkarts-tooltip' 
                     [matTooltipPosition]="'below'"
@@ -476,7 +535,7 @@
                 matTooltipClass='linkarts-tooltip'
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
-                    (click)="stop($event);add_time_of_view()"><span>{{style}}</span></a>
+                    (click)="stop($event);add_time_of_view();close_popup()"><span>{{style}}</span></a>
                 <div class="type-container" *ngIf="type=='one-shot'">
                     <span>One-shot</span></div>
                 <div class="type-container" *ngIf="type=='artbook'">
@@ -552,7 +611,7 @@
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200"
-                        (click)="stop($event);add_time_of_view()"><span>{{style}}</span></a>
+                        (click)="stop($event);add_time_of_view();close_popup()"><span>{{style}}</span></a>
                     <div class="type-container" *ngIf="type=='one-shot'">
                         <span>One-shot</span></div>
                     <div class="type-container" *ngIf="type=='artbook'">
@@ -566,14 +625,14 @@
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200"
                     *ngIf="firsttag"
-                    (click)="stop($event);add_time_of_view()"><span>{{firsttag}}</span></a>
+                    (click)="stop($event);add_time_of_view();close_popup()"><span>{{firsttag}}</span></a>
                     <a class="type-container style" [routerLink]=get_style_link(1)
                     matTooltip="Voir du contenu de ce genre"
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200"
                     *ngIf="secondtag"
-                    (click)="stop($event);add_time_of_view()"><span>{{secondtag}}</span></a>
+                    (click)="stop($event);add_time_of_view();close_popup()"><span>{{secondtag}}</span></a>
                     <a class="type-container style" [routerLink]=get_style_link(2)
                     matTooltip="Voir du contenu de ce genre"
                     matTooltipClass='linkarts-tooltip'
@@ -590,6 +649,7 @@
             
             <div [ngClass]="{'really-invisible': category_index!=1 }"  *ngIf="item_retrieved && mode_visiteur_added">
                 <app-comments 
+                
                 [type_of_account]=type_of_account 
                 [visitor_id]="visitor_id"
                 [visitor_name]="visitor_name"
@@ -605,7 +665,8 @@
                 (first_comment)="first_comment_received($event)"
                 [commentariesnumber]=commentariesnumber 
                 (new_comment)="new_comment();"
-                (removed_comment)="removed_comment();"></app-comments>
+                (removed_comment)="removed_comment();"
+                (click_on_user)="after_click_comment($event);"></app-comments>
             </div>
         </div>
         
@@ -663,10 +724,10 @@
                         <div class="title">Dessins</div>
                         <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_drawings; let i=index">
     
-                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0"  [item]=item[0] page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"   [item]=item[0] page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='artbook'>
                             </app-thumbnail-artwork>
-                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null"  [item]=item[0] page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item[0] page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
                         </div>
@@ -692,10 +753,10 @@
                     <div class="recommendation-group" *ngIf="list_of_recommendations_by_tag.length>0">
                         <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
     
-                            <app-thumbnail-artwork *ngIf="item.pagesnumber >=0"  [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.pagesnumber >=0" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='artbook'>
                             </app-thumbnail-artwork>
-                            <app-thumbnail-artwork *ngIf="item.pagesnumber == null"  [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.pagesnumber == null" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
             

@@ -93,6 +93,7 @@ export class HomeLinkartsComponent implements OnInit {
         this.Profile_Edition_Service.check_password_for_registration(id,password).subscribe(r=>{
           this.category_index=0;
           if(r[0].user_found){
+            this.navbar.add_page_visited_to_history(`/recommendations`).subscribe();
             this.location.go('/recommendations')
             const dialogRef = this.dialog.open(LoginComponent, {
               data: {usage:"registration",temp_pass:r[0].pass,email:r[0].user_found.email},
@@ -100,6 +101,7 @@ export class HomeLinkartsComponent implements OnInit {
             });
           }
           else{
+            this.navbar.add_page_visited_to_history(`/recommendations`).subscribe();
             this.location.go('/recommendations')
           }
         })
@@ -130,18 +132,22 @@ export class HomeLinkartsComponent implements OnInit {
   open_category(i : number) {
     if( i==0 ) {
       this.category_index = 0;
+      this.navbar.add_page_visited_to_history(`/recommendations`).subscribe();
       this.location.go('/recommendations');
     }
     else if( i==1 ) {
       this.category_index = 1;
+      this.navbar.add_page_visited_to_history(`/trendings`).subscribe();
       this.location.go('/trendings')
     }
     else if( i==2 ) {
       this.category_index = 2;
+      this.navbar.add_page_visited_to_history(`/subscribings`).subscribe();
       this.location.go('/subscribings')
     }
     else if( i==3 ) {
       this.category_index = 3;
+      this.navbar.add_page_visited_to_history(`/favorites`).subscribe();
       this.location.go('/favorites')
     }
     this.status[i]=true;

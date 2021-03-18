@@ -668,35 +668,9 @@
   }
 }
 
-/*.account-title {
-  cursor: default;
-  margin-top: 50px;
-  text-align: center;
-  justify-content: center;
-  color: rgb(25, 44, 80);
-  span {
-    font-size: 20px;
-    font-weight: bold;
-    mat-icon {
-      margin: auto 0px auto auto;
-      width: unset;
-      height: unset;
-      vertical-align: sub;
-      font-size: 26px;
-    }
-  }
-
-  &.large-icon {
-    mat-icon {
-      margin: auto 5px auto auto !important;
-      vertical-align: top !important;
-      font-size: 30px !important;
-    }
-  }
-}*/
 
 .container-skeletons {
-  width: 100%;
+  width: calc(90% + 1px);
   max-width: 1650px;
   margin-left: auto;
   margin-right: auto;

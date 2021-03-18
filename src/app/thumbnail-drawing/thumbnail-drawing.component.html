@@ -2,7 +2,7 @@
 <div class="drawing-container" #drawing_container>
         
     
-    <a [routerLink]=get_artwork() [ngClass]="{ 'for_news':for_news=='yes','shadow-news':for_news=='yes'}">
+    <div class="click-popup"  (click)="open_popup()" [ngClass]="{ 'for_news':for_news=='yes','shadow-news':for_news=='yes'}">
         <div #final_thumbnail class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();" [ngClass]="{'shiny':!show_picture && !prevent_shiny,'for_news':for_news=='yes'}">
 
             <img [src]="thumbnail_picture" (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'min-height-news':for_news=='yes'}">
@@ -56,16 +56,10 @@
                             <mat-icon [ngClass]="{'invisible': !show_icon }" >favorite</mat-icon>
                     </div>
                 </div>
-                <!--********************-->
-                <!--Date container-->
-                <!--********************-->
-                <!--<div class="date-container" [ngClass]="{'really-invisible':small_thumbnail}">
-                    <span>{{date_upload_to_show}}</span>
-                </div>-->
 
             </div>
 
         </div>
-    </a>
+    </div>
 
 </div>

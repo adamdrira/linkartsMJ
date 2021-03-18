@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, HostListener, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
@@ -122,6 +122,38 @@ export class ArtworkDrawingComponent implements OnInit {
   }
  
 
+  @ViewChild('artwork') artwork:ElementRef;
+  @ViewChild('close') close:ElementRef;
+
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.drawing_id_input){
+      if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
+        if(this.drawing_id_input && btn.className.includes("cdk-overlay-dark-backdrop")){
+          console.log("includes back")
+          this.add_time_of_view();
+          this.emit_close_click.emit(true);
+        }
+         
+      }
+      this.can_check_clickout=true;
+    }
+      
+  }
+
+
+
+  close_popup(){
+    if(this.drawing_id_input){
+      this.emit_close.emit(true);
+    }
+  }
+
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    this.add_time_of_view();
+    this.emit_close.emit(true);
+  }
+
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
   @ViewChild('swiperContainer') swiperContainerRef:ElementRef;
@@ -203,12 +235,8 @@ export class ArtworkDrawingComponent implements OnInit {
   mode_visiteur=true;
   mode_visiteur_added=false;
 
-  list_of_author_recommendations_comics:any[]=[];
-  list_of_author_recommendations_comics_retrieved=false;
   list_of_author_recommendations_drawings:any[]=[];
   list_of_author_recommendations_drawings_retrieved=false;
-  list_of_author_recommendations_writings:any[]=[];
-  list_of_author_recommendations_writings_retrieved=false;
   list_of_author_recommendations_retrieved=false;
 
   list_of_recommendations_by_tag:any[]=[];
@@ -243,12 +271,19 @@ export class ArtworkDrawingComponent implements OnInit {
   pp_first_comment:any;
 
   item_retrieved=false;
+
+  can_check_clickout=false;
+  @Input() drawing_format_input: string;
+  @Input() drawing_id_input: number;
+  @Input() drawing_title_input: string;
+  @Output() emit_close = new EventEmitter<boolean>();
+  @Output() emit_close_click = new EventEmitter<boolean>();
+  
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
 
   ngOnInit() {
-    let THIS=this;
     window.scroll(0,0);
 
     setInterval(() => {
@@ -258,14 +293,14 @@ export class ArtworkDrawingComponent implements OnInit {
           this.number_of_comments_to_show+=10;
         }
       }
-    },3000)
+    },1000)
 
-    this.type = this.activatedRoute.snapshot.paramMap.get('format');
+    this.type = this.drawing_format_input?this.drawing_format_input:this.activatedRoute.snapshot.paramMap.get('format');
     if( this.type != "one-shot" && this.type != "artbook" ) {
       this.page_not_found=true;
       return
     }
-    this.drawing_id = parseInt(this.activatedRoute.snapshot.paramMap.get('drawing_id'));
+    this.drawing_id = this.drawing_id_input?this.drawing_id_input:parseInt(this.activatedRoute.snapshot.paramMap.get('drawing_id'));
     if(!(this.drawing_id>0)){
       this.page_not_found=true;
       return
@@ -292,6 +327,7 @@ export class ArtworkDrawingComponent implements OnInit {
     }) 
     
     if (this.type =="one-shot"){
+      
       this.Drawings_Onepage_Service.retrieve_drawing_information_by_id2(this.drawing_id).subscribe(m => {
         if(m[0]){
           let r=m[0].data;
@@ -310,7 +346,7 @@ export class ArtworkDrawingComponent implements OnInit {
             }
           }
           else{
-            let title =this.activatedRoute.snapshot.paramMap.get('title');
+            let title =this.drawing_title_input?this.drawing_title_input:this.activatedRoute.snapshot.paramMap.get('title');
             if(r[0].title !=title ){
               this.page_not_found=true;
               return;
@@ -327,6 +363,7 @@ export class ArtworkDrawingComponent implements OnInit {
     }
 
     else if (this.type =="artbook"){
+      
       this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id2(this.drawing_id).subscribe(m => {
         if(m[0]){
           let r=m[0].data;
@@ -346,7 +383,7 @@ export class ArtworkDrawingComponent implements OnInit {
            
           }
           else{
-            let title =this.activatedRoute.snapshot.paramMap.get('title');
+            let title =this.drawing_title_input?this.drawing_title_input:this.activatedRoute.snapshot.paramMap.get('title');
             if(r[0].title !=title ){
               this.page_not_found=true;
               return
@@ -387,6 +424,8 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
+      this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`).subscribe();
+      this.location.go(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`);
       this.date_upload_to_show =get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
 
@@ -531,6 +570,8 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
+      this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`).subscribe();
+      this.location.go(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`);
       this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
       
@@ -682,18 +723,7 @@ export class ArtworkDrawingComponent implements OnInit {
   /********************************************** RECOMMENDATIONS **************************************/
 
   get_author_recommendations(){
-    this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
-      if(e[0].list_to_send.length>0){
-        for(let j=0;j<e[0].list_to_send.length;j++){
-          if(e[0].list_to_send[j].length>0){
-            this.list_of_author_recommendations_comics.push(e[0].list_to_send[j])
-          }
-        } 
-      }
-      this.list_of_author_recommendations_comics_retrieved=true;
-
-      this.check_recommendations();
-    })
+ 
     this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,this.drawing_id).subscribe(e=>{
       if(e[0].list_to_send.length >0){
         for(let j=0;j<e[0].list_to_send.length;j++){
@@ -705,28 +735,10 @@ export class ArtworkDrawingComponent implements OnInit {
       }
       this.list_of_author_recommendations_drawings_retrieved=true;
 
-      this.check_recommendations();
-    })
-    this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0).subscribe(e=>{
-      if(e[0].list_to_send.length >0){
-        for(let j=0;j<e[0].list_to_send.length;j++){
-          if(e[0].list_to_send[j].length>0){
-            this.list_of_author_recommendations_writings.push(e[0].list_to_send[j])
-          }
-        }
-      
-      }
-      this.list_of_author_recommendations_writings_retrieved=true;
-      this.check_recommendations();
-      
+      this.list_of_author_recommendations_retrieved=true;
     })
   }
 
-  check_recommendations(){
-    if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
-      this.list_of_author_recommendations_retrieved=true;
-    }
-  }
 
   first_propositions_retrieved=false;
   second_propositions_retrieved=false;
@@ -863,7 +875,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
   open_account() {
     return "/account/"+this.pseudo+"/"+this.authorid;
-    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
   };
   get_link() {
     return "/main-research-style-and-tag/1/Drawing/" + this.style + "/all";
@@ -898,7 +909,7 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   see_description() {
-    
+    this.add_time_of_view()
     this.dialog.open(PopupArtworkDataComponent, {
       data: {
         title:this.title,
@@ -916,7 +927,7 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   see_comments() {
-    
+    this.add_time_of_view()
     this.dialog.open(PopupCommentsComponent, {
       data: {
         visitor_id:this.visitor_id,
@@ -937,7 +948,14 @@ export class ArtworkDrawingComponent implements OnInit {
 
   }
 
+  after_click_comment(event){
+    this.add_time_of_view()
+    this.close_popup();
+  }
+
   open_chat_link() {
+    this.add_time_of_view()
+    this.close_popup();
     this.router.navigateByUrl('/chat/'+ this.pseudo +'/'+ this.authorid);
   }
 
@@ -1570,6 +1588,7 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   show_likes(){
+    this.add_time_of_view()
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
@@ -1578,6 +1597,7 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   show_loves(){
+    this.add_time_of_view()
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
@@ -1779,7 +1799,7 @@ export class ArtworkDrawingComponent implements OnInit {
     let compt=0;
     if(this.type=='artbook'){
       for(let j=0;j<this.list_drawing_pages.length;j++){
-        if(this.display_drawings[i]){
+        if(this.display_drawings[j]){
           compt+=1;
         }
         if(compt==this.list_drawing_pages.length){
@@ -1948,6 +1968,7 @@ export class ArtworkDrawingComponent implements OnInit {
                 }
                 this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
+                this.close_popup();
                 this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
                 return;
               })
@@ -1976,6 +1997,7 @@ export class ArtworkDrawingComponent implements OnInit {
                 }
                 this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
+                this.close_popup();
                 this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
                 return;
               })

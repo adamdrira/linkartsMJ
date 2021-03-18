@@ -14,7 +14,7 @@ import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Writing_Upload_Service} from '../services/writing.service';
 import {AuthenticationService} from '../services/authentication.service';
 import {LoginComponent} from '../login/login.component';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import {NotificationsService} from '../services/notifications.service';
 import { Ads_service } from '../services/ads.service';
@@ -26,6 +26,7 @@ import {get_date_to_show_navbar} from '../helpers/dates';
 import {Community_recommendation} from '../services/recommendations.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import * as WebFont from 'webfontloader';
+import { filter } from 'rxjs/operators';
 
 declare var $: any;
 declare var Swiper: any;
@@ -72,6 +73,14 @@ export class NavbarLinkartsComponent implements OnInit {
     private NotificationsService:NotificationsService,
     
     ) {
+
+      router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.previousUrl.push(event.url);
+        this.navbar.add_page_visited_to_history(event.url).subscribe()
+      });
+      
       navbar.connexion.subscribe(r=>{
         if(r!=this.connexion_status){
           this.connexion_status=r
@@ -124,6 +133,7 @@ export class NavbarLinkartsComponent implements OnInit {
     
   }
 
+  previousUrl=[];
   navbar_visible=false;
   @HostListener('window:beforeunload', ['$event'])
   beforeUnload($event) { 

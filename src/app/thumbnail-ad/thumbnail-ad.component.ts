@@ -18,8 +18,9 @@ import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 import { DOCUMENT } from '@angular/common';
+import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
+import { Router } from '@angular/router';
 
-declare var $: any
 
 @Component({
   selector: 'app-thumbnail-ad',
@@ -50,6 +51,7 @@ export class ThumbnailAdComponent implements OnInit {
     private rd: Renderer2,
     public navbar: NavbarService,
     public dialog: MatDialog,
+    private router:Router,
     private sanitizer:DomSanitizer,
     private Subscribing_service:Subscribing_service,
     private Ads_service:Ads_service,
@@ -139,7 +141,7 @@ export class ThumbnailAdComponent implements OnInit {
   @Input() item: any;
   @Input() now_in_seconds: number;
   @Input() for_ad_page: boolean;
-  
+  @Input() in_ad_page: any;
   type_of_account:string;
   certified_account:boolean;  
 
@@ -183,7 +185,6 @@ export class ThumbnailAdComponent implements OnInit {
   profile_data_retrieved=false;
   show_icon=false;
   ngOnInit() {
-    console.log(this.item);
     this.list_of_reporters=this.item.list_of_reporters;
     this.author_id=this.item.id_user;
     
@@ -224,7 +225,6 @@ export class ThumbnailAdComponent implements OnInit {
       this.cd.detectChanges();
       if(this.for_ad_page){
         if( this.targets && window.innerWidth<=1100 ) {
-          console.log(window.innerWidth)
             let second_width=this.before.nativeElement.offsetWidth/2;
             this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #021236e6");
             this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #021236e6");
@@ -232,7 +232,6 @@ export class ThumbnailAdComponent implements OnInit {
       }
       else{
         if( this.targets && window.innerWidth<=700 ) {
-          console.log(window.innerWidth)
             let second_width=this.before.nativeElement.offsetWidth/2;
             this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #021236e6");
             this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #021236e6");
@@ -268,11 +267,8 @@ export class ThumbnailAdComponent implements OnInit {
 
     if(this.for_ad_page){
       if( window.innerWidth<=1100 ) {
-        console.log(window)
-        console.log(window.innerWidth)
         if(this.targets){
           let second_width=this.before.nativeElement.offsetWidth/2;
-          console.log(second_width)
           this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #021236e6");
           this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #021236e6");
         }
@@ -289,11 +285,8 @@ export class ThumbnailAdComponent implements OnInit {
     }
     else{
       if( window.innerWidth<=700 ) {
-        console.log(window)
-        console.log(window.innerWidth)
         if(this.targets){
           let second_width=this.before.nativeElement.offsetWidth/2;
-          console.log(second_width)
           this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #1c2d50");
           this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #1c2d50");
         }
@@ -332,35 +325,16 @@ export class ThumbnailAdComponent implements OnInit {
     });
   }
 
-  /*read_pictures_response(i:number){
-    const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
-      data: {list_of_pictures:this.response_list_of_pictures,index_of_picture:i},
-      panelClass: "popupDocumentClass",
-    });
-  }
-
-  read_attachment_response(i:number){
-    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
-      data: {file:this.response_list_of_attachments[i]},
-      panelClass: "popupDocumentClass",
-    });
-  }*/
 
   update(){
     //fonction pour mettre à jour une annonce, possible que chaque semaine, gratuit au début
   }
-
-
-
- 
-
   
   get_ad_contents(item){
     let u=0;
     var re = /(?:\.([^.]+))?$/;
     if(item.number_of_attachments>0){
       for(let i=0;i<item.number_of_attachments;i++){
-        console.log(i)
         if(i==0){
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_one;
@@ -417,7 +391,6 @@ export class ThumbnailAdComponent implements OnInit {
           
         }
         if(i==1){
-          console.log(re.exec(item.attachment_name_two)[1]);
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_two;
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
@@ -680,7 +653,6 @@ export class ThumbnailAdComponent implements OnInit {
 
   check_archive(){
     this.Subscribing_service.check_if_publication_archived("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
-      console.log(r[0]);
       if(r[0].value){
         this.ad_archived=true;
       }
@@ -704,7 +676,6 @@ export class ThumbnailAdComponent implements OnInit {
   report(){
 
       this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).subscribe(r=>{
-        console.log(r[0])
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -726,13 +697,29 @@ export class ThumbnailAdComponent implements OnInit {
 
 
     this.Reports_service.cancel_report("ad",this.item.id,this.item.type_of_project).subscribe(r=>{
-      console.log(r)
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.id_user)>=0){
         let i=this.list_of_reporters.indexOf(this.id_user)
         this.list_of_reporters.splice(i,1)
         this.cd.detectChanges()
       }
     })
+  }
+
+  open_popup(){
+    if(this.in_ad_page){
+      this.router.navigate([this.get_artwork()]);
+    }
+    else{
+      this.dialog.open(PopupArtworkComponent, {
+        data: {
+          id_input:this.item.id,
+          title_input:this.item.title ,
+          category:"ad",
+        }, 
+        panelClass:"popupArtworkClass",
+      });
+     
+    }
   }
 
 }

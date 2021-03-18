@@ -825,6 +825,7 @@
   }
 
   .navbar .navbar-l1-searchbar-container .form-control {
+    resize: none;
     background-color: white;
     margin: 0 0 0 0;
     height: 100%;
@@ -2142,6 +2143,10 @@
 
   .notification-icon.publication {
     background-image: linear-gradient(90deg, #d06900 0, #ffd8ae 100%) !important;
+  }
+
+  .notification-icon.ad {
+    background-image: linear-gradient( 90deg , #08142b 0, #6e82a0 100%) !important;
   }
 
   .notification-icon mat-icon {
