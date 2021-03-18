@@ -4014,30 +4014,33 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 
  router.get('/get_group_chat_information/:id', function (req, res) {
 
-      if( ! req.headers['authorization'] ) {
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
         return res.status(401).json({msg: "error"});
       }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
-        }
-      }
-  let id_user = get_current_user(req.cookies.currentUser);
-  const Op = Sequelize.Op;
-  let id=parseInt(req.params.id);
-  list_of_chat_groups.findOne({
-    where:{
-      id:id,
-      list_of_receivers_ids: { [Op.contains]: [id_user] },
     }
-  }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(r=>{
-    res.status(200).send([r])
-  })
+    let id_user = get_current_user(req.cookies.currentUser);
+    const Op = Sequelize.Op;
+    let id=parseInt(req.params.id);
+    console.log("group chat info")
+    list_of_chat_groups.findOne({
+      where:{
+        id:id,
+        list_of_receivers_ids: { [Op.contains]: [id_user] },
+      }
+    }).catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(r=>{
+
+        console.log("resposne group chat")
+      res.status(200).send([r])
+    })
 
  });
 
