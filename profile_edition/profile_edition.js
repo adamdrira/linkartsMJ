@@ -22,6 +22,7 @@ module.exports = (router,
   users_passwords,
   users_cookies,
   users_remuneration,
+  users_visited_pages,
   List_of_views,
   List_of_likes,
   List_of_loves,
@@ -1043,6 +1044,46 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
 
+  router.post('/add_page_visited_to_history', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+  let current_user = get_current_user(req.cookies.currentUser);
+  const page=req.body.page;
+  users.findOne({
+    where:{
+      id:current_user,
+    }
+  }).catch(err => {
+    
+    res.status(500).json({msg: "error", details: err});		
+  }).then(user_found=>{
+    if(user_found){
+      users_visited_pages.create({
+        "id_user":current_user,
+        "nickname":user_found.nickname,
+         "url_page":page,
+      }).catch(err => {
+    
+        res.status(500).json({msg: "error", details: err});		
+      }).then(created=>{
+        res.status(200).send([created]);
+      })
+        	
+    }
+    else{
+      res.status(200).send({msg: "not_found"});	
+    }
+  })
+});
   
 
   router.post('/get_pseudos_who_match_for_signup', function (req, res) {
