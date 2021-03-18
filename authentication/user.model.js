@@ -124,6 +124,15 @@ module.exports = (sequelize, Sequelize) => {
 	});
 
 
+	const users_visited_pages= sequelize.define('users_visited_pages', {
+		id_user:{type: Sequelize.INTEGER},
+		nickname:{type: Sequelize.STRING},
+		url_page:{type: Sequelize.STRING},
+	},
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name,
+	});
+
 	const users_ips = sequelize.define('users_ips', {
 		id_user:{type: Sequelize.INTEGER},
 		list_of_ips:{type: Sequelize.ARRAY(Sequelize.STRING)},
@@ -201,5 +210,5 @@ module.exports = (sequelize, Sequelize) => {
 	});
 
 
-	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing,users_strikes,users_cookies,users_remuneration,users_connexions,users_ips};
+	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing,users_strikes,users_cookies,users_remuneration,users_connexions,users_ips,users_visited_pages};
 }

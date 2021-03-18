@@ -2,14 +2,14 @@ const env = require('./env.js');
 
 // Connect to database
 const Sequelize = require('sequelize');
-/*const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
+const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
     host : 'localhost',
     dialect: 'postgres'
-});*/
-const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
+});
+/*const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
   host : 'localhost',
   dialect: 'postgres'
-});
+});*/
 
 sequelize.authenticate().then(() => {
   console.log('Connection established successfully.');
@@ -35,5 +35,6 @@ db.users_cookies = require('./user.model.js')(sequelize, Sequelize).users_cookie
 db.users_remuneration= require('./user.model.js')(sequelize, Sequelize).users_remuneration;
 db.users_connexions= require('./user.model.js')(sequelize, Sequelize).users_connexions;
 db.users_ips= require('./user.model.js')(sequelize, Sequelize).users_ips;
+db.users_visited_pages= require('./user.model.js')(sequelize, Sequelize).users_visited_pages;
 
 module.exports = db;
