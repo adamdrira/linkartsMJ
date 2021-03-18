@@ -90,9 +90,8 @@ export class NavbarService {
       
     }
 
-     /********************************************* NOTIFICATIONS **************************************/
-    /********************************************* NOTIFICATIONS **************************************/
-    /********************************************* NOTIFICATIONS **************************************/
+    
+    
     /********************************************* NOTIFICATIONS **************************************/
     /********************************************* NOTIFICATIONS **************************************/
     /********************************************* NOTIFICATIONS **************************************/
@@ -302,6 +301,12 @@ export class NavbarService {
 
   get_last_100_account_viewers(id_user):Observable<any>{
     return this.httpClient.post('routes/get_last_100_account_viewers',{id_user:id_user}, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  add_page_visited_to_history(page):Observable<any>{
+    return this.httpClient.post('routes/add_page_visited_to_history',{page:page}, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }

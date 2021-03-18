@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, tap, map, delay } from 'rxjs/operators';
+import {HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
-const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
-};
 
 
 @Injectable({
@@ -52,7 +49,6 @@ export class Ads_service {
    get_thumbnail_name(){
     return this.httpClient.get('routes/get_thumbnail_ad_name', {withCredentials:true}).pipe(map(information=>{
         this.name_thumbnail_ad = information[0].name_thumbnail_ad;
-        console.log(this.name_thumbnail_ad)
         return information
     }));
   };
@@ -181,6 +177,12 @@ export class Ads_service {
 
     send_email_for_ad_answer(user_name,ad_id,author_id,title){
       return this.httpClient.post('routes/send_email_for_ad_answer', {user_name:user_name,ad_id:ad_id,author_id:author_id,title:title}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
+
+    check_if_response_sent(id_ad){
+      return this.httpClient.post('routes/check_if_response_sent', {id_ad:id_ad}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
