@@ -1,5 +1,22 @@
 $default-color: #f9f9f9;
 
+
+.close-popup {
+    position: absolute;
+    right: 0px;
+    background: unset;
+    border: unset;
+    z-index: 1000;
+    outline:none !important;
+    mat-icon {
+        max-width: 20px;
+        max-height: 20px;
+        overflow: hidden;
+        color: #f9f9f9e0;
+        font-size: 20px;
+    }
+}
+
 .artwork {
     //440px
     user-select: none;
@@ -37,7 +54,7 @@ $default-color: #f9f9f9;
             background-color: #091731;
         }
         &::-webkit-scrollbar {
-            width: 5px;
+            width: 6px;
             height: 0px;
             background-color: #081c40;
         }
@@ -483,6 +500,7 @@ $default-color: #f9f9f9;
         position: relative;
 
         .artwork-title{
+            padding-top:30px;
             border-bottom:unset !important;
             .artwork-serie{
                 .first-line{
@@ -554,7 +572,7 @@ $default-color: #f9f9f9;
         }
 
         .options-buttons-artwork{
-            top:20px !important;
+            top:30px !important;
            
             button {
                 height: 22px !important;
@@ -562,8 +580,11 @@ $default-color: #f9f9f9;
         }
         .options-buttons {
 
-            position: absolute;
-            right: 0px;
+            /*position: absolute;
+            right: 0px;*/
+            display: flex;
+            justify-content: center;
+            width: 22px;
             margin: auto;
             span {
                 cursor: default;
@@ -594,7 +615,6 @@ $default-color: #f9f9f9;
                 border-radius: 50px;
                 box-shadow: unset;
                 height: 41px;
-                width: 35px;
                 opacity: 0.8;
 
                 mat-icon {
@@ -602,18 +622,18 @@ $default-color: #f9f9f9;
                     height: unset;
                     width: unset;
                     margin: auto;
-                    font-size: 22px;
-                    max-width: 22px;
+                    font-size: 24px;
+                    max-width: 24px;
                     overflow: hidden;
                     color: #dadce1;
                 }
 
                 &:hover {
                     opacity: 1;
-                    background: #030a162e;
+                    background: unset;
                 }
                 &:active {
-                    background: #030a1654;
+                    background: unset;
                 }
             }
 
@@ -716,6 +736,11 @@ $default-color: #f9f9f9;
                 font-size: 11px;
                 display: flex;
                 justify-content: center;
+
+              
+                .right-part{
+                    margin: auto 0px auto 60px;
+                }
             }
         }
 
@@ -901,6 +926,7 @@ $default-color: #f9f9f9;
                     color: $default-color;
                     font-weight: 600;
                     font-size: 12px;
+                    
                     &.second-span {
                         color: rgb(192, 192, 192);
                         font-weight: 500;
@@ -1394,6 +1420,9 @@ $default-color: #f9f9f9;
         
          .view-and-date-numbers {
             font-size: 10px !important;
+            .right-part{
+                margin: auto 0px auto auto !important;
+            }
         }
         .right-container span.author-name   a{
                     max-width: 180px !important;
@@ -1579,6 +1608,8 @@ $default-color: #f9f9f9;
 }
 
 ::ng-deep {
+    
+   
     .artwork-mat-menu {
         margin-top: 3px !important;
         border-radius: 12px 10px 12px 12px !important;
