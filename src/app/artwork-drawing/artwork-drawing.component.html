@@ -394,7 +394,7 @@
                     </button>
                 </div>
 
-                <div class="right-part" >
+                <div class="right-part" *ngIf="type_of_account=='account'" >
                     <div class="options-buttons options-buttons-artwork">
 
                         <div *ngIf="archive_loading" class="archive-loading"> 
@@ -402,7 +402,7 @@
                         </div>
         
         
-                        <button *ngIf="!archive_loading && mode_visiteur_added && (!mode_visiteur || visitor_id==1)  && archive_retrieved && type_of_account=='account'" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
+                        <button *ngIf="!archive_loading && mode_visiteur_added && (!mode_visiteur || visitor_id==1)  && archive_retrieved " tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
                             <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                         </button>
                         <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">

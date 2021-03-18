@@ -634,10 +634,10 @@
                         </button>
                     </div>
 
-                    <div class="right-part" >
+                    <div class="right-part" *ngIf="type_of_account=='account'">
                         <div class="options-buttons">
                 
-                            <button *ngIf="visitor_mode_added && visitor_mode  && type_of_account=='account' && archive_retrieved" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
+                            <button *ngIf="visitor_mode_added && visitor_mode  && archive_retrieved" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                             </button>
                             <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
