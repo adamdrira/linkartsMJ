@@ -53,9 +53,6 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      });
 
      router.get('/get_number_of_unseen_messages',function(req,res){
-       console.log("get number of unseen messages")
-       console.log(11)
-
        if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -4060,7 +4057,6 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
     let id_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     let id=parseInt(req.params.id);
-    console.log("group chat info")
     list_of_chat_groups.findOne({
       where:{
         id:id,
@@ -4071,7 +4067,6 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
         res.status(500).json({msg: "error", details: err});		
       }).then(r=>{
 
-        console.log("resposne group chat")
       res.status(200).send([r])
     })
 
