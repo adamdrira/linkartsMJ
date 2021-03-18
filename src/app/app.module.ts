@@ -35,7 +35,6 @@ import { NgxMasonryModule } from 'ngx-masonry';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
-
 import {WebSocketService} from './services/websocket.service';
 import {ChatService} from './services/chat.service';
 import { NavbarService } from './services/navbar.service';
@@ -152,7 +151,51 @@ import { UploaderAttachmentsAdComponent } from './uploader-attachments-ad/upload
 import { UploaderAdResponseAttachmentsComponent } from './uploader-ad-response-attachments/uploader-ad-response-attachments.component';
 import { UploaderChatProfilePictureComponent } from './uploader-chat-profile-picture/uploader-chat-profile-picture.component';
 import { UploaderReportsAttachmentsComponent } from './uploader-reports-attachments/uploader-reports-attachments.component';
+import { PopupArtworkComponent } from './popup-artwork/popup-artwork.component';
 
+import { ShareButtonsPopupModule } from 'ngx-sharebuttons/popup';
+import { ShareModule } from 'ngx-sharebuttons';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
+import { faPinterest } from '@fortawesome/free-brands-svg-icons';
+import { faPinterestP } from '@fortawesome/free-brands-svg-icons';
+import { faFacebookMessenger } from '@fortawesome/free-brands-svg-icons';
+import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import { faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
+import { faLink} from '@fortawesome/free-solid-svg-icons';
+import { faCheck} from '@fortawesome/free-solid-svg-icons';
+import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
+import { ShareButtonModule } from 'ngx-sharebuttons/button';
+
+const icons = [
+  faPinterest,
+  faPinterestP,
+ faTwitterSquare,
+  faFacebookSquare,
+  faCheck,
+  faLinkedinIn,
+  faLinkedin,
+  faLink,
+  faFacebookMessenger,
+  faWhatsapp,
+];
+
+const shareProp = {
+  facebook: {
+    icon: ['fab', 'facebook-square']
+  },
+  pinterest: {
+    icon: ['fab', 'pinterest-p']
+  },
+  twitter: {
+    icon: ['fab', 'twitter-square']
+  },
+  whatsapp:{
+    icon: ['fab', 'whatsapp']
+  }
+};
 
 @NgModule({
 
@@ -256,6 +299,8 @@ import { UploaderReportsAttachmentsComponent } from './uploader-reports-attachme
     PopupChatSearchComponent,
     PopupLinkcollabFiltersComponent,
     TermsComponent,
+    PopupArtworkComponent,
+    
   ],
   imports: [
     AngularResizedEventModule,
@@ -293,6 +338,10 @@ import { UploaderReportsAttachmentsComponent } from './uploader-reports-attachme
     MatAutocompleteModule,
     NgxChartsModule,
     MatTooltipModule,
+    ShareModule,
+    ShareButtonModule,
+    ShareButtonsModule.withConfig({ prop: shareProp }),
+    ShareButtonsPopupModule,
   ],
   providers: [
     ConstantsService,
@@ -312,4 +361,7 @@ import { UploaderReportsAttachmentsComponent } from './uploader-reports-attachme
   bootstrap: [AppComponent]
 })
 export class AppModule { 
+  constructor(iconLibrary: FaIconLibrary) {
+    iconLibrary.addIcons(...icons);
+  }
 }
