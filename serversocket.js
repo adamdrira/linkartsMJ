@@ -44,11 +44,19 @@ wss.on('connection', (ws, req)=>{
   }
  let now = new Date();
 	let connexion_time = now.toString();
-  db.users_connexions.create({
-    "id_user":userID,
-    "connexion_time":connexion_time,
-    "status":"websocket",
+  db.users.findOne({
+    where:{
+      id:userID
+    }
+  }).then(user=>{
+    db.users_connexions.create({
+      "id_user":userID,
+      "nickname":user.nickname,
+      "connexion_time":connexion_time,
+      "status":"websocket",
+    })
   })
+  
  
   ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
     
@@ -852,10 +860,10 @@ app.post('/get_users_connected_in_the_chat', function(req, res) {
   const Op = Sequelize.Op;
   db.users_connexions.findAll({
     attributes: [
-        [Sequelize.fn('MAX', Sequelize.col('createdAt')), 'max'],'id_user','status','deconnexion_time',
+        [Sequelize.fn('MAX', Sequelize.col('createdAt')), 'max'],'id_user','status','nickname','deconnexion_time',
       
     ],
-    group:['id_user','status','deconnexion_time'],
+    group:['id_user','status','nickname','deconnexion_time'],
     where:{
       [Op.and]:[{id_user: list_of_friends},{id_user:{[Op.notIn]: list_of_users_connected_only}}],
       status:"websocket",
