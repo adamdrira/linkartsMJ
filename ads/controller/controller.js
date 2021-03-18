@@ -20,23 +20,8 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     };
 
 
-    /*router.post('*',(req,res)=>{
-      console.log("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeq")
-      console.log("checking current: " + req.headers['authorization'] );
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
-        }
-      }
-    })*/
-
     router.post('/check_if_ad_is_ok', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -65,7 +50,7 @@ console.log("checking current: " + req.headers['authorization'] );
           [Op.or]: [{ target_one: {[Op.in]:targets} }, { target_two: {[Op.in]:targets}}],
         }
       }).catch(err => {
-        console.log(err);	
+        	
         res.status(500).json({msg: "error", details: err});		
       }).then(ad=>{
         if(ad){
@@ -95,7 +80,6 @@ console.log("checking current: " + req.headers['authorization'] );
             const offer_or_demand = req.body.offer_or_demand;
             const price_value_service = req.body.price_value_service;
             const price_type_service = req.body.price_type_service;
-            console.log(price_value);
 
             list_of_ads.create({
                   "id_user": current_user,
@@ -123,7 +107,7 @@ console.log("checking current: " + req.headers['authorization'] );
         
               })
               .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
               list_of_users.findOne({
@@ -131,7 +115,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   id:current_user,
                 }
               }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
                 let number_of_ads=user.number_of_ads+1;
@@ -139,7 +123,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   "number_of_ads":number_of_ads,
                 })
               }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then( ()=>{res.status(200).send([r])})
               
@@ -149,15 +133,10 @@ console.log("checking current: " + req.headers['authorization'] );
          
     router.post('/upload_thumbnail_ad', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-      console.log("upload_thumbnail_ad")
-        console.log(req.cookies)
       if(!current_user){
-        console.log("upload_thumbnail_ad")
-        console.log(req.cookies)
         return res.status(401).json({msg: "error"});
       }
       var file_name='';
-      console.log(current_user)
       const PATH2= './data_and_routes/thumbnails_ads';
       let storage = multer.diskStorage({
         destination: (req, file, cb) => {
@@ -195,7 +174,6 @@ console.log("checking current: " + req.headers['authorization'] );
             })
             ]
           });
-          console.log("respond name_thumbnail_ad")
           list_covers_by_id[current_user]=file_name;
           res.status(200).send([{file_name:file_name}]);
           })();
@@ -203,7 +181,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/add_thumbnail_ad_to_database', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -224,14 +202,14 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
               })
               .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad =>  {
                 ad.update({
                   "thumbnail_name" :name
                 })
                 .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
               }); 
@@ -239,7 +217,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.delete('/remove_thumbnail_ad_from_folder/:name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -250,20 +228,16 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-      console.log("remove_thumbnail_ad_from_folder")
             fs.access('./data_and_routes/thumbnails_ads/' + req.params.name, fs.F_OK, (err) => {
               if(err){
-                console.log('suppression already done');
                 return res.status(200).send([{delete:"already_done"}])
               }
-              console.log( 'annulation en cours');
               const name  = req.params.name;
               fs.unlink('./data_and_routes/thumbnails_ads/' + name,  function (err) {
                 if (err) {
-                  console.log(err);
+                  
                 }  
                 else {
-                  console.log( 'fichier supprimé');
                   return res.status(200).send([{delete:"done"}]);
                 }
               });
@@ -271,9 +245,6 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_thumbnail_ad_name', (req, res)=>{ 
-        /*console.log('get_cookies_thumbnail_ad');
-        let value = req.cookies;
-        res.status(200).send([value]);*/
         let current_user = get_current_user(req.cookies.currentUser);
         let covername=list_covers_by_id[current_user];
         if(covername){
@@ -291,17 +262,11 @@ console.log("checking current: " + req.headers['authorization'] );
 
       
       var id_ad = parseInt(req.params.id_ad);
-      console.log(id_ad);
-      console.log(req.params.number_of_attachments);
-      console.log(req.params.file_name);
-      console.log(parseInt(req.params.attachment_number)+1);
       var number_of_attachments_retrieved=0;
       var number_of_attachments=parseInt(req.params.number_of_attachments);
       var attachment_number=parseInt(req.params.attachment_number)+1;
       var current_user = get_current_user(req.cookies.currentUser);
       if(!current_user){
-        console.log("cookies upload attachment")
-        console.log(req.cookies)
         return res.status(401).json({msg: "error"});
       }
       var file_name='';
@@ -315,7 +280,6 @@ console.log("checking current: " + req.headers['authorization'] );
         filename: (req, file, cb) => {
           name= file.originalname;
           name = name.substring(0,name.indexOf('.'));
-          console.log(name);
           var today = new Date();
           var ms = String(today.getMilliseconds()).padStart(2, '0');
           var ss = String(today.getSeconds()).padStart(2, '0');
@@ -341,33 +305,25 @@ console.log("checking current: " + req.headers['authorization'] );
             for(let i=0;i<5;i++){
               
               if(i==0 && ad.attachment_name_one!=null){
-                console.log(ad.dataValues);
                   number_of_attachments_retrieved=number_of_attachments_retrieved+1;
                 
               }
               if(i==1 && ad.attachment_name_two!=null){
-                console.log(ad.dataValues);
                   number_of_attachments_retrieved=number_of_attachments_retrieved+1;
               }
               
               if(i==2 && ad.attachment_name_three!=null){
-                console.log(ad.dataValues);
                   number_of_attachments_retrieved=number_of_attachments_retrieved+1;
               }
               if(i==3 && ad.attachment_name_four!=null){
-                console.log(ad.dataValues);
                   number_of_attachments_retrieved=number_of_attachments_retrieved+1;
               }
               if(i==4 && ad.attachment_name_five!=null){
-                console.log(ad.dataValues);
                   number_of_attachments_retrieved=number_of_attachments_retrieved+1;
               }
             }
-            console.log(number_of_attachments_retrieved);
         }
         (async () => {
-            console.log(file_name)
-            console.log(path.extname(file_name))
             if(path.extname(file_name)==".jpg" || path.extname(file_name)==".png" || path.extname(file_name)==".jpeg"){
               let filename = "./data_and_routes/attachments_ads/" + file_name ;
               const files = await imagemin([filename], {
@@ -388,7 +344,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             })
             .catch(err => {
-                console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
               }).then(ad =>  {
               if(attachment_number==1){
@@ -397,7 +353,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     "attachment_real_name_one" :name,
                   })
                   .catch(err => {
-                    console.log(err);	
+                    	
                     res.status(500).json({msg: "error", details: err});		
                   }).then(ad=>{
                     add_number_of_attachments_retrieved(ad);
@@ -406,7 +362,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         "number_of_attachments":number_of_attachments,
                       })
                       .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
                     }
@@ -422,7 +378,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   "attachment_real_name_two" :name,
                 })
                 .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
                   add_number_of_attachments_retrieved(ad);
@@ -431,7 +387,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       "number_of_attachments":number_of_attachments,
                     })
                     .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
                   }
@@ -446,7 +402,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   "attachment_real_name_three" :name,
                 })
                 .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
                   add_number_of_attachments_retrieved(ad);
@@ -455,7 +411,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       "number_of_attachments":number_of_attachments,
                     })
                     .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
                   }
@@ -470,7 +426,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   "attachment_real_name_four" :name,
                 })
                 .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
                   add_number_of_attachments_retrieved(ad);
@@ -479,7 +435,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       "number_of_attachments":number_of_attachments,
                     })
                     .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
                   }
@@ -494,7 +450,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   "attachment_real_name_five" :name,
                 })
                 .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
                   add_number_of_attachments_retrieved(ad);
@@ -503,7 +459,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       "number_of_attachments":number_of_attachments,
                     })
                     .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
                   }
@@ -520,7 +476,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.get('/get_ads_by_user_id/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -542,7 +498,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ads =>  {
             res.status(200).send([ads]);
@@ -552,7 +508,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.get('/get_all_my_ads', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -574,7 +530,7 @@ console.log("checking current: " + req.headers['authorization'] );
              ],
          })
          .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ads =>  {
            res.status(200).send([ads]);
@@ -582,7 +538,7 @@ console.log("checking current: " + req.headers['authorization'] );
    });
 
    router.get('/get_all_responses/:id_ad', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -604,7 +560,7 @@ console.log("checking current: " + req.headers['authorization'] );
            ],
        })
        .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ads =>  {
          res.status(200).send([ads]);
@@ -616,7 +572,7 @@ console.log("checking current: " + req.headers['authorization'] );
  
 
   router.post('/check_if_ad_answered', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -636,7 +592,7 @@ console.log("checking current: " + req.headers['authorization'] );
         },
       })
       .catch(err => {
-    console.log(err);	
+    	
     res.status(500).json({msg: "error", details: err});		
   }).then(ad =>  {
         if(ad){
@@ -650,7 +606,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
     router.get('/retrieve_ad_by_id/:id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -668,7 +624,7 @@ console.log("checking current: " + req.headers['authorization'] );
            },
          })
          .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad =>  {
            res.status(200).send([ad]);
@@ -676,7 +632,7 @@ console.log("checking current: " + req.headers['authorization'] );
    });
 
     router.get('/retrieve_ad_thumbnail_picture/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -707,7 +663,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/retrieve_ad_picture/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -736,7 +692,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/retrieve_ad_attachment/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -765,7 +721,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.delete('/delete_ad/:id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -785,7 +741,7 @@ console.log("checking current: " + req.headers['authorization'] );
               },
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             list_of_users.findOne({
@@ -793,7 +749,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id:current_user,
               }
             }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
               let number_of_ads=user.number_of_ads-1;
@@ -809,7 +765,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.post('/get_sorted_ads_linkcollab', function (req, res) {
-      console.log("checking current: " + req.headers['authorization'] );
+      
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -820,7 +776,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("get_sorted_ads_linkcollab ");
     const remuneration = req.body.remuneration;
     const service = req.body.service;
     const offer_or_demand = req.body.offer_or_demand;
@@ -831,21 +786,8 @@ console.log("checking current: " + req.headers['authorization'] );
     const author = req.body.author;
     const target = req.body.target;
     const sorting = req.body.sorting;
-    console.log((type_of_project != "none") ? type_of_project:"none");
-    console.log((author != "none") ? author:"none");
-    console.log((target != "none") ? target:"none");
-    console.log(sorting);
-    console.log(author);
-    console.log(remuneration);
-    console.log(service)
-    console.log(offer_or_demand)
-    console.log(type_of_project);
-    console.log(type_of_remuneration);
-    console.log(type_of_service);
-    console.log(offset);
     const Op = Sequelize.Op;
     let number_of_ads=0;
-
     let ads_to_look_for={}
     let order_to_look_for=[]
     if(remuneration){
@@ -964,10 +906,8 @@ console.log("checking current: " + req.headers['authorization'] );
     list_of_ads.count({
       where:ads_to_look_for,
     }).catch(err => {
-      console.log(err);	
       res.status(500).json({msg: "error", details: err});		
     }).then(number=>{
-      console.log(number)
       if(number){
         number_of_ads=number;
         list_of_ads.findAll({
@@ -977,7 +917,7 @@ console.log("checking current: " + req.headers['authorization'] );
           offset:offset
         })
         .catch(err => {
-          console.log(err);	
+          	
           res.status(500).json({msg: "error", details: err});		
         }).then(results=>{
           res.status(200).send([{number_of_ads:number_of_ads,results:results}]);
@@ -993,7 +933,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.get('/get_sorted_ads/:remuneration/:type_of_project/:author/:target/:sorting', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1004,21 +944,12 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    console.log("get_sorted_ads ads");
       const remuneration = req.params.remuneration;
       const type_of_project = req.params.type_of_project;
       const author = req.params.author;
       const target = req.params.target;
       const sorting = req.params.sorting;
-      console.log((type_of_project != "none") ? type_of_project:"none");
-      console.log((author != "none") ? author:"none");
-      console.log((target != "none") ? target:"none");
-      console.log(sorting);
-      console.log(author);
-      console.log(remuneration);
-      console.log(type_of_project);
       const Op = Sequelize.Op;
-
       if(remuneration=='true'){
         if(sorting=="pertinence"){
           list_of_ads.findAll({
@@ -1036,7 +967,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             res.status(200).send([ad]);});
@@ -1056,7 +987,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             res.status(200).send([ad]);});
@@ -1076,14 +1007,13 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             res.status(200).send([ad]);});
         }
       }
       else{
-        console.log("here")
         if(sorting=="pertinence"){
           list_of_ads.findAll({
             where: {
@@ -1099,7 +1029,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             res.status(200).send([ad]);});
@@ -1119,7 +1049,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             res.status(200).send([ad]);});
@@ -1139,7 +1069,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             res.status(200).send([ad]);});
@@ -1150,7 +1080,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.post('/add_ad_response', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1170,7 +1100,7 @@ console.log("checking current: " + req.headers['authorization'] );
         }
         })
         .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad =>  {
         const number = ad.number_of_responses + 1;
@@ -1178,7 +1108,7 @@ console.log("checking current: " + req.headers['authorization'] );
             "number_of_responses":number,
         })})
         .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then( ad=>{
           list_of_ads_responses.create({
@@ -1187,7 +1117,7 @@ console.log("checking current: " + req.headers['authorization'] );
             "id_user":current_user,
                 "description": description,
             }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(adr=>{
                 res.status(200).send([adr]);
@@ -1197,6 +1127,40 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
 
+
+
+router.post('/check_if_response_sent', function (req, res) {
+  
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let current_user = get_current_user(req.cookies.currentUser);
+    const id_ad = req.body.id_ad;
+    list_of_ads_responses.findOne({
+        where: {
+            id: id_ad,
+            id_user:current_user,
+        }
+        })
+        .catch(err => {
+          res.status(500).json({msg: "error", details: err});		
+        }).then(response =>  {
+          	if(response){
+              res.status(200).json([{response:response}]);
+            }
+            else{
+              res.status(200).json([{msg:"not found"}]);		
+            }
+        })
+     
+  });
 
 router.post('/upload_attachments_ad_response/:attachment_number/:id_ad_response/:file_name/:number_of_attachments', function (req, res) {
 
@@ -1220,7 +1184,6 @@ router.post('/upload_attachments_ad_response/:attachment_number/:id_ad_response/
   filename: (req, file, cb) => {
     name= file.originalname;
     name = name.substring(0,name.indexOf('.'));
-    console.log(name);
     var today = new Date();
     var ms = String(today.getMilliseconds()).padStart(2, '0');
     var ss = String(today.getSeconds()).padStart(2, '0');
@@ -1246,29 +1209,23 @@ upload_attachment(req, res, function(err){
       for(let i=0;i<5;i++){
         
         if(i==0 && ad.attachment_name_one!=null){
-          console.log(ad.dataValues);
             number_of_attachments_retrieved=number_of_attachments_retrieved+1;
           
         }
         if(i==1 && ad.attachment_name_two!=null){
-          console.log(ad.dataValues);
             number_of_attachments_retrieved=number_of_attachments_retrieved+1;
         }
         
         if(i==2 && ad.attachment_name_three!=null){
-          console.log(ad.dataValues);
             number_of_attachments_retrieved=number_of_attachments_retrieved+1;
         }
         if(i==3 && ad.attachment_name_four!=null){
-          console.log(ad.dataValues);
             number_of_attachments_retrieved=number_of_attachments_retrieved+1;
         }
         if(i==4 && ad.attachment_name_five!=null){
-          console.log(ad.dataValues);
             number_of_attachments_retrieved=number_of_attachments_retrieved+1;
         }
       }
-      console.log(number_of_attachments_retrieved);
   }
   (async () => {
       
@@ -1280,7 +1237,7 @@ upload_attachment(req, res, function(err){
         }
       })
       .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad =>  {
         if(attachment_number==1){
@@ -1289,7 +1246,7 @@ upload_attachment(req, res, function(err){
               "attachment_real_name_one" :name,
             })
             .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
               add_number_of_attachments_retrieved(ad);
@@ -1298,7 +1255,7 @@ upload_attachment(req, res, function(err){
                   "number_of_attachments":number_of_attachments,
                 })
                 .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
               }
@@ -1314,7 +1271,7 @@ upload_attachment(req, res, function(err){
             "attachment_real_name_two" :name,
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             add_number_of_attachments_retrieved(ad);
@@ -1323,7 +1280,7 @@ upload_attachment(req, res, function(err){
                 "number_of_attachments":number_of_attachments,
               })
               .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
             }
@@ -1338,7 +1295,7 @@ upload_attachment(req, res, function(err){
             "attachment_real_name_three" :name,
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             add_number_of_attachments_retrieved(ad);
@@ -1347,7 +1304,7 @@ upload_attachment(req, res, function(err){
                 "number_of_attachments":number_of_attachments,
               })
               .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
             }
@@ -1362,7 +1319,7 @@ upload_attachment(req, res, function(err){
             "attachment_real_name_four" :name,
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             add_number_of_attachments_retrieved(ad);
@@ -1371,7 +1328,7 @@ upload_attachment(req, res, function(err){
                 "number_of_attachments":number_of_attachments,
               })
               .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
             }
@@ -1386,7 +1343,7 @@ upload_attachment(req, res, function(err){
             "attachment_real_name_five" :name,
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{
             add_number_of_attachments_retrieved(ad);
@@ -1395,7 +1352,7 @@ upload_attachment(req, res, function(err){
                 "number_of_attachments":number_of_attachments,
               })
               .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad=>{res.status(200).send([ad])})
             }
@@ -1415,7 +1372,7 @@ upload_attachment(req, res, function(err){
 
 
 router.post('/get_number_of_ads_and_responses', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1426,7 +1383,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-  console.log("get_number_of_ads_and_responses")
   let id_user = req.body.id_user;
   let number_of_ads_answers=0;
   let list_of_ads_ids=[];
@@ -1455,10 +1411,9 @@ console.log("checking current: " + req.headers['authorization'] );
       ],
     })
     .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ads =>  {
-      console.log(ads.length + "ads length")
       if(ads.length>0 ){
         let compt=0;
         for(let i=0;i<ads.length;i++){
@@ -1469,13 +1424,12 @@ console.log("checking current: " + req.headers['authorization'] );
             }
           })
           .catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(resp =>  {
             compt++;
             number_of_ads_answers+=resp.length;
             if(compt==ads.length){
-              console.log("compt end ads")
               res.status(200).send([{number_of_ads:ads.length,number_of_ads_answers:number_of_ads_answers,list_of_ads_ids:list_of_ads_ids}]);
             }
             
@@ -1495,22 +1449,16 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
 router.post('/send_email_for_ad_answer', function (req, res) {
-  console.log("send_email_for_ad_answer")
   const user_name = req.body.user_name;
   const ad_id = req.body.ad_id;
   const author_id = req.body.author_id;
   const title= req.body.title;
-  console.log(user_name)
-  console.log(ad_id)
-  console.log(author_id)
-  console.log(title)
   list_of_users.findOne({
     where:{
       id:author_id
     }
   }).then(user=>{
     if(user){
-        console.log("user found")
         const transport = nodemailer.createTransport({
           host: "pro2.mail.ovh.net",
           port: 587,
@@ -1553,10 +1501,8 @@ router.post('/send_email_for_ad_answer', function (req, res) {
     
         transport.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log('Error while sending mail: ' + error);
                 res.status(200).send([{error:error}])
             } else {
-                console.log('Message sent: %s', info.messageId);
                 res.status(200).send([{sent:'Message sent ' + info.messageId }])
             }
             
