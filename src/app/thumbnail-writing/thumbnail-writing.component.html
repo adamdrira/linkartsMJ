@@ -6,7 +6,7 @@
             
                 
 
-            <a [routerLink]=get_artwork()>
+            <div style="cursor: pointer;" (click)="open_popup()">
                 <div #thumbnail class="swiper-container">
                     <div class="swiper-wrapper">
 
@@ -140,25 +140,6 @@
                                     </div>
                                 </div>
                                 
-                                <!--********************-->
-                                <!--Categories container-->
-                                <!--********************-->
-                                <!--<div class="categories-container">  
-                                    <span class="categories" *ngIf="category=='Scenario'">Scénario :</span>
-                                    <span class="categories" *ngIf="category=='Poetry'">Poésie :</span>
-                                    <span class="categories" *ngIf="category=='Illustrated novel'">Roman illustré :</span>
-                                    <span class="categories" *ngIf="category!='Scenario' &&  category!='Poetry' && category!='Illustrated novel'">{{category}} :</span>
-                                    <span *ngIf="firsttag!=null"> &nbsp; {{firsttag}}</span>
-                                    <span *ngIf="secondtag!=null">,&nbsp;{{secondtag}}</span>
-                                    <span *ngIf="thirdtag!=null">,&nbsp; {{thirdtag}}</span>
-                                </div>-->
-                                <!--********************-->
-                                <!--Date container-->
-                                <!--********************-->
-                                <!--<div class="date-container">
-                                    <span>{{date_upload_to_show}}</span>
-                                </div>-->
-
                             </div>
 
                         </div>
@@ -168,7 +149,7 @@
                     </div>
                 </div>
 
-            </a>
+            </div>
 
 
         </div>

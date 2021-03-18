@@ -6,8 +6,9 @@ import {NotationService} from '../services/notation.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
-import { Router  } from '@angular/router';
 import { NavbarService } from '../services/navbar.service';
+import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
+import { MatDialog } from '@angular/material/dialog';
 
 declare var Swiper: any;
 declare var $:any;
@@ -24,8 +25,8 @@ export class ThumbnailWritingComponent implements OnInit {
     private sanitizer :DomSanitizer,
     private Writing_Upload_Service:Writing_Upload_Service,
     private rd:Renderer2,
+    public dialog: MatDialog,
     private NotationService:NotationService,
-    private router:Router,
     private cd:ChangeDetectorRef,
     private navbar: NavbarService,
 
@@ -320,4 +321,14 @@ export class ThumbnailWritingComponent implements OnInit {
   }
 
 
+  open_popup(){
+    this.dialog.open(PopupArtworkComponent, {
+      data: {
+        id_input:this.writing_id,
+        title_input:this.title,
+        category:'writing',
+      }, 
+      panelClass:"popupArtworkClass",
+    });
+  }
 }

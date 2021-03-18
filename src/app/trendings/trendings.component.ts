@@ -1,6 +1,7 @@
 import { Component, OnInit, Input,ChangeDetectorRef } from '@angular/core';
 import { SimpleChanges } from '@angular/core';
 import { ChatService } from '../services/chat.service';
+import { NavbarService } from '../services/navbar.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
@@ -50,6 +51,7 @@ export class TrendingsComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
     private Trending_service:Trending_service,
+    private navbar:NavbarService,
     private cd:ChangeDetectorRef,
     private Profile_Edition_Service:Profile_Edition_Service,
 
@@ -98,11 +100,10 @@ export class TrendingsComponent implements OnInit {
     this.subcategory = (this.route.snapshot.data['section'])?this.route.snapshot.data['section']:0;
     this.section_chosen=true;
     this.Trending_service.send_rankings_and_get_trendings_comics().subscribe(info=>{
-    
+      
       this.load_comics_trendings(info);
       
       this.Trending_service.get_drawings_trendings().subscribe(info=>{
-      
         this.load_drawing_trendings(info);
       })
       this.Trending_service.get_writings_trendings().subscribe(info=>{
@@ -119,12 +120,15 @@ export class TrendingsComponent implements OnInit {
       return;
     }
     if(i==0){
+      this.navbar.add_page_visited_to_history(`/trendings/comic`).subscribe();
       this.subcategory=i;
     }
     else if(i==1){
+      this.navbar.add_page_visited_to_history(`/trendings/drawing`).subscribe();
       this.subcategory=i;  
     }
     else if(i==2){
+      this.navbar.add_page_visited_to_history(`/trendings/writing`).subscribe();
       this.subcategory=i;
     }
     return;
