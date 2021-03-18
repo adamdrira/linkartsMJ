@@ -53,6 +53,19 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      });
 
      router.get('/get_number_of_unseen_messages',function(req,res){
+       console.log("get number of unseen messages")
+       console.log(11)
+
+       if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       let list_of_users=[];
@@ -166,6 +179,16 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      })
 
      router.get('/get_number_of_unseen_messages_spams',function(req,res){
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       let list_of_users=[];
@@ -2307,6 +2330,16 @@ router.post('/get_other_messages', function (req, res) {
 
 
 router.post('/get_reactions_by_user',function(req,res){
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
   let id_message=req.body.id_message;
   list_of_chat_groups_reactions.findAll({
     where:{
@@ -4048,6 +4081,16 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 
  
  router.post('/get_my_emojis_reactions_for_msg_group',function(req,res){
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
   let id_user = get_current_user(req.cookies.currentUser);
   let id_message = req.body.id_message;
   let id_group_chat= req.body.id_group_chat;
@@ -4073,6 +4116,16 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 
 
  router.post('/get_chat_friend',function(req,res){
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend = req.body.friend_id;
   let is_a_group_chat=req.body.is_a_group_chat;
@@ -4122,6 +4175,16 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 
 
  router.post('/remove_friend',function(req,res){
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
     let id_user = get_current_user(req.cookies.currentUser);
     let id_friend = req.body.id_friend;
     const Op = Sequelize.Op;
@@ -4150,6 +4213,16 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
  })
 
  router.post('/remove_spam',function(req,res){
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend = req.body.id_friend;
   const Op = Sequelize.Op;
@@ -4178,6 +4251,16 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 
 
  router.post('/add_chat_friend',function(req,res){
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend = req.body.id_friend;
   let date = req.body.date;
