@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2,  ChangeDetectorRef, Inject } from '@angular/core';
+import { Component, OnInit,  ChangeDetectorRef, Inject, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
@@ -59,30 +59,70 @@ export class PopupLikesAndLovesComponent implements OnInit {
   visitor_id=this.data.visitor_id;
   visitor_name=this.data.visitor_name;
   show_icon=false;
+
+  list_of_data_retrieved=[];
+  list_of_sub_retrieved=[];
+  list_of_all_retrieved=[];
+  first_check=false;
+  number_of_likes_to_show=10;
+  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
+
   ngOnInit() {
-    let THIS=this;
-    console.log(this.data.visitor_id)
-    console.log(this.data.visitor_name)
+    let int = setInterval(() => {
+
+      if(this.number_of_likes_to_show<this.list_of_users_ids.length){
+        let len = this.list_of_users_ids.length - this.number_of_likes_to_show;
+        let see_more=false;
+        if(len>10){
+          let compt =0
+          for(let i=0;i<10;i++){
+            if(this.list_of_all_retrieved[ this.number_of_likes_to_show +i]){
+              compt++;
+            }
+          }
+          if(compt==10){
+            see_more=true;
+          }
+        }
+        else{
+          let compt =0
+          for(let i=0;i<len;i++){
+            if(this.list_of_all_retrieved[ this.number_of_likes_to_show +i]){
+              compt++;
+            }
+          }
+          if(compt==len){
+            see_more=true;
+          }
+        }
+      
+        if(  see_more && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+          this.number_of_likes_to_show+=10;
+        }
+
+      }
+      else if( this.number_of_likes_to_show>=this.list_of_users_ids.length){
+        clearInterval(int)
+      }
+      
+     
+    },1000)
+
     if(this.data.title=="likes"){
       this.title="Liste des mentions j'aime"
     }
     else if(this.data.title=="loves"){
         this.title="Liste des mentions j'adore"
     }
-
-    console.log(this.list_of_users_ids)
-
    
     if(this.list_of_users_ids.length>0){
       let n=this.list_of_users_ids.length;
       let compt=0;
       for (let i=0;i<n;i++){
-        let  sub_retrieved=false;
-        let data_retrieved=false;
         this.Profile_Edition_Service.retrieve_profile_data(this.list_of_users_ids[i]).subscribe(r=>{
           this.list_of_users_information[i]=r[0];
-          data_retrieved=true;
-          check_all(this)
+          this.list_of_data_retrieved[i]=true;
+          check_all(this,i)
         });
 
         this.Subscribing_service.check_if_visitor_susbcribed(this.list_of_users_ids[i]).subscribe(information=>{
@@ -92,8 +132,8 @@ export class PopupLikesAndLovesComponent implements OnInit {
           else{
             this.list_of_check_subscribtion[i]=false;
           }
-          sub_retrieved=true;
-          check_all(this)
+          this.list_of_sub_retrieved[i]=true;
+          check_all(this,i)
           
         });
 
@@ -105,13 +145,25 @@ export class PopupLikesAndLovesComponent implements OnInit {
 
         });
 
-        function check_all(THIS){
-          if(sub_retrieved && data_retrieved){
+        function check_all(THIS,i){
+          if(THIS.list_of_data_retrieved[i] && THIS.list_of_sub_retrieved[i]){
             compt++;
-            console.log(compt)
-            console.log(n)
+            THIS.list_of_all_retrieved[i]=true;
+            if(THIS.list_of_users_ids.length>10){
+              let compt1 =0
+              for(let j=0;j<10;j++){
+                if(THIS.list_of_all_retrieved[j]){
+                  compt1++;
+                }
+              }
+              if(compt1==10){
+                THIS.first_check=true;
+              }
+            }
+          
             if(compt==n){
               THIS.subscribtion_info_added=true;
+              THIS.first_check=true;
               THIS.cd.detectChanges()
             }
           }
@@ -133,8 +185,6 @@ export class PopupLikesAndLovesComponent implements OnInit {
         if(!this.list_of_check_subscribtion[i]){
           this.list_of_check_subscribtion[i]=true;
           this.Subscribing_service.subscribe_to_a_user(this.list_of_users_ids[i]).subscribe(information=>{
-            
-            console.log(information)
             if(information[0].subscribtion){
               this.loading_subscribtion=false;
               this.cd.detectChanges();
@@ -169,8 +219,6 @@ export class PopupLikesAndLovesComponent implements OnInit {
         else{
           this.list_of_check_subscribtion[i]=false;
           this.Subscribing_service.remove_subscribtion(this.list_of_users_ids[i]).subscribe(information=>{
-           
-            console.log(information)
             this.NotificationsService.remove_notification('subscribtion',this.list_of_users_ids[i].toString(),'none',this.data.visitor_id,0,false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
@@ -216,7 +264,13 @@ export class PopupLikesAndLovesComponent implements OnInit {
   }
 
   get_user_link(i:number) {
-    return "/account/"+ this.list_of_users_information[i].nickname +"/"+ this.list_of_users_ids[i];
+    if(this.list_of_users_information[i]){
+      return "/account/"+ this.list_of_users_information[i].nickname +"/"+ this.list_of_users_ids[i];
+    }
+    else{
+      return false
+    }
+   
   }
   close_dialog() {
     this.dialogRef.close();

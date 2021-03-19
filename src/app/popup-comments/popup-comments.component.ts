@@ -29,8 +29,6 @@ export class PopupCommentsComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<PopupCommentsComponent>,
     private cd:ChangeDetectorRef,
-    private rd:Renderer2,
-    private sanitizer:DomSanitizer,
     public dialog: MatDialog,
     private navbar: NavbarService,
 
@@ -70,7 +68,8 @@ export class PopupCommentsComponent implements OnInit {
 
   show_icon=false;
   ngOnInit() {
-    let THIS=this;
+    console.log("pop com")
+    console.log(this.data.category)
   }
 
 

@@ -37,8 +37,6 @@ export class PopupArtworkComponent implements OnInit {
   current_url='';
 
   ngOnInit(){
-    console.log("popup")
-    console.log(this.data)
     this.current_url=this.router.url;
   }
   

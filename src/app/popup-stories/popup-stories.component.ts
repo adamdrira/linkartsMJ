@@ -66,9 +66,7 @@ export class PopupStoriesComponent implements OnInit {
     let THIS=this;
 
     
-    console.log( this.data.list_of_users );
-    console.log( this.data.list_of_users[this.data.index_id_of_user] );
-    console.log( this.data.list_of_data[this.data.index_id_of_user] );
+    this.navbar.add_page_visited_to_history(`/stories`).subscribe();
     
     if(this.data.list_of_users.length>0){
       for(let i=0;i<this.data.list_of_users.length;i++){
@@ -78,12 +76,9 @@ export class PopupStoriesComponent implements OnInit {
     }
 
     if(!this.list_of_data[0]){
-      console.log('ya r')
       this.list_of_users.splice(0,1);
       this.list_of_data.splice(0,1);
       this.index_id_of_user-=-1;
-      console.log(this.list_of_users)
-      console.log(this.data.list_of_users)
     }
 
 
@@ -143,12 +138,7 @@ export class PopupStoriesComponent implements OnInit {
   let k=0;
   for(let s =0; s<this.list_of_users.length;s++){
     this.Story_service.get_last_seen_story(this.list_of_users[s]).subscribe(l=>{
-      console.log(l[0]);
-      console.log(s);
-      console.log(this.list_of_users)
-       console.log(this.list_of_data[s]) ;
       if(l[0]){
-        console.log(this.list_of_data[s].length)
         for (let i=0;i<this.list_of_data[s].length;i++){
           if(this.list_of_data[s][i].id==l[0].id_story){
             this.list_index_debut[s]=i+1;
@@ -161,9 +151,7 @@ export class PopupStoriesComponent implements OnInit {
               this.list_index_debut[s]=0;
             }
             k++;
-            //on a récupéré tous les indices des dernières stories vues par l'utilisateur
             if(k==this.list_of_users.length){
-              console.log(this.list_index_debut);
               for(let j = 0; j < this.list_of_users.length ; j++ ) {
                 this.createStory( this.list_of_users[j], this.list_index_debut[j],this.list_of_data[j] );
                 this.refresh_stories_status();
@@ -175,7 +163,6 @@ export class PopupStoriesComponent implements OnInit {
         }
       }
       else{
-        console.log("in ex");
         this.list_index_debut[s]=0;
         k++;
         if(k==this.list_of_users.length){
@@ -222,7 +209,6 @@ export class PopupStoriesComponent implements OnInit {
     });
 
     this.componentRef[ this.componentRef.length - 1 ].instance.show_next.subscribe( v => {
-      console.log("end of a story")
       THIS.next_story();
     });
     this.componentRef[ this.componentRef.length - 1 ].instance.show_prev.subscribe( v => {
@@ -230,7 +216,6 @@ export class PopupStoriesComponent implements OnInit {
     });
 
     this.componentRef[ this.componentRef.length - 1 ].instance.end_of_stories.subscribe( v => {
-      console.log(v);
       THIS.list_of_users_to_end.push(v.user_id);
       
     });
@@ -247,7 +232,6 @@ export class PopupStoriesComponent implements OnInit {
         this.componentRef[i].instance.pause = true;
       }
       this.cd.detectChanges();
-      console.log("we close here")
       this.dialogRef.close({event:"end-swiper",data:this.list_index_debut,list_of_users_to_end:this.list_of_users_to_end});
       return;
     }
@@ -280,7 +264,6 @@ export class PopupStoriesComponent implements OnInit {
       this.componentRef[i].instance.pause = true;
     }
     this.cd.detectChanges();
-    console.log("we close here")
     this.dialogRef.close({event:"closing-swiper",data:this.list_index_debut,list_of_users_to_end:this.list_of_users_to_end});
   }
   

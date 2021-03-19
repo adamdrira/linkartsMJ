@@ -19,19 +19,10 @@ import { NavbarService } from '../services/navbar.service';
   templateUrl: './popup-edit-cover.component.html',
   styleUrls: ['./popup-edit-cover.component.scss']
 })
-export class PopupEditCoverComponent implements OnInit {
+export class PopupEditCoverComponent {
 
   constructor(
-    private Profile_Edition_Service:Profile_Edition_Service,
     public dialogRef: MatDialogRef<PopupEditCoverComponent>,
-    private cd:ChangeDetectorRef,
-    private sanitizer:DomSanitizer,
-    private Drawings_Artbook_Service:Drawings_Artbook_Service,
-    private BdSerieService:BdSerieService,
-    private BdOneShotService:BdOneShotService,
-    private Writing_CoverService:Writing_CoverService,
-    private Bd_CoverService: Bd_CoverService,
-    private Drawings_CoverService:Drawings_CoverService,
     public dialog: MatDialog,
 
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -47,11 +38,6 @@ export class PopupEditCoverComponent implements OnInit {
 
   for_edition=true;
   show_icon=false;
-  ngOnInit() {
-    let THIS=this;
-    console.log(this.data)
-  
-  }
 
 
 

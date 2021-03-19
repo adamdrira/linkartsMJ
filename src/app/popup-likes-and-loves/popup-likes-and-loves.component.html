@@ -7,7 +7,7 @@
 
 
 
-<div class="scrollable-container">
+<div class="scrollable-container" #myScrollContainer>
     <div class="component-container">
         
 
@@ -17,20 +17,17 @@
             <span *ngIf="data.title=='loves'">Aucune mention j'adore</span>
         </div>
 
-
-        <div class="subscribers-container" *ngIf="list_of_users_information.length>0 && !subscribtion_info_added">
-            <ng-container *ngFor="let item of list_of_users_information; let i=index">
-                <div *ngIf="5>i" class="subscriber-card-skeleton dark-shiny"></div>
+        <div class="subscribers-container" *ngIf="list_of_users_ids.length>0 && !first_check">
+            <ng-container *ngFor="let item of list_of_users_ids.slice(0,number_of_likes_to_show); let i=index">
+                <div *ngIf="10>i" class="subscriber-card-skeleton dark-shiny"></div>
             </ng-container>
         </div>
 
-        <div class="subscribers-container" *ngIf="subscribtion_info_added" [@enterAnimation]>
-            <a [routerLink]=get_user_link(i) *ngFor="let item of list_of_users_information; let i=index" class="subscriber-card" (click)="close_dialog();">
+        <div class="subscribers-container" *ngIf="first_check" [@enterAnimation]>
+            <a [routerLink]=get_user_link(i) *ngFor="let item of list_of_users_ids.slice(0,number_of_likes_to_show); let i=index" class="subscriber-card" (click)="close_dialog();">
                 
-                <!--********************-->
-                <!--Author container-->
-                <!--********************-->
-                <div class="subscriber">
+         
+                <div class="subscriber" *ngIf="list_of_all_retrieved[i] && list_of_users_information[i]">
                     <div class="user-container">
 
                             <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
@@ -38,7 +35,7 @@
                             </div>
 
                             <div class="right-container">
-                                <span class="author-name">{{item.firstname}} {{item.lastname}}
+                                <span class="author-name">{{list_of_users_information[i].firstname}} {{list_of_users_information[i].lastname}}
                                     <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_users_information[i].certified_account"
                                     matTooltip="Compte certifié" 
                                     matTooltipClass='linkarts-tooltip' 
@@ -46,7 +43,7 @@
                                     [matTooltipShowDelay]="200">verified</mat-icon>
                                     
                                 </span>
-                                <span class="user-description">@{{item.nickname}}</span>
+                                <span class="user-description">@{{list_of_users_information[i].nickname}}</span>
                             </div>
 
                     </div>
@@ -66,6 +63,7 @@
     
             </a>
         </div>
+
 
 
     </div>
