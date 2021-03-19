@@ -1053,6 +1053,7 @@ export class AccountComponent implements OnInit {
     if(this.subscribed_users_list.length == 0) {
       return;
     }
+    this.navbar.add_page_visited_to_history(`/PopupSubscribersComponent`).subscribe();
     this.dialog.open(PopupSubscribersComponent, {
       data: {
         subscribers:this.subscribed_users_list,
@@ -1070,6 +1071,7 @@ export class AccountComponent implements OnInit {
     if(this.users_subscribed_to_list.length == 0) {
       return;
     }
+    this.navbar.add_page_visited_to_history(`/PopupSubscribingsComponent`).subscribe();
     this.dialog.open(PopupSubscribingsComponent, {
       data: {
         subscribings:this.users_subscribed_to_list,
@@ -1423,6 +1425,7 @@ export class AccountComponent implements OnInit {
 
 
   add_story(){
+    this.navbar.add_page_visited_to_history(`/PopupAddStoryComponent`).subscribe();
     const dialogRef = this.dialog.open(PopupAddStoryComponent, {
       data: {user_id:this.user_id},
       panelClass: 'popupAddStoryClass',
@@ -1431,6 +1434,7 @@ export class AccountComponent implements OnInit {
 
 
   change_cover_picture() {
+    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_cover_picture`).subscribe();
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_cover_picture"},
       panelClass: 'popupUploadPictureClass',
@@ -1438,6 +1442,7 @@ export class AccountComponent implements OnInit {
   }
 
   change_profile_picture() {
+    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_profile_picture`).subscribe();
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_profile_picture"},
       panelClass: 'popupUploadPictureClass',
@@ -2309,6 +2314,7 @@ report(){
   story_state=false;
   watch_story(){
     if(this.story_found){
+      this.navbar.add_page_visited_to_history(`/PopupStoriesComponent/watch_stories`).subscribe();
       const dialogRef = this.dialog.open(PopupStoriesComponent, {
         data: { for_account:true, list_of_users: [this.user_id], index_id_of_user: 0, list_of_data:this.list_of_stories,current_user:this.visitor_id,current_user_name:this.visitor_name},
         panelClass: 'popupStoriesClass'

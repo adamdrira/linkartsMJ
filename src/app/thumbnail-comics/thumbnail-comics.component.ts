@@ -10,7 +10,7 @@ import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import {PopupArtworkComponent} from '../popup-artwork/popup-artwork.component';
 import { NavbarService } from '../services/navbar.service';
 import { MatDialog } from '@angular/material/dialog';
-
+import { Router } from '@angular/router';
 
 declare var Swiper: any;
 declare var $:any;
@@ -30,6 +30,7 @@ export class ThumbnailComicsComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private BdSerieService: BdSerieService,
     private rd:Renderer2,
+    private router:Router,
     public dialog: MatDialog,
     private NotationService:NotationService,
     private cd:ChangeDetectorRef,
@@ -330,10 +331,7 @@ export class ThumbnailComicsComponent implements OnInit {
   }
   
   
-  get_artwork() {
-    return "/artwork-comic/"+this.format+"/"+this.title+"/"+this.bd_id;
-    //this.router.navigate([`/artwork-comic/${this.format}/${this.title}/${this.bd_id}`]);
-  }
+ 
 
   mouseEnterBook() {
     let v0 = this.cancelled;
@@ -371,7 +369,12 @@ export class ThumbnailComicsComponent implements OnInit {
     return number
   }
   
-  open_popup(){
+
+  open_popup(event){
+    event.preventDefault(); 
+    if (event.ctrlKey) {
+      return this.router.navigate(["/artwork-comic/"+this.format+"/"+this.title+"/"+this.bd_id]);
+    }
     this.dialog.open(PopupArtworkComponent, {
       data: {
         format_input:this.format,
@@ -381,6 +384,8 @@ export class ThumbnailComicsComponent implements OnInit {
       }, 
       panelClass:"popupArtworkClass",
     });
+
+    return  this.router.url;
   }
 
 }

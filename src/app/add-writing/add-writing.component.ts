@@ -110,6 +110,7 @@ export class AddWritingComponent implements OnInit {
   conditions:any;
 
   ngOnInit() {
+    this.navbar.add_page_visited_to_history(`/add-writing`).subscribe();
     window.scroll(0,0);
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;

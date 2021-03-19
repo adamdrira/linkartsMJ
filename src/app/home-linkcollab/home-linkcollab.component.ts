@@ -509,7 +509,12 @@ export class HomeLinkcollabComponent implements OnInit {
     this.list_of_ads=[];
     this.Ads_service.get_sorted_ads_linkcollab(this.type_of_project,this.author,this.target,this.remuneration,this.service,this.type_of_remuneration,this.type_of_service,this.offer_or_demand,this.sorting,this.offset_ads,this.compteur_ads).subscribe(r=>{
       this.number_of_results=r[0][0].number_of_ads;
-      this.number_of_pages=Math.trunc(parseInt(r[0][0].number_of_ads)/5)+1;
+      if(parseInt(r[0][0].number_of_ads)%5==0){
+        this.number_of_pages=Math.trunc(parseInt(r[0][0].number_of_ads)/5)
+      }
+      else{
+        this.number_of_pages=Math.trunc(parseInt(r[0][0].number_of_ads)/5)+1;
+      }
       let results=r[0][0].results;
       if(r[0]=this.compteur_ads){
         this.loading_ads=false;

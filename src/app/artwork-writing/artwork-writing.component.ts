@@ -119,7 +119,7 @@ export class ArtworkWritingComponent implements OnInit {
   clickout(btn) {
     if(this.writing_id_input){
       if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
-        if(this.writing_id_input && btn.className.includes("cdk-overlay-dark-backdrop")){
+        if(this.writing_id_input && !btn.className.baseVal && btn.className.includes("cdk-overlay-dark-backdrop")){
           console.log("includes back")
           this.add_time_of_view();
           this.emit_close_click.emit(true);
@@ -274,6 +274,7 @@ export class ArtworkWritingComponent implements OnInit {
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
+  location_done=false;
   ngOnInit() {
     window.scroll(0,0);
     setInterval(() => {
@@ -346,6 +347,7 @@ export class ArtworkWritingComponent implements OnInit {
             this.thumbnail_picture=r[0].name_coverpage ;
             this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`).subscribe();
             this.location.go(`/artwork-writing/${this.title}/${this.writing_id}`);
+            this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
             this.thumbnail_picture_retrieved=true;
   

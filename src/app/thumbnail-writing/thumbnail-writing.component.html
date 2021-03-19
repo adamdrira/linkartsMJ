@@ -6,7 +6,7 @@
             
                 
 
-            <div style="cursor: pointer;" (click)="open_popup()">
+            <a (click)="open_popup($event)"  href="/artwork-writing/{{this.title}}/{{this.writing_id}}" target="_blank">
                 <div #thumbnail class="swiper-container">
                     <div class="swiper-wrapper">
 
@@ -149,7 +149,7 @@
                     </div>
                 </div>
 
-            </div>
+            </a>
 
 
         </div>

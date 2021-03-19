@@ -648,6 +648,7 @@ export class ThumbnailAdComponent implements OnInit {
   edit_thumbnail(){
     const dialogRef = this.dialog.open(PopupEditCoverComponent, {
       data: {item:this.item,category:"ad"},
+      panelClass: 'popupEditCoverClass',
     });
   }
 
@@ -705,11 +706,15 @@ export class ThumbnailAdComponent implements OnInit {
     })
   }
 
-  open_popup(){
+  open_popup(event){
     if(this.in_ad_page){
       this.router.navigate([this.get_artwork()]);
     }
     else{
+      event.preventDefault(); 
+      if (event.ctrlKey) {
+        return this.router.navigate([this.get_artwork()]);
+      }
       this.dialog.open(PopupArtworkComponent, {
         data: {
           id_input:this.item.id,

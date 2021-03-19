@@ -100,7 +100,7 @@ export class AddComicComponent implements OnInit {
 
   conditions:any;
   ngOnInit() {
-    let THIS=this;
+    this.navbar.add_page_visited_to_history(`/add-comic`).subscribe();
    
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;

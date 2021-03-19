@@ -140,7 +140,7 @@ export class SignupComponent implements OnInit {
   conditions:any;
   show_icon=false;
   ngOnInit() {
-
+    this.navbar.add_page_visited_to_history(`/signup`).subscribe();
     this.Writing_Upload_Service.retrieve_writing_for_options(0).subscribe(r=>{
       this.conditions=r
     })

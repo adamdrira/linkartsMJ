@@ -168,6 +168,7 @@ import { faLink} from '@fortawesome/free-solid-svg-icons';
 import { faCheck} from '@fortawesome/free-solid-svg-icons';
 import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
 import { ShareButtonModule } from 'ngx-sharebuttons/button';
+import { PopupNavbarDisconnectedComponent } from './popup-navbar-disconnected/popup-navbar-disconnected.component';
 
 const icons = [
   faPinterest,
@@ -300,6 +301,7 @@ const shareProp = {
     PopupLinkcollabFiltersComponent,
     TermsComponent,
     PopupArtworkComponent,
+    PopupNavbarDisconnectedComponent,
     
   ],
   imports: [

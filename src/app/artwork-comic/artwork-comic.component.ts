@@ -123,8 +123,9 @@ export class ArtworkComicComponent implements OnInit {
   clickout(btn) {
     if(this.bd_id_input){
       if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
-        
-        if(this.bd_id_input && btn.className.includes("cdk-overlay-dark-backdrop")){
+        console.log(btn.className.baseVal)
+        console.log(btn.className)
+        if(this.bd_id_input && !btn.className.baseVal && btn.className.includes("cdk-overlay-dark-backdrop")){
           console.log("includes back")
           this.add_time_of_view();
           this.emit_close_click.emit(true);
@@ -280,6 +281,7 @@ export class ArtworkComicComponent implements OnInit {
   @Output() emit_close = new EventEmitter<boolean>();
   @Output() emit_close_click = new EventEmitter<boolean>();
   
+  location_done=false;
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
@@ -388,6 +390,7 @@ export class ArtworkComicComponent implements OnInit {
               this.monetization=r[0].monetization;
               this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`).subscribe();
               this.location.go(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`);
+              this.location_done=true;
               this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
                 this.pseudo = r[0].nickname;
                 this.type_of_account_checked=r[0].type_of_account_checked;
@@ -560,6 +563,7 @@ export class ArtworkComicComponent implements OnInit {
     })
   }
 
+
   bd_one_shot_calls(){
    
     this.BdOneShotService.retrieve_bd_by_id2(this.bd_id).subscribe(m => {
@@ -604,6 +608,7 @@ export class ArtworkComicComponent implements OnInit {
             this.thumbnail_picture_retrieved=true;
             this.navbar.add_page_visited_to_history(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`).subscribe();
             this.location.go(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`);
+            this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) )
             
             this.get_comic_oneshot_pages(this.bd_id,r[0].pagesnumber);

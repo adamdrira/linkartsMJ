@@ -335,6 +335,7 @@
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
+                        *ngIf="location_done"
                             shareButton="copy"
                             #insBtn="shareButton"
                             [style.color]="insBtn?.color">

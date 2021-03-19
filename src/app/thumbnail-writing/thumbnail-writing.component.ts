@@ -9,7 +9,7 @@ import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { NavbarService } from '../services/navbar.service';
 import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
 import { MatDialog } from '@angular/material/dialog';
-
+import { Router } from '@angular/router';
 declare var Swiper: any;
 declare var $:any;
 
@@ -27,6 +27,7 @@ export class ThumbnailWritingComponent implements OnInit {
     private rd:Renderer2,
     public dialog: MatDialog,
     private NotationService:NotationService,
+    private router:Router,
     private cd:ChangeDetectorRef,
     private navbar: NavbarService,
 
@@ -310,10 +311,6 @@ export class ThumbnailWritingComponent implements OnInit {
     this.pp_is_loaded=true;
   }
 
-  get_artwork() {
-    return "/artwork-writing/"+this.title+"/"+this.writing_id;
-    //this.router.navigate([`/artwork-writing/${this.title}/${this.writing_id}`]);
-  }
 
   stop(e: Event) {
     e.preventDefault();
@@ -321,7 +318,11 @@ export class ThumbnailWritingComponent implements OnInit {
   }
 
 
-  open_popup(){
+  open_popup(event){
+    event.preventDefault(); 
+    if (event.ctrlKey) {
+      return this.router.navigate(["/artwork-writing/"+this.title+"/"+this.writing_id]);
+    }
     this.dialog.open(PopupArtworkComponent, {
       data: {
         id_input:this.writing_id,

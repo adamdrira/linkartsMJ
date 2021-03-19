@@ -81,7 +81,6 @@ export class StoryViewComponent implements OnInit {
   
   @Input('currently_readed') set currently_readed(currently_readed: boolean) {
 
-    console.log("currently readed triggered")
     if( currently_readed ) {
 
       clearInterval(this.interval);
@@ -98,7 +97,6 @@ export class StoryViewComponent implements OnInit {
  }
 
  @Input('pause') set pause(pause: boolean) {
- console.log(" exit and clicking pause " + this.user_id)
   if( pause ) {
     this.page_closed=true;
     this.paused=true;
@@ -112,7 +110,6 @@ show_icon=false;
 ngOnInit() {
   let THIS=this;
 
-    console.log(this.list_of_data)
     $(window).on('blur', function(){
       if(!THIS.paused){
         THIS.clickPause();
@@ -149,7 +146,6 @@ ngOnInit() {
         if(k== this.list_of_data.length ){
 
           this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.index_debut].id).subscribe(r=>{
-            console.log(r[0])
             this.number_of_views=r[0].length;
           })
           this.cd.detectChanges();
@@ -205,12 +201,10 @@ ngOnInit() {
   }
 
   next_slide() {
-    console.log("next slide adding vew " + this.user_id)
     this.cd.detectChanges();
     let id_story =this.list_of_data[this.swiper.activeIndex].id;
     if(this.list_of_data[this.swiper.activeIndex+1]){
       this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex+1].id).subscribe(r=>{
-        console.log(r[0])
         this.number_of_views=r[0].length;
       })
     }
@@ -259,7 +253,6 @@ ngOnInit() {
     }
     
     this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex - 1].id).subscribe(r=>{
-      console.log(r[0])
       this.number_of_views=r[0].length;
     })
 
@@ -328,7 +321,7 @@ ngOnInit() {
   dialogRef.afterClosed().subscribe(result => {
     if(result){
       this.Story_service.delete_story(this.list_of_data[i].id).subscribe(r=>{
-        location.reload();
+        location.reload()
       })
     }
   })
@@ -345,21 +338,16 @@ get_list_of_viewers(i){
   
   clearInterval(this.interval);
   this.paused = true;
-  
   this.loading_list_of_viewers = true;
-
-  console.log("list_of_viewers")
   if(this.viewers_found){
     this.show_list_of_viewers=true;
     this.loading_list_of_viewers=false;
     return;
   }
   this.Story_service.get_list_of_viewers_for_story(this.list_of_data[i].id).subscribe(r=>{
-    console.log(r[0])
     if(r[0].length>0){
       let n =r[0].length;
       for (let i=0;i<n;i++){
-        console.log(r[0][i].id_user_who_looks)
         this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user_who_looks).subscribe(l=>{
           this.list_of_viewers[i]=l[0];
           
@@ -430,7 +418,6 @@ close_list_of_viewers(){
 
   report(i){
     this.Reports_service.check_if_content_reported('story',this.list_of_data[i].id,"unknown",0).subscribe(r=>{
-      console.log(r[0])
       if(r[0].nothing){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},

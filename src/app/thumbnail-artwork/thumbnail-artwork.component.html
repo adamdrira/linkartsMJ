@@ -17,7 +17,7 @@
         </span>
     </div>
 
-    <div style="cursor: pointer;" class="global-container" (click)="open_popup()"
+    <a class="global-container" (click)="open_popup($event)" [href]="get_artwork()" target="_blank"
         [ngClass]="{'subscribings-page':page=='subscribings','trendings-page':page=='trendings','avoid-clicks':!display_evenif_reported && thumbnail_picture_received && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)}">
 
 
@@ -343,5 +343,5 @@
             <span>{{rank}}</span>
         </div>
 
-    </div>
+    </a>
 </div>

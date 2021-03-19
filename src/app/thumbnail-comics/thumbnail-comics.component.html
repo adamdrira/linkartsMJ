@@ -5,7 +5,7 @@
 
         <div class="col-book text-center" >
             
-            <div style="cursor: pointer;" (click)="open_popup()">
+            <a (click)="open_popup($event)" href="/artwork-comic/{{format}}/{{this.title}}/{{this.bd_id}}" target="_blank">
             
                 <div #thumbnail class="swiper-container artbook-thumbnail">
                     
@@ -165,7 +165,7 @@
                     
                     
                 </div>
-            </div>
+            </a>
 
         </div>
     

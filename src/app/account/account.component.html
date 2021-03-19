@@ -214,11 +214,6 @@
 
                     <span>{{type_of_account}}
                         
-                        <!--<mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="professional_account"
-                        matTooltip="Compte professionnel" 
-                        matTooltipClass='tooltip-account-profile'
-                        [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="200">home_repair_service</mat-icon>-->
 
                     </span>
                 </div>
@@ -491,6 +486,21 @@
                     page="subscribings"
                     now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-artwork>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="list_of_ads.length>0 && list_of_ads_added">
+                <div class="account-title medium-icon">
+                    <span>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
+                        Annonce récente
+                    </span>
+                </div>
+                <div class="highlighted-artwork">
+                    <app-thumbnail-ad
+                    [item]=list_of_ads[0]
+                    [now_in_seconds]=now_in_seconds
+                    ></app-thumbnail-ad>
                 </div>
             </ng-container>
 

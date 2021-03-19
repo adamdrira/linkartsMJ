@@ -232,12 +232,7 @@ export class AdPageComponent implements OnInit {
   clickout(btn) {
     if(this.ad_id_input){
       if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
-        console.log("btn")
-        console.log(btn)
-        console.log(btn.className)
-        console.log(this.artwork.nativeElement.contains(btn))
-        if(this.ad_id_input && btn.className.includes("cdk-overlay-dark-backdrop")){
-          console.log("includes back")
+        if(this.ad_id_input && !btn.className.baseVal && btn.className.includes("cdk-overlay-dark-backdrop")){
           this.emit_close_click.emit(true);
         }
          
@@ -274,8 +269,9 @@ export class AdPageComponent implements OnInit {
   /**********************************************   ON INIT  **************************************/
   /**********************************************   ON INIT  **************************************/
   number_of_pictures=0;
+  location_done=false;
   ngOnInit() {
-    let THIS=this;
+    this.navbar.add_page_visited_to_history(`/add-ad`).subscribe();
   
     window.scroll(0,0);
     setInterval(() => {
@@ -327,6 +323,7 @@ export class AdPageComponent implements OnInit {
       this.item=m[0];
       this.navbar.add_page_visited_to_history(`/ad-page/${this.item.title}/${this.ad_id}`).subscribe();
       this.location.go(`/ad-page/${this.item.title}/${this.ad_id}`);
+      this.location_done=true;
       this.list_of_reporters=this.item.list_of_reporters
       if(!m[0] || title!=m[0].title || m[0].status=="deleted" || m[0].status=="suspended"){
         if(m[0] && m[0].status=="deleted"){

@@ -129,8 +129,7 @@ export class ArtworkDrawingComponent implements OnInit {
   clickout(btn) {
     if(this.drawing_id_input){
       if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
-        if(this.drawing_id_input && btn.className.includes("cdk-overlay-dark-backdrop")){
-          console.log("includes back")
+        if(this.drawing_id_input  && !btn.className.baseVal && btn.className.includes("cdk-overlay-dark-backdrop")){
           this.add_time_of_view();
           this.emit_close_click.emit(true);
         }
@@ -426,6 +425,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.status=r[0].status;
       this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`).subscribe();
       this.location.go(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`);
+      this.location_done=true;
       this.date_upload_to_show =get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
 
@@ -552,12 +552,9 @@ export class ArtworkDrawingComponent implements OnInit {
 
 
 
-
+  location_done=false;
   drawing_artbook_calls(r){
       this.authorid= r[0].authorid;
-      
-
-      
       this.list_of_reporters=r[0].list_of_reporters;
       this.highlight=r[0].highlight;
       this.title=r[0].title;
@@ -572,6 +569,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.status=r[0].status;
       this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`).subscribe();
       this.location.go(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`);
+      this.location_done=true;
       this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
       

@@ -94,7 +94,7 @@ export class AddDrawingComponent implements OnInit {
   conditions:any;
 
   ngOnInit() {
-    let THIS=this;
+    this.navbar.add_page_visited_to_history(`/add-drawing`).subscribe();
     window.scroll(0,0);
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;

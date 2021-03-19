@@ -1124,7 +1124,8 @@ export class ThumbnailArtworkComponent implements OnInit {
     this.cd.detectChanges();
   }
 
-  open_popup(){
+  open_popup(event){
+    
     let id=0;
     
     if(this.category=="comic"){
@@ -1141,6 +1142,10 @@ export class ThumbnailArtworkComponent implements OnInit {
       this.router.navigate([this.get_artwork()]);
     }
     else{
+      event.preventDefault(); 
+      if (event.ctrlKey) {
+        return this.router.navigate([this.get_artwork()]);
+      }
       this.dialog.open(PopupArtworkComponent, {
         data: {
           format_input:this.format,

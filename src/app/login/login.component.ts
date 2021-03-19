@@ -89,7 +89,7 @@ export class LoginComponent implements OnInit {
   display_error_reset=false;
 
   ngOnInit() {
-    let THIS=this;
+    this.navbar.add_page_visited_to_history(`/login`).subscribe();
     window.scroll(0,0);
     if(this.usage=="rest_pass" || this.usage=="registration"){
       this.loading=true;

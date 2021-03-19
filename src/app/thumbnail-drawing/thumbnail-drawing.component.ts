@@ -11,7 +11,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
 import { MatDialog } from '@angular/material/dialog';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-thumbnail-drawing',
   templateUrl: './thumbnail-drawing.component.html',
@@ -36,6 +36,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
+    private router:Router,
     private NotationService:NotationService,
     private navbar: NavbarService,
     ) {
@@ -242,12 +243,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.pp_is_loaded=true;
   }
 
-  
-  get_artwork() {
-    return "/artwork-drawing/"+this.format+"/"+this.title+"/"+this.drawing_id;
-    //this.router.navigate([`/artwork-drawing/${this.format}/${this.title}/${this.drawing_id}`]);
-  }
-
+ 
   
   resize_drawing() {
     if(this.for_news=="yes"){
@@ -274,9 +270,13 @@ export class ThumbnailDrawingComponent implements OnInit {
   }
 
 
-  open_popup(){
-    console.log(this.drawing_id)
-    console.log(this.title)
+
+
+  open_popup(event){
+    event.preventDefault(); 
+    if (event.ctrlKey) {
+      return this.router.navigate(["/artwork-drawing/"+this.format+"/"+this.title+"/"+this.drawing_id]);
+    }
     this.dialog.open(PopupArtworkComponent, {
       data: {
         format_input:this.format,
