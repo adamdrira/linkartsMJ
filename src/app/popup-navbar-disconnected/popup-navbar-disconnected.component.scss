@@ -1,0 +1,204 @@
+
+@import "../navbar-linkarts/navbar-linkarts.component.scss";
+
+$default-color: rgb(218,220,225);
+.navbar-component .connected-user .icon-container {
+    visibility: visible !important;
+    pointer-events: unset !important;
+    width: unset !important;
+}
+
+.title-popup {
+    width: 100%;
+    border-bottom: 1px solid #13213d;
+    box-shadow: 0px 10px 8px -8px #121b2b;
+    padding: 8px;
+    text-align: center;
+    display: flex;
+    height: 53px;
+    background: #162644;
+    justify-content: center;
+    align-items: center;
+
+
+
+    .close {
+        display: flex;
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        outline: none;
+        border: none;
+        background: unset;
+        padding: 5px;
+
+        mat-icon {
+            height: unset;
+            width: unset;
+            color: white;
+            font-size: 24px;
+            max-width:24px ;
+          overflow: hidden;
+        }
+    }
+
+
+    
+    .icon-messenger {
+        background-color: $default-color !important
+    }
+    
+    .icon-bell {
+        background-color: $default-color !important;
+    
+    }
+    .icon-messenger-invisible {
+        background-color:$default-color !important;
+    }
+
+    .icon-bell-invisible {
+        background-color: $default-color !important;
+    }
+      
+
+
+    @media (max-width: 430px) {
+        span {
+            font-size: 12px;
+        }
+    }
+}
+
+.scrollable-container-popup {
+    overflow: auto;
+    height: calc(100% - 51px);
+    padding: unset !important;
+
+    .scrollable-container-options{
+        display:block;
+
+        .option-element2{
+            display: none ;
+        }
+
+        .option-element{
+            outline:none;
+            padding:12px 20px;
+            display:flex;
+            align-items: center;
+            justify-content: left;
+            border-bottom: 1px solid #243350;
+            font-size: 14px;
+            color: $default-color;
+            cursor:pointer;
+
+            .icon-home {
+                width:14px !important;
+                height:14px !important;
+                margin: auto 10px auto 0px !important;
+                background-color:$default-color;
+                mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
+              }
+            
+              .icon-collaboration {
+                width:14px !important;
+                height:14px !important;
+                margin: auto 10px auto 0px !important;
+                background-color: $default-color;
+                mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
+              }
+
+            mat-icon {
+                margin: auto 10px auto 0px !important;
+                width: unset !important;
+                height: unset !important;
+                font-size: 18px !important;
+                max-width:18px !important;
+                overflow: hidden !important;
+                color: $default-color !important;
+              }
+        
+              img {
+                height: 24px;
+                width: 24px;
+                border-radius: 65px;
+                box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+                object-fit: cover;
+                margin: auto 8px auto -4px !important;
+              }
+        }
+
+        .option-element:hover {
+            color: white !important;
+        }
+        .option-element:active {
+            text-shadow: -0.04ex 0 white, 0.04ex 0 white;
+          }
+    }
+
+    @media (max-width: 400px) {
+        padding: 10px 10px 100px 10px;
+    }
+
+    @media (max-width: 500px) {
+        .option-element2{
+            display: flex ;
+        }
+    }
+
+    
+    &::-webkit-scrollbar-track
+    {
+        background-color: #001640cc;
+    }
+    &::-webkit-scrollbar
+    {
+        width: 5px;
+        background-color: #ffffff;
+    }
+    &::-webkit-scrollbar-thumb
+    {
+        background-color: #0f1e39;
+    }
+}
+
+::ng-deep {
+    .popupMenuNavbar {
+        width: 100% !important;
+        max-width: unset !important;
+        //max-height: 90% !important;
+        height:100vh;
+        //margin-top: 53px;
+        bottom: 0px;
+        border-radius: 0px !important;
+        position: absolute !important;
+
+        transition: bottom 200ms !important;
+
+        background: white;
+        padding: 0px !important;
+        box-shadow: 0px 0px 10px 0px #495875;
+
+        border-radius: 24px 24px 0px 0px !important;
+        overflow: hidden;
+
+        transform: translateY(100%);
+        animation: slideDown 600ms forwards 0s ease-in-out;
+
+        .mat-dialog-container {
+            padding: 0px;
+            overflow: hidden;
+            background: #182338;
+            box-shadow: unset;
+            height: unset;
+        }
+    }
+}
+
+@keyframes slideDown {
+    0% {
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}

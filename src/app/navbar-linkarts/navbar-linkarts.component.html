@@ -2443,11 +2443,11 @@
 
             <div class="options SMALL-SCREEN-OPTIONS"   
               *ngIf="type_of_profile!='account' && type_of_profile!='suspended' && !activated_search">
-              <button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options">
+              <button class="optionsMenu" tabIndex="-1" (click)="open_menu_for_phone_disconnected()"><!--[matMenuTriggerFor]="options"-->
                 <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more more_vert ">more_vert</mat-icon>
                 <mat-icon [ngClass]="{'invisible': !show_icon, 'invisible2': !logo_is_loaded2 }" class="optionsButton more menu">menu</mat-icon>
               </button>
-              <mat-menu #options="matMenu" class="navbar-mat-menu">
+              <!--<mat-menu #options="matMenu" class="navbar-mat-menu">
                 <button   class="navbar-button-menu-item menu" tabIndex="-1" mat-menu-item (click)="go_to_home()">
                   <div class="icon-home"></div>
                 <span>Accueil</span>
@@ -2481,7 +2481,7 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
                   <span>Confidentialité et sécurité</span>
                 </a>
-              </mat-menu>
+              </mat-menu>-->
             </div>
 
             <div class="options SMALL-SCREEN-OPTIONS HIDE-OPTIONS-ON-SMALL-SCREEN"

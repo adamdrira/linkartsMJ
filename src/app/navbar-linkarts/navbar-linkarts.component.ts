@@ -20,6 +20,7 @@ import {NotificationsService} from '../services/notifications.service';
 import { Ads_service } from '../services/ads.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
+import { PopupNavbarDisconnectedComponent } from '../popup-navbar-disconnected/popup-navbar-disconnected.component';
 import { SignupComponent } from '../signup/signup.component';
 import {get_date_to_show_chat} from '../helpers/dates';
 import {get_date_to_show_navbar} from '../helpers/dates';
@@ -2616,7 +2617,11 @@ change_message_status(event){
   /****************************************** POPUP NAVBAR  ********************************************/
   /****************************************** POPUP NAVBAR  ********************************************/
   /****************************************** POPUP NAVBAR  ********************************************/
-
+  open_menu_for_phone_disconnected() {
+    const dialogRef = this.dialog.open(PopupNavbarDisconnectedComponent, {
+      panelClass: 'popupMenuNavbar',
+    });
+  }
 
   popup_opened=false;
   open_menu_for_phone(){

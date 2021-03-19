@@ -1,0 +1,63 @@
+<div class="title-popup">
+    <button (click)="close_dialog()" class="close" tabIndex="-1">
+        <mat-icon [ngClass]="{'invisible': !show_icon }"  >close</mat-icon>
+    </button>
+    
+
+    <div class="navbar-component ">
+        <div class="connected-user">
+
+            <div class="navbar-l1-icons-container notifications-block" (click)="close_dialog();">
+                <img class="icon" src="../../assets/img/svg/Logo-LA3.svg">
+            </div>
+
+        </div>
+    </div>
+   
+
+</div>
+
+<div class="scrollable-container-popup">
+
+    <div class="scrollable-container-options">
+
+            <div class="option-element option-element2" (click)="go_to_home()">
+                <div class="icon-home"></div>
+                <span>Accueil</span>
+            </div>
+            <div class="option-element option-element2" (click)="go_to_linkcollab()">
+                <div class="icon-collaboration " ></div>
+                <span>LinkCollab</span>
+            </div>
+
+
+            <div class="option-element" (click)="login();">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">exit_to_app</mat-icon>
+              <span>Se connecter</span>
+            </div>
+            <div class="option-element" (click)="signup();">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
+              <span>S'inscrire</span>
+            </div>
+           
+            <a href="/services/0" class="option-element">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
+              <span>Qui sommes-nous ?</span>
+            </a>
+            <a href="/services/1" class="option-element">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
+              <span>Mentions légales</span>
+            </a>
+            <a href="/services/2" class="option-element">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
+              <span>Conditions d'utilisation</span>
+            </a>
+            <a href="/services/4" class="option-element">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
+              <span>Confidentialité et sécurité</span>
+            </a>
+
+    </div>
+   
+    
+</div>
