@@ -270,7 +270,7 @@ export class ArtworkDrawingComponent implements OnInit {
   pp_first_comment:any;
 
   item_retrieved=false;
-
+  url='';
   can_check_clickout=false;
   @Input() drawing_format_input: string;
   @Input() drawing_id_input: number;
@@ -425,6 +425,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.status=r[0].status;
       this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`).subscribe();
       this.location.go(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`);
+      this.url=`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show =get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
@@ -569,6 +570,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.status=r[0].status;
       this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`).subscribe();
       this.location.go(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`);
+      this.url=`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 

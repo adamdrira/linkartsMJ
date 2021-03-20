@@ -352,6 +352,7 @@
                 <div >
                     <button mat-icon-button
                         style="outline: none !important;"
+                        [url]=url
                     shareButton="facebook"
                     #fbBtn="shareButton"
                     [style.color]="fbBtn?.color">
@@ -359,6 +360,7 @@
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
+                        [url]=url
                             shareButton="twitter"
                             #twtBtn="shareButton"
                             [style.color]="twtBtn?.color">
@@ -366,6 +368,7 @@
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
+                        [url]=url
                             shareButton="pinterest"
                             #pinBtn="shareButton"
                             [style.color]="pinBtn?.color">
@@ -373,6 +376,7 @@
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
+                        [url]=url
                             shareButton="whatsapp"
                             #whaBtn="shareButton"
                             [style.color]="whaBtn?.color">
@@ -380,6 +384,7 @@
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
+                        [url]=url
                             shareButton="linkedin"
                             #msgBtn="shareButton"
                             [style.color]="msgBtn?.color">
@@ -387,7 +392,7 @@
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
-                        *ngIf="location_done"
+                        [url]=url
                             shareButton="copy"
                             #insBtn="shareButton"
                             [style.color]="insBtn?.color">

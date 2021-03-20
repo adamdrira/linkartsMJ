@@ -469,43 +469,48 @@
                         style="outline: none !important;"
                     shareButton="facebook"
                     #fbBtn="shareButton"
-                    [style.color]="fbBtn?.color">
+                    [style.color]="fbBtn?.color"
+                    [url]=url>
                     <fa-icon *ngIf="fbBtn" [icon]="fbBtn.icon" size="lg"></fa-icon>
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
                             shareButton="twitter"
                             #twtBtn="shareButton"
-                            [style.color]="twtBtn?.color">
+                            [style.color]="twtBtn?.color"
+                            [url]=url>
                     <fa-icon *ngIf="twtBtn" [icon]="twtBtn.icon" size="lg"></fa-icon>
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
                             shareButton="pinterest"
                             #pinBtn="shareButton"
-                            [style.color]="pinBtn?.color">
+                            [style.color]="pinBtn?.color"
+                            [url]=url>
                     <fa-icon *ngIf="pinBtn" [icon]="pinBtn.icon" size="lg"></fa-icon>
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
                             shareButton="whatsapp"
                             #whaBtn="shareButton"
-                            [style.color]="whaBtn?.color">
+                            [style.color]="whaBtn?.color"
+                            [url]=url>
                     <fa-icon *ngIf="whaBtn" [icon]="whaBtn.icon" size="lg"></fa-icon>
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
                             shareButton="linkedin"
                             #msgBtn="shareButton"
-                            [style.color]="msgBtn?.color">
+                            [style.color]="msgBtn?.color"
+                            [url]=url>
                     <fa-icon *ngIf="msgBtn" [icon]="msgBtn.icon" size="lg"></fa-icon>
                     </button>
                     <button mat-icon-button
                         style="outline: none !important;"
-                        *ngIf="location_done"
                             shareButton="copy"
                             #insBtn="shareButton"
-                            [style.color]="insBtn?.color">
+                            [style.color]="insBtn?.color"
+                            [url]=url>
                         <fa-icon *ngIf="insBtn" [icon]="insBtn.icon" size="lg"></fa-icon>
                     </button>
                 </div>

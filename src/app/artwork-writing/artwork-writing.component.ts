@@ -265,7 +265,7 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   item_retrieved=false;
-
+  url='';
   can_check_clickout=false;
   @Input() writing_id_input: number;
   @Input() writing_title_input: string;
@@ -347,6 +347,7 @@ export class ArtworkWritingComponent implements OnInit {
             this.thumbnail_picture=r[0].name_coverpage ;
             this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`).subscribe();
             this.location.go(`/artwork-writing/${this.title}/${this.writing_id}`);
+            this.url=`/artwork-writing/${this.title}/${this.writing_id}`;
             this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
             this.thumbnail_picture_retrieved=true;

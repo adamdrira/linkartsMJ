@@ -208,7 +208,7 @@ export class AdPageComponent implements OnInit {
   ready_to_check_view=false;
   loves_retrieved_but_not_checked=false;
   current_user_retrieved=false;
-
+  url='';
   can_check_clickout=false;
   @Input() ad_id_input: number;
   @Input() ad_title_input: string;
@@ -323,6 +323,7 @@ export class AdPageComponent implements OnInit {
       this.item=m[0];
       this.navbar.add_page_visited_to_history(`/ad-page/${this.item.title}/${this.ad_id}`).subscribe();
       this.location.go(`/ad-page/${this.item.title}/${this.ad_id}`);
+      this.url=`/ad-page/${this.item.title}/${this.ad_id}`;
       this.location_done=true;
       this.list_of_reporters=this.item.list_of_reporters
       if(!m[0] || title!=m[0].title || m[0].status=="deleted" || m[0].status=="suspended"){

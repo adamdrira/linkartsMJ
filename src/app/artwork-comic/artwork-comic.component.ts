@@ -282,6 +282,7 @@ export class ArtworkComicComponent implements OnInit {
   @Output() emit_close_click = new EventEmitter<boolean>();
   
   location_done=false;
+  url='';
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
@@ -390,6 +391,7 @@ export class ArtworkComicComponent implements OnInit {
               this.monetization=r[0].monetization;
               this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`).subscribe();
               this.location.go(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`);
+              this.url=`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`;
               this.location_done=true;
               this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
                 this.pseudo = r[0].nickname;
@@ -608,6 +610,7 @@ export class ArtworkComicComponent implements OnInit {
             this.thumbnail_picture_retrieved=true;
             this.navbar.add_page_visited_to_history(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`).subscribe();
             this.location.go(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`);
+            this.url=`/artwork-comic/one-shot/${this.title}/${this.bd_id}`;
             this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) )
             
@@ -1354,7 +1357,7 @@ export class ArtworkComicComponent implements OnInit {
     THIS.refresh_swiper_pagination();
     THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`).subscribe();
     THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
-  
+    this.url=`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
     
   }
 
@@ -1444,7 +1447,7 @@ export class ArtworkComicComponent implements OnInit {
     THIS.refresh_swiper_pagination();
     THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`).subscribe();
       THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
-    
+      this.url=`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
     
   }
 
@@ -1524,7 +1527,7 @@ export class ArtworkComicComponent implements OnInit {
       THIS.refresh_swiper_pagination();
       THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`).subscribe();
         THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${parseInt(chapter_number) + 1}`);
-      
+        this.url=`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
      
     });
 
