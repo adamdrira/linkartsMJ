@@ -54,7 +54,7 @@ import { AccountComponent } from './account/account.component';
 import { AccountAboutComponent } from './account-about/account-about.component';
 import { AccountMyAccountComponent } from './account-my-account/account-my-account.component';
 //import { AddArtworkComponent } from './add-artwork/add-artwork.component';
-import { AddAdComponent } from './add-ad/add-ad.component';
+//import { AddAdComponent } from './add-ad/add-ad.component';
 import { AdPageComponent } from './ad-page/ad-page.component';
 //import { AddComicComponent } from './add-comic/add-comic.component';
 import { AddComicsChapterComponent } from './add-comics-chapter/add-comics-chapter.component';
@@ -137,15 +137,15 @@ import { TrendingsComponent } from './trendings/trendings.component';
 import { TermsComponent } from './terms/terms.component';
 
 /*import { Uploader_bd_oneshot } from './uploader_bd_oneshot/uploader_bd_oneshot.component';
-import { UploaderBdCoverComponent } from './uploader-bd-cover/uploader-bd-cover.component';
 import { UploaderBdSerieComponent } from './uploader-bd-serie/uploader-bd-serie.component';
 import { UploaderDessinUniqueComponent } from './uploader-dessin-unique/uploader-dessin-unique.component';
 import { UploaderArtbookComponent } from './uploader-artbook/uploader-artbook.component';
-import { UploaderProfilePictureComponent } from './uploader-profile-picture/uploader-profile-picture.component';
-import { UploaderCoverPictureComponent } from './uploader-cover-picture/uploader-cover-picture.component';
-import { UploaderWrittingComponent } from './uploader-writting/uploader-writting.component';
+import { UploaderWrittingComponent } from './uploader-writting/uploader-writting.component';*/
+import { UploaderBdCoverComponent } from './uploader-bd-cover/uploader-bd-cover.component';
 import { UploaderCoverWritingComponent } from './uploader-cover-writing/uploader-cover-writing.component';
-import { UploaderThumbnailAdComponent } from './uploader-thumbnail-ad/uploader-thumbnail-ad.component';*/
+import { UploaderThumbnailAdComponent } from './uploader-thumbnail-ad/uploader-thumbnail-ad.component';
+import { UploaderCoverPictureComponent } from './uploader-cover-picture/uploader-cover-picture.component';
+import { UploaderProfilePictureComponent } from './uploader-profile-picture/uploader-profile-picture.component';
 import { UploaderStoryComponent } from './uploader-story/uploader-story.component';
 import { UploaderAttachmentsAdComponent } from './uploader-attachments-ad/uploader-attachments-ad.component';
 import { UploaderAdResponseAttachmentsComponent } from './uploader-ad-response-attachments/uploader-ad-response-attachments.component';
@@ -218,7 +218,7 @@ const shareProp = {
     //Uploader_bd_oneshot,
     //SwiperUploadOneshotComponent,
     //SwiperUploadSerieComponent,
-    //UploaderBdCoverComponent,
+    UploaderBdCoverComponent,
     //UploaderBdSerieComponent,
     FormSerieComponent,
     ThumbnailComicsComponent,
@@ -229,8 +229,8 @@ const shareProp = {
     //UploaderDessinUniqueComponent,
     //SwiperUploadArtbookComponent,
     //UploaderArtbookComponent,
-    //UploaderProfilePictureComponent,
-    //UploaderCoverPictureComponent,
+    UploaderCoverPictureComponent,
+    UploaderProfilePictureComponent,
     MediaDrawingsComponent,
     ThumbnailDrawingComponent,
     ThumbnailWritingComponent,
@@ -261,14 +261,14 @@ const shareProp = {
     MediaSeeMoreWritingsComponent,
     PopupSubscribingsComponent,
     PopupSubscribersComponent,
-    //UploaderCoverWritingComponent,
+    UploaderCoverWritingComponent,
     ThumbnailArtworkComponent,
     PopupAddStoryComponent,
     UploaderStoryComponent,
     PopupStoriesComponent,
     StoryViewComponent,
-    AddAdComponent,
-    //UploaderThumbnailAdComponent,
+    //AddAdComponent,
+    UploaderThumbnailAdComponent,
     UploaderAttachmentsAdComponent,
     ThumbnailAdComponent,
     PopupAdPicturesComponent,
