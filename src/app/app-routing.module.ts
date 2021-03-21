@@ -9,7 +9,7 @@ import{ AccountComponent } from "./account/account.component";
 import { AuthGuard } from './helpers/auth.guard';
 import { TempAuthGuard } from './helpers/temp_auth.guard';
 import { TermsComponent } from './terms/terms.component';
-import { AddArtworkComponent } from './add-artwork/add-artwork.component';
+//import { AddArtworkComponent } from './add-artwork/add-artwork.component';
 import { ArtworkComicComponent } from "./artwork-comic/artwork-comic.component";
 import { AddComicsChapterComponent } from './add-comics-chapter/add-comics-chapter.component';
 import { ArtworkWritingComponent } from './artwork-writing/artwork-writing.component';
@@ -48,11 +48,11 @@ const routes: Routes = [
 
   
   //add-artwork
-  {path:'add-artwork', component:AddArtworkComponent,  canActivate: [AuthGuard,TempAuthGuard], data: {section: -1}},
-  {path:'add-artwork/comic', component:AddArtworkComponent, canActivate: [AuthGuard,TempAuthGuard], data: {section: 0}},
+  {path:'add-artwork', loadChildren: () => import('./add-artwork-module/add-artwork-module.module').then(mod => mod.AddArtworkModuleModule) ,  canActivate: [AuthGuard,TempAuthGuard], data: {section: -1}},
+  /*{path:'add-artwork/comic', component:AddArtworkComponent, canActivate: [AuthGuard,TempAuthGuard], data: {section: 0}},
   {path:'add-artwork/drawing', component:AddArtworkComponent, canActivate: [AuthGuard,TempAuthGuard], data: {section: 1}},
   {path:'add-artwork/writing', component:AddArtworkComponent, canActivate: [AuthGuard,TempAuthGuard], data: {section: 2}},
-  {path:'add-artwork/ad', component:AddArtworkComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 3}},
+  {path:'add-artwork/ad', component:AddArtworkComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 3}},*/
   {path:'handle-comics-chapter/:id', component:AddComicsChapterComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 4}},
   
 
