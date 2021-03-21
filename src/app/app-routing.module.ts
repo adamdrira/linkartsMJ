@@ -53,7 +53,7 @@ const routes: Routes = [
   {path:'add-artwork/drawing', component:AddArtworkComponent, canActivate: [AuthGuard,TempAuthGuard], data: {section: 1}},
   {path:'add-artwork/writing', component:AddArtworkComponent, canActivate: [AuthGuard,TempAuthGuard], data: {section: 2}},
   {path:'add-artwork/ad', component:AddArtworkComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 3}},*/
-  {path:'handle-comics-chapter/:id', component:AddComicsChapterComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 4}},
+  {path:'handle-comics-chapter/:id', loadChildren: () => import('./add-artwork-module/add-artwork-module.module').then(mod => mod.AddArtworkModuleModule) ,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 4}},
   
 
   //Catégories Linkarts

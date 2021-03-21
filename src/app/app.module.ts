@@ -57,7 +57,6 @@ import { AccountMyAccountComponent } from './account-my-account/account-my-accou
 //import { AddAdComponent } from './add-ad/add-ad.component';
 import { AdPageComponent } from './ad-page/ad-page.component';
 //import { AddComicComponent } from './add-comic/add-comic.component';
-import { AddComicsChapterComponent } from './add-comics-chapter/add-comics-chapter.component';
 //import { AddDrawingComponent } from './add-drawing/add-drawing.component';
 //import { AddWritingComponent } from './add-writing/add-writing.component';
 import { ArtworkComicComponent } from './artwork-comic/artwork-comic.component';
@@ -74,7 +73,6 @@ import { ChatRightContainerComponent } from './chat-right-container/chat-right-c
 import { CommentsComponent } from './comments/comments.component';
 import { CommentElementComponent } from './comment-element/comment-element.component';
 import { FavoritesComponent } from './favorites/favorites.component';
-import { FormSerieComponent } from './form-serie/form-serie.component';
 import { HomeLinkartsComponent } from './home-linkarts/home-linkarts.component';
 import { HomeLinkcollabComponent } from './home-linkcollab/home-linkcollab.component';
 import { LoginComponent } from './login/login.component';
@@ -141,13 +139,9 @@ import { UploaderBdSerieComponent } from './uploader-bd-serie/uploader-bd-serie.
 import { UploaderDessinUniqueComponent } from './uploader-dessin-unique/uploader-dessin-unique.component';
 import { UploaderArtbookComponent } from './uploader-artbook/uploader-artbook.component';
 import { UploaderWrittingComponent } from './uploader-writting/uploader-writting.component';*/
-import { UploaderBdCoverComponent } from './uploader-bd-cover/uploader-bd-cover.component';
-import { UploaderCoverWritingComponent } from './uploader-cover-writing/uploader-cover-writing.component';
-import { UploaderThumbnailAdComponent } from './uploader-thumbnail-ad/uploader-thumbnail-ad.component';
 import { UploaderCoverPictureComponent } from './uploader-cover-picture/uploader-cover-picture.component';
 import { UploaderProfilePictureComponent } from './uploader-profile-picture/uploader-profile-picture.component';
 import { UploaderStoryComponent } from './uploader-story/uploader-story.component';
-import { UploaderAttachmentsAdComponent } from './uploader-attachments-ad/uploader-attachments-ad.component';
 import { UploaderAdResponseAttachmentsComponent } from './uploader-ad-response-attachments/uploader-ad-response-attachments.component';
 import { UploaderChatProfilePictureComponent } from './uploader-chat-profile-picture/uploader-chat-profile-picture.component';
 import { UploaderReportsAttachmentsComponent } from './uploader-reports-attachments/uploader-reports-attachments.component';
@@ -169,6 +163,9 @@ import { faCheck} from '@fortawesome/free-solid-svg-icons';
 import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
 import { ShareButtonModule } from 'ngx-sharebuttons/button';
 import { PopupNavbarDisconnectedComponent } from './popup-navbar-disconnected/popup-navbar-disconnected.component';
+
+
+import { CommonComponentsModule } from './common-components/common-components.module';
 
 const icons = [
   faPinterest,
@@ -214,28 +211,13 @@ const shareProp = {
     RecommendationsComponent,
     AccountComponent,
     MediaComicsComponent,
-    //AddArtworkComponent,
-    //Uploader_bd_oneshot,
-    //SwiperUploadOneshotComponent,
-    //SwiperUploadSerieComponent,
-    UploaderBdCoverComponent,
-    //UploaderBdSerieComponent,
-    FormSerieComponent,
     ThumbnailComicsComponent,
-    //AddDrawingComponent,
-    //AddWritingComponent,
-    //AddComicComponent,
-    //SwiperUploadDessinUniqueComponent,
-    //UploaderDessinUniqueComponent,
-    //SwiperUploadArtbookComponent,
-    //UploaderArtbookComponent,
     UploaderCoverPictureComponent,
     UploaderProfilePictureComponent,
     MediaDrawingsComponent,
     ThumbnailDrawingComponent,
     ThumbnailWritingComponent,
     MediaWritingsComponent,
-    //UploaderWrittingComponent,
     ArtworkWritingComponent,
     ArtworkComicComponent,
     ArtworkDrawingComponent,
@@ -261,15 +243,11 @@ const shareProp = {
     MediaSeeMoreWritingsComponent,
     PopupSubscribingsComponent,
     PopupSubscribersComponent,
-    UploaderCoverWritingComponent,
     ThumbnailArtworkComponent,
     PopupAddStoryComponent,
     UploaderStoryComponent,
     PopupStoriesComponent,
     StoryViewComponent,
-    //AddAdComponent,
-    UploaderThumbnailAdComponent,
-    UploaderAttachmentsAdComponent,
     ThumbnailAdComponent,
     PopupAdPicturesComponent,
     PopupAdAttachmentsComponent,
@@ -279,7 +257,6 @@ const shareProp = {
     ChatComponent,
     ChatRightContainerComponent,
     AccountAboutComponent,
-    AddComicsChapterComponent,
     MainSearchbarResultsComponent,
     PopupLikesAndLovesComponent,
     UploaderChatProfilePictureComponent,
@@ -305,6 +282,7 @@ const shareProp = {
     
   ],
   imports: [
+    CommonComponentsModule,
     AngularResizedEventModule,
     BrowserModule,
     AppRoutingModule,
