@@ -1,0 +1,9 @@
+::ng-deep {
+    .cdk-global-scrollblock {
+        overflow-y:unset !important;
+    }
+    .mat-dialog-container {
+        position:relative !important;
+    }
+    
+}
