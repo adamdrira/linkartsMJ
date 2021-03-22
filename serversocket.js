@@ -8,6 +8,7 @@ const subscribings_seq= require('./p_subscribings_archives_contents/model/sequel
 const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
+var nodemailer = require('nodemailer');
 // Create web socket server on top of a regular http server
 let wss = new WSServer({
   server: server,
@@ -73,7 +74,6 @@ wss.on('connection', (ws, req)=>{
       date_of_webSockets_last_message[userID]=date;
     }
     
-    ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
     if(messageArray.for_notifications){
 
 
@@ -123,20 +123,10 @@ wss.on('connection', (ws, req)=>{
       
 
     }
-
-
-
-    
-
-
     /***************************************** CHAT *************************/
     /***************************************** CHAT *************************/
      /***************************************** CHAT *************************/
     /***************************************** CHAT *************************/
-
-
-
-
 
 
     if(!messageArray.is_a_group_chat && !messageArray.for_notifications){
@@ -192,12 +182,130 @@ wss.on('connection', (ws, req)=>{
       }
       else if(messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji' && messageArray.status!='block'){
 
+
+        if(id_friend==id_user){
+          send_message_to_friend();
+        } 
+        else{
+          chat_seq.list_of_chat_friends.findOne({
+            where: {
+              is_a_group_chat:{[Op.not]: true},
+              [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],           
+            }
+          }).then( friend=>{
+            if(friend){
+              var yesterday = new Date();
+              yesterday.setDate(yesterday.getDate() - 1);
+              db.users_connexions.findOne({
+                id_user:id_friend,
+                createdAt: {[Op.gte]: yesterday}
+              }).then(r=>{
+                if(r){
+                  chat_seq.list_of_chat_emails.findOne({
+                    where:{
+                      id_user:id_user,
+                      id_receiver:id_friend,
+                      createdAt: {[Op.gte]: yesterday}
+                    }
+                  }).then(email=>{
+                    if(!email){
+                      chat_seq.list_of_chat_emails.create({
+                        "id_user":id_user,
+                        "id_receiver":id_friend,
+                        "status":"friend",
+                      })
+
+                      let user_name='';
+
+                      db.users.findOne({
+                        where:{
+                          id:id_friend,
+                        }
+                        
+                      }).then(user_found=>{
+                        user_name= user_found.firstname + ' ' + user_found.lastname;
+                        let mail_to_send='';
+                        let name = user_name;
+                        if(user_found.gender=="Homme"){
+                          mail_to_send=`<p>Cher ${name},</p>`
+                          }
+                          else if(user_found.gender=="Femme"){
+                          mail_to_send=`<p>Chère ${name},</p>`
+                          }
+                          else if(user_found.gender=="Groupe"){
+                          mail_to_send=`<p>Chers membres du groupe ${name},</p>`
+                          }
+  
+                          
+                          if(messageArray.message && messageArray.message.length>0){
+                            mail_to_send+=`<p>Vous venez de recevoir un message de la part de l'utilisateur @${messageArray.id_user_name} : </p>`
+                            mail_to_send+=`<p>"${messageArray.message}".</p>`
+                          }
+                          
+                          
+                          mail_to_send+=`<p><a href="http://localhost:4200/for_chat/${user_found.nickname}/${user_found.id}/${messageArray.id_user_name}/${id_user}">Cliquer ici</a> pour ouvrir la messagerie.</p>`
+                          
+                          mail_to_send+=`<p>Très sincèrement, l'équipe de LinkArts.</p>`
+  
+  
+                          const transport = nodemailer.createTransport({
+                            host: "pro2.mail.ovh.net",
+                            port: 587,
+                            secure: false, // true for 465, false for other ports
+                            auth: {
+                              user: "services@linkarts.fr", // compte expéditeur
+                              pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+                            },
+                              tls:{
+                                ciphers:'SSLv3'
+                            }
+                            });
+                        
+                          var mailOptions = {
+                            from: 'Linkarts <services@linkarts.fr>', // sender address
+                            to:"appaloosa-adam@hotmail.fr",
+                            subject: `Notification de la messagerie`, // Subject line
+                            html:mail_to_send , // html body
+                          };
+                          transport.sendMail(mailOptions, (error, info) => {
+                            if (error) {
+                              res.status(200).send([{error:error}])
+                            } else {
+                              res.status(200).send([{sent:'Message sent ' + info.messageId}])
+                            }
+                          })
+                      })
+                    }
+                    send_message_to_friend();
+                  })
+                }
+                else{
+                  send_message_to_friend();
+                }
+              })
+             
+            }
+            else{
+              subscribings_seq.list_of_subscribings.findOne({
+                where:{
+                  [Op.and]:[{[Op.or]:[{id_user: id_user},{id_user_subscribed_to:id_user}]},{[Op.or]:[{id_user: id_friend},{id_user_subscribed_to:id_friend}]}],
+                }
+              }).then(sub=>{
+                if(sub){
+                  send_message_to_friend();
+                }
+                else{
+                  send_message_to_spam();
+                } 
+              })
+            }
+          });
+        }
+
         /*****************************************TO A FRIEND *************************/
-    /*****************************************TO A FRIEND *************************/
-    /*****************************************TO A FRIEND *************************/
-    /*****************************************TO A FRIEND *************************/
-    /*****************************************TO A FRIEND *************************/
-    /*****************************************TO A FRIEND *************************/
+        /*****************************************TO A FRIEND *************************/
+        /*****************************************TO A FRIEND *************************/
+        /*****************************************TO A FRIEND *************************/
 
 
         function send_message_to_friend(){
@@ -336,12 +444,12 @@ wss.on('connection', (ws, req)=>{
           }); 
         }
         
-    /*****************************************to a spam  *************************/
-    /*****************************************to a spam   *************************/
-    /*****************************************to a spam  *************************/
-     /*****************************************to a spam  *************************/
-    /*****************************************to a spam   *************************/
-    /*****************************************to a spam  *************************/
+        /*****************************************to a spam  *************************/
+        /*****************************************to a spam   *************************/
+        /*****************************************to a spam  *************************/
+        /*****************************************to a spam  *************************/
+        /*****************************************to a spam   *************************/
+        /*****************************************to a spam  *************************/
 
         
         function send_message_to_spam(){
@@ -460,35 +568,7 @@ wss.on('connection', (ws, req)=>{
         }
 
 
-        if(id_friend==id_user){
-          send_message_to_friend();
-        } 
-        else{
-          chat_seq.list_of_chat_friends.findOne({
-            where: {
-              is_a_group_chat:{[Op.not]: true},
-              [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],           
-            }
-          }).then( friend=>{
-            if(friend){
-              send_message_to_friend();
-            }
-            else{
-              subscribings_seq.list_of_subscribings.findOne({
-                where:{
-                  [Op.and]:[{[Op.or]:[{id_user: id_user},{id_user_subscribed_to:id_user}]},{[Op.or]:[{id_user: id_friend},{id_user_subscribed_to:id_friend}]}],
-                }
-              }).then(sub=>{
-                if(sub){
-                  send_message_to_friend();
-                }
-                else{
-                  send_message_to_spam();
-                } 
-              })
-            }
-          });
-        }
+        
       }
       else{
         //for seen
