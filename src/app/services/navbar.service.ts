@@ -305,8 +305,8 @@ export class NavbarService {
     }));
   }
 
-  add_page_visited_to_history(page):Observable<any>{
-    return this.httpClient.post('routes/add_page_visited_to_history',{page:page}, {withCredentials:true}).pipe(map((information)=>{
+  add_page_visited_to_history(page,device_info):Observable<any>{
+    return this.httpClient.post('routes/add_page_visited_to_history',{page:page,device_info:device_info}, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }
