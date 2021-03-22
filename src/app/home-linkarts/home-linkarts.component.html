@@ -158,3 +158,42 @@
 
 
 
+<div class="footer">
+    <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
+
+    <div class="links-container">
+        <a class="link" href="/services/0">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">help</mat-icon>
+            <span>Qui sommes-nous ?</span>
+        </a>
+        <a class="link" href="/services/1">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">lock</mat-icon>
+            <span>Mentions légales</span>
+        </a>
+        <a class="link" href="/services/2">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">menu_book</mat-icon>
+            <span>Conditions d'utilisation</span>
+        </a>
+        <a class="link" href="/services/4">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">security</mat-icon>
+            <span>Confidentialité et sécurité</span>
+        </a>
+    </div>
+
+    <div class="horizontal-bar"></div>
+
+    <div class="logos-container">
+        <button mat-icon-button style="outline: none !important;" shareButton="linkedin" #msgBtn="shareButton" [style.color]="msgBtn?.color">
+            <fa-icon [icon]="msgBtn.icon" size="lg"></fa-icon>
+        </button>
+        <button mat-icon-button style="outline: none !important;" shareButton="instagram" #instaBtn="shareButton" [style.color]="instaBtn?.color">
+            <fa-icon *ngIf="instaBtn" [icon]="instaBtn.icon" size="lg"></fa-icon>
+        </button>
+        <button mat-icon-button style="outline: none !important;" shareButton="facebook" #faceBtn="shareButton" [style.color]="faceBtn?.color">
+            <fa-icon *ngIf="faceBtn" [icon]="faceBtn.icon" size="lg"></fa-icon>
+        </button>
+    </div>
+
+    <span>LinkArts © 2021</span>
+</div>
+
