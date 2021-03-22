@@ -6,6 +6,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Location } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 declare var Swiper:any;
 
@@ -32,6 +33,7 @@ export class PopupStoriesComponent implements OnInit {
     private cd:ChangeDetectorRef,
     private resolver: ComponentFactoryResolver, 
     private rd:Renderer2,
+    private deviceService: DeviceDetectorService,
     private navbar: NavbarService,
     private Story_service:Story_service,
     
@@ -62,11 +64,12 @@ export class PopupStoriesComponent implements OnInit {
   index_id_of_user=this.data.index_id_of_user
   for_account=this.data.for_account;
   show_icon=false;
+  device_info='';
   ngOnInit() {
     let THIS=this;
 
-    
-    this.navbar.add_page_visited_to_history(`/stories`).subscribe();
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    this.navbar.add_page_visited_to_history(`/stories`,this.device_info).subscribe();
     
     if(this.data.list_of_users.length>0){
       for(let i=0;i<this.data.list_of_users.length;i++){

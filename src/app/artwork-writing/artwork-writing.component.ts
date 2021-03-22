@@ -26,6 +26,7 @@ import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.co
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 declare var $: any;
 
@@ -72,6 +73,7 @@ export class ArtworkWritingComponent implements OnInit {
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
     public route :ActivatedRoute,
+    private deviceService: DeviceDetectorService,
     private location:Location,
     private activatedRoute: ActivatedRoute,
     private sanitizer:DomSanitizer,
@@ -265,7 +267,7 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   item_retrieved=false;
-  url='';
+  url='https://www.linkarts.fr';
   can_check_clickout=false;
   @Input() writing_id_input: number;
   @Input() writing_title_input: string;
@@ -275,7 +277,9 @@ export class ArtworkWritingComponent implements OnInit {
   /******************** ON INIT ****************** */
   /******************************************************* */
   location_done=false;
+  device_info='';
   ngOnInit() {
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
     setInterval(() => {
 
@@ -345,9 +349,9 @@ export class ArtworkWritingComponent implements OnInit {
             this.lovesnumber =r[0].lovesnumber ;
             this.status=r[0].status;
             this.thumbnail_picture=r[0].name_coverpage ;
-            this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`).subscribe();
+            this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`,this.device_info).subscribe();
             this.location.go(`/artwork-writing/${this.title}/${this.writing_id}`);
-            this.url=`/artwork-writing/${this.title}/${this.writing_id}`;
+            this.url=`https://www.linkarts.fr/artwork-writing/${this.title}/${this.writing_id}`;
             this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
             this.thumbnail_picture_retrieved=true;

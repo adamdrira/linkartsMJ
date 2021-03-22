@@ -16,8 +16,6 @@ import { Albums_service } from '../services/albums.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-import { AuthenticationService } from '../services/authentication.service';
-import { Community_recommendation } from '../services/recommendations.service';
 import { PopupSubscribingsComponent } from '../popup-subscribings/popup-subscribings.component';
 import { PopupSubscribersComponent } from '../popup-subscribers/popup-subscribers.component';
 import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
@@ -30,8 +28,8 @@ import { Story_service } from '../services/story.service';
 import { NotificationsService } from '../services/notifications.service';
 import { Ads_service } from '../../app/services/ads.service'
 import { trigger, transition, style, animate } from '@angular/animations';
-
 import {LoginComponent} from '../login/login.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 declare var $: any;
@@ -71,6 +69,7 @@ export class AccountComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private Story_service:Story_service,
     public navbar: NavbarService, 
+    private deviceService: DeviceDetectorService,
     private location: Location,
     private cd: ChangeDetectorRef,
     private Profile_Edition_Service: Profile_Edition_Service,
@@ -344,10 +343,10 @@ export class AccountComponent implements OnInit {
   /******************************************* START ON INIT ********************************************/
   /******************************************* START ON INIT ********************************************/
 
-
+  device_info='';
   ngOnInit()  {
  
-    let THIS=this;
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
    
     window.scroll(0,0);
     
@@ -410,7 +409,7 @@ export class AccountComponent implements OnInit {
       this.type_of_profile_retrieved=true;
       this.cd.detectChanges();
   
-
+     
       if( user  && this.visitor_id==user.id){
         this.mode_visiteur = false;
       }
@@ -458,12 +457,10 @@ export class AccountComponent implements OnInit {
         this.update_background_position( this.opened_section );;
         return
       }
-      
       else if( this.pseudo != user.nickname ) {
         this.page_not_found=true;
         return
       }
-      
       else{
         if(user && user.status=='suspended' && this.visitor_id==user.id){
           this.my_profile_is_suspended=true;
@@ -564,6 +561,19 @@ export class AccountComponent implements OnInit {
                 }
               })
             }
+            else if(this.route.snapshot.data['section']==9){
+              let id_friend = parseInt(this.route.snapshot.paramMap.get('id_friend'));
+              let pseudo_friend = this.route.snapshot.paramMap.get('pseudo_friend');
+              const dialogRef = this.dialog.open(LoginComponent, {
+                data: {usage:"for_chat"},
+                panelClass: "loginComponentClass",
+              });
+              dialogRef.afterClosed().subscribe(result => {
+                this.location.go("/chat/" + pseudo_friend + '/' + id_friend)
+                location.reload();
+                return
+              })
+            }
             else{
               this.open_section( 1,true );
               this.cd.detectChanges();
@@ -572,6 +582,13 @@ export class AccountComponent implements OnInit {
             
           }
           else{
+            if(this.route.snapshot.data['section']==9){
+              let id_friend = parseInt(this.route.snapshot.paramMap.get('id_friend'));
+              let pseudo_friend = this.route.snapshot.paramMap.get('pseudo_friend');
+              this.location.go("/chat/" + pseudo_friend + '/' + id_friend)
+              location.reload();
+              return
+            }
             let cat = this.route.snapshot.data['category']
             if(cat>=0){
               this.opened_category=cat;
@@ -1053,7 +1070,7 @@ export class AccountComponent implements OnInit {
     if(this.subscribed_users_list.length == 0) {
       return;
     }
-    this.navbar.add_page_visited_to_history(`/PopupSubscribersComponent`).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupSubscribersComponent`,this.device_info).subscribe();
     this.dialog.open(PopupSubscribersComponent, {
       data: {
         subscribers:this.subscribed_users_list,
@@ -1071,7 +1088,7 @@ export class AccountComponent implements OnInit {
     if(this.users_subscribed_to_list.length == 0) {
       return;
     }
-    this.navbar.add_page_visited_to_history(`/PopupSubscribingsComponent`).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupSubscribingsComponent`,this.device_info).subscribe();
     this.dialog.open(PopupSubscribingsComponent, {
       data: {
         subscribings:this.users_subscribed_to_list,
@@ -1183,27 +1200,27 @@ export class AccountComponent implements OnInit {
       
 
       if( (i == 0) ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}`).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/${this.user_id}`); 
       }
       else if( i == 1 ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks`).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); 
       }
       else if( i == 2 ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/ads`).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/ads`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); 
       }
       else if( i == 5 ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about`).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); 
     }
       else if( i == 6 ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/archives`).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/archives`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); 
       }
       else if( i == 7 ) {
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/my_account`).subscribe(); 
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/my_account`,this.device_info).subscribe(); 
         this.location.go(`/account/${this.pseudo}/${this.user_id}/my_account`); 
       }
     }
@@ -1255,15 +1272,15 @@ export class AccountComponent implements OnInit {
     this.add_album_to_load[0]=true;
     this.opened_category=i;
     if( this.opened_category==0 && this.opened_section==1) { 
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/comics`).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/comics`,this.device_info).subscribe();
       this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/comics`); 
     }
     else if(this.opened_category==1 && this.opened_section==1 ) { 
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`,this.device_info).subscribe();
       this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`); 
     }
     else if( this.opened_category==2 && this.opened_section==1 ) { 
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/writings`).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/writings`,this.device_info).subscribe();
       this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/writings`); 
     }
     this.add_album=-1;
@@ -1425,7 +1442,7 @@ export class AccountComponent implements OnInit {
 
 
   add_story(){
-    this.navbar.add_page_visited_to_history(`/PopupAddStoryComponent`).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupAddStoryComponent`,this.device_info).subscribe();
     const dialogRef = this.dialog.open(PopupAddStoryComponent, {
       data: {user_id:this.user_id},
       panelClass: 'popupAddStoryClass',
@@ -1434,7 +1451,7 @@ export class AccountComponent implements OnInit {
 
 
   change_cover_picture() {
-    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_cover_picture`).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_cover_picture`,this.device_info).subscribe();
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_cover_picture"},
       panelClass: 'popupUploadPictureClass',
@@ -1442,7 +1459,7 @@ export class AccountComponent implements OnInit {
   }
 
   change_profile_picture() {
-    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_profile_picture`).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_profile_picture`,this.device_info).subscribe();
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_profile_picture"},
       panelClass: 'popupUploadPictureClass',
@@ -2314,7 +2331,7 @@ report(){
   story_state=false;
   watch_story(){
     if(this.story_found){
-      this.navbar.add_page_visited_to_history(`/PopupStoriesComponent/watch_stories`).subscribe();
+      this.navbar.add_page_visited_to_history(`/PopupStoriesComponent/watch_stories`,this.device_info).subscribe();
       const dialogRef = this.dialog.open(PopupStoriesComponent, {
         data: { for_account:true, list_of_users: [this.user_id], index_id_of_user: 0, list_of_data:this.list_of_stories,current_user:this.visitor_id,current_user_name:this.visitor_name},
         panelClass: 'popupStoriesClass'

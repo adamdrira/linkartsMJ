@@ -1127,7 +1127,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   open_popup(event){
     
     let id=0;
-    
+    event.preventDefault();
     if(this.category=="comic"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id
     }
@@ -1142,7 +1142,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       this.router.navigate([this.get_artwork()]);
     }
     else{
-      event.preventDefault(); 
+       
       if (event.ctrlKey) {
         return this.router.navigate([this.get_artwork()]);
       }

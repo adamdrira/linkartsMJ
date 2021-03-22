@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ChangeDetectorRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject, Renderer2 } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
-import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {Writing_Upload_Service} from  '../services/writing.service';
 import { Router } from '@angular/router';
 import { Subscribing_service } from '../services/subscribing.service';
@@ -23,6 +23,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 @Component({
@@ -59,6 +60,7 @@ export class AddWritingComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private router: Router,
     public dialog: MatDialog,
+    private deviceService: DeviceDetectorService,
     private Writing_CoverService:Writing_CoverService,
     private Profile_Edition_Service:Profile_Edition_Service,
     private navbar: NavbarService,
@@ -108,9 +110,10 @@ export class AddWritingComponent implements OnInit {
   @ViewChild("title", {static:false}) title: ElementRef;
   
   conditions:any;
-
+  device_info='';
   ngOnInit() {
-    this.navbar.add_page_visited_to_history(`/add-writing`).subscribe();
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    this.navbar.add_page_visited_to_history(`/add-writing`,this.device_info).subscribe();
     window.scroll(0,0);
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;

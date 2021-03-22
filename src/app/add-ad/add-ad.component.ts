@@ -22,6 +22,7 @@ import { NavbarService } from '../services/navbar.service';
 
 
 import { normalize_to_nfc } from '../helpers/patterns';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 @Component({
@@ -56,7 +57,7 @@ export class AddAdComponent implements OnInit {
     private Ads_service:Ads_service,
     private router:Router,
     public dialog: MatDialog,
-    
+    private deviceService: DeviceDetectorService,
     private Subscribing_service:Subscribing_service,
     private NavbarService:NavbarService,
   ) { 
@@ -96,9 +97,10 @@ export class AddAdComponent implements OnInit {
   pictures_uploaded:boolean=false;
   attachments_uploaded:boolean=false;
   id_ad=0;
-
+  device_info='';
   ngOnInit() {
-    let THIS=this;
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    this.NavbarService.add_page_visited_to_history(`/add-ad`,this.device_info).subscribe();
     window.scroll(0,0);
     this.createFormControlsAds();
     this.createFormAd();

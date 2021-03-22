@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild} from '@angular/core';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { NavbarService } from '../services/navbar.service';
@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { SignupComponent } from '../signup/signup.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 declare var Swiper: any;
@@ -23,6 +24,7 @@ export class HomeLinkartsComponent implements OnInit {
     public navbar: NavbarService, 
     private location: Location,
     public dialog: MatDialog,
+    private deviceService: DeviceDetectorService,
     private Profile_Edition_Service:Profile_Edition_Service,
     private cd:ChangeDetectorRef,
     private router: Router
@@ -65,7 +67,9 @@ export class HomeLinkartsComponent implements OnInit {
   categories_to_load=[];
 
   change_profile_number=0;
+  device_info='';
   ngOnInit() {
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       
@@ -93,7 +97,7 @@ export class HomeLinkartsComponent implements OnInit {
         this.Profile_Edition_Service.check_password_for_registration(id,password).subscribe(r=>{
           this.category_index=0;
           if(r[0].user_found){
-            this.navbar.add_page_visited_to_history(`/recommendations`).subscribe();
+            this.navbar.add_page_visited_to_history(`/recommendations`,this.device_info ).subscribe();
             this.location.go('/recommendations')
             const dialogRef = this.dialog.open(LoginComponent, {
               data: {usage:"registration",temp_pass:r[0].pass,email:r[0].user_found.email},
@@ -101,7 +105,7 @@ export class HomeLinkartsComponent implements OnInit {
             });
           }
           else{
-            this.navbar.add_page_visited_to_history(`/recommendations`).subscribe();
+            this.navbar.add_page_visited_to_history(`/recommendations`,this.device_info).subscribe();
             this.location.go('/recommendations')
           }
         })
@@ -132,22 +136,22 @@ export class HomeLinkartsComponent implements OnInit {
   open_category(i : number) {
     if( i==0 ) {
       this.category_index = 0;
-      this.navbar.add_page_visited_to_history(`/recommendations`).subscribe();
+      this.navbar.add_page_visited_to_history(`/recommendations`,this.device_info).subscribe();
       this.location.go('/recommendations');
     }
     else if( i==1 ) {
       this.category_index = 1;
-      this.navbar.add_page_visited_to_history(`/trendings`).subscribe();
+      this.navbar.add_page_visited_to_history(`/trendings`,this.device_info).subscribe();
       this.location.go('/trendings')
     }
     else if( i==2 ) {
       this.category_index = 2;
-      this.navbar.add_page_visited_to_history(`/subscribings`).subscribe();
+      this.navbar.add_page_visited_to_history(`/subscribings`,this.device_info).subscribe();
       this.location.go('/subscribings')
     }
     else if( i==3 ) {
       this.category_index = 3;
-      this.navbar.add_page_visited_to_history(`/favorites`).subscribe();
+      this.navbar.add_page_visited_to_history(`/favorites`,this.device_info).subscribe();
       this.location.go('/favorites')
     }
     this.status[i]=true;

@@ -707,11 +707,12 @@ export class ThumbnailAdComponent implements OnInit {
   }
 
   open_popup(event){
+    event.preventDefault(); 
     if(this.in_ad_page){
       this.router.navigate([this.get_artwork()]);
     }
     else{
-      event.preventDefault(); 
+      
       if (event.ctrlKey) {
         return this.router.navigate([this.get_artwork()]);
       }

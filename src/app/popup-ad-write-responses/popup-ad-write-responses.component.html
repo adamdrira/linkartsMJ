@@ -37,9 +37,9 @@
             </div>
             
             <button class="submit-button" (click)="send_response();">
-                <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="display_loading">done_all</mat-icon>
-                <span *ngIf="display_loading">Envoyer</span>
-                <mat-spinner *ngIf="!display_loading" diameter="25"  style="margin:auto;"></mat-spinner>
+                <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="!display_loading">done_all</mat-icon>
+                <span *ngIf="!display_loading">Envoyer</span>
+                <mat-spinner *ngIf="display_loading" diameter="25"  style="margin:auto;"></mat-spinner>
             </button>
         
         </form>

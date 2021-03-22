@@ -12,6 +12,7 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Trending_service } from '../services/trending.service';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 
@@ -53,6 +54,7 @@ export class TrendingsComponent implements OnInit {
     private Trending_service:Trending_service,
     private navbar:NavbarService,
     private cd:ChangeDetectorRef,
+    private deviceService: DeviceDetectorService,
     private Profile_Edition_Service:Profile_Edition_Service,
 
     ) { }
@@ -85,9 +87,9 @@ export class TrendingsComponent implements OnInit {
     }
   }
   
-
+  device_info='';
   ngOnInit() {
-
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       if(r[0].id==1){
         this.Trending_service.get_trendings_for_tomorrow().subscribe(r=>{
@@ -120,15 +122,15 @@ export class TrendingsComponent implements OnInit {
       return;
     }
     if(i==0){
-      this.navbar.add_page_visited_to_history(`/trendings/comic`).subscribe();
+      this.navbar.add_page_visited_to_history(`/trendings/comic`,this.device_info).subscribe();
       this.subcategory=i;
     }
     else if(i==1){
-      this.navbar.add_page_visited_to_history(`/trendings/drawing`).subscribe();
+      this.navbar.add_page_visited_to_history(`/trendings/drawing`,this.device_info).subscribe();
       this.subcategory=i;  
     }
     else if(i==2){
-      this.navbar.add_page_visited_to_history(`/trendings/writing`).subscribe();
+      this.navbar.add_page_visited_to_history(`/trendings/writing`,this.device_info).subscribe();
       this.subcategory=i;
     }
     return;

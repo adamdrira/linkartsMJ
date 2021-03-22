@@ -53,7 +53,7 @@ export class CommentsComponent implements OnInit {
   @Input() number_of_comments_to_show:number;
   @Input() visitor_id:number;
   @Input()  visitor_name:string;
-  @Input() visitor_mode=true;
+  @Input() visitor_mode:boolean;
 
  
   skeleton_array=Array(5);

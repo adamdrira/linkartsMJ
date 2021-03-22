@@ -5,6 +5,8 @@
 
 <div class="popup-login">
     
+
+   <!-- CONNEXION AUTOMATIQUE APRES PREMIERE CONNEXION -->
     <ng-container *ngIf="usage=='rest_pass' || usage=='registration'">
 
         
@@ -33,7 +35,9 @@
 
     </ng-container>
 
-    <ng-container *ngIf="!reset_password_menu && !delete_account && usage!='rest_pass' && usage!='registration'">
+
+    <!-- CONNEXION CLASSIQUE -->
+    <ng-container *ngIf="!reset_password_menu && !delete_account && usage!='rest_pass' && usage!='registration' && usage!='for_chat'">
 
         
         <div  class="step-name">
@@ -93,10 +97,10 @@
 
 
 
-    <ng-container *ngIf="reset_password_menu && !delete_account && usage!='rest_pass' && usage!='registration'">
+    <!-- RECUPERATION DU MDP -->
+    <ng-container *ngIf="reset_password_menu && !delete_account && usage!='rest_pass' && usage!='registration' && usage!='for_chat'">
 
         <div class="back-button" (click)="open_connexion_menu();">
-            <!--<div (click)="open_connexion_menu();">Retour</div>-->
             <mat-icon [ngClass]="{'invisible': !show_icon }" >keyboard_arrow_left</mat-icon>
         </div>
         
@@ -133,7 +137,60 @@
     </ng-container>
 
 
+    <!-- CHAT CONNEXION -->
+    <ng-container *ngIf="usage=='for_chat'">
+
+        <div class="step-name">
+            <span>Authentification</span>
+        </div>
+
+        <div class="step-form" [formGroup]="loginForm">
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>E-mail</mat-label>
+                    <input matInput formControlName="username" autocomplete="off" type="search" (input)="normalize_input(loginForm, 'username');">
+                    <mat-error *ngIf="loginForm.controls['username'].invalid">Veuillez saisir un e-mail valide
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Mot de passe</mat-label>
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(loginForm, 'password');">
+
+                    <div class="remove-red-eye" (click)="change_password_type()"
+                    [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="100">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
+                    </div>
+
+                </mat-form-field>
+            </div>
+        </div>
+
+        <button [disabled]="loading" class="submit-button" (click)="authentication_for_chat();">
+            <span *ngIf="!loading">S'authentifier</span>
+            <div class="loading-dots" *ngIf="loading">
+                &nbsp; <span>.</span><span>.</span><span>.</span>
+            </div>
+        </button>
+
+        <div class="loading-span" *ngIf="loading">
+            <span>Authentification en cours</span>
+        </div>
+        
+        <div class="error">
+            <span *ngIf="display_wrong_data" [@enterAnimation]>Le mot de passe ou l'e-mail sont incorrects</span>
+        </div>
+
+    </ng-container>
+
     
+    <!-- SUPPRESSION ET SUSPENSION DE COMPTE -->
     <ng-container *ngIf="delete_account && step_deletion==0 ">
 
         <div class="step-name">
@@ -189,7 +246,7 @@
     </ng-container>
 
 
-    
+    <!-- SUPPRESSION ET SUSPENSION DE COMPTE 2-->
     <ng-container *ngIf="delete_account && step_deletion==1">
 
         <div class="step-name">
@@ -218,6 +275,7 @@
     </ng-container>
 
 
+    <!-- SUPPRESSION ET SUSPENSION DE COMPTE 3-->
     <ng-container *ngIf="delete_account && step_deletion==2">
 
         <div class="step-name">
@@ -251,6 +309,7 @@
         
     </ng-container>
 
+     <!-- SUPPRESSION ET SUSPENSION DE COMPTE 4-->
     <ng-container *ngIf="delete_account && step_deletion==3">
 
         <div class="step-name">

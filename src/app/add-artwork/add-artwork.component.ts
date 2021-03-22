@@ -1,19 +1,12 @@
 import { Component, OnInit, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { Renderer2 } from '@angular/core';
-import { ViewContainerRef, ComponentFactoryResolver} from '@angular/core';
-import { ConstantsService } from '../services/constants.service';
 import { UploadService } from '../services/upload.service';
 import { Observable } from 'rxjs';
-import { BdOneShotService} from '../services/comics_one_shot.service';
-import { BdSerieService} from '../services/comics_serie.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Location } from '@angular/common';
 import { Bd_CoverService } from '../services/comics_cover.service';
 import { Writing_CoverService } from '../services/writing_cover.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Ads_service } from '../services/ads.service';
-import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import { Drawings_CoverService } from '../services/drawings_cover.service';
 import { ActivatedRoute } from '@angular/router';
 import { NavbarService } from '../services/navbar.service';
@@ -21,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
+import * as WebFont from 'webfontloader';
 
 @Component({
   selector: 'app-add-artwork',
@@ -30,24 +24,16 @@ import { HostListener } from '@angular/core';
 export class AddArtworkComponent implements OnInit {
 
 
-  constructor(private rd: Renderer2, 
-    private el: ElementRef,
+  constructor(
     public route: ActivatedRoute, 
     private Drawings_CoverService:Drawings_CoverService,
-    private Drawings_Onepage_Service:Drawings_Onepage_Service,
-    private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Writing_CoverService:Writing_CoverService,
     private Writing_Upload_Service:Writing_Upload_Service,
     private Ads_service:Ads_service,
-    private _constants: ConstantsService, 
     private _upload: UploadService,
-    private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
     private Profile_Edition_Service: Profile_Edition_Service,
-    private viewref: ViewContainerRef,
-    private bdOneShotService: BdOneShotService,
     private Bd_CoverService: Bd_CoverService,
-    private BdSerieService: BdSerieService,
     private navbar: NavbarService,
     private location: Location,
     public dialog: MatDialog,
@@ -59,13 +45,9 @@ export class AddArtworkComponent implements OnInit {
           this.show_icon=true;
         }
       })
-    //this.navbar.setActiveSection(0);
     this.navbar.hide();
 
     this.opened_category$ = this._upload.getCategoryObservable();
-    //this.REAL_step$ = this._upload.getStepObservable();
-    //this.CURRENT_step = 0;
-
   }
 
 
@@ -96,6 +78,19 @@ export class AddArtworkComponent implements OnInit {
   ngOnInit() {
     
     let THIS=this;
+    WebFont.load({ google: { families: [ 'Material+Icons' ] } , active: function () {
+      THIS.navbar.showfont();
+      THIS.show_icon=true;
+    }});
+
+    let get_font = setInterval(() => {
+      if(!this.show_icon){
+        THIS.show_icon=true;
+        THIS.navbar.showfont();
+      }
+      clearInterval(get_font);
+    }, 5000);
+    
     window.scroll(0,0);
     this._upload.category.next( this.route.snapshot.data['section'] );
     this.cd.detectChanges();

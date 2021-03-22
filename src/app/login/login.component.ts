@@ -11,6 +11,7 @@ import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { normalize_to_nfc } from '../helpers/patterns';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 @Component({
@@ -34,6 +35,7 @@ export class LoginComponent implements OnInit {
   constructor(
       private formBuilder: FormBuilder,
       private location: Location,
+      private deviceService: DeviceDetectorService,
       public navbar:NavbarService,
       private Profile_Edition_Service:Profile_Edition_Service,
       private Community_recommendation:Community_recommendation,
@@ -57,6 +59,7 @@ export class LoginComponent implements OnInit {
       })
   }
   usage=this.data.usage;
+  for_chat_connexion=this.data.for_chat_connexion;
   temp_pass=this.data.temp_pass;
   email=this.data.email;
   suspend_account=false;
@@ -87,9 +90,10 @@ export class LoginComponent implements OnInit {
 
   hide=true;
   display_error_reset=false;
-
+  device_info='';
   ngOnInit() {
-    this.navbar.add_page_visited_to_history(`/login`).subscribe();
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    this.navbar.add_page_visited_to_history(`/login`, this.device_info).subscribe();
     window.scroll(0,0);
     if(this.usage=="rest_pass" || this.usage=="registration"){
       this.loading=true;
@@ -97,7 +101,7 @@ export class LoginComponent implements OnInit {
         if(data.token){
           this.Community_recommendation.delete_recommendations_cookies();
           this.Community_recommendation.generate_recommendations().subscribe(r=>{
-            location.reload();
+              location.reload();
           })
         }
         else{
@@ -203,8 +207,11 @@ export class LoginComponent implements OnInit {
 
   
   @HostListener('document:keydown.enter', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-    if( !this.reset_password_menu && !this.delete_account ) {
+    if( !this.reset_password_menu && !this.delete_account && this.usage!="for_chat" && this.usage!="rest_pass" && this.usage!="registration") {
       this.login();
+    }
+    else if(this.usage=="for_chat"){
+      this.authentication_for_chat()
     }
   }
   
@@ -396,5 +403,31 @@ export class LoginComponent implements OnInit {
         return;
       }
       normalize_to_nfc(fg,fc);
+    }
+
+
+
+    authentication_for_chat(){
+      if(this.loading){
+        return
+      }
+      this.loading=true;
+      this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
+        if(data.token){
+          this.Community_recommendation.delete_recommendations_cookies();
+          this.Community_recommendation.generate_recommendations().subscribe(r=>{
+            this.dialogRef.close();
+          })
+        }
+        else{
+          this.display_wrong_data=true;
+          this.loading=false;
+        }
+        
+      },
+      error => {
+        this.display_wrong_data=true;
+        this.loading=false;
+      });
     }
   }

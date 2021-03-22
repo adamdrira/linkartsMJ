@@ -585,15 +585,11 @@
 
     <ng-container *ngIf="step==3 && registerForm1.value.gender!='Groupe'">
 
-        <!--<div class="step-back">
-            <div (click)="step_back();" class="left">Retour</div>
-        </div>-->
 
         <div class="step-name">
             <span>Informations optionnelles</span>
         </div>
             
-        <!-- A TERMINER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
         <div class="step-form" [formGroup]="registerForm4">
 
             <div class="form-item">
@@ -606,13 +602,24 @@
                 </mat-form-field>
             </div>
 
-            <div class="form-item">
+            <!--<div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Formation ou compétences</mat-label>
-                    <input matInput formControlName="training" autocomplete="off" maxLength="100" type="search" (input)="normalize_input(registerForm4, 'training');">
+                    <input matInput formControlName="training" autocomplete="off" maxLength="250" type="search" (input)="normalize_input(registerForm4, 'training');">
                     <mat-error *ngIf="registerForm4.controls['training'].invalid ">Veuillez faire une saisie valide
                     </mat-error>
                     <div class="length-indicator">{{registerForm4.controls['training'].value?.length || 0}}/100</div>
+                </mat-form-field>
+            </div>-->
+
+            <div class="form-item" style="height:unset !important;">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Formation ou compétences</mat-label>
+                    <textarea matInput cdkTextareaAutosize formControlName="training" maxLength="250" autocomplete="off" (input)="normalize_input(registerForm4, 'training');"></textarea>
+                    
+                    <mat-error *ngIf="registerForm4.controls['training'].invalid">Veuillez saisir une description valide, ou laisser ce champ vide.
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm4.controls['training'].value?.length || 0}}/250</div>
                 </mat-form-field>
             </div>
 

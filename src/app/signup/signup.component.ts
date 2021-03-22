@@ -20,6 +20,7 @@ import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-at
 import { DOCUMENT } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-signup',
@@ -57,6 +58,7 @@ export class SignupComponent implements OnInit {
       private ChatService:ChatService,
       private NotificationsService:NotificationsService,
       private sanitizer:DomSanitizer,
+      private deviceService: DeviceDetectorService,
       private Profile_Edition_Service:Profile_Edition_Service,
       private Writing_Upload_Service:Writing_Upload_Service,
       private formBuilder: FormBuilder,
@@ -139,8 +141,10 @@ export class SignupComponent implements OnInit {
 
   conditions:any;
   show_icon=false;
+  device_info='';
   ngOnInit() {
-    this.navbar.add_page_visited_to_history(`/signup`).subscribe();
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    this.navbar.add_page_visited_to_history(`/signup`,this.device_info).subscribe();
     this.Writing_Upload_Service.retrieve_writing_for_options(0).subscribe(r=>{
       this.conditions=r
     })
@@ -274,8 +278,8 @@ export class SignupComponent implements OnInit {
       training:['', 
         Validators.compose([
           Validators.minLength(3),
-          Validators.maxLength(100),
-          Validators.pattern(pattern("text")),
+          Validators.maxLength(250),
+          Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ],
 

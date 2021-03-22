@@ -25,6 +25,7 @@ import { PopupCommentsComponent } from '../popup-comments/popup-comments.compone
 import { trigger, transition, style, animate } from '@angular/animations';
 import { LoginComponent } from '../login/login.component';
 import { DOCUMENT } from '@angular/common';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 declare var $: any
 declare var Swiper: any
@@ -96,6 +97,7 @@ export class AdPageComponent implements OnInit {
     public route: ActivatedRoute, 
     private activatedRoute: ActivatedRoute,
     public navbar: NavbarService,
+    private deviceService: DeviceDetectorService,
     public dialog: MatDialog,
     private sanitizer:DomSanitizer,
     private Subscribing_service:Subscribing_service,
@@ -208,7 +210,7 @@ export class AdPageComponent implements OnInit {
   ready_to_check_view=false;
   loves_retrieved_but_not_checked=false;
   current_user_retrieved=false;
-  url='';
+  url='https://www.linkarts.fr';
   can_check_clickout=false;
   @Input() ad_id_input: number;
   @Input() ad_title_input: string;
@@ -270,8 +272,9 @@ export class AdPageComponent implements OnInit {
   /**********************************************   ON INIT  **************************************/
   number_of_pictures=0;
   location_done=false;
+  device_info='';
   ngOnInit() {
-    this.navbar.add_page_visited_to_history(`/add-ad`).subscribe();
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
   
     window.scroll(0,0);
     setInterval(() => {
@@ -321,9 +324,9 @@ export class AdPageComponent implements OnInit {
         }
       }
       this.item=m[0];
-      this.navbar.add_page_visited_to_history(`/ad-page/${this.item.title}/${this.ad_id}`).subscribe();
+      this.navbar.add_page_visited_to_history(`/ad-page/${this.item.title}/${this.ad_id}`,this.device_info).subscribe();
       this.location.go(`/ad-page/${this.item.title}/${this.ad_id}`);
-      this.url=`/ad-page/${this.item.title}/${this.ad_id}`;
+      this.url=`https://www.linkarts.fr/ad-page/${this.item.title}/${this.ad_id}`;
       this.location_done=true;
       this.list_of_reporters=this.item.list_of_reporters
       if(!m[0] || title!=m[0].title || m[0].status=="deleted" || m[0].status=="suspended"){

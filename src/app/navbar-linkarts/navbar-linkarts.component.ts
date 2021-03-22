@@ -28,7 +28,7 @@ import {Community_recommendation} from '../services/recommendations.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import * as WebFont from 'webfontloader';
 import { filter } from 'rxjs/operators';
-
+import { DeviceDetectorService } from 'ngx-device-detector';
 declare var $: any;
 declare var Swiper: any;
 
@@ -59,6 +59,7 @@ export class NavbarLinkartsComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private rd:Renderer2,
     private router:Router,
+    private deviceService: DeviceDetectorService,
     public navbar: NavbarService,
     private sanitizer:DomSanitizer,
     private AuthenticationService:AuthenticationService,
@@ -79,7 +80,8 @@ export class NavbarLinkartsComponent implements OnInit {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl.push(event.url);
-        this.navbar.add_page_visited_to_history(event.url).subscribe()
+        let device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+        this.navbar.add_page_visited_to_history(event.url,device_info).subscribe()
       });
       
       navbar.connexion.subscribe(r=>{

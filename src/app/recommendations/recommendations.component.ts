@@ -4,7 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-declare var $: any
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 @Component({
@@ -40,6 +40,7 @@ export class RecommendationsComponent implements OnInit {
     private CookieService:CookieService,
     private Community_recommendation:Community_recommendation,
     private navbar:NavbarService,
+    private deviceService: DeviceDetectorService,
     ) { }
 
   
@@ -111,8 +112,9 @@ export class RecommendationsComponent implements OnInit {
   check_comics_history=false;
   check_writings_history=false;
   check_drawings_history=false;
+  device_info='';
   ngOnInit() {
-
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     this.navbar.check_if_contents_clicked().subscribe(r=>{
       if(r[0].list_of_comics && r[0].list_of_comics.length>0){
         this.check_comics_history=true;
@@ -263,7 +265,7 @@ export class RecommendationsComponent implements OnInit {
     }
     else if(this.sorted_category_retrieved){
       if(i==0){
-        this.navbar.add_page_visited_to_history(`/recommendations/comic`).subscribe();
+        this.navbar.add_page_visited_to_history(`/recommendations/comic`,this.device_info).subscribe();
         this.subcategory=i;
         this.type_of_skeleton="comic";
         window.dispatchEvent(new Event('resize'));
@@ -274,7 +276,7 @@ export class RecommendationsComponent implements OnInit {
       }
       else if(i==1){
         this.subcategory=i;  
-        this.navbar.add_page_visited_to_history(`/recommendations/drawing`).subscribe();
+        this.navbar.add_page_visited_to_history(`/recommendations/drawing`,this.device_info).subscribe();
         this.type_of_skeleton="drawing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
@@ -285,7 +287,7 @@ export class RecommendationsComponent implements OnInit {
       }
       else if(i==2){
         this.subcategory=i;
-        this.navbar.add_page_visited_to_history(`/recommendations/writing`).subscribe();
+        this.navbar.add_page_visited_to_history(`/recommendations/writing`,this.device_info).subscribe();
         this.type_of_skeleton="writing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();

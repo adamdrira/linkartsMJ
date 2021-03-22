@@ -23,6 +23,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 @Component({
@@ -57,6 +58,7 @@ export class AddComicComponent implements OnInit {
     private bdOneShotService: BdOneShotService,
     private bdSerieService: BdSerieService,
     private Bd_CoverService: Bd_CoverService,
+    private deviceService: DeviceDetectorService,
     public dialog: MatDialog,
     private constants:ConstantsService,
     private navbar: NavbarService,
@@ -99,8 +101,10 @@ export class AddComicComponent implements OnInit {
   user_retrieved=false;
 
   conditions:any;
+  device_info='';
   ngOnInit() {
-    this.navbar.add_page_visited_to_history(`/add-comic`).subscribe();
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    this.navbar.add_page_visited_to_history(`/add-comic`,this.device_info).subscribe();
    
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;

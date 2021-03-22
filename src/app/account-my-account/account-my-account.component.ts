@@ -1,22 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener, Input } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild} from '@angular/core';
-import { AuthenticationService } from '../services/authentication.service';
-import {Router} from "@angular/router"
+import {ElementRef,  ViewChild} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import { Trending_service } from '../services/trending.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { BdOneShotService } from '../services/comics_one_shot.service';
-import { BdSerieService } from '../services/comics_serie.service';
-import { Subscribing_service } from '../services/subscribing.service';
-import { Writing_Upload_Service } from '../services/writing.service';
-import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
-import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Favorites_service } from '../services/favorites.service';
-import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { FormBuilder, FormGroup, Validators, } from '@angular/forms';
@@ -27,6 +17,7 @@ import { LoginComponent } from '../login/login.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { SignupComponent } from '../signup/signup.component';
 import { NavbarService } from '../services/navbar.service';
+import { DeviceDetectorService } from 'ngx-device-detector';
 declare var $: any;
 @Component({
   selector: 'app-account-my-account',
@@ -56,27 +47,16 @@ export class AccountMyAccountComponent implements OnInit {
 
 
   constructor(
-    private rd: Renderer2, 
     private formBuilder: FormBuilder,
-    private authenticationService: AuthenticationService,
-    private router: Router,
     public route: ActivatedRoute, 
-    private activatedRoute: ActivatedRoute,
     private ChatService:ChatService,
     private Favorites_service:Favorites_service,
-    private location: Location,
     private cd: ChangeDetectorRef,
     private Trending_service:Trending_service,
     private Profile_Edition_Service: Profile_Edition_Service,
     private sanitizer:DomSanitizer,
-    private BdOneShotService: BdOneShotService,
-    private BdSerieService:BdSerieService,
-    private Writing_Upload_Service:Writing_Upload_Service,
-    private Drawings_Onepage_Service:Drawings_Onepage_Service,
-    private Drawings_Artbook_Service:Drawings_Artbook_Service,
-    private Subscribing_service:Subscribing_service,
     private NotificationsService:NotificationsService,
-    private Ads_service:Ads_service,
+    private deviceService: DeviceDetectorService,
     public dialog: MatDialog,
     private navbar: NavbarService, 
   ) {
@@ -128,9 +108,9 @@ export class AccountMyAccountComponent implements OnInit {
 
 
 
-
+  device_info='';
   ngOnInit(): void {
-    let THIS=this;
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     
         this.status=this.author.status;
         this.gender=this.author.gender;
@@ -161,12 +141,12 @@ export class AccountMyAccountComponent implements OnInit {
       return;
     }
     if(i==0){
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-my-account/account`).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-my-account/account`, this.device_info).subscribe();
       this.opened_category=i;
       this.cd.detectChanges();
     }
     if(i==1){
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/remuneration`).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/remuneration`, this.device_info).subscribe();
       this.sumo_ready=false;
       this.opened_category=i;
       this.cd.detectChanges();

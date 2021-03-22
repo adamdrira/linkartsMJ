@@ -29,6 +29,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { LoginComponent } from '../login/login.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 declare var Swiper: any;
 declare var $: any;
@@ -86,6 +87,7 @@ export class ArtworkComicComponent implements OnInit {
     private router:Router,
     private BdSerieService:BdSerieService,
     private Subscribing_service:Subscribing_service,
+    private deviceService: DeviceDetectorService,
     public dialog: MatDialog,
     private Community_recommendation:Community_recommendation,
     private Emphasize_service:Emphasize_service,
@@ -282,11 +284,13 @@ export class ArtworkComicComponent implements OnInit {
   @Output() emit_close_click = new EventEmitter<boolean>();
   
   location_done=false;
-  url='';
+  url='https://www.linkarts.fr';
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
+  device_info='';
   ngOnInit() {
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
     setInterval(() => {
 
@@ -389,9 +393,9 @@ export class ArtworkComicComponent implements OnInit {
               this.thumbnail_picture=r[0].name_coverpage;
               this.thumbnail_picture_retrieved=true;
               this.monetization=r[0].monetization;
-              this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`).subscribe();
+              this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`,this.device_info).subscribe();
               this.location.go(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`);
-              this.url=`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`;
+              this.url=`https://www.linkarts.fr/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`;
               this.location_done=true;
               this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
                 this.pseudo = r[0].nickname;
@@ -608,9 +612,9 @@ export class ArtworkComicComponent implements OnInit {
             this.status=r[0].status;
             this.thumbnail_picture=r[0].name_coverpage;
             this.thumbnail_picture_retrieved=true;
-            this.navbar.add_page_visited_to_history(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`).subscribe();
+            this.navbar.add_page_visited_to_history(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`,this.device_info).subscribe();
             this.location.go(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`);
-            this.url=`/artwork-comic/one-shot/${this.title}/${this.bd_id}`;
+            this.url=`https://www.linkarts.fr/artwork-comic/one-shot/${this.title}/${this.bd_id}`;
             this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) )
             
@@ -1061,6 +1065,7 @@ export class ArtworkComicComponent implements OnInit {
 
     this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
       speed: 500,
+      effect:'cube',
       spaceBetween: 100,
       simulateTouch: true,
       initialSlide:(this.style=="Manga")?this.pagesnumber-1:0,
@@ -1355,9 +1360,9 @@ export class ArtworkComicComponent implements OnInit {
       THIS.swiper.slideTo(0,false,false);
     }
     THIS.refresh_swiper_pagination();
-    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`).subscribe();
+    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
     THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
-    this.url=`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
+    THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
     
   }
 
@@ -1445,9 +1450,9 @@ export class ArtworkComicComponent implements OnInit {
       THIS.swiper.slideTo(0,false,false);
     }
     THIS.refresh_swiper_pagination();
-    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`).subscribe();
+    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
       THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
-      this.url=`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
+      THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
     
   }
 
@@ -1525,9 +1530,9 @@ export class ArtworkComicComponent implements OnInit {
         THIS.swiper.slideTo(0,false,false);
       }
       THIS.refresh_swiper_pagination();
-      THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`).subscribe();
+      THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
         THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${parseInt(chapter_number) + 1}`);
-        this.url=`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
+        THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
      
     });
 

@@ -21,6 +21,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { convert_timestamp_to_number, date_in_seconds, get_date_to_show } from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { normalize_to_nfc } from '../helpers/patterns';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 declare var $: any;
@@ -70,6 +71,7 @@ export class AccountAboutComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private Trending_service:Trending_service,
     private Profile_Edition_Service: Profile_Edition_Service,
+    private deviceService: DeviceDetectorService,
     private BdOneShotService: BdOneShotService,
     private BdSerieService:BdSerieService,
     private Writing_Upload_Service:Writing_Upload_Service,
@@ -176,7 +178,9 @@ export class AccountAboutComponent implements OnInit {
     }
   }
 
+  device_info='';
   ngOnInit(): void {
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
       const currentYear = moment().year();
       this.maxDate = moment([currentYear - 7, 11, 31]);
       this.siret=this.author.siret;
@@ -287,7 +291,7 @@ export class AccountAboutComponent implements OnInit {
       return;
     }
     if(i==1){
-      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/stats`).subscribe();
+      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/stats`,this.device_info).subscribe();
       this.sumo_ready=false;
       this.sumo_for_ads_ready=false;
       this.opened_category=i;
@@ -332,7 +336,7 @@ export class AccountAboutComponent implements OnInit {
       this.cd.detectChanges();
     }
     else{
-      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/about`).subscribe();
+      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/about`,this.device_info).subscribe();
       this.opened_category=i;
       this.cd.detectChanges();
     }
@@ -2458,7 +2462,7 @@ export class AccountAboutComponent implements OnInit {
         Validators.compose([
           Validators.minLength(3),
           Validators.maxLength(100),
-          Validators.pattern(pattern("text")),
+          Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ]
     });

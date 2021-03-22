@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, HostListener, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
-import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
@@ -31,6 +30,7 @@ import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-d
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { LoginComponent } from '../login/login.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 declare var Swiper: any;
 declare var $: any;
@@ -85,7 +85,7 @@ export class ArtworkDrawingComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private router:Router,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
-    private AuthenticationService:AuthenticationService,
+    private deviceService: DeviceDetectorService,
     private Subscribing_service:Subscribing_service,
     private Community_recommendation:Community_recommendation,
     public dialog: MatDialog,
@@ -270,7 +270,7 @@ export class ArtworkDrawingComponent implements OnInit {
   pp_first_comment:any;
 
   item_retrieved=false;
-  url='';
+  url='https://www.linkarts.fr';
   can_check_clickout=false;
   @Input() drawing_format_input: string;
   @Input() drawing_id_input: number;
@@ -281,8 +281,9 @@ export class ArtworkDrawingComponent implements OnInit {
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
-
+  device_info='';
   ngOnInit() {
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
 
     setInterval(() => {
@@ -423,9 +424,9 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
-      this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`).subscribe();
+      this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
       this.location.go(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`);
-      this.url=`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`;
+      this.url=`https://www.linkarts.fr/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show =get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
@@ -568,9 +569,9 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
-      this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`).subscribe();
+      this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
       this.location.go(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`);
-      this.url=`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`;
+      this.url=`https://www.linkarts.fr/artwork-drawing/artbook/${this.title}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
@@ -971,9 +972,8 @@ export class ArtworkDrawingComponent implements OnInit {
     this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
       speed: 500,
       spaceBetween: 100,
-      
+      effect:'cube',
       simulateTouch: true,
-
       scrollbar: {
         el: '.swiper-scrollbar',
         hide: true,
@@ -1012,10 +1012,7 @@ export class ArtworkDrawingComponent implements OnInit {
   refresh_swiper_pagination() {
     if( this.swiper ) {
       if( this.swiper.slides ) {
-        
-        
         $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
-        //$(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
       }
     }
   }

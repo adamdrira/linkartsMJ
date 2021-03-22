@@ -23,6 +23,7 @@ import { DOCUMENT } from '@angular/common';
 
 
 import { normalize_to_nfc } from '../helpers/patterns';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 
@@ -53,6 +54,7 @@ export class AddDrawingComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private Profile_Edition_Service:Profile_Edition_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
+    private deviceService: DeviceDetectorService,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
     private navbar: NavbarService,
@@ -92,9 +94,10 @@ export class AddDrawingComponent implements OnInit {
   type_of_account:string;
   user_retrieved=false;
   conditions:any;
-
+  device_info='';
   ngOnInit() {
-    this.navbar.add_page_visited_to_history(`/add-drawing`).subscribe();
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    this.navbar.add_page_visited_to_history(`/add-drawing`,this.device_info).subscribe();
     window.scroll(0,0);
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;
