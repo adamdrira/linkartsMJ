@@ -111,10 +111,10 @@ var list_of_chat_search= sequelize.define('list_of_chat_search', {
   id_receiver: DataTypes.INTEGER,
   is_a_group_chat: DataTypes.BOOLEAN,
   date:DataTypes.DATE,
-},
-{
-  freezeTableName: true // Model tableName will be the same as the model name
-}
+  },
+  {
+    freezeTableName: true // Model tableName will be the same as the model name
+  }
 )
 
 
@@ -135,6 +135,21 @@ var list_of_chat_sections = sequelize.define('list_of_chat_sections', {
 }
 )
 
+
+var list_of_chat_emails= sequelize.define('list_of_chat_emails', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  id_user: DataTypes.INTEGER,
+  id_receiver:DataTypes.INTEGER,
+  status: DataTypes.STRING,
+  },
+  {
+    freezeTableName: true // Model tableName will be the same as the model name
+  }
+)
   
 
 User.hasMany(list_of_messages, {
@@ -156,6 +171,7 @@ list_of_messages.belongsTo(User, {
   list_of_chat_groups_reactions,
   list_of_chat_spams,
   list_of_chat_search,
+  list_of_chat_emails,
   list_of_chat_sections};
 }
 
