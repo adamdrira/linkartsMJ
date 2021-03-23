@@ -924,18 +924,18 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 format: format,
                 publication_id: publication_id,
                 chapter_number: chapter_number
-
             },
         })
         .catch(err => {
 			res.status(500).json({msg: "error", details: err});		
-		}).then(contents=>{
-            contents.destroy({
-                truncate: false
-              })})
-        res.status(200).send([contents])
-            
-    
+		}).then(content=>{
+            if(content){
+                contents.destroy({
+                    truncate: false
+                })
+            }
+            res.status(200).send([{"done":done}]);
+            })
         
     });
 
