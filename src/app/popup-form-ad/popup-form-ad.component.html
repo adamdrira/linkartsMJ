@@ -1,0 +1,143 @@
+
+<div class="title">
+    <span>Edition des informations</span>
+    <button [mat-dialog-close]="true">
+        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+    </button>
+</div>
+
+<div class="scrollable-container">
+    <div class="component-container popupFormAd">
+        
+
+
+        <form [formGroup]="fd" novalidate>
+            <div class="form-container">
+
+
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Titre</mat-label>
+                        <input matInput formControlName="fdTitle" maxLength="40" autocomplete="off" (input)="normalize_input(fd, 'fdTitle');">
+                        <mat-error *ngIf="fd.controls['fdTitle'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        </mat-error>
+                        <div class="length-indicator">{{fd.controls['fdTitle'].value?.length || 0}}/40</div>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-item" style="height:50px;">
+                    <div class="monetisation-container">
+                        <mat-slide-toggle [checked]="volunteer" [disabled]="true" (change)="setVolunteer( $event )" style="font-weight:bold;">
+                            Annonce de collaboration bénévole
+                        </mat-slide-toggle>
+                    </div>
+                </div>
+
+                <div class="form-item" style="height:50px;">
+                    <div class="monetisation-container">
+                        <mat-slide-toggle [checked]="remuneration" (change)="setRemuneration( $event )" style="font-weight:bold;">
+                            Annonce de collaboration rémunérée
+                        </mat-slide-toggle>
+                    </div>
+                </div>
+
+                <div class="form-item monetization"  *ngIf="remuneration" [@enterAnimation]>
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Montant en € (optionnel)</mat-label>
+                        <input matInput formControlName="fdPrice" maxLength="9" autocomplete="off">
+                        <mat-error *ngIf="fd.controls['fdPrice'].invalid">Veuillez faire une saisie valide (votre saisie ne doit comporter que des chiffres et des points)
+                        </mat-error>
+                        <div class="length-indicator">{{fd.controls['fdPrice'].value?.length || 0}}/9</div>
+                    </mat-form-field>
+                </div>
+                <div class="form-item monetization" *ngIf="remuneration" [@enterAnimation]>
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Type de rémunération (optionnel)</mat-label>
+                        <mat-select [compareWith]="compareObjects" (selectionChange)="change_price_type($event)" panelClass="popupFormAdSelectClass" disableOptionCentering formControlName="fdPrice_type">
+                            <mat-option  *ngFor="let obj of listOfPriceTypes" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="fd.controls['fdPrice_type'].invalid">Veuillez sélectionner un type de rémunération</mat-error>
+                    </mat-form-field>
+                </div>
+
+
+                <div class="form-item" style="height:50px;">
+                    <div class="monetisation-container">
+                        <mat-slide-toggle [checked]="for_service" (change)="setService( $event )" style="font-weight:bold;">
+                            Annonce de produits ou services
+                        </mat-slide-toggle>
+                    </div>
+                </div>
+
+                <div class="form-item monetization"  *ngIf="for_service" [@enterAnimation]>
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Montant en € (optionnel)</mat-label>
+                        <input matInput formControlName="fdPrice1" maxLength="9" autocomplete="off">
+                        <mat-error *ngIf="fd.controls['fdPrice1'].invalid">Veuillez faire une saisie valide (votre saisie ne doit comporter que des chiffres et des points)
+                        </mat-error>
+                        <div class="length-indicator">{{fd.controls['fdPrice1'].value?.length || 0}}/9</div>
+                    </mat-form-field>
+                </div>
+                <div class="form-item monetization" *ngIf="for_service" [@enterAnimation]>
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Catégorie de l'annonce (optionnel)</mat-label>
+                        <mat-select [compareWith]="compareObjects" (selectionChange)="change_offer_and_demand($event)" panelClass="popupFormAdSelectClass" disableOptionCentering formControlName="fdPrice_type1">
+                            <mat-option  *ngFor="let obj of listOfPriceTypes1" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="fd.controls['fdPrice_type1'].invalid">Veuillez sélectionner une catégorie</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-item monetization" *ngIf="for_service" [@enterAnimation]>
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Type d'annonce (optionnel)</mat-label>
+                        <mat-select [compareWith]="compareObjects" (selectionChange)="change_offer_and_demand($event)" panelClass="popupFormAdSelectClass" disableOptionCentering formControlName="fdOffer_demand">
+                            <mat-option  *ngFor="let obj of listOffers" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="fd.controls['fdOffer_demand'].invalid">Veuillez sélectionner une catégorie</mat-error>
+                    </mat-form-field>
+                </div>
+
+
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Localisation préférentielle</mat-label>
+                        <input matInput formControlName="fdPreferential_location" maxLength="30" autocomplete="off" (input)="normalize_input(fd, 'fdPreferential_location');">
+                        <mat-error *ngIf="fd.controls['fdPreferential_location'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        </mat-error>
+                        <div class="length-indicator">{{fd.controls['fdPreferential_location'].value?.length || 0}}/30</div>
+                    </mat-form-field>
+                </div>
+
+                
+                <div class="form-item input-multiple-lines" style="height:unset !important;">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Description</mat-label>
+                    
+                        <textarea matInput cdkTextareaAutosize formControlName="fdDescription" maxLength="2000" autocomplete="off" (input)="normalize_input(fd, 'fdDescription');"></textarea>
+                        <mat-error *ngIf="fd.controls['fdDescription'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        </mat-error>
+                        <div class="length-indicator">{{fd.controls['fdDescription'].value?.length || 0}}/2000</div>
+                    </mat-form-field>
+                </div>
+
+
+            </div>
+
+            <button class="submit-button" (click)="validate_form_ads();">
+                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading">done_all</mat-icon>
+                <span *ngIf="!loading">Valider</span>
+                <mat-spinner *ngIf="loading" diameter="25"  style="margin:auto;"></mat-spinner>
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+

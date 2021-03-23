@@ -109,6 +109,7 @@ import { PopupEditCoverComponent } from './popup-edit-cover/popup-edit-cover.com
 import { PopupFormComicComponent } from './popup-form-comic/popup-form-comic.component';
 import { PopupFormDrawingComponent } from './popup-form-drawing/popup-form-drawing.component';
 import { PopupFormWritingComponent } from './popup-form-writing/popup-form-writing.component';
+import { PopupFormAdComponent } from './popup-form-ad/popup-form-ad.component';
 import { PopupLikesAndLovesComponent } from './popup-likes-and-loves/popup-likes-and-loves.component';
 import { PopupSubscribingsComponent } from './popup-subscribings/popup-subscribings.component';
 import { PopupSubscribersComponent } from './popup-subscribers/popup-subscribers.component';
@@ -211,6 +212,7 @@ const shareProp = {
     SubscribingsSeeMoreComponent,
     MediaSeeMoreComicsComponent,
     PopupFormComicComponent,
+    PopupFormAdComponent,
     ArchivesComponent,
     PopupFormDrawingComponent,
     PopupFormWritingComponent,
