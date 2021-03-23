@@ -20,7 +20,7 @@ import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { NavbarService } from '../services/navbar.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
 
 declare var Swiper:any;
@@ -53,6 +53,7 @@ export class ThumbnailArtworkComponent implements OnInit {
 
 
   constructor(
+    private route: ActivatedRoute, 
     private Profile_Edition_Service:Profile_Edition_Service,
     private Subscribing_service:Subscribing_service,
     private sanitizer:DomSanitizer,
@@ -133,7 +134,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   data_retrieved=false;
   pdfSrc:SafeUrl;
   total_pages_for_writing:number;
-  profile_picture:SafeUrl;
+  profile_picture:any;
   author_name:string='';
   author_pseudo:string='';
   primary_description:string;
@@ -162,7 +163,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   date_upload_to_show: string;
   category:string;
   format:string;
-  thumbnail_picture:SafeUrl;
+  thumbnail_picture:any;
   thumbnail_picture_received=false;
 
   thumbnail_is_loaded=false;
@@ -186,7 +187,9 @@ export class ThumbnailArtworkComponent implements OnInit {
         this.format=this.item.format;
         this.subscribing_format=this.format;
         this.content_id=this.item.publication_id;
-        this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+        this.route.data.subscribe(res => {
+         
+          let r= res.user
           this.user_id=r[0].id;
           this.user_name=r[0].firstname + ' ' + r[0].lastname;
           this.primary_description=r[0].primary_description;
@@ -206,7 +209,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.profile_picture = SafeURL;
+          this.profile_picture = url;
         });
 
         this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
@@ -246,7 +249,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture = url;
                 this.thumbnail_picture_received=true;
 
                 this.initialize_swiper();
@@ -287,7 +290,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture = url;
                 this.thumbnail_picture_received=true;
 
                 this.initialize_swiper();
@@ -330,7 +333,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture = url;
                 this.thumbnail_picture_received=true;
 
                 this.initialize_swiper();
@@ -369,7 +372,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture = url;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -417,7 +420,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture = url;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -438,25 +441,47 @@ export class ThumbnailArtworkComponent implements OnInit {
         this.type_of_thumbnail=1;
         this.category=this.subscribing_category;
         this.format=this.subscribing_format;
-        this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-          this.user_id=r[0].id;
-          this.user_name=r[0].firstname + ' ' + r[0].lastname;
-          this.primary_description=r[0].primary_description;
-          this.pseudo = r[0].nickname;
-          this.type_of_profile=r[0].status;
-          if(r[0].id==this.item.authorid){
-            this.visitor_mode=false;
-            
-          }
-          else{
-            this.visitor_mode=true;
-          }
-          this.visitor_mode_retrieved=true;
-        })
+
+        if(this.in_artwork){
+          this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+            this.user_id=r[0].id;
+            this.user_name=r[0].firstname + ' ' + r[0].lastname;
+            this.primary_description=r[0].primary_description;
+            this.pseudo = r[0].nickname;
+            this.type_of_profile=r[0].status;
+            if(r[0].id==this.item.authorid){
+              this.visitor_mode=false;
+              
+            }
+            else{
+              this.visitor_mode=true;
+            }
+            this.visitor_mode_retrieved=true;
+          })
+        }
+        else{
+          this.route.data.subscribe(resp => {
+            let r= resp.user;
+            this.user_id=r[0].id;
+            this.user_name=r[0].firstname + ' ' + r[0].lastname;
+            this.primary_description=r[0].primary_description;
+            this.pseudo = r[0].nickname;
+            this.type_of_profile=r[0].status;
+            if(r[0].id==this.item.authorid){
+              this.visitor_mode=false;
+              
+            }
+            else{
+              this.visitor_mode=true;
+            }
+            this.visitor_mode_retrieved=true;
+          })
+        }
+       
         this.Profile_Edition_Service.retrieve_profile_picture( this.item.authorid).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.profile_picture = SafeURL;
+          this.profile_picture = url;
         });
 
         this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).subscribe(r=> {
@@ -499,7 +524,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture = url;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -536,7 +561,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture = url;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -578,7 +603,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture = url;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -615,7 +640,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture = url;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -661,7 +686,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.thumbnail_picture = SafeURL;
+            this.thumbnail_picture = url;
             this.thumbnail_picture_received=true;
             
             this.initialize_swiper();
@@ -714,7 +739,6 @@ export class ThumbnailArtworkComponent implements OnInit {
   
   open_account() {
     return "/account/"+this.author_pseudo+"/"+this.item.authorid;
-    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
   };
   get_link() {
     return "/main-research-style-and-tag/1/Comic/"+this.style+"/all";
@@ -870,7 +894,7 @@ export class ThumbnailArtworkComponent implements OnInit {
             this.BdSerieService.retrieve_bd_page(bd_id,1,k).subscribe(r=>{
               let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
               let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_images_to_show[r[1]]=SafeURL;
+              this.list_of_images_to_show[r[1]]= SafeURL;
               compteur++;
               if(compteur==total_pages){
                 this.list_of_images_to_show_retrieved=true;
@@ -891,7 +915,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.BdOneShotService.retrieve_bd_page(bd_id,k).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
             let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_images_to_show[r[1]]=SafeURL;
+            this.list_of_images_to_show[r[1]]= SafeURL;
             compteur++;
             if(compteur==total_pages){
               this.list_of_images_to_show_retrieved=true;
@@ -911,7 +935,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
             let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_images_to_show[r[1]]=SafeURL;
+            this.list_of_images_to_show[r[1]]= SafeURL;
             compteur++;
             if(compteur==total_pages){
               this.list_of_images_to_show_mobile=[0].concat( this.list_of_images_to_show)
@@ -926,7 +950,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         this.Drawings_Onepage_Service.retrieve_drawing_page(this.drawing_name).subscribe(r=>{
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.list_of_images_to_show[0]=SafeURL;
+          this.list_of_images_to_show[0]= SafeURL;
           this.list_of_images_to_show_mobile=[0].concat( this.list_of_images_to_show)
           this.list_of_images_to_show_retrieved=true;
           this.cd.detectChanges();

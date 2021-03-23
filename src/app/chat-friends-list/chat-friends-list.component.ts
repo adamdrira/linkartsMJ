@@ -337,25 +337,33 @@ export class ChatFriendsListComponent implements OnInit {
     
 
 
-    this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-     
+    
+    this.route.data.subscribe( resp => {
+      let l=resp.user;
       this.current_user=l[0].id;
       this.current_user_pseudo=l[0].nickname;
       this.current_user_certification=l[0].certified_account;
       this.current_user_name=l[0].firstname + ' ' + l[0].lastname;
-      
-     
+    })
+
+
+    this.route.data.subscribe( resp => {
+      let r=resp.my_pp;
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.profile_picture = SafeURL;
+      this.profile_picture_retrieved=true;
     })
 
     
-    this.Profile_Edition_Service.retrieve_my_profile_picture().subscribe(r=> {
+    /*this.Profile_Edition_Service.retrieve_my_profile_picture().subscribe(r=> {
         
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
       this.profile_picture_retrieved=true;
       
-    });
+    });*/
     
     this.sort_friends_list();
     this.sort_spams_list();
@@ -377,7 +385,8 @@ export class ChatFriendsListComponent implements OnInit {
 
  
   sort_friends_list() {
-    this.chatService.get_list_of_users_I_talk_to().subscribe(r=>{
+    this.route.data.subscribe( resp => {
+      let r=resp.chat_uitt;
       let current_user=r[0].current_user
       let friends = r[0].friends
       if(friends.length>0){
@@ -487,7 +496,8 @@ export class ChatFriendsListComponent implements OnInit {
   
   sort_friends_groups_chats_list(){
     let len =this.list_of_friends_ids.length;
-    this.chatService.get_my_list_of_groups().subscribe(l=>{
+    this.route.data.subscribe( resp => {
+      let l=resp.chat_mlog;
       let list_of_names=[]
       if(l[0].length>0){
         for(let k=0;k<l[0].length;k++){

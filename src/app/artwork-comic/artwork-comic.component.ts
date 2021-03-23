@@ -977,7 +977,6 @@ export class ArtworkComicComponent implements OnInit {
 
   open_account() {
     return "/account/"+this.pseudo+"/"+this.authorid;
-    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
   };
   get_link() {
     return "/main-research-style-and-tag/1/Comic/" + this.style + "/all";
@@ -2291,9 +2290,7 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   edit_chapters(){
-    this.add_time_of_view()
-    this.close_popup();
-    this.router.navigateByUrl( `handle-comics-chapter/${this.bd_id}`);
+    this.router.navigateByUrl( `/add-artwork/handle-comics-chapter/${this.bd_id}`);
     return;
   }
   

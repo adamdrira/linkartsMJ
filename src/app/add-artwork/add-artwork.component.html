@@ -32,8 +32,8 @@
                 <span [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">Publier une annonce</span>
             </ng-container>
     
-            <a class="profile-picture-container" *ngIf="profile_picture_retrieved" href="/account/{{pseudo}}/{{user_id}}">
-                <img class="profile-picture" [src]="profile_picture"  (load)="load_pp()" [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">
+            <a class="profile-picture-container" *ngIf="profile_picture_retrieved" href="/account/{{pseudo}}/{{user_id}}" [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">
+                <img class="profile-picture" [src]="profile_picture"  (load)="load_pp()" >
             </a>
         </div>
         
@@ -72,11 +72,12 @@
     <!--For book type artworks-->
     <div *ngIf="(opened_category$ | async)==0" style="width:100%;">
         <app-add-comic 
-            author_name={{author_name}} 
-            pseudo={{pseudo}}
-            primary_description={{primary_description}} 
+            [user_id]=user_id
+            [author_name]=author_name 
+            [primary_description]=primary_description 
+            [pseudo]=pseudo 
             [profile_picture]=profile_picture
-            
+            [type_of_account]=type_of_account
             (stepChanged)="step_changed($event);"
             (cancelled)="step_back($event);">
         </app-add-comic>
@@ -85,11 +86,11 @@
     <!--For drawing type artworks-->
     <div *ngIf="(opened_category$ | async)==1" style="width:100%;">
         <app-add-drawing 
-            author_name={{author_name}} 
-            pseudo={{pseudo}} 
-            primary_description={{primary_description}} 
+            [author_name]=author_name 
+            [primary_description]=primary_description 
+            [pseudo]=pseudo
             [profile_picture]=profile_picture
-
+            [type_of_account]=type_of_account
             (stepChanged)="step_changed($event);"
             (cancelled)="step_back($event);">
         </app-add-drawing>
@@ -98,11 +99,11 @@
     <!--For writing type artworks-->
     <div *ngIf="(opened_category$ | async)==2" style="width:100%;">
         <app-add-writing 
-            author_name={{author_name}} 
-            pseudo={{pseudo}} 
-            primary_description={{primary_description}} 
+            [author_name]=author_name 
+            [primary_description]=primary_description 
+            [pseudo]=pseudo
             [profile_picture]=profile_picture
-
+            [type_of_account]=type_of_account
             (stepChanged)="step_changed($event);"
             (cancelled)="step_back($event);">
         </app-add-writing>
@@ -111,12 +112,11 @@
     <!--For writing type artworks-->
     <div *ngIf="(opened_category$ | async)==3" style="width:100%;">
         <app-add-ad 
-            author_name={{author_name}} 
-            primary_description={{primary_description}} 
+            [author_name]=author_name 
+            [primary_description]=primary_description 
+            [pseudo]=pseudo
             [profile_picture]=profile_picture
             [id]=user_id
-            pseudo={{pseudo}}
-            
             (stepChanged)="step_changed($event);"
             (cancelled)="step_back($event);">
         </app-add-ad>

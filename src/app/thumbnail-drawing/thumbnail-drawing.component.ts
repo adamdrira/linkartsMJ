@@ -74,7 +74,7 @@ export class ThumbnailDrawingComponent implements OnInit {
   lovesnumber: string;
   thumbnail_color: string;
   pagesnumber: number;
-  profile_picture: SafeUrl;  
+  profile_picture: any;  
   date_upload: string;
   date_upload_to_show: string;
   drawing_id: number;
@@ -135,7 +135,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.profile_picture = SafeURL;
+      this.profile_picture = url;
     });
 
 

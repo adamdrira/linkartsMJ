@@ -90,7 +90,7 @@ export class AddWritingComponent implements OnInit {
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('profile_picture') profile_picture:SafeUrl;
-
+  @Input('type_of_account') type_of_account:string;
   @Input('pseudo') pseudo:string;
   visitor_name:string;
   user_id:number;
@@ -103,8 +103,6 @@ export class AddWritingComponent implements OnInit {
   REAL_step: number;
   CURRENT_step: number;
   pdfSrc:SafeUrl;
-  type_of_account:string;
-  user_retrieved=false;
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
   @ViewChild("title", {static:false}) title: ElementRef;
@@ -118,13 +116,7 @@ export class AddWritingComponent implements OnInit {
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;
     })
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.user_id = r[0].id;
-      this.pseudo = r[0].nickname;
-      this.visitor_name=r[0].firstname + ' ' + r[0].lastname;
-      this.type_of_account=r[0].type_of_account;
-      this.user_retrieved=true;
-    })
+  
 
     this.createFormControlsWritings();
     this.createFormWritings();

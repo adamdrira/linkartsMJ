@@ -13,7 +13,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!! ARTWORK CONTAINER !!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div #leftContainer class="artwork-container">
+    <div class="artwork-container">
 
         <ng-container *ngIf="!item_retrieved ">
             <div class="top-container">
@@ -78,7 +78,7 @@
             </div>
         </div>
 
-        <div class="content-container swiper-artwork-writing" [ngClass]="{'really-invisible': !item_retrieved}">
+        <div #leftContainer class="content-container swiper-artwork-writing" [ngClass]="{'really-invisible': !item_retrieved}">
           
             <div #swiperContainer class="swiper-container swiper-artwork-writing">
                 <div #swiperWrapper class="swiper-wrapper swiper-artwork-writing">

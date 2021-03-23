@@ -60,8 +60,8 @@ export class ThumbnailUserComponent implements OnInit {
   //author
   pseudo:string;
   author_name:string;
-  profile_picture: SafeUrl;
-  cover_picture: SafeUrl;
+  profile_picture: any;
+  cover_picture: any;
   primary_description:string;
   user_id: number;
   pp_is_loaded=false;
@@ -94,13 +94,13 @@ export class ThumbnailUserComponent implements OnInit {
       this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.profile_picture = SafeURL;
+        this.profile_picture = url;
       });
   
       this.Profile_Edition_Service.retrieve_cover_picture( this.user_id ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.cover_picture = SafeURL;
+        this.cover_picture = url;
       });
   
       
@@ -169,7 +169,6 @@ export class ThumbnailUserComponent implements OnInit {
   }
   open_account() {
     return "/account/"+this.pseudo+"/"+this.user_id;
-    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
   }
   open_artworks() {
     return "/account/"+this.pseudo+"/"+this.user_id+"/artworks";

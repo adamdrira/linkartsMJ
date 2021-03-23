@@ -23,10 +23,12 @@
 
         <div class="left-container" [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
 
-            <img *ngIf="thumbnail_picture_received" #image [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'really-invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
+            <img  *ngIf="thumbnail_picture_received" #image [lazyLoad]="thumbnail_picture" loading="lazy" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
 
+           <!-- <img *ngIf="thumbnail_picture_received" #image [lazyLoad]="thumbnail_picture" loading="lazy" (load)="load_thumbnail()" [ngClass]="{'really-invisible':!thumbnail_is_loaded}" class="thumbnail-picture"> --> 
+           <div class="skeleton swiper-thumbnails shiny" *ngIf="!thumbnail_picture_received"></div>
 
-            <div class="skeleton swiper-thumbnails shiny" *ngIf="(!thumbnail_is_loaded)"></div>
+           <!--  <div class="skeleton swiper-thumbnails shiny" *ngIf="!thumbnail_is_loaded"></div>-->
 
         </div>
 
@@ -255,13 +257,12 @@
             <!--Author container-->
             <!--********************-->
             <div class="author-container">
-                <a [routerLink]=open_account() (click)="stop($event)" class="left-container"
+                <a [routerLink]=open_account() (click)="stop($event)" class="left-container" style="border-radius: 50px;" [ngClass]="{'shiny':!pp_is_loaded}"
                 matTooltip="Voir le profil"
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
-                    <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'really-invisible':!pp_is_loaded}">
-                    <div *ngIf="!pp_is_loaded" class="shiny"></div>
+                    <img [lazyLoad]="profile_picture" loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
                 </a>
                 <div class="right-container">
                     <span class="author-name" *ngIf="author_name!=''">

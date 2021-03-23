@@ -1,10 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
-import {Renderer2} from '@angular/core';
-import { Subscribing_service } from '../services/subscribing.service';
 import { Story_service } from '../services/story.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {  DomSanitizer } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
 import { PopupStoriesComponent } from '../popup-stories/popup-stories.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -30,11 +27,8 @@ declare var Swiper:any;
 export class StoriesComponent implements OnInit {
 
   constructor(
-    private rd: Renderer2,
-    private Subscribing_service:Subscribing_service,
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
-    private Router:Router,
     private cd:ChangeDetectorRef,
     public dialog: MatDialog,
     private Story_service:Story_service,
@@ -186,7 +180,7 @@ export class StoriesComponent implements OnInit {
           this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_users[k]).subscribe(t=> {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_pictures_by_ids[this.list_of_users[k]]=SafeURL;
+            this.list_of_pictures_by_ids[this.list_of_users[k]]=url;
             compteur_pp_rerieved++;
             if(compteur_pp_rerieved==compt_found_stories){
               this.sort_list_of_profile_pictures();
@@ -196,7 +190,7 @@ export class StoriesComponent implements OnInit {
           this.Profile_Edition_Service.retrieve_cover_picture( this.list_of_users[k] ).subscribe(v=> {
             let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_covers_by_ids[this.list_of_users[k]]=SafeURL;
+            this.list_of_covers_by_ids[this.list_of_users[k]]=url;
             compteur_covers_retrieved++;
             if(compteur_covers_retrieved==compt_found_stories){
               this.sort_list_of_covers();
@@ -231,14 +225,14 @@ export class StoriesComponent implements OnInit {
             this.Profile_Edition_Service.retrieve_my_profile_picture().subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_profile_pictures[0]=SafeURL;
+              this.list_of_profile_pictures[0]=url;
               pp_found=true;
             });
 
             this.Profile_Edition_Service.retrieve_cover_picture( this.list_of_users[k] ).subscribe(v=> {
               let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_cover_pictures[0]=SafeURL;
+              this.list_of_cover_pictures[0]=url;
               cover_found=true;
             });
 

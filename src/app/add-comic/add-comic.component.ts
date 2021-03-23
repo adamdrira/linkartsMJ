@@ -82,12 +82,12 @@ export class AddComicComponent implements OnInit {
   
   @ViewChild('nextButton', { read: ElementRef }) nextButton:ElementRef;
 
-
+  @Input('user_id') user_id:number;
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
   @Input('profile_picture') profile_picture:SafeUrl;
-  
+  @Input('type_of_account') type_of_account:string;
   @Output() started = new EventEmitter<any>();
   @Output() cancelled = new EventEmitter<any>();
   
@@ -97,8 +97,6 @@ export class AddComicComponent implements OnInit {
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
-  type_of_account:string;
-  user_retrieved=false;
 
   conditions:any;
   device_info='';
@@ -109,10 +107,7 @@ export class AddComicComponent implements OnInit {
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;
     })
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.type_of_account=r[0].type_of_account;
-      this.user_retrieved=true;
-    })
+    
     this.createFormControls00();
     this.createForm00();
 
@@ -384,9 +379,8 @@ export class AddComicComponent implements OnInit {
   }
   
   cancel_all() {
-      this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
-        console.log(r)
-      });
+    this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+    });
   }
 
 

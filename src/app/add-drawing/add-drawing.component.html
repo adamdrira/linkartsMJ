@@ -38,7 +38,7 @@
             </div>
 
 
-            <form [formGroup]="fd" novalidate  [ngClass]="{'invisible':!user_retrieved}">
+            <form [formGroup]="fd" novalidate >
 
                 <div class="form-container">
                     <div class="form-container-name">
@@ -209,9 +209,9 @@
 
             <app-swiper-upload-dessin-unique 
 
-                author_name={{author_name}} 
-                primary_description={{primary_description}}
-                pseudo={{pseudo}}
+            [author_name]=author_name 
+            [primary_description]=primary_description 
+            [pseudo]=pseudo
                 [profile_picture]=profile_picture
                 [drawing_id]=drawing_id
                 [name]=fd.value.fdTitle
@@ -256,9 +256,9 @@
 
             <app-swiper-upload-artbook 
 
-                author_name={{author_name}} 
-                primary_description={{primary_description}}
-                pseudo={{pseudo}}
+            [author_name]=author_name 
+            [primary_description]=primary_description 
+            [pseudo]=pseudo
                 [profile_picture]=profile_picture
                 [drawing_id]=drawing_id
                 [name]=fd.value.fdTitle

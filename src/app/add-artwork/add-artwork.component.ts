@@ -15,6 +15,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
 import * as WebFont from 'webfontloader';
+import { R } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-add-artwork',
@@ -66,6 +67,7 @@ export class AddArtworkComponent implements OnInit {
   primary_description:string;
   profile_picture:SafeUrl;
   pseudo:string;
+  type_of_account:string;
   profile_picture_retrieved=false;
   logo_loaded=false;
   pp_loaded=false;
@@ -95,38 +97,27 @@ export class AddArtworkComponent implements OnInit {
     this._upload.category.next( this.route.snapshot.data['section'] );
     this.cd.detectChanges();
 
-    
-    this.get_user_data();
+    this.route.data.subscribe(resp => {
+      let l=resp.user;
+      this.user_id = l[0].id;
+      this.author_name = l[0].firstname + ' ' + l[0].lastname;
+      this.primary_description=l[0].primary_description;
+      this.pseudo=l[0].nickname;
+      this.type_of_account=l[0].type_of_account;
+    });
+
+    this.route.data.subscribe( resp => {
+      let r = resp.my_pp;
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.profile_picture = SafeURL;
+      this.profile_picture_retrieved=true;
+    })
 
     
   }
 
   show_icon=false;
-  
-  
-
-  get_user_data() {
-    this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-
-      this.user_id = l[0].id;
-
-      this.Profile_Edition_Service.retrieve_profile_data( l[0].id ).subscribe(r=>{
-        this.author_name = r[0].firstname + ' ' + r[0].lastname;
-        this.primary_description=r[0].primary_description;
-        this.pseudo=r[0].nickname;
-      });
-
-      this.Profile_Edition_Service.retrieve_profile_picture( l[0].id ).subscribe(r=> {
-        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.profile_picture = SafeURL;
-        this.profile_picture_retrieved=true;
-      });
-      
-    });
-  }
-
-
   load_logo(){
     this.logo_loaded=true;
   }

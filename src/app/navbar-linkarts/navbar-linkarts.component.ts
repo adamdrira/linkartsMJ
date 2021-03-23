@@ -306,7 +306,6 @@ export class NavbarLinkartsComponent implements OnInit {
 
     this.AuthenticationService.tokenCheck().subscribe(r=>{
       if(r!=this.current_user_type &&  this.change_number<1){
-
         this.Profile_Edition_Service.get_current_user().subscribe(r=>{
           if(r[0]){
             if(r[0].status=="account" || r[0].status=="suspended"){

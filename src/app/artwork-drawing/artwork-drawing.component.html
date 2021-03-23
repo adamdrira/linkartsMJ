@@ -13,7 +13,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!! ARTWORK CONTAINER !!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div #leftContainer class="artwork-container">
+    <div class="artwork-container">
 
 
         <ng-container *ngIf="!item_retrieved ">
@@ -91,7 +91,7 @@
         </div>
 
 
-        <div class="content-container" [ngClass]="{'really-invisible': !item_retrieved }">
+        <div #leftContainer class="content-container" [ngClass]="{'really-invisible': !item_retrieved }">
             <div class="thumbnails-container" *ngIf="thumbnails==true" [@enterFromLeft]>
                 <div class="thumbnails-name">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="thumbnails-icon">apps</mat-icon>

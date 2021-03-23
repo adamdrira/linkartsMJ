@@ -19,7 +19,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 import { DOCUMENT } from '@angular/common';
 import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -57,6 +57,7 @@ export class ThumbnailAdComponent implements OnInit {
     private Ads_service:Ads_service,
     private Profile_Edition_Service:Profile_Edition_Service,
     private Reports_service:Reports_service,
+    private route: ActivatedRoute, 
     private cd:ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document,
     ) { 
@@ -137,7 +138,7 @@ export class ThumbnailAdComponent implements OnInit {
   author_name: string='';
   pseudo: string;
   primary_description: string;
-  profile_picture: SafeUrl;
+  profile_picture: any;
   @Input() item: any;
   @Input() now_in_seconds: number;
   @Input() for_ad_page: boolean;
@@ -147,7 +148,7 @@ export class ThumbnailAdComponent implements OnInit {
 
 
   date_to_show: string;
-  thumbnail_picture:SafeUrl;
+  thumbnail_picture:any;
   list_of_attachments_name:any[]=[];
   list_of_pictures:any[]=[];
   list_of_attachments:any[]=[];
@@ -188,20 +189,35 @@ export class ThumbnailAdComponent implements OnInit {
     this.list_of_reporters=this.item.list_of_reporters;
     this.author_id=this.item.id_user;
     
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.id_user=r[0].id;
-      if(r[0].id==this.item.id_user){
-        this.visitor_mode=false;
-      }
-      this.type_of_profile=r[0].status;
-      this.visitor_mode_retrieved=true;
-      this.check_archive()
-    });
+    if(this.in_ad_page){
+      this.Profile_Edition_Service.get_current_user().subscribe(r => {
+        this.id_user=r[0].id;
+        if(r[0].id==this.item.id_user){
+          this.visitor_mode=false;
+        }
+        this.type_of_profile=r[0].status;
+        this.visitor_mode_retrieved=true;
+        this.check_archive()
+      });
+    }
+    else{
+      this.route.data.subscribe(resp => {
+        let r= resp.user;
+        this.id_user=r[0].id;
+        if(r[0].id==this.item.id_user){
+          this.visitor_mode=false;
+        }
+        this.type_of_profile=r[0].status;
+        this.visitor_mode_retrieved=true;
+        this.check_archive()
+      });
+    }
+  
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.profile_picture = SafeURL;
+      this.profile_picture = url;
     });
 
     this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
@@ -221,7 +237,7 @@ export class ThumbnailAdComponent implements OnInit {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.thumbnail_picture_received=true;
-      this.thumbnail_picture = SafeURL;
+      this.thumbnail_picture = url;
       this.cd.detectChanges();
       if(this.for_ad_page){
         if( this.targets && window.innerWidth<=1100 ) {
@@ -341,7 +357,7 @@ export class ThumbnailAdComponent implements OnInit {
             this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_pictures[l[1]] = SafeURL;
+              this.list_of_pictures[l[1]] = url;
               u++
               if(u==item.number_of_attachments){
                 let length1=this.list_of_pictures.length;
@@ -396,7 +412,7 @@ export class ThumbnailAdComponent implements OnInit {
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_pictures[l[1]] = SafeURL;
+              this.list_of_pictures[l[1]] = url;
               u++
               if(u==item.number_of_attachments){
                 let length1=this.list_of_pictures.length;
@@ -451,7 +467,7 @@ export class ThumbnailAdComponent implements OnInit {
             this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_pictures[l[1]] = SafeURL;
+              this.list_of_pictures[l[1]] = url;
               u++
               if(u==item.number_of_attachments){
                 let length1=this.list_of_pictures.length;
@@ -506,7 +522,7 @@ export class ThumbnailAdComponent implements OnInit {
             this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_pictures[l[1]] = SafeURL;
+              this.list_of_pictures[l[1]] = url;
               u++
               if(u==item.number_of_attachments){
                 let length1=this.list_of_pictures.length;
@@ -561,7 +577,7 @@ export class ThumbnailAdComponent implements OnInit {
             this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_pictures[l[1]] = SafeURL;
+              this.list_of_pictures[l[1]] = url;
               u++
               if(u==item.number_of_attachments){
                 let length1=this.list_of_pictures.length;

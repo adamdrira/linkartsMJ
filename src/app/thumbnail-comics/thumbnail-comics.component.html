@@ -17,7 +17,7 @@
                                     <div class="element-book border-recto">
 
                                         <div class="miniature" [ngClass]="{'shiny':!imageloaded}" >
-                                                <img [src]="thumbnail_picture" (load)="loaded()" [ngClass]="{'invisible':!imageloaded}">
+                                                <img [lazyLoad]="thumbnail_picture"  loading="lazy" (load)="loaded()" [ngClass]="{'invisible':!imageloaded}">
                                         </div>
 
 
@@ -33,7 +33,7 @@
                                             <!--********************-->
                                             <div class="author-container">
                                                 <div class="left-container" style="border-radius: 50px;" [ngClass]="{'shiny':!pp_is_loaded}">
-                                                    <img [src]="profile_picture" (load)="pp_loaded()"  [ngClass]="{ 'invisible':!pp_is_loaded}">
+                                                    <img [lazyLoad]="profile_picture"  loading="lazy" (load)="pp_loaded()"  [ngClass]="{ 'invisible':!pp_is_loaded}">
                                                 </div>
                                                 <div class="right-container">
                                                     <span class="author-name">

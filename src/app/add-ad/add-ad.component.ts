@@ -195,11 +195,8 @@ export class AddAdComponent implements OnInit {
         comment_id:0,
       }
       this.chatService.messages.next(message_to_send);
-      //this.display_loading=false;
       this.can_delete = false;
       this.router.navigate([`/account/${this.pseudo}/${this.id}`]);
-      //window.location.href = `/account/${this.pseudo}/${this.id}`;
-      
     }) 
     
   }

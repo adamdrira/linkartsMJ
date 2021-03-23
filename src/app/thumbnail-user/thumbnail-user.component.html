@@ -18,12 +18,12 @@
         </ng-container>
 
         <div class="cover-picture" >
-            <img *ngIf="display_thumbnail " [src]=cover_picture (load)="load_cover()" [ngClass]="{'invisible':!cover_is_loaded}">
+            <img *ngIf="display_thumbnail"  [lazyLoad]="cover_picture"  loading="lazy" (load)="load_cover()" [ngClass]="{'invisible':!cover_is_loaded}">
         </div>
 
         <div class="absolute-profile-data" >
             <div class="profile-picture" [ngClass]="{'shiny':!pp_is_loaded || !display_thumbnail}">
-                <img  [src]=profile_picture (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                <img [lazyLoad]="profile_picture"  loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
             </div>
     
             <div class="profile-name"  *ngIf="display_thumbnail ">

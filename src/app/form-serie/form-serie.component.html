@@ -4,10 +4,6 @@
 
     <div class="chapters-title">
         <span>Liste des chapitres</span>
-        <!--<div class="add-chapter-button" (click)="add_series_chapter();">
-            <div class="plus-icon"></div>
-            <span>Ajouter</span>
-        </div>-->
         
         <button class="add-chapter-button style0" (click)="add_series_chapter();">
             <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
@@ -28,7 +24,6 @@
                     <span>Chapitre {{element.chapter + 1}}</span>
                 </div>
                 <div class="chapter-name form-item2" (click)="stop($event);">
-                    <!--<span *ngIf="edit_name!=i"> {{element.name}} </span>-->
                     <mat-form-field floatLabel='never' class="disabled" *ngIf="edit_name!=i">
                         <mat-label>Nom du chapitre</mat-label>
                         

@@ -82,7 +82,7 @@ export class AddDrawingComponent implements OnInit {
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
   @Input('profile_picture') profile_picture:SafeUrl;
-  
+  @Input('type_of_account') type_of_account:string;
   @Output() started = new EventEmitter<any>();
   @Output() cancelled = new EventEmitter<any>();
   
@@ -91,8 +91,6 @@ export class AddDrawingComponent implements OnInit {
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
-  type_of_account:string;
-  user_retrieved=false;
   conditions:any;
   device_info='';
   ngOnInit() {
@@ -101,10 +99,6 @@ export class AddDrawingComponent implements OnInit {
     window.scroll(0,0);
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;
-    })
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.type_of_account=r[0].type_of_account;
-      this.user_retrieved=true;
     })
     this.createFormControlsDrawings();
     this.createFormDrawings();

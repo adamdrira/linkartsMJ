@@ -68,6 +68,7 @@
 
 
  .chapters-list {
+    overflow-y: auto;
     background-color:rgb(250,250,250);
     height:fit-content;
     max-height: calc( 80vh - 50px );

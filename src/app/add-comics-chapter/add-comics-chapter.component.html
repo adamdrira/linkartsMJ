@@ -1,20 +1,24 @@
 
-<div class="container-fluid add-artwork">
+<div *ngIf="page_not_found">
+  page not found
+</div>
+
+<div class="container-fluid add-artwork" *ngIf="data_retrieved">
 
     <div class="fake-navbar">
-        <div class="navbar-container category1 step0" [ngClass]="{'invisible':!data_retrieved}">
+        <div class="navbar-container category1 step0">
             <a href="/" class="logo-container"  >
                 <img class="logo" (load)="load_logo()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
             </a>
             <span>Gestion des chapitres</span>
             <a class="profile-picture-container" href="/account/{{pseudo}}/{{user_id}}"  >
-                <img class="profile-picture" (load)="load_pp()" [src]="profile_picture" *ngIf="profile_picture"  [ngClass]="{'invisible':!pp_is_loaded}">
+                <img class="profile-picture" (load)="load_pp()" [src]="profile_picture"  [ngClass]="{'invisible':!pp_is_loaded}">
             </a>
         </div>
     </div>
     
 
-    <div class="form" *ngIf="list_of_chapters_retrieved && comics_data_retrieved">
+    <div class="form" >
 
         
         <div class="form-container">
@@ -26,10 +30,11 @@
 
         <app-form-serie 
         form_number=1
+        [user_id]="visitor_id"
+        [pseudo]="pseudo"
         [bdtitle]="comics_data.title"
         [bd_id_add_comics]="bd_id"
         [list_of_chapters]="list_of_chapters"
-        [chapter]="chapter_test"
         ></app-form-serie>
 
     </div>

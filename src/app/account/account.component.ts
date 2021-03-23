@@ -374,11 +374,13 @@ export class AccountComponent implements OnInit {
       this.primary_description_extended_privacy=l[0].primary_description_extended;
     })
 
-    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
+    this.route.data.subscribe(resp => {
+      let r=resp.user_pp;
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
-    });
+    })
+    
 
     this.Story_service.check_stories_for_account(this.user_id).subscribe(r=>{
       if(r[0] && r[0].story_found){
@@ -393,15 +395,16 @@ export class AccountComponent implements OnInit {
       this.story_retrieved=true;
     })
 
-    this.Profile_Edition_Service.retrieve_cover_picture( this.user_id ).subscribe(r=> {
+    this.route.data.subscribe(resp => {
+      let r=resp.user_cp;
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.cover_picture = SafeURL;
-    });
-
+    })
    
 
-    this.Profile_Edition_Service.retrieve_profile_data_and_check_visitor( this.user_id ).subscribe( s => {
+    this.route.data.subscribe( resp => {
+      let s = resp.user_data_visitor;
       let user=s[0].user;
       this.visitor_id=s[0].visitor.id
       this.visitor_name=s[0].visitor.nickname;

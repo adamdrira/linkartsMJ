@@ -103,7 +103,6 @@ export class ThumbnailComicsComponent implements OnInit {
 
   marks_retrieved=false;
 
-
   show_icon=false;
   ngOnInit() {
     this.user_id = this.item.authorid
@@ -135,7 +134,7 @@ export class ThumbnailComicsComponent implements OnInit {
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.profile_picture = SafeURL;
+      this.profile_picture = url;
     });
 
 
@@ -143,7 +142,7 @@ export class ThumbnailComicsComponent implements OnInit {
       this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.thumbnail_picture = SafeURL;
+        this.thumbnail_picture = url;
       });  
 
       this.NotationService.get_content_marks("comic", 'one-shot', this.bd_id,0).subscribe(r=>{
@@ -159,7 +158,7 @@ export class ThumbnailComicsComponent implements OnInit {
       this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.thumbnail_picture = SafeURL;
+        this.thumbnail_picture = url;
         
       });
       
@@ -326,6 +325,7 @@ export class ThumbnailComicsComponent implements OnInit {
 
   pp_is_loaded=false;
   pp_loaded(){
+   
     this.pp_is_loaded=true;
     this.cd.detectChanges()
   }

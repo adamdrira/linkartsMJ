@@ -80,7 +80,8 @@ export class HomeLinkartsComponent implements OnInit {
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+    this.route.data.subscribe(resp => {
+      let r= resp.user;
       
       if(r[0]){
         this.type_of_profile=r[0].status;

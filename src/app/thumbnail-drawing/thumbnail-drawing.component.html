@@ -5,7 +5,7 @@
     <a class="click-popup" (click)="open_popup($event)"  href="/artwork-drawing/{{format}}/{{this.title}}/{{this.drawing_id}}" target="_blank" [ngClass]="{ 'for_news':for_news=='yes','shadow-news':for_news=='yes'}">
         <div #final_thumbnail class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();" [ngClass]="{'shiny':!show_picture && !prevent_shiny,'for_news':for_news=='yes'}">
 
-            <img [src]="thumbnail_picture" (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'min-height-news':for_news=='yes'}">
+            <img [src]="thumbnail_picture"  (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'min-height-news':for_news=='yes'}">
             <div class="display-on-hover" [ngClass]="{'small-display-on-hover':small_thumbnail,'visible':showDrawingDetails,'invisible':!marks_retrieved}" *ngIf="showDrawingDetails" [@enterAnimation]>
                 
                 <!--********************-->
@@ -23,7 +23,7 @@
                 <!--********************-->
                 <div class="author-container"  [ngClass]="{'small-author-container':small_thumbnail}">
                     <div class="left-container"  [ngClass]="{ 'small-left-container':small_thumbnail,'invisible':!pp_is_loaded}">
-                        <img [src]="profile_picture" (load)="pp_loaded()" >
+                        <img [lazyLoad]="profile_picture"  loading="lazy" (load)="pp_loaded()" >
                     </div>
                     <div class="right-container" [ngClass]="{'small-right-container':small_thumbnail}">
                         <span class="author-name" [ngClass]="{'small-author-name':small_thumbnail}">

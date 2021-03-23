@@ -35,7 +35,7 @@ value:string="add";
 
 
   ngOnChanges( changes ) {
-    if( changes.chapter && this.initialized ) {
+    if( changes.chapter && this.initialized && this.form_number==0) {
       this.componentRef[ 0 ].name = this.chapter;
     }
   }
@@ -70,7 +70,8 @@ value:string="add";
 
   subscription: Subscription;
 
-  
+  @Input() user_id:number;
+  @Input() pseudo:string ;
   @Input() bd_id: number;
   @Input() chapter: string;
   @Input() form_number: number;
@@ -89,9 +90,6 @@ value:string="add";
   initialized: boolean;
 
   form: FormGroup;
-  user_id:number;
-  pseudo:string;
-  visitor_name:string;
 
   @ViewChild("cancelDeleteChapter", {static:false}) cancelDeleteChapter:ElementRef;
   @ViewChild("continueDeleteChapter", {static:false}) continueDeleteChapter:ElementRef;
@@ -102,17 +100,15 @@ value:string="add";
   display_chapters=false;
   show_icon=false;
   ngOnInit() {
-    let THIS=this;
+    console.log("for se")
+    console.log(this.user_id)
     window.scroll(0,0);
     if(this.form_number==1){
       this.current_chapter==this.list_of_chapters[this.list_of_chapters.length-1].chapter_number-1;
-      this.bd_id= this.bd_id_add_comics
+      this.bd_id= this.bd_id_add_comics;
+      
     }
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.user_id = r[0].id;
-      this.pseudo = r[0].nickname;
-      this.visitor_name=r[0].nickname;
-    })
+
     
  
     this.form = new FormGroup({
@@ -137,10 +133,8 @@ value:string="add";
         this.list_of_new_chapters[i]=false;
         this.addChapter();
         (<FormArray>this.form.get('chapters')).controls[i].setValue( this.list_of_chapters[i].title );
-        if(i==this.list_of_chapters.length-1){
-          this.display_chapters=true;
-        }
       }
+      this.display_chapters=true;
     }
     
 
@@ -477,11 +471,11 @@ value:string="add";
         this.display_loading=true;
         this.bdSerieService.validate_bd_serie(this.bd_id,this.componentRef.length).subscribe(r=>{
            this.Subscribing_service.validate_content("comic","serie",r[0],r[1]).subscribe(l=>{
-            this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length,"add",false,0).subscribe(l=>{
+            this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length,"add",false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"add_publication",
-                id_user_name:this.visitor_name,
+                id_user_name:this.pseudo,
                 id_user:this.user_id, 
                 publication_category:'comic',
                 publication_name:this.bdtitle,
@@ -541,11 +535,11 @@ value:string="add";
         }
         else{
           this.Subscribing_service.extend_serie_and_update_content(this.bd_id,this.list_of_chapters.length).subscribe(u=>{
-            this.NotificationsService.add_notification(type,this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,compt,"add",false,0).subscribe(l=>{
+            this.NotificationsService.add_notification(type,this.user_id,this.pseudo,null,'comic',this.bdtitle,'serie',this.bd_id,compt,"add",false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:type,
-                id_user_name:this.visitor_name,
+                id_user_name:this.pseudo,
                 id_user:this.user_id, 
                 publication_category:'comic',
                 publication_name:this.bdtitle,

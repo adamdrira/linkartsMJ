@@ -32,7 +32,7 @@
             </div>
             
             
-            <form [formGroup]="f00" novalidate [ngClass]="{'invisible':!user_retrieved}">
+            <form [formGroup]="f00" novalidate >
                 <div class="form-container">
                     <div class="form-container-name">
                         <span>Description du projet</span>
@@ -295,6 +295,8 @@
             
             <app-form-serie 
             form_number=0
+            [user_id]="user_id"
+            [pseudo]="pseudo"
             [bd_id]=bd_id
             [bdtitle]="f00.value.f00Title"
             [chapter]=f00.value.f00SerieFirstChapter></app-form-serie>
