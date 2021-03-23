@@ -200,7 +200,7 @@ wss.on('connection', (ws, req)=>{
                 id_user:id_friend,
                 createdAt: {[Op.gte]: yesterday}
               }).then(r=>{
-                if(r){
+                if(!r){
                   chat_seq.list_of_chat_emails.findOne({
                     where:{
                       id_user:id_user,
