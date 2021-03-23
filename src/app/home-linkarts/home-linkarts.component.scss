@@ -547,8 +547,28 @@
     margin: 31px auto 10px auto;
   }
 
-  .logos-container {
+  .logos-container.homeLinkarts {
     margin:0px auto 20px auto;
+
+    a.linkedin {
+      margin: 0px 10px;
+      ::ng-deep fa-icon svg {
+        color: rgb(40, 104, 178);
+      }
+    }
+    a.instagram {
+      margin: 0px 10px;
+      ::ng-deep fa-icon svg {
+        color: #de5877;
+      }
+    }
+    a.facebook {
+      margin: 0px 10px;
+      ::ng-deep fa-icon svg {
+        color: rgb(60, 90, 154);
+      }
+    }
+
   }
 
   > span {

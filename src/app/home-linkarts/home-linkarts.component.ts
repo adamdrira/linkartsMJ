@@ -10,6 +10,11 @@ import { SignupComponent } from '../signup/signup.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 
+import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
+import { faInstagram } from '@fortawesome/free-brands-svg-icons';
+
+
 declare var Swiper: any;
 
 @Component({
@@ -40,6 +45,10 @@ export class HomeLinkartsComponent implements OnInit {
     this.navbar.show();
     
   }
+
+  faLinkedin = faLinkedin;
+  faFacebookSquare = faFacebookSquare;
+  faInstagram = faInstagram;
 
   @ViewChild("homeLinkartsSelect") homeLinkartsSelect;
 

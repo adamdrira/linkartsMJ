@@ -1,3 +1,5 @@
+<img src="../../assets/img/svg/Logo-LA3-18-01.svg" class="invisible invisible-height">
+
 <div class="home-linkarts" *ngIf="type_of_profile_retrieved">
 
     <div class="categories-container" [ngClass]="{'visitor': type_of_profile!='account' }">
@@ -158,7 +160,7 @@
 
 
 
-<div class="footer">
+<div class="footer" *ngIf="type_of_profile_retrieved || category_index!=-1">
     <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
 
     <div class="links-container">
@@ -182,16 +184,27 @@
 
     <div class="horizontal-bar"></div>
 
-    <div class="logos-container">
-        <button mat-icon-button style="outline: none !important;" shareButton="linkedin" #msgBtn="shareButton" [style.color]="msgBtn?.color">
+    <div class="logos-container homeLinkarts">
+
+        <a href="http://www.instagram.com/linkarts.fr" target="_blank" class="instagram">
+            <fa-icon [icon]="faInstagram" size="lg"></fa-icon>
+        </a>
+        <a href="http://www.linkedin.com/company/linkarts" target="_blank" class="linkedin">
+            <fa-icon [icon]="faLinkedin" size="lg"></fa-icon>
+        </a>
+        <!--ajouter instagram-->
+        <a href="http://www.facebook.com/linkarts.fr" target="_blank" class="facebook">
+            <fa-icon [icon]="faFacebookSquare" size="lg"></fa-icon>
+        </a>
+
+        
+
+        <!--<button mat-icon-button style="outline: none !important;" shareButton="linkedin" #msgBtn="shareButton" [style.color]="msgBtn?.color">
             <fa-icon [icon]="msgBtn.icon" size="lg"></fa-icon>
-        </button>
-        <button mat-icon-button style="outline: none !important;" shareButton="instagram" #instaBtn="shareButton" [style.color]="instaBtn?.color">
-            <fa-icon *ngIf="instaBtn" [icon]="instaBtn.icon" size="lg"></fa-icon>
         </button>
         <button mat-icon-button style="outline: none !important;" shareButton="facebook" #faceBtn="shareButton" [style.color]="faceBtn?.color">
             <fa-icon *ngIf="faceBtn" [icon]="faceBtn.icon" size="lg"></fa-icon>
-        </button>
+        </button>-->
     </div>
 
     <span>LinkArts © 2021</span>
