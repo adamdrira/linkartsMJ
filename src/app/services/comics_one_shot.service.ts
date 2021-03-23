@@ -86,6 +86,7 @@ export class BdOneShotService {
 
    validate_bd(bd_id,page_number){
     return this.httpClient.post('routes/validation_upload_bd_oneshot/',{bd_id:bd_id, page_number:page_number},{withCredentials:true}).pipe(map(information=>{
+      return information
      }));
     }
 
