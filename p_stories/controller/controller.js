@@ -26,8 +26,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         if(!current_user){
             return res.status(401).json({msg: "error"});
           }
-        console.log("current user stry");
-        console.log(current_user)
+        
         var file_name='';
         const PATH2= './data_and_routes/stories';
         const Op = Sequelize.Op;
@@ -40,7 +39,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                 createdAt: {[Op.gte]: yesterday}
             },
         }).catch(err => {
-            console.log(err)
+            
             res.status(500).send([{error:err}])
         }).then(num=>{
             if(num>15){
@@ -68,9 +67,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                 var mm = String(today.getMonth() + 1).padStart(2, '0'); 
                 var yyyy = today.getFullYear();
                 let Today = yyyy + mm + dd + hh+ mi + ss + ms;
-                
                 file_name = current_user + '-' + Today + '.svg';
-                console.log(file_name)
                 cb(null, current_user + '-' + Today + '.svg');
                 }
             });
@@ -81,13 +78,10 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
     
             upload_story(req, res, function(err){
                 if(err){
-                    console.log(err)
+                    
                     res.status(500).send([{error:err}])
                 }
                 else{
-                    console.log("upload story")
-                    console.log(req.files);
-                    console.log(res.files);
                     (async () => {
                         let filename = "./data_and_routes/stories/" + file_name ;
                         const files = await imagemin([filename], {
@@ -98,18 +92,15 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                             })
                         ]
                         });
-    
-                        console.log("creation")
                         list_of_stories.create({
                             "id_user": current_user,
                             "status":"public",
                             "file_name": file_name,
                             "views_number": 0,
                         }).catch(err => {
-                            console.log(err);	
+                            ;	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(stories=>{
-                            console.log(stories)
                             res.status(200).send([stories]);
                         });
                     })();
@@ -129,7 +120,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
 
     
     router.post('/check_stories_for_account', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -140,7 +131,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("check_stories_for_account")
       
         const current_user = get_current_user(req.cookies.currentUser);
         const user_id=req.body.user_id;
@@ -163,7 +153,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ],
             })
             .catch(err => {
-                console.log(err);			
+                ;			
             }).then(stories =>  {
 
                 if(stories.length>0){
@@ -212,7 +202,7 @@ console.log("checking current: " + req.headers['authorization'] );
     })
     
     router.post('/get_stories_and_list_of_users', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -223,8 +213,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("get_stories_and_list_of_users")
-      
         const current_user = get_current_user(req.cookies.currentUser);
         let list_of_users=[current_user];
         const Op = Sequelize.Op;
@@ -249,7 +237,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
         })
         .catch(err => {
-            console.log(err);	
+            ;	
             res.status(500).json({msg: "error", details: err});		
         }).then(users =>  {
 
@@ -259,7 +247,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
                 for(let i=0;i<list_of_users.length;i++){
                     let user_id= list_of_users[i];
-                    console.log(user_id);
                     list_of_stories.findAll({
                     where: {
                         id_user: user_id,
@@ -271,7 +258,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         ],
                     })
                     .catch(err => {
-                        console.log(err);			
+                        ;			
                     }).then(stories =>  {
                         
                         if(stories.length>0){
@@ -315,7 +302,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                                 
                                         },
                                     }).catch(err => {
-                                        console.log(err);		
+                                        ;		
                                     }).then(number=>{
                                         list_of_stories_s[i]=stories;
                                         list_of_states[i]=false;
@@ -338,7 +325,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                                 
                                         },
                                         }).catch(err => {
-                                            console.log(err);		
+                                            ;		
                                         }).then(number=>{
                                             list_of_stories_s[i]=stories;
                                             list_of_states[i]=true;
@@ -383,7 +370,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_stories_by_user_id/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -404,7 +391,6 @@ console.log("checking current: " + req.headers['authorization'] );
         var last_week = new Date();
         last_week.setDate(last_week.getDate() - 7);
         const user_id= parseInt(req.params.user_id);
-        console.log(user_id);
             list_of_stories.findAll({
             where: {
                 id_user: user_id,
@@ -416,7 +402,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ],
             })
             .catch(err => {
-                console.log(err);	
+                ;	
                 res.status(500).json({msg: "error", details: err});		
             }).then(stories =>  {
                 
@@ -438,11 +424,6 @@ console.log("checking current: " + req.headers['authorization'] );
                           createdAt: {[Op.gte]: yesterday}
                         },
                       });
-                      console.log("get_stories_by_user_id")
-                      console.log(current_user)
-                      console.log(user_id)
-                      console.log(number_of_stories)
-                      console.log(number_of_stories_seen)
                     if ((number_of_stories==number_of_stories_seen && number_of_stories>0) || number_of_stories==0){
                         
                         list_of_views.count({
@@ -454,7 +435,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                   
                             },
                           }).catch(err => {
-                            console.log(err);	
+                            ;	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(number=>{
                             res.status(200).send([{stories:stories,state_of_views:false,number_of_views:number}])
@@ -471,7 +452,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                   
                             },
                           }).catch(err => {
-                                console.log(err);	
+                                ;	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(number=>{
                                 res.status(200).send([{stories:stories,state_of_views:true,number_of_views:number}])
@@ -484,7 +465,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_all_my_stories', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -508,7 +489,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ]
                 })
                 .catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(stories =>  {
                 res.status(200).send([stories]);
@@ -516,7 +497,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/hide_story', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -536,7 +517,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
                 })
                 .catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(story =>  {
                     story.update({
@@ -547,7 +528,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/check_if_all_stories_seen/:user_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -563,8 +544,6 @@ console.log("checking current: " + req.headers['authorization'] );
         var yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         const user_id= parseInt(req.params.user_id);
-        console.log("check_if_all_stories_seen");
-        console.log(user_id);
         (async () => {
             
           
@@ -576,10 +555,6 @@ console.log("checking current: " + req.headers['authorization'] );
                   createdAt: {[Op.gte]: yesterday}
                 },
               });
-            console.log("number of stories");
-              console.log(number_of_stories);
-              
-              
             const number_of_stories_seen = await list_of_views.count({
                 where: {
                   status:"public",
@@ -589,8 +564,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 },
               });
 
-            console.log("number_of_stories_seen");
-            console.log(number_of_stories_seen);
             if (number_of_stories==number_of_stories_seen){
                 res.status(200).send([{"value":true}])
             }
@@ -602,7 +575,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
         router.get('/get_total_number_of_views/:authorid', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -620,10 +593,7 @@ console.log("checking current: " + req.headers['authorization'] );
             before_yesterday.setDate(before_yesterday.getDate() - 2);
             var today = new Date();
             today.setDate(today.getDate());
-            
-        
                const authorid= parseInt(req.params.authorid);
-               console.log(authorid);
                list_of_views.count({
                     where: {
                       status:"public",
@@ -633,16 +603,16 @@ console.log("checking current: " + req.headers['authorization'] );
                           
                     },
                   }).catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
-		}).then(number=>{console.log(number);
+		}).then(number=>{
                       res.status(200).send([{"total":number}])})
                    
            
             });
 
         router.get('/retrieve_story/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -669,7 +639,7 @@ console.log("checking current: " + req.headers['authorization'] );
         });
 
         router.post('/check_if_story_already_seen', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -691,7 +661,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
                 })
                 .catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(story=>{res.status(200).send([story])})        
     
@@ -699,7 +669,7 @@ console.log("checking current: " + req.headers['authorization'] );
         });
 
         router.post('/add_view', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -715,14 +685,13 @@ console.log("checking current: " + req.headers['authorization'] );
             const  id_story = req.body.id_story;
             const  authorid = req.body.authorid;
             const  bool = req.body.bool;
-            console.log(bool);
             list_of_stories.findOne({
                 where:{
                     status:"public",
                     id:id_story,
                 }
             }).catch(err => {
-                console.log(err);	
+                ;	
                 res.status(500).json({msg: "error", details: err});		
             }).then(story=>{
                 if(story){
@@ -734,17 +703,16 @@ console.log("checking current: " + req.headers['authorization'] );
                             "id_story": id_story,
                         }
                     }).catch(err => {
-                        console.log(err);	
+                        ;	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(story_view=>{
                         if(story_view){
                             story_view.update({
                                 "view": story_view.view+1
                             }).catch(err => {
-                                console.log(err);	
+                                ;	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(view=>{
-                                    console.log(view.id);
                                     res.status(200).send([view])
                                 });
                     
@@ -757,13 +725,13 @@ console.log("checking current: " + req.headers['authorization'] );
                                 "id_story": id_story,
                                 "view":1
                             }).catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views=>{
                                 story.update({
                                     "views_number": story.views_number +1
                                 }).catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(res.status(200).send([views]));
                             });
@@ -781,7 +749,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
         router.post('/get_last_seen_story', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -807,12 +775,10 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
                 })
                 .catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(date0=>{
-                    console.log(date0)
                     if(date0!=0){
-                        console.log(date0)
                         list_of_views.max('updatedAt',{
                             where:{
                                 status:"public",
@@ -822,7 +788,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                             })
                             .catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(date=>{
                                 list_of_views.findOne({
@@ -830,7 +796,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                         updatedAt:date,
                                     }
                                 }).catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(story=>{
                                     res.status(200).send([story])})  
@@ -845,7 +811,7 @@ console.log("checking current: " + req.headers['authorization'] );
         });
 
         router.delete('/delete_story/:id', function (req, res) {
-            console.log("checking current: " + req.headers['authorization'] );
+            
                 if( ! req.headers['authorization'] ) {
                     return res.status(401).json({msg: "error"});
                 }
@@ -859,9 +825,6 @@ console.log("checking current: " + req.headers['authorization'] );
             let current_user = get_current_user(req.cookies.currentUser);
           
             const id = parseInt(req.params.id);
-            console.log("delete story")
-            console.log(id)
-            console.log(current_user)
             list_of_stories.findOne({
                 where: {
                     id:id,
@@ -870,11 +833,9 @@ console.log("checking current: " + req.headers['authorization'] );
                 },
             })
             .catch(err => {
-			console.log(err);	
+			;	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(story_found=>{
-            console.log("story found")
-            console.log(story_found)
             story_found.update({
                         status: "deleted"
             })
@@ -887,7 +848,7 @@ console.log("checking current: " + req.headers['authorization'] );
         });
 
         router.post('/get_list_of_viewers_for_story', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -909,7 +870,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     ['createdAt', 'DESC']
                 ]
                 }).catch(err => {
-                    console.log(err);	
+                    ;	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(stories=>{
                 res.status(200).send([stories])
