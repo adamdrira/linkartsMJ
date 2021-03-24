@@ -243,7 +243,7 @@ wss.on('connection', (ws, req)=>{
                           }
                           
                           
-                          mail_to_send+=`<p><a href="http://localhost:4200/for_chat/${user_found.nickname}/${user_found.id}/${messageArray.id_user_name}/${id_user}">Cliquer ici</a> pour ouvrir la messagerie.</p>`
+                          mail_to_send+=`<p><a href="http://localhost:4200/account/for_chat/${user_found.nickname}/${user_found.id}/${messageArray.id_user_name}/${id_user}">Cliquer ici</a> pour ouvrir la messagerie.</p>`
                           
                           mail_to_send+=`<p>Très sincèrement, l'équipe de LinkArts.</p>`
   
