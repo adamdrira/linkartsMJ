@@ -17,7 +17,10 @@ import { PopupChatSearchComponent } from '../popup-chat-search/popup-chat-search
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { ResizedEvent } from 'angular-resize-event';
+import { merge, fromEvent } from 'rxjs'
+
 declare var $: any;
+
 var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
 
 @Component({
@@ -93,7 +96,7 @@ export class ChatComponent implements OnInit  {
         if(font){
           this.show_icon=true;
         }
-      })
+      });
 
       this.uploader = new FileUploader({
         url:url,
@@ -122,6 +125,7 @@ export class ChatComponent implements OnInit  {
       })
   }
 
+  scroll:any;
   connexion_status=false;
   //for chat-right
   private reload_list_of_files_subject: BehaviorSubject<boolean>;
@@ -237,6 +241,7 @@ export class ChatComponent implements OnInit  {
   list_of_messages_files:any[]=[];
   display_attachments=false;
   attachments:any[]=[];
+  attachments_safe:any[]=[];
   attachments_for_sql:any[]=[];
   attachments_type:any[]=[];
   end_of_past_images=false;
@@ -253,6 +258,7 @@ export class ChatComponent implements OnInit  {
   compteur_image=0;
   compteur_loaded=0;
   put_messages_visible=false;
+  can_load_images=false;
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
 
  
@@ -300,9 +306,7 @@ export class ChatComponent implements OnInit  {
     }
     if((this.friend_type!=this.current_friend_type)|| (this.friend_id!=this.current_friend_id)){
       if(this.show_research_results){
-        this.first_turn_loaded=false;
         this.show_research_results=false;
-        
         this.searched_message = -1;
       }
       this.compteur_user++;
@@ -346,7 +350,6 @@ export class ChatComponent implements OnInit  {
     this.can_get_other_messages=false;
     this.list_of_chat_sections_found=[];
     this.list_of_chat_sections_found_id=[];
-    this.first_turn_loaded=false;
     this.current_friend_id=this.friend_id;
     this.current_friend_type=this.friend_type;
     this.list_of_chat_sections_notifications=[];
@@ -398,7 +401,6 @@ export class ChatComponent implements OnInit  {
     this.display_writing=false;
     this.list_of_chat_sections_found=[];
     this.list_of_chat_sections_found_id=[];
-    this.first_turn_loaded=false;
     this.current_friend_id=this.friend_id;
     this.current_friend_type=this.friend_type;
     this.number_of_sections_unseen=0;
@@ -418,7 +420,7 @@ export class ChatComponent implements OnInit  {
         this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).subscribe(p=>{
           let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=SafeURL;
+          this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=url;
          
         })
         this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).subscribe(r=>{
@@ -465,6 +467,53 @@ export class ChatComponent implements OnInit  {
   /*******************************************ON INIT ************************** */
   /*******************************************ON INIT ************************** */
 
+  onScroll(event){
+    if(this.myScrollContainer.nativeElement && this.myScrollContainer.nativeElement.scrollTop==0 && this.put_messages_visible && !this.show_research_results && !this.trigger_no_more){
+      if(this.can_get_other_messages){
+        this.compteur_get_messages++;
+        this.can_get_other_messages=false;
+        this.show_spinner=true;
+        if(this.list_of_messages.length>0){
+          this.chatService.get_other_messages(this.compteur_get_messages, this.friend_id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.list_of_messages_reactions,(this.friend_type=='group')?true:false).subscribe(r=>{
+            if(r[0][0][0] && this.compteur_get_messages==r[1]){
+              let num=this.list_of_messages.length;
+              this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
+              for(let i=0;i<r[0][0].length;i++){
+                this.list_of_messages.push(r[0][0][i]);
+                this.list_of_messages_date.push(this.date_of_message(r[0][0][i].createdAt,0));
+                if(this.friend_type=='user'){
+                  this.sort_pp(num-1+i);
+                }
+                this.get_picture_for_message(num-1+i);
+                
+              }
+            
+              this.calculate_dates_to_show()
+              this.show_spinner=false;
+              this.cd.detectChanges();
+              let offset=this.message_children.toArray()[r[0][0].length].nativeElement.offsetTop;
+              let height =this.message_children.toArray()[r[0][0].length].nativeElement.getBoundingClientRect().height;
+              this.myScrollContainer.nativeElement.scrollTop=offset-height;
+              this.can_get_other_messages=true;
+              
+            }
+            else{
+              this.show_spinner=false;
+              this.can_get_other_messages=false;
+              this.trigger_no_more=true;
+            }
+          })
+        }
+        else{
+            this.show_spinner=false;
+            this.can_get_other_messages=false;
+            this.trigger_no_more=true;
+        }
+        
+      }
+    }
+  }
+
   ngOnInit() {
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
     if(this.friend_type=='group'){
@@ -483,7 +532,7 @@ export class ChatComponent implements OnInit  {
           this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).subscribe(p=>{
             let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=SafeURL;
+            this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=url;
           
           })
 
@@ -513,58 +562,26 @@ export class ChatComponent implements OnInit  {
     this.current_id_chat_section=this.id_chat_section;
     this.current_friend_type=this.friend_type;
     this.current_friend_id=this.friend_id;
-    setInterval(() => {
+    let scroll_observer = setInterval(() => {
 
-      //scroll bar managment
-      if(this.myScrollContainer.nativeElement.scrollTop==0 && this.put_messages_visible && !this.show_research_results && !this.trigger_no_more){
-        if(this.can_get_other_messages){
-          this.compteur_get_messages++;
-          this.can_get_other_messages=false;
-          this.show_spinner=true;
-          if(this.list_of_messages.length>0){
-            this.chatService.get_other_messages(this.compteur_get_messages, this.friend_id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.list_of_messages_reactions,(this.friend_type=='group')?true:false).subscribe(r=>{
-              if(r[0][0][0] && this.compteur_get_messages==r[1]){
-                let num=this.list_of_messages.length;
-                this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
-                for(let i=0;i<r[0][0].length;i++){
-                  this.list_of_messages.push(r[0][0][i]);
-                  this.list_of_messages_date.push(this.date_of_message(r[0][0][i].createdAt,0));
-                  if(this.friend_type=='user'){
-                    this.sort_pp(num-1+i);
-                  }
-                  this.get_picture_for_message(num-1+i);
-                  
-                }
-              
-                this.calculate_dates_to_show()
-                this.show_spinner=false;
-                this.cd.detectChanges();
-                let offset=this.message_children.toArray()[r[0][0].length].nativeElement.offsetTop;
-                let height =this.message_children.toArray()[r[0][0].length].nativeElement.getBoundingClientRect().height;
-                this.myScrollContainer.nativeElement.scrollTop=offset-height;
-                this.can_get_other_messages=true;
-                
-              }
-              else{
-                this.show_spinner=false;
-                this.can_get_other_messages=false;
-                this.trigger_no_more=true;
-              }
-            })
-          }
-          else{
-              this.show_spinner=false;
-              this.can_get_other_messages=false;
-              this.trigger_no_more=true;
-          }
-          
+      if(!this.scroll){
+        if(this.myScrollContainer.nativeElement){
+          this.scroll = merge(
+            fromEvent(window, 'scroll'),
+            fromEvent(this.myScrollContainer.nativeElement, 'scroll')
+          );
         }
       }
+      else{
+        clearInterval(scroll_observer)
+      }
+     
+     
     }, 500);
       
 
     // retry managment
-    setInterval(() => {
+    /*setInterval(() => {
       if( this.friend_type=='user' && this.list_of_time.length>0){
         for(let i=0;i<this.list_of_time.length;i++){
           if(this.list_of_messages[i].status=='sent' && !this.display_retry[i]){
@@ -575,7 +592,7 @@ export class ChatComponent implements OnInit  {
           }
         }
       }
-    }, 5000);
+    }, 5000);*/
     
     
     //uploader_managment
@@ -598,7 +615,7 @@ export class ChatComponent implements OnInit  {
           panelClass: "popupConfirmationClass",
         });
       }
-      else if(Math.trunc(size)>10){
+      else if(Math.trunc(size)>20){
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:`Votre fichier est trop volumineux, choisissez un fichier de moins de 10Mo alors qu'il fait ${size}.`},
@@ -606,24 +623,19 @@ export class ChatComponent implements OnInit  {
         });
       }
       else{
-        if( re.exec(file._file.name)[1].toLowerCase()=="jpeg" || re.exec(file._file.name)[1].toLowerCase()=="png" || re.exec(file._file.name)[1].toLowerCase()=="jpg"){
-          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
-          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.attachments.push(SafeURL);
-          this.attachments_size.push(size);
+        let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.attachments_size.push(size);
+        this.attachments.push(url);
+        this.attachments_safe.push(SafeURL);
+        this.attachments_name.push(file._file.name);
+        if( re.exec(file._file.name)[1].toLowerCase()=="jpeg" || re.exec(file._file.name)[1].toLowerCase()=="png" || re.exec(file._file.name)[1].toLowerCase()=="jpg" || re.exec(file._file.name)[1].toLowerCase()=="gif"){
           this.attachments_type.push('picture_attachment');
-          this.attachments_name.push(file._file.name);
-          this.display_attachments=true;
         }
         else{
-          this.attachments_size.push(size);
-          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
-          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.attachments.push(SafeURL);
           this.attachments_type.push('file_attachment');
-          this.attachments_name.push(file._file.name);
-          this.display_attachments=true;
         }
+        this.display_attachments=true;
         if(this.can_show_send_icon){
           this.show_send_icon=true;
         }
@@ -680,21 +692,14 @@ export class ChatComponent implements OnInit  {
         if(this.an_image_is_pasted && this.end_of_past_images){
           this.an_image_is_pasted=false;
           this.end_of_past_images=false;
-          this.attachments_type=[];
-          this.attachments_name=[];
-          this.attachments_for_sql=[];
-          this.attachments=[];
-          this.compt_at=0;
-          this.display_attachments=false;
         }
-        else{
-          this.attachments_type=[];
-          this.attachments_name=[];
-          this.attachments_for_sql=[];
-          this.attachments=[];
-          this.compt_at=0;
-          this.display_attachments=false;
-        }
+        this.attachments_safe=[];
+        this.attachments_type=[];
+        this.attachments_name=[];
+        this.attachments_for_sql=[];
+        this.attachments=[];
+        this.compt_at=0;
+        this.display_attachments=false;
         this.uploader.queue=[];  
         this.k=0;  
       }
@@ -785,35 +790,35 @@ export class ChatComponent implements OnInit  {
             this.list_of_messages_date[i]=this.date_of_message(r[0][0][i].createdAt,0);
             if(this.list_of_messages[i].is_an_attachment){
               if(this.list_of_messages[i].attachment_type=='picture_message' && this.list_of_messages[i].status!="deleted"){
-                this.compteur_image+=1;
+                //this.compteur_image+=1;
                 this.chatService.get_picture_sent_by_msg(this.list_of_messages[i].attachment_name).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   if(r[1]==this.compteur_get_messages){
-                    this.list_of_messages_pictures[i]=SafeURL;
+                    this.list_of_messages_pictures[i]=url;
                   }
                  
                 })
               }
               else if(this.list_of_messages[i].attachment_type=='picture_attachment' && this.list_of_messages[i].status!="deleted"){
-                this.compteur_image+=1;
+                //this.compteur_image+=1;
                 this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   if(r[1]==this.compteur_get_messages){
-                    this.list_of_messages_pictures[i]=SafeURL;
+                    this.list_of_messages_pictures[i]=url;
                   }
                   
                 })
               }
               else if(this.list_of_messages[i].attachment_type=='file_attachment' && this.list_of_messages[i].status!="deleted"){
-                this.compteur_image+=1;
+                //this.compteur_image+=1;
                 this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   if(r[1]==this.compteur_get_messages){
                     this.list_of_messages_files[i]=SafeURL;
-                    this.loaded_image(i);
+                    //this.loaded_image(i);
                     
                   }
                   
@@ -851,14 +856,16 @@ export class ChatComponent implements OnInit  {
                 }
                 this.calculate_dates_to_show();
                 this.display_messages=true;
-                if(this.compteur_pp==0 && this.compteur_image==0){
+                //if(this.compteur_pp==0 && this.compteur_image==0){
                   this.cd.detectChanges();
                   this.put_messages_visible=true;
                   this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
+                  this.cd.detectChanges();
+                  this.can_load_images=true;
                   if(this.list_of_messages.length>0){
                     this.can_get_other_messages=true;
                   }
-                };
+                //};
               })
             }
           }
@@ -884,7 +891,6 @@ export class ChatComponent implements OnInit  {
   /*************************************DISPLAY CHAT***********************************/
   /*************************************DISPLAY CHAT***********************************/
   compteur_loaded_research=0;
-  first_turn_loaded=false;
   function_done=false;
  
   loaded_image(i){
@@ -896,29 +902,12 @@ export class ChatComponent implements OnInit  {
       this.list_of_pp_loaded_classic[Math.abs(i+1)]=true;
       this.cd.detectChanges()
     }
-    if(!this.show_research_results && !this.first_turn_loaded){
-      this.compteur_loaded+=1;
-      if(this.compteur_image!=0){
-        if (this.compteur_loaded==this.compteur_image + this.compteur_pp){
-          this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
-          this.put_messages_visible=true;
-          this.first_turn_loaded=true;
-          this.function_done=true;
-          this.can_get_other_messages=true;
-          
-        }
-      }
-      else {
-        if (this.compteur_loaded==this.compteur_pp){
-          this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
-          this.put_messages_visible=true;
-          this.first_turn_loaded=true;
-          this.function_done=true;
-          this.can_get_other_messages=true;
-        }
+    if(this.list_of_messages.length<=50){
+      if(i>=0 && i<=3){
+        this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
       }
     }
-    else if(this.show_research_results){
+    if(this.show_research_results){
       this.compteur_loaded_research+=1;
       if(this.compteur_image_research!=0){
         if (this.compteur_loaded_research==this.compteur_image_research + this.compteur_pp){
@@ -1045,10 +1034,11 @@ export class ChatComponent implements OnInit  {
         });
         return
       }
-      if( re.exec(name)[1].toLowerCase()=="jpeg" || re.exec(name)[1].toLowerCase()=="png" || re.exec(name)[1].toLowerCase()=="jpg"){
+      if( re.exec(name)[1].toLowerCase()=="jpeg" || re.exec(name)[1].toLowerCase()=="png" || re.exec(name)[1].toLowerCase()=="jpg" || re.exec(name)[1].toLowerCase()=="gif"){
         let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.attachments.push(SafeURL);
+        this.attachments.push(url);
+        this.attachments_safe.push(SafeURL);
         this.attachments_for_sql.push(blob);
         var today = new Date();
         var ms = String(today.getMilliseconds()).padStart(2, '0');
@@ -1138,6 +1128,7 @@ export class ChatComponent implements OnInit  {
 
   remove_attachment(i){
     this.attachments.splice(i,1);
+    this.attachments_safe.splice(i,1);
     this.attachments_name.splice(i,1);
     this.uploader.queue.splice(i,1);
     this.attachments_for_sql.splice(i,1);
@@ -1254,6 +1245,7 @@ export class ChatComponent implements OnInit  {
         this.attachments_name=[];
         this.attachments_for_sql=[];
         this.attachments=[];
+        this.attachments_safe=[];
         this.compt_at=0;
         this.display_attachments=false;
       }
@@ -1697,8 +1689,6 @@ export class ChatComponent implements OnInit  {
     for(let j=0;j<this.list_of_messages.length;j++){
       if(this.list_of_messages[j].id==id){
         let offset=this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.offsetTop;
-        let top=this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.getBoundingClientRect().top;
-        let height=this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.getBoundingClientRect().height;
         this.myScrollContainer.nativeElement.scrollTop=offset;
         
       }
@@ -1949,7 +1939,6 @@ changed_section(e:any) {
   this.trigger_no_more=false;
   this.today_triggered=false;
   this.chat_section_to_open=e.value;
-  this.first_turn_loaded=false;
 
   if(e.value!=''){
     let index =this.list_of_chat_sections.indexOf(e.value)
@@ -2001,6 +1990,7 @@ changed_section(e:any) {
   this.attachments_name=[];
   this.attachments_for_sql=[];
   this.attachments=[];
+  this.attachments_safe=[];
   this.cd.detectChanges();
 
   this.right_container_is_opened = false;
@@ -2211,7 +2201,6 @@ open_section_found(i){
   this.nothing_selected=false;
   this.trigger_no_more=false;
   this.chat_section_to_open=this.list_of_chat_sections_found[i];
-  this.first_turn_loaded=false;
   let index =this.list_of_chat_sections_id.indexOf(this.list_of_chat_sections_found_id[i])
   this.id_chat_section=this.list_of_chat_sections_found_id[i];
   this.change_section.emit({id_chat_section:this.id_chat_section});
@@ -2530,14 +2519,14 @@ get_picture_for_message(i){
       this.chatService.get_picture_sent_by_msg(this.list_of_messages[i].attachment_name).subscribe(t=>{
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.list_of_messages_pictures[i]=SafeURL;
+        this.list_of_messages_pictures[i]=url;
       })
     }
     else if(this.list_of_messages[i].attachment_type=='picture_attachment'){
       this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.list_of_messages_pictures[i]=SafeURL;
+        this.list_of_messages_pictures[i]=url;
       })
     }
     else if(this.list_of_messages[i].attachment_type=='file_attachment'){
@@ -2545,16 +2534,14 @@ get_picture_for_message(i){
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.list_of_messages_files[i]=SafeURL;
-        this.loaded_image(i);
+        //this.loaded_image(i);
       })
     }
 }
 cancel_show_research_results() {
 
   this.search_popup_closed = true;
-  this.first_turn_loaded=false;
   this.show_research_results=false;
-
   this.searched_message = -1;
   this.get_messages(this.id_chat_section,(this.friend_type=='user')?false:true);
   this.cd.detectChanges();
@@ -2896,7 +2883,7 @@ chat_service_managment_function(msg){
               this.chatService.get_picture_sent_by_msg(msg[0].attachment_name).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_messages_pictures.splice(0,0,SafeURL);
+                this.list_of_messages_pictures.splice(0,0,url);
                 this.list_of_messages.splice(0,0,message);
                 this.list_of_messages_files.splice(0,0,false)
                 if(this.list_of_messages.length==1){
@@ -2910,7 +2897,7 @@ chat_service_managment_function(msg){
               this.chatService.get_attachment(msg[0].attachment_name,'group',chat_friend_id).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_messages_pictures.splice(0,0,SafeURL)
+                this.list_of_messages_pictures.splice(0,0,url)
                 
                 this.list_of_messages.splice(0,0,message);
                 this.list_of_messages_files.splice(0,0,false)
@@ -3015,7 +3002,7 @@ chat_service_managment_function(msg){
               this.chatService.get_picture_sent_by_msg(msg[0].attachment_name).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_messages_pictures.splice(0,0,SafeURL)
+                this.list_of_messages_pictures.splice(0,0,url)
                 this.list_of_messages.splice(0,0,message);
                 this.list_of_messages_files.splice(0,0,false)
                 if(this.list_of_messages.length>1){
@@ -3042,7 +3029,7 @@ chat_service_managment_function(msg){
                 this.chatService.get_attachment(msg[0].attachment_name,'user',chat_friend_id).subscribe(r=>{
                   let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  this.list_of_messages_pictures.splice(0,0,SafeURL)
+                  this.list_of_messages_pictures.splice(0,0,url)
                   this.list_of_messages.splice(0,0,message);
                   this.list_of_messages_files.splice(0,0,false)
                   if(this.list_of_messages.length>1){

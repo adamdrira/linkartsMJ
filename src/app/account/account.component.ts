@@ -345,7 +345,6 @@ export class AccountComponent implements OnInit {
 
   device_info='';
   ngOnInit()  {
- 
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
    
     window.scroll(0,0);
@@ -370,6 +369,7 @@ export class AccountComponent implements OnInit {
       this.cd.detectChanges();
     })
 
+    
     this.Profile_Edition_Service.get_information_privacy(this.user_id).subscribe(l=>{
       this.primary_description_extended_privacy=l[0].primary_description_extended;
     })
@@ -382,7 +382,7 @@ export class AccountComponent implements OnInit {
     })
     
 
-    this.Story_service.check_stories_for_account(this.user_id).subscribe(r=>{
+    this.Story_service.check_stories_for_account(this.user_id).subscribe(r => {
       if(r[0] && r[0].story_found){
         this.list_of_stories[0]=r[0].stories_retrieved;
         this.story_state=r[0].status;
@@ -489,7 +489,7 @@ export class AccountComponent implements OnInit {
         }
         else{
           // check if the user author blocked the visitor
-          this.Profile_Edition_Service.check_if_user_blocked(this.user_id).subscribe(r=>{
+          this.Profile_Edition_Service.check_if_user_blocked(this.user_id).subscribe(r => {
             if(r[0].nothing){
               this.user_blocked=false;
             }
@@ -512,7 +512,8 @@ export class AccountComponent implements OnInit {
                   
         };
 
-        this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
+        this.route.data.subscribe(resp => {
+          let r=resp.number_of_contents;
           this.number_of_comics=r[0].number_of_comics;
           this.number_of_drawings=r[0].number_of_drawings;
           this.number_of_writings=r[0].number_of_writings;
@@ -635,7 +636,8 @@ export class AccountComponent implements OnInit {
       this.update_background_position(this.opened_section)
     });
 
-    this.Subscribing_service.get_new_comic_contents(this.user_id).subscribe(r=>{
+    this.route.data.subscribe(resp => {
+      let r=resp.new_comics;
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -682,7 +684,8 @@ export class AccountComponent implements OnInit {
       }
     });
 
-    this.Subscribing_service.get_new_drawing_contents(this.user_id).subscribe(r=>{
+    this.route.data.subscribe(resp => {
+      let r=resp.new_drawings;
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -728,7 +731,8 @@ export class AccountComponent implements OnInit {
       }
     });
 
-    this.Subscribing_service.get_new_writing_contents(this.user_id).subscribe(r=>{
+    this.route.data.subscribe(resp => {
+      let r=resp.new_writings;
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -759,7 +763,8 @@ export class AccountComponent implements OnInit {
     
     
 
-    this.Ads_service.get_ads_by_user_id(this.user_id).subscribe(r=>{
+    this.route.data.subscribe(resp => {
+      let r=resp.ads;
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -780,7 +785,7 @@ export class AccountComponent implements OnInit {
     /**************************************  SUBSCRIBINGS  **********************************/
     /**************************************  SUBSCRIBINGS  **********************************/
 
-    this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information=>{
+    this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information => {
       if(information[0].value){
         this.already_subscribed=true;
         this.subscribtion_checked=true;
@@ -790,7 +795,8 @@ export class AccountComponent implements OnInit {
       }
     }); 
 
-    this.Subscribing_service.get_all_subscribed_users(this.user_id).subscribe(information=>{
+    this.route.data.subscribe(resp => {
+      let information=resp.subscribers;
       if(Object.keys(information).length>0){
         this.subscribed_users_list=information[0];
       }
@@ -798,8 +804,8 @@ export class AccountComponent implements OnInit {
       this.update_background_position(this.opened_section)
     });
 
-    this.Subscribing_service.get_all_subscribings_by_user_id(this.user_id).subscribe(information=>{
-
+    this.route.data.subscribe(resp => {
+      let information=resp.subscribings;
       this.users_subscribed_to_list= information[0];
       this.cd.detectChanges();
       this.update_background_position(this.opened_section)
@@ -810,7 +816,8 @@ export class AccountComponent implements OnInit {
     /*********************************ALBUMS  ******************************************/
 
   
-      this.BdOneShotService.retrieve_bd_by_userid( this.user_id ).subscribe( r => {
+    this.route.data.subscribe(resp => {
+      let r=resp.comics_os;
         this.list_bd_oneshot = r[0];
         this.list_bd_oneshot_added=true;
         this.cd.detectChanges();
@@ -818,7 +825,8 @@ export class AccountComponent implements OnInit {
         this.get_comics_albums();
       });
 
-      this.BdSerieService.retrieve_bd_by_userid( this.user_id ).subscribe( r => {
+      this.route.data.subscribe(resp => {
+        let r=resp.comics_se;
         this.list_bd_series = r[0];
         this.list_bd_series_added=true;   
         this.cd.detectChanges();
@@ -828,7 +836,8 @@ export class AccountComponent implements OnInit {
 
      /*********************************** DRAWINGS *************************************/
 
-    this.Drawings_Onepage_Service.retrieve_drawing_onepage_info_user_id( this.user_id ).subscribe( r => {
+     this.route.data.subscribe(resp => {
+      let r=resp.drawings_os;
       this.list_drawings_onepage = r[0];
       this.list_drawings_onepage_added=true;
       this.cd.detectChanges();
@@ -836,7 +845,8 @@ export class AccountComponent implements OnInit {
       this.get_drawings_albums()
     });
     
-    this.Drawings_Artbook_Service.retrieve_drawing_artbook_info_by_userid( this.user_id ).subscribe( r => {
+    this.route.data.subscribe(resp => {
+      let r=resp.drawings_ar;
       this.list_drawings_artbook = r[0];
       this.list_drawings_artbook_added=true;
       this.cd.detectChanges();
@@ -850,12 +860,13 @@ export class AccountComponent implements OnInit {
     /*********************************** WRITINGS *************************************/
 
     
-    this.Writing_Upload_Service.retrieve_writings_information_by_user_id( this.user_id ).subscribe( r => {
+    this.route.data.subscribe(resp => {
+      let r=resp.writings;
       this.list_writings = r[0];
       this.list_writings_added=true;
       this.cd.detectChanges();
       this.update_background_position( this.opened_section );
-      this.Albums_service.get_albums_writings(this.user_id).subscribe(information=>{
+      this.Albums_service.get_albums_writings(this.user_id).subscribe(information => {
         if(Object.keys(information).length!=0){
           for (let i=0; i <Object.keys(information).length;i++){
             this.list_titles_albums_writings_added.push(information[i].album_name);
@@ -915,8 +926,7 @@ export class AccountComponent implements OnInit {
 
   get_comics_albums(){
     if(this.list_bd_series_added && this.list_bd_oneshot_added){
-      this.Albums_service.get_albums_comics(this.user_id).subscribe(info=>{
-
+      this.Albums_service.get_albums_comics(this.user_id).subscribe(info => {
         this.list_bd_albums_status[0]=info[0].standard_albums[0].status;        
         this.list_bd_albums_status[1]=info[0].standard_albums[1].status;
 
@@ -956,8 +966,7 @@ export class AccountComponent implements OnInit {
   get_drawings_albums(){
 
     if(this.list_drawings_artbook_added && this.list_drawings_onepage_added){
-      this.Albums_service.get_albums_drawings(this.user_id).subscribe(info=>{
-
+      this.Albums_service.get_albums_drawings(this.user_id).subscribe(info => {
         this.list_drawing_albums_status[0]=info[0].standard_albums[0].status;        
         this.list_drawing_albums_status[1]=info[0].standard_albums[1].status;
         let information =info[0].albums;
@@ -996,20 +1005,6 @@ export class AccountComponent implements OnInit {
     }
     
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -24,7 +24,7 @@
         </div>
 
         <div class="subscribers-container" *ngIf="first_check" [@enterAnimation]>
-            <a [routerLink]=get_user_link(i) *ngFor="let item of list_of_users_ids.slice(0,number_of_likes_to_show); let i=index" class="subscriber-card" (click)="close_dialog();">
+            <a [routerLink]=get_user_link(i) (click)="close_dialog()" *ngFor="let item of list_of_users_ids.slice(0,number_of_likes_to_show); let i=index" class="subscriber-card" (click)="close_dialog();">
                 
          
                 <div class="subscriber" *ngIf="list_of_all_retrieved[i] && list_of_users_information[i]">

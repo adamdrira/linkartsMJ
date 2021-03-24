@@ -127,7 +127,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
   @HostListener('document:click', ['$event.target'])
   clickout(btn) {
-    if(this.drawing_id_input){
+    if(this.drawing_id_input && !this.in_other_popup){
       if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
         if(this.drawing_id_input  && !btn.className.baseVal && btn.className.includes("cdk-overlay-dark-backdrop")){
           this.add_time_of_view();
@@ -282,6 +282,7 @@ export class ArtworkDrawingComponent implements OnInit {
   /******************** ON INIT ****************** */
   /******************************************************* */
   device_info='';
+  in_other_popup=false;
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
@@ -424,9 +425,10 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
+      let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
       this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
-      this.location.go(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`);
-      this.url=`https://www.linkarts.fr/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`;
+      this.location.go(`/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`);
+      this.url=`https://www.linkarts.fr/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show =get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
@@ -569,9 +571,10 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
+      let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
       this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
-      this.location.go(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`);
-      this.url=`https://www.linkarts.fr/artwork-drawing/artbook/${this.title}/${this.drawing_id}`;
+      this.location.go(`/artwork-drawing/artbook/${title_url}/${this.drawing_id}`);
+      this.url=`https://www.linkarts.fr/artwork-drawing/artbook/${title_url}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
@@ -878,17 +881,17 @@ export class ArtworkDrawingComponent implements OnInit {
     return "/account/"+this.pseudo+"/"+this.authorid;
   };
   get_link() {
-    return "/main-research-style-and-tag/1/Drawing/" + this.style + "/all";
+    return "/main-research/style-and-tag/1/Drawing/" + this.style + "/all";
   };
   get_style_link(i: number) {
     if( i == 0 ) {
-      return "/main-research-style-and-tag/1/Drawing/" + this.style + "/" + this.firsttag;
+      return "/main-research/style-and-tag/1/Drawing/" + this.style + "/" + this.firsttag;
     }
     if( i == 1 ) {
-      return "/main-research-style-and-tag/1/Drawing/" + this.style + "/" + this.secondtag;
+      return "/main-research/style-and-tag/1/Drawing/" + this.style + "/" + this.secondtag;
     }
     if( i == 2 ) {
-      return "/main-research-style-and-tag/1/Drawing/" + this.style + "/" + this.thirdtag;
+      return "/main-research/style-and-tag/1/Drawing/" + this.style + "/" + this.thirdtag;
     }
   }
 
@@ -910,8 +913,8 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   see_description() {
-    this.add_time_of_view()
-    this.dialog.open(PopupArtworkDataComponent, {
+    this.in_other_popup=true;
+    let dialogRef= this.dialog.open(PopupArtworkDataComponent, {
       data: {
         title:this.title,
         highlight:this.highlight,
@@ -924,12 +927,19 @@ export class ArtworkDrawingComponent implements OnInit {
       }, 
       panelClass: 'popupArtworkDataClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
 
   }
 
   see_comments() {
-    this.add_time_of_view()
-    this.dialog.open(PopupCommentsComponent, {
+    this.in_other_popup=true;
+    let dialogRef= this.dialog.open(PopupCommentsComponent, {
       data: {
         visitor_id:this.visitor_id,
         visitor_name:this.visitor_name,
@@ -946,6 +956,13 @@ export class ArtworkDrawingComponent implements OnInit {
       }, 
       panelClass: 'popupCommentsClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
 
   }
 
@@ -1296,14 +1313,22 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.liked=false;
                 this.likesnumber-=1;
                 if(r[0].error="loved"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 else if(r[0].error="already_liked"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 this.like_in_progress=false;
               }
@@ -1348,14 +1373,22 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.liked=false;
                 this.likesnumber-=1;
                 if(r[0].error="loved"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 else if(r[0].error="already_liked"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 this.like_in_progress=false;
               }
@@ -1369,10 +1402,14 @@ export class ArtworkDrawingComponent implements OnInit {
 
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
     
   }
@@ -1501,14 +1538,22 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.loved=false;
                 this.lovesnumber-=1;
                 if(r[0].error="liked"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 else if(r[0].error="already_loved"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 this.love_in_progress=false;
               }
@@ -1555,14 +1600,22 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.loved=false;
                 this.lovesnumber-=1;
                 if(r[0].error="liked"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 else if(r[0].error="already_loved"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 this.love_in_progress=false;
               }
@@ -1576,30 +1629,47 @@ export class ArtworkDrawingComponent implements OnInit {
       
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
 
   }
 
   show_likes(){
-    this.add_time_of_view()
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
     });
-
+  
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
   }
 
   show_loves(){
-    this.add_time_of_view()
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
     });
-
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
   }
 
   scroll_to_comments() {
@@ -1700,10 +1770,14 @@ export class ArtworkDrawingComponent implements OnInit {
       }
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
   
   }
@@ -1738,15 +1812,23 @@ export class ArtworkDrawingComponent implements OnInit {
     this.checking_report=true;
     this.Reports_service.check_if_content_reported('drawing',this.drawing_id,this.type,0).subscribe(r=>{
       if(r[0].nothing){
+        this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
         });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
       }
       else{
+        this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'drawing',publication_id:this.drawing_id,format:this.type,chapter_number:0},
           panelClass:"popupReportClass"
         });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
       }
       this.checking_report=false;
     })
@@ -1819,6 +1901,7 @@ export class ArtworkDrawingComponent implements OnInit {
   //visible : true ou privé : false
  
   edit_information() {
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupFormDrawingComponent, {
       data: {
         format:this.type, 
@@ -1835,10 +1918,14 @@ export class ArtworkDrawingComponent implements OnInit {
       },
       panelClass: 'popupFormDrawingClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })
   }
 
   edit_thumbnail() {
-      const dialogRef = this.dialog.open(PopupEditCoverComponent, {
+    this.in_other_popup=true;
+    const dialogRef = this.dialog.open(PopupEditCoverComponent, {
         data: {
         format:this.type,
         drawing_id: this.drawing_id, 
@@ -1854,11 +1941,14 @@ export class ArtworkDrawingComponent implements OnInit {
       },
       panelClass: 'popupEditCoverClass',
     });     
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })
   }
 
   archive_loading=false;
   set_private() {
-
+    this.in_other_popup=true
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir archiver cette œuvre ? Elle ne sera visible que par vous dans les archives.'},
       panelClass: "popupConfirmationClass",
@@ -1895,9 +1985,11 @@ export class ArtworkDrawingComponent implements OnInit {
       else{
         this.archive_loading=false;
       }
+      this.in_other_popup=false;
     });
   }
   set_public() {
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir désarchiver cette œuvre ? Elle sera visible par tous les utilisateurs.'},
       panelClass: "popupConfirmationClass",
@@ -1931,10 +2023,12 @@ export class ArtworkDrawingComponent implements OnInit {
       else{
         this.archive_loading=false;
       }
+      this.in_other_popup=false;
     });
   }
 
   remove_artwork() {
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
       panelClass: "popupConfirmationClass",
@@ -2007,6 +2101,7 @@ export class ArtworkDrawingComponent implements OnInit {
       else{
         this.archive_loading=false;
       }
+      this.in_other_popup=false;
     });
   }
 

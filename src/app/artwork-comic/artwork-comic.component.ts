@@ -123,20 +123,15 @@ export class ArtworkComicComponent implements OnInit {
 
   @HostListener('document:click', ['$event.target'])
   clickout(btn) {
-    if(this.bd_id_input){
+    if(this.bd_id_input && !this.in_other_popup){
       if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
-        console.log(btn.className.baseVal)
-        console.log(btn.className)
         if(this.bd_id_input && !btn.className.baseVal && btn.className.includes("cdk-overlay-dark-backdrop")){
-          console.log("includes back")
           this.add_time_of_view();
           this.emit_close_click.emit(true);
         }
-         
       }
       this.can_check_clickout=true;
     }
-      
   }
 
   @HostListener('window:popstate', ['$event'])
@@ -393,9 +388,10 @@ export class ArtworkComicComponent implements OnInit {
               this.thumbnail_picture=r[0].name_coverpage;
               this.thumbnail_picture_retrieved=true;
               this.monetization=r[0].monetization;
+              let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
               this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`,this.device_info).subscribe();
-              this.location.go(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`);
-              this.url=`https://www.linkarts.fr/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`;
+              this.location.go(`/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`);
+              this.url=`https://www.linkarts.fr/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`;
               this.location_done=true;
               this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
                 this.pseudo = r[0].nickname;
@@ -612,9 +608,10 @@ export class ArtworkComicComponent implements OnInit {
             this.status=r[0].status;
             this.thumbnail_picture=r[0].name_coverpage;
             this.thumbnail_picture_retrieved=true;
+            let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
             this.navbar.add_page_visited_to_history(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`,this.device_info).subscribe();
-            this.location.go(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`);
-            this.url=`https://www.linkarts.fr/artwork-comic/one-shot/${this.title}/${this.bd_id}`;
+            this.location.go(`/artwork-comic/one-shot/${title_url}/${this.bd_id}`);
+            this.url=`https://www.linkarts.fr/artwork-comic/one-shot/${title_url}/${this.bd_id}`;
             this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) )
             
@@ -749,7 +746,7 @@ export class ArtworkComicComponent implements OnInit {
     if(this.current_user_retrieved && this.ready_to_check_view){
       if (this.authorid == this.visitor_id){
         this.mode_visiteur = false;
-       
+        
         this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").subscribe(p=>{
           if(!p[0].value){
             this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).subscribe();
@@ -979,17 +976,17 @@ export class ArtworkComicComponent implements OnInit {
     return "/account/"+this.pseudo+"/"+this.authorid;
   };
   get_link() {
-    return "/main-research-style-and-tag/1/Comic/" + this.style + "/all";
+    return "/main-research/style-and-tag/1/Comic/" + this.style + "/all";
   };
   get_style_link(i: number) {
     if( i == 0 ) {
-      return "/main-research-style-and-tag/1/Comic/" + this.style + "/" + this.firsttag;
+      return "/main-research/style-and-tag/1/Comic/" + this.style + "/" + this.firsttag;
     }
     if( i == 1 ) {
-      return "/main-research-style-and-tag/1/Comic/" + this.style + "/" + this.secondtag;
+      return "/main-research/style-and-tag/1/Comic/" + this.style + "/" + this.secondtag;
     }
     if( i == 2 ) {
-      return "/main-research-style-and-tag/1/Comic/" + this.style + "/" + this.thirdtag;
+      return "/main-research/style-and-tag/1/Comic/" + this.style + "/" + this.thirdtag;
     }
   }
 
@@ -1011,8 +1008,8 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   see_description() {
-    this.add_time_of_view()
-    this.dialog.open(PopupArtworkDataComponent, {
+    this.in_other_popup=true;
+    let dialogRef= this.dialog.open(PopupArtworkDataComponent, {
       data: {
         title:this.title,
         highlight:this.highlight,
@@ -1025,12 +1022,19 @@ export class ArtworkComicComponent implements OnInit {
       }, 
       panelClass: 'popupArtworkDataClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
 
   }
 
   see_comments() {
-    this.add_time_of_view()
-    this.dialog.open(PopupCommentsComponent, {
+    this.in_other_popup=true;
+    let dialogRef= this.dialog.open(PopupCommentsComponent, {
       data: {
         visitor_id:this.visitor_id,
         visitor_name:this.visitor_name,
@@ -1047,6 +1051,13 @@ export class ArtworkComicComponent implements OnInit {
       }, 
       panelClass: 'popupCommentsClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
 
   }
 
@@ -1359,9 +1370,10 @@ export class ArtworkComicComponent implements OnInit {
       THIS.swiper.slideTo(0,false,false);
     }
     THIS.refresh_swiper_pagination();
+    let title_url=THIS.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
     THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
-    THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
-    THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
+    THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`);
+    THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
     
   }
 
@@ -1449,10 +1461,11 @@ export class ArtworkComicComponent implements OnInit {
       THIS.swiper.slideTo(0,false,false);
     }
     THIS.refresh_swiper_pagination();
+    let title_url=THIS.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
     THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
-      THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
-      THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
-    
+    THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`);
+    THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
+  
   }
 
 
@@ -1529,10 +1542,11 @@ export class ArtworkComicComponent implements OnInit {
         THIS.swiper.slideTo(0,false,false);
       }
       THIS.refresh_swiper_pagination();
+      let title_url=THIS.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
       THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
-        THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${parseInt(chapter_number) + 1}`);
-        THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`;
-     
+      THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${parseInt(chapter_number) + 1}`);
+      THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
+    
     });
 
   }
@@ -1675,14 +1689,22 @@ export class ArtworkComicComponent implements OnInit {
                 this.liked=false;
                 this.likesnumber-=1;
                 if(r[0].error="loved"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 else if(r[0].error="already_liked"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 this.like_in_progress=false;
               }
@@ -1728,14 +1750,22 @@ export class ArtworkComicComponent implements OnInit {
                 this.liked=false;
                 this.likesnumber-=1;
                 if(r[0].error="loved"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 else if(r[0].error="already_liked"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 this.like_in_progress=false;
               }
@@ -1749,10 +1779,15 @@ export class ArtworkComicComponent implements OnInit {
       
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
+
     }
   }
 
@@ -1880,16 +1915,6 @@ export class ArtworkComicComponent implements OnInit {
               else{
                 this.loved=false;
                 this.lovesnumber-=1;
-                /*if(r[0].error="liked"){
-                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-                    data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
-                  });
-                }
-                else if(r[0].error="already_loved"){
-                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-                    data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
-                  });
-                }*/
                 this.love_in_progress=false;
               }
               
@@ -1955,29 +1980,49 @@ export class ArtworkComicComponent implements OnInit {
       
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
     
   }
 
+  in_other_popup=false;
   show_likes(){
-    this.add_time_of_view()
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes[this.current_chapter],visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
-    });
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
 
   }
 
   show_loves(){
-    this.add_time_of_view()
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves[this.current_chapter],visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
     });
+    
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
 
   }
 
@@ -2079,10 +2124,14 @@ export class ArtworkComicComponent implements OnInit {
       }
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
   
   }
@@ -2117,15 +2166,23 @@ export class ArtworkComicComponent implements OnInit {
     this.checking_report=true;
     this.Reports_service.check_if_content_reported('comic',this.bd_id,this.type,(this.type=='serie')?(this.current_chapter+1):0).subscribe(r=>{
       if(r[0].nothing){
+        this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
         });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
       }
       else{
+        this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'comic',publication_id:this.bd_id,format:this.type,chapter_number:(this.type=='serie')?(this.current_chapter+1):0},
           panelClass:"popupReportClass"
         });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
       }
       this.checking_report=false;
     })
@@ -2248,6 +2305,7 @@ export class ArtworkComicComponent implements OnInit {
   /******************************************************************** */
 
   edit_information() {
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupFormComicComponent, {
       data: {
         format:this.type, 
@@ -2268,8 +2326,12 @@ export class ArtworkComicComponent implements OnInit {
       },
       panelClass: 'popupFormComicClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })
   }
   edit_thumbnail() {
+    this.in_other_popup=true;
       const dialogRef = this.dialog.open(PopupEditCoverComponent, {
         data: {
         format:this.type,
@@ -2286,7 +2348,10 @@ export class ArtworkComicComponent implements OnInit {
         category:"comic",
       },
       panelClass: 'popupEditCoverClass',
-    });     
+    });  
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })   
   }
 
   edit_chapters(){
@@ -2296,7 +2361,7 @@ export class ArtworkComicComponent implements OnInit {
   
   archive_loading=false;
   set_private() {
-
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir archiver cette œuvre ? Elle ne sera visible que par vous dans les archives.'},
       panelClass: "popupConfirmationClass",
@@ -2329,9 +2394,11 @@ export class ArtworkComicComponent implements OnInit {
       else{
         this.archive_loading=false;
       }
+      this.in_other_popup=false;
     });
   }
   set_public() {
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir désarchiver cette œuvre ? Elle sera visible par tous les utilisateurs.'},
       panelClass: "popupConfirmationClass",
@@ -2365,11 +2432,13 @@ export class ArtworkComicComponent implements OnInit {
       else{
         this.archive_loading=false;
       }
+      this.in_other_popup=false;
     });
   }
 
   
   remove_artwork() {
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
       panelClass: "popupConfirmationClass",
@@ -2443,6 +2512,7 @@ export class ArtworkComicComponent implements OnInit {
       else{
         this.archive_loading=false;
       }
+      this.in_other_popup=false;
     });
   }
 

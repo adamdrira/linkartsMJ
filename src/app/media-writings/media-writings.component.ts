@@ -189,7 +189,7 @@ export class MediaWritingsComponent implements OnInit {
 
 
   open_research(item:any) {
-    return "/main-research-style-and-tag/1/Writing/"+item+"/all";
+    return "/main-research/style-and-tag/1/Writing/"+item+"/all";
   }
 
 

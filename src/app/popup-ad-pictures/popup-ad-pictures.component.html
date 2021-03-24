@@ -4,7 +4,7 @@
 
 
 <div class="component-container">
-    <div #swiperContainer class="swiper-container" *ngIf="list_of_pictures.length > 1">
+    <div #swiperContainer class="swiper-container" *ngIf="list_of_pictures.length >= 1">
         <div #swiperWrapper class="swiper-wrapper">
     
             <div #swiperSlide *ngFor="let item of list_of_pictures; let i = index" class="swiper-slide">
@@ -18,7 +18,7 @@
     </div>
     
     
-    <div class="bottom-thumbnails" *ngIf="list_of_pictures.length > 1">
+    <div class="bottom-thumbnails" *ngIf="list_of_pictures.length >= 1">
         <div class="swiper-thumbnails">
             <div #swiperContainer2 class="swiper-container">
                 <div #swiperWrapper2 class="swiper-wrapper">
@@ -34,13 +34,5 @@
         <div class="swiper-button-prev s2" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
     </div>
     
-
-    <div class="swiper-container" *ngIf="list_of_pictures.length == 1">
-        <div #swiperWrapper class="swiper-wrapper">
-            <div class="swiper-slide">
-                <img [src]="list_of_pictures[0]" class="slide-container-img">
-            </div>
-        </div>
-    </div>
 
 </div>

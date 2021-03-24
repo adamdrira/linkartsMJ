@@ -26,6 +26,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { LoginComponent } from '../login/login.component';
 import { DOCUMENT } from '@angular/common';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { PopupFormAdComponent } from '../popup-form-ad/popup-form-ad.component';
 
 declare var $: any
 declare var Swiper: any
@@ -177,7 +178,6 @@ export class AdPageComponent implements OnInit {
   response_pictures_retrieved=false;
   response_attachments_retrieved=false;
   b:number;
-
   first_comment='';
   first_comment_retrieved=false;
   pp_first_comment:any;
@@ -188,20 +188,15 @@ export class AdPageComponent implements OnInit {
   left_container_category_index=0;
   list_of_author_ads:any[]=[];
   list_of_other_ads:any[]=[];
-
   number_of_views:number;
-
   commentariesnumber:number;
-
   ad_archived=false;
   archive_retrieved=false;
   list_of_reporters=[];
-
   type_of_profile='';
   type_of_profile_retrieved=false;
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   number_of_comments_to_show=10;
-
   page_not_found=false;
   profile_data_retrieved=false;
   emphasized_contend_retrieved=false;
@@ -232,7 +227,7 @@ export class AdPageComponent implements OnInit {
 
   @HostListener('document:click', ['$event.target'])
   clickout(btn) {
-    if(this.ad_id_input){
+    if(this.ad_id_input && !this.in_other_popup){
       if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
         if(this.ad_id_input && !btn.className.baseVal && btn.className.includes("cdk-overlay-dark-backdrop")){
           this.emit_close_click.emit(true);
@@ -324,9 +319,10 @@ export class AdPageComponent implements OnInit {
         }
       }
       this.item=m[0];
+      let title_url=this.item.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
       this.navbar.add_page_visited_to_history(`/ad-page/${this.item.title}/${this.ad_id}`,this.device_info).subscribe();
-      this.location.go(`/ad-page/${this.item.title}/${this.ad_id}`);
-      this.url=`https://www.linkarts.fr/ad-page/${this.item.title}/${this.ad_id}`;
+      this.location.go(`/ad-page/${title_url}/${this.ad_id}`);
+      this.url=`https://www.linkarts.fr/ad-page/${title_url}/${this.ad_id}`;
       this.location_done=true;
       this.list_of_reporters=this.item.list_of_reporters
       if(!m[0] || title!=m[0].title || m[0].status=="deleted" || m[0].status=="suspended"){
@@ -557,39 +553,50 @@ export class AdPageComponent implements OnInit {
 
   /******************************************** OPTIONS **************************************/
  
-
+  in_other_popup=false;
   read_pictures(i:number){
-    
-      const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
-        data: {list_of_pictures:this.list_of_pictures,index_of_picture:i},
-        panelClass: "popupDocumentClass",
-      });
+    this.in_other_popup=true;
+    const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
+      data: {list_of_pictures:this.list_of_pictures,index_of_picture:i},
+      panelClass: "popupDocumentClass",
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })
   }
 
   read_attachment(i:number){
+    this.in_other_popup=true;
     this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.list_of_attachments[i]},
       panelClass: "popupDocumentClass",
     }).afterClosed().subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
+        this.in_other_popup=false;
     });
   }
 
   read_pictures_response(i:number){
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {list_of_pictures:this.response_list_of_pictures,index_of_picture:i},
       panelClass: "popupDocumentClass",
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })
   }
 
   read_attachment_response(i:number){
+    this.in_other_popup=true;
     this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.response_list_of_attachments[i]},
       panelClass: "popupDocumentClass",
     }).afterClosed().subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
+      this.in_other_popup=false;
     });
   }
 
@@ -598,6 +605,7 @@ export class AdPageComponent implements OnInit {
   }
 
   delete(){
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette annonce ?'},
       panelClass: "popupConfirmationClass",
@@ -612,6 +620,7 @@ export class AdPageComponent implements OnInit {
           })
         })
       }
+      this.in_other_popup=false;
     })
    
   };
@@ -666,21 +675,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             });
           }
@@ -690,21 +685,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             });
           }
@@ -719,21 +700,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_pictures[l[1]] = SafeURL;
               u++;
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             });
           }
@@ -743,21 +710,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             });
           }
@@ -772,21 +725,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             });
           }
@@ -796,21 +735,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             });
           }
@@ -825,21 +750,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             })
           }
@@ -849,21 +760,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             })
           }
@@ -878,21 +775,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             })
           }
@@ -902,21 +785,7 @@ export class AdPageComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
+                this.sort_attachments();
               }
             })
           }
@@ -927,6 +796,25 @@ export class AdPageComponent implements OnInit {
     else{
       this.attachments_retrieved=true;
     }
+  }
+
+  sort_attachments(){
+    let length1=this.list_of_pictures.length;
+    for(let j=0;j<length1;j++){
+      if(!this.list_of_pictures[length1-1-j]){
+        this.list_of_pictures.splice(length1-1-j,1);
+        this.list_of_pictures_name.splice(length1-1-j,1);
+      }
+    }
+    let length2=this.list_of_attachments.length;
+    for(let j=0;j<length2;j++){
+      if(!this.list_of_attachments[length2-j-1]){
+        this.list_of_attachments.splice(length2-j-1,1);
+        this.list_of_attachments_name.splice(length2-j-1,1);
+      }
+    }
+    this.attachments_retrieved=true;
+    this.cd.detectChanges()
   }
 
   return_to_ad(i){
@@ -1018,10 +906,14 @@ export class AdPageComponent implements OnInit {
       }
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
   
   }
@@ -1068,27 +960,39 @@ export class AdPageComponent implements OnInit {
       this.Ads_service.check_if_response_sent(this.item.id).subscribe(r=>{
         
         if(r[0].response){
+          this.in_other_popup=true;
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous avez déjà répondu à cette annonce'},
             panelClass: "popupConfirmationClass",
           });
+          dialogRef.afterClosed().subscribe(result => {
+            this.in_other_popup=false;
+          })
           
         }
         else{
+          this.in_other_popup=true;
           const dialogRef = this.dialog.open(PopupAdWriteResponsesComponent, {
             data: {item:this.item},
             panelClass: 'popupAdWriteReponsesClass',
           });
+          dialogRef.afterClosed().subscribe(result => {
+            this.in_other_popup=false;
+          })
         }
         this.checking_response=false;
       })
       
     }
     else {
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
   }
 
@@ -1109,19 +1013,17 @@ export class AdPageComponent implements OnInit {
             let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_profile_pictures[i] = SafeURL;
-            this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(q=> {
-              this.list_of_authors_name[i] = q[0].firstname + ' ' + q[0].lastname;
-              
-              this.list_of_certified_account[i] = q[0].certified_account;
-
-              this.list_of_ids[i]=q[0].id; 
-              this.list_of_pseudos[i]=q[0].nickname; 
-              this.list_of_primary_descriptions[i]=q[0].primary_description;
-              compt++;
-              if(compt==r[0].length){
-                this.answers_retrieved=true;
-              }
-            });
+          });
+          this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(q=> {
+            this.list_of_authors_name[i] = q[0].firstname + ' ' + q[0].lastname;
+            this.list_of_certified_account[i] = q[0].certified_account;
+            this.list_of_ids[i]=q[0].id; 
+            this.list_of_pseudos[i]=q[0].nickname; 
+            this.list_of_primary_descriptions[i]=q[0].primary_description;
+            compt++;
+            if(compt==r[0].length){
+              this.answers_retrieved=true;
+            }
           });
         }
       }
@@ -1155,24 +1057,9 @@ export class AdPageComponent implements OnInit {
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.response_list_of_pictures[l[1]] = SafeURL;
-              
               u++
               if(u==item.number_of_attachments){
-                let length1=this.response_list_of_pictures.length
-                for(let j=0;j<length1;j++){
-                  if(!this.response_list_of_pictures[length1-1-j]){
-                    this.response_list_of_pictures.splice(length1-1-j,1);
-                    this.response_list_of_pictures_names.splice(length1-1-j,1)
-                  }
-                }
-                let length2=this.response_list_of_attachments.length
-                for(let j=0;j<length2;j++){
-                  if(!this.response_list_of_attachments[length2-1-j]){
-                    this.response_list_of_attachments.splice(length2-1-j,1);
-                    this.response_list_of_attachments_name.splice(length2-1-j,1);
-                  }
-                }
-                this.response_attachments_retrieved=true;
+                this.sort_response_attachments()
               }
             });
           }
@@ -1182,21 +1069,7 @@ export class AdPageComponent implements OnInit {
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.response_list_of_pictures.length
-                for(let j=0;j<length1;j++){
-                  if(!this.response_list_of_pictures[length1-1-j]){
-                    this.response_list_of_pictures.splice(length1-1-j,1);
-                    this.response_list_of_pictures_names.splice(length1-1-j,1)
-                  }
-                }
-                let length2=this.response_list_of_attachments.length
-                for(let j=0;j<length2;j++){
-                  if(!this.response_list_of_attachments[length2-1-j]){
-                    this.response_list_of_attachments.splice(length2-1-j,1);
-                    this.response_list_of_attachments_name.splice(length2-1-j,1);
-                  }
-                }
-                this.response_attachments_retrieved=true;
+                this.sort_response_attachments()
               }
             });
           }
@@ -1211,21 +1084,7 @@ export class AdPageComponent implements OnInit {
               this.response_list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.response_list_of_pictures.length
-                for(let j=0;j<length1;j++){
-                  if(!this.response_list_of_pictures[length1-1-j]){
-                    this.response_list_of_pictures.splice(length1-1-j,1);
-                    this.response_list_of_pictures_names.splice(length1-1-j,1)
-                  }
-                }
-                let length2=this.response_list_of_attachments.length
-                for(let j=0;j<length2;j++){
-                  if(!this.response_list_of_attachments[length2-1-j]){
-                    this.response_list_of_attachments.splice(length2-1-j,1);
-                    this.response_list_of_attachments_name.splice(length2-1-j,1);
-                  }
-                }
-                this.response_attachments_retrieved=true;
+                this.sort_response_attachments()
               }
             });
           }
@@ -1235,21 +1094,7 @@ export class AdPageComponent implements OnInit {
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.response_list_of_pictures.length
-                for(let j=0;j<length1;j++){
-                  if(!this.response_list_of_pictures[length1-1-j]){
-                    this.response_list_of_pictures.splice(length1-1-j,1);
-                    this.response_list_of_pictures_names.splice(length1-1-j,1)
-                  }
-                }
-                let length2=this.response_list_of_attachments.length
-                for(let j=0;j<length2;j++){
-                  if(!this.response_list_of_attachments[length2-1-j]){
-                    this.response_list_of_attachments.splice(length2-1-j,1);
-                    this.response_list_of_attachments_name.splice(length2-1-j,1);
-                  }
-                }
-                this.response_attachments_retrieved=true;
+                this.sort_response_attachments()
               }
             });
           }
@@ -1264,21 +1109,7 @@ export class AdPageComponent implements OnInit {
               this.response_list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.response_list_of_pictures.length
-                for(let j=0;j<length1;j++){
-                  if(!this.response_list_of_pictures[length1-1-j]){
-                    this.response_list_of_pictures.splice(length1-1-j,1);
-                    this.response_list_of_pictures_names.splice(length1-1-j,1)
-                  }
-                }
-                let length2=this.response_list_of_attachments.length
-                for(let j=0;j<length2;j++){
-                  if(!this.response_list_of_attachments[length2-1-j]){
-                    this.response_list_of_attachments.splice(length2-1-j,1);
-                    this.response_list_of_attachments_name.splice(length2-1-j,1);
-                  }
-                }
-                this.response_attachments_retrieved=true;
+                this.sort_response_attachments()
               }
             });
           }
@@ -1288,21 +1119,7 @@ export class AdPageComponent implements OnInit {
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.response_list_of_pictures.length
-                for(let j=0;j<length1;j++){
-                  if(!this.response_list_of_pictures[length1-1-j]){
-                    this.response_list_of_pictures.splice(length1-1-j,1);
-                    this.response_list_of_pictures_names.splice(length1-1-j,1)
-                  }
-                }
-                let length2=this.response_list_of_attachments.length
-                for(let j=0;j<length2;j++){
-                  if(!this.response_list_of_attachments[length2-1-j]){
-                    this.response_list_of_attachments.splice(length2-1-j,1);
-                    this.response_list_of_attachments_name.splice(length2-1-j,1);
-                  }
-                }
-                this.response_attachments_retrieved=true;
+                this.sort_response_attachments()
               }
             });
           }
@@ -1317,21 +1134,7 @@ export class AdPageComponent implements OnInit {
               this.response_list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.response_list_of_pictures.length
-                for(let j=0;j<length1;j++){
-                  if(!this.response_list_of_pictures[length1-1-j]){
-                    this.response_list_of_pictures.splice(length1-1-j,1);
-                    this.response_list_of_pictures_names.splice(length1-1-j,1)
-                  }
-                }
-                let length2=this.response_list_of_attachments.length
-                for(let j=0;j<length2;j++){
-                  if(!this.response_list_of_attachments[length2-1-j]){
-                    this.response_list_of_attachments.splice(length2-1-j,1);
-                    this.response_list_of_attachments_name.splice(length2-1-j,1);
-                  }
-                }
-                this.response_attachments_retrieved=true;
+                this.sort_response_attachments()
               }
             })
           }
@@ -1341,21 +1144,7 @@ export class AdPageComponent implements OnInit {
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.response_list_of_pictures.length
-                for(let j=0;j<length1;j++){
-                  if(!this.response_list_of_pictures[length1-1-j]){
-                    this.response_list_of_pictures.splice(length1-1-j,1);
-                    this.response_list_of_pictures_names.splice(length1-1-j,1)
-                  }
-                }
-                let length2=this.response_list_of_attachments.length
-                for(let j=0;j<length2;j++){
-                  if(!this.response_list_of_attachments[length2-1-j]){
-                    this.response_list_of_attachments.splice(length2-1-j,1);
-                    this.response_list_of_attachments_name.splice(length2-1-j,1);
-                  }
-                }
-                this.response_attachments_retrieved=true;
+                this.sort_response_attachments()
               }
             })
           }
@@ -1370,21 +1159,7 @@ export class AdPageComponent implements OnInit {
               this.response_list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.response_list_of_pictures.length
-                for(let j=0;j<length1;j++){
-                  if(!this.response_list_of_pictures[length1-1-j]){
-                    this.response_list_of_pictures.splice(length1-1-j,1);
-                    this.response_list_of_pictures_names.splice(length1-1-j,1)
-                  }
-                }
-                let length2=this.response_list_of_attachments.length
-                for(let j=0;j<length2;j++){
-                  if(!this.response_list_of_attachments[length2-1-j]){
-                    this.response_list_of_attachments.splice(length2-1-j,1);
-                    this.response_list_of_attachments_name.splice(length2-1-j,1);
-                  }
-                }
-                this.response_attachments_retrieved=true;
+                this.sort_response_attachments()
               }
             })
           }
@@ -1398,12 +1173,35 @@ export class AdPageComponent implements OnInit {
     
   }
 
+  sort_response_attachments(){
+    let length1=this.response_list_of_pictures.length;
+    for(let j=0;j<length1;j++){
+      if(!this.response_list_of_pictures[length1-1-j]){
+        this.response_list_of_pictures.splice(length1-1-j,1);
+        this.response_list_of_pictures_names.splice(length1-1-j,1)
+      }
+    }
+    let length2=this.response_list_of_attachments.length
+    for(let j=0;j<length2;j++){
+      if(!this.response_list_of_attachments[length2-1-j]){
+        this.response_list_of_attachments.splice(length2-1-j,1);
+        this.response_list_of_attachments_name.splice(length2-1-j,1);
+      }
+    }
+    this.response_attachments_retrieved=true;
+    this.cd.detectChanges();
+  }
+
 
   edit_thumbnail(){
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupEditCoverComponent, {
       data: {item:this.item,category:"ad"},
       panelClass: 'popupEditCoverClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })
   }
 
 
@@ -1416,16 +1214,25 @@ export class AdPageComponent implements OnInit {
     this.checking_report=true;
     this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).subscribe(r=>{
       if(r[0].nothing){
+        this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
           panelClass: "popupConfirmationClass",
         });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
+        
       }
       else{
+        this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.item.id_user,publication_category:'ad',publication_id:this.item.id,format:this.item.type_of_project,chapter_number:0},
           panelClass:"popupReportClass"
         });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
       }
       this.checking_report=false;
     })
@@ -1445,8 +1252,8 @@ export class AdPageComponent implements OnInit {
 
 
   see_comments() {
-  
-    this.dialog.open(PopupCommentsComponent, {
+    this.in_other_popup=true;
+    let dialogRef=this.dialog.open(PopupCommentsComponent, {
       data: {
         visitor_id:this.visitor_id,
         visitor_name:this.visitor_name,
@@ -1463,20 +1270,23 @@ export class AdPageComponent implements OnInit {
       }, 
       panelClass: 'popupCommentsClass',
     });
-
+    dialogRef.afterClosed().subscribe(result => {
+      if(!result){
+        this.emit_close_click.emit(true);
+      }
+      this.in_other_popup=false;
+    })
   }
 
   open_account() {
     return "/account/" + this.pseudo + "/" + this.item.id_user;
   };
-
   
   certified_account:boolean;  
   stop(e: Event) {
     e.preventDefault();
     e.stopPropagation();
   };
-
 
   picture_loaded=[];
   load_picture(i){
@@ -1485,5 +1295,18 @@ export class AdPageComponent implements OnInit {
 
   after_click_comment(event){
     this.close_popup();
+  }
+
+  edit_information() {
+    this.in_other_popup=true;
+    const dialogRef = this.dialog.open(PopupFormAdComponent, {
+      data: {
+        item:this.item,
+      },
+      panelClass: 'popupFormAdClass',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })
   }
 }

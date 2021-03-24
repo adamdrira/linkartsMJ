@@ -1,13 +1,9 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject } from '@angular/core';
-
-
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
-declare var $: any;
 
 @Component({
   selector: 'app-popup-artwork-data',
@@ -24,18 +20,15 @@ declare var $: any;
     ),
   ],
 })
-export class PopupArtworkDataComponent implements OnInit {
+export class PopupArtworkDataComponent {
 
   constructor(
     public dialogRef: MatDialogRef<PopupArtworkDataComponent>,
-    private cd:ChangeDetectorRef,
-    private rd:Renderer2,
-    private sanitizer:DomSanitizer,
     public dialog: MatDialog,
-
 
     private navbar: NavbarService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
+      dialogRef.disableClose = true;
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
@@ -72,10 +65,10 @@ export class PopupArtworkDataComponent implements OnInit {
 
   get_link() {
     if(this.category != 'Writing') {
-      return "/main-research-style-and-tag/1/"+this.category+"/" + this.style + "/all";
+      return "/main-research/style-and-tag/1/"+this.category+"/" + this.style + "/all";
     }
     else {
-      return "/main-research-style-and-tag/1/"+this.category+"/" + this.get_french_style(this.style) + "/all";
+      return "/main-research/style-and-tag/1/"+this.category+"/" + this.get_french_style(this.style) + "/all";
     }
   };
   get_style_link(i: number) {
@@ -90,21 +83,19 @@ export class PopupArtworkDataComponent implements OnInit {
     }
 
     if( i == 0 ) {
-      return "/main-research-style-and-tag/1/"+this.category+"/" + link_style + "/" + this.firsttag;
+      return "/main-research/style-and-tag/1/"+this.category+"/" + link_style + "/" + this.firsttag;
     }
     if( i == 1 ) {
-      return "/main-research-style-and-tag/1/"+this.category+"/" + link_style + "/" + this.secondtag;
+      return "/main-research/style-and-tag/1/"+this.category+"/" + link_style + "/" + this.secondtag;
     }
     if( i == 2 ) {
-      return "/main-research-style-and-tag/1/"+this.category+"/" + link_style + "/" + this.thirdtag;
+      return "/main-research/style-and-tag/1/"+this.category+"/" + link_style + "/" + this.thirdtag;
     }
   }
 
 
   show_icon=false;
-  ngOnInit() {
-    let THIS=this;
-    
+  close_dialog() {
+    this.dialogRef.close();
   }
-
 }

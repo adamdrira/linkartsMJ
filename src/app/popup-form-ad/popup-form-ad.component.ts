@@ -5,6 +5,7 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dial
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { ConstantsService } from '../services/constants.service';
+import { Ads_service } from '../services/ads.service';
 import { NavbarService } from '../services/navbar.service';
 import { Location } from '@angular/common';
 
@@ -26,10 +27,9 @@ import { Location } from '@angular/common';
 export class PopupFormAdComponent implements OnInit {
 
   constructor(
-    private renderer: Renderer2,
-    private cd:ChangeDetectorRef,
     public dialogRef: MatDialogRef<PopupFormAdComponent>,
     private navbar: NavbarService,
+    private Ads_service:Ads_service,
     private location: Location,
     private constants:ConstantsService,
     public dialog: MatDialog,
@@ -93,10 +93,10 @@ export class PopupFormAdComponent implements OnInit {
   createFormControlsAds() {
     this.fdTitle = new FormControl(this.data.item.title, [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text") ) ]);
     this.fdDescription = new FormControl(this.data.item.description, [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
-    this.fdPrice = new FormControl(this.data.item.price_value, [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("share") ) ]);
-    this.fdPrice_type = new FormControl(this.data.item.price_type);
-    this.fdPrice1 = new FormControl(this.data.item.price_value_service, [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("share") ) ]);
-    this.fdPrice_type1 = new FormControl(this.data.item.price_type_service);
+    this.fdPrice = new FormControl(this.data.item.price_value, [Validators.minLength(1), Validators.maxLength(15), Validators.pattern( pattern("classic") ) ]);
+    this.fdPrice_type = new FormControl(this.data.item.price_type?this.data.item.price_type:'');
+    this.fdPrice1 = new FormControl(this.data.item.price_value_service, [Validators.minLength(1), Validators.maxLength(15), Validators.pattern( pattern("classic") ) ]);
+    this.fdPrice_type1 = new FormControl(this.data.item.price_type_service?this.data.item.price_type_service:'');
     this.fdOffer_demand= new FormControl(this.data.item.offer_or_demand);
     this.fdPreferential_location = new FormControl(this.data.item.location, [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("location") ) ]);
   }
@@ -119,7 +119,13 @@ export class PopupFormAdComponent implements OnInit {
   
   
   validate_form_ads() {
+    if(this.loading){
+      return
+    }
 
+    console.log(this.fd)
+    this.loading=true;
+    
     if(this.remuneration && !this.fd.valid){
       if(this.fd.value.fdPrice.length==0){
         this.price_value ="0";
@@ -145,9 +151,12 @@ export class PopupFormAdComponent implements OnInit {
       this.price_value1 ="0";
     }
 
-    
+   
     if ( this.fd.valid && !(this.remuneration && this.for_service)) {
-      
+      this.Ads_service.edit_primary_information_ad(this.data.item.id,this.fd.value.fdTitle,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'),this.fd.value.fdPreferential_location,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1,this.offer_or_demand).subscribe(r=> {
+        this.location.go(`/ad-page/${this.fd.value.fdTitle}/${this.data.item.id}`);
+        location.reload();         
+      });
        
     }
     else {
@@ -155,6 +164,7 @@ export class PopupFormAdComponent implements OnInit {
         data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires'},
         panelClass: "popupConfirmationClass",
       });
+      this.loading=false;
     }
 
   }

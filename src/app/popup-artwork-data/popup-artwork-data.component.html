@@ -12,6 +12,7 @@
         
         <div class="verso-type">
             <a class="type-container" [routerLink]=get_link()
+            (click)="close_dialog()"
             matTooltip="Voir du contenu de ce genre"
             matTooltipClass='linkarts-tooltip'
             [matTooltipPosition]="'below'"
@@ -25,18 +26,21 @@
         
         <div class="verso-type">
             <a class="type-container style" [routerLink]=get_style_link(0)
+            (click)="close_dialog()"
             matTooltip="Voir du contenu de ce style"
             matTooltipClass='linkarts-tooltip'
             [matTooltipPosition]="'below'"
             [matTooltipShowDelay]="200"
             *ngIf="firsttag"><span>{{firsttag}}</span></a>
             <a class="type-container style" [routerLink]=get_style_link(1)
+            (click)="close_dialog()"
             matTooltip="Voir du contenu de ce style"
             matTooltipClass='linkarts-tooltip'
             [matTooltipPosition]="'below'"
             [matTooltipShowDelay]="200"
             *ngIf="secondtag"><span>{{secondtag}}</span></a>
             <a class="type-container style" [routerLink]=get_style_link(2)
+            (click)="close_dialog()"
             matTooltip="Voir du contenu de ce style"
             matTooltipClass='linkarts-tooltip'
             [matTooltipPosition]="'below'"

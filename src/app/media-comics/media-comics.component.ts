@@ -197,7 +197,7 @@ export class MediaComicsComponent implements OnInit {
   }
 
   open_research(item:any) {
-    return "/main-research-style-and-tag/1/Comic/"+item+"/all";
+    return "/main-research/style-and-tag/1/Comic/"+item+"/all";
   }
 
   offset=0;

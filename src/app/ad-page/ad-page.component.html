@@ -669,6 +669,10 @@
                                 <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                             </button>
                             <mat-menu #artworkOptions02="matMenu" class="artwork-mat-menu">
+                                <button class="artwork-button-menu-item" mat-menu-item (click)="edit_information();">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                    <span>Modifier les informations</span>
+                                </button>
                                 <button class="artwork-button-menu-item" mat-menu-item (click)="edit_thumbnail();">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">view_carousel</mat-icon>
                                     <span>Modifier la miniature</span>

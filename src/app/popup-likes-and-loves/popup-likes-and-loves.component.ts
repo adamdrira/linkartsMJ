@@ -40,6 +40,7 @@ export class PopupLikesAndLovesComponent implements OnInit {
     private navbar: NavbarService,
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
+      dialogRef.disableClose = true;
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
@@ -280,5 +281,7 @@ export class PopupLikesAndLovesComponent implements OnInit {
     e.preventDefault();
     e.stopPropagation();
   };
+
+
 
 }

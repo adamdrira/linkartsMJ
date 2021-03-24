@@ -1312,7 +1312,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   //WORDS
   open_research_style_and_tags(i: number) {
-    return "/main-research-style-and-tag/1/" + this.list_of_real_categories[this.indice_title_selected] + "/" + this.first_filters[this.indice_title_selected][i] + "/all";
+    return "/main-research/style-and-tag/1/" + this.list_of_real_categories[this.indice_title_selected] + "/" + this.first_filters[this.indice_title_selected][i] + "/all";
     
     
   }
@@ -1362,7 +1362,8 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   get_ad_last_propositions(i:number) {
-    return "/ad-page/"+this.list_of_last_propositions[i].title +"/"+ this.list_of_last_propositions[i].id;
+    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/ad-page/"+title_url +"/"+ this.list_of_last_propositions[i].id;
   }
 
   open_ad_last_propositions_history(i: number) {
@@ -1371,13 +1372,15 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     let ad =this.list_of_last_propositions_history[i];
     this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
-      this.router.navigate([`/ad-page/${this.list_of_last_propositions_history[i].title}/${this.list_of_last_propositions_history[i].id}`]);
+      let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+      this.router.navigate([`/ad-page/${title_url}/${this.list_of_last_propositions_history[i].id}`]);
       this.loading_research=false;
       return
     })
   }
   get_ad_last_propositions_history(i: number) {
-    return "/ad-page/" + this.list_of_last_propositions_history[i].title + "/" + this.list_of_last_propositions_history[i].id;
+    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/ad-page/" + title_url + "/" + this.list_of_last_propositions_history[i].id;
   }
 
 
@@ -1387,8 +1390,10 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     let artwork=this.list_of_last_propositions[i];
     this.not_using_chat();
+    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
+        this.router.navigate([`/artwork-writing/${title_url}/${s.target_id}`]);
         this.loading_research=false;
         return
       })
@@ -1396,7 +1401,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
     else {
       this.navbar.add_main_research_to_history(s.publication_category,s.format,s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
-        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${s.format}/${this.list_of_last_propositions[i].title}/${s.target_id}`]);
+        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${s.format}/${title_url}/${s.target_id}`]);
         this.loading_research=false;
         return
       })
@@ -1404,11 +1409,12 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
   get_artwork_last_proposition(s:any, i:number) {
+    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
     if(s.publication_category=="Writing") {
-      return "/artwork-" + s.publication_category.toLowerCase() + "/" + this.list_of_last_propositions[i].title + "/" + s.target_id;
+      return "/artwork-" + s.publication_category.toLowerCase() + "/" + title_url+ "/" + s.target_id;
     }
     else {
-      return "/artwork-" + s.publication_category.toLowerCase() + "/" + s.format + "/" + this.list_of_last_propositions[i].title + "/" + s.target_id;
+      return "/artwork-" + s.publication_category.toLowerCase() + "/" + s.format + "/" + title_url + "/" + s.target_id;
     }
 
   }
@@ -1418,9 +1424,10 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     let artwork=this.list_of_last_propositions_history[i];
     this.not_using_chat();
+    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
-        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${this.list_of_last_propositions_history[i].title}/${s.target_id}`]);
+        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${title_url}/${s.target_id}`]);
         this.loading_research=false;
         return
       })
@@ -1428,7 +1435,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
     else {
       this.navbar.add_main_research_to_history(s.publication_category,s.format,s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
-        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${s.format}/${this.list_of_last_propositions_history[i].title}/${s.target_id}`]);
+        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${s.format}/${title_url}/${s.target_id}`]);
         this.loading_research=false;
         return
       })
@@ -1437,11 +1444,12 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   get_artwork_last_proposition_history(s:any, i:number) {
+    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
     if(s.publication_category=="Writing") {
-      return "/artwork-" + s.publication_category.toLowerCase() + "/" + this.list_of_last_propositions_history[i].title + "/" + s.target_id;
+      return "/artwork-" + s.publication_category.toLowerCase() + "/" + title_url + "/" + s.target_id;
     }
     else {
-      return "/artwork-" + s.publication_category.toLowerCase() + "/" + s.format + "/" + this.list_of_last_propositions_history[i].title + "/" + s.target_id;
+      return "/artwork-" + s.publication_category.toLowerCase() + "/" + s.format + "/" + title_url + "/" + s.target_id;
     }
   }
 
@@ -1527,7 +1535,8 @@ export class NavbarLinkartsComponent implements OnInit {
     this.close_notifications();
   }
   get_comic(notif:any) {
-    return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
+    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/artwork-comic/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
   }
 
   open_comic_chapter(notif:any) {
@@ -1535,28 +1544,32 @@ export class NavbarLinkartsComponent implements OnInit {
     this.close_notifications();
   }
   get_comic_chapter(notif:any) {
-    return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id + "/" + notif.chapter_number;
+    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
   }
   open_drawing(notif:any) {
     this.not_using_chat();
     this.close_notifications();
   }
   get_drawing(notif:any) {
-    return "/artwork-drawing/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
+    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/artwork-drawing/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
   }
   open_writing(notif:any) {
     this.not_using_chat();
     this.close_notifications();
   }
   get_writing(notif:any) {
-    return "/artwork-writing/" + notif.publication_name + "/" + notif.publication_id;
+    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/artwork-writing/" + title_url + "/" + notif.publication_id;
   }
   open_ad(notif:any) {
     this.not_using_chat();
     this.close_notifications();
   }
   get_ad(notif:any) {
-    return "/ad-page/" + notif.publication_name + "/" + notif.publication_id;
+    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/ad-page/" + title_url + "/" + notif.publication_id;
   }
 
 
@@ -1575,8 +1588,9 @@ export class NavbarLinkartsComponent implements OnInit {
     this.cancel_research();
     this.not_using_chat();
     this.loading_research=true;
+    let value=this.input.nativeElement.value.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')
     this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
-      this.router.navigate([`/main-research/1/${this.input.nativeElement.value}/${this.publication_category}`]);
+      this.router.navigate([`/main-research/1/${value}/${this.publication_category}`]);
       this.loading_research=false;
       this.activated_search=false;
       return;
@@ -1597,7 +1611,8 @@ export class NavbarLinkartsComponent implements OnInit {
 
   get_trending_message(i) {
     let str=this.most_researched_propositions[i].research_string;
-    return "/main-research/1/" + str + "/All";
+    let value=str.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/main-research/1/" + value + "/All";
   }
 
   add_clicked_after_research(i){

@@ -1,5 +1,5 @@
 
-<button class="close-button" (click)="close_dialog()">
+<button class="close-button" [mat-dialog-close]="true">
     <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
 </button>
 

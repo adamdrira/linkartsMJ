@@ -215,12 +215,6 @@ export class LoginComponent implements OnInit {
     }
   }
   
-  close_dialog(){
-    if(!this.loading){
-      this.dialogRef.close();
-    }
-   
-  }
 
   time_between_connexions:any;
   display_connexion_not_allowed=false;

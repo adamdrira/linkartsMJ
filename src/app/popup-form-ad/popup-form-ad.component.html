@@ -14,7 +14,9 @@
         <form [formGroup]="fd" novalidate>
             <div class="form-container">
 
-
+                <div class="form-container-name">
+                    <span>Titre</span>
+                </div>
                 <div class="form-item">
                     <mat-form-field floatLabel='never'>
                         <mat-label>Titre</mat-label>
@@ -25,7 +27,7 @@
                     </mat-form-field>
                 </div>
 
-                <div class="form-item" style="height:50px;">
+                <div class="form-item" style="height:50px;" *ngIf="!for_service && !remuneration">
                     <div class="monetisation-container">
                         <mat-slide-toggle [checked]="volunteer" [disabled]="true" (change)="setVolunteer( $event )" style="font-weight:bold;">
                             Annonce de collaboration bénévole
@@ -33,7 +35,7 @@
                     </div>
                 </div>
 
-                <div class="form-item" style="height:50px;">
+                <div class="form-item" style="height:50px;"  *ngIf="remuneration">
                     <div class="monetisation-container">
                         <mat-slide-toggle [checked]="remuneration" (change)="setRemuneration( $event )" style="font-weight:bold;">
                             Annonce de collaboration rémunérée
@@ -41,16 +43,17 @@
                     </div>
                 </div>
 
-                <div class="form-item monetization"  *ngIf="remuneration" [@enterAnimation]>
+                
+                <div class="form-item monetization" *ngIf="remuneration"  [@enterAnimation]>
                     <mat-form-field floatLabel='never'>
                         <mat-label>Montant en € (optionnel)</mat-label>
-                        <input matInput formControlName="fdPrice" maxLength="9" autocomplete="off">
-                        <mat-error *ngIf="fd.controls['fdPrice'].invalid">Veuillez faire une saisie valide (votre saisie ne doit comporter que des chiffres et des points)
+                        <input matInput formControlName="fdPrice" maxLength="15" autocomplete="off">
+                        <mat-error *ngIf="fd.controls['fdPrice'].invalid">Veuillez faire une saisie valide ou laisser ce champ vide.
                         </mat-error>
-                        <div class="length-indicator">{{fd.controls['fdPrice'].value?.length || 0}}/9</div>
+                        <div class="length-indicator">{{fd.controls['fdPrice'].value?.length || 0}}/15</div>
                     </mat-form-field>
                 </div>
-                <div class="form-item monetization" *ngIf="remuneration" [@enterAnimation]>
+                <div class="form-item monetization" *ngIf="remuneration"  [@enterAnimation]>
                     <mat-form-field floatLabel='never'>
                         <mat-label>Type de rémunération (optionnel)</mat-label>
                         <mat-select [compareWith]="compareObjects" (selectionChange)="change_price_type($event)" panelClass="popupFormAdSelectClass" disableOptionCentering formControlName="fdPrice_type">
@@ -63,7 +66,7 @@
                 </div>
 
 
-                <div class="form-item" style="height:50px;">
+                <div class="form-item" style="height:50px;" *ngIf="for_service">
                     <div class="monetisation-container">
                         <mat-slide-toggle [checked]="for_service" (change)="setService( $event )" style="font-weight:bold;">
                             Annonce de produits ou services
@@ -71,7 +74,7 @@
                     </div>
                 </div>
 
-                <div class="form-item monetization"  *ngIf="for_service" [@enterAnimation]>
+                <div class="form-item monetization" *ngIf="for_service"  [@enterAnimation]>
                     <mat-form-field floatLabel='never'>
                         <mat-label>Montant en € (optionnel)</mat-label>
                         <input matInput formControlName="fdPrice1" maxLength="9" autocomplete="off">
@@ -103,7 +106,9 @@
                     </mat-form-field>
                 </div>
 
-
+                <div class="form-container-name">
+                    <span>Localisation</span>
+                </div>
                 <div class="form-item">
                     <mat-form-field floatLabel='never'>
                         <mat-label>Localisation préférentielle</mat-label>
@@ -114,7 +119,9 @@
                     </mat-form-field>
                 </div>
 
-                
+                <div class="form-container-name">
+                    <span>Description</span>
+                </div>
                 <div class="form-item input-multiple-lines" style="height:unset !important;">
                     <mat-form-field floatLabel='never'>
                         <mat-label>Description</mat-label>

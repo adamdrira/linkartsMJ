@@ -148,9 +148,9 @@ export class AddAdComponent implements OnInit {
     this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text") ) ]);
     this.fdMydescription = new FormControl('', Validators.required);
     this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
-    this.fdPrice = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("share") ) ]);
+    this.fdPrice = new FormControl('', [Validators.minLength(1), Validators.maxLength(15), Validators.pattern( pattern("classic") ) ]);
     this.fdPrice_type = new FormControl('');
-    this.fdPrice1 = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("share") ) ]);
+    this.fdPrice1 = new FormControl('', [Validators.minLength(1), Validators.maxLength(15), Validators.pattern( pattern("classic") ) ]);
     this.fdPrice_type1 = new FormControl('');
     this.fdOffer_demand= new FormControl('');
     this.fdTargets = new FormControl( this.genres, [Validators.required]);

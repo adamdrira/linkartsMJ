@@ -1,13 +1,10 @@
-import { Component, OnInit, Renderer2,  ChangeDetectorRef, Inject } from '@angular/core';
+import { Component,ChangeDetectorRef, Inject } from '@angular/core';
 
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-
-declare var $: any;
 
 @Component({
   selector: 'app-popup-comments',
@@ -24,7 +21,7 @@ declare var $: any;
     ),
   ],
 })
-export class PopupCommentsComponent implements OnInit {
+export class PopupCommentsComponent  {
 
   constructor(
     public dialogRef: MatDialogRef<PopupCommentsComponent>,
@@ -66,11 +63,11 @@ export class PopupCommentsComponent implements OnInit {
     this.commentariesnumber--;
   }
 
-  show_icon=false;
-  ngOnInit() {
-    console.log("pop com")
-    console.log(this.data.category)
+
+  after_click_comment(event){
+    this.dialogRef.close();
   }
 
+  show_icon=false;
 
 }

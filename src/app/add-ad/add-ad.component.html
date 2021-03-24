@@ -62,10 +62,10 @@
                     <div class="form-item monetization"  *ngIf="remuneration" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
                             <mat-label>Montant en € (optionnel)</mat-label>
-                            <input matInput formControlName="fdPrice" maxLength="9" autocomplete="off">
-                            <mat-error *ngIf="fd.controls['fdPrice'].invalid">Veuillez faire une saisie valide (votre saisie ne doit comporter que des chiffres et des points)
+                            <input matInput formControlName="fdPrice" maxLength="15" autocomplete="off">
+                            <mat-error *ngIf="fd.controls['fdPrice'].invalid">Veuillez faire une saisie valide ou laisser ce champ vide.
                             </mat-error>
-                            <div class="length-indicator">{{fd.controls['fdPrice'].value?.length || 0}}/9</div>
+                            <div class="length-indicator">{{fd.controls['fdPrice'].value?.length || 0}}/15</div>
                         </mat-form-field>
                     </div>
                     <div class="form-item monetization" *ngIf="remuneration" [@enterAnimation]>

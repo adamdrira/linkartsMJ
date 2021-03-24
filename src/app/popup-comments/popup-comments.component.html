@@ -11,7 +11,9 @@
 
         <app-comments [type_of_account]=type_of_account [visitor_id]=visitor_id [visitor_name]=visitor_name [title]="title" [category]=category [format]=format
         [style]=style [publication_id]=publication_id [chapter_number]=chapter_number [authorid]=authorid
-        [number_of_comments_to_show]=number_of_comments_to_show (new_comment)="new_comment();"
+        [number_of_comments_to_show]=number_of_comments_to_show 
+        (new_comment)="new_comment();"
+        (click_on_user)="after_click_comment($event);"
         (removed_comment)="removed_comment();"></app-comments>
 
 

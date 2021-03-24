@@ -204,11 +204,8 @@
                     DEBUT DES MESSAGES DE CLASSIQUES
                     DEBUT DES MESSAGES DE CLASSIQUES
                     DEBUT DES MESSAGES DE CLASSIQUES
-                    DEBUT DES MESSAGES DE CLASSIQUES
-                    DEBUT DES MESSAGES DE CLASSIQUES
-                    DEBUT DES MESSAGES DE CLASSIQUES
                 -->
-            <div #myScrollContainer class="messages-container" [ngClass]="{'invisible':!put_messages_visible}"
+            <div #myScrollContainer (scroll)="onScroll($event)" class="messages-container" [ngClass]="{'invisible':!put_messages_visible}"
                 *ngIf="friend_type=='user'">
 
 
@@ -254,7 +251,7 @@
                             *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <div class="my-message-content"
                                 [ngClass]="{
-                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
+                                    'contains-picture':(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':(list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user ),
                                     'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver) && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
@@ -386,14 +383,18 @@
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
                                                 style="max-width:140px;max-height:140px;"
-                                                [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                [customObservable]="scroll"
+                                                *ngIf="can_load_images"
+                                                [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy"  >
                                         </div>
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'"
                                             class="image-container"
                                             (click)="show_images(list_of_messages.length -1 - i)">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
+                                            [customObservable]="scroll"
+                                            *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
-                                                [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
                                         </div>
                                         <div
                                             *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
@@ -436,7 +437,7 @@
 
                             <div class="friend-message-content"
                                 [ngClass]="{ 
-                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
+                                    'contains-picture':(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')   && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length -1 - i].id_user==list_of_messages[list_of_messages.length- i-2].id_user,
                                     'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
@@ -540,16 +541,20 @@
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
                                             (click)="show_images(list_of_messages.length -1 - i)">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
+                                            [customObservable]="scroll"
+                                            *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
                                                 style="max-width:140px;max-height:140px;"
-                                                [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
                                         </div>
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'"
                                             class="image-container"
                                             (click)="show_images(list_of_messages.length -1 - i)">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
+                                            [customObservable]="scroll"
+                                            *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
-                                                [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
 
                                         </div>
                                         <div
@@ -682,7 +687,7 @@
 
 
 
-            <div #myScrollContainer class="messages-container"
+            <div #myScrollContainer class="messages-container" (scroll)="onScroll($event)"
                 [ngClass]="{'invisible':!put_messages_visible || !list_of_users_names_retrieved}"
                 *ngIf="friend_type!='user'">
 
@@ -730,7 +735,7 @@
                             *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <div class="my-message-content"
                                 [ngClass]="{
-                                'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
+                                'contains-picture':(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                 'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user,
                                 'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=current_user_id || list_of_messages[list_of_messages.length- i].is_from_server)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                 'margin-for-emojis': (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id])  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
@@ -888,16 +893,20 @@
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
                                             (click)="show_images(list_of_messages.length -1 - i)">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
+                                            [customObservable]="scroll"
+                                            *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
                                                 style="max-width:140px;max-height:140px;"
-                                                [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
                                         </div>
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'"
                                             class="image-container"
                                             (click)="show_images(list_of_messages.length -1 - i)">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
+                                            [customObservable]="scroll"
+                                            *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
-                                                [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
 
                                         </div>
                                         <div
@@ -941,7 +950,7 @@
 
                             <div class="friend-message-content"
                                 [ngClass]="{
-                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
+                                    'contains-picture':(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length -1 - i].id_user==list_of_messages[list_of_messages.length- i-2].id_user,
                                     'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user || list_of_messages[list_of_messages.length- i].is_from_server)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'margin-for-emojis': (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id]) && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
@@ -969,7 +978,9 @@
                                 *ngIf="list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length>1 && get_list_of_view_names(i)">
                                     <div class="friend-picture" [ngClass]="{'shiny': !users_pp_loaded[list_of_messages[list_of_messages.length- i-1].id_user] }">
                                         
-                                        <img [src]="list_of_users_profile_pictures[list_of_messages[list_of_messages.length- i-1].id_user]"
+                                        <img 
+                                        [customObservable]="scroll"
+                                        [lazyLoad]="list_of_users_profile_pictures[list_of_messages[list_of_messages.length- i-1].id_user]" loading="lazy"
                                         (load)="load_users_pp(list_of_messages[list_of_messages.length- i-1].id_user)"
                                         [ngClass]="{'invisible':!users_pp_loaded[list_of_messages[list_of_messages.length- i-1].id_user]}">
 
@@ -1066,16 +1077,20 @@
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
                                             (click)="show_images(list_of_messages.length -1 - i)">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
+                                            [customObservable]="scroll"
+                                            *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
                                                 style="max-width:140px;max-height:140px;"
-                                                [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
                                         </div>
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'"
                                             class="image-container"
                                             (click)="show_images(list_of_messages.length -1 - i)">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
+                                            [customObservable]="scroll"
+                                            *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
-                                                [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
 
                                         </div>
                                         <div
@@ -1117,7 +1132,10 @@
                                         *ngFor="let id of list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw">
                                         <div class="user-profile-who-saw-friend"
                                             *ngIf="id!=current_user_id && !has_user_saw_something_else_after(id,list_of_messages.length- i-1)">
-                                            <img [src]="list_of_users_profile_pictures[id]" (load)="load_users_pp(id)"
+                                            <img 
+                                            [customObservable]="scroll"
+                                            [lazyLoad]="list_of_users_profile_pictures[id]" loading="lazy" 
+                                            (load)="load_users_pp(id)"
                                                 [ngClass]="{'invisible':!users_pp_loaded[id]}">
                                             <div class="display-who-saw">
                                                 <span> vu par {{list_of_users_names[id]}}</span>
@@ -1294,7 +1312,7 @@
                                 <mat-icon>close</mat-icon>
                             </button>
                             <div class="attachment-picture" [@enterAnimation]>
-                                <img [src]="attachments[i]">
+                                <img [src]="attachments_safe[i]">
                             </div>
                         </ng-container>
 

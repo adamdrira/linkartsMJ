@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, ViewChild, ElementRef, ViewChildren, QueryList, Sanitizer, ChangeDetectorRef, Input, HostListener, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Renderer2, ViewChild, ElementRef, ViewChildren, QueryList, ChangeDetectorRef, Input, HostListener, EventEmitter, Output } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { Writing_Upload_Service } from '../services/writing.service';
@@ -119,10 +119,9 @@ export class ArtworkWritingComponent implements OnInit {
 
   @HostListener('document:click', ['$event.target'])
   clickout(btn) {
-    if(this.writing_id_input){
+    if(this.writing_id_input && !this.in_other_popup){
       if (!(this.artwork.nativeElement.contains(btn)) && this.can_check_clickout && !(this.close.nativeElement.contains(btn))){
         if(this.writing_id_input && !btn.className.baseVal && btn.className.includes("cdk-overlay-dark-backdrop")){
-          console.log("includes back")
           this.add_time_of_view();
           this.emit_close_click.emit(true);
         }
@@ -349,9 +348,10 @@ export class ArtworkWritingComponent implements OnInit {
             this.lovesnumber =r[0].lovesnumber ;
             this.status=r[0].status;
             this.thumbnail_picture=r[0].name_coverpage ;
+            let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
             this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`,this.device_info).subscribe();
-            this.location.go(`/artwork-writing/${this.title}/${this.writing_id}`);
-            this.url=`https://www.linkarts.fr/artwork-writing/${this.title}/${this.writing_id}`;
+            this.location.go(`/artwork-writing/${title_url}/${this.writing_id}`);
+            this.url=`https://www.linkarts.fr/artwork-writing/${title_url}/${this.writing_id}`;
             this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
             this.thumbnail_picture_retrieved=true;
@@ -687,18 +687,18 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   get_link() {
-    return "/main-research-style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/all";
+    return "/main-research/style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/all";
   };
 
   get_style_link(i: number) {
     if( i == 0 ) {
-      return "/main-research-style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.firsttag;
+      return "/main-research/style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.firsttag;
     }
     if( i == 1 ) {
-      return "/main-research-style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.secondtag;
+      return "/main-research/style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.secondtag;
     }
     if( i == 2 ) {
-      return "/main-research-style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.thirdtag;
+      return "/main-research/style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.thirdtag;
     }
   }
 
@@ -729,9 +729,10 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
 
+  in_other_popup=false;
   see_description() {
-    this.add_time_of_view()
-    this.dialog.open(PopupArtworkDataComponent, {
+    this.in_other_popup=true;
+    let dialogRef= this.dialog.open(PopupArtworkDataComponent, {
       data: {
         title:this.title,
         highlight:this.highlight,
@@ -744,12 +745,19 @@ export class ArtworkWritingComponent implements OnInit {
       }, 
       panelClass: 'popupArtworkDataClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
 
   }
 
   see_comments() {
-    this.add_time_of_view()
-    this.dialog.open(PopupCommentsComponent, {
+    this.in_other_popup=true;
+    let dialogRef= this.dialog.open(PopupCommentsComponent, {
       data: {
         visitor_id:this.visitor_id,
         visitor_name:this.visitor_name,
@@ -766,6 +774,13 @@ export class ArtworkWritingComponent implements OnInit {
       }, 
       panelClass: 'popupCommentsClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
 
   }
 
@@ -947,14 +962,22 @@ export class ArtworkWritingComponent implements OnInit {
                 this.liked=false;
                 this.likesnumber-=1;
                 if(r[0].error="loved"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 else if(r[0].error="already_liked"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 this.like_in_progress=false;
               }
@@ -965,10 +988,14 @@ export class ArtworkWritingComponent implements OnInit {
       
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
   }
 
@@ -1063,14 +1090,22 @@ export class ArtworkWritingComponent implements OnInit {
                 this.loved=false;
                 this.lovesnumber-=1;
                 if(r[0].error="liked"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 else if(r[0].error="already_loved"){
+                  this.in_other_popup=true;
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
                   });
+                  dialogRef.afterClosed().subscribe(result => {
+                    this.in_other_popup=false;
+                  })
                 }
                 this.love_in_progress=false;
               }
@@ -1082,10 +1117,14 @@ export class ArtworkWritingComponent implements OnInit {
       
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
 
   }
@@ -1192,10 +1231,14 @@ export class ArtworkWritingComponent implements OnInit {
       }
     }
     else{
+      this.in_other_popup=true;
       const dialogRef = this.dialog.open(LoginComponent, {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
+      dialogRef.afterClosed().subscribe(result => {
+        this.in_other_popup=false;
+      })
     }
   
   }
@@ -1230,16 +1273,24 @@ export class ArtworkWritingComponent implements OnInit {
     this.checking_report=true;
     this.Reports_service.check_if_content_reported('writing',this.writing_id,"unknown",0).subscribe(r=>{
       if(r[0].nothing){
+        this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
           panelClass: "popupConfirmationClass",
         });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
       }
       else{
+        this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'writing',publication_id:this.writing_id,format:"unknown",chapter_number:0},
           panelClass:"popupReportClass"
         });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
       }
       this.checking_report=false;
     })
@@ -1282,21 +1333,34 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   show_likes(){
-    this.add_time_of_view()
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
 
   }
 
   show_loves(){
-    this.add_time_of_view()
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
     });
-
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+      if(!result){
+        this.add_time_of_view();
+        this.emit_close_click.emit(true);
+      }
+    })
   }
 
 
@@ -1343,7 +1407,7 @@ pageRendered(e:any) {
  
   edit_information() {
     
-    
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupFormWritingComponent, {
       data: { 
       writing_id: this.writing_id, 
@@ -1359,10 +1423,13 @@ pageRendered(e:any) {
     },
     panelClass: 'popupFormWritingClass',
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })
   }
 
   edit_thumbnail() {
-
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupEditCoverComponent, {
       data: {
       writing_id: this.writing_id,
@@ -1379,13 +1446,16 @@ pageRendered(e:any) {
     },
     panelClass: 'popupEditCoverClass',
     }); 
+    dialogRef.afterClosed().subscribe(result => {
+      this.in_other_popup=false;
+    })
 
   }
 
   
   archive_loading=false;
   set_private() {
-
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir archiver cette œuvre ? Elle ne sera visible que par vous dans les archives.'},
       panelClass: "popupConfirmationClass",
@@ -1407,9 +1477,11 @@ pageRendered(e:any) {
       else{
         this.archive_loading=false;
       }
+      this.in_other_popup=false;
     });
   }
   set_public() {
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir désarchiver cette œuvre ? Elle sera visible par tous les utilisateurs.'},
       panelClass: "popupConfirmationClass",
@@ -1431,10 +1503,12 @@ pageRendered(e:any) {
       else{
         this.archive_loading=false;
       }
+      this.in_other_popup=false;
     });
   }
 
   remove_artwork() {
+    this.in_other_popup=true;
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
       panelClass: "popupConfirmationClass",
@@ -1477,6 +1551,7 @@ pageRendered(e:any) {
       else{
         this.archive_loading=false;
       }
+      this.in_other_popup=false;
     });
   }
 

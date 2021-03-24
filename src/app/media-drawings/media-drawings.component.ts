@@ -163,7 +163,7 @@ export class MediaDrawingsComponent implements OnInit {
   }
 
   open_research(item:any) {
-    return "/main-research-style-and-tag/1/Drawing/"+item+"/all";
+    return "/main-research/style-and-tag/1/Drawing/"+item+"/all";
   }
 
   /**********************************************DISplay drawings thumbnails******************** */

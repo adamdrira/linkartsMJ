@@ -403,7 +403,8 @@ open_comic(notif:any) {
   this.close_dialog();
 }
 get_comic(notif:any) {
-  return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/artwork-comic/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
 }
 
 open_comic_chapter(notif:any) {
@@ -412,7 +413,8 @@ open_comic_chapter(notif:any) {
   this.close_dialog();
 }
 get_comic_chapter(notif:any) {
-  return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id + "/" + notif.chapter_number;
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+  return "/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
 }
 open_drawing(notif:any) {
   this.not_using_chat();
@@ -420,7 +422,8 @@ open_drawing(notif:any) {
   this.close_dialog();
 }
 get_drawing(notif:any) {
-  return "/artwork-drawing/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+  return "/artwork-drawing/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
 }
 open_writing(notif:any) {
   this.not_using_chat();
@@ -428,7 +431,8 @@ open_writing(notif:any) {
   this.close_dialog();
 }
 get_writing(notif:any) {
-  return "/artwork-writing/" + notif.publication_name + "/" + notif.publication_id;
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+  return "/artwork-writing/" + title_url + "/" + notif.publication_id;
 }
 open_ad(notif:any) {
   this.not_using_chat();
@@ -436,7 +440,8 @@ open_ad(notif:any) {
   this.close_dialog();
 }
 get_ad(notif:any) {
-  return "/ad-page/" + notif.publication_name + "/" + notif.publication_id;
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return "/ad-page/" + title_url + "/" + notif.publication_id;
 }
 
 sort_notifications(msg){
