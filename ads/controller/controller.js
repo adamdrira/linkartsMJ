@@ -63,50 +63,60 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     })
 
     router.post('/add_primary_information_ad', function (req, res) {
-            let current_user = get_current_user(req.cookies.currentUser);
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+      let current_user = get_current_user(req.cookies.currentUser);
 
-            var today = new Date();
-        
-            const description = req.body.description;
-            const title = req.body.title;
-            const location = req.body.location;
-            const type_of_project = req.body.type_of_project;
-            const my_description = req.body.my_description;
-            const targets = req.body.targets;
-            const remuneration = req.body.remuneration;
-            const price_value = req.body.price_value;
-            const price_type = req.body.price_type;
-            const service = req.body.service;
-            const offer_or_demand = req.body.offer_or_demand;
-            const price_value_service = req.body.price_value_service;
-            const price_type_service = req.body.price_type_service;
+      var today = new Date();
+  
+      const description = req.body.description;
+      const title = req.body.title;
+      const location = req.body.location;
+      const type_of_project = req.body.type_of_project;
+      const my_description = req.body.my_description;
+      const targets = req.body.targets;
+      const remuneration = req.body.remuneration;
+      const price_value = req.body.price_value;
+      const price_type = req.body.price_type;
+      const service = req.body.service;
+      const offer_or_demand = req.body.offer_or_demand;
+      const price_value_service = req.body.price_value_service;
+      const price_type_service = req.body.price_type_service;
 
-            list_of_ads.create({
-                  "id_user": current_user,
-                  "title":title,
-                  "type_of_project": type_of_project,
-                  "description":description,
-                  "location":location,
-                  "my_description": my_description,
-                  "target_one": targets[0],
-                  "target_two": targets[1],
-                  "number_of_pictures":0,
-                  "number_of_attachments":0,
-                  "number_of_responses":0,
-                  "remuneration":remuneration,
-                  "price_value":price_value,
-                  "price_type":price_type,
-                  "service":service,
-                  "price_value_service":price_value_service,
-                  "price_type_service":price_type_service,
-                  "status":"public",
-                  "refreshment_number":0,
-                  "commentariesnumber":0,
-                  "offer_or_demand":offer_or_demand,
-                  "date":today,
-        
-              })
-              .catch(err => {
+      list_of_ads.create({
+            "id_user": current_user,
+            "title":title,
+            "type_of_project": type_of_project,
+            "description":description,
+            "location":location,
+            "my_description": my_description,
+            "target_one": targets[0],
+            "target_two": targets[1],
+            "number_of_pictures":0,
+            "number_of_attachments":0,
+            "number_of_responses":0,
+            "remuneration":remuneration,
+            "price_value":price_value,
+            "price_type":price_type,
+            "service":service,
+            "price_value_service":price_value_service,
+            "price_type_service":price_type_service,
+            "status":"public",
+            "refreshment_number":0,
+            "commentariesnumber":0,
+            "offer_or_demand":offer_or_demand,
+            "date":today,
+  
+        })
+        .catch(err => {
 				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
@@ -115,21 +125,83 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   id:current_user,
                 }
               }).catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
+                
+              res.status(500).json({msg: "error", details: err});		
+            }).then(user=>{
                 let number_of_ads=user.number_of_ads+1;
                 user.update({
                   "number_of_ads":number_of_ads,
                 })
               }).catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then( ()=>{res.status(200).send([r])})
+            res.status(500).json({msg: "error", details: err});		
+          }).then( ()=>{res.status(200).send([r])})
               
               }); 
         
     });
+
+    router.post('/edit_primary_information_ad', function (req, res) {
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+      let current_user = get_current_user(req.cookies.currentUser);
+
+  
+      const ad_id = req.body.ad_id;
+      const description = req.body.description;
+      const title = req.body.title;
+      const location = req.body.location;
+      const remuneration = req.body.remuneration;
+      const price_value = req.body.price_value;
+      const price_type = req.body.price_type;
+      const service = req.body.service;
+      const offer_or_demand = req.body.offer_or_demand;
+      const price_value_service = req.body.price_value_service;
+      const price_type_service = req.body.price_type_service;
+
+      list_of_ads.findOne({
+        where:{
+          id_user: current_user,
+          id:ad_id,
+        }
+      })
+      .catch(err => {
+
+        res.status(500).json({msg: "error", details: err});		
+        }).then(r =>  {
+          if(r){
+            r.update({
+              "title":title,
+              "description":description,
+              "location":location,
+              "remuneration":remuneration,
+              "price_value":price_value,
+              "price_type":price_type,
+              "service":service,
+              "price_value_service":price_value_service,
+              "price_type_service":price_type_service,
+              "status":"public",
+              "offer_or_demand":offer_or_demand,
+            }).then(ad=>{
+              res.status(200).send([ad])
+            })
+          }
+          else{
+            res.status(200).send([{"reload":reload}])
+          }
+          
+        
+    }); 
+  
+  });
          
     router.post('/upload_thumbnail_ad', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
@@ -1449,6 +1521,16 @@ router.post('/get_number_of_ads_and_responses', function (req, res) {
 
 
 router.post('/send_email_for_ad_answer', function (req, res) {
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
   const user_name = req.body.user_name;
   const ad_id = req.body.ad_id;
   const author_id = req.body.author_id;
@@ -1485,7 +1567,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
         }
 
         mail_to_send+=`<p>${user_name} a répondu à votre annonce <b> ${title}</b>.</p>
-            <p><a href="https://linkarts.fr/ad-page/${title}/${ad_id}"> Cliquer ici</a> pour consulter l'annonce et les réponses la concernant.</p>`
+            <p><a href="https://www.linkarts.fr/ad-page/${title}/${ad_id}"> Cliquer ici</a> pour consulter l'annonce et les réponses la concernant.</p>`
         mail_to_send+=`<p> Très sincèrement, l'équipe de LinkArts.</p>`
 
 
