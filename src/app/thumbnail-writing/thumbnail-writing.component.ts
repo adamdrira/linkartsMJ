@@ -94,13 +94,14 @@ export class ThumbnailWritingComponent implements OnInit {
 
 
   marks_retrieved=false;
-
+  title_for_url:string;
   show_icon=false;
   ngOnInit() {
     this.user_id = this.item.authorid;
     this.file_name = this.item.name_coverpage;
     this.total_pages=this.item.total_pages;
     this.title = this.item.title;
+    this.title_for_url=this.item.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
     this.category = this.item.category;
     this.highlight = this.item.highlight.slice(0,290);
     this.firsttag = this.item.firsttag;
@@ -321,7 +322,7 @@ export class ThumbnailWritingComponent implements OnInit {
   open_popup(event){
     event.preventDefault(); 
     if (event.ctrlKey) {
-      return this.router.navigate(["/artwork-writing/"+this.title+"/"+this.writing_id]);
+      return this.router.navigate(["/artwork-writing/"+this.title_for_url+"/"+this.writing_id]);
     }
     this.dialog.open(PopupArtworkComponent, {
       data: {

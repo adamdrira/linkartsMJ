@@ -135,6 +135,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   pdfSrc:SafeUrl;
   total_pages_for_writing:number;
   profile_picture:any;
+  profile_picture_safe:any;
   author_name:string='';
   author_pseudo:string='';
   primary_description:string;
@@ -164,6 +165,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   category:string;
   format:string;
   thumbnail_picture:any;
+  thumbnail_picture_safe:any;
   thumbnail_picture_received=false;
 
   thumbnail_is_loaded=false;
@@ -210,6 +212,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.profile_picture = url;
+          this.profile_picture_safe=SafeURL;
         });
 
         this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
@@ -250,6 +253,7 @@ export class ThumbnailArtworkComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
+                this.thumbnail_picture_safe=SafeURL;
                 this.thumbnail_picture_received=true;
 
                 this.initialize_swiper();
@@ -291,6 +295,7 @@ export class ThumbnailArtworkComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
+                this.thumbnail_picture_safe=SafeURL;
                 this.thumbnail_picture_received=true;
 
                 this.initialize_swiper();
@@ -334,6 +339,7 @@ export class ThumbnailArtworkComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
+                this.thumbnail_picture_safe=SafeURL;
                 this.thumbnail_picture_received=true;
 
                 this.initialize_swiper();
@@ -373,6 +379,7 @@ export class ThumbnailArtworkComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
+                this.thumbnail_picture_safe=SafeURL;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -421,6 +428,7 @@ export class ThumbnailArtworkComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
+                this.thumbnail_picture_safe=SafeURL;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -482,6 +490,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.profile_picture = url;
+          this.profile_picture_safe=SafeURL;
         });
 
         this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).subscribe(r=> {
@@ -525,6 +534,7 @@ export class ThumbnailArtworkComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
+                this.thumbnail_picture_safe=SafeURL;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -562,6 +572,7 @@ export class ThumbnailArtworkComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
+                this.thumbnail_picture_safe=SafeURL;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -604,6 +615,7 @@ export class ThumbnailArtworkComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
+                this.thumbnail_picture_safe=SafeURL;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -641,6 +653,7 @@ export class ThumbnailArtworkComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
+                this.thumbnail_picture_safe=SafeURL;
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
@@ -687,6 +700,7 @@ export class ThumbnailArtworkComponent implements OnInit {
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.thumbnail_picture = url;
+            this.thumbnail_picture_safe=SafeURL;
             this.thumbnail_picture_received=true;
             
             this.initialize_swiper();
@@ -725,15 +739,18 @@ export class ThumbnailArtworkComponent implements OnInit {
   };
 
   get_artwork() {
-    if(this.subscribing_category=='comic') {
-      return "/artwork-comic/"+this.subscribing_format+"/"+this.title+"/"+this.content_id;
+    if(this.title){
+      if(this.subscribing_category=='comic') {
+        return "/artwork-comic/"+this.subscribing_format+"/"+this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')+"/"+this.content_id;
+      }
+      else if(this.subscribing_category=='drawing') {
+        return "/artwork-drawing/"+this.subscribing_format+"/"+this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')+"/"+this.content_id;
+      }
+      else {
+        return "/artwork-writing"+"/"+this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')+"/"+this.content_id;
+      }
     }
-    else if(this.subscribing_category=='drawing') {
-      return "/artwork-drawing/"+this.subscribing_format+"/"+this.title+"/"+this.content_id;
-    }
-    else {
-      return "/artwork-writing"+"/"+this.title+"/"+this.content_id;
-    }
+   
   };
 
   
@@ -741,10 +758,10 @@ export class ThumbnailArtworkComponent implements OnInit {
     return "/account/"+this.author_pseudo+"/"+this.item.authorid;
   };
   get_link() {
-    return "/main-research-style-and-tag/1/Comic/"+this.style+"/all";
+    return "/main-research/style-and-tag/1/Comic/"+this.style+"/all";
   };
   get_link_tags(s) {
-    return "/main-research-style-and-tag/1/Comic/"+this.style+"/" + s ;
+    return "/main-research/style-and-tag/1/Comic/"+this.style+"/" + s ;
   };
 
   see_more_clicked = false;
@@ -824,7 +841,6 @@ export class ThumbnailArtworkComponent implements OnInit {
   show_absolute_cover=true;
   load_pdf() {
     this.show_absolute_cover = false;
-    
   };
   close_pdf() {
     this.show_absolute_cover = true;

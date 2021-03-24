@@ -42,6 +42,9 @@ export function pattern(type: string) {
     if(type == "share") {
         return "[0-9][0-9.]*[0-9]";
     }
+    if(type=="classic"){
+        return "[a-zA-Z0-9"+"\,\.\_-"+"]\{1,}[a-zA-Z0-9 "+"\,\.\_-"+"]\{0,15}"
+    }
     //localisation
     //Commence par lettre ou accent
     // Au milieu ", -" sont autorisés

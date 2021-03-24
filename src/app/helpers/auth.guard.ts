@@ -22,11 +22,11 @@ export class AuthGuard implements CanActivate {
                 .tokenCheck()
                  .subscribe(
                     (status:any) => {
-                        //console.log(status);
                         if(status=="account" || status=="suspended"){
                             resolve(true);
                         }
                         else if(status=="visitor"){
+                            this.router.navigateByUrl('/');
                             resolve(false);
                         }
                         

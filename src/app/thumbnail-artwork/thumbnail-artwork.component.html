@@ -23,7 +23,8 @@
 
         <div class="left-container" [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
 
-            <img  *ngIf="thumbnail_picture_received" #image [lazyLoad]="thumbnail_picture" loading="lazy" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
+            <img  *ngIf="thumbnail_picture_received && !in_artwork" #image [lazyLoad]="thumbnail_picture" loading="lazy" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
+            <img  *ngIf="thumbnail_picture_received && in_artwork" #image [src]="thumbnail_picture_safe" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
 
            <!-- <img *ngIf="thumbnail_picture_received" #image [lazyLoad]="thumbnail_picture" loading="lazy" (load)="load_thumbnail()" [ngClass]="{'really-invisible':!thumbnail_is_loaded}" class="thumbnail-picture"> --> 
            <div class="skeleton swiper-thumbnails shiny" *ngIf="!thumbnail_picture_received"></div>
@@ -262,7 +263,8 @@
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
-                    <img [lazyLoad]="profile_picture" loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                   <img *ngIf="in_artwork" [src]="profile_picture_safe"  (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                    <img *ngIf="!in_artwork"  [lazyLoad]="profile_picture" loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
                 </a>
                 <div class="right-container">
                     <span class="author-name" *ngIf="author_name!=''">
@@ -319,7 +321,7 @@
             <div #swiperArtworkPreview style="height:100%;width:100%" *ngIf="list_of_images_to_show_retrieved">
                 <div class="swiper-wrapper" [ngClass]="{'only-one-slide': swiperArtworkPreview && swiper_initialized && swiper.slides.length==1}">
                     <div class="swiper-slide" *ngFor="let item of list_of_images_to_show; let i=index">
-                        <img (load)="load_image(i)" [src]="item" [ngClass]="{'invisible':!loaded_images[i]}">
+                        <img *ngIf="swiper_launched" (load)="load_image(i)" [src]="item" [ngClass]="{'invisible':!loaded_images[i]}">
                     </div>
                     
                     <div class="pagination-container">
@@ -333,7 +335,7 @@
                 <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                 <span>Aperçu de la première page</span>
             </div>
-            <pdf-viewer *ngIf="pdfSrc" class="pdf-document" [src]="pdfSrc" [autoresize]="true" [page]="1" [show-all]="false" [original-size]='true'
+            <pdf-viewer *ngIf="pdfSrc && !show_absolute_cover" class="pdf-document" [src]="pdfSrc" [autoresize]="true" [page]="1" [show-all]="false" [original-size]='true'
                 [fit-to-page]='true' [render-text]='false' (after-load-complete)="afterLoadComplete($event)">
             </pdf-viewer>
         </div>

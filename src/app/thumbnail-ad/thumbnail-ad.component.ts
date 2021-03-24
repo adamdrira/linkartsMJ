@@ -66,10 +66,12 @@ export class ThumbnailAdComponent implements OnInit {
           this.show_icon=true;
         }
       })
+
     //this.navbar.setActiveSection(1);
     this.navbar.show();
   }
 
+  scroll:any;
   @ViewChildren('category') categories:QueryList<ElementRef>;
   @ViewChild('image') image:ElementRef;
   @ViewChild('targets') targets:ElementRef;
@@ -139,6 +141,7 @@ export class ThumbnailAdComponent implements OnInit {
   pseudo: string;
   primary_description: string;
   profile_picture: any;
+  profile_picture_safe:any;
   @Input() item: any;
   @Input() now_in_seconds: number;
   @Input() for_ad_page: boolean;
@@ -149,8 +152,10 @@ export class ThumbnailAdComponent implements OnInit {
 
   date_to_show: string;
   thumbnail_picture:any;
+  thumbnail_picture_safe:any;
   list_of_attachments_name:any[]=[];
   list_of_pictures:any[]=[];
+  list_of_pictures_safe:any[]=[];
   list_of_attachments:any[]=[];
   attachments_retrieved=false;
   visitor_mode=true;
@@ -168,14 +173,7 @@ export class ThumbnailAdComponent implements OnInit {
   list_of_subscribers_number:any[]=[];
   answers_retrieved=false;
   see_responses=0;
-  response_to_read:any;
-  response_list_of_pictures=[];
-  response_list_of_attachments=[];
-  response_list_of_attachments_name=[];
-  response_list_of_attachments_type=[];
   response_attachments_retrieved=false;
-  list_of_pictures_name=[];
-
   thumbnail_picture_received=false;
   thumbnail_is_loaded=false;
   pp_is_loaded=false;
@@ -218,6 +216,7 @@ export class ThumbnailAdComponent implements OnInit {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = url;
+      this.profile_picture_safe=SafeURL;
     });
 
     this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
@@ -236,8 +235,9 @@ export class ThumbnailAdComponent implements OnInit {
     this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.thumbnail_picture_received=true;
       this.thumbnail_picture = url;
+      this.thumbnail_picture_safe=SafeURL;
+      this.thumbnail_picture_received=true;
       this.cd.detectChanges();
       if(this.for_ad_page){
         if( this.targets && window.innerWidth<=1100 ) {
@@ -326,7 +326,7 @@ export class ThumbnailAdComponent implements OnInit {
 
   read_pictures(i:number){
       const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
-        data: {list_of_pictures:this.list_of_pictures,index_of_picture:i},
+        data: {list_of_pictures:this.list_of_pictures_safe,index_of_picture:i},
         panelClass: "popupDocumentClass",
       });
   }
@@ -353,29 +353,14 @@ export class ThumbnailAdComponent implements OnInit {
       for(let i=0;i<item.number_of_attachments;i++){
         if(i==0){
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
-            this.list_of_pictures_name[i] = item.attachment_real_name_one;
             this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
+              this.list_of_pictures_safe[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             });
           }
@@ -385,22 +370,7 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             });
           }
@@ -408,29 +378,14 @@ export class ThumbnailAdComponent implements OnInit {
         }
         if(i==1){
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
-            this.list_of_pictures_name[i] = item.attachment_real_name_two;
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
+              this.list_of_pictures_safe[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             });
           }
@@ -440,22 +395,7 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             });
           }
@@ -463,29 +403,14 @@ export class ThumbnailAdComponent implements OnInit {
         }
         if(i==2){
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
-            this.list_of_pictures_name[i] = item.attachment_real_name_three;
             this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
+              this.list_of_pictures_safe[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             });
           }
@@ -495,22 +420,7 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             });
           }
@@ -518,29 +428,14 @@ export class ThumbnailAdComponent implements OnInit {
         };
         if(i==3){
           if(re.exec(item.attachment_name_four)[1]!="pdf"){
-            this.list_of_pictures_name[i] = item.attachment_real_name_four;
             this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
+              this.list_of_pictures_safe[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             })
           }
@@ -550,22 +445,7 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             })
           }
@@ -573,29 +453,14 @@ export class ThumbnailAdComponent implements OnInit {
         };
         if(i==4){
           if(re.exec(item.attachment_name_five)[1]!="pdf"){
-            this.list_of_pictures_name[i] = item.attachment_real_name_five;
             this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
+              this.list_of_pictures_safe[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             })
           }
@@ -605,22 +470,7 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                let length1=this.list_of_pictures.length;
-                for(let j=0;j<length1;j++){
-                  if(!this.list_of_pictures[length1-1-j]){
-                    this.list_of_pictures.splice(length1-1-j,1);
-                    this.list_of_pictures_name.splice(length1-1-j,1);
-                  }
-                }
-                let length2=this.list_of_attachments.length;
-                for(let j=0;j<length2;j++){
-                  if(!this.list_of_attachments[length2-j-1]){
-                    this.list_of_attachments.splice(length2-j-1,1);
-                    this.list_of_attachments_name.splice(length2-j-1,1);
-                  }
-                }
-                this.attachments_retrieved=true;
-                this.cd.detectChanges();
+                this.sort_attachments()
               }
             })
           }
@@ -634,7 +484,30 @@ export class ThumbnailAdComponent implements OnInit {
     }
   }
 
+  sort_attachments(){
+    let length1=this.list_of_pictures.length;
+    for(let j=0;j<length1;j++){
+      if(!this.list_of_pictures[length1-1-j]){
+        this.list_of_pictures_safe.splice(length1-1-j,1);
+        this.list_of_pictures.splice(length1-1-j,1);
+      }
+    }
+    let length2=this.list_of_attachments.length;
+    for(let j=0;j<length2;j++){
+      if(!this.list_of_attachments[length2-j-1]){
+        this.list_of_attachments.splice(length2-j-1,1);
+        this.list_of_attachments_name.splice(length2-j-1,1);
+      }
+    }
+    this.attachments_retrieved=true;
+    this.cd.detectChanges();
+  }
 
+  
+  pictures_loaded=[];
+  load_pictures(i){
+    this.pictures_loaded[i]=true;
+  }
   
   load_thumbnail(){
     this.thumbnail_is_loaded=true;
@@ -646,7 +519,7 @@ export class ThumbnailAdComponent implements OnInit {
 
 
   get_artwork() {
-    return "/ad-page/" + this.item.title + "/" + this.item.id;
+    return "/ad-page/" + this.item.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29') + "/" + this.item.id;
   }
   open_account() {
     return "/account/"+this.pseudo+"/"+this.item.id_user;

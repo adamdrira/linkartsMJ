@@ -104,10 +104,12 @@ export class ThumbnailComicsComponent implements OnInit {
   marks_retrieved=false;
 
   show_icon=false;
+  title_for_url:string;
   ngOnInit() {
     this.user_id = this.item.authorid
     this.file_name = this.item.name_coverpage
     this.title = this.item.title
+    this.title_for_url=this.item.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')
     this.category = this.item.category
     this.highlight = this.item.highlight.slice(0,290);
     this.firsttag = this.item.firsttag
@@ -373,7 +375,7 @@ export class ThumbnailComicsComponent implements OnInit {
   open_popup(event){
     event.preventDefault(); 
     if (event.ctrlKey) {
-      return this.router.navigate(["/artwork-comic/"+this.format+"/"+this.title+"/"+this.bd_id]);
+      return this.router.navigate(["/artwork-comic/"+this.format+"/"+ this.title_for_url+"/"+this.bd_id]);
     }
     this.dialog.open(PopupArtworkComponent, {
       data: {
