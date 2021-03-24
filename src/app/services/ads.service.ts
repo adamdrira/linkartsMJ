@@ -28,6 +28,12 @@ export class Ads_service {
        }));
    }
 
+  edit_primary_information_ad(ad_id,title,description,location,remuneration,price_value,price_type,service,price_value_service,price_type_service,offer_or_demand){
+    return this.httpClient.post('routes/edit_primary_information_ad', {description: description, title: title,ad_id:ad_id,service:service,offer_or_demand:offer_or_demand,price_value_service:price_value_service,price_type_service:price_type_service,location:location,remuneration:remuneration,price_value:price_value,price_type:price_type}, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));         
+  }
+
    check_if_ad_is_ok(type_of_project,my_description,targets){
     return this.httpClient.post('routes/check_if_ad_is_ok', {type_of_project:type_of_project,my_description:my_description,targets:targets}, {withCredentials:true}).pipe(map((information)=>{
       return information;
