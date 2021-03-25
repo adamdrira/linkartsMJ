@@ -1559,7 +1559,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
             <table style="width:100%;margin-bottom:20px">
                 <tr id="tr1">
                     <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
-                        <img src="../../src/assets/img/Logo-LA3.png" style="margin:auto auto;height:36px;width:36px;" />
+                        <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" style="margin:auto auto;height:36px;width:36px;" />
                     </td>
                 </tr>
 
@@ -1592,7 +1592,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
                   <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${user_name} a répondu à votre annonce : <b> ${title}</b>.</p>
-                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Pour pouvoir vous connecter, veuillez confirmer votre inscription :</p>
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez consulter votre annonce et les réponses la concernant en cliquant sur le bouton ci-dessous : </p>
 
                       <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
                           <a href="https://www.linkarts.fr/ad-page/${title}/${ad_id}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
@@ -1601,7 +1601,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
                       </div>
 
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                      <img src="../../src/assets/img/logo_long_1.png" style="height: 25px;float: left;" />
+                      <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" style="width:80px;float: left;" />
                   </td>
 
               </tr>
@@ -1622,8 +1622,8 @@ router.post('/send_email_for_ad_answer', function (req, res) {
         mail_to_send+='</div>'
         var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', // sender address
-            //to: user.email, // my mail
-            to: "appaloosa-adam@hotmail.fr",
+            to: user.email, // my mail
+            //to: "appaloosa-adam@hotmail.fr",
             subject: `Réponse à une annonce`, // Subject line
             //text: 'plain text', // plain text body
             html:  mail_to_send, // html body
