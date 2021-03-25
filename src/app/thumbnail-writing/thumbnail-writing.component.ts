@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, ChangeDetectorRef, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, ChangeDetectorRef, ViewChildren, QueryList, SimpleChanges } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Writing_Upload_Service} from '../services/writing.service';
@@ -10,6 +10,7 @@ import { NavbarService } from '../services/navbar.service';
 import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { merge, fromEvent } from 'rxjs';
 declare var Swiper: any;
 declare var $:any;
 
@@ -91,11 +92,22 @@ export class ThumbnailWritingComponent implements OnInit {
   @Input() item:any;
   @Input() now_in_seconds: number;
   @Input() width: number;
-
+  @Input() myScrollContainer: any;
 
   marks_retrieved=false;
   title_for_url:string;
   show_icon=false;
+  scroll:any;
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.myScrollContainer ){
+      if(this.myScrollContainer){
+        this.scroll = merge(
+          fromEvent(window, 'scroll'),
+          fromEvent(this.myScrollContainer, 'scroll')
+        );
+      }
+    }
+  }
   ngOnInit() {
     this.user_id = this.item.authorid;
     this.file_name = this.item.name_coverpage;

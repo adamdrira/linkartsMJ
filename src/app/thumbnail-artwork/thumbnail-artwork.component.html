@@ -23,13 +23,9 @@
 
         <div class="left-container" [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
 
-            <img  *ngIf="thumbnail_picture_received && !in_artwork" #image [lazyLoad]="thumbnail_picture" loading="lazy" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
-            <img  *ngIf="thumbnail_picture_received && in_artwork" #image [src]="thumbnail_picture_safe" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
+            <img  *ngIf="thumbnail_picture_received " #image [lazyLoad]="thumbnail_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
 
-           <!-- <img *ngIf="thumbnail_picture_received" #image [lazyLoad]="thumbnail_picture" loading="lazy" (load)="load_thumbnail()" [ngClass]="{'really-invisible':!thumbnail_is_loaded}" class="thumbnail-picture"> --> 
-           <div class="skeleton swiper-thumbnails shiny" *ngIf="!thumbnail_picture_received"></div>
-
-           <!--  <div class="skeleton swiper-thumbnails shiny" *ngIf="!thumbnail_is_loaded"></div>-->
+            <div class="skeleton swiper-thumbnails shiny" *ngIf="!thumbnail_picture_received"></div>
 
         </div>
 
@@ -263,8 +259,8 @@
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
-                   <img *ngIf="in_artwork" [src]="profile_picture_safe"  (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
-                    <img *ngIf="!in_artwork"  [lazyLoad]="profile_picture" loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                 
+                    <img   [lazyLoad]="profile_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
                 </a>
                 <div class="right-container">
                     <span class="author-name" *ngIf="author_name!=''">

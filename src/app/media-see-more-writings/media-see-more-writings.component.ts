@@ -1,9 +1,6 @@
 import { Component, OnInit, Input,EventEmitter, Output, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
 
-declare var $: any
-
-
 @Component({
   selector: 'app-media-see-more-writings',
   templateUrl: './media-see-more-writings.component.html',
@@ -28,6 +25,7 @@ export class MediaSeeMoreWritingsComponent implements OnInit {
   @Input() sorted_artpieces_scenario: any[];
   @Input() sorted_artpieces_article: any[];
   @Input() sorted_artpieces_poetry: any[];
+  @Input() myScrollContainer: any;
 
   new_sorted_artpieces: any[]=[];
   new_sorted_artpieces_added=false;

@@ -256,7 +256,7 @@
                           [routerLink]="get_account(i)">
                           <div class="result-container">
                             <div class="image-container">
-                              <img [src]="list_of_thumbnails[i]" (load)="pp_thumb_load(i)"
+                              <img  [lazyLoad]="list_of_thumbnails[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy" (load)="pp_thumb_load(i)"
                                 [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
                             </div>
                             <div class="name-container block">
@@ -284,7 +284,7 @@
                           (click)="open_ad_last_propositions(i);" [routerLink]="get_ad_last_propositions(i)">
                           <div class="result-container">
                             <div class="image-container">
-                              <img [src]="list_of_thumbnails[i]" (load)="pp_thumb_load(i)"
+                              <img [lazyLoad]="list_of_thumbnails[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy" (load)="pp_thumb_load(i)"
                                 [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
                             </div>
                             <div class="name-container">
@@ -307,7 +307,7 @@
 
                           <div class="result-container">
                             <div class="image-container">
-                              <img [src]="list_of_thumbnails[i]" (load)="pp_thumb_load(i)"
+                              <img [lazyLoad]="list_of_thumbnails[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy"(load)="pp_thumb_load(i)"
                                 [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
                             </div>
                             <div class="name-container">
@@ -351,7 +351,7 @@
 
                       <div *ngIf="list_of_first_propositions_history.length==0" class="no-results">
                         <span>
-                          Aucune proposition disponible pour le moment
+                          Aucune proposition disponible
                         </span>
                       </div>
 
@@ -365,7 +365,7 @@
 
                           <a class="result-container" (click)="open_history_account(i);" [routerLink]="get_history_account(i)">
                             <div class="image-container">
-                              <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)"
+                              <img [lazyLoad]="list_of_thumbnails_history[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy" (load)="pp_thumb_hist_load(i)"
                                 [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
                             </div>
                             <div class="name-container block">
@@ -401,7 +401,7 @@
                           [routerLink]="get_ad_last_propositions_history(i)">
 
                             <div class="image-container">
-                              <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)"
+                              <img  [lazyLoad]="list_of_thumbnails_history[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy" (load)="pp_thumb_hist_load(i)"
                                 [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
                             </div>
                             <div class="name-container">
@@ -429,7 +429,7 @@
                           (click)="open_artwork_last_proposition_history(item,i);"
                           [routerLink]="get_artwork_last_proposition_history(item,i)">
                             <div class="image-container">
-                              <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)"
+                              <img  [lazyLoad]="list_of_thumbnails_history[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy" (load)="pp_thumb_hist_load(i)"
                                 [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
                             </div>
                             <div class="name-container">
@@ -522,7 +522,7 @@
               <div class="notifications-chat-container "
                 *ngIf="show_chat_messages && data_retrieved && using_chat_retrieved && !popup_opened" [@enterAnimation]>
 
-                <div #myScrollContainer_chat class="notifications-container ">
+                <div #myScrollContainer_chat class="notifications-container "  (scroll)="chat_scroll($event)">
                   <div class="loading-page" *ngIf="!list_of_friends_retrieved ">
                     <mat-spinner diameter="20"></mat-spinner>
                   </div>
@@ -531,7 +531,7 @@
                     <div *ngFor="let item of list_of_friends_ids.slice(0,number_of_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'invisible':!show_chat_messages}">
                       <a class="author-container" (click)="open_chat_2()" [routerLink]="get_chat_2(i)">
                         <div class="left-container">
-                          <img [src]="list_of_friends_profile_pictures[i]" (load)="load_friends_pp(i)" [ngClass]="{'invisible': !friends_pp_loaded[i] }">
+                          <img  [lazyLoad]="list_of_friends_profile_pictures[i]"  [customObservable]="scroll_chat? scroll_chat : null" loading="lazy" (load)="load_friends_pp(i)" [ngClass]="{'invisible': !friends_pp_loaded[i] }">
 
 
                           <ng-container *ngIf="connections_status_retrieved">
@@ -875,7 +875,7 @@
 
 
               <div class="notifications-chat-container" *ngIf="show_notifications && data_retrieved && !popup_opened" [@enterAnimation]>
-                <div #myScrollContainer class="notifications-container notifications-model">
+                <div #myScrollContainer class="notifications-container notifications-model" (scroll)="notifs_scroll($event)">
 
                   <!--IF NO NOTIFICATION TO SHOW-->
                   <ng-container
@@ -897,7 +897,7 @@
 
                         <a (click)="close_notifications();not_using_chat()" [routerLink]="get_account_for_notification(notif)">
                           <div class="left-container">
-                            <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                            <img  [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
                               <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
@@ -958,7 +958,7 @@
 
                         <a (click)="open_my_account();" [routerLink]="get_my_account()">
                           <div class="left-container">
-                            <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                            <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
                               <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
@@ -977,7 +977,7 @@
 
                         <a (click)="open_my_account();" [routerLink]="get_my_account()">
                           <div class="left-container">
-                            <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                            <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
                               <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
@@ -997,7 +997,7 @@
 
                         <a (click)="open_my_account();" [routerLink]="get_my_account()">
                           <div class="left-container">
-                            <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                            <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
                               <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
@@ -1014,7 +1014,7 @@
 
                         <a (click)="open_my_account();" [routerLink]="get_my_account()">
                           <div class="left-container">
-                            <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                            <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
                               <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
@@ -1034,7 +1034,7 @@
                       <ng-container *ngIf="notif.type=='ad_response'">
                           <a (click)="open_ad(notif)" [routerLink]="get_ad(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon ad">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
@@ -1054,7 +1054,7 @@
                         <ng-container *ngIf="notif.publication_category=='comic'">
                           <a (click)="open_comic(notif);" [routerLink]="get_comic(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon publication">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
@@ -1072,7 +1072,7 @@
                           <ng-container *ngIf="notif.format=='one-shot'">
                             <a (click)="open_drawing(notif);" [routerLink]="get_drawing(notif)">
                               <div class="left-container">
-                                <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                                <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
                                 <div class="notification-icon publication">
                                   <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
@@ -1088,7 +1088,7 @@
                           <ng-container *ngIf="notif.format!='one-shot'">
                             <a (click)="open_drawing(notif);" [routerLink]="get_drawing(notif)">
                               <div class="left-container">
-                                <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                                <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
                                 <div class="notification-icon publication">
                                   <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
@@ -1106,7 +1106,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a (click)="open_writing(notif);" [routerLink]="get_writing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon publication">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
@@ -1123,7 +1123,7 @@
                         <ng-container *ngIf="notif.publication_category=='ad'">
                           <a (click)="open_ad(notif);" [routerLink]="get_ad(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon publication">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
@@ -1145,7 +1145,7 @@
                         <ng-container *ngIf="notif.publication_category=='comic'">
                           <a (click)="open_comic(notif);" [routerLink]="get_comic(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon publication">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
@@ -1169,7 +1169,7 @@
                           <ng-container *ngIf="notif.format=='serie'">
                             <a (click)="open_comic_chapter(notif);" [routerLink]="get_comic_chapter(notif)">
                               <div class="left-container">
-                                <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                                <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
                                 <div class="notification-icon like">
                                   <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
@@ -1221,7 +1221,7 @@
                           <ng-container *ngIf="notif.format!='serie'">
                             <a (click)="open_comic(notif);" [routerLink]="get_comic(notif)">
                               <div class="left-container">
-                                <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                                <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
                                 <div class="notification-icon like">
                                   <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
@@ -1275,7 +1275,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a (click)="open_drawing(notif);" [routerLink]="get_drawing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
@@ -1325,7 +1325,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a (click)="open_writing(notif);" [routerLink]="get_writing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
@@ -1381,7 +1381,7 @@
 
                           <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif);" [routerLink]="get_comic_chapter(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon favorite">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
@@ -1431,7 +1431,7 @@
                           </a>
                           <a *ngIf="notif.format!='serie'" (click)="open_comic(notif);" [routerLink]="get_comic(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon favorite">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
@@ -1481,7 +1481,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a (click)="open_drawing(notif);" [routerLink]="get_drawing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon favorite">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
@@ -1531,7 +1531,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a (click)="open_writing(notif);" [routerLink]="get_writing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon favorite">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
@@ -1587,7 +1587,7 @@
 
                           <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif);" [routerLink]="get_comic_chapter(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -1638,7 +1638,7 @@
 
                           <a *ngIf="notif.format!='serie'" (click)="open_comic(notif);" [routerLink]="get_comic(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -1688,7 +1688,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a (click)="open_drawing(notif);" [routerLink]="get_drawing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -1738,7 +1738,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a (click)="open_writing(notif);" [routerLink]="get_writing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -1788,7 +1788,7 @@
                         <ng-container *ngIf="notif.publication_category=='ad'">
                           <a (click)="open_ad(notif);" [routerLink]="get_ad(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -1843,7 +1843,7 @@
                         <ng-container *ngIf="notif.publication_category=='comic'">
                           <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif);" [routerLink]="get_comic_chapter(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -1890,7 +1890,7 @@
                           </a>
                           <a *ngIf="notif.format!='serie'" (click)="open_comic(notif);" [routerLink]="get_comic(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -1940,7 +1940,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a (click)="open_drawing(notif);" [routerLink]="get_drawing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -1990,7 +1990,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a (click)="open_writing(notif);" [routerLink]="get_writing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -2040,7 +2040,7 @@
                         <ng-container *ngIf="notif.publication_category=='ad'">
                           <a (click)="open_ad(notif);" [routerLink]="get_ad(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
@@ -2095,7 +2095,7 @@
                         <ng-container *ngIf="notif.publication_category=='comic'">
                           <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif);" [routerLink]="get_comic_chapter(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
@@ -2142,7 +2142,7 @@
                           </a>
                           <a *ngIf="notif.format!='serie'" (click)="open_comic(notif);" [routerLink]="get_comic(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
@@ -2192,7 +2192,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a (click)="open_drawing(notif);" [routerLink]="get_drawing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
@@ -2242,7 +2242,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a (click)="open_writing(notif);" [routerLink]="get_writing(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
@@ -2292,7 +2292,7 @@
                         <ng-container *ngIf="notif.publication_category=='ad'">
                           <a (click)="open_ad(notif);" [routerLink]="get_ad(notif)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>

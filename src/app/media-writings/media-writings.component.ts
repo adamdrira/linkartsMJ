@@ -1,11 +1,9 @@
 import { trigger, transition, style, animate } from '@angular/animations';
-import { Component, OnInit, Input, HostListener, EventEmitter, Output, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, HostListener, EventEmitter, Output, ChangeDetectorRef, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import {Renderer2} from '@angular/core';
 import {Writing_Upload_Service} from '../services/writing.service';
 import { NavbarService } from '../services/navbar.service';
-
-
-declare var $: any
+import { merge, fromEvent } from 'rxjs';
 
 
 @Component({
@@ -104,6 +102,10 @@ export class MediaWritingsComponent implements OnInit {
   list_of_contents_sorted:boolean=false;
   show_icon=false;
   number_of_writings_for_history=5;
+
+  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
+  scroll:any;
+
   ngOnInit() {
     window.scroll(0,0);
     var n = Math.floor(this.width/250);
@@ -113,6 +115,23 @@ export class MediaWritingsComponent implements OnInit {
     else{
       this.number_of_writings_to_show=6;
     }
+
+    let scroll_observer = setInterval(() => {
+
+      if(!this.scroll){
+        if(this.myScrollContainer){
+          console.log("in scroll")
+          this.scroll = merge(
+            fromEvent(window, 'scroll'),
+            fromEvent(this.myScrollContainer.nativeElement, 'scroll')
+          );
+        }
+      }
+      else{
+        clearInterval(scroll_observer)
+      }
+    }, 500);
+
     this.current_number_of_writings_to_show!= this.number_of_writings_to_show;
     this.get_history_recommendation();
 

@@ -45,10 +45,8 @@
 
 
         <div class="left-container no-border-style">
-            <img #image *ngIf="!in_ad_page" [lazyLoad]="thumbnail_picture" loading="lazy" (load)="load_thumbnail()"
+            <img #image  [lazyLoad]="thumbnail_picture"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnail()"
                 [ngClass]="{'invisible':!thumbnail_is_loaded}" >
-            <img #image *ngIf="in_ad_page" [src]="thumbnail_picture_safe" (load)="load_thumbnail()"
-            [ngClass]="{'invisible':!thumbnail_is_loaded}" >
         </div>
 
 
@@ -66,8 +64,7 @@
                     matTooltipClass='tooltip-thumbnail-ad' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200">
-                        <img  *ngIf="!in_ad_page" [lazyLoad]="profile_picture" loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
-                        <img *ngIf="in_ad_page" [src]="profile_picture_safe" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                        <img [lazyLoad]="profile_picture"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
                     </a>
 
                     <div class="right-container">
@@ -194,8 +191,7 @@
                     <div *ngIf="category_index==1" class="attachments-container" [@enterAnimation]>
                         <div *ngFor="let picture of list_of_pictures, let i=index"
                             (click)="read_pictures(i);stop($event);" class="image-container">
-                            <img *ngIf="!in_ad_page" [lazyLoad]="list_of_pictures[i]" loading="lazy" (load)="load_pictures(i)" [ngClass]="{'invisible':!pictures_loaded[i]}">
-                            <img *ngIf="in_ad_page" [src]="list_of_pictures_safe[i]" (load)="load_pictures(i)" [ngClass]="{'invisible':!pictures_loaded[i]}" >
+                            <img [lazyLoad]="list_of_pictures[i]"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_pictures(i)" [ngClass]="{'invisible':!pictures_loaded[i]}">
                         </div>
                     </div>
                     <div *ngIf="category_index==2" class="attachments-container" [@enterAnimation]>

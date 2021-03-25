@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {get_date_to_show} from '../helpers/dates';
 import {Reports_service} from '../services/reports.service';
 import {NotationService} from '../services/notation.service';
-
+import { merge, fromEvent } from 'rxjs';
 import { interval, Subscription } from 'rxjs';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -125,7 +125,8 @@ export class ThumbnailArtworkComponent implements OnInit {
   @Input() subscribing_category: any;
   @Input() subscribing_format: any;
   @Input() emphasized: boolean;
-
+  @Input() artwork_container: any;
+  scroll:any;
 
   type_of_account:string;
   certified_account:boolean;  
@@ -178,6 +179,18 @@ export class ThumbnailArtworkComponent implements OnInit {
   report_done=false;
 
   show_icon=false;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.artwork_container ){
+      if(this.artwork_container){
+        this.scroll = merge(
+          fromEvent(window, 'scroll'),
+          fromEvent(this.artwork_container, 'scroll')
+        );
+      }
+    }
+  }
+
   ngOnInit() {
 
     if( !this.skeleton ) {

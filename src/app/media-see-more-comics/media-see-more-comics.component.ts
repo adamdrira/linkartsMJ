@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
 
-declare var $: any
-
 @Component({
   selector: 'app-media-see-more-comics',
   templateUrl: './media-see-more-comics.component.html',
@@ -26,7 +24,7 @@ export class MediaSeeMoreComicsComponent implements OnInit {
   @Input() sorted_artpieces_manga: any[];
   @Input() sorted_artpieces_comics: any[];
   @Input() sorted_artpieces_webtoon: any[];
-
+  @Input() myScrollContainer: any;
 
   new_sorted_artpieces: any[]=[];
   new_sorted_artpieces_added=false;

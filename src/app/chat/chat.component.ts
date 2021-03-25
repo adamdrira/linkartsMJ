@@ -468,7 +468,7 @@ export class ChatComponent implements OnInit  {
   /*******************************************ON INIT ************************** */
 
   onScroll(event){
-    if(this.myScrollContainer.nativeElement && this.myScrollContainer.nativeElement.scrollTop==0 && this.put_messages_visible && !this.show_research_results && !this.trigger_no_more){
+    if(this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop==0 && this.put_messages_visible && !this.show_research_results && !this.trigger_no_more){
       if(this.can_get_other_messages){
         this.compteur_get_messages++;
         this.can_get_other_messages=false;
@@ -565,7 +565,7 @@ export class ChatComponent implements OnInit  {
     let scroll_observer = setInterval(() => {
 
       if(!this.scroll){
-        if(this.myScrollContainer.nativeElement){
+        if(this.myScrollContainer){
           this.scroll = merge(
             fromEvent(window, 'scroll'),
             fromEvent(this.myScrollContainer.nativeElement, 'scroll')
@@ -575,8 +575,6 @@ export class ChatComponent implements OnInit  {
       else{
         clearInterval(scroll_observer)
       }
-     
-     
     }, 500);
       
 

@@ -14,13 +14,14 @@
 
 
         
-        <div class="container-homepage container-comics " style="transition:opacity 1s;" >
+        <div #myScrollContainer class="container-homepage container-comics " style="transition:opacity 1s;" >
 
             <ng-container *ngIf="item==='BD'">
                 <ng-container *ngFor="let item of sorted_artpieces_bd.slice(0,number_of_comics_to_show); let i = index">
                     <app-thumbnail-comics class="thumbnail-component-container" 
                         [item]=item
                         [width]=width
+                        [myScrollContainer]="myScrollContainer"
                         [format]=sorted_artpieces_bd_format[i]
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-comics>
@@ -32,6 +33,7 @@
                     <app-thumbnail-comics class="thumbnail-component-container" 
                         [item]=item
                         [width]=width
+                        [myScrollContainer]="myScrollContainer"
                         [format]=sorted_artpieces_manga_format[i]
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-comics>
@@ -43,6 +45,7 @@
                     <app-thumbnail-comics  class="thumbnail-component-container" 
                         [item]=item
                         [width]=width
+                        [myScrollContainer]="myScrollContainer"
                         [format]=sorted_artpieces_comics_format[i]
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-comics>
@@ -54,6 +57,7 @@
                     <app-thumbnail-comics class="thumbnail-component-container" 
                         [item]=item
                         [width]=width
+                        [myScrollContainer]="myScrollContainer"
                         [format]=sorted_artpieces_webtoon_format[i]
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-comics>
@@ -73,6 +77,7 @@
                         <app-media-see-more-comics
                         [style]=item
                         [width]=width
+                        [myScrollContainer]=myScrollContainer
                         [sorted_artpieces_bd]=sorted_artpieces_bd.slice(0,6)
                         [sorted_artpieces_manga]=sorted_artpieces_manga.slice(0,6)
                         [sorted_artpieces_comics]=sorted_artpieces_comics.slice(0,6)
@@ -115,13 +120,14 @@
                     <span>Récemment consultés</span>
             </div>
     
-            <div class="container-homepage container-comics " style="transition:opacity 1s;"    [@enterAnimation]>
+            <div #myScrollContainer2 class="container-homepage container-comics " style="transition:opacity 1s;"    [@enterAnimation]>
     
                     <ng-container *ngFor="let item of last_consulted_comics; let i = index">
                         <app-thumbnail-comics class="thumbnail-component-container" 
                             *ngIf="item.chaptersnumber == null"
                             [item]=item
                             [width]=width
+                            [myScrollContainer]=myScrollContainer2
                             format='one-shot'
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-comics>
@@ -129,6 +135,7 @@
                             *ngIf="item.chaptersnumber >=0"
                             [item]=item 
                             [width]=width
+                            [myScrollContainer]=myScrollContainer2
                             format='serie'
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-comics>

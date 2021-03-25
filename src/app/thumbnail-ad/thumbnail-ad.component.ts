@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, HostListener, Inject, SimpleChanges } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { Reports_service } from '../services/reports.service';
-
+import { merge, fromEvent } from 'rxjs';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -71,7 +71,6 @@ export class ThumbnailAdComponent implements OnInit {
     this.navbar.show();
   }
 
-  scroll:any;
   @ViewChildren('category') categories:QueryList<ElementRef>;
   @ViewChild('image') image:ElementRef;
   @ViewChild('targets') targets:ElementRef;
@@ -146,6 +145,8 @@ export class ThumbnailAdComponent implements OnInit {
   @Input() now_in_seconds: number;
   @Input() for_ad_page: boolean;
   @Input() in_ad_page: any;
+  @Input() ad_container: any;
+  scroll:any;
   type_of_account:string;
   certified_account:boolean;  
 
@@ -183,6 +184,17 @@ export class ThumbnailAdComponent implements OnInit {
   list_of_reporters:any[]=[];
   profile_data_retrieved=false;
   show_icon=false;
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.ad_container ){
+      if(this.ad_container){
+        this.scroll = merge(
+          fromEvent(window, 'scroll'),
+          fromEvent(this.ad_container, 'scroll')
+        );
+      }
+    }
+  }
+
   ngOnInit() {
     this.list_of_reporters=this.item.list_of_reporters;
     this.author_id=this.item.id_user;

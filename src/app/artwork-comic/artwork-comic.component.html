@@ -12,7 +12,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!! ARTWORK CONTAINER !!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div  class="artwork-container"  >
+    <div #artwork_container  class="artwork-container"  >
 
         <ng-container *ngIf="!item_retrieved ">
             <div class="top-container">
@@ -291,11 +291,14 @@
     
                             <app-thumbnail-artwork *ngIf="item[0].chaptersnumber >=0"   (click)="stop($event);add_time_of_view();close_popup()"  
                                 [item]=item[0] page='subscribings'
+                                [artwork_container]=artwork_container
                                 in_artwork=true
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='serie'>
                             </app-thumbnail-artwork>
                             <app-thumbnail-artwork *ngIf="item[0].chaptersnumber == null" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item[0] page='subscribings'
-                                now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='one-shot'>
+                                now_in_seconds={{now_in_seconds}} 
+                                [artwork_container]=artwork_container
+                                subscribing_category='comic' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
                         </div>
                     </div>
@@ -319,10 +322,14 @@
                     <div class="recommendation-group" *ngIf="list_of_recommendations_by_tag.length>0">
                         <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
     
-                            <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0" in_artwork=true  
+                                [artwork_container]=artwork_container
+                                (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='serie'>
                             </app-thumbnail-artwork>
-                            <app-thumbnail-artwork *ngIf="item.chaptersnumber == null" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.chaptersnumber == null" in_artwork=true  
+                            [artwork_container]=artwork_container
+                            (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
             
@@ -855,10 +862,14 @@
                         <div class="title">Bandes dessinées</div>
                         <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_comics; let i=index" >
     
-                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber >=0" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"   [item]=item[0] page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber >=0" in_artwork=true 
+                                [artwork_container]=artwork_container
+                                 (click)="stop($event);add_time_of_view();close_popup()"   [item]=item[0] page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='serie'>
                             </app-thumbnail-artwork>
-                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber == null" in_artwork=true (click)="stop($event);add_time_of_view();close_popup()"   [item]=item[0] page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber == null" in_artwork=true 
+                            [artwork_container]=artwork_container
+                            (click)="stop($event);add_time_of_view();close_popup()"   [item]=item[0] page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
                         </div>
@@ -885,10 +896,14 @@
                     <div class="recommendation-group" *ngIf="list_of_recommendations_by_tag.length>0">
                         <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
     
-                            <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"   [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0" in_artwork=true  
+                                [artwork_container]=artwork_container
+                                (click)="stop($event);add_time_of_view();close_popup()"   [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='serie'>
                             </app-thumbnail-artwork>
-                            <app-thumbnail-artwork *ngIf="item.chaptersnumber == null" in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.chaptersnumber == null" in_artwork=true  
+                            [artwork_container]=artwork_container
+                            (click)="stop($event);add_time_of_view();close_popup()"  [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
             

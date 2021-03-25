@@ -598,18 +598,20 @@
                         <span>Bandes dessinées</span>
                     </div>
                     
-                    <div class="container-comics container-small-screen ">
+                    <div #myScrollContainer class="container-comics container-small-screen ">
                         <div *ngFor="let item of new_comic_contents.slice(0,number_of_new_contents_to_show),let i=index" >
                             <app-thumbnail-comics 
                             *ngIf="item.chaptersnumber == null" 
                             [item]=item 
                             [width]=width
+                            [myScrollContainer]=myScrollContainer
                             format='one-shot' 
                             now_in_seconds={{now_in_seconds}}
                             ></app-thumbnail-comics> 
                             <app-thumbnail-comics 
                             *ngIf="item.chaptersnumber>=0"
                             [item]=item 
+                            [myScrollContainer]=myScrollContainer
                             [width]=width
                             format='serie' 
                             now_in_seconds={{now_in_seconds}}
@@ -648,10 +650,11 @@
                         <span>Écrits</span>
                     </div>
 
-                    <div class="container-writings newWritings container-small-screen ">
+                    <div #myScrollContainer class="container-writings newWritings container-small-screen ">
                         <div *ngFor="let item of new_writing_contents.slice(0,number_of_new_contents_to_show)" >
                             <app-thumbnail-writing
                             [item]=item
+                            [myScrollContainer]=myScrollContainer
                             [width]=width
                             now_in_seconds={{now_in_seconds}}
                             ></app-thumbnail-writing>
@@ -1111,17 +1114,19 @@
                                             <div class="artwork-type-title" (click)="open_album(list_titles_albums_bd_added.length-i+2,false);" >
                                                 <span>{{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}</span>
                                             </div>
-                                            <div class=" container-comics container-small-screen"   >
+                                            <div  #myScrollContainer class=" container-comics container-small-screen"   >
                                                 <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1].slice(0,number_of_comics_to_show_by_album[list_titles_albums_bd_added.length-i+1]);let j=index" >
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber == null" 
                                                     [item]=item2 
                                                     [width]=width
+                                                    [myScrollContainer]=myScrollContainer
                                                     format='one-shot' 
                                                     now_in_seconds={{now_in_seconds}}
                                                     ></app-thumbnail-comics> 
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber>=0"
                                                     [item]=item2 
                                                     [width]=width
+                                                    [myScrollContainer]=myScrollContainer
                                                     format='serie' 
                                                     now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
                                                 </div>
@@ -1143,10 +1148,11 @@
                                             <div class="artwork-type-title" (click)="open_album(2,false);">
                                                 <span>Séries</span>
                                             </div>
-                                            <div class=" container-comics container-small-screen"  >
+                                            <div #myScrollContainer class=" container-comics container-small-screen"  >
                                                 <app-thumbnail-comics 
                                                 *ngFor="let item of list_bd_series.slice(0,number_of_comics_to_show_by_album[1]) ; let i = index"
                                                 [item]=item 
+                                                [myScrollContainer]=myScrollContainer
                                                 [width]=width
                                                 format='serie' 
                                                 now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
@@ -1167,9 +1173,10 @@
                                             <div class="artwork-type-title" (click)="open_album(1,false);">
                                                 <span>One-shots</span>
                                             </div>
-                                            <div class=" container-comics  container-small-screen"  >
+                                            <div #myScrollContainer class=" container-comics  container-small-screen"  >
                                                 <app-thumbnail-comics *ngFor="let item of list_bd_oneshot.slice(0,number_of_comics_to_show_by_album[0]) ; let i = index" #bdThumbnail
                                                 [item]=item 
+                                                [myScrollContainer]=myScrollContainer
                                                 [width]=width
                                                 format='one-shot' 
                                                 now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
@@ -1440,10 +1447,11 @@
                                                 <span>{{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}</span>
                                             </div>
 
-                                            <div class="container-small-screen container-writings">
+                                            <div #myScrollContainer class="container-small-screen container-writings">
                                                 <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1].slice(0,number_of_writings_to_show_by_album[list_titles_albums_writings_added.length-i])" >
                                                     <app-thumbnail-writing 
                                                         [item]=item
+                                                        [myScrollContainer]=myScrollContainer
                                                         [width]=width
                                                         now_in_seconds={{now_in_seconds}}
                                                     ></app-thumbnail-writing>
@@ -1465,11 +1473,12 @@
                                     <div *ngIf="list_titles_albums_writings_added.length>0" class="artwork-type-title"  (click)="open_album(0,false);">
                                         <span>Tout</span>
                                     </div>
-                                    <div *ngIf="list_writings_added && list_writings.length!=0 " class="container-small-screen container-writings">   
+                                    <div #myScrollContainer *ngIf="list_writings_added && list_writings.length!=0 " class="container-small-screen container-writings">   
                                     
                                         <div *ngFor="let item of list_writings.slice(0,number_of_writings_to_show_by_album[0])">
                                             <app-thumbnail-writing 
                                                 [item]=item
+                                                [myScrollContainer]=myScrollContainer
                                                 [width]=width
                                                 now_in_seconds={{now_in_seconds}}
                                             ></app-thumbnail-writing>

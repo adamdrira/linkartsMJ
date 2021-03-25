@@ -10,12 +10,13 @@
             </a>
         </div>
 
-        <div class="container-homepage container-writings" style="transition:opacity 1s;" >
+        <div #myScrollContainer class="container-homepage container-writings" style="transition:opacity 1s;" >
 
             <ng-container *ngIf="style==='Roman illustré'">
                 <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [myScrollContainer]=myScrollContainer
                         [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
@@ -26,6 +27,7 @@
                 <ng-container *ngFor="let item of sorted_artpieces_poetry.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [myScrollContainer]=myScrollContainer
                         [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
@@ -36,6 +38,7 @@
                 <ng-container *ngFor="let item of sorted_artpieces_roman.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [myScrollContainer]=myScrollContainer
                         [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
@@ -47,6 +50,7 @@
                 <ng-container *ngFor="let item of sorted_artpieces_scenario.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [myScrollContainer]=myScrollContainer
                         [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
@@ -57,6 +61,7 @@
                 <ng-container *ngFor="let item of sorted_artpieces_article.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [myScrollContainer]=myScrollContainer
                         [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
@@ -76,6 +81,7 @@
                         <app-media-see-more-writings
                             [style]=style
                             [width]=width
+                            [myScrollContainer]=myScrollContainer
                             [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel.slice(0,6)
                             [sorted_artpieces_roman]=sorted_artpieces_roman.slice(0,6)
                             [sorted_artpieces_scenario]=sorted_artpieces_scenario.slice(0,6)
@@ -118,13 +124,14 @@
                 <span>Récemment consultés</span>
         </div>
         
-        <div class="container-homepage container-writings " style="transition:opacity 1s;" >
+        <div #myScrollContainer2 class="container-homepage container-writings " style="transition:opacity 1s;" >
     
             
                 <ng-container *ngFor="let item of last_consulted_writings; let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
                         [width]=width
+                        [myScrollContainer]=myScrollContainer2
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
                 </ng-container>

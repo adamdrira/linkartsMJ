@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, HostListener, ChangeDetectorRef, SimpleChanges, ElementRef, ViewChild, QueryList, ViewChildren } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import {BdOneShotService} from '../services/comics_one_shot.service';
@@ -104,7 +104,6 @@ export class MediaComicsComponent implements OnInit {
   list_of_contents_sorted:boolean=false;
   number_of_thumbnails=0;
 
-
   show_icon=false;
   number_of_comics_for_history=5;
   ngOnInit() {
@@ -117,9 +116,10 @@ export class MediaComicsComponent implements OnInit {
       this.number_of_comics_to_show=6;
     }
     this.current_number_of_comics_to_show=this.number_of_comics_to_show;
-    this.get_history_recommendation()
+    this.get_history_recommendation();
       
   }
+
 
   get_history_recommendation(){
     this.number_of_skeletons_per_line=this.number_of_comics_to_show;

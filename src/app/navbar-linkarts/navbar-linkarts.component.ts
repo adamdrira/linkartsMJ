@@ -28,6 +28,7 @@ import {Community_recommendation} from '../services/recommendations.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import * as WebFont from 'webfontloader';
 import { filter } from 'rxjs/operators';
+import { merge, fromEvent } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
 declare var $: any;
 declare var Swiper: any;
@@ -166,6 +167,7 @@ export class NavbarLinkartsComponent implements OnInit {
   scrolled=false;
   navbarBoxShadow = false;
   profile_picture:SafeUrl;
+  profile_picture_unsafe:any;
   user_id:number;
   author_first_name:string;
   author_name:string;
@@ -261,7 +263,7 @@ export class NavbarLinkartsComponent implements OnInit {
   margin_is_not_set:boolean = true;
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   @ViewChild('myScrollContainer_chat') private myScrollContainer_chat: ElementRef;
-
+  scroll_chat:any;
   @ViewChild('navbarMargin', { read: ElementRef }) navbarMargin:ElementRef;
     
   list_of_conditions=[];
@@ -338,46 +340,47 @@ export class NavbarLinkartsComponent implements OnInit {
       }
     })  
 
-    setInterval(() => {
-      if(this.show_notifications){
-        if((this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.8)){
-          if(this.index_of_notifications_to_show<this.final_list_of_notifications_to_show.length){
-
-            let number_of_notifs=0;
-            let index_fin=-1;
-            for(let i=this.index_of_notifications_to_show;i<this.final_list_of_notifications_to_show.length;i++){
-              if(this.final_list_of_notifications_to_show[i]){
-                number_of_notifs+=1;
-              }
-              if(number_of_notifs==10){
-                index_fin=i;
-              }
-            }
-
-            if(index_fin>0){
-              this.index_of_notifications_to_show=index_fin;
-            }
-            else{
-              this.index_of_notifications_to_show=this.final_list_of_notifications_to_show.length;
-            }
-          }
-          
-        }
-      }
-      if(this.show_chat_messages){
-        if(this.myScrollContainer_chat && (this.myScrollContainer_chat.nativeElement.scrollTop + this.myScrollContainer_chat.nativeElement.offsetHeight >= this.myScrollContainer_chat.nativeElement.scrollHeight*0.8)){
-          if(this.number_of_friends_to_show<this.list_of_friends_ids.length){
-            this.number_of_friends_to_show+=10;
-          }
-        }
-      }
-    }, 500);
-
-    
 
   }
 
  
+  chat_scroll(event){
+    if(this.show_chat_messages){
+      if(this.myScrollContainer_chat && (this.myScrollContainer_chat.nativeElement.scrollTop + this.myScrollContainer_chat.nativeElement.offsetHeight >= this.myScrollContainer_chat.nativeElement.scrollHeight*0.8)){
+        if(this.number_of_friends_to_show<this.list_of_friends_ids.length){
+          this.number_of_friends_to_show+=10;
+        }
+      }
+    }
+  }
+
+  notifs_scroll(event){
+    if(this.show_notifications){
+      if((this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.8)){
+        if(this.index_of_notifications_to_show<this.final_list_of_notifications_to_show.length){
+
+          let number_of_notifs=0;
+          let index_fin=-1;
+          for(let i=this.index_of_notifications_to_show;i<this.final_list_of_notifications_to_show.length;i++){
+            if(this.final_list_of_notifications_to_show[i]){
+              number_of_notifs+=1;
+            }
+            if(number_of_notifs==10){
+              index_fin=i;
+            }
+          }
+
+          if(index_fin>0){
+            this.index_of_notifications_to_show=index_fin;
+          }
+          else{
+            this.index_of_notifications_to_show=this.final_list_of_notifications_to_show.length;
+          }
+        }
+        
+      }
+    }
+  }
  
 
   check_chat_service_func(){
@@ -404,6 +407,7 @@ export class NavbarLinkartsComponent implements OnInit {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
+        this.profile_picture_unsafe=url;
       });
 
       this.chatService.get_number_of_unseen_messages().subscribe(a=>{
@@ -566,7 +570,7 @@ export class NavbarLinkartsComponent implements OnInit {
           if(this.compteur_get_final_list==t[1]){
             let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_notifications_profile_pictures[i] = SafeURL;
+              this.list_of_notifications_profile_pictures[i] = url;
               compteur_pp++;
               if(compteur_pp==this.list_of_notifications.length){
                 this.index_of_notifications_to_show=15+ this.number_of_empties;
@@ -591,7 +595,7 @@ export class NavbarLinkartsComponent implements OnInit {
             if(this.compteur_get_final_list==t[1]){
               let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_notifications_profile_pictures[i] = SafeURL;
+                this.list_of_notifications_profile_pictures[i] = url;
                 compteur_pp++;
                 if(compteur_pp==this.list_of_notifications.length){
                   this.index_of_notifications_to_show=15+ this.number_of_empties;
@@ -912,6 +916,12 @@ export class NavbarLinkartsComponent implements OnInit {
               THIS.loading_other=false;
               THIS.show_other_propositions=true;
               THIS.cd.detectChanges();
+              if(THIS.propositions){
+                THIS.scroll_propositions= merge(
+                  fromEvent(window, 'scroll'),
+                  fromEvent(THIS.propositions.nativeElement, 'scroll')
+                );
+              }
             }
           }
         }
@@ -932,9 +942,14 @@ export class NavbarLinkartsComponent implements OnInit {
         this.cd.detectChanges();
         this.initialize_swiper()
         this.initialize_swiper2();
-        //this.swiper.update();
-        //this.swiper2.update();
         this.cd.detectChanges();
+
+        if(this.propositions){
+          this.scroll_propositions= merge(
+            fromEvent(window, 'scroll'),
+            fromEvent(this.propositions.nativeElement, 'scroll')
+          );
+        }
       }
       
       
@@ -942,12 +957,20 @@ export class NavbarLinkartsComponent implements OnInit {
     
   }
 
+  scroll_propositions:any;
+
   display_first_propositions_triggered=false;
   display_first_propositions(category){
     this.display_first_propositions_triggered=true;
     this.show_first_propositions=true;
     this.loading_recent=false;
     this.cd.detectChanges();
+    if(this.propositions){
+      this.scroll_propositions= merge(
+        fromEvent(window, 'scroll'),
+        fromEvent(this.propositions.nativeElement, 'scroll')
+      );
+    }
   }
   get_first_propositions(i,compteur){
     this.list_of_thumbnails_history[i]=null;
@@ -960,7 +983,7 @@ export class NavbarLinkartsComponent implements OnInit {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_recent){
-              this.list_of_thumbnails_history[i] = SafeURL;
+              this.list_of_thumbnails_history[i] = url;
               
             }
            
@@ -982,7 +1005,7 @@ export class NavbarLinkartsComponent implements OnInit {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_recent){
-              this.list_of_thumbnails_history[i] = SafeURL;
+              this.list_of_thumbnails_history[i] = url;
               
             }
            
@@ -1004,7 +1027,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
-                  this.list_of_thumbnails_history[i] = SafeURL;
+                  this.list_of_thumbnails_history[i] = url;
                   
                 }
                 
@@ -1025,7 +1048,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
-                  this.list_of_thumbnails_history[i] = SafeURL;
+                  this.list_of_thumbnails_history[i] = url;
                  
                 }
             })
@@ -1047,7 +1070,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
-                  this.list_of_thumbnails_history[i] = SafeURL;
+                  this.list_of_thumbnails_history[i] = url;
                   
                 }
             })
@@ -1067,7 +1090,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
-                  this.list_of_thumbnails_history[i] = SafeURL;
+                  this.list_of_thumbnails_history[i] = url;
                   
                 }
             })
@@ -1089,7 +1112,7 @@ export class NavbarLinkartsComponent implements OnInit {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               if(compteur==this.compteur_recent){
-                this.list_of_thumbnails_history[i] = SafeURL;
+                this.list_of_thumbnails_history[i] = url;
                
               }
               
@@ -1112,6 +1135,12 @@ export class NavbarLinkartsComponent implements OnInit {
     this.show_other_propositions=true;
     this.loading_other=false;
     this.cd.detectChanges();
+    if(this.propositions){
+      this.scroll_propositions= merge(
+        fromEvent(window, 'scroll'),
+        fromEvent(this.propositions.nativeElement, 'scroll')
+      );
+    }
   }
   get_other_propositions(i,compteur){
     this.list_of_thumbnails[i]=null;
@@ -1125,7 +1154,7 @@ export class NavbarLinkartsComponent implements OnInit {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_research){
-              this.list_of_thumbnails[i] = SafeURL;
+              this.list_of_thumbnails[i] = url;
              
             }
            
@@ -1147,7 +1176,7 @@ export class NavbarLinkartsComponent implements OnInit {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_research){
-              this.list_of_thumbnails[i] = SafeURL;
+              this.list_of_thumbnails[i] = url;
              
             }
            
@@ -1170,7 +1199,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
-                  this.list_of_thumbnails[i] = SafeURL;
+                  this.list_of_thumbnails[i] = url;
                  
                 }
                 
@@ -1191,7 +1220,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
-                  this.list_of_thumbnails[i] = SafeURL;
+                  this.list_of_thumbnails[i] = url;
                   
                 }
             })
@@ -1213,7 +1242,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
-                  this.list_of_thumbnails[i] = SafeURL;
+                  this.list_of_thumbnails[i] = url;
                   
                 }
             })
@@ -1233,7 +1262,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
-                  this.list_of_thumbnails[i] = SafeURL;
+                  this.list_of_thumbnails[i] = url;
                   
                 }
             })
@@ -1255,7 +1284,7 @@ export class NavbarLinkartsComponent implements OnInit {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               if(compteur==this.compteur_research){
-                this.list_of_thumbnails[i] = SafeURL;
+                this.list_of_thumbnails[i] = url;
                
               }
               
@@ -1849,6 +1878,13 @@ open_messages(){
   }
   else{
     this.show_chat_messages=true;
+    this.cd.detectChanges();
+    if(this.myScrollContainer_chat){
+      this.scroll_chat = merge(
+        fromEvent(window, 'scroll'),
+        fromEvent(this.myScrollContainer_chat.nativeElement, 'scroll')
+      );
+    }
   }
  
 }
@@ -1858,6 +1894,7 @@ open_notifications_notifs(event: any){
   this.open_notifications();
 }
 
+scroll_notifs:any;
 open_notifications(){
   if(this.show_notifications){
     this.show_notifications=false;
@@ -1865,12 +1902,19 @@ open_notifications(){
     return
   }
   
-  else{
-    for(let i=0;i<this.list_of_notifications.length;i++){
-      this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
-    }
-    this.show_notifications=true;
+  for(let i=0;i<this.list_of_notifications.length;i++){
+    this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
   }
+  this.show_notifications=true;
+  this.cd.detectChanges();
+
+  if(this.myScrollContainer){
+    this.scroll_notifs = merge(
+      fromEvent(window, 'scroll'),
+      fromEvent(this.myScrollContainer.nativeElement, 'scroll')
+    );
+  }
+  
 }
 
 
@@ -1919,7 +1963,7 @@ sort_friends_list() {
             this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_pictures_by_ids_users[friends[i].id_receiver] = SafeURL;
+              this.list_of_pictures_by_ids_users[friends[i].id_receiver] = url;
               compt_pp++;
               if(compt_pp==friends.length){
                 this.sort_list_of_profile_pictures()
@@ -1955,7 +1999,7 @@ sort_friends_list() {
             this.Profile_Edition_Service.retrieve_profile_picture(  friends[i].id_user ).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_pictures_by_ids_users[friends[i].id_user] = SafeURL;
+              this.list_of_pictures_by_ids_users[friends[i].id_user] = url;
               compt_pp++;
               if(compt_pp==friends.length){
                 this.sort_list_of_profile_pictures()
@@ -2012,7 +2056,7 @@ sort_friends_groups_chats_list(){
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 
-                this.list_of_pictures_by_ids_groups[r[0].friends[i].id_receiver] = SafeURL;
+                this.list_of_pictures_by_ids_groups[r[0].friends[i].id_receiver] = url;
                 compt ++;
                 if(compt==r[0].friends.length){
                   this.sort_list_of_profile_pictures();
@@ -2250,7 +2294,7 @@ change_message_status(event){
                   this.list_of_friends_names.splice(0,0,this.author_name);
                   this.list_of_friends_certifications.splice(0,0,this.author_certification);
                   this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
-                  this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
+                  this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture_unsafe);
                   this.list_of_friends_pseudos.splice(0,0,this.pseudo);
                   this.cd.detectChanges();
               }
@@ -2272,7 +2316,7 @@ change_message_status(event){
                 this.Profile_Edition_Service.retrieve_profile_picture( event.friend_id).subscribe(t=> {
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  picture = SafeURL;
+                  picture = url;
                   pp_retrieved=true;
                   check_all(this)
                 })
@@ -2318,7 +2362,7 @@ change_message_status(event){
       this.chatService.retrieve_chat_profile_picture(s[0].chat_profile_pic_name,s[0].profile_pic_origin).subscribe(t=> {
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        let picture = SafeURL;
+        let picture = url;
         this.list_of_chat_friends_ids.splice(0,0,s[0].id)
         this.list_of_friends_types.splice(0,0,'group');
         this.list_of_friends_ids.splice(0,0,id);
@@ -2647,6 +2691,7 @@ change_message_status(event){
         data: {
           list_of_conditions:this.list_of_conditions,
           profile_picture:this.profile_picture,
+          profile_picture_unsafe:this.profile_picture_unsafe,
           user_id:this.user_id,
           author_first_name:this.author_first_name,
           pseudo:this.pseudo,

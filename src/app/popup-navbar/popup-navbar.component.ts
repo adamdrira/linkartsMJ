@@ -1,6 +1,5 @@
 import { Component, OnInit, ElementRef, ChangeDetectorRef, HostListener, ViewChild, Inject } from '@angular/core';
-
-
+import { merge, fromEvent } from 'rxjs';
 import { MatDialog,MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ChatService } from '../services/chat.service';
 import {get_date_to_show_chat} from '../helpers/dates';
@@ -20,7 +19,7 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import {trigger, style, animate, transition} from '@angular/animations';
-declare var $: any;
+
 
 @Component({
   selector: 'app-popup-navbar',
@@ -80,6 +79,7 @@ export class PopupNavbarComponent implements OnInit {
  
   
   profile_picture=this.data.profile_picture;
+  profile_picture_unsafe=this.data.profile_picture_unsafe;
   user_id=this.data.user_id;
   author_first_name=this.data.author_first_name;
   author_name=this.data.author_name;
@@ -108,8 +108,6 @@ export class PopupNavbarComponent implements OnInit {
     }
     if(this.show_chat_messages){
       if(this.chat &&!this.chat.nativeElement.contains(event.target) ) {
-        console.log("reset chat")
-        //this.list_of_chat_friends_ids=[]; 
         this.show_chat_messages=false;
         this.number_of_unseen_messages=0;
         this.cd.detectChanges();
@@ -123,7 +121,6 @@ export class PopupNavbarComponent implements OnInit {
 
     if(!this.list_of_friends_retrieved){
       this.chatService.get_number_of_unseen_messages().subscribe(a=>{
-        //console.log(a);
         if(a[0]){
           this.number_of_unseen_messages=a[0].number_of_unseen_messages;
         }
@@ -138,21 +135,16 @@ export class PopupNavbarComponent implements OnInit {
       this.compteur_get_final_list++;
       let compteur=this.compteur_get_final_list;
       let compteur_pp=0;
-      //console.log("Az r to go list for l" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
       for(let i=0;i<this.list_of_notifications.length;i++){
-       // console.log("Az index " + i + "/" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
-        this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
-  
+       this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
         if(status=="initialize"){
           this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
             if(this.compteur_get_final_list==t[1]){
-             // console.log("Az pp ret i " + i + "/" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
-              let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
+             let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_notifications_profile_pictures[i] = SafeURL;
+                this.list_of_notifications_profile_pictures[i] = url;
                 compteur_pp++;
                 if(compteur_pp==this.list_of_notifications.length){
-                  //console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
                   this.index_of_notifications_to_show=15+this.number_of_empties;
                   this.notifications_pictures_retrieved=true;
                   this.display_number_of_unchecked_notifications();
@@ -166,7 +158,6 @@ export class PopupNavbarComponent implements OnInit {
           if( this.list_of_notifications_profile_pictures[i]){
             compteur_pp++;
             if(compteur_pp==this.list_of_notifications.length){
-              //console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
               this.index_of_notifications_to_show=15+this.number_of_empties;
               this.notifications_pictures_retrieved=true;
               this.display_number_of_unchecked_notifications();
@@ -175,14 +166,12 @@ export class PopupNavbarComponent implements OnInit {
           else{
             this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
               if(this.compteur_get_final_list==t[1]){
-                //console.log("Az pp ret i " + i + "/" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
                 let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  this.list_of_notifications_profile_pictures[i] = SafeURL;
+                  this.list_of_notifications_profile_pictures[i] = url;
                   compteur_pp++;
                   if(compteur_pp==this.list_of_notifications.length){
-                   // console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
-                    this.index_of_notifications_to_show=15+this.number_of_empties;
+                   this.index_of_notifications_to_show=15+this.number_of_empties;
                     this.notifications_pictures_retrieved=true;
                     this.display_number_of_unchecked_notifications();
                   }
@@ -197,48 +186,47 @@ export class PopupNavbarComponent implements OnInit {
       }
     }
    
-     
-    
-    setInterval(() => {
-      // après avoir cliqué sur "voir tous les résultats" dans la liste des propositions classique
-      if(this.show_notifications){
-        if((this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.8)){
-          if(this.index_of_notifications_to_show<this.final_list_of_notifications_to_show.length){
-
-            let number_of_notifs=0;
-            let index_fin=-1;
-            for(let i=this.index_of_notifications_to_show;i<this.final_list_of_notifications_to_show.length;i++){
-              if(this.final_list_of_notifications_to_show[i]){
-                number_of_notifs+=1;
-              }
-              if(number_of_notifs==10){
-                index_fin=i;
-              }
-            }
-
-            if(index_fin>0){
-              this.index_of_notifications_to_show=index_fin;
-            }
-            else{
-              this.index_of_notifications_to_show=this.final_list_of_notifications_to_show.length;
-            }
-          }
-          
-        }
-      }
-      if(this.show_chat_messages){
-        if(this.myScrollContainer_chat && (this.myScrollContainer_chat.nativeElement.scrollTop + this.myScrollContainer_chat.nativeElement.offsetHeight >= this.myScrollContainer_chat.nativeElement.scrollHeight*0.8)){
-          if(this.number_of_friends_to_show<this.list_of_friends_ids.length){
-            this.number_of_friends_to_show+=10;
-          }
-        }
-      }
-    }, 500);
-
   }
 
+  chat_scroll(event){
+    if(this.show_chat_messages){
+      if(this.myScrollContainer_chat && (this.myScrollContainer_chat.nativeElement.scrollTop + this.myScrollContainer_chat.nativeElement.offsetHeight >= this.myScrollContainer_chat.nativeElement.scrollHeight*0.8)){
+        if(this.number_of_friends_to_show<this.list_of_friends_ids.length){
+          this.number_of_friends_to_show+=10;
+        }
+      }
+    }
+  }
 
+  notifs_scroll(event){
+    if(this.show_notifications){
+      if((this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.8)){
+        if(this.index_of_notifications_to_show<this.final_list_of_notifications_to_show.length){
+  
+          let number_of_notifs=0;
+          let index_fin=-1;
+          for(let i=this.index_of_notifications_to_show;i<this.final_list_of_notifications_to_show.length;i++){
+            if(this.final_list_of_notifications_to_show[i]){
+              number_of_notifs+=1;
+            }
+            if(number_of_notifs==10){
+              index_fin=i;
+            }
+          }
+  
+          if(index_fin>0){
+            this.index_of_notifications_to_show=index_fin;
+          }
+          else{
+            this.index_of_notifications_to_show=this.final_list_of_notifications_to_show.length;
+          }
+        }
+        
+      }
+    }
+  }
 
+  
 
   disconnecting=false;
   logout() {
@@ -284,16 +272,6 @@ export class PopupNavbarComponent implements OnInit {
     this.pp_is_loaded=true;
   }
 
-
-/*
-  open_options(i){
-    console.log(i)
-    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
-      data: {file:this.list_of_conditions[i]},
-      panelClass: "popupDocumentClass",
-    });
-   
-  }*/
   
 /*********************************************  NOTIFICATIONS ****************************/
 /*********************************************  NOTIFICATIONS ****************************/
@@ -445,10 +423,7 @@ get_ad(notif:any) {
 }
 
 sort_notifications(msg){
-  //console.log("sorting notif")
   if(msg[0].for_notifications){
-    console.log(msg[0].information)
-    console.log(this.list_of_notifications[0])
     if(msg[0].information!='remove'){
       this.list_of_notifications.splice(0,0,msg[0])
     }
@@ -466,14 +441,12 @@ sort_notifications(msg){
             index=i;
           }
       }
-      //console.log(this.list_of_notifications[index])
       if(index>=0){
         this.list_of_notifications.splice(index,1)
       }
       
     }
     this.get_final_list_of_notifications_to_show("add");
-    //console.log(this.list_of_notifications)
   }
   else{
     this.list_of_messages.splice(0,0,msg[0]);
@@ -484,9 +457,6 @@ sort_notifications(msg){
 
 
 change_notifications_status_to_checked(){
-  //console.log("change_notifications_status_to_checked")
-  //console.log( this.list_of_notifications)
-  //console.log(this.final_list_of_notifications_to_show)
   let modify=false;
   for(let i=0;i<this.list_of_notifications.length;i++){
     if(this.list_of_notifications[i].status=="unchecked"){
@@ -511,7 +481,6 @@ get_final_list_of_notifications_to_show(status){
   }
   this.compteur_get_final_list++;
   let compteur=this.compteur_get_final_list
-  //console.log("Az get fi list of notifs r c " + this.compteur_get_final_list)
   this.final_list_of_notifications_to_show=[];
   this.dictionnary_of_similar_notifications={};
   this.dictionnary_of_similar_notifications[0]=[];
@@ -535,7 +504,6 @@ get_final_list_of_notifications_to_show(status){
                 similar_found=true;
               }
               if(!similar_found && this.list_of_notifications[i].id_user==this.list_of_notifications[j].id_user){
-                //console.log("similar user notif " + i + ' et ' + j)
                 similar_found=true;
               }
               
@@ -552,7 +520,6 @@ get_final_list_of_notifications_to_show(status){
               similar_found=true;
             }
             if(!similar_found && this.list_of_notifications[i].id_user==this.list_of_notifications[j].id_user){
-              //console.log("similar user notif " + i + ' et ' + j)
               similar_found=true;
             }
         }
@@ -569,21 +536,17 @@ get_final_list_of_notifications_to_show(status){
   this.data_retrieved=true;
   this.display_number_of_unchecked_notifications();
   let compteur_pp=0;
-  //console.log("Az r to go list for l" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
   for(let i=0;i<this.list_of_notifications.length;i++){
-   // console.log("Az index " + i + "/" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
-    this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
+   this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
 
     if(status=="initialize"){
       this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
         if(this.compteur_get_final_list==t[1]){
-         // console.log("Az pp ret i " + i + "/" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
-          let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
+         let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_notifications_profile_pictures[i] = SafeURL;
+            this.list_of_notifications_profile_pictures[i] = url;
             compteur_pp++;
             if(compteur_pp==this.list_of_notifications.length){
-              //console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
               this.index_of_notifications_to_show=15+number_of_empties;
               this.notifications_pictures_retrieved=true;
               this.display_number_of_unchecked_notifications();
@@ -597,7 +560,6 @@ get_final_list_of_notifications_to_show(status){
       if( this.list_of_notifications_profile_pictures[i]){
         compteur_pp++;
         if(compteur_pp==this.list_of_notifications.length){
-          //console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
           this.index_of_notifications_to_show=15+number_of_empties;
           this.notifications_pictures_retrieved=true;
           this.display_number_of_unchecked_notifications();
@@ -606,13 +568,11 @@ get_final_list_of_notifications_to_show(status){
       else{
         this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
           if(this.compteur_get_final_list==t[1]){
-            //console.log("Az pp ret i " + i + "/" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
             let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_notifications_profile_pictures[i] = SafeURL;
+              this.list_of_notifications_profile_pictures[i] = url;
               compteur_pp++;
               if(compteur_pp==this.list_of_notifications.length){
-               // console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
                 this.index_of_notifications_to_show=15+number_of_empties;
                 this.notifications_pictures_retrieved=true;
                 this.display_number_of_unchecked_notifications();
@@ -640,8 +600,6 @@ display_number_of_unchecked_notifications(){
     }
   }
   this.number_of_unchecked_notifications=number;
-  //console.log(.log("number_of_unchecked_notifications")
-  //console.log(.log(number)
 }
 
 indice=0
@@ -665,19 +623,24 @@ get_date(created,i){
     this.open_notifications();
   }
   
+  scroll_notifs:any;
   open_notifications(){
     if(this.show_notifications){
       this.show_notifications=false;
       this.change_notifications_status_to_checked();
       return
     }
-    
-    else{
-      for(let i=0;i<this.list_of_notifications.length;i++){
-        this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
-      }
-      this.show_notifications=true;
+    for(let i=0;i<this.list_of_notifications.length;i++){
+      this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
     }
+    this.show_notifications=true;
+    if(this.myScrollContainer){
+      this.scroll_notifs = merge(
+        fromEvent(window, 'scroll'),
+        fromEvent(this.myScrollContainer.nativeElement, 'scroll')
+      );
+    }
+    
   }
 
 
@@ -753,6 +716,8 @@ open_messages_notifs(event: any) {
   event.stopPropagation();
   this.open_messages();
 }
+
+scroll_chat:any;
 open_messages(){
   
   if(this.show_chat_messages){
@@ -760,12 +725,14 @@ open_messages(){
     return;
   }
   if(!this.using_chat && this.using_chat_retrieved){
-    console.log("open message")
     this.show_chat_messages=true;
-    console.log(this.data_retrieved)
-    console.log(this.using_chat_retrieved)
-    console.log(this.data_retrieved)
-    console.log(this.list_of_friends_retrieved)
+    this.cd.detectChanges();
+    if(this.myScrollContainer_chat){
+      this.scroll_chat = merge(
+        fromEvent(window, 'scroll'),
+        fromEvent(this.myScrollContainer_chat.nativeElement, 'scroll')
+      );
+    }
   }
  
 }
@@ -795,19 +762,16 @@ sort_friends_list() {
 
  
 
-  //console.log("first sort friends list")
   this.chatService.get_list_of_users_I_talk_to().subscribe(r=>{
 
     let friends=r[0].friends;
     if(friends.length>0){
       let compt=0;
       let compt_pp=0;
-      //console.log(friends)
       for(let i=0;i<friends.length;i++){
         this.list_of_chat_friends_ids[i]=friends[i].id;
         let data_retrieved=false;
         if(friends[i].id_user==this.user_id){
-            
             this.list_of_friends_types[i]='user';
             this.list_of_friends_users_only[i]=friends[i].id_receiver;
             this.list_of_friends_ids[i]=friends[i].id_receiver;
@@ -823,11 +787,8 @@ sort_friends_list() {
             this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_pictures_by_ids_users[friends[i].id_receiver] = SafeURL;
-              console.log( this.list_of_pictures_by_ids_users)
+              this.list_of_pictures_by_ids_users[friends[i].id_receiver] = url;
               compt_pp++;
-              console.log(compt_pp)
-              console.log(friends.length)
               if(compt_pp==friends.length){
                 this.sort_list_of_profile_pictures()
               }
@@ -838,7 +799,6 @@ sort_friends_list() {
               if(data_retrieved ){
                 compt ++;
                 if(compt==friends.length){
-                  //console.log(this.list_of_friends_ids)
                   THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).subscribe(u=>{
                     THIS.list_of_friends_last_message=u[0].list_of_friends_messages;
                     THIS.sort_friends_groups_chats_list();
@@ -863,11 +823,8 @@ sort_friends_list() {
             this.Profile_Edition_Service.retrieve_profile_picture(  friends[i].id_user ).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_pictures_by_ids_users[friends[i].id_user] = SafeURL;
-              console.log( this.list_of_pictures_by_ids_users)
-              compt_pp++
-              console.log(compt_pp)
-              console.log(friends.length)
+              this.list_of_pictures_by_ids_users[friends[i].id_user] = url;
+              compt_pp++;
               if(compt_pp==friends.length){
                 this.sort_list_of_profile_pictures()
               }
@@ -878,10 +835,8 @@ sort_friends_list() {
               if(data_retrieved ){
                 compt ++;
                 if(compt==friends.length){
-                  //console.log(this.list_of_friends_ids)
                   THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).subscribe(u=>{
                     THIS.list_of_friends_last_message=u[0].list_of_friends_messages;
-                    //console.log(this.list_of_friends_last_message)
                     THIS.sort_friends_groups_chats_list();
                   });
                 }
@@ -889,9 +844,6 @@ sort_friends_list() {
             }
         }
       }
-    }
-    else{
-      //console.log("régler le cas 0 ...")
     }
     
   })
@@ -927,9 +879,7 @@ sort_friends_groups_chats_list(){
                
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                
-                this.list_of_pictures_by_ids_groups[r[0].friends[i].id_receiver] = SafeURL;
-                console.log( this.list_of_pictures_by_ids_groups)
+                this.list_of_pictures_by_ids_groups[r[0].friends[i].id_receiver] = url;
                 compt ++;
                 if(compt==r[0].friends.length){
                   this.sort_list_of_profile_pictures();
@@ -986,11 +936,7 @@ sort_list_of_groups_and_friends(){
 
 
 sort_list_of_profile_pictures(){
-  console.log("try pp")
   if(this.can_sort_list_of_profile_pictures){
-    console.log("sort_listpp")
-    console.log( this.list_of_pictures_by_ids_users)
-    console.log(this.list_of_pictures_by_ids_groups)
     let length=this.list_of_friends_ids.length;
     for(let i=0;i<length;i++){
       if(this.list_of_friends_types[i]=='user'){
@@ -999,10 +945,7 @@ sort_list_of_profile_pictures(){
       else{
         this.list_of_friends_profile_pictures[i]=this.list_of_pictures_by_ids_groups[this.list_of_friends_ids[i]]
       }
-     
     }
-    console.log(this.list_of_friends_ids)
-    console.log(this.list_of_friends_profile_pictures)
    
   }
   else{
@@ -1017,11 +960,7 @@ load_friends_pp(i){
 }
 
 get_connections_status(){
-  //console.log(this.list_of_friends_users_only)
   this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
-    //console.log(r)
-    //console.log(r[0].list_of_users_connected);
-    //console.log(this.list_of_friends_types)
     let compt=0
     for(let i=0;i<this.list_of_friends_types.length;i++){
       
@@ -1038,7 +977,6 @@ get_connections_status(){
           this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
         }
         compt++;
-        console.log(this.list_of_friends_types.length)
         if(compt==this.list_of_friends_types.length){
           this.connections_status_retrieved=true;
           this.cd.detectChanges()
@@ -1097,8 +1035,6 @@ change_message_status(event){
         index_friend=i;
       }
     }
-    //console.log(index_friend)
-    
     if(index_friend>=0){
       if(event.status=="delete" && this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section){
         this.list_of_friends_last_message[index_friend].status="deleted";
@@ -1107,7 +1043,6 @@ change_message_status(event){
         if(event.friend_type=='group'){
            if( (this.list_of_friends_last_message[index_friend].id_user==this.user_id && this.user_id!=event.real_friend_id)
              || this.list_of_friends_last_message[index_friend].id_user!=this.user_id ){
-               //console.log("putting messages group to seen")
               if( this.list_of_friends_last_message[index_friend].list_of_users_who_saw.indexOf(event.real_friend_id)<0){
                 this.list_of_friends_last_message[index_friend].list_of_users_who_saw.push(event.real_friend_id);
               }
@@ -1123,19 +1058,12 @@ change_message_status(event){
       
       
     }
-    else{
-      //console.log("error friend not retrieved")
-    }
     
   }
   this.cd.detectChanges()
 }
 
   new_sort_friends_list(event){
-    //console.log("getting message from chat")
-    //console.log(event);
-    //console.log(this.list_of_friends_ids)
-    //console.log(this.list_of_friends_types)
     if(this.list_of_pp_sorted){
       let index=-1;
       for(let i=0;i<this.list_of_friends_ids.length;i++){
@@ -1143,16 +1071,10 @@ change_message_status(event){
           index=i;
         }
       }
-      //console.log(index)
       if(index>=0){
-        //console.log("a friend message")
-        //fait partie de la liste des contacts
-        //console.log(event.message);
         this.list_of_friends_last_message[index]=event.message;
         this.cd.detectChanges();
-        //put message to received
         this.list_of_friends_last_message[index].status="received";
-        //console.log("received");
         this.cd.detectChanges();
         
         this.list_of_friends_types.splice(0,0,this.list_of_friends_types.splice(index,1)[0]);
@@ -1163,7 +1085,6 @@ change_message_status(event){
         this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
         this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
         this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
-        //console.log(this.list_of_friends_last_message)
         this.cd.detectChanges();
 
       }
@@ -1175,7 +1096,6 @@ change_message_status(event){
           this.chatService.check_if_is_related(event.friend_id).subscribe(r=>{
             if(r[0].value){
               if(event.friend_id==this.user_id){
-                console.log("it s me")
                 this.list_of_friends_types.splice(0,0,'user');
                 this.list_of_friends_ids.splice(0,0,event.friend_id);
                   this.list_of_friends_last_message.splice(0,0,event.message);
@@ -1183,12 +1103,11 @@ change_message_status(event){
                   this.list_of_friends_names.splice(0,0,this.author_name);
                   this.list_of_friends_certifications.splice(0,0,this.author_certification);
                   this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
-                  this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
+                  this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture_unsafe);
                   this.list_of_friends_pseudos.splice(0,0,this.pseudo);
                   this.cd.detectChanges();
               }
               else{
-                console.log("related but not me")
                 let name;
                 let pseudo;
                 let picture;
@@ -1196,7 +1115,6 @@ change_message_status(event){
                 let pp_retrieved=false;
                 let certification= false;
                 this.Profile_Edition_Service.retrieve_profile_data(event.friend_id).subscribe(s=>{
-                  console.log(s);
                   pseudo = s[0].nickname;
                   certification = s[0].certified_account;
                   name =s[0].firstname + ' ' + s[0].lastname;
@@ -1205,10 +1123,9 @@ change_message_status(event){
                 });
     
                 this.Profile_Edition_Service.retrieve_profile_picture( event.friend_id).subscribe(t=> {
-                  console.log(t);
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  picture = SafeURL;
+                  picture = url;
                   pp_retrieved=true;
                   check_all(this)
                 })
@@ -1242,25 +1159,18 @@ change_message_status(event){
 
 
   add_group_to_contacts(event){
-    //console.log("adding group to contacts")
-    //console.log(event);
     this.get_group_chat_name(event.friend_id,event.message)
   }
   
 
   get_group_chat_name(id,message){
-    //console.log("get_group_chat_name")
-    //console.log(id);
-    //console.log(message)
     let pseudo = message.group_name;
     let name =message.group_name;
     this.chatService.get_group_chat_as_friend(id).subscribe(s=>{
-      //console.log(s[0])
-      
       this.chatService.retrieve_chat_profile_picture(s[0].chat_profile_pic_name,s[0].profile_pic_origin).subscribe(t=> {
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        let picture = SafeURL;
+        let picture = url;
         this.list_of_chat_friends_ids.splice(0,0,s[0].id)
         this.list_of_friends_types.splice(0,0,'group');
         this.list_of_friends_ids.splice(0,0,id);
@@ -1270,9 +1180,6 @@ change_message_status(event){
         this.list_of_friends_certifications.splice(0,0,null);
         this.list_of_friends_profile_pictures.splice(0,0,picture);
         this.list_of_friends_pseudos.splice(0,0,pseudo);
-        //console.log(this.list_of_friends_last_message);
-        //console.log(this.list_of_friends_types)
-        //console.log(this.list_of_friends_names)
         this.cd.detectChanges();
       })
       
@@ -1347,7 +1254,6 @@ change_message_status(event){
         index=i;
       }
     }
-    //console.log(index)
     if(index>=0){
       this.list_of_friends_types.splice(index,1);
       this.list_of_friends_ids.splice(index,1);
@@ -1361,120 +1267,10 @@ change_message_status(event){
     }
   }
   
-  /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
-  /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
-  /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
-  /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
-
-  chat_service_managment_function(msg){
-   
-    if(!msg[0].for_notifications){
-      //console.log(msg[0])
-      //console.log(this.list_of_messages)
-      //a person sends a message
-      if(msg[0].id_user!="server" && !msg[0].is_from_server){
-        //console.log("it's not from server");
-        //console.log(msg[0].status)
-        if(msg[0].is_a_group_chat){
-          //console.log("is from a group");
-          if( msg[0].status=="seen"){
-            //console.log("in the else if seen")
-            //console.log("change message status 2")
-            this.change_message_status({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_receiver,friend_type:'group',spam:false,real_friend_id:msg[0].id_user});
-          }
-          else{
-            //console.log(msg[0].status)
-            //console.log("in the else ");
-            this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'group'});
-            if(!this.show_chat_messages){
-              this.number_of_unseen_messages+=1;
-            }
-            this.cd.detectChanges;
-          }
-        }
-        else{
-          //console.log("is from a user ");
-          
-          // not the friend I am talking to but seen
-          if(msg[0].status=="seen"){
-            //console.log("in the else if seen")
-            //console.log("change message status 3")
-            this.change_message_status({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_user,friend_type:'user'});
-          }
-          // not the friend I am talking to and not seen
-          else{
-            this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'user'});
-            if(!this.show_chat_messages){
-              this.number_of_unseen_messages+=1;
-            }
-            this.cd.detectChanges;
-          }
-        }
-        
-      }
-      else if(msg[0].server_message=="received_new"){
-        //console.log("received new but not here")
-        this.new_sort_friends_list({friend_id:msg[0].message.id_receiver,message:msg[0].message,friend_type:'user'});
-        if(!this.show_chat_messages){
-          this.number_of_unseen_messages+=1;
-        }
-        this.cd.detectChanges;
-      }
-      else if(msg[0].server_message=="block" ){
-        //console.log("block")
-        this.blocking_managment({friend_id:msg[0].id_user_blocking})
-      }
-      //a message from the server to tell that the message has been sent
-      else if(msg[0].message=="New"){
-        //console.log("new");
-        if(msg[0].is_a_group_chat){
-          //console.log("adding new group to contacts")
-          this.add_group_to_contacts({friend_id:msg[0].id_receiver,message:msg[0]});
-          this.cd.detectChanges;
-        }
-        else{
-            this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'user'});
-            if(!this.show_chat_messages){
-              this.number_of_unseen_messages+=1;
-            }
-            this.cd.detectChanges;
-        }
-      }
-      else if(msg[0].message=="New_friend_in_the_group"){
-        //console.log("New_friend_in_the_group");
-        this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'group',value:false});
-        if(!this.show_chat_messages){
-          this.number_of_unseen_messages+=1;
-        }
-        this.cd.detectChanges;
-        
-      }
-      else if(msg[0].message=="Exit"){
-        //console.log("Exit");
-        if(msg[0].is_a_group_chat){
-          this.display_exit({friend_id:msg[0].id_user,message:msg[0]});
-          if(!this.show_chat_messages){
-            this.number_of_unseen_messages+=1;
-          }
-          this.cd.detectChanges;
-        }
-      }
-    }
-  }
-
-  open_chat(i){
-    //console.log(this.list_of_friends_ids[i]);
-    //console.log(this.list_of_friends_types[i]);
-  }
-
-
- 
-
   
   close_dialog(){
     this.show_chat_messages=false;
     this.show_notifications=false;
-
     this.dialogRef.close();
   }
 

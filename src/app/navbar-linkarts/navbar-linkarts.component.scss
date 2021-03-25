@@ -1601,6 +1601,7 @@
   }
   .notifications-container.notifications-model {
     position: relative;
+    z-index: 1;
     min-height: 110px;
     max-height: 265px;
     background: #f9f9f9;

@@ -12,7 +12,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!! ARTWORK CONTAINER !!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div #leftContainer class="artwork-container">
+    <div #leftContainer class="artwork-container"> 
         <div class="content-container">
 
             <ng-container *ngIf="!item || !visitor_mode_added">
@@ -436,7 +436,7 @@
             <div *ngIf="list_of_author_ads_retrieved"  [ngClass]="{'really-invisible': left_container_category_index!=0 }">
                 <div class="recommendation-group" *ngIf=" display_author_ads ">
                     <div class="thumbnail-container" *ngFor="let item of list_of_author_ads; let i=index" >
-                        <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [for_ad_page]="for_ad_page" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                        <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [ad_container]=leftContainer [for_ad_page]="for_ad_page" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                     </div>
                 </div>
                 
@@ -456,7 +456,7 @@
             <div *ngIf="list_of_other_ads_retrieved" [ngClass]="{'really-invisible': left_container_category_index!=1 }">
                 <div class="recommendation-group" *ngIf=" display_other_ads">
                     <div class="thumbnail-container" *ngFor="let item of list_of_other_ads; let i=index" >
-                        <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                        <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [ad_container]=leftContainer [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                     </div>
                 </div>
                 <div class="recommendation-group" *ngIf=" !display_other_ads">
@@ -782,7 +782,7 @@
                 <div *ngIf="list_of_author_ads_retrieved"  [ngClass]="{'really-invisible': left_container_category_index!=0 }">
                     <div class="recommendation-group" *ngIf=" display_author_ads ">
                         <div class="thumbnail-container" *ngFor="let item of list_of_author_ads; let i=index" >
-                            <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                            <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [ad_container]=leftContainer [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                         </div>
                     </div>
                     
@@ -802,7 +802,7 @@
                 <div *ngIf="list_of_other_ads_retrieved" [ngClass]="{'really-invisible': left_container_category_index!=1 }">
                     <div class="recommendation-group" *ngIf=" display_other_ads">
                         <div class="thumbnail-container" *ngFor="let item of list_of_other_ads; let i=index" >
-                            <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                            <app-thumbnail-ad in_ad_page=true (click)="close_popup()" [ad_container]=leftContainer [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                         </div>
                     </div>
                     <div class="recommendation-group" *ngIf="!display_other_ads">

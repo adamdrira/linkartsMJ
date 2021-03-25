@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext, ChangeDetectorRef, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext, ChangeDetectorRef, ViewChildren, QueryList, SimpleChanges } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -11,7 +11,7 @@ import {PopupArtworkComponent} from '../popup-artwork/popup-artwork.component';
 import { NavbarService } from '../services/navbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-
+import { merge, fromEvent } from 'rxjs';
 declare var Swiper: any;
 declare var $:any;
 
@@ -70,7 +70,7 @@ export class ThumbnailComicsComponent implements OnInit {
   @Input() format: string;
   @Input() now_in_seconds: number;
   @Input() width: number;
-  
+  @Input() myScrollContainer: any;
 
   //author
   pseudo:string;
@@ -105,6 +105,18 @@ export class ThumbnailComicsComponent implements OnInit {
 
   show_icon=false;
   title_for_url:string;
+  scroll:any;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.myScrollContainer ){
+      if(this.myScrollContainer){
+        this.scroll = merge(
+          fromEvent(window, 'scroll'),
+          fromEvent(this.myScrollContainer, 'scroll')
+        );
+      }
+    }
+  }
   ngOnInit() {
     this.user_id = this.item.authorid
     this.file_name = this.item.name_coverpage

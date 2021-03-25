@@ -30,7 +30,7 @@ import { Ads_service } from '../../app/services/ads.service'
 import { trigger, transition, style, animate } from '@angular/animations';
 import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import { merge, fromEvent } from 'rxjs';
 
 declare var $: any;
 
@@ -1265,6 +1265,9 @@ export class AccountComponent implements OnInit {
         return;
       }
     }
+
+    
+    
 
     this.category_to_load[i]=true;
     this.add_album_to_load[0]=true;
