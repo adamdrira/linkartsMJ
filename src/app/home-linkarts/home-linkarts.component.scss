@@ -487,11 +487,12 @@
   border-top: 2px solid #f1f1f1;
   display:flex;
   flex-direction: column;
-  padding:30px 10px 30px 10px;
+  padding:20px 10px 0px 10px;
 
   > img {
-    height: 35px;
-    margin-bottom: 30px;
+    height: 28px;
+    padding-left: 4px;
+    margin-bottom: 20px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -510,12 +511,12 @@
     }
 
     .link {
-      margin-left: 16px;
-      margin-right: 16px;
+      margin-left: 11px;
+      margin-right: 11px;
       display: flex;
 
       mat-icon {
-        margin: auto 10px auto 0px;
+        margin: auto 6px auto 0px;
         width: unset;
         height: unset;
         font-size: 18px;
@@ -525,6 +526,7 @@
       }
       span {
         color: #7d7d7d;
+        font-size: 13px;
         font-weight: 600;
         transition:color 200ms;
       }
@@ -544,11 +546,11 @@
     width: 50px;
     height: 2px;
     background: #dcdcdc;
-    margin: 31px auto 10px auto;
+    margin: 16px auto 10px auto;
   }
 
   .logos-container.homeLinkarts {
-    margin:0px auto 20px auto;
+    margin:0px auto 16px auto;
 
     a.linkedin {
       margin: 0px 10px;
@@ -573,7 +575,11 @@
 
   > span {
     color: #7d7d7d;
+    font-size: 12px;
     font-weight: 600;
-    margin:0px auto 0px auto;
+    max-width: 350px;
+    padding-bottom: 10px;
+    text-align: center;
+    margin: 0px auto 0px auto;
   }
 }
