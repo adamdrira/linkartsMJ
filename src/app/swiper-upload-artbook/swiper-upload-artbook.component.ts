@@ -1,12 +1,9 @@
-import { Component, OnInit, Input, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, ViewChild, HostListener, SimpleChanges } from '@angular/core';
+import { Component, Input, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, ViewChild, HostListener, SimpleChanges } from '@angular/core';
 
 import { SafeUrl } from '@angular/platform-browser';
-import { UploadService } from '../services/upload.service';
-import { BdOneShotService } from '../services/comics_one_shot.service';
 import { UploaderArtbookComponent } from '../uploader-artbook/uploader-artbook.component';
 import { Drawings_CoverService } from '../services/drawings_cover.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -34,7 +31,7 @@ declare var Cropper;
     ),
   ],
 })
-export class SwiperUploadArtbookComponent implements OnInit {
+export class SwiperUploadArtbookComponent  {
 
   @HostListener('window:beforeunload', ['$event'])
   beforeUnload($event) { 
@@ -43,12 +40,8 @@ export class SwiperUploadArtbookComponent implements OnInit {
 
 
   constructor(private rd: Renderer2, 
-    private el: ElementRef,
-    private _upload: UploadService,
     private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
-    private viewref: ViewContainerRef,
-    private bdOneShotService: BdOneShotService,
     private Drawings_CoverService:Drawings_CoverService,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
@@ -73,7 +66,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
   @Input('profile_picture') profile_picture:SafeUrl;
-
+  @Input('user_id') user_id:number;
   @Input() name: string;
   @Input() description: string;
   @Input() category: string;
@@ -117,10 +110,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
   
   
   show_icon=false;
-  ngOnInit() {
-    console.log(this.drawing_id)
-  }
-
+ 
  
   ngAfterViewInit(){
    
@@ -361,8 +351,14 @@ export class SwiperUploadArtbookComponent implements OnInit {
     this.componentRef[ this.componentRef.length - 1 ].instance.drawing_id = this.drawing_id;
     this.componentRef[ this.componentRef.length - 1 ].instance.page = this.swiper.slides.length - 1;
     this.componentRef[ this.componentRef.length - 1 ].instance.title = this.name;
+
+    this.componentRef[ this.componentRef.length - 1 ].instance.author_name = this.author_name;
+    this.componentRef[ this.componentRef.length - 1 ].instance.profile_picture = this.profile_picture;
+    this.componentRef[ this.componentRef.length - 1 ].instance.primary_description = this.primary_description;
+    this.componentRef[ this.componentRef.length - 1 ].instance.pseudo = this.pseudo;
+    this.componentRef[ this.componentRef.length - 1 ].instance.user_id = this.user_id;
   
-    
+  
     this.componentRef[ this.componentRef.length - 1 ].instance.sendPicture.subscribe( v => {
       if( v.page == 0 && !v.removing && !v.changePage ) {
 
@@ -531,12 +527,10 @@ export class SwiperUploadArtbookComponent implements OnInit {
             this.componentRef[ step ].instance.upload = true;
             this.componentRef[ step ].instance.total_pages = this.componentRef.length;
             this.componentRef[ step ].instance.sendValidated.subscribe( v => {
-              console.log("received validated")
               this.block_cancel=true;
               this.display_loading=false
               this.Drawings_CoverService.remove_covername();
-              this.router.navigate([`/account/${v.pseudo}/${v.user_id}`]);
-              //window.location.href = `/account/${v.pseudo}/${v.user_id}`;
+              this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
             });
           }
         })
@@ -553,7 +547,6 @@ export class SwiperUploadArtbookComponent implements OnInit {
     if(!this.block_cancel){
       this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(res=>{
         this.Drawings_CoverService.remove_cover_from_folder().subscribe()
-        console.log(res)
       });
     }
       

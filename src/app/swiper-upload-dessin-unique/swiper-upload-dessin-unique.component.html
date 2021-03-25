@@ -3,7 +3,18 @@
 
 
     <div class="swiper-container456" id="target1">
-        <app-uploader-dessin-unique [upload]=upload [drawing_id]=drawing_id [title]=name (uploaded)="uploaded_image( $event );" (sendValidated)="sendValidated($event)" (image)="get_image( $event );"></app-uploader-dessin-unique>
+        <app-uploader-dessin-unique 
+        [upload]=upload 
+        [author_name]=author_name 
+        [profile_picture]=profile_picture
+        [primary_description]=primary_description 
+        [pseudo]=pseudo
+        [user_id]=user_id
+        [drawing_id]=drawing_id 
+        [title]=name 
+        (uploaded)="uploaded_image( $event );" 
+        (sendValidated)="sendValidated($event)" 
+        (image)="get_image( $event );"></app-uploader-dessin-unique>
     </div>
 
     <div class="form-container" *ngIf="image_uploaded" style="margin-top:40px;" id="target2">

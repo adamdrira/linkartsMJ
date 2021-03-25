@@ -1,18 +1,15 @@
 import { Component, OnInit,ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import {Writing_Upload_Service} from  '../services/writing.service';
-import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import {  SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { NavbarService } from '../services/navbar.service';
 
 
-declare var Swiper:any;
-declare var $:any;
-const URL ='http://localhost:4600/routes/upload_writing';
+const URL ='https://www.linkarts.fr/routes/upload_writing';
 
 @Component({
   selector: 'app-uploader-writting',
@@ -39,11 +36,9 @@ export class UploaderWrittingComponent implements OnInit {
   can_operate=false; // afficher les boutons pour valider ou recommencer
 
   constructor (
-    private Subscribing_service:Subscribing_service,
     private Writing_Upload_Service:Writing_Upload_Service,
     private cd:ChangeDetectorRef,
     public dialog: MatDialog,
-    private sanitizer:DomSanitizer,
     private navbar: NavbarService,
     
     ){
@@ -77,9 +72,6 @@ export class UploaderWrittingComponent implements OnInit {
     this.Writing_Upload_Service.send_confirmation_for_addwriting(false,0); 
    
     this.uploader.onAfterAddingFile = async (file) => {
-
-
-      console.log( this.uploader);
       var re = /(?:\.([^.]+))?$/;
       let size = file._file.size/1024/1024;
 
@@ -115,7 +107,6 @@ export class UploaderWrittingComponent implements OnInit {
     };
 
      this.uploader.onCompleteItem = (file) => {
-       console.log("item complete")
       this.confirmation = true; 
       this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation,this.total_pages);
       this.Writing_Upload_Service.get_writing_name().subscribe();
@@ -169,7 +160,6 @@ export class UploaderWrittingComponent implements OnInit {
 
   validate_pdf(){
     this.uploader.queue[0].upload();
-    console.log(this.total_pages)
   }
 
 }

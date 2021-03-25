@@ -92,8 +92,7 @@ export class AddWritingComponent implements OnInit {
   @Input('profile_picture') profile_picture:SafeUrl;
   @Input('type_of_account') type_of_account:string;
   @Input('pseudo') pseudo:string;
-  visitor_name:string;
-  user_id:number;
+  @Input('user_id') user_id:number;
   writing_id:number;
 
   @Output() cancelled = new EventEmitter<any>();
@@ -257,11 +256,11 @@ export class AddWritingComponent implements OnInit {
           this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).subscribe(s=>{
             this.Writing_Upload_Service.validate_writing(this.writing_id).subscribe(r=>{
               this.Subscribing_service.validate_content("writing","unknown",r[0].writing_id,0).subscribe(l=>{
-                this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'writing',this.title,'unknown',v[0].writing_id,0,"add",false,0).subscribe(l=>{
+                this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'writing',this.title,'unknown',v[0].writing_id,0,"add",false,0).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"add_publication",
-                    id_user_name:this.visitor_name,
+                    id_user_name:this.pseudo,
                     id_user:this.user_id, 
                     publication_category:'writing',
                     publication_name:this.title,

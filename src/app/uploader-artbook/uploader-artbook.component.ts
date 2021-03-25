@@ -11,9 +11,8 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { Subscribing_service } from '../services/subscribing.service';
 import { NavbarService } from '../services/navbar.service';
 
-const url = 'http://localhost:4600/routes/upload_drawing_artbook/';
+const url = 'https://www.linkarts.fr/routes/upload_drawing_artbook/';
 
-declare var $:any;
 @Component({
   selector: 'app-uploader-artbook',
   templateUrl: './uploader-artbook.component.html',
@@ -70,9 +69,11 @@ export class UploaderArtbookComponent implements OnInit {
   _page: number;
   _upload:boolean;
 
-  user_id:number;
-  visitor_name:string;
-  pseudo:string;
+  @Input('author_name') author_name:string;
+  @Input('pseudo') pseudo:string;
+  @Input('primary_description') primary_description:string;
+  @Input('profile_picture') profile_picture:SafeUrl;
+  @Input('user_id') user_id:number;
 
 
    //on récupère le titre de la bd et le numéro de la page où se trouve l'uplaoder
@@ -80,10 +81,7 @@ export class UploaderArtbookComponent implements OnInit {
    @Input() set page(page: number) {
      this._page=page;
      let URL = url + page.toString() + '/' + this.drawing_id;
-     console.log('suivant' + URL)
      this.uploader.setOptions({ url: URL});
-
-     
     if( page==0 ) {
       this.sendPicture.emit( {page: page, image: this.SafeURL, changePage: true, removing: false} );
     }
@@ -122,14 +120,6 @@ export class UploaderArtbookComponent implements OnInit {
 
   show_icon=false;
   ngOnInit() {
-    console.log(this.drawing_id)
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.user_id = r[0].id;
-      this.pseudo = r[0].nickname;
-      this.visitor_name=r[0].nickname;
-    })
-    
-
     this.uploader.onAfterAddingFile = async (file) => {
       
       var re = /(?:\.([^.]+))?$/;
@@ -138,7 +128,6 @@ export class UploaderArtbookComponent implements OnInit {
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
@@ -171,11 +160,11 @@ export class UploaderArtbookComponent implements OnInit {
       if( (this._page + 1) == this.total_pages ) {
         this.Drawings_Artbook_Service.validate_drawing(this.total_pages,this.drawing_id).subscribe(r=>{
           this.Subscribing_service.validate_content("drawing","artbook",this.drawing_id,0).subscribe(l=>{
-            this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
+            this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"add_publication",
-                id_user_name:this.visitor_name,
+                id_user_name:this.pseudo,
                 id_user:this.user_id, 
                 publication_category:'drawing',
                 publication_name:this.title,
@@ -234,9 +223,7 @@ export class UploaderArtbookComponent implements OnInit {
   //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
   remove_afterupload(item){
    
-    //On supprime le fichier en base de donnée
     this.Drawings_Artbook_Service.remove_page_from_sql(this._page,this.drawing_id).subscribe(information=>{
-      console.log(information);
       const filename= information[0].drawing_name;
       this.Drawings_Artbook_Service.remove_page_from_folder(filename).subscribe(r=>{
         this.sendPicture.emit( {page: this._page, changePage: false, removing: true } );

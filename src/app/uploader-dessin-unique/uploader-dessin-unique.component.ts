@@ -11,8 +11,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { Subscribing_service } from '../services/subscribing.service';
 import { NavbarService } from '../services/navbar.service';
 
-const url = 'http://localhost:4600/routes/upload_drawing_onepage';
-declare var $:any;
+const url = 'https://www.linkarts.fr/routes/upload_drawing_onepage';
 @Component({
   selector: 'app-uploader-dessin-unique',
   templateUrl: './uploader-dessin-unique.component.html',
@@ -60,12 +59,13 @@ export class UploaderDessinUniqueComponent implements OnInit {
   afficherpreview :boolean = false;
   afficheruploader:boolean = true;
 
-  user_id:number;
-  visitor_name:string;
-  pseudo:string;
+  u
   @Input('drawing_id') drawing_id:number;
-   
-
+  @Input('author_name') author_name:string;
+  @Input('pseudo') pseudo:string;
+  @Input('primary_description') primary_description:string;
+  @Input('profile_picture') profile_picture:SafeUrl;
+  @Input('user_id') user_id:number;
    //Modification 04 avril
    @Output() uploaded = new EventEmitter<boolean>();
    @Output() image = new EventEmitter<SafeUrl>();
@@ -106,15 +106,9 @@ export class UploaderDessinUniqueComponent implements OnInit {
   image_to_show:any;
   show_icon=false;
   ngOnInit() {
-    console.log(this.drawing_id)
     let URL = url + '/' + this.drawing_id;
-    console.log(URL)
      this.uploader.setOptions({ url: URL});
-      this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-        this.user_id = r[0].id;
-        this.pseudo = r[0].nickname;
-        this.visitor_name=r[0].nickname;
-      })
+      
     
       this.uploader.onAfterAddingFile = async (file) => {
           
@@ -125,7 +119,6 @@ export class UploaderDessinUniqueComponent implements OnInit {
         let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-          console.log(re.exec(file._file.name)[1])
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
@@ -161,12 +154,11 @@ export class UploaderDessinUniqueComponent implements OnInit {
       this.uploader.onCompleteItem = (file) => {
         this.Drawings_Onepage_Service.validate_drawing(this.drawing_id).subscribe(r=>{
         this.Subscribing_service.validate_content("drawing","one-shot",this.drawing_id,0).subscribe(l=>{
-          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
-            console.log(l[0])
+          this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"add_publication",
-              id_user_name:this.visitor_name,
+              id_user_name:this.pseudo,
               id_user:this.user_id, 
               publication_category:'drawing',
               publication_name:this.title,
@@ -215,9 +207,7 @@ remove_beforeupload(item:FileItem){
 
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
 remove_afterupload(item){
-    //On supprime le fichier en base de donnée
     this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(information=>{
-      console.log(information);
       const filename= information[0].drawing_name;
       this.Drawings_Onepage_Service.remove_drawing_from_folder(filename).subscribe(r=>{
         item.remove();
@@ -230,7 +220,6 @@ remove_afterupload(item){
 }
 
 upload_image(){
-  console.log("fonction enclenchée")
   this.uploader.queue[0].upload();
 }
 

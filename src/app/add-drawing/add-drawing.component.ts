@@ -81,6 +81,7 @@ export class AddDrawingComponent implements OnInit {
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
+  @Input('user_id') user_id:number;
   @Input('profile_picture') profile_picture:SafeUrl;
   @Input('type_of_account') type_of_account:string;
   @Output() started = new EventEmitter<any>();

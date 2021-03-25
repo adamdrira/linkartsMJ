@@ -1,16 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
-import { Subscribing_service } from '../services/subscribing.service';
 import { BdSerieService} from '../services/comics_serie.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NavbarService } from '../services/navbar.service';
 
-const url = 'http://localhost:4600/routes/upload_page_bd_serie/';
+const url = 'https://www.linkarts.fr/routes/upload_page_bd_serie/';
 
-declare var $:any;
 @Component({
   selector: 'app-uploader-bd-serie',
   templateUrl: './uploader-bd-serie.component.html',
@@ -20,10 +18,8 @@ declare var $:any;
 export class UploaderBdSerieComponent implements OnInit{
 
   constructor (
-    private Subscribing_service:Subscribing_service,
     private sanitizer:DomSanitizer,  
     private BdSerieService: BdSerieService, 
-    private cd:ChangeDetectorRef,
     public dialog: MatDialog,
     private navbar: NavbarService,
     ){
@@ -73,10 +69,8 @@ export class UploaderBdSerieComponent implements OnInit{
 
   @Input() set chapter(chapter: number) {
     this._chapter=chapter;
-    console.log(this.bd_id)
     let bd_id = (this.bd_id).toString();
     let URL = url + this.page.toString() + '/' + chapter + '/' + bd_id;
-    console.log('suivant : ' + URL)
     this.uploader.setOptions({ url: URL});
 
   }
@@ -124,8 +118,6 @@ export class UploaderBdSerieComponent implements OnInit{
   image_to_show:any;
   show_icon=false;
   ngOnInit() {
-
-    console.log(this.bd_id);
     this.uploader.onAfterAddingFile = async (file) => {
 
       
@@ -136,7 +128,6 @@ export class UploaderBdSerieComponent implements OnInit{
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
@@ -164,9 +155,6 @@ export class UploaderBdSerieComponent implements OnInit{
     this.uploader.onCompleteItem = (file) => {
 
       if( (this._page + 1) == this.total_pages ) {
-        console.log("validate bd chapter ")
-        console.log(this.total_pages)
-        console.log(this.chapter)
         this.BdSerieService.validate_bd_chapter(this.bd_id,this.total_pages, this.chapter).subscribe(r=>{
           this.sendValidated.emit(true);
         })
@@ -194,9 +182,7 @@ remove_beforeupload(item:FileItem){
 
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
 remove_afterupload(item){
-    //On supprime le fichier en base de donnée
     this.BdSerieService.remove_page_from_sql(this.bd_id,this.page, this.chapter).subscribe(information=>{
-      console.log(information);
       const filename= information[0].file_name;
       this.BdSerieService.remove_page_from_folder(filename).subscribe(r=>{
         item.remove();

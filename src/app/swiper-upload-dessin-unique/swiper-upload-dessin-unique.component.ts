@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { NavbarService } from '../services/navbar.service';
 
 
-declare var $: any;
 declare var Cropper;
 
 @Component({
@@ -39,7 +38,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   constructor(
     private Drawings_CoverService:Drawings_CoverService,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
-    private rd:Renderer2,
     public dialog: MatDialog,
     private cd:ChangeDetectorRef,
     private router:Router,
@@ -59,11 +57,11 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   thumbnail_height:string;
 
   @Input('drawing_id') drawing_id:number;
+  @Input('profile_picture') profile_picture:SafeUrl;
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
-  @Input('profile_picture') profile_picture:SafeUrl;
-  
+  @Input('user_id') user_id:string;
   @Input() name: string;
   @Input() description: string;
   @Input() format: string;
@@ -262,7 +260,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     if(!this.block_cancel){
       this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(res=>{
         this.Drawings_CoverService.remove_cover_from_folder().subscribe()
-        console.log(res)
       }); 
     }
      

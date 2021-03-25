@@ -4,7 +4,6 @@ import { FileUploader, FileItem } from 'ng2-file-upload';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
 import { BdOneShotService} from '../services/comics_one_shot.service';
-import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 
 import { Subscribing_service } from '../services/subscribing.service';
@@ -14,9 +13,7 @@ import {NotificationsService}from '../services/notifications.service';
 import {ChatService} from '../services/chat.service';
 import { NavbarService } from '../services/navbar.service';
 
-const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
-
-declare var $:any;
+const url = 'https://www.linkarts.fr/routes/upload_page_bd_oneshot/';
 
 @Component({
   selector: 'app-uploader_bd_oneshot',
@@ -32,7 +29,6 @@ export class Uploader_bd_oneshot implements OnInit{
     private NotificationsService:NotificationsService,
      private sanitizer:DomSanitizer,  
      private bdOneShotService: BdOneShotService, 
-     private router: Router,
      private navbar: NavbarService,
      private Profile_Edition_Service:Profile_Edition_Service,
      public dialog: MatDialog,
@@ -72,7 +68,6 @@ export class Uploader_bd_oneshot implements OnInit{
    @Input() set page(page: number) {
      this._page=page;
      let URL = url + page.toString() + '/' + this.bd_id;
-     console.log('suivant' + URL)
      this.uploader.setOptions({ url: URL});
    }
 
@@ -116,8 +111,6 @@ get upload(): boolean {
 
   show_icon=false;
   ngOnInit() {
-
-    console.log(this.bd_id)
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
@@ -132,7 +125,6 @@ get upload(): boolean {
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
@@ -209,7 +201,6 @@ remove_beforeupload(item:FileItem){
 remove_afterupload(item){
     //On supprime le fichier en base de donnée
     this.bdOneShotService.remove_page_from_sql(this.bd_id,this.page).subscribe(information=>{
-      console.log(information);
       const filename= information[0].file_name;
       this.bdOneShotService.remove_page_from_folder(filename).subscribe()
     });
