@@ -8,7 +8,6 @@ const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 var nodemailer = require('nodemailer');
 var list_covers_by_id={};
-
 module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
     function get_current_user(token){
@@ -1554,27 +1553,77 @@ router.post('/send_email_for_ad_answer', function (req, res) {
           }
         });
   
-        let mail_to_send='';
-        let name = user.firstname + ' ' + user.lastname;
-        if(user.gender=="Homme"){
-          mail_to_send=`<p>Cher ${name},</p>`
-        }
-        else if(user.gender=="Femme"){
-          mail_to_send=`<p>Chère ${name},</p>`
-        }
-        else if(user.gender=="Groupe"){
-          mail_to_send=`<p>Chers membres du groupe ${name},</p>`
-        }
-
-        mail_to_send+=`<p>${user_name} a répondu à votre annonce <b> ${title}</b>.</p>
-            <p><a href="https://www.linkarts.fr/ad-page/${title}/${ad_id}"> Cliquer ici</a> pour consulter l'annonce et les réponses la concernant.</p>`
-        mail_to_send+=`<p> Très sincèrement, l'équipe de LinkArts.</p>`
+        let mail_to_send='<div style="margin: 25px;background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+          mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+            mail_to_send+=`
+            <table style="width:100%;margin-bottom:20px">
+                <tr id="tr1">
+                    <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
+                        <img src="../../src/assets/img/Logo-LA3.png" style="margin:auto auto;height:36px;width:36px;" />
+                    </td>
+                </tr>
 
 
+                <tr id="tr2" >
+                    <td  align="center" style="background: rgb(2, 18, 54)">
+                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                        <div style="height:1px;width:20px;background:white;"></div>
+                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Réponse à une annonce</p>
+                    </td>
+                </tr>
+            </table>`;
+
+            let name = user.firstname + ' ' + user.lastname;
+            let start=''
+            if(user.gender=="Homme"){
+              start=`Cher ${name},`
+            }
+            else if(user.gender=="Femme"){
+              start=`Chère ${name},</p>`
+            }
+            else if(user.gender=="Groupe"){
+              start=`Chers membres du groupe ${name},`
+            }
+
+            mail_to_send+=`
+            <table style="width:88%;margin:25px auto;">
+              <tr id="tr3">
+
+                  <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${user_name} a répondu à votre annonce : <b> ${title}</b>.</p>
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Pour pouvoir vous connecter, veuillez confirmer votre inscription :</p>
+
+                      <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                          <a href="https://www.linkarts.fr/ad-page/${title}/${ad_id}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                              Consulter mon annonce
+                          </a>
+                      </div>
+
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+                      <img src="../../src/assets/img/logo_long_1.png" style="height: 25px;float: left;" />
+                  </td>
+
+              </tr>
+            </table>`
+
+            mail_to_send+=`
+            <table style="width:88%;margin:25px auto;">
+                <tr id="tr4">
+                    <td align="center">
+                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                    </td>
+
+                </tr>
+            </table>`
+
+        mail_to_send+='</div>'
+        mail_to_send+='</div>'
         var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', // sender address
-            to: user.email, // my mail
-            //cc:"adam.drira@etu.emse.fr",
+            //to: user.email, // my mail
+            to: "appaloosa-adam@hotmail.fr",
             subject: `Réponse à une annonce`, // Subject line
             //text: 'plain text', // plain text body
             html:  mail_to_send, // html body
