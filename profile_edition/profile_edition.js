@@ -258,6 +258,59 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
 
 });
 
+router.get('/retrieve_profile_picture_by_pseudo/:pseudo', function (req, res) {
+
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
+
+
+const pseudo = req.params.pseudo;
+
+users.findOne({
+  where: {
+    nickname: pseudo,
+  }
+})
+.catch(err => {
+  
+  res.status(500).json({msg: "error", details: err});		
+}).then(User =>  {
+  if(User && User.profile_pic_file_name){
+    let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
+    fs.readFile( path.join(process.cwd(),filename), function(e,data){
+      if(e){
+        filename = "./data_and_routes/not-found-image.jpg";
+        fs.readFile( path.join(process.cwd(),filename), function(e,data){
+          res.status(200).send(data);
+        } );
+      }
+      else{
+        res.status(200).send(data);
+      }
+      
+    } );
+  }
+  else{
+    let filename = "./data_and_routes/not-found-image.jpg";
+    fs.readFile( path.join(process.cwd(),filename), function(e,data){
+      res.status(200).send(data);
+    } );
+  }
+  
+}); 
+
+
+
+});
+
 
 
 router.post('/retrieve_my_profile_picture', function (req, res) {
@@ -326,7 +379,7 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
         }
       }
 
-    const user_id = req.params.user_id;
+    const user_id = parseInt(req.params.user_id);
 
     users.findOne({
       where: {
@@ -360,6 +413,58 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
       }
      
     }); 
+
+
+});
+
+
+router.get('/retrieve_cover_picture_by_pseudo/:pseudo', function (req, res) {
+
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
+
+const pseudo = req.params.pseudo;
+
+users.findOne({
+  where: {
+    nickname: pseudo,
+  }
+})
+.catch(err => {
+  
+  res.status(500).json({msg: "error", details: err});		
+}).then(User =>  {
+  if(User && User.cover_pic_file_name  ){
+    let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+    fs.readFile( path.join(process.cwd(),filename), function(e,data){
+      if(e){
+        filename = "./data_and_routes/not-found-image.jpg";
+        fs.readFile( path.join(process.cwd(),filename), function(e,data){
+          res.status(200).send(data);
+        } );
+      }
+      else{
+        res.status(200).send(data);
+      }
+      
+    } );
+  }
+  else{
+    let  filename = "./data_and_routes/not-found-image.jpg";
+    fs.readFile( path.join(process.cwd(),filename), function(e,data){
+      res.status(200).send(data);
+    } );
+  }
+ 
+}); 
 
 
 });
@@ -713,7 +818,7 @@ router.get('/retrieve_profile_data_links/:id_user', function (req, res) {
 });
 
 router.get('/get_user_id_by_pseudo/:pseudo', function (req, res) {
-
+    console.log("get_user_id_by_pseudo")
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
