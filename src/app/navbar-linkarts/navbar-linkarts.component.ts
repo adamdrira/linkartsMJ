@@ -1341,7 +1341,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   //WORDS
   open_research_style_and_tags(i: number) {
-    return "/main-research/style-and-tag/1/" + this.list_of_real_categories[this.indice_title_selected] + "/" + this.first_filters[this.indice_title_selected][i] + "/all";
+    return "/main-research/styles/tags/1/" + this.list_of_real_categories[this.indice_title_selected] + "/" + this.first_filters[this.indice_title_selected][i] + "/all";
     
     
   }
@@ -1589,8 +1589,11 @@ export class NavbarLinkartsComponent implements OnInit {
     this.close_notifications();
   }
   get_writing(notif:any) {
-    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    return "/artwork-writing/" + title_url + "/" + notif.publication_id;
+    if(notif.publication_name){
+      let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+      return "/artwork-writing/" + title_url + "/" + notif.publication_id;
+    }
+ 
   }
   open_ad(notif:any) {
     this.not_using_chat();

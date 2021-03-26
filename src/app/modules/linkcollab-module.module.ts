@@ -63,6 +63,7 @@ import { ErrorInterceptor } from '../helpers/error.interceptor';
     MatNativeDateModule,
     MatChipsModule,
     MatAutocompleteModule,
+    MatTooltipModule,
    
   ],
   providers: [

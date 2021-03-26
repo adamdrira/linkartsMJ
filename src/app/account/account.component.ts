@@ -30,8 +30,6 @@ import { Ads_service } from '../../app/services/ads.service'
 import { trigger, transition, style, animate } from '@angular/animations';
 import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { merge, fromEvent } from 'rxjs';
-
 declare var $: any;
 
 
@@ -220,6 +218,7 @@ export class AccountComponent implements OnInit {
   mode_visiteur_added:boolean=false;
   pseudo:string;
   user_id:number=0;
+  user_data:any;
   gender:string;
   author:any;
   author_name:string;
@@ -350,15 +349,28 @@ export class AccountComponent implements OnInit {
     window.scroll(0,0);
     
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
-    this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    /*this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     if(!(this.user_id && this.user_id>0) || !( this.pseudo && this.pseudo.length>0)){
+      this.page_not_found=true;
+      return
+    }*/
+
+   
+    if( !( this.pseudo && this.pseudo.length>0)){
       this.page_not_found=true;
       return
     }
 
+    this.route.data.subscribe(resp => {
+      let r=resp.user_data_by_pseudo;
+      this.user_id =r[0].id;
+      this.user_data=r[0];
+    })
+
 
 
     this.Profile_Edition_Service.retrieve_profile_data_links(this.user_id).subscribe(l=>{
+      console.log("links route")
       if(l[0].length>0){
         for(let i=0;i<l[0].length;i++){
           this.links_titles[i]=l[0][i].link_title;
@@ -375,11 +387,20 @@ export class AccountComponent implements OnInit {
     })
 
     this.route.data.subscribe(resp => {
-      let r=resp.user_pp;
+      console.log("second route")
+      let r=resp.user_pp_pseudo;
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
     })
+
+    this.route.data.subscribe(resp => {
+      let r=resp.user_cp_pseudo;
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.cover_picture = SafeURL;
+    })
+   
     
 
     this.Story_service.check_stories_for_account(this.user_id).subscribe(r => {
@@ -395,20 +416,18 @@ export class AccountComponent implements OnInit {
       this.story_retrieved=true;
     })
 
-    this.route.data.subscribe(resp => {
-      let r=resp.user_cp;
-      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.cover_picture = SafeURL;
-    })
-   
+    
 
     this.route.data.subscribe( resp => {
-      let s = resp.user_data_visitor;
-      let user=s[0].user;
-      this.visitor_id=s[0].visitor.id
-      this.visitor_name=s[0].visitor.nickname;
-      this.type_of_profile=s[0].visitor.status;
+      console.log("third route")
+      let s = resp.user;
+      let user=this.user_data;
+      console.log(user)
+      console.log("visitor")
+      console.log(s[0])
+      this.visitor_id=s[0].id
+      this.visitor_name=s[0].nickname;
+      this.type_of_profile=s[0].status;
       this.type_of_profile_retrieved=true;
       this.cd.detectChanges();
   

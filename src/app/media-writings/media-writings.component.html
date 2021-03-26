@@ -129,6 +129,7 @@
             
                 <ng-container *ngFor="let item of last_consulted_writings; let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
+                    *ngIf="item"
                         [item]=item
                         [width]=width
                         [myScrollContainer]=myScrollContainer2

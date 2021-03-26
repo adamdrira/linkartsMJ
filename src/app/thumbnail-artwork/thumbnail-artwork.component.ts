@@ -771,10 +771,10 @@ export class ThumbnailArtworkComponent implements OnInit {
     return "/account/"+this.author_pseudo+"/"+this.item.authorid;
   };
   get_link() {
-    return "/main-research/style-and-tag/1/Comic/"+this.style+"/all";
+    return "/main-research/styles/tags/1/Comic/"+this.style+"/all";
   };
   get_link_tags(s) {
-    return "/main-research/style-and-tag/1/Comic/"+this.style+"/" + s ;
+    return "/main-research/styles/tags/1/Comic/"+this.style+"/" + s ;
   };
 
   see_more_clicked = false;

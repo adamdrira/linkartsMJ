@@ -60,25 +60,6 @@ export class MediaWritingsComponent implements OnInit {
   }
 
   current_number_of_writings_to_show:number;
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    //var width = $('.media-container').width();
-    var n = Math.floor(this.width/250);
-    if(n>3){
-      this.number_of_writings_to_show=(n<6)?n:6;
-    }
-    else{
-      this.number_of_writings_to_show=6;
-    }
-
-    if(this.current_number_of_writings_to_show!= this.number_of_writings_to_show){
-      this.get_history_recommendation();
-    }
-    this.current_number_of_writings_to_show!= this.number_of_writings_to_show;
-    this.cd.detectChanges()
-  }
-  
-
 
   @Output() send_number_of_thumbnails2 = new EventEmitter<object>();
   @Output() list_of_writings_retrieved_emitter = new EventEmitter<object>();
@@ -120,7 +101,6 @@ export class MediaWritingsComponent implements OnInit {
 
       if(!this.scroll){
         if(this.myScrollContainer){
-          console.log("in scroll")
           this.scroll = merge(
             fromEvent(window, 'scroll'),
             fromEvent(this.myScrollContainer.nativeElement, 'scroll')
@@ -140,6 +120,7 @@ export class MediaWritingsComponent implements OnInit {
   
   get_history_recommendation(){
     this.last_consulted_writings_retrieved=false;
+    this.cd.detectChanges();
     this.number_of_skeletons_per_line=this.number_of_writings_to_show;
     this.can_show_more_history=true;
     this.last_consulted_writings=[];
@@ -208,7 +189,7 @@ export class MediaWritingsComponent implements OnInit {
 
 
   open_research(item:any) {
-    return "/main-research/style-and-tag/1/Writing/"+item+"/all";
+    return "/main-research/styles/tags/1/Writing/"+item+"/all";
   }
 
 

@@ -976,17 +976,17 @@ export class ArtworkComicComponent implements OnInit {
     return "/account/"+this.pseudo+"/"+this.authorid;
   };
   get_link() {
-    return "/main-research/style-and-tag/1/Comic/" + this.style + "/all";
+    return "/main-research/styles/tags/1/Comic/" + this.style + "/all";
   };
   get_style_link(i: number) {
     if( i == 0 ) {
-      return "/main-research/style-and-tag/1/Comic/" + this.style + "/" + this.firsttag;
+      return "/main-research/styles/tags/1/Comic/" + this.style + "/" + this.firsttag;
     }
     if( i == 1 ) {
-      return "/main-research/style-and-tag/1/Comic/" + this.style + "/" + this.secondtag;
+      return "/main-research/styles/tags/1/Comic/" + this.style + "/" + this.secondtag;
     }
     if( i == 2 ) {
-      return "/main-research/style-and-tag/1/Comic/" + this.style + "/" + this.thirdtag;
+      return "/main-research/styles/tags/1/Comic/" + this.style + "/" + this.thirdtag;
     }
   }
 
@@ -1075,7 +1075,6 @@ export class ArtworkComicComponent implements OnInit {
 
     this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
       speed: 500,
-      effect:'cube',
       spaceBetween: 100,
       simulateTouch: true,
       initialSlide:(this.style=="Manga")?this.pagesnumber-1:0,

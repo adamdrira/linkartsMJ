@@ -881,17 +881,17 @@ export class ArtworkDrawingComponent implements OnInit {
     return "/account/"+this.pseudo+"/"+this.authorid;
   };
   get_link() {
-    return "/main-research/style-and-tag/1/Drawing/" + this.style + "/all";
+    return "/main-research/styles/tags/1/Drawing/" + this.style + "/all";
   };
   get_style_link(i: number) {
     if( i == 0 ) {
-      return "/main-research/style-and-tag/1/Drawing/" + this.style + "/" + this.firsttag;
+      return "/main-research/styles/tags/1/Drawing/" + this.style + "/" + this.firsttag;
     }
     if( i == 1 ) {
-      return "/main-research/style-and-tag/1/Drawing/" + this.style + "/" + this.secondtag;
+      return "/main-research/styles/tags/1/Drawing/" + this.style + "/" + this.secondtag;
     }
     if( i == 2 ) {
-      return "/main-research/style-and-tag/1/Drawing/" + this.style + "/" + this.thirdtag;
+      return "/main-research/styles/tags/1/Drawing/" + this.style + "/" + this.thirdtag;
     }
   }
 
@@ -989,7 +989,6 @@ export class ArtworkDrawingComponent implements OnInit {
     this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
       speed: 500,
       spaceBetween: 100,
-      effect:'cube',
       simulateTouch: true,
       scrollbar: {
         el: '.swiper-scrollbar',

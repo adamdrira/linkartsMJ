@@ -27,6 +27,8 @@ import { UserComicsSerieResolverService } from './services/resolver-user-comics-
 import { UserDrawingsOsResolverService } from './services/resolver-user-drawings-os.service';
 import { UserSubscribersResolverService } from './services/resolver-get-subscribers.service';
 import { UserSubscribingsResolverService } from './services/resolver-get-subscribings.service';
+import { UserDataPseudoResolverService } from './services/resolver-data-by-pseudo.service';
+import { UserPseudoProfilePicResolverService } from './services/resolver-user-pp-pseudo.service';
 /*import { UserLinksResolverService } from './services/resolver-user-links.service';
 import { UserCheckStoryResolverService } from './services/resolver-check-stories-account.service';
 import { UserCheckSubResolverService } from './services/resolver-check-subscribed.service';
@@ -38,11 +40,11 @@ import { UserInfosPrivacyResolverService } from './services/resolver-user-infos-
 import { UserEmphasizedResolverService } from './services/resolver-emphasized-content.service';*/
 
 let accountResolvers={ 
+  user_data_by_pseudo:UserDataPseudoResolverService,
   user: UserResolverService,
-  user_pp:UserIdProfilePicResolverService,
-  user_cp:UserIdCoverPicResolverService, 
-  user_data:UserIdDataResolverService,
-  user_data_visitor: UserIdDataVisitorResolverService,
+  user_pp_pseudo:UserPseudoProfilePicResolverService,
+  user_cp_pseudo:UserPseudoProfilePicResolverService, 
+
 
   //emphasized: UserEmphasizedResolverService,
   subscribers:UserSubscribersResolverService,
@@ -77,23 +79,23 @@ const routes: Routes = [
 
 
   {path:'account/:pseudo/:id', component:AccountComponent , data: {section: 0,preload: true}, resolve: accountResolvers },
-  {path:':pseudo/:id/artworks', component:AccountComponent, data: {section: 1}, resolve: accountResolvers},
-  {path:':pseudo/:id/artworks/comics', component:AccountComponent, data: {section: 1, category:0}, resolve: accountResolvers},
-  {path:':pseudo/:id/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}, resolve: accountResolvers},
-  {path:':pseudo/:id/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}, resolve: accountResolvers},
-  {path:':pseudo/:id/ads', component:AccountComponent,  data: {section: 2}, resolve: accountResolvers},
-  {path:':pseudo/:id/about', component:AccountComponent,  data: {section: 5}, resolve: accountResolvers},
-  {path:':pseudo/:id/archives', component:AccountComponent,  data: {section: 6}, resolve: accountResolvers},
-  {path:':pseudo/:id/my_account', component:AccountComponent,  data: {section: 7}, resolve: accountResolvers},
-  {path:':pseudo/:id/my_account/:password', component:AccountComponent,  data: {section: 8}, resolve: accountResolvers},
-  {path:'for_chat/:pseudo/:id/:pseudo_friend/:id_friend', component:AccountComponent,  data: {section: 9}, resolve: accountResolvers},
+  {path:'account/:pseudo/:id/artworks', component:AccountComponent, data: {section: 1}, resolve: accountResolvers},
+  {path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, data: {section: 1, category:0}, resolve: accountResolvers},
+  {path:'account/:pseudo/:id/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}, resolve: accountResolvers},
+  {path:'account/:pseudo/:id/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}, resolve: accountResolvers},
+  {path:'account/:pseudo/:id/ads', component:AccountComponent,  data: {section: 2}, resolve: accountResolvers},
+  {path:'account/:pseudo/:id/about', component:AccountComponent,  data: {section: 5}, resolve: accountResolvers},
+  {path:'account/:pseudo/:id/archives', component:AccountComponent,  data: {section: 6}, resolve: accountResolvers},
+  {path:'account/:pseudo/:id/my_account', component:AccountComponent,  data: {section: 7}, resolve: accountResolvers},
+  {path:'account/:pseudo/:id/my_account/:password', component:AccountComponent,  data: {section: 8}, resolve: accountResolvers},
+  {path:'account/for_chat/:pseudo/:id/:pseudo_friend/:id_friend', component:AccountComponent,  data: {section: 9}, resolve: accountResolvers},
 
   
   
   {path:'add-artwork', loadChildren: () => import('./modules/add-artwork-module.module').then(mod => mod.AddArtworkModuleModule) ,  canActivate: [AuthGuard], data: {section: -1,preload: true}},
   {path:'chat', loadChildren: () => import('./modules/chat-module.module').then(mod => mod.ChatModuleModule) ,  canActivate: [AuthGuard], data: {preload: true}},
   {path:'linkcollab', loadChildren: () => import('./modules/linkcollab-module.module').then(mod => mod.LinkcollabModuleModule), resolve: { user: UserResolverService }},
-  {path:'main-research/:page/:text/:category', loadChildren: () => import('./modules/main-search-module.module').then(mod => mod.MainSearchModuleModule), data: {section: 0}, resolve: { user: UserResolverService }},
+  {path:'main-research', loadChildren: () => import('./modules/main-search-module.module').then(mod => mod.MainSearchModuleModule), data: {section: 0}, resolve: { user: UserResolverService }},
   {path:'services/:article_number', loadChildren: () => import('./modules/terms-module.module').then(mod => mod.TermsModuleModule)},
 
   //Catégories Linkarts

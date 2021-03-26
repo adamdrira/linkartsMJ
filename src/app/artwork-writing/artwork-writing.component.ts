@@ -687,18 +687,18 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   get_link() {
-    return "/main-research/style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/all";
+    return "/main-research/styles/tags/1/Writing/" + this.get_french_style(this.style) + "/all";
   };
 
   get_style_link(i: number) {
     if( i == 0 ) {
-      return "/main-research/style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.firsttag;
+      return "/main-research/styles/tags/1/Writing/" + this.get_french_style(this.style) + "/" + this.firsttag;
     }
     if( i == 1 ) {
-      return "/main-research/style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.secondtag;
+      return "/main-research/styles/tags/1/Writing/" + this.get_french_style(this.style) + "/" + this.secondtag;
     }
     if( i == 2 ) {
-      return "/main-research/style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.thirdtag;
+      return "/main-research/styles/tags/1/Writing/" + this.get_french_style(this.style) + "/" + this.thirdtag;
     }
   }
 

@@ -47,7 +47,8 @@ export class MediaComicsComponent implements OnInit {
         else{
           this.number_of_comics_to_show=6;
         }
-        if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
+        if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show && this.last_consulted_comics_retrieved){
+          console.log("change hist")
           this.get_history_recommendation();
         }
         this.current_number_of_comics_to_show=this.number_of_comics_to_show;
@@ -58,27 +59,6 @@ export class MediaComicsComponent implements OnInit {
   }
 
   current_number_of_comics_to_show:number;
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    if(this.width>0){
-      var n = Math.floor(this.width/250);
-      if(n>3){
-        this.number_of_comics_to_show=(n<6)?n:6;
-      }
-      else{
-        this.number_of_comics_to_show=6;
-      }
-      if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
-        this.get_history_recommendation();
-      }
-      this.current_number_of_comics_to_show=this.number_of_comics_to_show;
-      this.cd.detectChanges()
-    }
-    
-  }
-
-
-
   cancelled: number;
 
   @Input() sorted_style_list: any[];
@@ -116,6 +96,7 @@ export class MediaComicsComponent implements OnInit {
       this.number_of_comics_to_show=6;
     }
     this.current_number_of_comics_to_show=this.number_of_comics_to_show;
+    console.log("ini")
     this.get_history_recommendation();
       
   }
@@ -125,9 +106,13 @@ export class MediaComicsComponent implements OnInit {
     this.number_of_skeletons_per_line=this.number_of_comics_to_show;
     this.can_show_more_history=true;
     this.last_consulted_comics_retrieved=false;
+    this.cd.detectChanges();
     this.last_consulted_comics=[];
     this.number_of_comics_for_history= this.number_of_comics_to_show;
     this.navbar.get_last_researched_navbar_for_recommendations("Comic",0,this.number_of_comics_for_history).subscribe(m=>{
+      console.log("hist")
+      console.log(m[0])
+      
       if(m[0].length>0){
         let list=m[0];
         let compteur=0;
@@ -197,7 +182,7 @@ export class MediaComicsComponent implements OnInit {
   }
 
   open_research(item:any) {
-    return "/main-research/style-and-tag/1/Comic/"+item+"/all";
+    return "/main-research/styles/tags/1/Comic/"+item+"/all";
   }
 
   offset=0;
@@ -214,6 +199,7 @@ export class MediaComicsComponent implements OnInit {
     this.new_last_consulted_comics=[];
     this.offset+=this.number_of_comics_for_history;
     this.navbar.get_last_researched_navbar_for_recommendations("Comic",this.offset,this.number_of_comics_for_history).subscribe(m=>{
+      
       if(m[0].length>0){
         let list=m[0];
         let compteur=0;

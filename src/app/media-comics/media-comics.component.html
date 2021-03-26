@@ -124,7 +124,7 @@
     
                     <ng-container *ngFor="let item of last_consulted_comics; let i = index">
                         <app-thumbnail-comics class="thumbnail-component-container" 
-                            *ngIf="item.chaptersnumber == null"
+                            *ngIf="item && item.chaptersnumber == null"
                             [item]=item
                             [width]=width
                             [myScrollContainer]=myScrollContainer2
@@ -132,7 +132,7 @@
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-comics>
                         <app-thumbnail-comics  class="thumbnail-component-container" 
-                            *ngIf="item.chaptersnumber >=0"
+                            *ngIf="item && item.chaptersnumber >=0"
                             [item]=item 
                             [width]=width
                             [myScrollContainer]=myScrollContainer2

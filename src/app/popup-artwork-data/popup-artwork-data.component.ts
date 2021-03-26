@@ -65,10 +65,10 @@ export class PopupArtworkDataComponent {
 
   get_link() {
     if(this.category != 'Writing') {
-      return "/main-research/style-and-tag/1/"+this.category+"/" + this.style + "/all";
+      return "/main-research/styles/tags/1/"+this.category+"/" + this.style + "/all";
     }
     else {
-      return "/main-research/style-and-tag/1/"+this.category+"/" + this.get_french_style(this.style) + "/all";
+      return "/main-research/styles/tags/1/"+this.category+"/" + this.get_french_style(this.style) + "/all";
     }
   };
   get_style_link(i: number) {
@@ -83,13 +83,13 @@ export class PopupArtworkDataComponent {
     }
 
     if( i == 0 ) {
-      return "/main-research/style-and-tag/1/"+this.category+"/" + link_style + "/" + this.firsttag;
+      return "/main-research/styles/tags/1/"+this.category+"/" + link_style + "/" + this.firsttag;
     }
     if( i == 1 ) {
-      return "/main-research/style-and-tag/1/"+this.category+"/" + link_style + "/" + this.secondtag;
+      return "/main-research/styles/tags/1/"+this.category+"/" + link_style + "/" + this.secondtag;
     }
     if( i == 2 ) {
-      return "/main-research/style-and-tag/1/"+this.category+"/" + link_style + "/" + this.thirdtag;
+      return "/main-research/styles/tags/1/"+this.category+"/" + link_style + "/" + this.thirdtag;
     }
   }
 

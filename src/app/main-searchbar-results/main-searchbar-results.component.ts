@@ -272,7 +272,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.first_filter=this.first_filters[i][0];
       this.second_filter="all";
       this.first_filter_selected=0;
-      this.location.go(`/main-research/style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
+      this.location.go(`/main-research/styles/tags/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
       this.cd.detectChanges();
       this.initialize_swiper()
       this.swiper.update();
@@ -817,7 +817,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     else{
       this.first_filter_selected=i;
       this.first_filter=this.first_filters[this.indice_title_selected][i];
-      this.location.go(`/main-research/style-and-tag/1/${this.category}/${this.first_filter}/${this.second_filter}`);
+      this.location.go(`/main-research/styles/tags/1/${this.category}/${this.first_filter}/${this.second_filter}`);
       this.manage_sections_sg();
     }
     
@@ -830,12 +830,12 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.second_filter_selected=-1;
       this.second_filter="all";
      
-      this.location.go(`/main-research/style-and-tag/1/${this.category}/${this.first_filter}/all`);
+      this.location.go(`/main-research/styles/tags/1/${this.category}/${this.first_filter}/all`);
     }
     else{
       this.second_filter_selected=i;
       this.second_filter=this.second_filters[this.indice_title_selected][i];
-      this.location.go(`/main-research/style-and-tag/1/${this.category}/${this.first_filter}/${this.second_filter}`);
+      this.location.go(`/main-research/styles/tags/1/${this.category}/${this.first_filter}/${this.second_filter}`);
     }
     this.manage_sections_sg();
   }
@@ -961,10 +961,10 @@ export class MainSearchbarResultsComponent implements OnInit {
 
   get_style_genre_link(filter1,filter2,title_selected) {
     if(filter1 != -1 && filter2 != -1 ) {
-      return "/main-research/style-and-tag/1/"+this.list_of_real_categories[title_selected]+"/"+this.first_filters[title_selected][filter1]+"/"+this.second_filters[title_selected][filter2];
+      return "/main-research/styles/tags/1/"+this.list_of_real_categories[title_selected]+"/"+this.first_filters[title_selected][filter1]+"/"+this.second_filters[title_selected][filter2];
     }
     if(filter1 != -1 && filter2 == -1 ) {
-      return "/main-research/style-and-tag/1/"+this.list_of_real_categories[title_selected]+"/"+this.first_filters[title_selected][filter1]+"/all";
+      return "/main-research/styles/tags/1/"+this.list_of_real_categories[title_selected]+"/"+this.first_filters[title_selected][filter1]+"/all";
     }
     return "/";
   }
@@ -1041,7 +1041,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     }
   }
   if(this.opened_section==2 ){
-    this.location.go(`/main-research/style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
+    this.location.go(`/main-research/styles/tags/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
   }
   else{
     this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);

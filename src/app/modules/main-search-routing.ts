@@ -6,9 +6,9 @@ import { MainSearchbarResultsComponent } from '../main-searchbar-results/main-se
 import { UserResolverService } from '../services/resolver-current-user';
 
 const routes: Routes = [
-    {path:'', component:MainSearchbarResultsComponent, data: {section: 0}, resolve: { user: UserResolverService }},
+    {path:':page/:text/:category', component:MainSearchbarResultsComponent, data: {section: 0}, resolve: { user: UserResolverService }},
     {path:':page/:text/:category/:first_filter/:second_filter', component:MainSearchbarResultsComponent, data: {section: 1}, resolve: { user: UserResolverService }},
-    {path:'style-and-tag/:page/:category/:first_filter/:second_filter', component:MainSearchbarResultsComponent, data: {section: 2}, resolve: { user: UserResolverService }},
+    {path:'styles/tags/:page/:category/:first_filter/:second_filter', component:MainSearchbarResultsComponent, data: {section: 2}, resolve: { user: UserResolverService }},
   
    
 ];

@@ -22,13 +22,7 @@ declare var $: any
 })
 export class MediaDrawingsComponent implements OnInit {
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    if(this.list_visibility_albums_drawings){
-      this.update_number_of_drawings_to_show();
-    }
 
-  }
 
   cancelled: number;
   artbooks_per_line: number;
@@ -72,6 +66,9 @@ export class MediaDrawingsComponent implements OnInit {
           this.get_history_recommendation();
         }
       }
+      if(this.list_visibility_albums_drawings){
+        this.update_number_of_drawings_to_show();
+      }
       this.current_number_of_drawings_to_show= this.number_of_drawings_to_show;
       
      
@@ -112,6 +109,7 @@ export class MediaDrawingsComponent implements OnInit {
     this.number_of_skeletons_per_line=this.number_of_drawings_to_show;
     this.can_show_more_history=true;
     this.last_consulted_drawings_retrieved=false;
+    this.cd.detectChanges();
     this.last_consulted_drawings=[];
     this.navbar.get_last_researched_navbar_for_recommendations("Drawing",0, this.number_of_drawings_to_show).subscribe(m=>{
       if(m[0].length>0){
@@ -163,7 +161,7 @@ export class MediaDrawingsComponent implements OnInit {
   }
 
   open_research(item:any) {
-    return "/main-research/style-and-tag/1/Drawing/"+item+"/all";
+    return "/main-research/styles/tags/1/Drawing/"+item+"/all";
   }
 
   /**********************************************DISplay drawings thumbnails******************** */
