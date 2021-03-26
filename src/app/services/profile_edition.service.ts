@@ -53,6 +53,12 @@ export class Profile_Edition_Service {
     }));
   }
 
+  retrieve_profile_picture_by_pseudo(pseudo){
+    return this.httpClient.get(`routes/retrieve_profile_picture_by_pseudo/${pseudo}`, {responseType:'blob'} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
   retrieve_my_profile_picture(){
     return this.httpClient.post('routes/retrieve_my_profile_picture', {}, {responseType:'blob',withCredentials:true} ).pipe(map((information)=>{
       return information;
@@ -73,6 +79,12 @@ export class Profile_Edition_Service {
 
   retrieve_cover_picture(user_id: number){
     return this.httpClient.get(`routes/retrieve_cover_picture/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  retrieve_cover_picture_by_pseudo(pseudo){
+    return this.httpClient.get(`routes/retrieve_cover_picture_by_pseudo/${pseudo}`, {responseType:'blob'} ).pipe(map((information)=>{
       return information;
     }));
   }
