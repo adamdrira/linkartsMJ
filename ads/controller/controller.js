@@ -1553,13 +1553,13 @@ router.post('/send_email_for_ad_answer', function (req, res) {
           }
         });
   
-        let mail_to_send='<div style="margin: 25px;background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+        let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
           mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
             mail_to_send+=`
             <table style="width:100%;margin-bottom:20px">
                 <tr id="tr1">
                     <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
-                        <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" style="margin:auto auto;height:36px;width:36px;" />
+                        <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
                     </td>
                 </tr>
 
@@ -1586,7 +1586,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
             }
 
             mail_to_send+=`
-            <table style="width:88%;margin:25px auto;">
+            <table style="width:100%;margin:25px auto;">
               <tr id="tr3">
 
                   <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
@@ -1601,18 +1601,18 @@ router.post('/send_email_for_ad_answer', function (req, res) {
                       </div>
 
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                      <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" style="width:80px;float: left;" />
+                      <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
                   </td>
 
               </tr>
             </table>`
 
             mail_to_send+=`
-            <table style="width:88%;margin:25px auto;">
+            <table style="width:100%;margin:25px auto;">
                 <tr id="tr4">
                     <td align="center">
                         <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
                     </td>
 
                 </tr>
@@ -1622,8 +1622,8 @@ router.post('/send_email_for_ad_answer', function (req, res) {
         mail_to_send+='</div>'
         var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', // sender address
-            to: user.email, // my mail
-            //to: "appaloosa-adam@hotmail.fr",
+            //to: user.email, // my mail
+            to: "appaloosa-adam@hotmail.fr",
             subject: `Réponse à une annonce`, // Subject line
             //text: 'plain text', // plain text body
             html:  mail_to_send, // html body
