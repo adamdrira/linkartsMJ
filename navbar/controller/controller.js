@@ -119,7 +119,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         let status2="clicked"
         let id_user = get_current_user(req.cookies.currentUser);
         
-        pool.query('SELECT  publication_category,format,target_id,research_string,max("createdAt")  FROM list_of_navbar_researches WHERE publication_category=$1 AND id_user=$3   AND ( status=$2 OR  status=$4) GROUP BY publication_category,format,target_id,research_string ORDER BY max("createdAt") DESC LIMIT $6 OFFSET $5', [category,status,id_user,status2,offset,limit], (error, results) => {
+        pool.query('SELECT  publication_category,format,target_id,max("createdAt")  FROM list_of_navbar_researches WHERE publication_category=$1 AND id_user=$3   AND ( status=$2 OR  status=$4) GROUP BY publication_category,format,target_id ORDER BY max("createdAt") DESC LIMIT $6 OFFSET $5', [category,status,id_user,status2,offset,limit], (error, results) => {
             if (error) {
                 
                 res.status(500).send([{error:error}]);
