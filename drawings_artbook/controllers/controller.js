@@ -658,7 +658,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 
     
 
-  router.get('/retrieve_drawing_artbook_info_by_userid/:user_id', function (req, res) {
+  router.get('/retrieve_drawing_artbook_info_by_pseudo/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -670,10 +670,21 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
           return res.status(401).json({msg: "error"});
         }
       }
-       const user_id= parseInt(req.params.user_id);
-        Liste_artbook.findAll({
+
+      const pseudo = req.params.pseudo;
+      list_of_users.findOne({
+          where:{
+              nickname:pseudo
+          }
+      }).catch(err => {
+              
+        res.status(500).json({msg: "error", details: err});		
+      })
+      .then(user=>{
+        if(user){
+          Liste_artbook.findAll({
             where: {
-              authorid: user_id,
+              authorid: user.id,
               status:"public"
             },
             order: [
@@ -682,12 +693,15 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
           })
           .catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawing =>  {
+            res.status(500).json({msg: "error", details: err});		
+          }).then(drawing =>  {
             
             res.status(200).send([drawing]);
             
           }); 
+        }
+      })
+       
    
     });
 
