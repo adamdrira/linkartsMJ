@@ -575,7 +575,51 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             res.status(200).send([ads]);
           }); 
     });
+    
 
+    router.get('/get_ads_by_pseudo/:pseudo', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+
+      const pseudo = req.params.pseudo;
+      list_of_users.findOne({
+        where:{
+            nickname:pseudo
+        }
+      }).catch(err => {
+              
+        res.status(500).json({msg: "error", details: err});		
+      })
+      .then(user=>{
+        if(user){
+          list_of_ads.findAll({
+            where: {
+              id_user: user.id,
+              status:"public"
+            },
+            order: [
+                ['date', 'DESC']
+              ],
+          })
+          .catch(err => {
+				
+            res.status(500).json({msg: "error", details: err});		
+          }).then(ads =>  {
+            res.status(200).send([ads]);
+          }); 
+        }
+      })
+         
+    });
     
 
     router.get('/get_all_my_ads', function (req, res) {
@@ -1622,8 +1666,8 @@ router.post('/send_email_for_ad_answer', function (req, res) {
         mail_to_send+='</div>'
         var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', // sender address
-            //to: user.email, // my mail
-            to: "appaloosa-adam@hotmail.fr",
+            to: user.email, // my mail
+            //to: "appaloosa-adam@hotmail.fr",
             subject: `Réponse à une annonce`, // Subject line
             //text: 'plain text', // plain text body
             html:  mail_to_send, // html body
