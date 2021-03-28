@@ -1,10 +1,6 @@
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Sequelize = require('sequelize');
-const multer = require('multer');
-const fs = require('fs');
-var path = require('path');
-
 
 
 
@@ -21,7 +17,6 @@ module.exports = (router, favorites,users) => {
 
     
     router.post('/get_all_favorites_by_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -32,12 +27,10 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("get_all_favorites_by_user")
         
         const Op = Sequelize.Op;
         const  date_format = req.body.date_format;
         const  id_user = req.body.id_user;
-        console.log(date_format)
         let date=new Date();
     
         if(date_format==0){
@@ -49,7 +42,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 id:id_user,
             }
         }).catch(err => {
-			console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
             if(user && user.status=="account"){
@@ -63,8 +55,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         ,order: [
                             ['createdAt', 'DESC']
                         ]
-                    }).catch(err => {
-                        console.log(err);	
+                    }).catch(err => {	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(favorites=>{
                         res.status(200).send([{list_of_favorites:favorites}])
@@ -82,7 +73,6 @@ console.log("checking current: " + req.headers['authorization'] );
                             ['createdAt', 'DESC']
                         ]
                     }).catch(err => {
-                        console.log(err);	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(favorites=>{
                         res.status(200).send([{list_of_favorites:favorites}])
@@ -101,7 +91,6 @@ console.log("checking current: " + req.headers['authorization'] );
  
 
     router.post('/get_total_favorites_gains_by_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -112,7 +101,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("get_total_favorites_gains_by_user")
         
         let current_user = get_current_user(req.cookies.currentUser);
         let total_gains=0;
@@ -124,7 +112,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 ['createdAt', 'DESC']
             ]
         }).catch(err => {
-			console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(favorites=>{
 
@@ -140,7 +127,6 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/get_total_favorites_gains_by_users_group', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -151,12 +137,10 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("get_total_favorites_gains_by_users_group")
         const Op = Sequelize.Op;
         let current_user = get_current_user(req.cookies.currentUser);
         let list_of_ids=req.body.list_of_ids
         let total_gains=0;
-        console.log(list_of_ids)
         favorites.findAll({
             where:{
                 id_user:list_of_ids,
@@ -165,8 +149,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ,order: [
                 ['createdAt', 'DESC']
             ]
-        }).catch(err => {
-			console.log(err);	
+        }).catch(err => {	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(favorites=>{
 
