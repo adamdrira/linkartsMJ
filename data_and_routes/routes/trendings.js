@@ -123,8 +123,8 @@ pool.connect((err, client, release) => {
                             })
                             .on("finish", function() {
                               //pour ubuntu
-                              //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings_preview.py', date]);
-                              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings_preview.py', date]);
+                              const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings_preview.py', date]);
+                              //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings_preview.py', date]);
                               pythonProcess.stderr.pipe(process.stderr);
                               pythonProcess.stdout.on('data', (data) => {
                               });
@@ -223,117 +223,118 @@ pool.connect((err, client, release) => {
             where:{
               date:date_yes
             }
-          }).catch(err => {
-            response.status(500).json({msg: "error", details: err});	
           }).then(result=>{
             if(result){
-              response.status(200).send([{"comics_trendings":result.trendings}]);
+               response.status(200).send([{"comics_trendings":result.trendings}]);
             }
+            call_python();
+            
           })
         }
 
-        let Path1=`/csvfiles_for_python/view_rankings.csv`;
-        let Path2=`/csvfiles_for_python/likes_rankings.csv`;
-        let Path3=`/csvfiles_for_python/loves_rankings.csv`
-        let ws = fs.createWriteStream('./data_and_routes/routes' + Path1);
-        let ws1 = fs.createWriteStream('./data_and_routes/routes' + Path2);
-        let ws2= fs.createWriteStream('./data_and_routes/routes' + Path3);
+        function call_python(){
+          let Path1=`/csvfiles_for_python/view_rankings.csv`;
+          let Path2=`/csvfiles_for_python/likes_rankings.csv`;
+          let Path3=`/csvfiles_for_python/loves_rankings.csv`
+          let ws = fs.createWriteStream('./data_and_routes/routes' + Path1);
+          let ws1 = fs.createWriteStream('./data_and_routes/routes' + Path2);
+          let ws2= fs.createWriteStream('./data_and_routes/routes' + Path3);
 
 
-        
-        pool.query(' SELECT * FROM list_of_views WHERE "createdAt" ::date  <= $1 AND "createdAt" ::date >= $2 AND view_time is not null AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
-          if (error) {
-            
-          }
-          else{
-            let json_view = JSON.parse(JSON.stringify(results.rows));
-            fastcsv.write(json_view, { headers: true })
-            .pipe(ws)
-            .on('error', function(e){
-            })
-            .on("finish", function() {
-              pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
-                  if (error) {
-                  }
-                  else{
+          
+          pool.query(' SELECT * FROM list_of_views WHERE "createdAt" ::date  <= $1 AND "createdAt" ::date >= $2 AND view_time is not null AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
+            if (error) {
+              
+            }
+            else{
+              let json_view = JSON.parse(JSON.stringify(results.rows));
+              fastcsv.write(json_view, { headers: true })
+              .pipe(ws)
+              .on('error', function(e){
+              })
+              .on("finish", function() {
+                pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
+                    if (error) {
+                    }
+                    else{
 
-                  let json_likes = JSON.parse(JSON.stringify(results.rows));
-                  fastcsv.write(json_likes, { headers: true })
-                  .pipe(ws1)
-                    .on('error', function(e){
-                    })
-                    .on("finish", function() {
-                  
-                      pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2   AND monetization=$3', [today,_before_before_yesterday,'true'], (error, results) => {
-                          if (error) {
-                            
-                          }
-                          else{
-                          let json_loves = JSON.parse(JSON.stringify(results.rows));
-                          fastcsv.write(json_loves, { headers: true })
-                          .pipe(ws2)
-                            .on('error', function(e){
-                            })
-                            .on("finish", function() {
+                    let json_likes = JSON.parse(JSON.stringify(results.rows));
+                    fastcsv.write(json_likes, { headers: true })
+                    .pipe(ws1)
+                      .on('error', function(e){
+                      })
+                      .on("finish", function() {
+                    
+                        pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2   AND monetization=$3', [today,_before_before_yesterday,'true'], (error, results) => {
+                            if (error) {
                               
-                              //pour ubuntu
-                              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
-                              //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
-                              //console.log(pythonProcess)
-                              pythonProcess.stderr.pipe(process.stderr);
-                              pythonProcess.stdout.on('data', (data) => {
-                              });
-                              pythonProcess.stdout.on("end", (data) => {
-                                let files = [__dirname + Path1,__dirname + Path2,__dirname + Path3];
-                                for (let i=0;i<files.length;i++){
-                                  fs.access(files[i], fs.F_OK, (err) => {
-                                    if(err){
-                                      if(i==files.length -1){
-                                        let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/comics_rankings_for_trendings-${date}.json`));
-
-                                        trendings_seq.trendings_comics.create({
-                                          "trendings":json,
-                                          "date":date
-                                        }).catch(err => {
-                                        }).then(result=>{
-                                          add_comics_trendings(json,date);
-                                           // return response.status(200).send([{comics_trendings:json}]); 
-                                        })
-                                      } 
-                                    }  
-                                    else{
-                                      fs.unlink(files[i],function (err) {
-                                        if (err) {
-                                        } 
+                            }
+                            else{
+                            let json_loves = JSON.parse(JSON.stringify(results.rows));
+                            fastcsv.write(json_loves, { headers: true })
+                            .pipe(ws2)
+                              .on('error', function(e){
+                              })
+                              .on("finish", function() {
+                                
+                                //pour ubuntu
+                                //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
+                                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
+                                pythonProcess.stderr.pipe(process.stderr);
+                                pythonProcess.stdout.on('data', (data) => {
+                                });
+                                pythonProcess.stdout.on("end", (data) => {
+                                  let files = [__dirname + Path1,__dirname + Path2,__dirname + Path3];
+                                  for (let i=0;i<files.length;i++){
+                                    fs.access(files[i], fs.F_OK, (err) => {
+                                      if(err){
                                         if(i==files.length -1){
                                           let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/comics_rankings_for_trendings-${date}.json`));
+
                                           trendings_seq.trendings_comics.create({
                                             "trendings":json,
                                             "date":date
                                           }).catch(err => {
                                           }).then(result=>{
                                             add_comics_trendings(json,date);
-                                             // return response.status(200).send([{comics_trendings:json}]); 
-                                          }) 
+                                          })
                                         } 
-                                      });
-                                      
-                                    }     
-                                  })
-                                }   
+                                      }  
+                                      else{
+                                        fs.unlink(files[i],function (err) {
+                                          if (err) {
+                                          } 
+                                          if(i==files.length -1){
+                                            let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/comics_rankings_for_trendings-${date}.json`));
+                                            trendings_seq.trendings_comics.create({
+                                              "trendings":json,
+                                              "date":date
+                                            }).catch(err => {
+                                            }).then(result=>{
+                                              add_comics_trendings(json,date);
+                                            }) 
+                                          } 
+                                        });
+                                        
+                                      }     
+                                    })
+                                  }   
+                                });
+
+
+
                               });
+                              }
+                            })                           
+                      });
+                        }
+                    })  
+                  })
+                }
+            })
+          }
 
-
-
-                            });
-                            }
-                          })                           
-                    });
-                      }
-                  })  
-                })
-              }
-          })
+        
 
       }
       
@@ -720,6 +721,80 @@ const get_writings_trendings = (request, response) => {
             }
           }).then(user=>{
             if(user){
+              const Op = Sequelize.Op;
+              var byesterday = new Date();
+              byesterday.setDate(byesterday.getDate() - 2);
+              authentification.users_connexions.findOne({
+                where:{
+                  id_user:list_of_users[i],
+                  createdAt: {[Op.gte]: byesterday}
+                }
+                
+              }).then(r=>{
+
+                if(!r){
+                  send_email()
+                }
+              })
+
+             function send_email(){
+                let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+                mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+                  mail_to_send+=`
+                  <table style="width:100%;margin-bottom:20px">
+                      <tr id="tr1">
+                          <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
+                              <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
+                          </td>
+                      </tr>
+      
+      
+                      <tr id="tr2" >
+                          <td  align="center" style="background: rgb(2, 18, 54)">
+                              <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                              <div style="height:1px;width:20px;background:white;"></div>
+                              <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Top Tendances !</p>
+                          </td>
+                      </tr>
+                  </table>`;
+      
+                 
+                  mail_to_send+=`
+                  <table style="width:100%;margin:25px auto;">
+                    <tr id="tr3">
+      
+                        <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Félicitation ${user.firstname} !</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">L'une de vos œuvres a atteint le top 15 des <b>Tendances</b> pour la catégorie <b>Bandes dessinées</b>.</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Cliquez sur le bouton ci-dessous pour accéder aux tendances et découvrir le classement de votre œuvre : </p>
+      
+                            <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                                <a href="https://linkarts.fr/trendings/comics" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                    Accéder aux tendances
+                                </a>
+                            </div>
+      
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                        </td>
+      
+                    </tr>
+                  </table>`
+      
+                  mail_to_send+=`
+                  <table style="width:100%;margin:25px auto;">
+                      <tr id="tr4">
+                          <td align="center">
+                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                          </td>
+      
+                      </tr>
+                  </table>`
+      
+              mail_to_send+='</div>'
+              mail_to_send+='</div>'
+
               const transport = nodemailer.createTransport({
                 host: "pro2.mail.ovh.net",
                 port: 587,
@@ -736,20 +811,19 @@ const get_writings_trendings = (request, response) => {
               var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
                   to:  user.email, // my mail
+                  //to: "appaloosa-adam@hotmail.fr",
                   subject: `Top tendances !`, // Subject line
-                  //text: 'plain text', // plain text body
-                  html:  `<p> Félicitation ${user.firstname} !</p>
-                  <p>L'une de vos œvres a atteint le top tendances pour la catégorie <b>Bandes dessinées</b></p>
-                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici</a> pour voir les tendances</p>
-                  <p>L'équipe de LinkArts.</p>`, // html body
+                  html: mail_to_send, // html body
               };
         
-              /*transport.sendMail(mailOptions, (error, info) => {
+              transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
-                  } else {
                   }
-              })*/
+              })
+
+             }
+              
             }
           })
         }
@@ -970,6 +1044,79 @@ const get_writings_trendings = (request, response) => {
             }
           }).then(user=>{
             if(user){
+              const Op = Sequelize.Op;
+              var byesterday = new Date();
+              byesterday.setDate(byesterday.getDate() - 2);
+              authentification.users_connexions.findOne({
+                where:{
+                  id_user:list_of_users[i],
+                  createdAt: {[Op.gte]: byesterday}
+                }
+              }).then(r=>{
+                if(!r){
+                  send_email()
+                }
+              })
+
+             function send_email(){
+
+                let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+                mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+                  mail_to_send+=`
+                  <table style="width:100%;margin-bottom:20px">
+                      <tr id="tr1">
+                          <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
+                              <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
+                          </td>
+                      </tr>
+      
+      
+                      <tr id="tr2" >
+                          <td  align="center" style="background: rgb(2, 18, 54)">
+                              <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                              <div style="height:1px;width:20px;background:white;"></div>
+                              <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Top Tendances !</p>
+                          </td>
+                      </tr>
+                  </table>`;
+      
+                 
+                  mail_to_send+=`
+                  <table style="width:100%;margin:25px auto;">
+                    <tr id="tr3">
+      
+                        <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Félicitation ${user.firstname} !</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">L'une de vos œuvres a atteint le top 15 des <b>Tendances</b> pour la catégorie <b>Dessins</b>.</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Cliquez sur le bouton ci-dessous pour accéder aux tendances et découvrir le classement de votre œuvre : </p>
+      
+                            <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                                <a href="https://linkarts.fr/trendings/drawings" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                    Accéder aux tendances
+                                </a>
+                            </div>
+      
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                        </td>
+      
+                    </tr>
+                  </table>`
+      
+                  mail_to_send+=`
+                  <table style="width:100%;margin:25px auto;">
+                      <tr id="tr4">
+                          <td align="center">
+                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                          </td>
+      
+                      </tr>
+                  </table>`
+      
+              mail_to_send+='</div>'
+              mail_to_send+='</div>'
+
               const transport = nodemailer.createTransport({
                 host: "pro2.mail.ovh.net",
                 port: 587,
@@ -983,22 +1130,23 @@ const get_writings_trendings = (request, response) => {
                 }
               });
         
-            var mailOptions = {
-                from: 'Linkarts <services@linkarts.fr>', // sender address
-                to:  user.email, // my mail
-                subject: `Top tendances !`, // Subject line
-                html:  `<p> Félicitation ${user.firstname} !</p>
-                <p> l'une de vos œvres a atteint le top tendances pour la catégorie <b>Dessins</b>.</p>
-                <p><a href="https://linkarts.fr/trendings/drawings"> Cliquer ici</a> pour voir les tendances.</p>
-                <p>L'équipe de LinkArts.</p>`, // html body
-            };
+              var mailOptions = {
+                  from: 'Linkarts <services@linkarts.fr>', // sender address
+                  to:  user.email, // my mail
+                  //to: "appaloosa-adam@hotmail.fr",
+                  subject: `Top tendances !`, // Subject line
+                  html: mail_to_send, // html body
+              };
         
-            /*transport.sendMail(mailOptions, (error, info) => {
+              transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
-                  } else {
                   }
-              })*/
+              })
+
+             }
+
+        
             }
           })
         }
@@ -1154,6 +1302,79 @@ const get_writings_trendings = (request, response) => {
             }
           }).then(user=>{
             if(user){
+              const Op = Sequelize.Op;
+              var byesterday = new Date();
+              byesterday.setDate(byesterday.getDate() - 2);
+              authentification.users_connexions.findOne({
+                where:{
+                  id_user:list_of_users[i],
+                  createdAt: {[Op.gte]: byesterday}
+                }
+              }).then(r=>{
+                if(!r){
+                  send_email()
+                }
+              })
+
+             function send_email(){
+
+                let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+                mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+                  mail_to_send+=`
+                  <table style="width:100%;margin-bottom:20px">
+                      <tr id="tr1">
+                          <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
+                              <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
+                          </td>
+                      </tr>
+      
+      
+                      <tr id="tr2" >
+                          <td  align="center" style="background: rgb(2, 18, 54)">
+                              <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                              <div style="height:1px;width:20px;background:white;"></div>
+                              <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Top Tendances !</p>
+                          </td>
+                      </tr>
+                  </table>`;
+      
+                 
+                  mail_to_send+=`
+                  <table style="width:100%;margin:25px auto;">
+                    <tr id="tr3">
+      
+                        <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Félicitation ${user.firstname} !</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">L'une de vos œuvres a atteint le top 15 des <b>Tendances</b> pour la catégorie <b>Écrit</b>.</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Cliquez sur le bouton ci-dessous pour accéder aux tendances et découvrir le classement de votre œuvre : </p>
+      
+                            <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                                <a href="https://linkarts.fr/trendings/writings" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                    Accéder aux tendances
+                                </a>
+                            </div>
+      
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                        </td>
+      
+                    </tr>
+                  </table>`
+      
+                  mail_to_send+=`
+                  <table style="width:100%;margin:25px auto;">
+                      <tr id="tr4">
+                          <td align="center">
+                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                          </td>
+      
+                      </tr>
+                  </table>`
+      
+              mail_to_send+='</div>'
+              mail_to_send+='</div>'
+
               const transport = nodemailer.createTransport({
                 host: "pro2.mail.ovh.net",
                 port: 587,
@@ -1167,22 +1388,21 @@ const get_writings_trendings = (request, response) => {
                 }
               });
         
-            var mailOptions = {
-                from: 'Linkarts <services@linkarts.fr>', // sender address
-                to:  user.email, // my mail
-                subject: `Top tendances !`, // Subject lineÉcrit
-                html:  `<p> Félicitation ${user.firstname} !</p>
-                <p> l'une de vos œvres a atteint le top tendances pour la catégorie <b>Écrit</b>.</p>
-                <p><a href="https://linkarts.fr/trendings/drawings"> Cliquer ici</a> pour voir les tendances.</p>
-                <p>L'équipe de LinkArts.</p>`, // html body
-            };
+              var mailOptions = {
+                  from: 'Linkarts <services@linkarts.fr>', // sender address
+                  to:  user.email, // my mail
+                  //to: "appaloosa-adam@hotmail.fr",
+                  subject: `Top tendances !`, // Subject line
+                  html: mail_to_send, // html body
+              };
         
-            /*transport.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log('Error while sending mail: ' + error);
-                } else {
-                }
-            })*/
+              transport.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                      console.log('Error while sending mail: ' + error);
+                  }
+              })
+        
+             }
             }
           })
         }
