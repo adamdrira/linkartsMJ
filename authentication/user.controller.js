@@ -20,7 +20,7 @@ var nodemailer = require('nodemailer');
 const algorithm = 'aes-256-ctr';
 const secretKey = 'vOVH6sdmpNWjRRIqCc7rdJBL1lwHzfr3';
 var geoip = require('geoip-lite');
-
+const List_of_notifications= require('../notifications/model/sequelize').list_of_notifications;
 
 
 
@@ -239,6 +239,16 @@ exports.create = (req, res) => {
 					})
 				})
 				.then(()=>{
+					List_of_notifications.create({
+						"type":"welcome",
+						"id_user":1,
+                        "id_receiver":r.id,
+                        "status":"unchecked"
+					}).catch(err => {
+						res.status(500).json({msg: "error", details: err});		
+					})
+				})
+				.then(()=>{
 					User.findAll({
 						where:{
 							status:"account",
@@ -406,24 +416,76 @@ exports.reset_password = (req, res) => {
 					
 				})
 
-				let mail_to_send='';
-				let name = user_found.firstname + ' ' + user_found.lastname;
-				if(user_found.gender=="Homme"){
-				mail_to_send=`<p>Cher ${name},</p>`
-				}
-				else if(user_found.gender=="Femme"){
-				mail_to_send=`<p>Chère ${name},</p>`
-				}
-				else if(user_found.gender=="Groupe"){
-				mail_to_send=`<p>Chers membres du groupe ${name},</p>`
-				}
-
-				mail_to_send+=`<p>Votre nouveau mot de passe est le suivant : ${pass}.</p>`
-
-				mail_to_send+=`<p><a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}/my_account/${password_registration}">Cliquer ici</a> pour le modifier.</p>`
 				
-				mail_to_send+=`<p>Très sincèrement, l'équipe de LinkArts.</p>`
 
+
+				let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+				mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+					mail_to_send+=`
+					<table style="width:100%;margin-bottom:20px">
+						<tr id="tr1">
+							<td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
+								<img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
+							</td>
+						</tr>
+
+
+						<tr id="tr2" >
+							<td  align="center" style="background: rgb(2, 18, 54)">
+								<p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+								<div style="height:1px;width:20px;background:white;"></div>
+								<p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Récupération de mot de passe</p>
+							</td>
+						</tr>
+					</table>`;
+
+					let name = user_found.firstname + ' ' + user_found.lastname;
+					let start=''
+					if(user_found.gender=="Homme"){
+					start=`Cher ${name},`
+					}
+					else if(user_found.gender=="Femme"){
+					start=`Chère ${name},</p>`
+					}
+					else if(user_found.gender=="Groupe"){
+					start=`Chers membres du groupe ${name},`
+					}
+
+					mail_to_send+=`
+					<table style="width:100%;margin:25px auto;">
+					<tr id="tr3">
+
+						<td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
+							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Votre nouveau mot de de passe temporaire est le suivant : <b> ${pass}</b>.</p>
+							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Pour accéder à votre compte et modifier votre mot de passe, cliquez sur le bouton ci-dessous : </p>
+
+							<div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+								<a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}/my_account/${password_registration}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+									Consulter mon compte
+								</a>
+							</div>
+
+							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+							<img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+						</td>
+
+					</tr>
+					</table>`
+
+					mail_to_send+=`
+					<table style="width:100%;margin:25px auto;">
+						<tr id="tr4">
+							<td align="center">
+								<p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+								<p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+							</td>
+
+						</tr>
+					</table>`
+
+				mail_to_send+='</div>'
+				mail_to_send+='</div>'
 
 				const transport = nodemailer.createTransport({
 					host: "pro2.mail.ovh.net",
@@ -440,12 +502,10 @@ exports.reset_password = (req, res) => {
 			
 				var mailOptions = {
 					from: 'Linkarts <services@linkarts.fr>', // sender address
-					//to: user_found.email, // my mail
-					to:"appaloosa-adam@hotmail.fr",
-					//cc:"adam.drira@etu.emse.fr",
-					subject: `Récupération du mot de passe`, // Subject line
-					html:mail_to_send , // html body
-					// attachments: params.attachments
+					to: user_found.email, // my mail
+					//to:"appaloosa-adam@hotmail.fr",
+					subject: `Récupération du mot de passe`, 
+					html:mail_to_send, 
 				};
 				transport.sendMail(mailOptions, (error, info) => {
 					if (error) {
@@ -485,58 +545,8 @@ exports.reset_password = (req, res) => {
 				if(user.length>0){
 					const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(user[0].iv, 'hex'));
 					const decrypted = Buffer.concat([decipher.update(Buffer.from(user[0].content, 'hex')), decipher.final()]);
-			
-					const transport = nodemailer.createTransport({
-						host: "pro2.mail.ovh.net",
-						port: 587,
-						secure: false, // true for 465, false for other ports
-						auth: {
-						  user: "services@linkarts.fr", // compte expéditeur
-						  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
-						},
-							tls:{
-							  ciphers:'SSLv3'
-						}
-					});
-				
-
-					let mail_to_send='';
-					let name = user_found.firstname + ' ' + user_found.lastname;
-					if(user_found.gender=="Homme"){
-					mail_to_send=`<p>Cher ${name},</p>`
-					}
-					else if(user_found.gender=="Femme"){
-					mail_to_send=`<p>Chere ${name},</p>`
-					}
-					else if(user_found.gender=="Groupe"){
-					mail_to_send=`<p>Chers membres du groupe ${name},</p>`
-					}
-
-					mail_to_send+=`<p>Votre mot de passe est le suivant : ${decrypted.toString()}. </p>`
-
-					mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}/my_account">Cliquer ici</a> pour le modifier.</p>`
+					let pass = decrypted.toString()
 					
-					mail_to_send+=`<p>Très sincèrement, l'équipe de LinkArts.</p>`
-						
-					var mailOptions = {
-						from: 'Linkarts <services@linkarts.fr>', // sender address
-						to: user_found.email, // my mail
-						//cc:"adam.drira@etu.emse.fr",
-						subject: `Récupération du mot de passe`, // Subject line
-						html: mail_to_send, // plain text body
-						//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
-						// attachments: params.attachments
-					};
-					
-					transport.sendMail(mailOptions, (error, info) => {
-						if (error) {
-							res.status(200).send([{error:error}])
-						} else {
-							res.status(200).send([{sent:'Message sent ' + info.messageId}])
-						}
-						
-			
-					})
 				}
 				else{
 					res.status(200).send([{error:"user not found"}])
@@ -920,6 +930,77 @@ exports.login = async (req, res) => {
 
 								
 									if(distance>100){
+
+										let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+										mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+											mail_to_send+=`
+											<table style="width:100%;margin-bottom:20px">
+												<tr id="tr1">
+													<td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
+														<img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
+													</td>
+												</tr>
+
+
+												<tr id="tr2" >
+													<td  align="center" style="background: rgb(2, 18, 54)">
+														<p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+														<div style="height:1px;width:20px;background:white;"></div>
+														<p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Fraude potentielle !</p>
+													</td>
+												</tr>
+											</table>`;
+
+											let name = user.firstname + ' ' + user.lastname;
+											let start=''
+											if(user.gender=="Homme"){
+											start=`Cher ${name},`
+											}
+											else if(user.gender=="Femme"){
+											start=`Chère ${name},</p>`
+											}
+											else if(user.gender=="Groupe"){
+											start=`Chers membres du groupe ${name},`
+											}
+
+											mail_to_send+=`
+											<table style="width:100%;margin:25px auto;">
+											<tr id="tr3">
+
+												<td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+													<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
+													<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Une connexion à votre compte a été réalisée à un endroit inhabituel.</p>`
+
+													mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Voici les informations disponibles sur cette localisation : </p>
+													<ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+															<li style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 5px;">pays : ${geo.country}</li>
+															<li style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 5px;">région : ${geo.region}</li>
+															<li style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 5px;">ville : ${geo.city}</li>
+															<li style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 5px;">latitude : ${geo.ll[0]}</li>
+															<li style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 5px;">longitude: ${geo.ll[1]}</li>
+															<li style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 5px;">fuseau horaire : ${geo.timezone}</li>
+													</ul>`
+
+													mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous conseillons dans un premier temps de vérifier que votre adresse IP publique n'est pas localisée à cet endroit inhabituel.</br></br> Si ce n'est pas le cas et que vous n'êtes pas le responsable de cette connexion, nous vous conseillons de tenter de changer votre mot de passe : </p>
+
+													<div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+														<a href="https://www.linkarts.fr/account/${user.nickname}/my_account" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+															Accèder à mon compte
+														</a>
+													</div>`
+													  
+													
+								
+											mail_to_send+=`
+											<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Si celà n'est pas possible, nous sommes dans le regret de vous inviter à crééer un nouveau compte et à nous répondre à cet e-mail pour avoir plus d'informations sur ce sujet.</br></br> Si par contre, vous êtes bien le responsable de cette connexion, il n'y a pas de crainte à avoir.</p>
+											<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+													  <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+												  </td>
+								
+											  </tr>
+											</table>`
+
+											
 										const transport = nodemailer.createTransport({
 												host: "pro2.mail.ovh.net",
 												port: 587,
@@ -933,38 +1014,15 @@ exports.login = async (req, res) => {
 												}
 										});
 
+										
+
+
 										var mailOptions = {
 												from: 'Linkarts <services@linkarts.fr>', // sender address
 												to: user.email, // my mail
 												//to:"appaloosa-adam@hotmail.fr",
 												subject: `Fraude potentielle !`, // Subject line
-												//text: decrypted.toString(), // plain text body
-												html:  `<p >Attention une connexion à votre compte a été réalisée à un endroit inhabituel.</p>
-														<ul>
-																<li>pays : ${geo.country}</li>
-																<li>région : ${geo.region}</li>
-																<li>ville : ${geo.city}</li>
-																<li>latitude : ${geo.ll[0]}</li>
-																<li>longitude: ${geo.ll[1]}</li>
-																<li>fuseau horaire : ${geo.timezone}</li>
-														</ul>
-												<p> Si vous n'êtes pas le responsable de cette connexion nous vous conseillons de tenter de changer vot>
-														<ul>
-																<li><a href="https://www.linkarts.fr/account/${user.nickname}/${user.id}/my_account"> C>
-
-														</ul>
-												<p> Si le mot de passe a été modifié par l'individu malveillant nous vous conseillons de demander à réc>
-														<ul>
-																<li><a href="https://www.linkarts.fr/login"> Cliquer ici</a> pour me connecter et rense>
-
-														</ul>
-														<p>Si le problème ne se règle pas vous pouvez toujours nous écrire dans la messagerie et nous tâcherons>
-														<ul>
-																<li><a href="https://www.linkarts.fr/chat"> Cliquer ici</a> pour regoindre la messageri>
-
-														</ul>
-												<p>Si vous êtes le responsable de ce changement il n'y a pas de crainte à avoir. </p>
-												<p>Très sincèrement, l'équipe de LinkArts.</p>`, // html body
+												html:  mail_to_send, 
 
 										};
 
@@ -1008,7 +1066,7 @@ exports.login = async (req, res) => {
 			})
 
 			function calcCrow(lat1, lon1, lat2, lon2) {
-					var R = 6371; // km
+					var R = 6371; 
 					var dLat = toRad(lat2-lat1);
 					var dLon = toRad(lon2-lon1);
 					var lat1 = toRad(lat1);
@@ -1071,6 +1129,7 @@ exports.logout = (req,res) =>{
 }
 
 exports.check_email_and_password = async (req, res) => {
+	console.log("check check_email_and_password")
 	if( ! req.headers['authorization'] ) {
 		return res.status(401).json({msg: "error"});
 	}
@@ -1085,7 +1144,7 @@ exports.check_email_and_password = async (req, res) => {
 	const users = await User.findAll( {
 		where: { 
 			[Op.or]:[{status:"account"},{status:"suspended"}],
-			email:{[Op.iLike]: req.body.mail_or_username},
+			email:{[Op.iLike]: req.body.email},
 			} 
 		});
 
