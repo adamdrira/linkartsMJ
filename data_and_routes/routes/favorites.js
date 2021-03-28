@@ -462,8 +462,8 @@ function get_current_user(token){
           
                 var mailOptions = {
                     from: 'Linkarts <services@linkarts.fr>', // sender address
-                    //to:  list_of_users[i].email, // my mail
-                    to: "appaloosa-adam@hotmail.fr",
+                    to:  list_of_users[i].email, // my mail
+                    //to: "appaloosa-adam@hotmail.fr",
                     subject: `Top Coups de cœur !`, // Subject line
                     html: mail_to_send, // html body
                 };
