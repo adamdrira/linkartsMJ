@@ -518,6 +518,54 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
     })
 
+
+    router.post('/get_all_subscribings_by_pseudo', function (req, res) {
+
+        if( ! req.headers['authorization'] ) {
+          return res.status(401).json({msg: "error"});
+        }
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
+        }
+        let pseudo = req.body.pseudo;
+        const Op = Sequelize.Op;
+        list_of_users.findOne({
+            where:{
+                nickname:pseudo
+            }
+        })
+        .catch(err => {
+            res.status(500).json({msg: "error", details: err});		
+        })
+        .then(user=>{
+            if(user){
+                list_of_subscribings.findAll({
+                    where: {
+                        status:"public",
+                        id_user:user.id,
+                    },
+                    order: [
+                        ['createdAt', 'DESC']
+                    ]
+                })
+                .catch(err => {
+                        
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(users =>  {
+                    res.status(200).send([users])
+                });
+            }
+        })
+    })
+
+
+    
+
+
     router.get('/get_all_users_subscribed_to_today/:id_user', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
@@ -617,6 +665,49 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             res.status(200).send([users_subscribed_to])
         });    
     });
+
+    router.get('/get_all_subscribers_by_pseudo/:pseudo', function (req, res) {
+
+        if( ! req.headers['authorization'] ) {
+          return res.status(401).json({msg: "error"});
+        }
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
+        }
+
+        list_of_users.findOne({
+            where:{
+                nickname:req.params.pseudo
+            }
+        })
+        .catch(err => {
+            res.status(500).json({msg: "error", details: err});		
+        })
+        .then(user=>{
+            if(user){
+                list_of_subscribings.findAll({
+                    where: {
+                        status:"public",
+                        id_user_subscribed_to:user.id,
+                    },
+                    order: [
+                        ['createdAt', 'DESC']
+                    ]
+                })
+                .catch(err => {
+                        
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(users_subscribed_to =>  {
+                    res.status(200).send([users_subscribed_to])
+                }); 
+            }
+        })
+            
+      });
 
     router.get('/check_if_visitor_susbcribed/:id_user_to_check', function (req, res) {
         if( ! req.headers['authorization'] ) {
@@ -1186,38 +1277,48 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         
     });
 
-    router.get('/get_new_comic_contents/:id_user', function (req, res) {
+    router.get('/get_new_comic_contents/:pseudo', function (req, res) {
 
-      if( ! req.headers['authorization'] ) {
+        if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
-      }
-      else {
+        }
+        else {
         let val=req.headers['authorization'].replace(/^Bearer\s/, '')
         let user= get_current_user(val)
         if(!user){
-          return res.status(401).json({msg: "error"});
+            return res.status(401).json({msg: "error"});
         }
-      }
-         
-            const id_user = parseInt(req.params.id_user);
-           list_of_contents.findAll({
-                where: {
-                    id_user:id_user,
-                    publication_category:"comic",
-                    status:"ok",
-                },
-                order: [
-                    ['real_date', 'DESC']
-                ],
-                limit: 6,
-            }).catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(content => {res.status(200).send([content])})
-           
+        }
+        const pseudo = req.params.pseudo;
+        list_of_users.findOne({
+            where:{
+                nickname:pseudo
+            }
+        }).catch(err => {
+                
+        res.status(500).json({msg: "error", details: err});		
+        })
+        .then(user=>{
+            if(user){
+                list_of_contents.findAll({
+                    where: {
+                        id_user:user.id,
+                        publication_category:"comic",
+                        status:"ok",
+                    },
+                    order: [
+                        ['real_date', 'DESC']
+                    ],
+                    limit: 6,
+                }).catch(err => {
+                    
+                res.status(500).json({msg: "error", details: err});		
+                }).then(content => {res.status(200).send([content])})
+            }
+        })  
     });
 
-    router.get('/get_new_writing_contents/:id_user', function (req, res) {
+    router.get('/get_new_writing_contents/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1229,26 +1330,37 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
           return res.status(401).json({msg: "error"});
         }
       }
-         
-            const id_user = parseInt(req.params.id_user);
-            list_of_contents.findAll({
-                where: {
-                    id_user:id_user,
-                    publication_category:"writing",
-                    status:"ok",
-                },
-                order: [
-                    ['real_date', 'DESC']
-                ],
-                limit: 6,
-            }).catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(content => {res.status(200).send([content])})
+      const pseudo = req.params.pseudo;
+      list_of_users.findOne({
+          where:{
+              nickname:pseudo
+          }
+      }).catch(err => {
+              
+      res.status(500).json({msg: "error", details: err});		
+      })
+      .then(user=>{
+          if(user){
+              list_of_contents.findAll({
+                  where: {
+                      id_user:user.id,
+                      publication_category:"writing",
+                      status:"ok",
+                  },
+                  order: [
+                      ['real_date', 'DESC']
+                  ],
+                  limit: 6,
+              }).catch(err => {
+                  
+              res.status(500).json({msg: "error", details: err});		
+              }).then(content => {res.status(200).send([content])})
+          }
+      })  
        
     });
 
-    router.get('/get_new_drawing_contents/:id_user', function (req, res) {
+    router.get('/get_new_drawing_contents/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1260,25 +1372,34 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
           return res.status(401).json({msg: "error"});
         }
       }
-        
-            const id_user = parseInt(req.params.id_user);
-            list_of_contents.findAll({
-                where: {
-                    id_user:id_user,
-                    publication_category:"drawing",
-                    status:"ok",
-                },
-                order: [
-                    ['real_date', 'DESC']
-                ],
-                limit: 6,
-            }).catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(content => {res.status(200).send([content])})
-          
-    });
-
+      const pseudo = req.params.pseudo;
+      list_of_users.findOne({
+          where:{
+              nickname:pseudo
+          }
+      }).catch(err => {
+              
+      res.status(500).json({msg: "error", details: err});		
+      })
+      .then(user=>{
+          if(user){
+              list_of_contents.findAll({
+                  where: {
+                      id_user:user.id,
+                      publication_category:"drawing",
+                      status:"ok",
+                  },
+                  order: [
+                      ['real_date', 'DESC']
+                  ],
+                  limit: 6,
+              }).catch(err => {
+                  
+              res.status(500).json({msg: "error", details: err});		
+              }).then(content => {res.status(200).send([content])})
+          }
+      })  
+  });
 
     
 
