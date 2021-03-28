@@ -16,8 +16,8 @@ export class UserDrawingsOsResolverService implements Resolve<any> {
     ) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        let id_user= parseInt(route.paramMap.get('id'));
-        return this.Drawings_Onepage_Service.retrieve_drawing_onepage_info_user_id(id_user).pipe(
+        let pseudo= route.paramMap.get('pseudo');
+        return this.Drawings_Onepage_Service.retrieve_drawing_onepage_info_by_pseudo(pseudo).pipe(
             catchError((error) => {
             return  new Observable<any>();
             })

@@ -87,9 +87,9 @@ export class Drawings_Onepage_Service {
   }
 
   
-  retrieve_drawing_onepage_info_user_id(user_id: number) {
+  retrieve_drawing_onepage_info_by_pseudo(pseudo: string) {
 
-    return this.httpClient.get(`routes/retrieve_drawing_onepage_info_user_id/${user_id}`).pipe(map(information=>{
+    return this.httpClient.get(`routes/retrieve_drawing_onepage_info_by_pseudo/${pseudo}`).pipe(map(information=>{
       return information;   
     }));
     

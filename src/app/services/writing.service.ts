@@ -115,8 +115,8 @@ export class Writing_Upload_Service {
    }
 
    
-  retrieve_writings_information_by_user_id(user_id){
-    return this.httpClient.get(`routes/retrieve_writings_information_by_user_id/${user_id}`, {withCredentials:true}).pipe(map(information=>{
+  retrieve_writings_information_by_pseudo(pseudo){
+    return this.httpClient.get(`routes/retrieve_writings_information_by_pseudo/${pseudo}`, {withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
   }

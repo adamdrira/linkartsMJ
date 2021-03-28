@@ -16,8 +16,8 @@ export class UserNewWritingsResolverService implements Resolve<any> {
     ) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        let id_user= parseInt(route.paramMap.get('id'));
-        return this.Subscribing_service.get_new_writing_contents(id_user).pipe(
+        let pseudo= route.paramMap.get('pseudo');
+        return this.Subscribing_service.get_new_writing_contents(pseudo).pipe(
             catchError((error) => {
             return  new Observable<any>();
             })

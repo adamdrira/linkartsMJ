@@ -16,8 +16,8 @@ export class UserComicsSerieResolverService implements Resolve<any> {
     ) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        let id_user= parseInt(route.paramMap.get('id'));
-        return this.BdSerieService.retrieve_bd_by_userid(id_user).pipe(
+        let pseudo= route.paramMap.get('pseudo');
+        return this.BdSerieService.retrieve_bd_by_pseudo(pseudo).pipe(
             catchError((error) => {
             return  new Observable<any>();
             })

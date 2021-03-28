@@ -131,8 +131,8 @@ export class BdSerieService {
      }));
   }
 
-  retrieve_bd_by_userid(user_id: number) {
-    return this.httpClient.get(`routes/retrieve_bd_serie_by_user_id/${user_id}`).pipe(map(information=>{
+  retrieve_bd_by_pseudo(pseudo: string) {
+    return this.httpClient.get(`routes/retrieve_bd_serie_by_pseudo/${pseudo}`).pipe(map(information=>{
       return information;   
     }));  
   }

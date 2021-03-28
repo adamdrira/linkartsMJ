@@ -58,8 +58,20 @@ export class Subscribing_service {
     }));
   }
 
+  get_all_subscribings_by_pseudo(pseudo){
+    return this.httpClient.post(`routes/get_all_subscribings_by_pseudo`,{pseudo:pseudo}, {withCredentials:true}).pipe(map(information=>{
+      return information;
+    }));
+  }
+
   get_all_subscribed_users(id_user){
     return this.httpClient.get(`routes/get_all_subscribed_users/${id_user}`, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+  get_all_subscribers_by_pseudo(pseudo){
+    return this.httpClient.get(`routes/get_all_subscribers_by_pseudo/${pseudo}`, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
@@ -158,20 +170,20 @@ export class Subscribing_service {
 
   
 
-  get_new_drawing_contents(id_user){
-    return this.httpClient.get(`routes/get_new_drawing_contents/${id_user}`).pipe(map(information=>{
+  get_new_drawing_contents(pseudo){
+    return this.httpClient.get(`routes/get_new_drawing_contents/${pseudo}`).pipe(map(information=>{
         return information;
       }));
   };
 
-  get_new_writing_contents(id_user){
-    return this.httpClient.get(`routes/get_new_writing_contents/${id_user}`).pipe(map(information=>{
+  get_new_writing_contents(pseudo){
+    return this.httpClient.get(`routes/get_new_writing_contents/${pseudo}`).pipe(map(information=>{
         return information;
       }));
   };
 
-  get_new_comic_contents(id_user){
-    return this.httpClient.get(`routes/get_new_comic_contents/${id_user}`).pipe(map(information=>{
+  get_new_comic_contents(pseudo){
+    return this.httpClient.get(`routes/get_new_comic_contents/${pseudo}`).pipe(map(information=>{
         return information;
       }));
   };

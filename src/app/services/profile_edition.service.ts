@@ -116,6 +116,12 @@ export class Profile_Edition_Service {
     }));
   }
 
+  retrieve_number_of_contents_by_pseudo(pseudo){
+    return this.httpClient.post('routes/retrieve_number_of_contents_by_pseudo',{pseudo:pseudo},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
   retrieve_profile_data_links(id_user: number){
     return this.httpClient.get(`routes/retrieve_profile_data_links/${id_user}` ).pipe(map((information)=>{
       return information;

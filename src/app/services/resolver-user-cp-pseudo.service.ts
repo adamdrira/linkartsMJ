@@ -10,7 +10,7 @@ import { Profile_Edition_Service } from "./profile_edition.service";
     providedIn: 'root'
 })
 
-export class UserPseudoProfilePicResolverService implements Resolve<any> {
+export class UserPseudoCoverPicResolverService implements Resolve<any> {
     constructor(
         private profile_edition: Profile_Edition_Service
     ) { }

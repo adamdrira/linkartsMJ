@@ -92,9 +92,9 @@ export class Drawings_Artbook_Service {
   }
 
   
-  retrieve_drawing_artbook_info_by_userid(user_id: number) {
+  retrieve_drawing_artbook_info_by_pseudo(pseudo: string) {
 
-    return this.httpClient.get(`routes/retrieve_drawing_artbook_info_by_userid/${user_id}`).pipe(map(information=>{
+    return this.httpClient.get(`routes/retrieve_drawing_artbook_info_by_pseudo/${pseudo}`).pipe(map(information=>{
       return information;   
     }));
     

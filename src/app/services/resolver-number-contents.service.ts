@@ -16,8 +16,8 @@ export class UserNumberContentsResolverService implements Resolve<any> {
     ) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        let id_user= parseInt(route.paramMap.get('id'));
-        return this.Profile_Edition_Service.retrieve_number_of_contents(id_user).pipe(
+        let pseudo= route.paramMap.get('pseudo');
+        return this.Profile_Edition_Service.retrieve_number_of_contents_by_pseudo(pseudo).pipe(
             catchError((error) => {
             return  new Observable<any>();
             })

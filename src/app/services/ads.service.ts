@@ -112,6 +112,13 @@ export class Ads_service {
       }));
     }
 
+    get_ads_by_pseudo(pseudo: string) {
+      return this.httpClient.get(`routes/get_ads_by_pseudo/${pseudo}`).pipe(map(information=>{
+        return information;   
+      }));
+    }
+
+
     get_all_my_ads() {
       return this.httpClient.get('routes/get_ads_by_user_id',{withCredentials:true}).pipe(map(information=>{
         return information;   
