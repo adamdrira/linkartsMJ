@@ -3,7 +3,7 @@ import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/cor
 import {ElementRef,Renderer2, ViewChild} from '@angular/core';
 import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer, Meta, SafeUrl, Title } from '@angular/platform-browser';
 import {trigger, style, animate, transition} from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
@@ -73,7 +73,10 @@ export class NavbarLinkartsComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private Ads_service:Ads_service,
     private chatService:ChatService,
-    private NotificationsService:NotificationsService,
+    private NotificationsService:NotificationsService,    
+    private title: Title,
+    private meta: Meta,
+
     
     ) {
 
@@ -1343,7 +1346,10 @@ export class NavbarLinkartsComponent implements OnInit {
   open_research_style_and_tags(i: number) {
     return "/main-research/styles/tags/1/" + this.list_of_real_categories[this.indice_title_selected] + "/" + this.first_filters[this.indice_title_selected][i] + "/all";
     
-    
+  }
+  update_metas(i: number) {
+    this.title.setTitle( this.first_filters[this.indice_title_selected][i] + " - LinkArts");
+    this.meta.updateTag({ name: 'description', content: this.first_filters[this.indice_title_selected][i] + " en ligne gratuit sur LinkArts, site français dédié aux artistes et professionnels du monde de l’édition." });  
   }
   open_main_research(s: string) {
     this.router.navigate([`/main-research/1/${s}/All`]);
@@ -1623,6 +1629,10 @@ export class NavbarLinkartsComponent implements OnInit {
     let value=this.input.nativeElement.value.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')
     this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       this.router.navigate([`/main-research/1/${value}/${this.publication_category}`]);
+      
+      this.title.setTitle('LinkArts – BD, Dessins et Ecrits');
+      this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+
       this.loading_research=false;
       this.activated_search=false;
       return;
@@ -1630,6 +1640,10 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   click_on_trending_message(i){
+    
+    this.title.setTitle('LinkArts – BD, Dessins et Ecrits');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+
     this.cancel_research();
     this.not_using_chat();
     this.loading_research=true;

@@ -13,6 +13,7 @@ import {get_date_to_show_chat} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { pattern } from '../helpers/patterns';
 
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-chat-friends-list',
@@ -83,6 +84,9 @@ export class ChatFriendsListComponent implements OnInit {
     public route: ActivatedRoute, 
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    
+    private title: Title,
+    private meta: Meta
     ){
 
       navbar.visibility_observer_font.subscribe(font=>{
@@ -250,6 +254,11 @@ export class ChatFriendsListComponent implements OnInit {
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
 
   ngOnInit() {
+    
+    this.title.setTitle('LinkArts – BD, Dessins et Ecrits');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+
+    
     let THIS=this;
     this.active_section = this.route.snapshot.data['section'];
     if(this.active_section==2){

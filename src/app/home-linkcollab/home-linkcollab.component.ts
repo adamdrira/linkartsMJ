@@ -7,6 +7,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupLinkcollabFiltersComponent } from '../popup-linkcollab-filters/popup-linkcollab-filters.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ConstantsService } from '../services/constants.service';
+import { Title, Meta } from '@angular/platform-browser';
 
 declare var Swiper: any
 
@@ -76,7 +77,11 @@ export class HomeLinkcollabComponent implements OnInit {
     private Ads_service:Ads_service,
     public dialog: MatDialog,
     private constants:ConstantsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+
+    private title: Title,
+    private meta: Meta
+    
     ) {
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
@@ -133,6 +138,10 @@ export class HomeLinkcollabComponent implements OnInit {
   /*********************************************************************** */
   /*********************************************************************** */
   ngOnInit() {
+    
+    this.title.setTitle("LinkCollab – annonces de collaboration pour artistes et éditeurs");
+    this.meta.updateTag({ name: 'description', content: "Annonces de recherche pour dessinateurs, illustrateurs, écrivains, et scénaristes." });
+
     let THIS=this;
     window.scroll(0,0);
     this.open_category(0, true);

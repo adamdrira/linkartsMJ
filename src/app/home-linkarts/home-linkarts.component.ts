@@ -15,6 +15,8 @@ import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 
+import { Meta, Title } from '@angular/platform-browser';
+
 declare var Swiper: any;
 
 @Component({
@@ -32,7 +34,10 @@ export class HomeLinkartsComponent implements OnInit {
     private deviceService: DeviceDetectorService,
     private Profile_Edition_Service:Profile_Edition_Service,
     private cd:ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    
+    private title: Title,
+    private meta: Meta
     
     ) {
 
@@ -78,6 +83,12 @@ export class HomeLinkartsComponent implements OnInit {
   change_profile_number=0;
   device_info='';
   ngOnInit() {
+
+    
+    this.title.setTitle('LinkArts – BD, Dessins et Ecrits');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+
+
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
     this.route.data.subscribe(resp => {

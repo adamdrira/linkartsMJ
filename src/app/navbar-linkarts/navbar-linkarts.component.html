@@ -175,7 +175,7 @@
                           <div class="swiper-wrapper">
                               <div class="swiper-slide" *ngFor="let item of first_filters[indice_title_selected];let i=index">
                                   <a class="element" *ngIf="item!=''"
-                                    (click)="cancel_research();not_using_chat()" [routerLink]="open_research_style_and_tags(i)">
+                                    (click)="cancel_research();not_using_chat();update_metas(i);" [routerLink]="open_research_style_and_tags(i)">
                                     <span>
                                       {{item}}
                                     </span>

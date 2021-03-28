@@ -11,7 +11,7 @@ import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Writing_Upload_Service} from '../services/writing.service';
 import {Ads_service} from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer, Meta, SafeUrl, Title } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ConstantsService } from '../services/constants.service';
 
@@ -51,6 +51,8 @@ export class MainSearchbarResultsComponent implements OnInit {
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
     private router:Router,
+    private title: Title,
+    private meta: Meta,
   ) { 
     navbar.visibility_observer_font.subscribe(font=>{
       if(font){
@@ -179,6 +181,10 @@ export class MainSearchbarResultsComponent implements OnInit {
         return;
       }
       this.first_filter_selected=index1;
+      
+      this.title.setTitle(this.first_filter + " - LinkArts");
+      this.meta.updateTag({ name: 'description', content: this.first_filter + " en ligne gratuit sur LinkArts, site français dédié aux artistes et professionnels du monde de l’édition." });
+
       let index2=this.second_filters[this.indice_title_selected].indexOf(this.second_filter);
       if(index1<0 &&  this.second_filter!="all"){
         this.location.go('/');
@@ -273,6 +279,10 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.second_filter="all";
       this.first_filter_selected=0;
       this.location.go(`/main-research/styles/tags/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
+
+      this.title.setTitle(this.first_filter + " - LinkArts");
+      this.meta.updateTag({ name: 'description', content: this.first_filter + " en ligne gratuit sur LinkArts, site français dédié aux artistes et professionnels du monde de l’édition." });
+
       this.cd.detectChanges();
       this.initialize_swiper()
       this.swiper.update();
@@ -818,6 +828,10 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.first_filter_selected=i;
       this.first_filter=this.first_filters[this.indice_title_selected][i];
       this.location.go(`/main-research/styles/tags/1/${this.category}/${this.first_filter}/${this.second_filter}`);
+
+      this.title.setTitle(this.first_filter + " - LinkArts");
+      this.meta.updateTag({ name: 'description', content: this.first_filter + " en ligne gratuit sur LinkArts, site français dédié aux artistes et professionnels du monde de l’édition." });    
+
       this.manage_sections_sg();
     }
     
@@ -831,11 +845,17 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.second_filter="all";
      
       this.location.go(`/main-research/styles/tags/1/${this.category}/${this.first_filter}/all`);
+      this.title.setTitle(this.first_filter + " - LinkArts");
+      this.meta.updateTag({ name: 'description', content: this.first_filter + " en ligne gratuit sur LinkArts, site français dédié aux artistes et professionnels du monde de l’édition." });  
     }
     else{
       this.second_filter_selected=i;
       this.second_filter=this.second_filters[this.indice_title_selected][i];
       this.location.go(`/main-research/styles/tags/1/${this.category}/${this.first_filter}/${this.second_filter}`);
+      
+      this.title.setTitle(this.first_filter + " - LinkArts");
+      this.meta.updateTag({ name: 'description', content: this.first_filter + " en ligne gratuit sur LinkArts, site français dédié aux artistes et professionnels du monde de l’édition." });    
+
     }
     this.manage_sections_sg();
   }
@@ -967,6 +987,11 @@ export class MainSearchbarResultsComponent implements OnInit {
       return "/main-research/styles/tags/1/"+this.list_of_real_categories[title_selected]+"/"+this.first_filters[title_selected][filter1]+"/all";
     }
     return "/";
+  }
+
+  update_metas(filter1,filter2,title_selected) {
+    this.title.setTitle(this.first_filters[title_selected][filter1] + " - LinkArts");
+    this.meta.updateTag({ name: 'description', content: this.first_filters[title_selected][filter1] + " en ligne gratuit sur LinkArts, site français dédié aux artistes et professionnels du monde de l’édition." });    
   }
 
   get_linkcollab(filter1,filter2,title_selected){

@@ -30,6 +30,9 @@ import { Ads_service } from '../../app/services/ads.service'
 import { trigger, transition, style, animate } from '@angular/animations';
 import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
+
+import { Meta, Title } from '@angular/platform-browser';
+
 declare var $: any;
 
 
@@ -82,6 +85,9 @@ export class AccountComponent implements OnInit {
     public dialog: MatDialog,
     private Emphasize_service:Emphasize_service,
     private Ads_service:Ads_service,
+    
+    private meta: Meta,private title: Title
+
     ) {
 
     navbar.visibility_observer_font.subscribe(font=>{
@@ -450,6 +456,10 @@ export class AccountComponent implements OnInit {
         //this.update_background_position( this.opened_section );;
 
         this.author_name = user.firstname + ' ' + user.lastname;
+
+        this.title.setTitle( "@"+this.pseudo+" • LinkArts : BD, Dessins et Ecrits" );
+        this.meta.updateTag({ name: 'description', content: "Découvrir le profil de "+this.author_name+", ses œuvres, annonces, et abonnements." });
+
         this.cd.detectChanges();
         if(user.status=="suspended"){
           this.gender=user.gender;
@@ -491,6 +501,10 @@ export class AccountComponent implements OnInit {
         }
         this.author=user;
         this.author_name = user.firstname + ' ' + user.lastname;
+        
+        this.title.setTitle( "@"+this.pseudo+" • LinkArts : BD, Dessins et Ecrits" );
+        this.meta.updateTag({ name: 'description', content: "Découvrir le profil de "+this.author_name+", ses œuvres, annonces, et abonnements." });
+        
         this.gender=user.gender;
         this.firstName=user.firstname;
         this.lastName=user.lastname;
