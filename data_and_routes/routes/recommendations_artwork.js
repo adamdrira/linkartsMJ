@@ -3,21 +3,21 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 
 /*const pool = new Pool({
-  port: 5432,
-  database: 'linkarts',
-  user: 'postgres',
-  password: 'test',
-  host: 'localhost',
-});*/
-
-const pool = new Pool({
-  port: 5432,
-  database: 'linkarts',
-  user: 'adamdrira',
-  password: 'E273adamZ9Qvps',
-  host: 'localhost',
-  //dialect: 'postgres'
-});
+    port: 5432,
+    database: 'linkarts',
+    user: 'postgres',
+    password: 'test',
+    host: 'localhost',
+  });*/
+  
+  const pool = new Pool({
+    port: 5432,
+    database: 'linkarts',
+    user: 'adamdrira',
+    password: 'E273adamZ9Qvps',
+    host: 'localhost',
+    //dialect: 'postgres'
+  });
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -60,7 +60,8 @@ const get_comics_recommendations_by_author = (request, response) => {
 
   pool.query('SELECT * FROM list_of_contents  WHERE id_user=$1 AND status=$4 AND  publication_category=$2 AND id NOT IN (SELECT id FROM list_of_contents WHERE publication_category=$2 AND publication_id=$3) ORDER BY "createdAt" DESC limit 4', [id_user,"comic",publication_id,"ok"], (error, results) => {
     if (error) {
-        response.status(500).send([{error:err}])
+      
+        response.status(500).send([{error:error}])
     }
     else{
         let result = JSON.parse(JSON.stringify(results.rows));
@@ -70,7 +71,8 @@ const get_comics_recommendations_by_author = (request, response) => {
                 if (result[i].format=="one-shot"){
                     pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid=$1 AND bd_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
                     if (error) {
-                        response.status(500).send([{error:err}])
+                      
+                        response.status(500).send([{error:error}])
                     }
                     else{
                         let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -86,7 +88,8 @@ const get_comics_recommendations_by_author = (request, response) => {
                   
                         pool.query('SELECT * FROM liste_bd_serie WHERE authorid=$1 AND bd_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
                         if (error) {
-                            response.status(500).send([{error:err}])
+                          
+                            response.status(500).send([{error:error}])
                         }
                         else{
                             let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -128,7 +131,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
   
     pool.query('SELECT * FROM list_of_contents WHERE id_user=$1 AND publication_category=$2 AND status=$4 AND id NOT IN (SELECT id FROM list_of_contents WHERE publication_category=$2 AND publication_id=$3) ORDER BY "createdAt" DESC limit 4', [id_user,"drawing",publication_id,"ok"], (error, results) => {
       if (error) {
-        response.status(500).send([{error:err}])
+        
+        response.status(500).send([{error:error}])
       }
       else{
           let result = JSON.parse(JSON.stringify(results.rows));
@@ -138,7 +142,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
                 if (result[i].format=="one-shot"){
                     pool.query('SELECT * FROM liste_drawings_one_page  WHERE authorid=$1 AND drawing_id=$2 AND status=$3', [id_user,result[i].publication_id ,"public"], (error, results2) => {
                         if (error) {
-                            response.status(500).send([{error:err}])
+                          
+                          response.status(500).send([{error:error}])
                         }
                         else{
                             let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -154,7 +159,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
                     // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                     pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid=$1 AND drawing_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
                         if (error) {
-                            response.status(500).send([{error:err}])
+                          
+                          response.status(500).send([{error:error}])
                         }
                         else{
                             let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -197,7 +203,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
   
     pool.query('SELECT * FROM list_of_contents WHERE id_user=$1 AND publication_category=$2 AND status=$4 AND id NOT IN (SELECT id FROM list_of_contents WHERE publication_category=$2 AND publication_id=$3) ORDER BY "createdAt" DESC limit 4', [id_user,"writing",publication_id,"ok"], (error, results) => {
       if (error) {
-        response.status(500).send([{error:err}])
+        
+        response.status(500).send([{error:error}])
       }
       else{
           let result = JSON.parse(JSON.stringify(results.rows));
@@ -207,7 +214,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                     pool.query('SELECT * FROM liste_writings WHERE authorid=$1 AND writing_id=$2 AND status=$3', [id_user,result[i].publication_id ,"public"], (error, results2) => {
                     if (error) {
-                        response.status(500).send([{error:err}])
+                      
+                      response.status(500).send([{error:error}])
                     }
                     else{
                         let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -230,7 +238,7 @@ const get_drawings_recommendations_by_author = (request, response) => {
 
 
 
-    const get_artwork_recommendations_by_tag = (req, res) => {
+    const get_artwork_recommendations_by_tag = (req, response) => {
         if( ! req.headers['authorization'] ) {
             return response.status(401).json({msg: "error"});
         }
@@ -252,7 +260,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
      
         pool.query('  SELECT  publication_category,format,target_id,research_string,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5 OR secondtag=$5 OR thirdtag=$5) AND style=$6  AND id not in (SELECT id from list_of_navbar_researches where publication_category=$1 and format=$4 and target_id=$7) GROUP BY publication_category,format,target_id,research_string  ORDER BY count(*) DESC LIMIT $3 ', [category,status,limit,format,second_filter,first_filter,target_id], (error, results) => {
             if (error) {
-                response.status(500).send([{error:err}])
+              
+              response.status(500).send([{error:error}])
             }
             else{
                 let result = JSON.parse(JSON.stringify(results.rows));
@@ -262,7 +271,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
                  
                     pool.query('  SELECT  publication_category,format,target_id,research_string,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5 OR secondtag=$5 OR thirdtag=$5) AND style!=$6  AND id not in (SELECT id from list_of_navbar_researches where publication_category=$1 and format=$4 and target_id=$7) GROUP BY publication_category,format,target_id,research_string  ORDER BY count(*) DESC LIMIT $3 '  , [category,status,new_limit,format,second_filter,first_filter,target_id], (error, results2) => {
                         if (error) {
-                            response.status(500).send([{error:err}])
+                          
+                          response.status(500).send([{error:error}])
                         }
                         else{
                             let result2 = JSON.parse(JSON.stringify(results2.rows));
