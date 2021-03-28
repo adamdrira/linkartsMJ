@@ -197,8 +197,10 @@ wss.on('connection', (ws, req)=>{
               var yesterday = new Date();
               yesterday.setDate(yesterday.getDate() - 1);
               db.users_connexions.findOne({
-                id_user:id_friend,
-                createdAt: {[Op.gte]: yesterday}
+                where:{
+                  id_user:id_friend,
+                  createdAt: {[Op.gte]: yesterday}
+                }
               }).then(r=>{
                 if(!r){
                   chat_seq.list_of_chat_emails.findOne({
@@ -215,38 +217,83 @@ wss.on('connection', (ws, req)=>{
                         "status":"friend",
                       })
 
-                      let user_name='';
-
                       db.users.findOne({
                         where:{
                           id:id_friend,
                         }
                         
                       }).then(user_found=>{
-                        user_name= user_found.firstname + ' ' + user_found.lastname;
-                        let mail_to_send='';
-                        let name = user_name;
+                        let name = user_found.firstname + ' ' + user_found.lastname;
+                        let text='';
                         if(user_found.gender=="Homme"){
-                          mail_to_send=`<p>Cher ${name},</p>`
-                          }
-                          else if(user_found.gender=="Femme"){
-                          mail_to_send=`<p>Chère ${name},</p>`
-                          }
-                          else if(user_found.gender=="Groupe"){
-                          mail_to_send=`<p>Chers membres du groupe ${name},</p>`
-                          }
+                          text=`Cher ${name},`
+                        }
+                        else if(user_found.gender=="Femme"){
+                          text=`Chère ${name},`
+                        }
+                        else if(user_found.gender=="Groupe"){
+                          text=`Chers membres du groupe ${name},`
+                        }
+
+                          
   
+                          let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+                          mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+                            mail_to_send+=`
+                            <table style="width:100%;margin-bottom:20px">
+                                <tr id="tr1">
+                                    <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
+                                        <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
+                                    </td>
+                                </tr>
+                
+                
+                                <tr id="tr2" >
+                                    <td  align="center" style="background: rgb(2, 18, 54)">
+                                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                                        <div style="height:1px;width:20px;background:white;"></div>
+                                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Messagerie</p>
+                                    </td>
+                                </tr>
+                            </table>`;
+                
                           
-                          if(messageArray.message && messageArray.message.length>0){
-                            mail_to_send+=`<p>Vous venez de recevoir un message de la part de l'utilisateur @${messageArray.id_user_name} : </p>`
-                            mail_to_send+=`<p>"${messageArray.message}".</p>`
-                          }
-                          
-                          
-                          mail_to_send+=`<p><a href="http://localhost:4200/account/for_chat/${user_found.nickname}/${user_found.id}/${messageArray.id_user_name}/${id_user}">Cliquer ici</a> pour ouvrir la messagerie.</p>`
-                          
-                          mail_to_send+=`<p>Très sincèrement, l'équipe de LinkArts.</p>`
-  
+                            mail_to_send+=`
+                            <table style="width:100%;margin:25px auto;">
+                              <tr id="tr3">
+                
+                                  <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${text}</p>
+                                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous venez de recevoir un message de la part de l'utilisateur <b>${messageArray.id_user_name}</b>.</p>
+                                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Cliquez sur le bouton ci-dessous pour accéder à la messagerie et découvrir le message : </p>
+                
+                                      <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                                          <a href="https://www.linkarts.fr/account/for_chat/${user_found.nickname}/${user_found.id}/${messageArray.id_user_name}/${id_user}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                              Accéder à la messagerie
+                                          </a>
+                                      </div>
+                
+                                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+                                      <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                                  </td>
+                
+                              </tr>
+                            </table>`
+                
+                            mail_to_send+=`
+                            <table style="width:100%;margin:25px auto;">
+                                <tr id="tr4">
+                                    <td align="center">
+                                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                                    </td>
+                
+                                </tr>
+                            </table>`
+                
+                          mail_to_send+='</div>'
+                          mail_to_send+='</div>'
+
   
                           const transport = nodemailer.createTransport({
                             host: "pro2.mail.ovh.net",
@@ -263,25 +310,20 @@ wss.on('connection', (ws, req)=>{
                         
                           var mailOptions = {
                             from: 'Linkarts <services@linkarts.fr>', // sender address
-                            to:"appaloosa-adam@hotmail.fr",
-                            subject: `Notification de la messagerie`, // Subject line
+                            to:user_found.email,
+                            //to:"appaloosa-adam@hotmail.fr",
+                            subject: `Messagerie`, // Subject line
                             html:mail_to_send , // html body
                           };
                           transport.sendMail(mailOptions, (error, info) => {
-                            if (error) {
-                              res.status(200).send([{error:error}])
-                            } else {
-                              res.status(200).send([{sent:'Message sent ' + info.messageId}])
-                            }
+                            
                           })
                       })
                     }
-                    send_message_to_friend();
                   })
                 }
-                else{
-                  send_message_to_friend();
-                }
+                send_message_to_friend();
+                
               })
              
             }
@@ -940,10 +982,10 @@ app.post('/get_users_connected_in_the_chat', function(req, res) {
   const Op = Sequelize.Op;
   db.users_connexions.findAll({
     attributes: [
-        [Sequelize.fn('MAX', Sequelize.col('createdAt')), 'max'],'id_user','status','nickname','deconnexion_time',
+        [Sequelize.fn('MAX', Sequelize.col('createdAt')), 'max'],'id_user','status','deconnexion_time',
       
     ],
-    group:['id_user','status','nickname','deconnexion_time'],
+    group:['id_user','status','deconnexion_time'],
     where:{
       [Op.and]:[{id_user: list_of_friends},{id_user:{[Op.notIn]: list_of_users_connected_only}}],
       status:"websocket",
