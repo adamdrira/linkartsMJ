@@ -753,8 +753,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     });
 
     
-                   //on valide l'upload
-  router.get('/retrieve_drawing_onepage_info_user_id/:user_id', function (req, res) {
+  router.get('/retrieve_drawing_onepage_info_by_pseudo/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -767,24 +766,37 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
         }
       }
 
+      const pseudo = req.params.pseudo;
+      list_of_users.findOne({
+          where:{
+              nickname:pseudo
+          }
+      }).catch(err => {
+              
+        res.status(500).json({msg: "error", details: err});		
+      })
+      .then(user=>{
+        if(user){
+          drawings_one_page.findAll({
+             where: {
+               authorid: user.id,
+               status:"public"
+             },
+             order: [
+                 ['drawing_id', 'ASC']
+               ],
+           })
+           .catch(err => {
+         
+             res.status(500).json({msg: "error", details: err});		
+           }).then(drawings =>  {
+             res.status(200).send([drawings]);
+           }); 
+        }
+      })
    
 
-       const user_id= parseInt(req.params.user_id);
-         drawings_one_page.findAll({
-            where: {
-              authorid: user_id,
-              status:"public"
-            },
-            order: [
-                ['drawing_id', 'ASC']
-              ],
-          })
-          .catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawings =>  {
-            res.status(200).send([drawings]);
-          }); 
+      
     
     });
 
