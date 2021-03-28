@@ -30,7 +30,7 @@ function get_current_user(token){
 };
 
 router.post('/add_primary_information_report', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -42,9 +42,6 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
   let current_user = get_current_user(req.cookies.currentUser);
-  console.log("add_primary_information_report")
-
-
   const type_of_report = req.body.type_of_report;
   const id_receiver = req.body.id_receiver;
   const publication_category = req.body.publication_category;
@@ -65,7 +62,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     })
     .catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
       if(publication_category=="comic"){
@@ -76,7 +73,7 @@ console.log("checking current: " + req.headers['authorization'] );
               status:"public",
             }
           }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
             if(bd){
@@ -111,7 +108,7 @@ console.log("checking current: " + req.headers['authorization'] );
               status:"public",
             }
           }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
             if(bd){
@@ -149,7 +146,7 @@ console.log("checking current: " + req.headers['authorization'] );
               status:"public",
             }
           }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
             if(bd){
@@ -184,7 +181,7 @@ console.log("checking current: " + req.headers['authorization'] );
               status:"public",
             }
           }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
             if(bd){
@@ -220,7 +217,7 @@ console.log("checking current: " + req.headers['authorization'] );
             writing_id:publication_id
           }
         }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
           if(bd){
@@ -254,7 +251,7 @@ console.log("checking current: " + req.headers['authorization'] );
             id:publication_id
           }
         }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
           if(bd){
@@ -288,7 +285,6 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     function report_content_and_create(bd){
-      console.log("report_content_and_create")
       List_of_contents.findOne({
         where:{
           publication_category: publication_category,
@@ -298,12 +294,11 @@ console.log("checking current: " + req.headers['authorization'] );
         }
         
       }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content=>{
         if(content){
           let list_of_reporters=content.list_of_reporters;
-          console.log(list_of_reporters)
           if(!list_of_reporters ){
             list_of_reporters=[current_user];
             content.update({
@@ -333,7 +328,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
 router.post('/check_if_content_reported', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -344,14 +339,11 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-  console.log("check_if_content_reported")
   let current_user = get_current_user(req.cookies.currentUser);
   const publication_category = req.body.publication_category;
   const publication_id = req.body.publication_id;
   const format = req.body.format;
   const chapter_number = req.body.chapter_number;
-
-  console.log(publication_category)
   //if(!(format=="serie" && chapter_number==0)){
     reports.findOne({
       where:{
@@ -363,56 +355,26 @@ console.log("checking current: " + req.headers['authorization'] );
           
       })
       .catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r =>  {
-        console.log("result")
-        console.log(r)
         if(r){
           res.status(200).send([{nothing:"nothing"}])
         }
         else{
-          console.log("send r")
           res.status(200).send([{error:"nothing_found"}])
         }
         
       
       }); 
-  /*}
-  else{
-    reports.findOne({
-      where:{
-        id_user:current_user,
-        publication_category: publication_category,
-        publication_id:publication_id,
-        format:format,
-      }
-          
-      })
-      .catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(r =>  {
-        console.log("result")
-        console.log(r)
-        if(r){
-          res.status(200).send([{nothing:"nothing"}])
-        }
-        else{
-          console.log("send r")
-          res.status(200).send([r])
-        }
-        
-      
-      }); 
-  }*/
+
  
 
 });
 
 
 router.post('/cancel_report', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -423,7 +385,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-  console.log("cancel_report")
   let current_user = get_current_user(req.cookies.currentUser);
   const publication_category = req.body.publication_category;
   const publication_id = req.body.publication_id;
@@ -439,7 +400,7 @@ console.log("checking current: " + req.headers['authorization'] );
           
       })
       .catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(report =>  {
         if(report){
@@ -454,7 +415,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   status:"public",
                 }
               }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
                 if(bd){
@@ -483,7 +444,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   status:"public",
                 }
               }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
                 if(bd){
@@ -515,7 +476,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   status:"public",
                 }
               }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
                 if(bd){
@@ -544,7 +505,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   status:"public",
                 }
               }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
                 if(bd){
@@ -575,7 +536,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 status:"public",
               }
             }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
               if(bd){
@@ -604,7 +565,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 status:"public",
               }
             }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd=>{
               if(bd){
@@ -629,7 +590,6 @@ console.log("checking current: " + req.headers['authorization'] );
          
         }
         else{
-          console.log("send r")
           res.status(200).send([{error:"nothing_found"}])
         }
         
@@ -648,7 +608,7 @@ console.log("checking current: " + req.headers['authorization'] );
           }
          
         }).catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content=>{
           if(content){
@@ -694,7 +654,6 @@ router.post('/upload_attachments_reports/:attachment_number/:id_report/:file_nam
     filename: (req, file, cb) => {
       name= file.originalname;
       name = name.substring(0,name.indexOf('.'));
-      console.log(name);
       var today = new Date();
       var ms = String(today.getMilliseconds()).padStart(2, '0');
       var ss = String(today.getSeconds()).padStart(2, '0');
@@ -724,7 +683,7 @@ router.post('/upload_attachments_reports/:attachment_number/:id_report/:file_nam
       }
     })
     .catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(report =>  {
       if(attachment_number==1){
@@ -732,7 +691,7 @@ router.post('/upload_attachments_reports/:attachment_number/:id_report/:file_nam
             "attachment_name_one" :file_name,
           })
           .catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(report=>{
             res.status(200).send([report])
@@ -744,7 +703,7 @@ router.post('/upload_attachments_reports/:attachment_number/:id_report/:file_nam
           "attachment_name_two" :file_name,
         })
         .catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(report=>{
           res.status(200).send([report])
@@ -756,7 +715,7 @@ router.post('/upload_attachments_reports/:attachment_number/:id_report/:file_nam
           "attachment_name_three" :file_name,
         })
         .catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(report=>{
           res.status(200).send([report])
@@ -768,7 +727,7 @@ router.post('/upload_attachments_reports/:attachment_number/:id_report/:file_nam
           "attachment_name_four" :file_name,
         })
         .catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(report=>{
           res.status(200).send([ad])
@@ -780,7 +739,7 @@ router.post('/upload_attachments_reports/:attachment_number/:id_report/:file_nam
           "attachment_name_five" :file_name,
         })
         .catch(err => {
-			console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(report=>{
           res.status(200).send([report])
