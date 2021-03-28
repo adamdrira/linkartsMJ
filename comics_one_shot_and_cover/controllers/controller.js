@@ -517,7 +517,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
 
     router.post('/upload_cover_bd_oneshot', function (req, res) {
 
-    
+      console.log("uplaod cover")
 
       let current_user = get_current_user(req.cookies.currentUser);
       if(!current_user){
@@ -554,6 +554,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       }).any();
 
       upload_cover(req, res, function(err){
+        console.log(req.files)
       
         let filename = "./data_and_routes/covers_bd/" + file_name ;
          (async () => {
@@ -751,7 +752,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
 
 
                    //on valide l'upload
-  router.get('/retrieve_bd_by_user_id/:user_id', function (req, res) {
+  router.get('/retrieve_bd_by_pseudo/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -764,26 +765,39 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
         }
       }
 
+      const pseudo = req.params.pseudo;
+      list_of_users.findOne({
+          where:{
+              nickname:pseudo
+          }
+      }).catch(err => {
+              
+        res.status(500).json({msg: "error", details: err});		
+      })
+      .then(user=>{
+        if(user){
+          Liste_bd_os.findAll({
+              where: {
+                authorid: user.id,
+                status:"public"
+              },
+              order: [
+                  ['createdAt', 'DESC']
+                ],
+            })
+            .catch(err => {
+                
+              res.status(500).json({msg: "error", details: err});		
+            }).then(bd =>  {
+              
+              res.status(200).send([bd]);
+              
+            }); 
+        }
+      })
   
 
-       const user_id= parseInt(req.params.user_id);
-         Liste_bd_os.findAll({
-            where: {
-              authorid: user_id,
-              status:"public"
-            },
-            order: [
-                ['createdAt', 'DESC']
-              ],
-          })
-          .catch(err => {
-            	
-            res.status(500).json({msg: "error", details: err});		
-          }).then(bd =>  {
-            
-            res.status(200).send([bd]);
-            
-          }); 
+      
     });
 
     router.post('/get_number_of_bd_oneshot', function (req, res) {
