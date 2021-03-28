@@ -973,7 +973,7 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   open_account() {
-    return "/account/"+this.pseudo+"/"+this.authorid;
+    return "/account/"+this.pseudo;
   };
   get_link() {
     return "/main-research/styles/tags/1/Comic/" + this.style + "/all";
@@ -1116,6 +1116,7 @@ export class ArtworkComicComponent implements OnInit {
 
 
   refresh_swiper_pagination() {
+    console.log("refresh swiper")
     if( this.swiper ) {
       if( this.swiper.slides ) {
         
@@ -1123,6 +1124,7 @@ export class ArtworkComicComponent implements OnInit {
           $(".top-container .pages-controller-container input").val( this.pagesnumber-this.swiper.activeIndex );
         }
         else{
+          console.log(this.swiper.activeIndex + 1 )
           $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
         }
       }

@@ -48,7 +48,6 @@ export class MediaComicsComponent implements OnInit {
           this.number_of_comics_to_show=6;
         }
         if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show && this.last_consulted_comics_retrieved){
-          console.log("change hist")
           this.get_history_recommendation();
         }
         this.current_number_of_comics_to_show=this.number_of_comics_to_show;
@@ -96,7 +95,6 @@ export class MediaComicsComponent implements OnInit {
       this.number_of_comics_to_show=6;
     }
     this.current_number_of_comics_to_show=this.number_of_comics_to_show;
-    console.log("ini")
     this.get_history_recommendation();
       
   }
@@ -110,9 +108,6 @@ export class MediaComicsComponent implements OnInit {
     this.last_consulted_comics=[];
     this.number_of_comics_for_history= this.number_of_comics_to_show;
     this.navbar.get_last_researched_navbar_for_recommendations("Comic",0,this.number_of_comics_for_history).subscribe(m=>{
-      console.log("hist")
-      console.log(m[0])
-      
       if(m[0].length>0){
         let list=m[0];
         let compteur=0;

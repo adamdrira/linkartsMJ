@@ -323,7 +323,7 @@ open_my_account() {
   this.close_dialog()
 }
 get_my_account() {
-  return "/account/" + this.pseudo + "/" + this.user_id + "/my_account";
+  return "/account/" + this.pseudo + "/my_account";
 }
 
 go_to_home(){
@@ -341,12 +341,12 @@ go_to_linkcollab(){
 
 really_open_my_profile() {
   this.not_using_chat();
-  this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
+  this.router.navigate([`/account/${this.pseudo}`]);
   this.close_dialog()
 }
 really_open_my_account() {
   this.not_using_chat();
-  this.router.navigate([`/account/${this.pseudo}/${this.user_id}/my_account`]);
+  this.router.navigate([`/account/${this.pseudo}/my_account`]);
   this.close_dialog()
 }
 
@@ -373,7 +373,7 @@ get_my_favorite() {
 }
 
 get_account_for_notification(notif:any) {
-  return "/account/" + notif.id_user_name + "/" + notif.id_user;
+  return "/account/" + notif.id_user_name ;
 }
 open_comic(notif:any) {
   this.not_using_chat();

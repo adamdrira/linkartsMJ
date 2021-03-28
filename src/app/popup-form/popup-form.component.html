@@ -72,9 +72,6 @@
                     <div class="loading-dots" *ngIf="!pseudo_found && registerForm5.value.fdSearchbar">
                         &nbsp; <span>.</span><span>.</span><span>.</span>
                     </div>
-                    <!--<div class="display-message" *ngIf="!pp_found_loaded && !registerForm5.value.fdSearchbar">
-                        Rechercher un artiste
-                        </div>-->
                         
                     <div class="subscriber-card" *ngIf="pseudo_found" [ngClass]="{'invisible':!pp_found_loaded}" [@enterAnimation]>
                         <div class="subscriber">
@@ -106,7 +103,9 @@
     </div>
 
     <button class="submit-button" (click)="validate_add();">
-        <span>Valider</span>
+        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading">done_all</mat-icon>
+        <span *ngIf="!loading">Valider</span>
+        <mat-spinner *ngIf="loading" diameter="25"  style="margin:auto;"></mat-spinner>
     </button>
 
     <div class="error">

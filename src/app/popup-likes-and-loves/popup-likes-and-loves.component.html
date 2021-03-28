@@ -7,7 +7,7 @@
 
 
 
-<div class="scrollable-container" #myScrollContainer>
+<div class="scrollable-container" #myScrollContainer  (scroll)="onScroll()">
     <div class="component-container">
         
 
@@ -68,3 +68,9 @@
 
     </div>
 </div>
+
+<div class="for-spinner" *ngIf="loading_more">
+    <mat-spinner  diameter="25"  style="margin:auto;"></mat-spinner>
+</div>
+
+

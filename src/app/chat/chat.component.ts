@@ -3604,7 +3604,7 @@ remove_contact(){
 
   open_friend_link() {
     
-    return "/account/" + this.friend_pseudo +"/"+ this.friend_id;
+    return "/account/" + this.friend_pseudo;
   }
 
   set_not_using_chat(){

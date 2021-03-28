@@ -887,11 +887,11 @@ export class CommentElementComponent implements OnInit {
   
 
   open_account() {
-    return "/account/"+this.pseudo+"/"+this.authorid;
+    return "/account/"+this.pseudo;
   };
 
   open_response_account(i:number) {
-    return "/account/"+this.pseudo_list[i]+"/"+this.responses_list[i].authorid;
+    return "/account/"+this.pseudo_list[i];
   }
 
   @Output() click_on_user2 = new EventEmitter<boolean>();

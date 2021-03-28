@@ -667,7 +667,7 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   open_account() {
-    return "/account/"+this.pseudo+"/"+this.authorid;
+    return "/account/"+this.pseudo;
   };
 
   
@@ -1540,7 +1540,7 @@ pageRendered(e:any) {
               this.archive_loading=false;
               this.chatService.messages.next(message_to_send);
               this.close_popup();
-              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+              this.router.navigateByUrl( `/account/${this.pseudo}`);
               return;
             })
           });

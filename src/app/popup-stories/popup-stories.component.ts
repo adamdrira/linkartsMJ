@@ -53,7 +53,6 @@ export class PopupStoriesComponent implements OnInit {
 
   @ViewChild('swiperContainerStories') swiperContainerStories: ElementRef;
 
-  index_debut:number;
   list_index_debut=[];
   list_of_users_to_end=[];
  
@@ -61,13 +60,14 @@ export class PopupStoriesComponent implements OnInit {
 
   list_of_users=[];
   list_of_data=[];
-  index_id_of_user=this.data.index_id_of_user
+  index_id_of_user:number;
   for_account=this.data.for_account;
   show_icon=false;
   device_info='';
   ngOnInit() {
     let THIS=this;
-
+    console.log(this.data)
+    this.index_id_of_user=this.data.index_id_of_user;
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     this.navbar.add_page_visited_to_history(`/stories`,this.device_info).subscribe();
     
@@ -81,14 +81,15 @@ export class PopupStoriesComponent implements OnInit {
     if(!this.list_of_data[0]){
       this.list_of_users.splice(0,1);
       this.list_of_data.splice(0,1);
-      this.index_id_of_user-=-1;
+      this.index_id_of_user-=1;
     }
 
+    console.log( this.index_id_of_user)
 
     this.cd.detectChanges();
     
     var ua = navigator.userAgent.toLowerCase(); 
-    if (ua.indexOf('safari') != -1) { 
+    if (ua.indexOf('safari') > -1) { 
       if (ua.indexOf('chrome') > -1) {
         // Chrome
         this.swiper = new Swiper( this.swiperContainerStories.nativeElement, {
@@ -191,6 +192,9 @@ export class PopupStoriesComponent implements OnInit {
 
   createStory( user_id: number, index_debut: number,list_of_data:any) {
     
+    console.log("create story")
+    console.log(" user " + user_id)
+    console.log(" index_debut " + index_debut)
     this.story_loaded = true;
     
     let THIS = this;

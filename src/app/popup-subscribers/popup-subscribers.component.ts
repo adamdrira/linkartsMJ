@@ -66,45 +66,6 @@ export class PopupSubscribersComponent implements OnInit {
   number_of_subs_to_show=10;
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   ngOnInit() {
-    let int = setInterval(() => {
-
-      if(this.number_of_subs_to_show<this.list_of_subscribers.length){
-        let len = this.list_of_subscribers.length - this.number_of_subs_to_show;
-        let see_more=false;
-        if(len>10){
-          let compt =0
-          for(let i=0;i<10;i++){           
-            if(this.list_of_all_retrieved[ this.number_of_subs_to_show +i]){
-              compt++;
-            }
-          }
-          if(compt==10){
-            see_more=true;
-          }
-        }
-        else{
-          let compt =0
-          for(let i=0;i<len;i++){
-            if(this.list_of_all_retrieved[ this.number_of_subs_to_show +i]){
-              compt++;
-            }
-          }
-          if(compt==len){
-            see_more=true;
-          }
-        }
-        if(  see_more && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
-          this.number_of_subs_to_show+=10;
-        }
-
-      }
-      else if( this.number_of_subs_to_show>=this.list_of_subscribers.length){
-        clearInterval(int)
-      }
-      
-     
-    },10000)
-
     let n=this.list_of_subscribers.length;
     let compt=0;
     if(n>0){
@@ -155,6 +116,50 @@ export class PopupSubscribersComponent implements OnInit {
         }
         
       }
+    }
+  }
+
+  loading_more=false
+  onScroll(){
+    if(!this.loading_more && this.number_of_subs_to_show<this.list_of_subscribers.length && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+      let len = this.list_of_subscribers.length - this.number_of_subs_to_show;
+      let see_more=false;
+      this.loading_more=true;
+      if(len>10){
+        let compt =0
+        for(let i=0;i<10;i++){           
+          if(this.list_of_all_retrieved[ this.number_of_subs_to_show +i]){
+            compt++;
+          }
+        }
+        if(compt==10){
+          see_more=true;
+        }
+      }
+      else{
+        let compt =0
+        for(let i=0;i<len;i++){
+          if(this.list_of_all_retrieved[ this.number_of_subs_to_show +i]){
+            compt++;
+          }
+        }
+        if(compt==len){
+          see_more=true;
+        }
+      }
+      if(  see_more ){
+        this.number_of_subs_to_show+=10;
+        this.loading_more=false;
+        this.cd.detectChanges();
+      }
+      else{
+        let pause = setInterval(()=>{
+          this.loading_more=false;
+          this.onScroll()
+          clearInterval(pause)
+        },1000)
+      }
+
     }
   }
 
@@ -235,7 +240,7 @@ export class PopupSubscribersComponent implements OnInit {
 
   get_user_link(i:number) {
     if(this.list_of_subscribers_information[i]){
-      return "/account/"+ this.list_of_subscribers_information[i].nickname +"/"+ this.list_of_subscribers_information[i].id;
+      return "/account/"+ this.list_of_subscribers_information[i].nickname ;
     }
     return false
   }

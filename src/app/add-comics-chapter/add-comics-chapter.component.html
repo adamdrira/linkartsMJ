@@ -11,7 +11,7 @@
                 <img class="logo" (load)="load_logo()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
             </a>
             <span>Gestion des chapitres</span>
-            <a class="profile-picture-container" href="/account/{{pseudo}}/{{user_id}}"  >
+            <a class="profile-picture-container" href="/account/{{pseudo}}"  >
                 <img class="profile-picture" (load)="load_pp()" [src]="profile_picture"  [ngClass]="{'invisible':!pp_is_loaded}">
             </a>
         </div>

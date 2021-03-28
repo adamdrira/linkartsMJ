@@ -878,7 +878,7 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   open_account() {
-    return "/account/"+this.pseudo+"/"+this.authorid;
+    return "/account/"+this.pseudo;
   };
   get_link() {
     return "/main-research/styles/tags/1/Drawing/" + this.style + "/all";
@@ -2059,7 +2059,7 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
                 this.close_popup();
-                this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+                this.router.navigateByUrl( `/account/${this.pseudo}`);
                 return;
               })
             });
@@ -2088,7 +2088,7 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
                 this.close_popup();
-                this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+                this.router.navigateByUrl( `/account/${this.pseudo}`);
                 return;
               })
             });

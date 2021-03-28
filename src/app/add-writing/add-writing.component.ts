@@ -274,8 +274,7 @@ export class AddWritingComponent implements OnInit {
                   }
                   this.chatService.messages.next(message_to_send);
                   this.block_cancel=true;
-                  this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
-                  //window.location.href = `/account/${this.pseudo}/${this.user_id}`;
+                  this.router.navigate([`/account/${this.pseudo}`]);
                 }) 
               }); 
             })

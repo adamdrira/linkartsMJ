@@ -196,7 +196,7 @@ export class AddAdComponent implements OnInit {
       }
       this.chatService.messages.next(message_to_send);
       this.can_delete = false;
-      this.router.navigate([`/account/${this.pseudo}/${this.id}`]);
+      this.router.navigate([`/account/${this.pseudo}`]);
     }) 
     
   }

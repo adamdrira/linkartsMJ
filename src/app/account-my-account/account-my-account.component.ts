@@ -675,10 +675,13 @@ export class AccountMyAccountComponent implements OnInit {
             
           }
           else{
+            console.log(r[0])
+            console.log(r[0].user.list_of_members_validations)
+            console.log(r[0].user.list_of_members)
             let index=this.list_of_groups_ids.indexOf(id_group);
             let user_index= (this.list_of_members_ids_by_group[id_group]).indexOf(this.id_user)
             this.list_of_members_status_by_group[id_group][user_index]="validated";
-            if(r[0].user.list_of_members_validations.length==r[0].user.list_of_members.length){
+            if(r[0].user.list_of_members_validations && r[0].user.list_of_members_validations.length==r[0].user.list_of_members.length){
               for(let j=0;j< this.list_of_members_status_by_group[id_group].length;j++){
                 this.list_of_members_status_by_group[id_group][j]="validated";
               }

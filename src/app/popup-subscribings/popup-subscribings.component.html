@@ -21,7 +21,7 @@
         </ng-container>
     </div>
 
-    <div class="subscribers-container" *ngIf="list_of_subscribings.length>0 && first_check" [@enterAnimation] #myScrollContainer>
+    <div class="subscribers-container" *ngIf="list_of_subscribings.length>0 && first_check" [@enterAnimation] #myScrollContainer (scroll)="onScroll()">
         <div *ngFor="let item of list_of_subscribings_information.slice(0,number_of_subs_to_show); let i=index" class="subscriber-card" [ngClass]="{'really-invisible':!list_of_subscribings_information[i] }">
             
             
@@ -79,3 +79,6 @@
 
 </div>
 
+<div class="for-spinner" *ngIf="loading_more">
+    <mat-spinner  diameter="25"  style="margin:auto;"></mat-spinner>
+</div>

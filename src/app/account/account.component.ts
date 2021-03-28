@@ -26,13 +26,9 @@ import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Story_service } from '../services/story.service';
 import { NotificationsService } from '../services/notifications.service';
-import { Ads_service } from '../../app/services/ads.service'
 import { trigger, transition, style, animate } from '@angular/animations';
 import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
-import { Meta, Title } from '@angular/platform-browser';
-
 declare var $: any;
 
 
@@ -84,10 +80,6 @@ export class AccountComponent implements OnInit {
     private Albums_service:Albums_service,
     public dialog: MatDialog,
     private Emphasize_service:Emphasize_service,
-    private Ads_service:Ads_service,
-    
-    private meta: Meta,private title: Title
-
     ) {
 
     navbar.visibility_observer_font.subscribe(font=>{
@@ -376,7 +368,6 @@ export class AccountComponent implements OnInit {
 
 
     this.Profile_Edition_Service.retrieve_profile_data_links(this.user_id).subscribe(l=>{
-      console.log("links route")
       if(l[0].length>0){
         for(let i=0;i<l[0].length;i++){
           this.links_titles[i]=l[0][i].link_title;
@@ -393,7 +384,6 @@ export class AccountComponent implements OnInit {
     })
 
     this.route.data.subscribe(resp => {
-      console.log("second route")
       let r=resp.user_pp_pseudo;
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -425,12 +415,8 @@ export class AccountComponent implements OnInit {
     
 
     this.route.data.subscribe( resp => {
-      console.log("third route")
       let s = resp.user;
       let user=this.user_data;
-      console.log(user)
-      console.log("visitor")
-      console.log(s[0])
       this.visitor_id=s[0].id
       this.visitor_name=s[0].nickname;
       this.type_of_profile=s[0].status;
@@ -456,10 +442,6 @@ export class AccountComponent implements OnInit {
         //this.update_background_position( this.opened_section );;
 
         this.author_name = user.firstname + ' ' + user.lastname;
-
-        this.title.setTitle( "@"+this.pseudo+" • LinkArts : BD, Dessins et Ecrits" );
-        this.meta.updateTag({ name: 'description', content: "Découvrir le profil de "+this.author_name+", ses œuvres, annonces, et abonnements." });
-
         this.cd.detectChanges();
         if(user.status=="suspended"){
           this.gender=user.gender;
@@ -501,10 +483,6 @@ export class AccountComponent implements OnInit {
         }
         this.author=user;
         this.author_name = user.firstname + ' ' + user.lastname;
-        
-        this.title.setTitle( "@"+this.pseudo+" • LinkArts : BD, Dessins et Ecrits" );
-        this.meta.updateTag({ name: 'description', content: "Découvrir le profil de "+this.author_name+", ses œuvres, annonces, et abonnements." });
-        
         this.gender=user.gender;
         this.firstName=user.firstname;
         this.lastName=user.lastname;
@@ -1232,27 +1210,27 @@ export class AccountComponent implements OnInit {
 
       if( (i == 0) ) { 
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}`,this.device_info).subscribe();
-        this.location.go(`/account/${this.pseudo}/${this.user_id}`); 
+        this.location.go(`/account/${this.pseudo}`); 
       }
       else if( i == 1 ) { 
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks`,this.device_info).subscribe();
-        this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); 
+        this.location.go(`/account/${this.pseudo}/artworks`); 
       }
       else if( i == 2 ) { 
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/ads`,this.device_info).subscribe();
-        this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); 
+        this.location.go(`/account/${this.pseudo}/ads`); 
       }
       else if( i == 5 ) { 
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about`,this.device_info).subscribe();
-        this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); 
+        this.location.go(`/account/${this.pseudo}/about`); 
     }
       else if( i == 6 ) { 
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/archives`,this.device_info).subscribe();
-        this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); 
+        this.location.go(`/account/${this.pseudo}/archives`); 
       }
       else if( i == 7 ) {
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/my_account`,this.device_info).subscribe(); 
-        this.location.go(`/account/${this.pseudo}/${this.user_id}/my_account`); 
+        this.location.go(`/account/${this.pseudo}/my_account`); 
       }
     }
     
@@ -1307,15 +1285,15 @@ export class AccountComponent implements OnInit {
     this.opened_category=i;
     if( this.opened_category==0 && this.opened_section==1) { 
       this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/comics`,this.device_info).subscribe();
-      this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/comics`); 
+      this.location.go(`/account/${this.pseudo}/artworks/comics`); 
     }
     else if(this.opened_category==1 && this.opened_section==1 ) { 
       this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`,this.device_info).subscribe();
-      this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`); 
+      this.location.go(`/account/${this.pseudo}/artworks/drawings`); 
     }
     else if( this.opened_category==2 && this.opened_section==1 ) { 
       this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/writings`,this.device_info).subscribe();
-      this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/writings`); 
+      this.location.go(`/account/${this.pseudo}/artworks/writings`); 
     }
     this.add_album=-1;
     this.opened_album=-1;

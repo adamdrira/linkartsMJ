@@ -32,7 +32,7 @@
                 <span [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">Publier une annonce</span>
             </ng-container>
     
-            <a class="profile-picture-container" *ngIf="profile_picture_retrieved" href="/account/{{pseudo}}/{{user_id}}" [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">
+            <a class="profile-picture-container" *ngIf="profile_picture_retrieved" href="/account/{{pseudo}}" [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">
                 <img class="profile-picture" [src]="profile_picture"  (load)="load_pp()" >
             </a>
         </div>

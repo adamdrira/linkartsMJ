@@ -175,7 +175,7 @@
                           <div class="swiper-wrapper">
                               <div class="swiper-slide" *ngFor="let item of first_filters[indice_title_selected];let i=index">
                                   <a class="element" *ngIf="item!=''"
-                                    (click)="cancel_research();not_using_chat();update_metas(i);" [routerLink]="open_research_style_and_tags(i)">
+                                    (click)="cancel_research();not_using_chat()" [routerLink]="open_research_style_and_tags(i)">
                                     <span>
                                       {{item}}
                                     </span>
@@ -891,6 +891,21 @@
 
 
                     <div class="author-container" *ngIf="notif">
+                      <!-- ---------------------------favorites----------------------------------->
+                      <!-- ---------------------------favorites----------------------------------->
+                      <ng-container *ngIf="notif.type=='welcome'">
+
+                        <a (click)="close_notifications();not_using_chat();" [routerLink]="get_my_account()">
+                          <div class="left-container">
+                            <img src="../../assets/img/svg/Logo-LA3.svg" >
+                          </div>
+                          <div class="right-container">
+                            <span><b>Bienvenue sur Linkarts !</b> Vous pouvez dès à présent personnaliser votre page de profile et modifier vos informations de compte.</span>
+                          
+                            <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                          </div>
+                        </a>
+                      </ng-container>
                        <!-- ---------------------------subscribtion----------------------------------->
                       <!-- ---------------------------subscribtion----------------------------------->
                       <ng-container *ngIf="notif.type=='subscribtion'">

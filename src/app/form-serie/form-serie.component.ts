@@ -490,8 +490,7 @@ value:string="add";
               this.chatService.messages.next(message_to_send);
               this.block_cancel=true;
               this.Bd_CoverService.remove_covername();
-              this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
-              //window.location.href = `/account/${this.pseudo}/${this.user_id}`;
+              this.router.navigate([`/account/${this.pseudo}`]);
           }); 
           
           
@@ -530,7 +529,7 @@ value:string="add";
         }
         if(compt==0){
           
-          this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+          this.router.navigate( [ `/account/${this.pseudo}` ] );
           
         }
         else{
@@ -552,7 +551,7 @@ value:string="add";
                 comment_id:0,
               }
               this.chatService.messages.next(message_to_send);
-              this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+              this.router.navigate( [ `/account/${this.pseudo}` ] );
               
             }) 
           })

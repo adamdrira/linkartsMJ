@@ -615,7 +615,7 @@ export class AdPageComponent implements OnInit {
         this.Ads_service.delete_ad(this.item.id).subscribe(l=>{
           this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
             this.close_popup();
-            this.router.navigateByUrl( `/account/${this.pseudo}/${this.visitor_id}`);
+            this.router.navigateByUrl( `/account/${this.pseudo}`);
             return;
           })
         })
@@ -997,7 +997,7 @@ export class AdPageComponent implements OnInit {
   }
 
   get_response_author_link(i: number) {
-    return "/account/"+ this.list_of_pseudos[i] +"/" + this.list_of_ids[i];
+    return "/account/"+ this.list_of_pseudos[i] ;
   }
 
   responses(){
@@ -1279,7 +1279,7 @@ export class AdPageComponent implements OnInit {
   }
 
   open_account() {
-    return "/account/" + this.pseudo + "/" + this.item.id_user;
+    return "/account/" + this.pseudo ;
   };
   
   certified_account:boolean;  

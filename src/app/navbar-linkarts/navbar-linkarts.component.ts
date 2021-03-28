@@ -3,7 +3,7 @@ import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/cor
 import {ElementRef,Renderer2, ViewChild} from '@angular/core';
 import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
-import { DomSanitizer, Meta, SafeUrl, Title } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import {trigger, style, animate, transition} from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
@@ -73,10 +73,7 @@ export class NavbarLinkartsComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private Ads_service:Ads_service,
     private chatService:ChatService,
-    private NotificationsService:NotificationsService,    
-    private title: Title,
-    private meta: Meta,
-
+    private NotificationsService:NotificationsService,
     
     ) {
 
@@ -1306,7 +1303,7 @@ export class NavbarLinkartsComponent implements OnInit {
   /**************************************** ACCOUNT NAVIGATION  ***********************************/
   /**************************************** ACCOUNT NAVIGATION  ***********************************/
   get_my_profile() {
-    return "/account/" + this.pseudo + "/" + this.user_id;
+    return "/account/" + this.pseudo ;
   }
 
   go_to_home(){
@@ -1346,10 +1343,7 @@ export class NavbarLinkartsComponent implements OnInit {
   open_research_style_and_tags(i: number) {
     return "/main-research/styles/tags/1/" + this.list_of_real_categories[this.indice_title_selected] + "/" + this.first_filters[this.indice_title_selected][i] + "/all";
     
-  }
-  update_metas(i: number) {
-    this.title.setTitle( this.first_filters[this.indice_title_selected][i] + " - LinkArts");
-    this.meta.updateTag({ name: 'description', content: this.first_filters[this.indice_title_selected][i] + " en ligne gratuit sur LinkArts, site français dédié aux artistes et professionnels du monde de l’édition." });  
+    
   }
   open_main_research(s: string) {
     this.router.navigate([`/main-research/1/${s}/All`]);
@@ -1367,7 +1361,7 @@ export class NavbarLinkartsComponent implements OnInit {
     })
   }
   get_account(i:number) {
-    return "/account/" + this.list_of_last_propositions[i].nickname +"/"+ this.list_of_last_propositions[i].id;
+    return "/account/" + this.list_of_last_propositions[i].nickname ;
   }
 
   open_history_account(i: number) {
@@ -1381,7 +1375,7 @@ export class NavbarLinkartsComponent implements OnInit {
     })
   }
   get_history_account(i: number) {
-    return "/account/" + this.list_of_last_propositions_history[i].nickname + "/" + this.list_of_last_propositions_history[i].id;
+    return "/account/" + this.list_of_last_propositions_history[i].nickname ;
   }
 
   //ANNONCES
@@ -1528,16 +1522,16 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
   get_my_account() {
-    return "/account/" + this.pseudo + "/" + this.user_id + "/my_account";
+    return "/account/" + this.pseudo + "/my_account";
   }
 
   really_open_my_profile() {
     this.not_using_chat();
-    this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
+    this.router.navigate([`/account/${this.pseudo}`]);
   }
   really_open_my_account() {
     this.not_using_chat();
-    this.router.navigate([`/account/${this.pseudo}/${this.user_id}/my_account`]);
+    this.router.navigate([`/account/${this.pseudo}/my_account`]);
   }
 
   open_my_trending(){
@@ -1563,7 +1557,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
   
   get_account_for_notification(notif:any) {
-    return "/account/" + notif.id_user_name + "/" + notif.id_user;
+    return "/account/" + notif.id_user_name ;
   }
   open_comic(notif:any) {
     this.not_using_chat();
@@ -1629,10 +1623,6 @@ export class NavbarLinkartsComponent implements OnInit {
     let value=this.input.nativeElement.value.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')
     this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       this.router.navigate([`/main-research/1/${value}/${this.publication_category}`]);
-      
-      this.title.setTitle('LinkArts – BD, Dessins et Ecrits');
-      this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
-
       this.loading_research=false;
       this.activated_search=false;
       return;
@@ -1640,10 +1630,6 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   click_on_trending_message(i){
-    
-    this.title.setTitle('LinkArts – BD, Dessins et Ecrits');
-    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
-
     this.cancel_research();
     this.not_using_chat();
     this.loading_research=true;

@@ -54,7 +54,7 @@ export class PopupChatGroupMembersComponent implements OnInit {
   }
 
   get_user_link(i:number) {
-    return "/account/"+ this.list_of_pseudos[i] +"/"+ this.list_of_ids[i];
+    return "/account/"+ this.list_of_pseudos[i];
   }
   close_dialog() {
     this.dialogRef.close();
