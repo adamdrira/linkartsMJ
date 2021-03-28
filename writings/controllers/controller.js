@@ -648,7 +648,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     });
 
                      //récupère toutes les bd selon l'auteur
-  router.get('/retrieve_writings_information_by_user_id/:user_id', function (req, res) {
+  router.get('/retrieve_writings_information_by_pseudo/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -661,12 +661,20 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
         }
       }
 
-    
-
-       const user_id= parseInt(req.params.user_id);
-         Liste_Writings.findAll({
+      const pseudo = req.params.pseudo;
+      list_of_users.findOne({
+          where:{
+              nickname:pseudo
+          }
+      }).catch(err => {
+              
+        res.status(500).json({msg: "error", details: err});		
+      })
+      .then(user=>{
+        if(user){
+          Liste_Writings.findAll({
             where: {
-              authorid: user_id,
+              authorid: user.id,
               status:"public"
             },
             order: [
@@ -675,11 +683,15 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
           })
           .catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(writing =>  {
+            res.status(500).json({msg: "error", details: err});		
+          }).then(writing =>  {
             
             res.status(200).send([writing]);
           }); 
+        }
+      })
+
+
     
     });
 
