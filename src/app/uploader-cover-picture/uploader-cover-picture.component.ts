@@ -123,7 +123,7 @@ export class UploaderCoverPictureComponent implements OnInit {
 
     };
     this.uploader.onCompleteItem = (file) => {
-      this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] )
+      location.reload();
       
     }
 

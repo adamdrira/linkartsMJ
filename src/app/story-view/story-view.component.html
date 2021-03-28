@@ -9,7 +9,7 @@
         <div class="header author-container">
 
             <a [routerLink]=open_account() (click)="close_stories();">
-                <img (load)='loaded_pp()' [src]="profile_picture" [ngClass]="{'really-invisible':!display_pp }">
+                <img (load)='loaded_pp()'  [lazyLoad]="profile_picture" [customObservable]="scroll? scroll : null"  loading="lazy" [ngClass]="{'really-invisible':!display_pp }">
                 <div *ngIf="!display_pp" class="image-skeleton shiny"></div>
             </a>
 
@@ -61,11 +61,11 @@
         <!--********************-->
         <!--Partie 3-->
         <!--********************-->
-        <div class="swiper-wrapper">
+        <div  class="swiper-wrapper">
     
-            <div *ngFor="let item of list_of_contents; let i=index" class="swiper-slide" [ngStyle]="{'overflow': show_list_of_viewers ? 'auto' : 'unset'}">
+            <div  *ngFor="let item of list_of_contents; let i=index" class="swiper-slide" [ngStyle]="{'overflow': show_list_of_viewers ? 'auto' : 'unset'}">
 
-                <img (load)='loaded_image(i)' [src]=item [ngClass]="{'invisible':!display_images[i],'really-invisible':show_list_of_viewers || loading_list_of_viewers}">
+                <img (load)='loaded_image(i)'  [lazyLoad]="item"  loading="lazy" [ngClass]="{'invisible':!display_images[i],'really-invisible':show_list_of_viewers || loading_list_of_viewers}">
                 
                 
                 <div class="loading-dots" *ngIf="loading_list_of_viewers">
@@ -90,7 +90,7 @@
                             <div class="user-container">
         
                                     <div class="left-container"  [ngClass]="{'shiny':!list_of_pp_loaded[k]}">
-                                        <img [src]="list_of_profile_pictures[k]" (load)="load_list_of_pp(k)"  [ngClass]="{ 'invisible':!list_of_pp_loaded[k]}">
+                                        <img [lazyLoad]="list_of_profile_pictures[k]" [customObservable]="scroll? scroll : null"  loading="lazy"  (load)="load_list_of_pp(k)"  [ngClass]="{ 'invisible':!list_of_pp_loaded[k]}">
                                     </div>
         
                                     <div class="right-container">

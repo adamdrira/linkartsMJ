@@ -768,7 +768,7 @@ export class ThumbnailArtworkComponent implements OnInit {
 
   
   open_account() {
-    return "/account/"+this.author_pseudo+"/"+this.item.authorid;
+    return "/account/"+this.author_pseudo;
   };
   get_link() {
     return "/main-research/styles/tags/1/Comic/"+this.style+"/all";

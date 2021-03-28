@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, ViewChildren, QueryList} from '@angular/core';
 import { Story_service } from '../services/story.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {  DomSanitizer } from '@angular/platform-browser';
@@ -6,6 +6,7 @@ import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.compo
 import { PopupStoriesComponent } from '../popup-stories/popup-stories.component';
 import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { merge, fromEvent } from 'rxjs';
 
 declare var Swiper:any;
 
@@ -89,6 +90,12 @@ export class StoriesComponent implements OnInit {
     this.swiper = new Swiper('.story-swiper-container', {
       speed: 500,
       slidesPerView: 1,
+      preloadImages: false,
+      lazy: {
+        loadOnTransitionStart: true,
+        checkInView:true,
+      },
+      watchSlidesVisibility:true,
       breakpoints: {
         0: {
           slidesPerView: 1,
@@ -128,9 +135,15 @@ export class StoriesComponent implements OnInit {
       },
       observer: true,
     });
-    this.cd.detectChanges()
+   
+    this.cd.detectChanges();
+    this.swiper.lazy.loadInSlide(0);
   }
 
+  lazyImageLoad(swiper, slideEl: HTMLElement, imageEl: HTMLElement) {
+    console.log(slideEl)
+    console.log(imageEl)
+  }
 
 
   my_index=-1;
@@ -144,7 +157,9 @@ export class StoriesComponent implements OnInit {
     
 
   }
-
+  
+ 
+  
   retrieve_data_and_valdiate(){
     let compt=0;
     let compt_found_stories=0;
@@ -247,6 +262,7 @@ export class StoriesComponent implements OnInit {
                 if(compt==list_of_users_length){ 
                   if(compt_found_stories==0){
                     THIS.users_retrieved=true;
+                    THIS.cd.detectChanges();
                     THIS.initialize_swiper();
                   }
                   else{
@@ -264,6 +280,7 @@ export class StoriesComponent implements OnInit {
             if(compt==list_of_users_length){
               if(compt_found_stories==0){
                 this.users_retrieved=true;
+                this.cd.detectChanges();
                 this.initialize_swiper();
               }
               else{
@@ -514,6 +531,7 @@ export class StoriesComponent implements OnInit {
         THIS.list_of_state[t+1]=true;
         if(t==THIS.list_of_state_true_length-1){
           THIS.users_retrieved=true;
+          THIS.cd.detectChanges();
           THIS.initialize_swiper();
         }
       }
@@ -523,12 +541,14 @@ export class StoriesComponent implements OnInit {
         THIS.list_of_state[t]=true;
         if(t==THIS.list_of_state_true_length-1){
           THIS.users_retrieved=true;
+          THIS.cd.detectChanges();
           THIS.initialize_swiper();
         }
       }
     }
     else{
       THIS.users_retrieved=true;
+      THIS.cd.detectChanges();
       THIS.initialize_swiper();
     }
   }
@@ -626,6 +646,8 @@ export class StoriesComponent implements OnInit {
      
     }
     else if((i>0 && !this.do_I_have_stories) || this.do_I_have_stories){
+
+      console.log("open stories")
       const dialogRef = this.dialog.open(PopupStoriesComponent, {
         data: { list_of_users: this.final_list_of_users, index_id_of_user: i, list_of_data:this.list_of_list_of_data,current_user:this.user_id,current_user_name:this.user_name},
         panelClass: 'popupStoriesClass'

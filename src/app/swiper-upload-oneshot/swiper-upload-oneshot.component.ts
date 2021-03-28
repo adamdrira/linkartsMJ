@@ -1,10 +1,7 @@
-import { Component, OnInit, ViewChild, ViewChildren, QueryList, ViewContainerRef, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, Output, EventEmitter, Input, HostListener } from '@angular/core';
-import { UploadService } from '../services/upload.service';
+import { Component, OnInit, ViewChild, ViewContainerRef, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, Input, HostListener } from '@angular/core';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { Bd_CoverService } from '../services/comics_cover.service';
-import { Subscribing_service } from '../services/subscribing.service';
 import { Uploader_bd_oneshot } from '../uploader_bd_oneshot/uploader_bd_oneshot.component';
-
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Router } from '@angular/router';
@@ -30,17 +27,13 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
 
   constructor(private rd: Renderer2, 
-    private el: ElementRef,
-    private _upload: UploadService,
     private resolver: ComponentFactoryResolver, 
     private router:Router,
     private cd: ChangeDetectorRef,
-    private viewref: ViewContainerRef,
     private bdOneShotService: BdOneShotService,
     private Bd_CoverService:Bd_CoverService,
     public dialog: MatDialog,
     private navbar: NavbarService,
-    private Subscribing_service:Subscribing_service
 
     ) {
       navbar.visibility_observer_font.subscribe(font=>{
@@ -341,11 +334,9 @@ export class SwiperUploadOneshotComponent implements OnInit {
         this.componentRef[ step ].instance.upload = true;
         this.componentRef[ step ].instance.total_pages = this.componentRef.length;
         this.componentRef[ step ].instance.sendValidated.subscribe( v => {
-          console.log("received validated")
           this.block_cancel=true;
           this.Bd_CoverService.remove_covername();
-          this.router.navigate([`/account/${v.pseudo}/${v.user_id}`]);
-          //window.location.href = `/account/${v.pseudo}/${v.user_id}`;
+          this.router.navigate([`/account/${v.pseudo}`]);
         });
       }
 
@@ -360,7 +351,6 @@ export class SwiperUploadOneshotComponent implements OnInit {
     if(!this.block_cancel){
       this.bdOneShotService.RemoveBdOneshot(this.bd_id).subscribe(res=>{
         this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
-          console.log(r)
         })
       });
     }

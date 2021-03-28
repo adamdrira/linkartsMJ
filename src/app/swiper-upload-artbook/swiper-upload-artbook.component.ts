@@ -530,7 +530,7 @@ export class SwiperUploadArtbookComponent  {
               this.block_cancel=true;
               this.display_loading=false
               this.Drawings_CoverService.remove_covername();
-              this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
+              this.router.navigate([`/account/${this.pseudo}`]);
             });
           }
         })

@@ -213,8 +213,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   sendValidated(event){
       this.block_cancel=true;
       this.Drawings_CoverService.remove_covername();
-      this.router.navigate([`/account/${event.pseudo}/${event.user_id}`]);
-      //window.location.href = `/account/${event.pseudo}/${event.user_id}`;
+      this.router.navigate([`/account/${this.pseudo}`]);
   }
 
   block_cancel=false;

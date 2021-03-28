@@ -168,13 +168,13 @@ export class ThumbnailUserComponent implements OnInit {
     e.stopPropagation();
   }
   open_account() {
-    return "/account/"+this.pseudo+"/"+this.user_id;
+    return "/account/"+this.pseudo;
   }
   open_artworks() {
-    return "/account/"+this.pseudo+"/"+this.user_id+"/artworks";
+    return "/account/"+this.pseudo+"/artworks";
   }
   open_announcements() {
-    return "/account/"+this.pseudo+"/"+this.user_id+"/ads";
+    return "/account/"+this.pseudo+"/ads";
   }
 
 }

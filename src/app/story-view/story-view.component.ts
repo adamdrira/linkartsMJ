@@ -9,6 +9,9 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
+import { merge, fromEvent } from 'rxjs';
+
+
 declare var Swiper:any;
 declare var $: any;
 
@@ -72,7 +75,7 @@ export class StoryViewComponent implements OnInit {
   visitor_mode=true;
   author_name:string;
   pseudo:string;
-  profile_picture: SafeUrl;
+  profile_picture: any;
   number_of_views:number;
   index_of_story_to_show:number;
   test=false;
@@ -139,7 +142,7 @@ ngOnInit() {
             let blob = new Blob([reader.result], {type: 'image/svg+xml'});
             let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
             const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
-            THIS.list_of_contents[i]=SafeURL;
+            THIS.list_of_contents[i]=url;
         }
         
         k++;
@@ -168,7 +171,7 @@ ngOnInit() {
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.profile_picture = SafeURL;
+      this.profile_picture = url;
     });
     
 
@@ -179,7 +182,16 @@ ngOnInit() {
 
   }
 
-  
+  scroll:any;
+  ngAfterViewInit(){
+    if(this.swiperStory){
+      console.log("merge story view")
+      this.scroll = merge(
+        fromEvent(window, 'scroll'),
+        fromEvent(this.swiperStory.nativeElement, 'scroll')
+      );
+    }
+  }
 
   initialize_swiper() {
       this.swiper = new Swiper( this.swiperStory.nativeElement, {
@@ -332,7 +344,7 @@ loading_list_of_viewers=false;
 viewers_found=false;
 list_of_viewers=[];
 list_of_check_subscribtion=[];
-list_of_profile_pictures:SafeUrl[]=[];
+list_of_profile_pictures:any[]=[];
 list_of_pp_loaded=[];
 get_list_of_viewers(i){
   
@@ -358,17 +370,17 @@ get_list_of_viewers(i){
             else{
               this.list_of_check_subscribtion[i]=false;
             }
-            this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user_who_looks).subscribe(t=> {
-              let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_profile_pictures[i] = SafeURL;
-              if(i==n-1){
-                this.viewers_found=true;
-                this.show_list_of_viewers=true;
-                this.loading_list_of_viewers=false;
-              }
-            });
-            
+          });
+
+          this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user_who_looks).subscribe(t=> {
+            let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            this.list_of_profile_pictures[i] = url;
+            if(i==n-1){
+              this.viewers_found=true;
+              this.show_list_of_viewers=true;
+              this.loading_list_of_viewers=false;
+            }
           });
         })
         
@@ -439,12 +451,11 @@ close_list_of_viewers(){
     this.closePopup.emit();
   }
   open_account() {
-    return "/account/"+this.pseudo+"/"+this.user_id;
-    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
+    return "/account/"+this.pseudo;
   };
 
   get_viewer_link(i:number) {
-    return "/account/"+ this.list_of_viewers[i].nickname +"/"+ this.list_of_viewers[i].id;
+    return "/account/"+ this.list_of_viewers[i].nickname ;
   }
 
   stop(e: Event) {

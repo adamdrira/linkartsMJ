@@ -10,10 +10,6 @@ import { AdPageComponent } from './ad-page/ad-page.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { UserResolverService } from './services/resolver-current-user';
-import { UserIdDataResolverService } from './services/resolver-user-data.service';
-import { UserIdProfilePicResolverService } from './services/resolver-user-pp.service';
-import { UserIdCoverPicResolverService } from './services/resolver-user-cp.service';
-import { UserIdDataVisitorResolverService } from './services/resolver-user-and-visitor.service';
 import { AccountComponent } from './account/account.component';
 import { UserWritingsResolverService } from './services/resolver-user-writings.service';
 import { UserNumberContentsResolverService } from './services/resolver-number-contents.service';
@@ -29,6 +25,7 @@ import { UserSubscribersResolverService } from './services/resolver-get-subscrib
 import { UserSubscribingsResolverService } from './services/resolver-get-subscribings.service';
 import { UserDataPseudoResolverService } from './services/resolver-data-by-pseudo.service';
 import { UserPseudoProfilePicResolverService } from './services/resolver-user-pp-pseudo.service';
+import { UserPseudoCoverPicResolverService } from './services/resolver-user-cp-pseudo.service';
 /*import { UserLinksResolverService } from './services/resolver-user-links.service';
 import { UserCheckStoryResolverService } from './services/resolver-check-stories-account.service';
 import { UserCheckSubResolverService } from './services/resolver-check-subscribed.service';
@@ -43,31 +40,32 @@ let accountResolvers={
   user_data_by_pseudo:UserDataPseudoResolverService,
   user: UserResolverService,
   user_pp_pseudo:UserPseudoProfilePicResolverService,
-  user_cp_pseudo:UserPseudoProfilePicResolverService, 
+  user_cp_pseudo:UserPseudoCoverPicResolverService, 
 
-
-  //emphasized: UserEmphasizedResolverService,
   subscribers:UserSubscribersResolverService,
   subscribings:UserSubscribingsResolverService,
-  //infos_privacy: UserInfosPrivacyResolverService,
-  //user_links:UserLinksResolverService,
 
   new_comics:UserNewComicsResolverService,
   new_drawings: UserNewDrawingsResolverService,
   new_writings: UserNewWritingsResolverService,
-  /*album_comics:UserAlbumComicsResolverService,
-  album_drawings: UserAlbumDrawingsResolverService,
-  album_writings: UserAlbumWritingsResolverService,*/
+ 
 
   comics_os:UserComicsOsResolverService,
   comics_se:UserComicsSerieResolverService, 
   drawings_os:UserDrawingsOsResolverService,
   drawings_ar: UserDrawingsArtbookResolverService,
   writings:UserWritingsResolverService,
+
   ads:UserAdsResolverService, 
   number_of_contents:UserNumberContentsResolverService,
 
-  /*check_stories:UserCheckStoryResolverService, 
+   /*emphasized: UserEmphasizedResolverService,
+  infos_privacy: UserInfosPrivacyResolverService,
+  user_links:UserLinksResolverService,
+  album_comics:UserAlbumComicsResolverService,
+  album_drawings: UserAlbumDrawingsResolverService,
+  album_writings: UserAlbumWritingsResolverService,
+  check_stories:UserCheckStoryResolverService, 
   check_subscribed:UserCheckSubResolverService,
   check_blocked: UserCheckBlockResolverService,*/
 
@@ -78,15 +76,15 @@ const routes: Routes = [
   {path:'', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { user: UserResolverService }},
 
 
-  {path:'account/:pseudo/:id', component:AccountComponent , data: {section: 0,preload: true}, resolve: accountResolvers },
-  {path:'account/:pseudo/:id/artworks', component:AccountComponent, data: {section: 1}, resolve: accountResolvers},
-  {path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, data: {section: 1, category:0}, resolve: accountResolvers},
-  {path:'account/:pseudo/:id/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}, resolve: accountResolvers},
-  {path:'account/:pseudo/:id/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}, resolve: accountResolvers},
-  {path:'account/:pseudo/:id/ads', component:AccountComponent,  data: {section: 2}, resolve: accountResolvers},
-  {path:'account/:pseudo/:id/about', component:AccountComponent,  data: {section: 5}, resolve: accountResolvers},
-  {path:'account/:pseudo/:id/archives', component:AccountComponent,  data: {section: 6}, resolve: accountResolvers},
-  {path:'account/:pseudo/:id/my_account', component:AccountComponent,  data: {section: 7}, resolve: accountResolvers},
+  {path:'account/:pseudo', component:AccountComponent , data: {section: 0,preload: true}, resolve: accountResolvers },
+  {path:'account/:pseudo/artworks', component:AccountComponent, data: {section: 1}, resolve: accountResolvers},
+  {path:'account/:pseudo/artworks/comics', component:AccountComponent, data: {section: 1, category:0}, resolve: accountResolvers},
+  {path:'account/:pseudo/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}, resolve: accountResolvers},
+  {path:'account/:pseudo/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}, resolve: accountResolvers},
+  {path:'account/:pseudo/ads', component:AccountComponent,  data: {section: 2}, resolve: accountResolvers},
+  {path:'account/:pseudo/about', component:AccountComponent,  data: {section: 5}, resolve: accountResolvers},
+  {path:'account/:pseudo/archives', component:AccountComponent,  data: {section: 6}, resolve: accountResolvers},
+  {path:'account/:pseudo/my_account', component:AccountComponent,  data: {section: 7}, resolve: accountResolvers},
   {path:'account/:pseudo/:id/my_account/:password', component:AccountComponent,  data: {section: 8}, resolve: accountResolvers},
   {path:'account/for_chat/:pseudo/:id/:pseudo_friend/:id_friend', component:AccountComponent,  data: {section: 9}, resolve: accountResolvers},
 
