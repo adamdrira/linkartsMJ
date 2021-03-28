@@ -8,6 +8,7 @@ const Notations = require('../../publications_notation/model/sequelize');
 const Sequelize = require('sequelize');
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
+const { servicesVersion } = require('typescript');
 
 
 
@@ -870,18 +871,34 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             "likesnumber": 0,
             "lovesnumber":0,
             "commentarynumbers":0,
+          }).then(chapter=>{
+            chapters_bd_serie.findAll({
+              where: {
+                bd_id: bd_id,
+                author_id: current_user,
+                status:"public"
+              }
+            }).then(serie=>{
+              Liste_bd_serie.update({
+                "chaptersnumber":serie.length
+              },{
+                where:{
+                  bd_id: bd_id,
+                  authorid: current_user,
+                  status:"public"
+                }
+              })
+              res.status(200).send([serie]);
+            })
           })
-          .catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(res.status(200).send([bd_chapter]))
+        
+         
         }); 
         
       });
 
 
-                   //on valide l'upload
-  router.get('/retrieve_bd_serie_by_user_id/:user_id', function (req, res) {
+  router.get('/retrieve_bd_serie_by_pseudo/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -893,23 +910,37 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           return res.status(401).json({msg: "error"});
         }
       }
-       const user_id= parseInt(req.params.user_id);
-        Liste_bd_serie.findAll({
-            where: {
-              authorid: user_id,
-              status:"public"
-            },
-            order: [
-              ['createdAt', 'DESC']
-            ],
-          })
-          .catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
-            
-            res.status(200).send([bd]);
-          }); 
+
+      const pseudo = req.params.pseudo;
+      list_of_users.findOne({
+          where:{
+              nickname:pseudo
+          }
+      }).catch(err => {
+              
+        res.status(500).json({msg: "error", details: err});		
+      })
+      .then(user=>{
+        if(user){
+          Liste_bd_serie.findAll({
+              where: {
+                authorid: user.id,
+                status:"public"
+              },
+              order: [
+                ['createdAt', 'DESC']
+              ],
+            })
+            .catch(err => {
+        
+              res.status(500).json({msg: "error", details: err});		
+            }).then(bd =>  {
+              
+              res.status(200).send([bd]);
+            }); 
+        }
+      })
+       
  
     });
 
@@ -1141,7 +1172,6 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       });
 
   router.get('/retrieve_chapters_by_id/:bd_id', function (req, res) {
-
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1152,7 +1182,6 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           return res.status(401).json({msg: "error"});
         }
       }
-
 
 
         const bd_id= parseInt(req.params.bd_id);
