@@ -19,7 +19,7 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
 
     
     router.post('/check_if_user_has_trendings', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -40,7 +40,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ['createdAt', 'DESC']
             ]
         }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(tren=>{
             if(tren.length>0){
@@ -53,7 +53,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             ['createdAt', 'DESC']
                         ]
                     }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comics=>{
                         let list_of_comics=comics
@@ -66,7 +66,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 ['createdAt', 'DESC']
                             ]
                         }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(drawings=>{
                             let list_of_drawings=drawings
@@ -79,7 +79,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                     ['createdAt', 'DESC']
                                 ]
                             }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(writings=>{
                                 let list_of_writings=writings
@@ -99,7 +99,7 @@ console.log("checking current: " + req.headers['authorization'] );
     })
 
     router.post('/get_all_trendings_by_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -110,8 +110,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("get_all_trendings_by_user")
-        
         const Op = Sequelize.Op;
         const  date_format = req.body.date_format;
         const  id_user = req.body.id_user;
@@ -119,7 +117,6 @@ console.log("checking current: " + req.headers['authorization'] );
         var list_of_comics=[];
         var list_of_drawings=[];
         var list_of_writings=[];
-        console.log(date_format)
         let date=new Date();
     
         if(date_format==0){
@@ -142,7 +139,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ],
                 limit:6,
             }).catch(err => {
-                console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
             }).then(trendings=>{
                 list_of_contents=trendings;
@@ -156,7 +153,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     ],
                     limit:6,
                 }).catch(err => {
-                    console.log(err);	
+                    	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(trendings_com=>{
                     list_of_comics=trendings_com;
@@ -170,7 +167,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         ],
                         limit:6,
                     }).catch(err => {
-                        console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(trendings_draw=>{
                         list_of_drawings=trendings_draw;
@@ -184,7 +181,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             ],
                             limit:6,
                         }).catch(err => {
-                            console.log(err);	
+                            	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(trendings_wri=>{
                             list_of_writings=trendings_wri;
@@ -204,7 +201,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     ['createdAt', 'DESC']
                 ]
             }).catch(err => {
-                console.log(err);	
+                	
                 res.status(500).json({msg: "error", details: err});		
             }).then(trendings=>{
                 let list_of_contents=trendings
@@ -219,7 +216,7 @@ console.log("checking current: " + req.headers['authorization'] );
                         ['createdAt', 'DESC']
                     ]
                 }).catch(err => {
-                    console.log(err);	
+                    	
                     res.status(500).json({msg: "error", details: err});		
                 }).then(comics=>{
                     let list_of_comics=comics
@@ -233,7 +230,7 @@ console.log("checking current: " + req.headers['authorization'] );
                             ['createdAt', 'DESC']
                         ]
                     }).catch(err => {
-                        console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(drawings=>{
                         let list_of_drawings=drawings
@@ -247,7 +244,7 @@ console.log("checking current: " + req.headers['authorization'] );
                                 ['createdAt', 'DESC']
                             ]
                         }).catch(err => {
-                            console.log(err);	
+                            	
                             res.status(500).json({msg: "error", details: err});		
                         }).then(writings=>{
                             let list_of_writings=writings
@@ -273,7 +270,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/get_total_trendings_gains_by_user', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -284,8 +281,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("get_total_trendings_gains_by_user")
-        
         let current_user = get_current_user(req.cookies.currentUser);
         let total_gains=0;
         trendings_contents.findAll({
@@ -296,7 +291,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ['createdAt', 'DESC']
             ]
         }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(trendings=>{
 
@@ -312,7 +307,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.post('/get_total_trendings_gains_by_users_group', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -323,8 +318,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-        console.log("get_total_trendings_gains_by_users_group")
-        
         let current_user = get_current_user(req.cookies.currentUser);
         let list_of_ids=req.body.list_of_ids
         let total_gains=0;
@@ -336,7 +329,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 ['createdAt', 'DESC']
             ]
         }).catch(err => {
-			console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(trendings=>{
 
@@ -356,7 +349,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/get_date_of_trendings', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
