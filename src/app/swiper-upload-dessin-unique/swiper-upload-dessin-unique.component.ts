@@ -114,9 +114,8 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     
     if( !this.cropperInitialized ) {
       this.cropper = new Cropper(content.nativeElement, {
-        guides: false,
+        guides: true,
         viewMode:2,
-        autoCropArea:1,
         center:true,
         restore:false,
         zoomOnWheel:false,
@@ -138,14 +137,14 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
     if( ((canvas.height / canvas.width) < (180/300)) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:"La miniature n'est pas assez haute. Veuillez augmenter la hauteur, ou réduire la largeur"},
+        data: {showChoice:false, higher_crop:true, text:"Veuillez augmenter la hauteur, ou réduire la largeur du rognage"},
         panelClass: "popupConfirmationClass",
       });
       return;
     }
     else if( ((canvas.height / canvas.width) > (600/300)) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:"La miniature n'est pas assez large. Veuillez augmenter la largeur, ou réduire la hauteur"},
+        data: {showChoice:false, larger_crop:true, text:"Veuillez augmenter la largeur, ou réduire la hauteur du rognage"},
         panelClass: "popupConfirmationClass",
       });
       return;

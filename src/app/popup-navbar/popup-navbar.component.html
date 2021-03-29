@@ -95,6 +95,10 @@
                 <div class="icon-collaboration " ></div>
                 <span>LinkCollab</span>
             </div>
+            <div class="option-element option-element2" (click)="go_to_add_artwork()">
+                <div class="icon-add " ></div>
+                <span>Publier une œuvre ou une annonce</span>
+            </div>
             <div class="option-element" (click)="really_open_my_profile()">
               <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'shiny': !pp_is_loaded }">
               <span>Mon profil</span>

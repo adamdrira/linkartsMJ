@@ -108,6 +108,14 @@ $default-color: rgb(218,220,225);
                 mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
               }
 
+              .icon-add {
+                width:14px !important;
+                height:14px !important;
+                margin: auto 10px auto 0px !important;
+                background-color: $default-color;
+                mask: url("../../assets/img/svg/add.svg") no-repeat 50% 50%;
+              }
+
             mat-icon {
                 margin: auto 10px auto 0px !important;
                 width: unset !important;

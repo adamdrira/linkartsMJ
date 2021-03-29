@@ -181,6 +181,9 @@
                     <img class="min-height-news" [src]="imageDestination">
                     <div #thumbnail class="display-on-hover " [ngClass]="{'visible':showDrawingDetails}" style="cursor:default;">
                         
+                        <div class="artbook-icon">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">collections</mat-icon>
+                        </div>
                         <!--********************-->
                         <!--Title container-->
                         <!--********************-->

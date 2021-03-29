@@ -2361,6 +2361,19 @@
               </div>
             </div>
 
+            
+
+            <a class="icon-container add-artwork none-for-phone" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved, 'set-background-color': !( !pp_is_loaded || !data_retrieved )}" href="/add-artwork">
+              <div class="icon icon-add"
+                [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved}"
+                matTooltip="Publier une œuvre ou une annonce" 
+                matTooltipClass='linkarts-tooltip' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">
+              </div>
+            </a>
+
+
             <!-- ---------------------------NOTIFICATIONS END----------------------------------->
             <!-- ---------------------------NOTIFICATIONS END----------------------------------->
             <!-- ---------------------------NOTIFICATIONS END----------------------------------->

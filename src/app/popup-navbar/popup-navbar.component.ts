@@ -339,6 +339,12 @@ go_to_linkcollab(){
   this.close_dialog()
 }
 
+go_to_add_artwork(){
+  this.not_using_chat();
+  this.router.navigate(['/add-artwork']);
+  this.close_dialog()
+}
+
 really_open_my_profile() {
   this.not_using_chat();
   this.router.navigate([`/account/${this.pseudo}`]);

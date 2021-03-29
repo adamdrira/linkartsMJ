@@ -164,7 +164,6 @@
 
   .categories-container {
     display: flex;
-    margin-top: 30px;
     justify-content: center;
     padding-left: 5px;
     padding-right: 5px;
@@ -491,8 +490,7 @@
 
   > img {
     height: 28px;
-    padding-left: 4px;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -501,52 +499,77 @@
     display:flex;
     justify-content: center;
 
-    @media (max-width: 1000px) {
-      flex-direction:column;
-      align-items: center;
-      .link {
-        margin-top: 5px;
-        margin-bottom: 5px;
-      }
-    }
+    .links {
 
-    .link {
-      margin-left: 11px;
-      margin-right: 11px;
+      margin-left: 10px;
+      margin-right: 10px;
+      width: 200px;
       display: flex;
+      flex-direction: column;
 
-      mat-icon {
-        margin: auto 6px auto 0px;
-        width: unset;
-        height: unset;
-        font-size: 18px;
-        max-width:18px;
-        overflow: hidden;
-        color: #7d7d7d;
-      }
-      span {
-        color: #7d7d7d;
-        font-size: 13px;
-        font-weight: 600;
-        transition:color 200ms;
-      }
-
-      &:hover {
+      .link {
+        cursor:pointer;
+        margin-left: 11px;
+        margin-right: 11px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+        display: flex;
+  
         mat-icon {
-          color: rgb(32, 56, 100);
+          margin: auto 6px auto 0px;
+          width: unset;
+          height: unset;
+          font-size: 18px;
+          max-width:18px;
+          overflow: hidden;
+          color: #7d7d7d;
         }
         span {
-          color: rgb(32,56,100);
+          color: #7d7d7d;
+          font-size: 13px;
+          font-weight: 600;
+          transition:color 200ms;
+        }
+  
+        &:hover {
+          mat-icon {
+            color: rgb(32, 56, 100);
+          }
+          span {
+            color: rgb(32,56,100);
+          }
         }
       }
     }
+    
+
+    @media (max-width: 800px) {
+      flex-direction: column;
+      margin-left: auto;
+      margin-right: auto;
+      .links {
+        .link {
+
+          margin-top:2px;
+          margin-bottom:2px;
+          mat-icon {
+            margin-left:auto;
+          }
+          span {
+            margin-right:auto;
+            font-size:11px;
+          }
+        }
+      }
+    }
+
   }
 
   .horizontal-bar {
     width: 50px;
     height: 2px;
     background: #dcdcdc;
-    margin: 16px auto 10px auto;
+    margin: 7px auto 10px auto;
   }
 
   .logos-container.homeLinkarts {

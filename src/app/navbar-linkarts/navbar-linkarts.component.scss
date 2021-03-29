@@ -79,7 +79,7 @@
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 730px) {
   .large-screen {
     display: none !important;
   }
@@ -173,7 +173,7 @@
         margin: auto;
       }
       
-      @media (max-width: 700px) {
+      @media (max-width: 730px) {
         height: 32px;
         width: 32px;
         div {
@@ -232,7 +232,7 @@
     width: calc(100% - 600px);
   }
   .connected-user .navbar-l1-searchbar-container {
-    width: calc(100% - 720px);
+    width: calc(100% - 740px);
   }
 
   a {
@@ -935,7 +935,7 @@
     &.SMALL-SCREEN-PP {
       display:none;
     }
-    @media (max-width: 700px) {
+    @media (max-width: 730px) {
       display: none;
       &.SMALL-SCREEN-PP {
         position: relative;
@@ -1020,6 +1020,16 @@
     }
   }
 
+  .icon-add {
+    background-color: rgb(32, 56, 100);
+    mask: url("../../assets/img/svg/add.svg") no-repeat 50% 50%;
+    transition: transform 200ms;
+    &:hover {
+      background-color: rgb(32, 56, 100);
+      mask: url("../../assets/img/svg/add.svg") no-repeat 50% 50%;
+    }
+  }
+
   @keyframes transform-mask-size {
     0% {
       mask-size: 100% 100%;
@@ -1078,6 +1088,23 @@
     display: flex;
     margin-left: 7px;
     margin-right: 7px;
+
+    &.add-artwork {
+      padding: 8px;
+      
+      &.set-background-color {
+        background: linear-gradient(0.125turn, rgba(2, 18, 54, 0.9), rgb(32 56 100), rgb(58 111 156));
+      }
+      .icon {
+        height: 16px;
+        width: 16px;
+        background: #e4eaf0;
+      }
+      transition:transform 200ms;
+      &:active {
+        transform:scale(0.95);
+      }
+    }
   }
 
   .position {
@@ -1813,8 +1840,8 @@
   }
 
   .shiny {
-    background-color: rgb(220, 220, 220);
-    background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
+    background-color: rgb(220, 220, 220) !important;
+    background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%) !important;
     background-size: 300% 100%;
     animation: shine 2s infinite;
   }
@@ -1947,7 +1974,7 @@
   
 
   
-  @media (max-width: 700px) {
+  @media (max-width: 730px) {
     
     
     .notifications-chat-container {
@@ -1984,7 +2011,7 @@
     .SMALL-SCREEN-OPTIONS {
       display: flex !important;
       &.HIDE-OPTIONS-ON-SMALL-SCREEN {
-        @media (max-width: 700px) {
+        @media (max-width: 730px) {
           display: none !important;
         }
       }

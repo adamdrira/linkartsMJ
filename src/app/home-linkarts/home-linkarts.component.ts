@@ -16,6 +16,7 @@ import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 
 import { Meta, Title } from '@angular/platform-browser';
+import { PopupContactComponent } from '../popup-contact/popup-contact.component';
 
 declare var Swiper: any;
 
@@ -307,6 +308,12 @@ export class HomeLinkartsComponent implements OnInit {
 
   sectionChange2(e:any) {
     this.router.navigate([ this.get_category(e) ]);
+  }
+
+  open_popup_contact() {
+    const dialogRef = this.dialog.open(PopupContactComponent, {
+      panelClass:"popupContactComponentClass"
+    });
   }
 
   
