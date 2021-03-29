@@ -1,14 +1,28 @@
 
 <div class="popup-container">
 
-    <div class="alert-icon">
+    <div class="alert-icon" *ngIf="!data.higher_crop && !data.larger_crop">
         <mat-icon [ngClass]="{'invisible': !show_icon }">error_outline</mat-icon>
+    </div>
+
+
+    <div *ngIf="data.higher_crop || data.larger_crop" class="cropper-animations" [ngClass]="{'higher-crop': data.higher_crop,'larger-crop': data.larger_crop }">
+        <mat-icon class="arrow-top green" *ngIf="data.higher_crop">arrow_upward</mat-icon>
+        <mat-icon class="arrow-top red" *ngIf="data.larger_crop">arrow_downward</mat-icon>
+        <div>
+            <mat-icon class="arrow-left green" *ngIf="data.larger_crop">arrow_back</mat-icon>
+            <mat-icon class="arrow-left red" *ngIf="data.higher_crop">arrow_forward</mat-icon>
+            <div class="crop"></div>
+            <mat-icon class="arrow-right red" *ngIf="data.higher_crop">arrow_back</mat-icon>
+            <mat-icon class="arrow-right green" *ngIf="data.larger_crop">arrow_forward</mat-icon>
+        </div>
+        <mat-icon class="arrow-bottom red" *ngIf="data.larger_crop">arrow_upward</mat-icon>
+        <mat-icon class="arrow-bottom green" *ngIf="data.higher_crop">arrow_downward</mat-icon>
     </div>
 
     <span>
         {{data.text}}
     </span>
-
 
     <div *ngIf="data.showChoice" class="buttons-container">
         <button (click)="cancel();">

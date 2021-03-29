@@ -30,6 +30,86 @@
     }
 }
 
+.cropper-animations {
+    justify-content: center;
+    display:flex;
+    flex-direction:column;
+    margin-bottom: 30px;
+    
+    mat-icon {
+        font-weight: 600;
+
+        &.green {
+            color:green;
+        }
+        &.red {
+            color:red;
+        }
+    }
+    .arrow-top {
+        margin:auto auto 0px auto;
+        &.green {
+            animation: uparrow 0.6s infinite alternate ease-in-out;
+        }
+    }
+    .arrow-bottom {
+        margin:0px auto auto auto;
+        &.green {
+            animation: downarrow 0.6s infinite alternate ease-in-out;
+        }
+    }
+    .arrow-left {
+        margin:auto 0px auto auto;
+        &.green {
+            animation: leftarrow 0.6s infinite alternate ease-in-out;
+        }
+    }
+    .arrow-right {
+        margin:auto auto auto 0px;
+        &.green {
+            animation: rightarrow 0.6s infinite alternate ease-in-out;
+        }
+    }
+    > div {
+        display:flex;
+    }
+    &.higher-crop .crop {
+        width: 200px;
+        height: 70px;
+        border: 1px solid #679ed4;
+        border-radius: 5px;
+        background: #f9fbfd;
+    }
+    &.larger-crop .crop {
+        width: 90px;
+        height: 200px;
+        border: 1px solid #679ed4;
+        border-radius: 5px;
+        background: #f9fbfd;
+    }
+
+}
+
+
+@keyframes uparrow {
+    0% { -webkit-transform: translateY(0); opacity: 0.4 }
+    100% { -webkit-transform: translateY(-0.4em); opacity: 0.9 }
+}
+@keyframes downarrow {
+    0% { -webkit-transform: translateY(0); opacity: 0.4 }
+    100% { -webkit-transform: translateY(0.4em); opacity: 0.9 }
+}
+@keyframes leftarrow {
+    0% { -webkit-transform: translateX(0); opacity: 0.4 }
+    100% { -webkit-transform: translateX(-0.4em); opacity: 0.9 }
+}
+@keyframes rightarrow {
+    0% { -webkit-transform: translateX(0); opacity: 0.4 }
+    100% { -webkit-transform: translateX(0.4em); opacity: 0.9 }
+}
+
+  
+
 .buttons-container {
     margin-top: 30px;
     margin-bottom: 20px;
