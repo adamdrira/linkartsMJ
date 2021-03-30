@@ -199,4 +199,16 @@ export class Ads_service {
         return information;
       }));
     }
+    set_all_responses_to_seen(id_ad){
+      return this.httpClient.post('routes/set_all_responses_to_seen', {id_ad:id_ad}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
+
+    get_all_my_responses(pseudo,limit,offset): Observable<Object>{
+      return this.httpClient.get(`routes/get_all_my_responses/${pseudo}/${limit}/${offset}`).pipe(map(information=>{
+        return information;   
+      }));
+    }
+    
 }

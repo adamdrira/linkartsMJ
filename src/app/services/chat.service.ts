@@ -67,6 +67,13 @@ get_list_of_users_I_talk_to():Observable<any>{
       }));
 }
 
+get_list_of_users_I_talk_to_navbar():Observable<any>{
+  return this.httpClient.get('routes/get_list_of_users_I_talk_to_navbar',{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+
 get_list_of_spams():Observable<any>{
     return this.httpClient.get('routes/get_list_of_spams',{withCredentials:true}).pipe(map(information=>{
         return information;   
@@ -182,6 +189,12 @@ get_group_chat_name(id):Observable<any>{
 
 get_my_list_of_groups():Observable<any>{
   return this.httpClient.get('routes/get_my_list_of_groups',{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+get_my_list_of_groups_navbar():Observable<any>{
+  return this.httpClient.get('routes/get_my_list_of_groups_navbar',{withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
 }
