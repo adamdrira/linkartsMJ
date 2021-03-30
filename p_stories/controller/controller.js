@@ -245,6 +245,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                 for(let i=0;i<users.length;i++){
                     list_of_users.push(users[i].id_user_subscribed_to);
                 }
+            }
                 for(let i=0;i<list_of_users.length;i++){
                     let user_id= list_of_users[i];
                     list_of_stories.findAll({
@@ -291,7 +292,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                                     },
                                 });
             
-                                if ((number_of_stories==number_of_stories_seen && number_of_stories>0) || number_of_stories==0){
+                                if ((number_of_stories_seen==number_of_stories && number_of_stories>0) || number_of_stories==0){
                                     
                                     list_of_views.count({
                                         where: {
@@ -302,7 +303,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                                                 
                                         },
                                     }).catch(err => {
-                                        ;		
+                                        
                                     }).then(number=>{
                                         list_of_stories_s[i]=stories;
                                         list_of_states[i]=false;
@@ -360,10 +361,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                         
                     }); 
                 }
-            }
-            else{
-                res.status(200).send([{list_of_users:list_of_users,list_of_users_data:list_of_users_data,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views}])
-            }
+            
             
         });
 
@@ -838,6 +836,15 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
 		}).then(story_found=>{
             story_found.update({
                         status: "deleted"
+            })
+
+            list_of_views.update({
+                "status":"deleted"
+            },{
+                where:{
+                    id_story:id,
+                    authorid:current_user,
+                },
             })
             res.status(200).send([story_found]);
         });
