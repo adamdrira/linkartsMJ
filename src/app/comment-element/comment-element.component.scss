@@ -30,6 +30,7 @@ $default-color: rgb(218,220,225);
     > .right-container {
         width: stretch;
 
+        
         .comment {
             //max-height: 180px;
             position: relative;
@@ -40,33 +41,38 @@ $default-color: rgb(218,220,225);
             border-radius: 12px;
             padding: 6px 12px 12px 12px;
             font-size: 12px;
-            overflow-y: scroll;
+            
 
             a {
                 color: white;
                 font-weight: 700;
                 font-size: 12px;
                 line-height: 27px;
+               
+
             }
 
-            scrollbar-width:thin;
-            scrollbar-color: #122951 transparent;
-            &::-webkit-scrollbar {
-                width: 4px;
-                height: 4px;
-            }
-            &::-webkit-scrollbar-track {
-                border-radius: 10px;
-                background-color: transparent;
-            }
-            &::-webkit-scrollbar-thumb {
-                border-radius: 10px;
-                background-color: #122951;
-            }
-
+            
             textarea {
                 padding:0px;
+                min-height: 18px !important;
                 color:$default-color;
+
+                overflow-y: scroll;
+                scrollbar-width:thin;
+                scrollbar-color: #122951 transparent;
+                &::-webkit-scrollbar {
+                    width: 5px;
+                    height: 5px;
+                }
+                &::-webkit-scrollbar-track {
+                    border-radius: 10px;
+                    background-color: transparent;
+                }
+                &::-webkit-scrollbar-thumb {
+                    border-radius: 10px;
+                    background-color: #122951;
+                }
             }
 
             .see-more {
@@ -92,6 +98,8 @@ $default-color: rgb(218,220,225);
                         font-weight:600;
                     }
                 }
+
+               
             }
         }
             

@@ -188,9 +188,9 @@
                     <div class="project-type" *ngIf="item.service">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">design_services</mat-icon>
                         <span> 
-                            <ng-container *ngIf="item.price_type_service==''"> Produits & Sevices •</ng-container>  
-                            <ng-container *ngIf="item.price_type_service!=''"> {{item.price_type_service}} •</ng-container> 
-                            <ng-container *ngIf="item.offer_or_demand!=''"> {{item.offer_or_demand}} </ng-container> 
+                            <ng-container *ngIf="item.price_type_service==''"> Produits & Sevices</ng-container>  
+                            <ng-container *ngIf="item.price_type_service!=''"> • {{item.price_type_service}}</ng-container> 
+                            <ng-container *ngIf="item.offer_or_demand!=''"> • {{item.offer_or_demand}} </ng-container> 
                             <ng-container *ngIf="item.price_value_service>0">: {{item.price_value_service}}€ </ng-container> 
                            
                         </span>
@@ -252,27 +252,27 @@
                     <mat-spinner diameter="40"></mat-spinner>
                 </div>
                 
-                <div *ngIf="see_responses==1 && answers_retrieved" [@enterFromRightAnimation]>
-                    <div class="project-type" *ngIf="list_of_profile_pictures.length">
+                <div #ResponsesContainer class="responses-main-container" *ngIf="see_responses==1 && answers_retrieved" [@enterFromRightAnimation] (scroll)="onScrollResponses()">
+                    <div class="project-type" *ngIf="list_of_pseudos.length && answers_retrieved">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">dehaze</mat-icon>
                         <span>Liste des réponses</span>
                     </div>
-                    <div class="project-no-response" *ngIf="!list_of_profile_pictures.length">
+                    <div class="project-no-response" *ngIf="!list_of_pseudos.length && answers_retrieved">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                         <span>Aucune réponse</span>
                     </div>
                     
     
-                    <ng-container *ngIf="list_of_profile_pictures.length">
-                        <div class="responses-container" *ngFor="let item of list_of_profile_pictures; let i=index">
+                    <ng-container *ngIf="list_of_pseudos.length>0">
+                        <div class="responses-container" *ngFor="let item of list_of_pseudos.slice(0,number_of_responses_to_show); let i=index">
                             <div class="subscriber-card">
                                 <!--********************-->
                                 <!--Author container-->
                                 <!--********************-->
                                 <div class="subscriber">
                                     <a [routerLink]=get_response_author_link(i) class="user-container"   (click)="stop($event);close_popup()">
-                                        <div class="left-container">
-                                            <img [src]="list_of_profile_pictures[i]">
+                                        <div class="left-container"  [ngClass]="{'shiny':!response_pictures_loaded[i]}" >
+                                            <img [lazyLoad]="list_of_profile_pictures[i]"  [customObservable]="scroll? scroll : null" loading="lazy"   (load)="load_reponse_picture(i)" [ngClass]="{'invisible':!response_pictures_loaded[i]}">
                                         </div>
                                         
                                         
@@ -300,16 +300,27 @@
                                 <button (click)="stop($event);see_response(i);" [@enterAnimation]>
                                     <span>Voir la réponse</span>
                                 </button>
+                                <a [routerLink]="get_response_author_chat(i)" (click)="stop($event);close_popup()" class="message" matTooltip="Écrire"
+                                matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200" [@enterAnimation]>
+                                    <div class="icon-messenger" >
+                                    </div>
+                                    <span class="message-text">
+                                        Écrire
+                                    </span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="for-spinner" *ngIf="loading_more">
+                            <mat-spinner  diameter="25"  style="margin:auto;"></mat-spinner>
                         </div>
                     </ng-container>
                     
                 </div>
     
                 
-                <div *ngIf="see_responses==2" [@enterAnimation]>
+                <div *ngIf="see_responses==2"  [@enterFromLeftAnimation]>
     
-                    <div class="response-title">
+                    <div class="response-title" >
                         <div class="project-type">
                             <span>Réponse de {{list_of_authors_name[b]}}</span>
                         </div>
@@ -477,7 +488,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!! INFORMATIONS CONTAINER !!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div #myScrollContainer class="artwork-about-container" >
+    <div #myScrollContainer class="artwork-about-container" (scroll)="onScrollComments()" >
     
         <ng-container *ngIf="!archive_retrieved || !visitor_mode_added">
             
@@ -590,7 +601,7 @@
 
                 <div class="view-and-date-numbers">
                     <div >
-                        <button mat-icon-button
+                        <button mat-icon-button (click)="add_share_history('facebook')"
                         style="outline: none !important;"
                         [url]=url
                         shareButton="facebook"
@@ -598,7 +609,7 @@
                         [style.color]="fbBtn?.color">
                         <fa-icon *ngIf="fbBtn" [icon]="fbBtn.icon" size="lg"></fa-icon>
                         </button>
-                        <button mat-icon-button
+                        <button mat-icon-button  (click)="add_share_history('twitter')"
                         style="outline: none !important;"
                         [url]=url
                                 shareButton="twitter"
@@ -606,7 +617,7 @@
                                 [style.color]="twtBtn?.color">
                         <fa-icon *ngIf="twtBtn" [icon]="twtBtn.icon" size="lg"></fa-icon>
                         </button>
-                        <button mat-icon-button
+                        <button mat-icon-button  (click)="add_share_history('pinterest')"
                         style="outline: none !important;"
                         [url]=url
                                 shareButton="pinterest"
@@ -614,7 +625,7 @@
                                 [style.color]="pinBtn?.color">
                         <fa-icon *ngIf="pinBtn" [icon]="pinBtn.icon" size="lg"></fa-icon>
                         </button>
-                        <button mat-icon-button
+                        <button mat-icon-button (click)="add_share_history('whatsapp')"
                         style="outline: none !important;"
                         [url]=url
                                 shareButton="whatsapp"
@@ -622,7 +633,7 @@
                                 [style.color]="whaBtn?.color">
                         <fa-icon *ngIf="whaBtn" [icon]="whaBtn.icon" size="lg"></fa-icon>
                         </button>
-                        <button mat-icon-button
+                        <button mat-icon-button (click)="add_share_history('linkedin')"
                         style="outline: none !important;"
                         [url]=url
                                 shareButton="linkedin"
@@ -630,7 +641,7 @@
                                 [style.color]="msgBtn?.color">
                         <fa-icon *ngIf="msgBtn" [icon]="msgBtn.icon" size="lg"></fa-icon>
                         </button>
-                        <button mat-icon-button
+                        <button mat-icon-button (click)="add_share_history('copy')"
                         style="outline: none !important;"
                         [url]=url
                                 shareButton="copy"
@@ -648,7 +659,7 @@
                             </button>
                             <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
                                 <button class="artwork-button-menu-item" mat-menu-item (click)="archive();" *ngIf="!ad_archived">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark</mat-icon>
                                     <span>Archiver</span>
                                 </button>
                                 <button class="artwork-button-menu-item" mat-menu-item (click)="unarchive();" *ngIf="ad_archived">

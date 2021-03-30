@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, SimpleChanges, ElementRef, ViewChild, Output, EventEmitter, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, SimpleChanges, ElementRef, ViewChild, Output, EventEmitter, ViewChildren, QueryList, Renderer2 } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { NotationService } from '../services/notation.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
@@ -64,6 +64,7 @@ export class CommentElementComponent implements OnInit {
     private NotificationsService:NotificationsService,
     private sanitizer:DomSanitizer,
     private Profile_Edition_Service:Profile_Edition_Service,
+    private rd:Renderer2,
     private cd:ChangeDetectorRef,
     private navbar: NavbarService,
     private NotationService:NotationService
@@ -549,6 +550,7 @@ export class CommentElementComponent implements OnInit {
         this.NotationService.edit_commentary(this.textareaREAD.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.id)
             .subscribe(l=>{
               this.comment=l[0].commentary;
+             
         });
       }
       

@@ -12,7 +12,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!! ARTWORK CONTAINER !!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div #artwork_container  class="artwork-container"  >
+    <div #artwork_container  class="artwork-container" [@enterFromLeftAnimation] >
 
         <ng-container *ngIf="!item_retrieved ">
             <div class="top-container">
@@ -142,28 +142,28 @@
         </div>
 
         <div #leftContainer class="content-container" [ngClass]="{'really-invisible': !item_retrieved }">
-            <div class="thumbnails-container" *ngIf="thumbnails==true" [@enterFromLeft]>
+            <div class="thumbnails-container" *ngIf="thumbnails" [@enterFromLeftAnimation]>
                 <div class="thumbnails-name">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="thumbnails-icon">apps</mat-icon>
                     <span>Vignettes</span>
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="close-icon" (click)="click_thumbnails();">close</mat-icon>
                 </div>
                 
-                <div class="thumbnails-contents" *ngIf="swiper && style!='Manga'">
+                <div #ThumbnailContainer class="thumbnails-contents" *ngIf="swiper && style!='Manga'">
                     <ng-container *ngFor="let element of thumbnails_links; let i = index">
                         <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
-                            [ngClass]="{'opened': i==swiper.activeIndex}">
-                            <img [src]=element>
+                            [ngClass]="{'opened': i==swiper.activeIndex}"  [ngClass]="{'shiny':!thumbnails_loaded[i]}">
+                            <img [lazyLoad]="element"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnails(i)" [ngClass]="{'invisible':!thumbnails_loaded[i]}">
                         </div>
                         <span>Page {{i+1}}</span>
                     </ng-container>
                 </div>
 
-                <div class="thumbnails-contents" *ngIf="swiper && style=='Manga'">
+                <div #ThumbnailContainer class="thumbnails-contents" *ngIf="swiper && style=='Manga'">
                     <ng-container *ngFor="let element of thumbnails_links.slice().reverse(); let i = index">
                         <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
-                            [ngClass]="{'opened': (thumbnails_links.length-i-1)==swiper.activeIndex}">
-                            <img [src]=element>
+                            [ngClass]="{'opened': (thumbnails_links.length-i-1)==swiper.activeIndex}" [ngClass]="{'shiny':!thumbnails_loaded[i]}">
+                            <img  [lazyLoad]="element"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnails(i)" [ngClass]="{'invisible':!thumbnails_loaded[i]}">
                         </div>
                         <span>Page {{i+1}}</span>
                     </ng-container>
@@ -180,7 +180,7 @@
                                         <mat-spinner diameter="50" *ngIf=" (!display_comics_pages[i] || !display_comics_pages[list_bd_pages.length-1])">
                                         </mat-spinner>
                                     </div>
-                                    <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img" [src]="item" (contextmenu)="onRightClick()"
+                                    <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
                                             [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] || !display_comics_pages[list_bd_pages.length-1]}">
                                 </ng-container>
                                 <ng-container *ngIf="style!='Manga'">
@@ -188,7 +188,7 @@
                                         <mat-spinner diameter="50" *ngIf=" (!display_comics_pages[i] )">
                                         </mat-spinner>
                                     </div>
-                                    <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img" [src]="item" (contextmenu)="onRightClick()"
+                                    <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
                                             [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] }">
                                 </ng-container>
 
@@ -208,7 +208,7 @@
                                             <mat-spinner diameter="50" *ngIf=" (!display_comics_pages[i] || !display_comics_pages[list_of_pages_by_chapter[current_chapter].length-1])">
                                             </mat-spinner>
                                         </div>
-                                        <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img" [src]="item" (contextmenu)="onRightClick()"
+                                        <img  (load)="a_drawing_is_loaded(i)"class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy"  (contextmenu)="onRightClick()"
                                             [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] || !display_comics_pages[list_of_pages_by_chapter[current_chapter].length-1]}">
                                     </ng-container>
                                     <ng-container *ngIf="style!='Manga'">
@@ -216,7 +216,7 @@
                                             <mat-spinner diameter="50" *ngIf="!display_comics_pages[i]">
                                             </mat-spinner>
                                         </div>
-                                        <img (load)="a_drawing_is_loaded(i)" class="slide-container-img" [src]="item" (contextmenu)="onRightClick()"
+                                        <img (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy"  (contextmenu)="onRightClick()"
                                             [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i]}">
                                     </ng-container>
                                     
@@ -354,7 +354,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!! INFORMATIONS CONTAINER !!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div #myScrollContainer class="artwork-about-container">
+    <div #myScrollContainer class="artwork-about-container" [@enterFromRightAnimation] (scroll)="onScrollComments()">
         
 
         <ng-container *ngIf=" !archive_retrieved || !mode_visiteur_added || !subscribtion_retrieved">
@@ -472,7 +472,7 @@
             
             <div class="view-and-date-numbers">
                 <div >
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('facebook')"
                         style="outline: none !important;"
                     shareButton="facebook"
                     #fbBtn="shareButton"
@@ -480,7 +480,7 @@
                     [url]=url>
                     <fa-icon *ngIf="fbBtn" [icon]="fbBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('twitter')"
                         style="outline: none !important;"
                             shareButton="twitter"
                             #twtBtn="shareButton"
@@ -488,7 +488,7 @@
                             [url]=url>
                     <fa-icon *ngIf="twtBtn" [icon]="twtBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('pinterest')"
                         style="outline: none !important;"
                             shareButton="pinterest"
                             #pinBtn="shareButton"
@@ -496,7 +496,7 @@
                             [url]=url>
                     <fa-icon *ngIf="pinBtn" [icon]="pinBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('whatsapp')"
                         style="outline: none !important;"
                             shareButton="whatsapp"
                             #whaBtn="shareButton"
@@ -504,7 +504,7 @@
                             [url]=url>
                     <fa-icon *ngIf="whaBtn" [icon]="whaBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('linkedin')"
                         style="outline: none !important;"
                             shareButton="linkedin"
                             #msgBtn="shareButton"
@@ -512,7 +512,7 @@
                             [url]=url>
                     <fa-icon *ngIf="msgBtn" [icon]="msgBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('copy')"
                         style="outline: none !important;"
                             shareButton="copy"
                             #insBtn="shareButton"
@@ -554,7 +554,7 @@
                                 <span>Annuler la mise en avant</span>
                             </button>
                             <button *ngIf="status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="set_private();">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark</mat-icon>
                                 <span>Archiver</span>
                             </button>
                             <button *ngIf="status=='private'" class="artwork-button-menu-item" mat-menu-item (click)="set_public();">
@@ -587,7 +587,7 @@
                                 <span>Annuler le signalement</span>
                             </button>
                             <button (click)="archive()" class="artwork-button-menu-item" mat-menu-item *ngIf="!content_archived">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark</mat-icon>
                                 <span>Archiver</span>
                             </button>
                             <button (click)="unarchive()" class="artwork-button-menu-item" mat-menu-item *ngIf="content_archived">

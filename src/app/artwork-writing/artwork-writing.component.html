@@ -13,7 +13,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!! ARTWORK CONTAINER !!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div class="artwork-container">
+    <div class="artwork-container" [@enterFromLeftAnimation] >
 
         <ng-container *ngIf="!item_retrieved ">
             <div class="top-container">
@@ -186,7 +186,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!! INFORMATIONS CONTAINER !!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div #myScrollContainer class="artwork-about-container">
+    <div #myScrollContainer class="artwork-about-container"  [@enterFromRightAnimation] (scroll)="onScrollComments()">
         
 
         <ng-container *ngIf=" !archive_retrieved || !mode_visiteur_added || !subscribtion_retrieved">
@@ -298,53 +298,53 @@
 
             <div class="view-and-date-numbers">
                 <div >
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('facebook')"
                         style="outline: none !important;"
-                        [url]=url
                     shareButton="facebook"
                     #fbBtn="shareButton"
-                    [style.color]="fbBtn?.color">
+                    [style.color]="fbBtn?.color"
+                    [url]=url>
                     <fa-icon *ngIf="fbBtn" [icon]="fbBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('twitter')"
                         style="outline: none !important;"
-                        [url]=url
                             shareButton="twitter"
                             #twtBtn="shareButton"
-                            [style.color]="twtBtn?.color">
+                            [style.color]="twtBtn?.color"
+                            [url]=url>
                     <fa-icon *ngIf="twtBtn" [icon]="twtBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('pinterest')"
                         style="outline: none !important;"
-                        [url]=url
                             shareButton="pinterest"
                             #pinBtn="shareButton"
-                            [style.color]="pinBtn?.color">
+                            [style.color]="pinBtn?.color"
+                            [url]=url>
                     <fa-icon *ngIf="pinBtn" [icon]="pinBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('whatsapp')"
                         style="outline: none !important;"
-                        [url]=url
                             shareButton="whatsapp"
                             #whaBtn="shareButton"
-                            [style.color]="whaBtn?.color">
+                            [style.color]="whaBtn?.color"
+                            [url]=url>
                     <fa-icon *ngIf="whaBtn" [icon]="whaBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('linkedin')"
                         style="outline: none !important;"
-                        [url]=url
                             shareButton="linkedin"
                             #msgBtn="shareButton"
-                            [style.color]="msgBtn?.color">
+                            [style.color]="msgBtn?.color"
+                            [url]=url>
                     <fa-icon *ngIf="msgBtn" [icon]="msgBtn.icon" size="lg"></fa-icon>
                     </button>
-                    <button mat-icon-button
+                    <button mat-icon-button (click)="add_share_history('copy')"
                         style="outline: none !important;"
-                        [url]=url
                             shareButton="copy"
                             #insBtn="shareButton"
-                            [style.color]="insBtn?.color">
-                    <fa-icon *ngIf="insBtn" [icon]="insBtn.icon" size="lg"></fa-icon>
+                            [style.color]="insBtn?.color"
+                            [url]=url>
+                        <fa-icon *ngIf="insBtn" [icon]="insBtn.icon" size="lg"></fa-icon>
                     </button>
                 </div>
 
@@ -376,7 +376,7 @@
                                 <span>Modifier la miniature</span>
                             </button>
                             <button *ngIf="status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="set_private();">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark</mat-icon>
                                 <span>Archiver</span>
                             </button>
                             <button *ngIf="status=='private'" class="artwork-button-menu-item" mat-menu-item (click)="set_public();">
@@ -409,7 +409,7 @@
                                 <span>Annuler le signalement</span>
                             </button>
                             <button (click)="archive()" class="artwork-button-menu-item" mat-menu-item *ngIf="!content_archived">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark</mat-icon>
                                 <span>Archiver</span>
                             </button>
                             <button (click)="unarchive()" class="artwork-button-menu-item" mat-menu-item *ngIf="content_archived">

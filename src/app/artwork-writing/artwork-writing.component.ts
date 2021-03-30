@@ -53,13 +53,21 @@ declare var $: any;
       ]
     ),
     trigger(
-      'enterFromLeft', [
+      'enterFromLeftAnimation', [
         transition(':enter', [
           style({transform: 'translateX(-100%)', opacity: 0}),
-          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
         ])
-      ]
-    )
+      ],
+    ),
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
   ],
 })
 export class ArtworkWritingComponent implements OnInit {
@@ -280,14 +288,7 @@ export class ArtworkWritingComponent implements OnInit {
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
-    setInterval(() => {
-
-      if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
-        if(this.number_of_comments_to_show<this.commentariesnumber){
-          this.number_of_comments_to_show+=10;
-        }
-      }
-    },1000)
+    
 
     this.writing_id  = this.writing_id_input?this.writing_id_input:parseInt(this.activatedRoute.snapshot.paramMap.get('writing_id'));
     if(!(this.writing_id>0)){
@@ -453,7 +454,11 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
 
-
+  onScrollComments(){
+    if( this.commentariesnumber && this.number_of_comments_to_show<this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+        this.number_of_comments_to_show+=10;
+    }
+  }
 
 
   check_likes_after_current(){
@@ -1576,6 +1581,11 @@ pageRendered(e:any) {
     this.add_time_of_view()
     this.close_popup();
   }
+
+  add_share_history(category){
+    this.navbar.add_page_visited_to_history(`/artwork-writing-share/${this.title}/${this.writing_id}/${category}`,this.device_info).subscribe();
+  }
+
 }
 
 

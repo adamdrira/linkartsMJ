@@ -332,7 +332,7 @@ export class NavbarLinkartsComponent implements OnInit {
       if(this.list_of_friends_retrieved && !this.navbar.get_using_chat() && !this.popup_opened){
         this.get_connections_status();
       }
-    }, 60000);
+    }, 120000);
 
     this.navbar.notification.subscribe(msg=>{
       if(msg && msg[0].for_notifications){
@@ -1934,14 +1934,12 @@ sort_friends_list() {
   this.list_of_friends_retrieved=false;
   this.list_of_friends_date=[]
   this.list_of_friends_users_only=[];
-
   this.list_of_last_connection_dates=[];
   this.list_of_friends_connected=[];
   this.connections_status_retrieved=false;
   this.list_of_groups_retrieved=false;
   this.list_of_groups_ids=[];
-  this.chatService.get_list_of_users_I_talk_to().subscribe(r=>{
-
+  this.chatService.get_list_of_users_I_talk_to_navbar().subscribe(r=>{
     let friends=r[0].friends;
     if(friends.length>0){
       let compt=0;
@@ -1950,7 +1948,6 @@ sort_friends_list() {
         this.list_of_chat_friends_ids[i]=friends[i].id;
         let data_retrieved=false;
         if(friends[i].id_user==this.user_id){
-            
             this.list_of_friends_types[i]='user';
             this.list_of_friends_users_only[i]=friends[i].id_receiver;
             this.list_of_friends_ids[i]=friends[i].id_receiver;
@@ -1962,7 +1959,6 @@ sort_friends_list() {
               data_retrieved=true;
               all_retrieved(this);
             });
-
             this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1972,8 +1968,6 @@ sort_friends_list() {
                 this.sort_list_of_profile_pictures()
               }
             });
-           
-            
             function all_retrieved(THIS){
               if(data_retrieved ){
                 compt ++;
@@ -2024,27 +2018,23 @@ sort_friends_list() {
         }
       }
     }
-    
   })
 };
 
 
 sort_friends_groups_chats_list(){
   let len =this.list_of_friends_ids.length;
-  this.chatService.get_my_list_of_groups().subscribe(l=>{
+  this.chatService.get_my_list_of_groups_navbar().subscribe(l=>{
     let list_of_names=[]
     if(l[0].length>0){
       for(let k=0;k<l[0].length;k++){
-        
         list_of_names.push(l[0][k].name)
         this.list_of_friends_names[len+k]=l[0][k].name;
         this.list_of_friends_certifications[len+k]=null;
         this.list_of_friends_pseudos[len+k]=l[0][k].name
         this.list_of_groups_ids[k]=l[0][k].id;
         if(k==l[0].length-1){
-          // get_list_of_groups_I_am_in sans les spams
           this.chatService.get_list_of_groups_I_am_in( this.list_of_groups_ids).subscribe(r=>{
-           
             let compt=0;
             let list_of_ids=[]
             for(let i=0;i<r[0].friends.length;i++){
@@ -2053,12 +2043,9 @@ sort_friends_groups_chats_list(){
               this.list_of_friends_ids[len+i]=r[0].friends[i].id_receiver;
               this.list_of_friends_date[len+i]=new Date(r[0].friends[i].date).getTime()/1000;
               this.list_of_friends_types[len+i]='group';
-              
               this.chatService.retrieve_chat_profile_picture(r[0].friends[i].chat_profile_pic_name,r[0].friends[i].profile_pic_origin).subscribe(t=> {
-               
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                
                 this.list_of_pictures_by_ids_groups[r[0].friends[i].id_receiver] = url;
                 compt ++;
                 if(compt==r[0].friends.length){
@@ -2074,7 +2061,6 @@ sort_friends_groups_chats_list(){
           })
         }
       }
-      
     }
     else{
       this.can_sort_list_of_profile_pictures=true;
@@ -2083,10 +2069,7 @@ sort_friends_groups_chats_list(){
       }
       this.get_connections_status();
       this.list_of_friends_retrieved=true;
-    }
-    
-    
-    
+    };
   });
 }
 

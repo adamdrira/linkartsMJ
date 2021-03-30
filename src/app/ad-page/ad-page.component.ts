@@ -27,7 +27,7 @@ import { LoginComponent } from '../login/login.component';
 import { DOCUMENT } from '@angular/common';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupFormAdComponent } from '../popup-form-ad/popup-form-ad.component';
-
+import { merge, fromEvent } from 'rxjs';
 declare var $: any
 declare var Swiper: any
 
@@ -272,15 +272,6 @@ export class AdPageComponent implements OnInit {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
   
     window.scroll(0,0);
-    setInterval(() => {
-
-      if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
-        if(this.number_of_comments_to_show<this.commentariesnumber){
-          this.number_of_comments_to_show+=10;
-        }
-      }
-    },3000)
-
     this.ad_id = this.ad_id_input?this.ad_id_input:parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     let title = this.ad_title_input?this.ad_title_input:this.activatedRoute.snapshot.paramMap.get('title');
 
@@ -340,9 +331,10 @@ export class AdPageComponent implements OnInit {
         }
       }
       else{
+        
         this.commentariesnumber=m[0].commentariesnumber;
       
-        this.navbar.get_number_of_clicked("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+        this.navbar.get_number_of_clicked("Ad",this.item.id).subscribe(r=>{
           this.number_of_views=r[0].number
         })
         this.ready_to_check_view=true;
@@ -387,15 +379,14 @@ export class AdPageComponent implements OnInit {
         this.get_recommendations()
       }
       
-     
-
-
-
-      
     })
+  }
 
-    
-    
+
+  onScrollComments(){
+    if( this.commentariesnumber && this.number_of_comments_to_show<this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+        this.number_of_comments_to_show+=10;
+    }
   }
 
 
@@ -412,7 +403,7 @@ export class AdPageComponent implements OnInit {
         })
       }
       else{
-        this.navbar.add_main_research_to_history("Ad",null ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,this.type_of_account).subscribe();
+        this.navbar.add_main_research_to_history("Ad",this.item.type_of_project ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,this.type_of_account).subscribe();
       }
       this.visitor_mode_added=true;
     }
@@ -1000,9 +991,26 @@ export class AdPageComponent implements OnInit {
     return "/account/"+ this.list_of_pseudos[i] ;
   }
 
+  get_response_author_chat(i){
+    return "/chat/"+ this.list_of_pseudos[i] + '/' + this.list_of_ids[i];
+  }
+
+  scroll:any;
+
+  response_pictures_loaded=[];
+  load_reponse_picture(i){
+    this.response_pictures_loaded[i]=true;
+  }
+  all_answers_retrieved=false;
+  ready_to_filter=false;
   responses(){
-    
     this.see_responses=1;
+    if(this.all_answers_retrieved){
+      this.answers_retrieved=true;
+      this.merge_lazy();
+      return
+    }
+    
     this.Ads_service.get_all_responses(this.item.id).subscribe(r=>{
       this.list_of_responses=r[0];
       if (r[0]!=null){
@@ -1012,7 +1020,7 @@ export class AdPageComponent implements OnInit {
           this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user).subscribe(p=> {
             let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_profile_pictures[i] = SafeURL;
+            this.list_of_profile_pictures[i] = url;
           });
           this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(q=> {
             this.list_of_authors_name[i] = q[0].firstname + ' ' + q[0].lastname;
@@ -1020,18 +1028,110 @@ export class AdPageComponent implements OnInit {
             this.list_of_ids[i]=q[0].id; 
             this.list_of_pseudos[i]=q[0].nickname; 
             this.list_of_primary_descriptions[i]=q[0].primary_description;
-            compt++;
-            if(compt==r[0].length){
-              this.answers_retrieved=true;
-            }
+
+            check_all(this);
+            
           });
+
+          function check_all(THIS){
+            compt++;
+            if(THIS.list_of_ids.length>10){
+              let compt1 =0
+              for(let j=0;j<10;j++){
+                if(THIS.list_of_ids[j]){
+                  compt1++;
+                }
+              }
+              if(compt1==10){
+                THIS.answers_retrieved=true;
+                THIS.all_answers_retrieved=true;
+              }
+            }
+          
+            if(compt==r[0].length){
+              THIS.answers_retrieved=true;
+              THIS.all_answers_retrieved=true;
+              THIS.ready_to_filter=true;
+              THIS.merge_lazy();
+            }
+          }
         }
       }
       if(!r[0].length) {
+        this.all_answers_retrieved=true;
         this.answers_retrieved=true;
       }
     })
+
+
+    this.Ads_service.set_all_responses_to_seen(this.item.id).subscribe(r=>{
+      console.log(r)
+    })
   }
+
+  @ViewChild('ResponsesContainer') private ResponsesContainer: ElementRef;
+  @ViewChild('leftContainer') private leftContainer: ElementRef;
+  merge_lazy(){
+    this.cd.detectChanges();
+    if(this.ResponsesContainer){
+      this.scroll = merge(
+        fromEvent(window, 'scroll'),
+        fromEvent(this.ResponsesContainer.nativeElement, 'scroll'),
+        fromEvent(this.leftContainer.nativeElement, 'scroll'),
+        
+      );
+    }
+
+   
+  }
+  
+
+  loading_more=false;
+  number_of_responses_to_show=10;
+  onScrollResponses(){
+    if(!this.loading_more && this.number_of_responses_to_show<this.list_of_responses.length && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+      this.loading_more=true;
+      let len = this.list_of_responses.length - this.number_of_responses_to_show;
+      let see_more=false;
+      if(len>10){
+        let compt =0
+        for(let i=0;i<10;i++){
+          if(this.list_of_ids[ this.number_of_responses_to_show +i]){
+            compt++;
+          }
+        }
+        if(compt==10){
+          see_more=true;
+        }
+      }
+      else{
+        let compt =0
+        for(let i=0;i<len;i++){
+          if(this.list_of_ids[ this.number_of_responses_to_show +i]){
+            compt++;
+          }
+        }
+        if(compt==len){
+          see_more=true;
+        }
+      }
+    
+      if(  see_more ){
+        this.number_of_responses_to_show+=10;
+        this.loading_more=false;
+        this.cd.detectChanges();
+      }
+      else{
+        let pause = setInterval(()=>{
+          this.loading_more=false;
+          this.onScrollResponses()
+          clearInterval(pause)
+        },1000)
+      }
+
+    }
+  }
+
 
   see_response(i){
     this.b=i;
@@ -1309,4 +1409,10 @@ export class AdPageComponent implements OnInit {
       this.in_other_popup=false;
     })
   }
+
+
+  add_share_history(category){
+    this.navbar.add_page_visited_to_history(`/ad-page-share/${this.item.title}/${this.ad_id}/${category}`,this.device_info).subscribe();
+  }
+
 }

@@ -140,11 +140,6 @@ export class StoriesComponent implements OnInit {
     this.swiper.lazy.loadInSlide(0);
   }
 
-  lazyImageLoad(swiper, slideEl: HTMLElement, imageEl: HTMLElement) {
-    console.log(slideEl)
-    console.log(imageEl)
-  }
-
 
   my_index=-1;
   ngOnInit() {
@@ -647,7 +642,6 @@ export class StoriesComponent implements OnInit {
     }
     else if((i>0 && !this.do_I_have_stories) || this.do_I_have_stories){
 
-      console.log("open stories")
       const dialogRef = this.dialog.open(PopupStoriesComponent, {
         data: { list_of_users: this.final_list_of_users, index_id_of_user: i, list_of_data:this.list_of_list_of_data,current_user:this.user_id,current_user_name:this.user_name},
         panelClass: 'popupStoriesClass'

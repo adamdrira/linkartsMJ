@@ -28,7 +28,7 @@ import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.co
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { trigger, transition, style, animate } from '@angular/animations';
-
+import { merge, fromEvent } from 'rxjs';
 import { LoginComponent } from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
@@ -58,13 +58,21 @@ declare var $: any;
       ]
     ),
     trigger(
-      'enterFromLeft', [
+      'enterFromLeftAnimation', [
         transition(':enter', [
           style({transform: 'translateX(-100%)', opacity: 0}),
-          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
         ])
-      ]
-    )
+      ],
+    ),
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
   ],
 })
 export class ArtworkDrawingComponent implements OnInit {
@@ -210,7 +218,7 @@ export class ArtworkDrawingComponent implements OnInit {
   thirdtag:string;
   pagesnumber:number;
 
-  list_drawing_pages:SafeUrl[]=[];
+  list_drawing_pages:any[]=[];
   drawing_one_shot:SafeUrl;
   pseudo:string='';
   authorid:number=0;
@@ -286,15 +294,6 @@ export class ArtworkDrawingComponent implements OnInit {
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
-
-    setInterval(() => {
-
-      if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
-        if(this.number_of_comments_to_show<this.commentariesnumber){
-          this.number_of_comments_to_show+=10;
-        }
-      }
-    },1000)
 
     this.type = this.drawing_format_input?this.drawing_format_input:this.activatedRoute.snapshot.paramMap.get('format');
     if( this.type != "one-shot" && this.type != "artbook" ) {
@@ -399,6 +398,12 @@ export class ArtworkDrawingComponent implements OnInit {
       })
     }
     
+  }
+
+  onScrollComments(){
+    if( this.commentariesnumber && this.number_of_comments_to_show<this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+        this.number_of_comments_to_show+=10;
+    }
   }
 
   check_archive(){
@@ -661,9 +666,12 @@ export class ArtworkDrawingComponent implements OnInit {
       this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.list_drawing_pages[r[1]]=(SafeURL);
+        this.list_drawing_pages[r[1]]=url;
       });
     };
+
+    this.initialize_swiper();
+    this.display_pages=true;
 
   }
 
@@ -990,6 +998,12 @@ export class ArtworkDrawingComponent implements OnInit {
       speed: 500,
       spaceBetween: 100,
       simulateTouch: true,
+      preloadImages: false,
+      lazy: {
+        loadOnTransitionStart: true,
+        checkInView:true,
+      },
+      watchSlidesVisibility:true,
       scrollbar: {
         el: '.swiper-scrollbar',
         hide: true,
@@ -1022,6 +1036,9 @@ export class ArtworkDrawingComponent implements OnInit {
         THIS.setSlide( $(".top-container .pages-controller-container input").val() );
       }
     });
+
+    this.cd.detectChanges();
+    
   }
 
 
@@ -1081,7 +1098,8 @@ export class ArtworkDrawingComponent implements OnInit {
 
   
 
-  
+  @ViewChild('ThumbnailContainer') private ThumbnailContainer: ElementRef;
+  scroll:any;
   click_thumbnails() {
 
 
@@ -1090,31 +1108,35 @@ export class ArtworkDrawingComponent implements OnInit {
     }
 
     if( !this.thumbnails ) {
-      (async () => { 
-        const getCurrentCity = () => {
-        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 190px )");
-        return Promise.resolve('Lyon');
-      };
-        await getCurrentCity();
-        this.swiper.update();
-      })();
+      this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 190px )");
+      this.cd.detectChanges();
+      this.swiper.update();
       this.thumbnails=true;
     }
     else {
-      (async () => { 
-        const getCurrentCity = () => {
-        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% )");
-        return Promise.resolve('Lyon');
-      };
-        await getCurrentCity();
-        this.swiper.update();
-
-      })();
+      this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% )");
+      this.cd.detectChanges();
+      this.swiper.update();
       this.thumbnails=false;
     }
 
+    this.cd.detectChanges();
+    setInterval(() => {
+      if(this.ThumbnailContainer){
+        this.scroll = merge(
+          fromEvent(window, 'scroll'),
+          fromEvent(this.ThumbnailContainer.nativeElement, 'scroll'),
+        );
+      }
+    },1000)
+
   }
 
+  thumbnails_loaded=[];
+  load_thumbnails(i){
+    this.thumbnails_loaded[i]=true;
+  }
+  
   onRightClick() {
     return false;
   }
@@ -1874,7 +1896,8 @@ export class ArtworkDrawingComponent implements OnInit {
 
   a_drawing_is_loaded(i){
     this.display_drawings[i]=true;
-    let compt=0;
+    this.initialize_swiper();
+    /*let compt=0;
     if(this.type=='artbook'){
       for(let j=0;j<this.list_drawing_pages.length;j++){
         if(this.display_drawings[j]){
@@ -1889,7 +1912,7 @@ export class ArtworkDrawingComponent implements OnInit {
     }
     else{
       this.display_pages=true;
-    }
+    }*/
    
   }
 
@@ -2119,6 +2142,9 @@ export class ArtworkDrawingComponent implements OnInit {
   first_comment_pp_loaded=false;
   load_first_comment_pp(){
     this.first_comment_pp_loaded=true;
+  }
+  add_share_history(category){
+    this.navbar.add_page_visited_to_history(`/artwork-drawing-share/${this.type}/${this.title}/${this.drawing_id}/${category}`,this.device_info).subscribe();
   }
 }
 

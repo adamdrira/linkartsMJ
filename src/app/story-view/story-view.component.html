@@ -9,7 +9,8 @@
         <div class="header author-container">
 
             <a [routerLink]=open_account() (click)="close_stories();">
-                <img (load)='loaded_pp()'  [lazyLoad]="profile_picture" [customObservable]="scroll? scroll : null"  loading="lazy" [ngClass]="{'really-invisible':!display_pp }">
+                <img *ngIf="is_start" (load)='loaded_pp()' [src]="profile_picture_safe" loading="lazy"  [ngClass]="{'really-invisible':!display_pp }">
+                <img *ngIf="!is_start"  (load)='loaded_pp()'   class="swiper-lazy" [attr.data-src]="profile_picture" [lazyLoad]="profile_picture"  loading="lazy"  [ngClass]="{'really-invisible':!display_pp }">
                 <div *ngIf="!display_pp" class="image-skeleton shiny"></div>
             </a>
 
@@ -63,9 +64,9 @@
         <!--********************-->
         <div  class="swiper-wrapper">
     
-            <div  *ngFor="let item of list_of_contents; let i=index" class="swiper-slide" [ngStyle]="{'overflow': show_list_of_viewers ? 'auto' : 'unset'}">
+            <div  *ngFor="let item of list_of_contents; let i=index" class="swiper-slide" [ngStyle]="{'overflow': show_list_of_viewers ? 'auto' : 'unset'}" (scroll)="onScroll(i)">
 
-                <img (load)='loaded_image(i)'  [lazyLoad]="item"  loading="lazy" [ngClass]="{'invisible':!display_images[i],'really-invisible':show_list_of_viewers || loading_list_of_viewers}">
+                <img (load)='loaded_image(i)'  class="swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy"  loading="lazy" [ngClass]="{'invisible':!display_images[i],'really-invisible':show_list_of_viewers || loading_list_of_viewers}">
                 
                 
                 <div class="loading-dots" *ngIf="loading_list_of_viewers">
@@ -78,25 +79,25 @@
                     <span>Retour</span>
                 </button>
 
-                <div class="no-viewers" *ngIf="!loading_list_of_viewers && show_list_of_viewers && !viewers_found">
+                <div class="no-viewers" *ngIf="!loading_list_of_viewers && show_list_of_viewers && !viewers_found[i]">
                     <span>Aucune vue</span>
                 </div>
 
-                <div class="subscribers-container" *ngIf="!loading_list_of_viewers && show_list_of_viewers && viewers_found" [@enterAnimation]>
-                    <a [routerLink]=get_viewer_link(k) *ngFor="let item of list_of_viewers; let k=index" (click)="close_stories();" class="subscriber-card">
+                <div #SwiperSlides class="subscribers-container" *ngIf="!loading_list_of_viewers && show_list_of_viewers && viewers_found[i]" [@enterAnimation]>
+                    <a [routerLink]=get_viewer_link(i,k)  *ngFor="let item of list_of_viewers[i].slice(0,number_of_pp_to_show[i]); let k=index" (click)="close_stories();" class="subscriber-card">
                 
                         
                         <div class="subscriber">
-                            <div class="user-container">
+                            <div class="user-container"  >
         
                                     <div class="left-container"  [ngClass]="{'shiny':!list_of_pp_loaded[k]}">
-                                        <img [lazyLoad]="list_of_profile_pictures[k]" [customObservable]="scroll? scroll : null"  loading="lazy"  (load)="load_list_of_pp(k)"  [ngClass]="{ 'invisible':!list_of_pp_loaded[k]}">
+                                        <img  class="swiper-lazy" [lazyLoad]="list_of_profile_pictures[i][k]"  [customObservable]="scroll? scroll : null" loading="lazy"  loading="lazy"  (load)="load_list_of_pp(k)"  [ngClass]="{ 'invisible':!list_of_pp_loaded[k]}">
                                     </div>
         
                                     <div class="right-container">
                                         <span class="author-name">
                                             <div>{{item.firstname}} {{item.lastname}}</div>
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_viewers[k].certified_account"
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_viewers[i][k].certified_account"
                                             matTooltip="Compte certifié" 
                                             matTooltipClass='linkarts-tooltip' 
                                             [matTooltipPosition]="'below'"
@@ -109,19 +110,13 @@
                             </div>
                         </div>
             
-                        <div *ngIf="!list_of_check_subscribtion[k] && current_user!=list_of_viewers[k].id && !loading_subscribtion" class="subscribe-button button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                            <span>S'abonner</span>
-                        </div>
-                        <div *ngIf="list_of_check_subscribtion[k] && current_user!=list_of_viewers[k].id && !loading_subscribtion" class="unsubscribe-button button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
-                            
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active</mat-icon>
-                            <span>Abonné(e)</span>
-                        </div>
-            
                     </a>
+                    <div class="for-spinner" *ngIf="loading_more[i]" >
+                        <mat-spinner  diameter="25"  style="margin:auto;"></mat-spinner>
+                    </div>
                 </div>
 
+               
                 
                 <div class="left-absolute-container" *ngIf="!loading_list_of_viewers && !show_list_of_viewers" (click)="previous_slide();"></div>
                 <div class="right-absolute-container" *ngIf="!loading_list_of_viewers && !show_list_of_viewers" (click)="next_slide();"></div>

@@ -3,7 +3,6 @@ import { Component, OnInit, Inject, ChangeDetectorRef, ComponentFactoryResolver,
 import { StoryViewComponent } from '../story-view/story-view.component';
 import { Story_service } from '../services/story.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Location } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -66,7 +65,6 @@ export class PopupStoriesComponent implements OnInit {
   device_info='';
   ngOnInit() {
     let THIS=this;
-    console.log(this.data)
     this.index_id_of_user=this.data.index_id_of_user;
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     this.navbar.add_page_visited_to_history(`/stories`,this.device_info).subscribe();
@@ -84,7 +82,6 @@ export class PopupStoriesComponent implements OnInit {
       this.index_id_of_user-=1;
     }
 
-    console.log( this.index_id_of_user)
 
     this.cd.detectChanges();
     
@@ -94,6 +91,12 @@ export class PopupStoriesComponent implements OnInit {
         // Chrome
         this.swiper = new Swiper( this.swiperContainerStories.nativeElement, {
           effect: 'cube',
+          preloadImages: false,
+          lazy: {
+            loadOnTransitionStart: true,
+            checkInView:true,
+          },
+          watchSlidesVisibility:true,
           cubeEffect: {
             shadow: true,
             slideShadows: true,
@@ -157,7 +160,7 @@ export class PopupStoriesComponent implements OnInit {
             k++;
             if(k==this.list_of_users.length){
               for(let j = 0; j < this.list_of_users.length ; j++ ) {
-                this.createStory( this.list_of_users[j], this.list_index_debut[j],this.list_of_data[j] );
+                this.createStory( this.list_of_users[j], this.list_index_debut[j],this.list_of_data[j],j );
                 this.refresh_stories_status();
                 this.swiper.slideTo( this.index_id_of_user, false, false );
                 this.refresh_stories_status();
@@ -171,7 +174,7 @@ export class PopupStoriesComponent implements OnInit {
         k++;
         if(k==this.list_of_users.length){
           for(let j = 0; j < this.list_of_users.length ; j++ ) {
-            this.createStory( this.list_of_users[j], this.list_index_debut[j],this.list_of_data[j]);
+            this.createStory( this.list_of_users[j], this.list_index_debut[j],this.list_of_data[j],j);
             this.refresh_stories_status();
             this.swiper.slideTo( this.index_id_of_user, false, false );
             this.refresh_stories_status();
@@ -190,11 +193,9 @@ export class PopupStoriesComponent implements OnInit {
   }
 
 
-  createStory( user_id: number, index_debut: number,list_of_data:any) {
+  createStory( user_id: number, index_debut: number,list_of_data:any,index) {
     
-    console.log("create story")
-    console.log(" user " + user_id)
-    console.log(" index_debut " + index_debut)
+
     this.story_loaded = true;
     
     let THIS = this;
@@ -207,7 +208,7 @@ export class PopupStoriesComponent implements OnInit {
     this.componentRef[ this.componentRef.length - 1 ].instance.list_of_data = list_of_data;
     this.componentRef[ this.componentRef.length - 1 ].instance.user_id = user_id;
     this.componentRef[ this.componentRef.length - 1 ].instance.current_user = this.data.current_user;
-
+    this.componentRef[ this.componentRef.length - 1 ].instance.is_start = (this.index_id_of_user==index)?true:false;
     this.componentRef[ this.componentRef.length - 1 ].instance.current_user_name = this.data.current_user_name;
     this.componentRef[ this.componentRef.length - 1 ].instance.index_debut = index_debut;
 

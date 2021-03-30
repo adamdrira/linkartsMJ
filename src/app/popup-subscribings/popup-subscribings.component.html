@@ -74,11 +74,12 @@
            
 
         </div>
+        <div class="for-spinner" *ngIf="loading_more">
+            <mat-spinner  diameter="25"  style="margin:auto;"></mat-spinner>
+        </div>
+        
     </div>
 
 
 </div>
 
-<div class="for-spinner" *ngIf="loading_more">
-    <mat-spinner  diameter="25"  style="margin:auto;"></mat-spinner>
-</div>

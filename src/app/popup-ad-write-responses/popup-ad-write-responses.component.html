@@ -6,7 +6,7 @@
 </div>
 
 <div class="scrollable-container">
-    <div class="component-container popupAdWriteResponses">
+    <div class="component-container popupAdWriteResponses" *ngIf="!show_message">
 
         <div>
             <app-uploader-ad-response-attachments
@@ -45,6 +45,21 @@
         </form>
 
 
+    </div>
+
+    <div *ngIf="show_message">
+        <div class="sent-mail-icon" >
+            <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
+        </div>
+        <div class="sent-mail-text" >
+            <span>Votre réponse a bien été envoyée !</span>
+            <span>Vous pouvez suivre son avancée dans la section <b>Annonces</b> de votre page de profile.</span>
+        </div>
+       
+
+        <button class="finish-button" [mat-dialog-close]="true">
+            <span>Continuer</span>
+        </button>
     </div>
 </div>
 

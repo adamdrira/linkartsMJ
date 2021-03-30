@@ -1,12 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {Ads_service} from '../services/ads.service';
 import {NotificationsService} from '../services/notifications.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {ChatService} from '../services/chat.service';
-import { Router } from '@angular/router';
-
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
 
@@ -23,7 +21,7 @@ export class PopupAdWriteResponsesComponent implements OnInit {
     private chatService:ChatService,
     public dialog: MatDialog,
     private Ads_service:Ads_service,
-    private router:Router,
+    private cd:ChangeDetectorRef,
     private navbar: NavbarService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { 
@@ -35,8 +33,8 @@ export class PopupAdWriteResponsesComponent implements OnInit {
   }
 
   show_icon=false;
+  show_message=false;
   ngOnInit() {
-    let THIS=this;
  
     this.createFormControlsAds();
     this.createFormAd();
@@ -85,7 +83,8 @@ export class PopupAdWriteResponsesComponent implements OnInit {
         this.chatService.messages.next(message_to_send);
         this.Ads_service.send_email_for_ad_answer(visitor_name,this.data.item.id,this.data.item.id_user,this.data.item.title).subscribe(l=>{
           this.display_loading=false;
-          location.reload();
+          this.show_message=true;
+          this.cd.detectChanges();
         })
         
       })
@@ -106,5 +105,8 @@ export class PopupAdWriteResponsesComponent implements OnInit {
       this.display_loading=true;
     })
   }
+
+
+  
 
 }

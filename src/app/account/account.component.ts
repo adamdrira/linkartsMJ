@@ -13,6 +13,7 @@ import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Albums_service } from '../services/albums.service';
+import { Ads_service } from '../services/ads.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
@@ -79,6 +80,7 @@ export class AccountComponent implements OnInit {
     private Subscribing_service:Subscribing_service,
     private Albums_service:Albums_service,
     public dialog: MatDialog,
+    private Ads_service:Ads_service,
     private Emphasize_service:Emphasize_service,
     ) {
 
@@ -135,8 +137,9 @@ export class AccountComponent implements OnInit {
 
   width:number;
   new_contents_loading=false;
-  number_of_ads_to_show=5;
-
+  number_of_ads_to_show=10;
+  number_of_ads_responses_to_show=10;
+  loading_responses=false;
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
     let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
@@ -153,8 +156,37 @@ export class AccountComponent implements OnInit {
       if(this.opened_category==2 && this.opened_album>0 && this.opened_section==1){
         this.see_more_writings(this.opened_album,this.opened_album)
       }
-      if(this.list_of_ads_added && this.opened_section==2 && this.number_of_ads_to_show<this.list_of_ads.length){
-        this.number_of_ads_to_show+=5;
+      if(this.list_of_ads_added && this.opened_section==2  && this.opened_category_ad==0 && this.number_of_ads_to_show<this.list_of_ads.length){
+        this.number_of_ads_to_show+=10;
+      }
+      if(this.list_of_ads_added && !this.loading_responses && this.opened_section==2  && this.opened_category_ad==1 && this.number_of_ads_responses_to_show<this.list_of_ads_responses.length){
+        this.loading_responses=true;
+        this.number_of_ads_to_show+=10;
+        this.Ads_service.get_all_my_responses(this.pseudo,10, this.number_of_ads_to_show).subscribe(r => {
+          console.log("ads resp more")
+          console.log(r)
+          let len= this.list_of_ads_responses.length
+          if (r[0].length>0){
+            let compt=0
+            for (let i=0;i<r[0].length;i++){
+              this.list_of_ads_responses[i+ len]=r[0][i];
+                this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).subscribe(m=>{
+                  this.list_of_ads_responses_data[i+ len]=m[0];
+                  this.cd.detectChanges();
+                  compt++;
+                  if(compt==r[0].length){
+                    this.loading_responses=false;
+                  }
+                })
+              }
+          }
+          else{
+            this.loading_responses=false;
+          }
+          
+        })
+    
+      
       }
     }
     
@@ -236,6 +268,9 @@ export class AccountComponent implements OnInit {
   archives_ads:any[]=[];
   list_of_ads:any[]=[];
   list_of_ads_added:boolean=false;
+  list_of_ads_responses:any[]=[];
+  list_of_ads_responses_data:any[]=[];
+  list_of_ads_responses_added:boolean=false;
   /***************************************** */
   /****************    BD    *************** */
   /***************************************** */
@@ -347,13 +382,6 @@ export class AccountComponent implements OnInit {
     window.scroll(0,0);
     
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
-    /*this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    if(!(this.user_id && this.user_id>0) || !( this.pseudo && this.pseudo.length>0)){
-      this.page_not_found=true;
-      return
-    }*/
-
-   
     if( !( this.pseudo && this.pseudo.length>0)){
       this.page_not_found=true;
       return
@@ -777,17 +805,41 @@ export class AccountComponent implements OnInit {
     this.route.data.subscribe(resp => {
       let r=resp.ads;
       if (r[0].length>0){
-        let compteur=0;
         for (let i=0;i<r[0].length;i++){
-            this.list_of_ads[i]=(r[0][i]);
-            compteur++;
-            if(compteur==r[0].length){
+            this.list_of_ads[i]=r[0][i];
+            if(i==r[0].length-1){
               this.list_of_ads_added=true;
             }
         }
       }
       else{
         this.list_of_ads_added=true;
+      }
+      this.cd.detectChanges();
+      this.update_background_position(this.opened_section)
+    })
+
+    this.route.data.subscribe(resp => {
+      console.log("ads resp")
+      
+      let r=resp.ads_responses;
+      console.log(r)
+      if (r[0].length>0){
+        let compt=0
+        for (let i=0;i<r[0].length;i++){
+          this.list_of_ads_responses[i]=r[0][i];
+            this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).subscribe(m=>{
+              this.list_of_ads_responses_data[i]=m[0];
+              compt++;
+              if(compt==r[0].length){
+                this.list_of_ads_responses_added=true;
+              }
+            })
+            
+          }
+      }
+      else{
+        this.list_of_ads_responses_added=true;
       }
       this.cd.detectChanges();
       this.update_background_position(this.opened_section)
@@ -2360,7 +2412,13 @@ report(){
     }
   }
 
-
+  opened_category_ad=0;
+  open_category_ad(i){
+    if(this.opened_category_ad==i){
+      return
+    }
+    this.opened_category_ad=i;
+  }
 }
 
 

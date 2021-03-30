@@ -137,7 +137,7 @@ export class PopupLikesAndLovesComponent implements OnInit {
     
   }
 
-  loading_more=false
+  loading_more=false;
   onScroll(){
     if(!this.loading_more && this.number_of_likes_to_show<this.list_of_users_ids.length && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
       this.loading_more=true;

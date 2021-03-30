@@ -159,7 +159,7 @@
                     </div>
                     <div  class="change-story-picture" [ngClass]="{'watch-story':!story_found}" (click)="add_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">add_circle_outline</mat-icon>
-                        <span>Ajouter une story</span>
+                        <span>Publier dans ma story</span>
                     </div>
                 </ng-container>
                 <ng-container *ngIf="mode_visiteur && mode_visiteur_added && story_retrieved && story_found  && type_of_profile=='account'">
@@ -489,6 +489,20 @@
                 </div>
             </ng-container>
 
+            <ng-container *ngIf="!emphasized_artwork_added && !mode_visiteur && !(!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added)" >
+                <div class="account-title medium-icon">
+                    <span>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">stars</mat-icon>
+                        Œuvre mise en avant
+                    </span>
+                </div>
+                <div class="text-lines">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                    <span>Aucune œuvre mise en avant</span>
+                    <span>Vous pouvez mettre une œuvre en avant depuis le mode lecture d'une œuvre</span>
+                </div>
+            </ng-container>
+
             <ng-container *ngIf="list_of_ads.length>0 && list_of_ads_added">
                 <div class="account-title medium-icon">
                     <span>
@@ -504,19 +518,7 @@
                 </div>
             </ng-container>
 
-            <ng-container *ngIf="!emphasized_artwork_added && !mode_visiteur && !(!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added)" >
-                <div class="account-title medium-icon">
-                    <span>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">stars</mat-icon>
-                        Œuvre mise en avant
-                    </span>
-                </div>
-                <div class="text-lines">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
-                    <span>Aucune œuvre mise en avant</span>
-                    <span>Vous pouvez mettre une œuvre en avant depuis le mode lecture d'une œuvre</span>
-                </div>
-            </ng-container>
+           
 
             
 
@@ -1018,10 +1020,6 @@
                     <!------------------------------------------------------------------------->
                     <!------------------------------------------------------------------------->
                     <div *ngIf="add_album==-1 " >
-                        
-                        <!--<div class="loading-page" *ngIf=" (opened_category==1) && contents_loading  ">
-                            <mat-spinner diameter="30" ></mat-spinner>
-                        </div>-->
 
                         <ng-container *ngIf=" opened_category==0 && opened_album==0 && !display_comics_thumbnails">
                             <div *ngFor="let item of categories_array; index as i1">
@@ -1578,7 +1576,20 @@
         <ng-container *ngIf="list_writings_added && list_drawings_artbook_added
         && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
 
-            <div class="ads-container" *ngIf="opened_section==2 && list_of_ads_added && list_of_ads.length>0"  [@enterAnimation]>
+            <div class="panel-background" *ngIf="!mode_visiteur">
+                <div class="logos-container"  #target [@enterFromTopAnimation]>
+                    <button class="logo" [ngClass]="{'opened': opened_category_ad == 0 }" (click)="open_category_ad(0);scroll(target);" #target>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
+                        <span>Mes annonces</span>
+                    </button>
+                    <button class="logo" [ngClass]="{'opened': opened_category_ad == 1 }" (click)="open_category_ad(1);scroll(target);" #target>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">post_add</mat-icon>
+                        <span>Mes réponses</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="ads-container" *ngIf="opened_section==2 && list_of_ads_added && list_of_ads.length>0 "  [@enterAnimation] [ngClass]="{'really-invisible': opened_category_ad!=0 }">
                 <div class="ad" *ngFor="let item of list_of_ads.slice(0,number_of_ads_to_show); let i = index">
                     <app-thumbnail-ad
                     [item]=item
@@ -1587,7 +1598,21 @@
                 </div>
             </div>
 
-            <div class="add-artwork-button" *ngIf="opened_section==2 && !mode_visiteur  && list_of_ads_added && list_of_ads.length==0" >
+            <div class="ads-container" *ngIf="opened_section==2 && !mode_visiteur && list_of_ads_responses_added && list_of_ads_responses.length>0 "  [@enterAnimation] [ngClass]="{'really-invisible': opened_category_ad!=1 }">
+                <div class="ad" *ngFor="let item of list_of_ads_responses_data.slice(0,number_of_ads_responses_to_show); let i = index">
+                    <app-thumbnail-ad
+                    [item]=item
+                    [now_in_seconds]=now_in_seconds
+                    ></app-thumbnail-ad>
+                </div>
+            </div>
+
+            <div class="loading-page" *ngIf=" opened_section==2 && !mode_visiteur && opened_category_ad==1"  [@enterAnimation] >
+
+                    <mat-spinner diameter="20" ></mat-spinner>
+            </div>
+
+            <div class="add-artwork-button" *ngIf="opened_section==2 && !mode_visiteur  && list_of_ads_added && list_of_ads.length==0 && opened_category_ad==0" >
                 <a [routerLink]=get_add_artwork_link()>
                     <button>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
@@ -1595,9 +1620,15 @@
                     </button>
                 </a>
             </div>
-            <div class="text-lines large" *ngIf=" opened_section==2 && mode_visiteur  && list_of_ads_added && list_of_ads.length==0" >
+
+            <div class="text-lines large" *ngIf=" opened_section==2 && mode_visiteur  && list_of_ads_added && list_of_ads.length==0 && opened_category_ad==0" >
                 <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                 <span>Aucune annonce</span>
+            </div>
+
+            <div class="text-lines large" *ngIf=" opened_section==2 && !mode_visiteur && list_of_ads_responses_added && list_of_ads_responses.length==0 && opened_category_ad==1" >
+                <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                <span>Vous n'avez répondu à aucune annonce</span>
             </div>
 
 

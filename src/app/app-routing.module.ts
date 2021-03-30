@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import{ HomeLinkartsComponent } from "./home-linkarts/home-linkarts.component";
-import{ HomeLinkcollabComponent } from "./home-linkcollab/home-linkcollab.component";
 import { AuthGuard } from './helpers/auth.guard';
 import { ArtworkComicComponent } from "./artwork-comic/artwork-comic.component";
 import { ArtworkWritingComponent } from './artwork-writing/artwork-writing.component';
@@ -10,86 +9,17 @@ import { AdPageComponent } from './ad-page/ad-page.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { UserResolverService } from './services/resolver-current-user';
-import { AccountComponent } from './account/account.component';
-import { UserWritingsResolverService } from './services/resolver-user-writings.service';
-import { UserNumberContentsResolverService } from './services/resolver-number-contents.service';
-import { UserComicsOsResolverService } from './services/resolver-user-comics-os.service';
-import { UserNewDrawingsResolverService } from './services/resolver-new-drawings.service';
-import { UserNewWritingsResolverService } from './services/resolver-new-writings.service';
-import { UserNewComicsResolverService } from './services/resolver-new-comics.service';
-import { UserAdsResolverService } from './services/resolver-user-ads.service';
-import { UserDrawingsArtbookResolverService } from './services/resolver-user-drawings-ar.service';
-import { UserComicsSerieResolverService } from './services/resolver-user-comics-se.service';
-import { UserDrawingsOsResolverService } from './services/resolver-user-drawings-os.service';
-import { UserSubscribersResolverService } from './services/resolver-get-subscribers.service';
-import { UserSubscribingsResolverService } from './services/resolver-get-subscribings.service';
-import { UserDataPseudoResolverService } from './services/resolver-data-by-pseudo.service';
-import { UserPseudoProfilePicResolverService } from './services/resolver-user-pp-pseudo.service';
-import { UserPseudoCoverPicResolverService } from './services/resolver-user-cp-pseudo.service';
-/*import { UserLinksResolverService } from './services/resolver-user-links.service';
-import { UserCheckStoryResolverService } from './services/resolver-check-stories-account.service';
-import { UserCheckSubResolverService } from './services/resolver-check-subscribed.service';
-import { UserCheckBlockResolverService } from './services/resolver-check-user-blocked.service';
-import { UserAlbumDrawingsResolverService } from './services/resolver-user-album-drawings.service';
-import { UserAlbumWritingsResolverService } from './services/resolver-user-album-writings.service';
-import { UserAlbumComicsResolverService } from './services/resolver-user-album-comics.service';
-import { UserInfosPrivacyResolverService } from './services/resolver-user-infos-privacy.service';
-import { UserEmphasizedResolverService } from './services/resolver-emphasized-content.service';*/
+import { OriginFbResolverService } from './services/resolver-origin-fb.service';
+import { OriginLkResolverService } from './services/resolver-origin-lk.service';
+import { OriginInResolverService } from './services/resolver-origin-in.service';
 
-let accountResolvers={ 
-  user_data_by_pseudo:UserDataPseudoResolverService,
-  user: UserResolverService,
-  user_pp_pseudo:UserPseudoProfilePicResolverService,
-  user_cp_pseudo:UserPseudoCoverPicResolverService, 
-
-  subscribers:UserSubscribersResolverService,
-  subscribings:UserSubscribingsResolverService,
-
-  new_comics:UserNewComicsResolverService,
-  new_drawings: UserNewDrawingsResolverService,
-  new_writings: UserNewWritingsResolverService,
- 
-
-  comics_os:UserComicsOsResolverService,
-  comics_se:UserComicsSerieResolverService, 
-  drawings_os:UserDrawingsOsResolverService,
-  drawings_ar: UserDrawingsArtbookResolverService,
-  writings:UserWritingsResolverService,
-
-  ads:UserAdsResolverService, 
-  number_of_contents:UserNumberContentsResolverService,
-
-   /*emphasized: UserEmphasizedResolverService,
-  infos_privacy: UserInfosPrivacyResolverService,
-  user_links:UserLinksResolverService,
-  album_comics:UserAlbumComicsResolverService,
-  album_drawings: UserAlbumDrawingsResolverService,
-  album_writings: UserAlbumWritingsResolverService,
-  check_stories:UserCheckStoryResolverService, 
-  check_subscribed:UserCheckSubResolverService,
-  check_blocked: UserCheckBlockResolverService,*/
-
-}
 
 const routes: Routes = [
 
   {path:'', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { user: UserResolverService }},
 
 
-  {path:'account/:pseudo', component:AccountComponent , data: {section: 0,preload: true}, resolve: accountResolvers },
-  {path:'account/:pseudo/artworks', component:AccountComponent, data: {section: 1}, resolve: accountResolvers},
-  {path:'account/:pseudo/artworks/comics', component:AccountComponent, data: {section: 1, category:0}, resolve: accountResolvers},
-  {path:'account/:pseudo/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}, resolve: accountResolvers},
-  {path:'account/:pseudo/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}, resolve: accountResolvers},
-  {path:'account/:pseudo/ads', component:AccountComponent,  data: {section: 2}, resolve: accountResolvers},
-  {path:'account/:pseudo/about', component:AccountComponent,  data: {section: 5}, resolve: accountResolvers},
-  {path:'account/:pseudo/archives', component:AccountComponent,  data: {section: 6}, resolve: accountResolvers},
-  {path:'account/:pseudo/my_account', component:AccountComponent,  data: {section: 7}, resolve: accountResolvers},
-  {path:'account/:pseudo/:id/my_account/:password', component:AccountComponent,  data: {section: 8}, resolve: accountResolvers},
-  {path:'account/for_chat/:pseudo/:id/:pseudo_friend/:id_friend', component:AccountComponent,  data: {section: 9}, resolve: accountResolvers},
-
-  
-  
+  {path:'account',loadChildren: () => import('./modules/account-module.module').then(mod => mod.AccountModuleModule)},
   {path:'add-artwork', loadChildren: () => import('./modules/add-artwork-module.module').then(mod => mod.AddArtworkModuleModule) ,  canActivate: [AuthGuard], data: {section: -1,preload: true}},
   {path:'chat', loadChildren: () => import('./modules/chat-module.module').then(mod => mod.ChatModuleModule) ,  canActivate: [AuthGuard], data: {preload: true}},
   {path:'linkcollab', loadChildren: () => import('./modules/linkcollab-module.module').then(mod => mod.LinkcollabModuleModule), resolve: { user: UserResolverService }},
@@ -121,7 +51,12 @@ const routes: Routes = [
   //{path:'login_invited_user', component:LoginInvitedUserComponent},
 
 
-  //Autre
+  //Origines
+  {path:'fb', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { origin: OriginFbResolverService,user: UserResolverService }},
+  {path:'lk', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { origin: OriginLkResolverService,user: UserResolverService }},
+  {path:'in', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { origin: OriginInResolverService,user: UserResolverService }},
+  
+  //Autres
   {path:'**', redirectTo:''}
 ];
 

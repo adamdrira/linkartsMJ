@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, Output, EventEmitter, SimpleChanges, Renderer2, HostListener } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, Output, EventEmitter, SimpleChanges, Renderer2, HostListener, QueryList, ViewChildren } from '@angular/core';
 import {Story_service} from '../services/story.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Reports_service} from '../services/reports.service';
@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import { merge, fromEvent } from 'rxjs';
+import { R } from '@angular/cdk/keycodes';
 
 
 declare var Swiper:any;
@@ -51,7 +52,7 @@ export class StoryViewComponent implements OnInit {
    }
 
   
-
+   @ViewChildren("SwiperSlides", {read: ElementRef}) SwiperSlides:QueryList<ElementRef>;
   @ViewChild('swiperStory', {static: false}) swiperStory:ElementRef;
   @ViewChild('storyBarFill', {static: false}) storyBarFill:ElementRef;
 
@@ -59,6 +60,8 @@ export class StoryViewComponent implements OnInit {
   @Input('list_of_data') list_of_data; //list_of_data
   @Input('current_user') current_user;  //visitor
   @Input('index_debut') index_debut;
+  @Input('is_start') is_start;
+  
   //index_debut:number=3;
   
   @Output() show_next = new EventEmitter<any>();
@@ -76,6 +79,7 @@ export class StoryViewComponent implements OnInit {
   author_name:string;
   pseudo:string;
   profile_picture: any;
+  profile_picture_safe:any;
   number_of_views:number;
   index_of_story_to_show:number;
   test=false;
@@ -85,7 +89,6 @@ export class StoryViewComponent implements OnInit {
   @Input('currently_readed') set currently_readed(currently_readed: boolean) {
 
     if( currently_readed ) {
-
       clearInterval(this.interval);
       this.startTimer();
       this.cd.detectChanges();
@@ -112,7 +115,6 @@ export class StoryViewComponent implements OnInit {
 show_icon=false;
 ngOnInit() {
   let THIS=this;
-
     $(window).on('blur', function(){
       if(!THIS.paused){
         THIS.clickPause();
@@ -172,6 +174,7 @@ ngOnInit() {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = url;
+      this.profile_picture_safe = SafeURL;
     });
     
 
@@ -182,22 +185,19 @@ ngOnInit() {
 
   }
 
-  scroll:any;
-  ngAfterViewInit(){
-    if(this.swiperStory){
-      console.log("merge story view")
-      this.scroll = merge(
-        fromEvent(window, 'scroll'),
-        fromEvent(this.swiperStory.nativeElement, 'scroll')
-      );
-    }
-  }
+  
 
   initialize_swiper() {
       this.swiper = new Swiper( this.swiperStory.nativeElement, {
         
         speed: 1,
         slidePerView:1,
+        preloadImages: false,
+        lazy: {
+          loadOnTransitionStart: true,
+          checkInView:true,
+        },
+        watchSlidesVisibility:true,
         grabCursor: false,
         simulateTouch: false,
         allowTouchMove: false,
@@ -214,82 +214,86 @@ ngOnInit() {
 
   next_slide() {
     this.cd.detectChanges();
-    let id_story =this.list_of_data[this.swiper.activeIndex].id;
-    if(this.list_of_data[this.swiper.activeIndex+1]){
-      this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex+1].id).subscribe(r=>{
-        this.number_of_views=r[0].length;
+    if(this.swiper){
+      let id_story =this.list_of_data[this.swiper.activeIndex].id;
+      if(this.list_of_data[this.swiper.activeIndex+1]){
+        this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex+1].id).subscribe(r=>{
+          this.number_of_views=r[0].length;
+        })
+      }
+      this.Story_service.check_if_story_already_seen(id_story).subscribe(r=>{
+        if(r[0]){
+          this.Story_service.add_view(this.user_id,id_story,false).subscribe();
+        }
+        else{
+          this.Story_service.add_view(this.user_id,id_story,true).subscribe();
+        }
+          
       })
-    }
-    this.Story_service.check_if_story_already_seen(id_story).subscribe(r=>{
-      if(r[0]){
-        this.Story_service.add_view(this.user_id,id_story,false).subscribe();
+      
+      if( this.swiper.slides.length == ( this.swiper.activeIndex + 1 ) ) {
+        this.end_of_stories.emit({user_id:this.user_id});
+        this.show_next.emit();
+        clearInterval(this.interval);
+        this.timeLeft = 10;
+        return;
       }
-      else{
-        this.Story_service.add_view(this.user_id,id_story,true).subscribe();
+      
+      if( this.paused ) {
+        this.paused = false;
+        this.startTimer();
       }
-        
-    })
-    
-    if( this.swiper.slides.length == ( this.swiper.activeIndex + 1 ) ) {
-      this.end_of_stories.emit({user_id:this.user_id});
-      this.show_next.emit();
-      clearInterval(this.interval);
+  
+      this.swiper.slideTo( this.swiper.activeIndex + 1 );
+      this.cd.detectChanges();
+  
       this.timeLeft = 10;
-      return;
     }
     
-    if( this.paused ) {
-      this.paused = false;
-      this.startTimer();
-    }
-
-    this.swiper.slideTo( this.swiper.activeIndex + 1 );
-    this.cd.detectChanges();
-
-    this.timeLeft = 10;
   }
 
   previous_slide() {
     this.cd.detectChanges();
-    
-    if( this.swiper.activeIndex == 0 ) {
-      this.show_prev.emit();
-      //clearInterval(this.interval);
-      //this.timeLeft = 10;
-      return;
+    if(this.swiper){
+      if( this.swiper.activeIndex == 0 ) {
+        this.show_prev.emit();
+        return;
+      }
+      
+      if( this.paused ) {
+        this.paused = false;
+        this.startTimer();
+      }
+      
+      this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex - 1].id).subscribe(r=>{
+        this.number_of_views=r[0].length;
+      })
+  
+      this.swiper.slideTo( this.swiper.activeIndex - 1 );
+      this.cd.detectChanges();
+  
+      this.timeLeft = 10;
     }
     
-    if( this.paused ) {
-      this.paused = false;
-      this.startTimer();
-    }
-    
-    this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex - 1].id).subscribe(r=>{
-      this.number_of_views=r[0].length;
-    })
-
-    this.swiper.slideTo( this.swiper.activeIndex - 1 );
-    this.cd.detectChanges();
-
-    this.timeLeft = 10;
   }
 
 
   timeLeft: number = 10;
   interval:any;
   startTimer() {
+    if(!this.show_list_of_viewers && !this.loading_list_of_viewers){
+      clearInterval(this.interval);
+      this.interval = setInterval(() => {
+
+        if(this.timeLeft > 0) {
+          this.timeLeft = this.timeLeft - 0.1;
+        } else {
+          this.next_slide();
+          this.timeLeft = 10;
+        }
+      },100)
+    }
     
-    clearInterval(this.interval);
-
-    this.interval = setInterval(() => {
-
-      if(this.timeLeft > 0) {
-        this.timeLeft = this.timeLeft - 0.1;
-      } else {
-        this.next_slide();
-        this.timeLeft = 10;
-      }
-    },100)
   }
 
   clickPause() {
@@ -341,57 +345,131 @@ ngOnInit() {
 
 show_list_of_viewers=false;
 loading_list_of_viewers=false;
-viewers_found=false;
+viewers_found=[];
 list_of_viewers=[];
 list_of_check_subscribtion=[];
 list_of_profile_pictures:any[]=[];
 list_of_pp_loaded=[];
 get_list_of_viewers(i){
-  
   clearInterval(this.interval);
   this.paused = true;
   this.loading_list_of_viewers = true;
-  if(this.viewers_found){
+  
+  if(this.viewers_found[i]){
     this.show_list_of_viewers=true;
     this.loading_list_of_viewers=false;
     return;
   }
+  this.number_of_pp_to_show[i]=10;
+  this.list_of_viewers[i]=[];
+  this.list_of_profile_pictures[i]=[];
   this.Story_service.get_list_of_viewers_for_story(this.list_of_data[i].id).subscribe(r=>{
     if(r[0].length>0){
       let n =r[0].length;
-      for (let i=0;i<n;i++){
-        this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user_who_looks).subscribe(l=>{
-          this.list_of_viewers[i]=l[0];
-          
-          this.Subscribing_service.check_if_visitor_susbcribed(r[0][i].id_user_who_looks).subscribe(information=>{
-            if(information[0].value){
-              this.list_of_check_subscribtion[i]=true;
-            }
-            else{
-              this.list_of_check_subscribtion[i]=false;
-            }
-          });
-
-          this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user_who_looks).subscribe(t=> {
-            let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_profile_pictures[i] = url;
-            if(i==n-1){
-              this.viewers_found=true;
-              this.show_list_of_viewers=true;
-              this.loading_list_of_viewers=false;
-            }
-          });
+      let compt=0;
+      for (let j=0;j<n;j++){
+        this.Profile_Edition_Service.retrieve_profile_data(r[0][j].id_user_who_looks).subscribe(l=>{
+          this.list_of_viewers[i][j]=l[0];
+          check_all(this)
+         
         })
+
+        this.Profile_Edition_Service.retrieve_profile_picture( r[0][j].id_user_who_looks).subscribe(t=> {
+          let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_profile_pictures[i][j] = url;
+        });
+
+        function check_all(THIS){
+          compt++;
+          if(n>10){
+            let compt1 =0
+            for(let k=0;k<10;k++){
+              if(THIS.list_of_viewers[i][k]){
+                compt1++;
+              }
+            }
+            if(compt1==10){
+              THIS.viewers_found[i]=true;
+              THIS.show_list_of_viewers=true;
+              THIS.loading_list_of_viewers=false;
+              THIS.merge_lazy(i)
+            }
+          }
         
+          if(compt==n && !THIS.viewers_found[i]){
+            THIS.viewers_found[i]=true;
+            THIS.show_list_of_viewers=true;
+            THIS.loading_list_of_viewers=false;
+            THIS.merge_lazy(i)
+          }
+        }
       }
     }
     else{
       this.show_list_of_viewers=true;
       this.loading_list_of_viewers=false;
-      this.viewers_found=false;
+      this.viewers_found[i]=false;
     }
   })
+}
+
+scroll:any;
+  
+merge_lazy(i){
+  this.cd.detectChanges();
+  if(this.SwiperSlides.toArray()[i]){
+    this.scroll = merge(
+      fromEvent(window, 'scroll'),
+      fromEvent(this.SwiperSlides.toArray()[i].nativeElement, 'scroll')
+    );
+  }
+}
+
+loading_more=[];
+number_of_pp_to_show=[];
+onScroll(i){
+  if(!this.loading_more[i] && this.number_of_pp_to_show[i]<this.list_of_viewers[i].length && this.SwiperSlides.toArray()[i].nativeElement.scrollTop + this.SwiperSlides.toArray()[i].nativeElement.offsetHeight >= this.SwiperSlides.toArray()[i].nativeElement.scrollHeight*0.7){
+    this.loading_more[i]=true;
+    let len = this.list_of_viewers[i].length - this.number_of_pp_to_show[i];
+    let see_more=false;
+    if(len>10){
+      let compt =0
+      for(let j=0;j<10;j++){
+        if(this.list_of_viewers[i][ this.number_of_pp_to_show[i] +j]){
+          compt++;
+        }
+      }
+      if(compt==10){
+        see_more=true;
+      }
+    }
+    else{
+      let compt =0
+      for(let j=0;j<len;j++){
+        if(this.list_of_viewers[i][ this.number_of_pp_to_show[i] +j]){
+          compt++;
+        }
+      }
+      if(compt==len){
+        see_more=true;
+      }
+    }
+  
+    if(  see_more ){
+      this.number_of_pp_to_show[i]+=10;
+      this.loading_more[i]=false;
+      this.cd.detectChanges();
+    }
+    else{
+      let pause = setInterval(()=>{
+        this.loading_more[i]=false;
+        this.onScroll(i)
+        clearInterval(pause)
+      },1000)
+    }
+
+  }
 }
 
 loading_subscribtion=false;
@@ -454,8 +532,10 @@ close_list_of_viewers(){
     return "/account/"+this.pseudo;
   };
 
-  get_viewer_link(i:number) {
-    return "/account/"+ this.list_of_viewers[i].nickname ;
+
+  get_viewer_link(i:number,k:number) {
+    
+    return "/account/"+ this.list_of_viewers[i][k].nickname ;
   }
 
   stop(e: Event) {

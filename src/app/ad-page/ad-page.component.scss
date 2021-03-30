@@ -61,6 +61,32 @@ span {
     pointer-events: none;
 }
 
+.for-spinner{
+    position: relative;
+    width: 100%;
+}
+
+.responses-main-container{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-right: 10px;
+    max-height: 960px;
+    scrollbar-width:thin;
+    scrollbar-color: #152646 #091731;
+    &::-webkit-scrollbar-track {
+        /*background-color: #001640cc;*/
+        background: #091731;
+    }
+    &::-webkit-scrollbar {
+        width: 8px;
+        border-radius: 20px;
+    }
+    &::-webkit-scrollbar-thumb {
+        /*background-color: #0f1e39;*/
+        background-color: #152646;
+        border-radius: 20px;
+    }
+}
 
 div.data-container {
     padding-top:50px !important;
@@ -538,7 +564,7 @@ div.data-container {
             }
 
             button {
-                margin: auto 0px auto 0px;
+                margin: auto 5px auto 5px;
                 border-radius: 50px;
                 background-color: #20345a;
                 border: unset;
@@ -569,6 +595,36 @@ div.data-container {
                     transform: scale(0.96);
                 }
             }
+
+            .message{
+                margin: auto 5px auto 5px;
+                border-radius: 50px;
+                background-color: #20345a;
+                border: unset;
+                box-shadow: 0 2px 1px 0 rgb(0 0 0 / 36%);
+                outline: none !important;
+                display: -webkit-box;
+                display: flex;
+                padding: 6px 10px;
+                -webkit-box-pack: center;
+                justify-content: center;
+
+                .message-text{
+                    visibility: hidden;
+                    width: 0px ;
+                }
+
+                .icon-messenger{
+                    width: 16px;
+                    height: 20px;
+                    background-color: $default-color;
+                    mask: url("../../assets/img/svg/send3.svg") no-repeat 50% 50%;
+                    transition: mask-size 200ms;
+                    &:active {
+                    animation:transform-mask-size 200ms forwards;
+                    }
+                }
+            }
         }
     }
     @media (max-width: 600px) {
@@ -596,6 +652,23 @@ div.data-container {
             }
             .subscriber {
                 margin: 5px 0px 15px 0px;
+            }
+
+            .message{
+                margin-top: 10px !important;
+            }
+
+            .message-text{
+                font-size: 13px;
+                visibility: visible !important;
+                width: unset !important;
+                font-weight: 600;
+                margin: auto 10px auto 10px;
+            }
+
+            .icon-messenger{
+                visibility: hidden !important;
+                width: unset !important;
             }
         }
     }
