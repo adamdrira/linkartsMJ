@@ -408,7 +408,6 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 target_id:target_id,
                 id_user:{[Op.ne]: id_user},
                 publication_category:publication_category,
-                format:format,
             }
         }).catch(err => {
 				
