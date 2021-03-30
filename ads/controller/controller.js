@@ -668,7 +668,6 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
       list_of_ads_responses.findAll({
          where: {
            id_ad: id_ad,
-           status:"public",
          },
          order: [
              ['createdAt', 'DESC']
@@ -681,6 +680,81 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
          res.status(200).send([ads]);
        }); 
  });
+
+ router.get('/get_all_my_responses/:pseudo/:limit/:offset', function (req, res) {
+
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
+
+  let offset = parseInt(req.params.offset);
+  let limit = parseInt(req.params.limit);
+  let pseudo = req.params.pseudo;
+  list_of_users.findOne({
+    where:{
+        nickname:pseudo
+    }
+  }).catch(err => {
+          
+    res.status(500).json({msg: "error", details: err});		
+  })
+  .then(user=>{
+    if(user){
+      list_of_ads_responses.findAll({
+        where: {
+          id_user: user.id,
+        },
+        order: [
+            ['createdAt', 'DESC']
+          ],
+        limit:limit,
+        offset:offset,
+      })
+      .catch(err => {
+        
+      res.status(500).json({msg: "error", details: err});		
+    }).then(ads =>  {
+        res.status(200).send([ads]);
+      }); 
+    }
+  })
+    
+});
+
+
+  router.post('/set_all_responses_to_seen', function (req, res) {
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let id_ad = req.body.id_ad;
+      list_of_ads_responses.update({
+        "status":"seen"
+      },{
+        where: {
+          id_ad: id_ad,
+        }
+      })
+      .catch(err => {
+        
+      res.status(500).json({msg: "error", details: err});		
+    }).then(ads =>  {
+        res.status(200).send([{done:"done"}]);
+      }); 
+  });
 
     
 
@@ -1230,7 +1304,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             "id_ad": id_ad,
             "status":"public",
             "id_user":current_user,
-                "description": description,
+            "description": description,
             }).catch(err => {
 				
 			res.status(500).json({msg: "error", details: err});		
