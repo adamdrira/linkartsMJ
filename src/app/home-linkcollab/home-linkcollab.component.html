@@ -77,7 +77,11 @@
                 <div class="swiper-wrapper">
 
                     <div class="swiper-slide">
-                        <div class="category" (click)="open_category(0, true);" [ngClass]="{'opened': category_index==0 }">
+                        <div class="category" (click)="open_category(0, true);" [ngClass]="{'opened': category_index==0 }"
+                        matTooltip="Collaborations libres sans transactions"
+                        matTooltipClass='linkarts-tooltip'
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="100">
                             <!--<div class="icon-container">
                                 <div class="icon icon-recommendation">
                                 </div>
@@ -87,7 +91,11 @@
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <div class="category" (click)="open_category(1, true);" [ngClass]="{'opened': category_index==1 }">
+                        <div class="category" (click)="open_category(1, true);" [ngClass]="{'opened': category_index==1 }"
+                        matTooltip="Collaborations - partenariats avec transactions"
+                        matTooltipClass='linkarts-tooltip'
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="100">
                             <!--<div class="icon-container">
                                 <div class="icon icon-trendings">
                                 </div>
@@ -97,7 +105,11 @@
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <div class="category" (click)="open_category(2, true);" [ngClass]="{'opened': category_index==2 }">
+                        <div class="category" (click)="open_category(2, true);" [ngClass]="{'opened': category_index==2 }"
+                        matTooltip="Offre - demande de produits ou de services"
+                        matTooltipClass='linkarts-tooltip'
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="100">
                             <!--<div class="icon-container">
                                 <div class="icon icon-newsfeed">
                                 </div>
