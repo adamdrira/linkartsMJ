@@ -9,8 +9,6 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 
-
-
 module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spams,list_of_chat_search,list_of_chat_sections,list_of_subscribings, list_of_users,list_of_chat_groups,list_of_chat_groups_reactions) => {
 
     function get_current_user(token){
@@ -44,6 +42,37 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
              order: [
                  ['date', 'DESC']
                ],
+           })
+           .catch(err => {
+              res.status(500).json({msg: "error", details: err});		
+            }).then(friends =>  {
+               res.status(200).send([{friends:friends,current_user:current_user}])
+           }); 
+     });
+
+     router.get('/get_list_of_users_I_talk_to_navbar', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+        let current_user = get_current_user(req.cookies.currentUser);
+        const Op = Sequelize.Op;
+        list_of_chat_friends.findAll({
+             where: {
+                [Op.or]:[{id_user: current_user},{id_receiver:current_user}],
+                is_a_group_chat:{[Op.not]: true},
+             },
+             order: [
+                 ['date', 'DESC']
+               ],
+             limit:10,
            })
            .catch(err => {
               res.status(500).json({msg: "error", details: err});		
@@ -3427,10 +3456,6 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     });
 
 
-    
-      
-
-
     router.get('/get_my_list_of_groups', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
@@ -3452,6 +3477,41 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             order: [
                 ['createdAt', 'DESC']
               ],
+            
+          })
+          .catch(err => {
+			
+			res.status(500).json({msg: "error", details: err});		
+		}).then(groups =>  {
+              res.status(200).send([groups])
+          }); 
+    });
+      
+
+
+    router.get('/get_my_list_of_groups_navbar', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+      let current_user = get_current_user(req.cookies.currentUser);
+      const Op = Sequelize.Op;
+      list_of_chat_groups.findAll({
+            where: {
+              list_of_receivers_ids: { [Op.contains]: [current_user] },
+            },
+            order: [
+                ['updatedAt', 'DESC']
+              ],
+            limit:10,
+            
           })
           .catch(err => {
 			
