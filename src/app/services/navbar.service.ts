@@ -267,8 +267,8 @@ export class NavbarService {
 
 
   
-  get_number_of_clicked(publication_category,format,target_id){
-    return this.httpClient.post(`routes/get_number_of_clicked`,{publication_category:publication_category,format:format,target_id:target_id}, {withCredentials:true}).pipe(map((information)=>{
+  get_number_of_clicked(publication_category,target_id){
+    return this.httpClient.post(`routes/get_number_of_clicked`,{publication_category:publication_category,target_id:target_id}, {withCredentials:true}).pipe(map((information)=>{
         return information;
     }));
   }
