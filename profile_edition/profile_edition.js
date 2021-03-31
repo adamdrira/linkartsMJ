@@ -23,6 +23,7 @@ module.exports = (router,
   users_cookies,
   users_remuneration,
   users_visited_pages,
+  users_contact_us,
   List_of_views,
   List_of_likes,
   List_of_loves,
@@ -2878,6 +2879,41 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
 
+  router.post('/send_message_contact_us', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let current_user = get_current_user(req.cookies.currentUser);
+    let firstname=req.body.firstname;
+    let lastname=req.body.lastname;
+    let email=req.body.email;
+    let message=req.body.message;
+    users_contact_us.create({
+        "id_user": current_user,
+        "firstname": firstname,
+        "lastname": lastname,
+        "email": email,
+        "message": message,
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(message_send =>  {
+      if(message_send){
+          res.status(200).send([message_send])
+      }
+    }); 
+
+ 
+});
   
 
 

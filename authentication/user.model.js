@@ -3,7 +3,6 @@
 module.exports = (sequelize, Sequelize) => {
 
 	const User = sequelize.define('users', {
-		//account_type: {type: Sequelize.INTEGER}, à ajouter
 		type_of_account:{type: Sequelize.STRING},
 		type_of_account_checked:{type: Sequelize.BOOLEAN},
 		certified_account:{type: Sequelize.BOOLEAN},
@@ -209,6 +208,17 @@ module.exports = (sequelize, Sequelize) => {
 		//timestamps: false,
 	});
 
+	const users_contact_us = sequelize.define('users_contact_us', {
+		id_user:{type: Sequelize.INTEGER},
+		firstname:{type: Sequelize.STRING},
+		lastname:{type: Sequelize.STRING},
+		email:{type: Sequelize.STRING},
+		message:{type: Sequelize.STRING(1000)},
+	},
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name,
+		//timestamps: false,
+	});
 
-	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing,users_strikes,users_cookies,users_remuneration,users_connexions,users_ips,users_visited_pages};
+	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing,users_strikes,users_cookies,users_remuneration,users_connexions,users_ips,users_visited_pages,users_contact_us};
 }

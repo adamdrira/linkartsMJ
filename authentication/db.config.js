@@ -36,5 +36,5 @@ db.users_remuneration= require('./user.model.js')(sequelize, Sequelize).users_re
 db.users_connexions= require('./user.model.js')(sequelize, Sequelize).users_connexions;
 db.users_ips= require('./user.model.js')(sequelize, Sequelize).users_ips;
 db.users_visited_pages= require('./user.model.js')(sequelize, Sequelize).users_visited_pages;
-
+db.users_contact_us= require('./user.model.js')(sequelize, Sequelize).users_contact_us;
 module.exports = db;
