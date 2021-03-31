@@ -12,7 +12,7 @@
     </div>
 
     
-    <div class="step-form" [formGroup]="registerForm1">
+    <div class="step-form" [formGroup]="registerForm1" *ngIf="!show_done">
         
         
         <div class="form-item">
@@ -25,7 +25,7 @@
         </div>
         <div class="form-item">
             <mat-form-field floatLabel='never'>
-                <mat-label>Nom*</mat-label>
+                <mat-label>Nom</mat-label>
                 <input matInput formControlName="lastName" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'lastName');">
                 <mat-error *ngIf="registerForm1.controls['lastName'].invalid">Veuillez saisir un nom valide
                 </mat-error>
@@ -42,12 +42,12 @@
         
         <div class="form-item" style="height:unset !important;">
             <mat-form-field floatLabel='never'>
-                <mat-label>Message</mat-label>
-                <textarea matInput cdkTextareaAutosize formControlName="message" maxLength="500" autocomplete="off" (input)="normalize_input(registerForm1, 'message');"></textarea>
+                <mat-label>Message*</mat-label>
+                <textarea matInput cdkTextareaAutosize formControlName="message" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm1, 'message');"></textarea>
                 
                 <mat-error *ngIf="registerForm1.controls['message'].invalid">Veuillez saisir un message valide
                 </mat-error>
-                <div class="length-indicator">{{registerForm1.controls['message'].value?.length || 0}}/500</div>
+                <div class="length-indicator">{{registerForm1.controls['message'].value?.length || 0}}/1000</div>
             </mat-form-field>
         </div>
 
@@ -56,12 +56,24 @@
     </div>
 
 
-    <button [disabled]="loading" class="submit-button" (click)="validate_step();">
+    <button [disabled]="loading" class="submit-button" (click)="validate_step();" *ngIf="!show_done">
         <span *ngIf="!loading">Envoyer</span>
         <div class="loading-dots" *ngIf="loading">
             &nbsp; <span>.</span><span>.</span><span>.</span>
         </div>
     </button>
 
+    
+    <div *ngIf="show_done">
+        <div class="sent-mail-icon" >
+            <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
+        </div>
+        <div class="sent-mail-text" >
+            <span>Votre message a bien été envoyée !</span>
+        </div>
+        <button class="finish-button" [mat-dialog-close]="true">
+            <span>Continuer</span>
+        </button>
+    </div>
 
 </div>

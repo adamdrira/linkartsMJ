@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
+import { Profile_Edition_Service } from '../services/profile_edition.service';
 
 @Component({
   selector: 'app-popup-contact',
@@ -16,6 +17,7 @@ export class PopupContactComponent implements OnInit {
     public navbar:NavbarService,
     public dialogRef: MatDialogRef<PopupContactComponent>,
     private cd:ChangeDetectorRef,
+    private Profile_Edition_Service:Profile_Edition_Service,
     public dialog: MatDialog,
 
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -29,17 +31,27 @@ export class PopupContactComponent implements OnInit {
   }
 
   show_icon=false;
-
+  firstname='';
+  lastname='';
+  email='';
   ngOnInit(): void {
     
+    if(this.data.current_user){
+      if((this.data.current_user[0].status=='account' || this.data.current_user[0].status=='suspended') && this.data.current_user[0].gender!="Groupe"){
+        this.firstname=this.data.current_user[0].firstname;
+        this.lastname=this.data.current_user[0].lastname;
+        this.email=this.data.current_user[0].email;
+      }
+    }
+     
     this.registerForm1 = this.formBuilder.group({
-      email: ['', 
+      email: [this.email, 
         Validators.compose([
           Validators.required,
           Validators.maxLength(100),
         ]),
       ],
-      firstName: ['', 
+      firstName: [this.firstname, 
         Validators.compose([
           Validators.required,
           Validators.pattern(pattern("name")),
@@ -47,9 +59,8 @@ export class PopupContactComponent implements OnInit {
           Validators.maxLength(20),
         ]),
       ],
-      lastName: ['', 
+      lastName: [this.lastname, 
         Validators.compose([
-          Validators.required,
           Validators.pattern(pattern("name")),
           Validators.minLength(2),
           Validators.maxLength(20),
@@ -59,8 +70,8 @@ export class PopupContactComponent implements OnInit {
         Validators.compose([
           Validators.required,
           Validators.minLength(3),
-          Validators.maxLength(500),
-          Validators.pattern(pattern("text")),
+          Validators.maxLength(1000),
+          Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ],
     });
@@ -85,9 +96,25 @@ export class PopupContactComponent implements OnInit {
 
   
   loading=false;
-
+  show_done=false;
   validate_step() {
-    this.loading = true;
+    
+    if(this.loading){
+      return
+    }
+    
+
+    if(this.registerForm1.valid){
+      this.loading = true;
+      console.log("send")
+      this.Profile_Edition_Service.send_message_contact_us(this.registerForm1.value.firstName,this.registerForm1.value.lastName,this.registerForm1.value.email,this.registerForm1.value.message.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
+        console.log(r);
+        this.loading=false;
+        this.show_done=true;
+      })
+    }
+
+    
   }
 
 }

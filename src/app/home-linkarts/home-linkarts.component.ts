@@ -76,7 +76,7 @@ export class HomeLinkartsComponent implements OnInit {
   category_index:number = -1;
   type_of_profile_retrieved=false;
   type_of_profile:string="visitor";
-
+  current_user:any;
   status=[];
 
   categories_to_load=[];
@@ -94,7 +94,7 @@ export class HomeLinkartsComponent implements OnInit {
     window.scroll(0,0);
     this.route.data.subscribe(resp => {
       let r= resp.user;
-      
+      this.current_user=resp.user;
       if(r[0]){
         this.type_of_profile=r[0].status;
       }
@@ -312,8 +312,10 @@ export class HomeLinkartsComponent implements OnInit {
 
   open_popup_contact() {
     const dialogRef = this.dialog.open(PopupContactComponent, {
+      data:{current_user:this.current_user},
       panelClass:"popupContactComponentClass"
     });
+    this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).subscribe();
   }
 
   
