@@ -40,9 +40,9 @@
                 <button *ngIf="like_in_progress">
                     <mat-spinner diameter="15"></mat-spinner>
                 </button>
-                <button *ngIf="!liked && !like_in_progress && type_of_account=='account'" (click)="add_or_remove_like()">J'aime</button>
-                <button *ngIf="liked && !like_in_progress && type_of_account=='account'" (click)="add_or_remove_like()">Je n'aime plus</button>
-                <span><ng-container *ngIf="type_of_account=='account'">&nbsp;• </ng-container>{{number_of_likes}}</span>
+                <button *ngIf="!liked && !like_in_progress && type_of_account=='account'" (click)="add_or_remove_like()">J'aime • </button>
+                <button *ngIf="liked && !like_in_progress && type_of_account=='account'" (click)="add_or_remove_like()">Je n'aime plus • </button>
+                <span><ng-container *ngIf="number_of_likes_retrieved"></ng-container>{{number_of_likes}}</span>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                 <span>&nbsp;•</span>
                 <button *ngIf="!see_responses" (click)="show_responses();" >Répondre <ng-container *ngIf="responses_list.length>0">({{responses_list.length}})</ng-container></button>
@@ -95,9 +95,9 @@
                                 <button *ngIf="answer_like_in_progress[i]">
                                     <mat-spinner diameter="15"></mat-spinner>
                                 </button>
-                                <button *ngIf="!liked_list[i] && !answer_like_in_progress[i]" (click)="add_or_remove_answer_like(i)">J'aime</button>
-                                <button *ngIf="liked_list[i] && !answer_like_in_progress[i]" (click)="add_or_remove_answer_like(i)">Je n'aime plus</button>
-                                <span> • {{item.likesnumber}}</span>
+                                <button *ngIf="!liked_list[i] && !answer_like_in_progress[i] && type_of_account=='account'" (click)="add_or_remove_answer_like(i)">J'aime • </button>
+                                <button *ngIf="liked_list[i] && !answer_like_in_progress[i] && type_of_account=='account'" (click)="add_or_remove_answer_like(i)">Je n'aime plus • </button>
+                                <span>{{item.likesnumber}}</span>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                             </ng-container>
         

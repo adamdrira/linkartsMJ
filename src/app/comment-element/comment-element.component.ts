@@ -161,7 +161,7 @@ export class CommentElementComponent implements OnInit {
     }
   }
   
-
+  number_of_likes_retrieved=false;
   ngOnInit(): void {
     this.date_upload_to_show = get_date_to_show(date_in_seconds(this.now_in_seconds,this.comment_information.createdAt) );
     this.comment=this.comment_information.commentary;
@@ -174,6 +174,10 @@ export class CommentElementComponent implements OnInit {
     this.number_of_likes=this.comment_information.number_of_likes;
     this.likes_checked=true;
 
+    this.NotationService.get_number_of_likes_by_comment(this.comment_information.id).subscribe(r=>{
+      this.number_of_likes=r[0].length;
+      this.number_of_likes_retrieved=true;
+    })
     
     this.NotationService.get_commentary_answers_by_id(this.comment_information.id).subscribe(info=>{
       
@@ -342,7 +346,11 @@ export class CommentElementComponent implements OnInit {
 
 
   add_or_remove_like(){
+    if(this.like_in_progress || this.type_of_account!='account'){
+      return
+    }
     this.like_in_progress=true;
+
     if(this.liked){
       this.NotationService.remove_like_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.id).subscribe(r=>{
         if(this.visitor_id!=this.authorid){
@@ -420,6 +428,9 @@ export class CommentElementComponent implements OnInit {
   }
 
   add_or_remove_answer_like(i){
+    if(this.answer_like_in_progress[i] || this.type_of_account!='account'){
+      return
+    }
     this.answer_like_in_progress[i]=true;
     if(this.liked_list[i]){
       this.NotationService.remove_like_on_commentary_answer(this.responses_list[i].id).subscribe(r=>{
