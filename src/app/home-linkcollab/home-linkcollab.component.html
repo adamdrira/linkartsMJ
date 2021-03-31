@@ -11,10 +11,6 @@
                     
                     <mat-select-trigger>
                         <ng-container *ngIf="category_index==0">
-                            <!--<div class="icon-container">
-                                <div class="icon icon-recommendation">
-                                </div>
-                            </div>-->
                             <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
                             <span>Collaborations bénévoles</span>
                         </ng-container>
@@ -78,42 +74,30 @@
 
                     <div class="swiper-slide">
                         <div class="category" (click)="open_category(0, true);" [ngClass]="{'opened': category_index==0 }"
-                        matTooltip="Collaborations libres sans transactions"
+                        matTooltip="Collaborations libres de contrats, sans transactions"
                         matTooltipClass='linkarts-tooltip'
                         [matTooltipPosition]="'below'"
                         [matTooltipShowDelay]="100">
-                            <!--<div class="icon-container">
-                                <div class="icon icon-recommendation">
-                                </div>
-                            </div>-->
                             <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
                             <span>Collaborations bénévoles</span>
                         </div>
                     </div>
                     <div class="swiper-slide">
                         <div class="category" (click)="open_category(1, true);" [ngClass]="{'opened': category_index==1 }"
-                        matTooltip="Collaborations - partenariats avec transactions"
+                        matTooltip="Collaborations/Partenariats avec transactions et contrats"
                         matTooltipClass='linkarts-tooltip'
                         [matTooltipPosition]="'below'"
                         [matTooltipShowDelay]="100">
-                            <!--<div class="icon-container">
-                                <div class="icon icon-trendings">
-                                </div>
-                            </div>-->
                             <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
                             <span>Collaborations rémunérées</span>
                         </div>
                     </div>
                     <div class="swiper-slide">
                         <div class="category" (click)="open_category(2, true);" [ngClass]="{'opened': category_index==2 }"
-                        matTooltip="Offre - demande de produits ou de services"
+                        matTooltip="Offre/Demande de produits ou de services sans contrats"
                         matTooltipClass='linkarts-tooltip'
                         [matTooltipPosition]="'below'"
                         [matTooltipShowDelay]="100">
-                            <!--<div class="icon-container">
-                                <div class="icon icon-newsfeed">
-                                </div>
-                            </div>-->
                             <mat-icon [ngClass]="{'invisible': !show_icon }">design_services</mat-icon>
                             <span>Produits et services</span>
                         </div>
