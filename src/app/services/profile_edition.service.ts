@@ -411,4 +411,11 @@ export class Profile_Edition_Service {
     }));
   }
 
+  send_message_contact_us(firstname,lastname,email,message){
+    return this.httpClient.post('routes/send_message_contact_us',{firstname:firstname,lastname:lastname,email:email,message:message},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  
 }
