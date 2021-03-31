@@ -163,8 +163,13 @@ export class NotationService {
     }
 
     get_loves(category, format, style, publication_id,chapter_number){
-      
       return this.httpClient.get(`routes/get_loves/${category}/${format}/${style}/${publication_id}/${chapter_number}`, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
+
+    get_number_of_likes_by_comment(comment_id){
+      return this.httpClient.get(`routes/get_number_of_likes_by_comment/${comment_id}`, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
