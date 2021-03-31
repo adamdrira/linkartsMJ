@@ -2249,6 +2249,39 @@ module.exports = (router,
            
     });
 
+
+    router.get('/get_number_of_likes_by_comment/:comment_id', function (req, res) {
+
+        if( ! req.headers['authorization'] ) {
+          return res.status(401).json({msg: "error"});
+        }
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
+        }
+         
+        const comment_id = parseInt(req.params.comment_id);
+        
+        List_of_comments_likes.findAll({
+            where: {
+                comment_id:comment_id,
+            }
+        }).catch(err => {
+            
+              res.status(500).json({msg: "error", details: err});		
+          }).then(comments=>{
+              if(comments){
+                res.status(200).send([{length:comments.length}])
+              }
+                      
+          })
+             
+      });
+
+    
     
 
     router.post('/add_like_on_commentary_answer', function (req, res) {
