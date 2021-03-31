@@ -50,7 +50,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { AngularResizedEventModule } from 'angular-resize-event';
-import { NgxMasonryModule } from 'ngx-masonry';
+
 
 
 import { CommonComponentsModule } from '../modules/common-components.module';
@@ -58,6 +58,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
 import { ConstantsService } from '../services/constants.service';
+
 
 
 
@@ -110,13 +111,12 @@ import { ConstantsService } from '../services/constants.service';
     MatAutocompleteModule,
     MatTooltipModule,
     PdfViewerModule,
-    NgxMasonryModule,
     PickerModule,
     EmojiModule,
     FileUploadModule,
     ToastrModule.forRoot(),
     NgxChartsModule,
-   
+    
   ],
   providers: [
     ConstantsService,

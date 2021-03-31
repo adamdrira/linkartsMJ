@@ -2,10 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import{ HomeLinkartsComponent } from "./home-linkarts/home-linkarts.component";
 import { AuthGuard } from './helpers/auth.guard';
-import { ArtworkComicComponent } from "./artwork-comic/artwork-comic.component";
-import { ArtworkWritingComponent } from './artwork-writing/artwork-writing.component';
-import { ArtworkDrawingComponent } from './artwork-drawing/artwork-drawing.component';
-import { AdPageComponent } from './ad-page/ad-page.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { UserResolverService } from './services/resolver-current-user';
@@ -20,6 +16,7 @@ const routes: Routes = [
 
 
   {path:'account',loadChildren: () => import('./modules/account-module.module').then(mod => mod.AccountModuleModule)},
+  {path:'content',  loadChildren: () => import('./modules/artworks-module.module').then(mod => mod.ArtworksModuleModule), resolve: { user: UserResolverService }},
   {path:'add-artwork', loadChildren: () => import('./modules/add-artwork-module.module').then(mod => mod.AddArtworkModuleModule) ,  canActivate: [AuthGuard], data: {section: -1,preload: true}},
   {path:'chat', loadChildren: () => import('./modules/chat-module.module').then(mod => mod.ChatModuleModule) ,  canActivate: [AuthGuard], data: {preload: true}},
   {path:'linkcollab', loadChildren: () => import('./modules/linkcollab-module.module').then(mod => mod.LinkcollabModuleModule), resolve: { user: UserResolverService }},
@@ -37,18 +34,10 @@ const routes: Routes = [
   {path:'favorites', component:HomeLinkartsComponent,  data: {category: 3}, resolve: { user: UserResolverService }},
 
   
-  //Contenu
-  {path:'artwork-writing/:title/:writing_id', component:ArtworkWritingComponent, resolve: { user: UserResolverService }},
-  {path:'artwork-comic/:format/:title/:bd_id', component:ArtworkComicComponent,  data: {section: 1}, resolve: { user: UserResolverService }},
-  {path:'artwork-comic/:format/:title/:bd_id/:chapter_number', component:ArtworkComicComponent,  data: {section: 2}, resolve: { user: UserResolverService }},
-  {path:'artwork-drawing/:format/:title/:drawing_id', component:ArtworkDrawingComponent, resolve: { user: UserResolverService }},
-  {path:'ad-page/:title/:id', component:AdPageComponent, resolve: { user: UserResolverService }},
-
   
   //Authentification
   {path:'login', component:HomeLinkartsComponent,  data: {category: 5}, resolve: { user: UserResolverService }},
   {path:'signup', component:HomeLinkartsComponent,  data: {category: 6}, resolve: { user: UserResolverService }},
-  //{path:'login_invited_user', component:LoginInvitedUserComponent},
 
 
   //Origines

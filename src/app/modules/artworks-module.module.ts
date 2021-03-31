@@ -1,22 +1,18 @@
+
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AccountRoutingModule } from './account-routing';
+import { ArtworksRoutingModule } from './artworks-routing';
 
-import { AccountComponent } from '../account/account.component';
-import { AccountAboutComponent } from '../account-about/account-about.component';
-import { AccountMyAccountComponent } from '../account-my-account/account-my-account.component';
-import { ArchivesComponent } from '../archives/archives.component';
-import { AddAlbumComicComponent } from '../add-album-comic/add-album-comic.component';
-import { AddAlbumDrawingComponent } from '../add-album-drawing/add-album-drawing.component';
-import { AddAlbumWritingComponent } from '../add-album-writing/add-album-writing.component';
-import { PopupSubscribingsComponent } from '../popup-subscribings/popup-subscribings.component';
-import { PopupSubscribersComponent } from '../popup-subscribers/popup-subscribers.component';
-
-
-import { ThumbnailAlbumComicComponent } from '../thumbnail-album-comic/thumbnail-album-comic.component';
-import { ThumbnailAlbumDrawingComponent } from '../thumbnail-album-drawing/thumbnail-album-drawing.component';
-import { ThumbnailAlbumWritingComponent } from '../thumbnail-album-writing/thumbnail-album-writing.component';
-
+import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
+import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
+import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
+import { AdPageComponent } from '../ad-page/ad-page.component';
+import { ArtworkComicComponent } from '../artwork-comic/artwork-comic.component';
+import { ArtworkDrawingComponent } from '../artwork-drawing/artwork-drawing.component';
+import { ArtworkWritingComponent } from '../artwork-writing/artwork-writing.component';
+import { CommentsComponent } from '../comments/comments.component';
+import { CommentElementComponent } from '../comment-element/comment-element.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -56,29 +52,72 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
 
+import { ShareButtonsPopupModule } from 'ngx-sharebuttons/popup';
+import { ShareModule } from 'ngx-sharebuttons';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
+import { faPinterest } from '@fortawesome/free-brands-svg-icons';
+import { faPinterestP } from '@fortawesome/free-brands-svg-icons';
+import { faInstagramSquare } from '@fortawesome/free-brands-svg-icons';
+import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import { faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
+import { faLink} from '@fortawesome/free-solid-svg-icons';
+import { faCheck} from '@fortawesome/free-solid-svg-icons';
+import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
+import { ShareButtonModule } from 'ngx-sharebuttons/button';
+import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks  } from 'ng-lazyload-image'; 
 
 
+const icons = [
+    faPinterest,
+    faPinterestP,
+    faTwitterSquare,
+    faFacebookSquare,
+    faCheck,
+    faLinkedinIn,
+    faLinkedin,
+    faLink,
+    faInstagramSquare,
+    faWhatsapp,
+  ];
+  
+  const shareProp = {
+    facebook: {
+      icon: ['fab', 'facebook-square']
+    },
+    pinterest: {
+      icon: ['fab', 'pinterest-p']
+    },
+    twitter: {
+      icon: ['fab', 'twitter-square']
+    },
+    whatsapp:{
+      icon: ['fab', 'whatsapp']
+    }
+  };
+
+  
 @NgModule({
   declarations: [
-    AccountComponent,
-    AccountAboutComponent,
-    AccountMyAccountComponent,
-    ArchivesComponent,
-    AddAlbumComicComponent,
-    AddAlbumDrawingComponent,
-    AddAlbumWritingComponent,
-    ThumbnailAlbumComicComponent,
-    ThumbnailAlbumDrawingComponent,
-    ThumbnailAlbumWritingComponent,
-    PopupSubscribingsComponent,
-    PopupSubscribersComponent,
+    PopupArtworkComponent,
+    ArtworkWritingComponent,
+    ArtworkComicComponent,
+    ArtworkDrawingComponent,
+    CommentsComponent,
+    CommentElementComponent,
+    AdPageComponent,
+    PopupArtworkDataComponent,
+    PopupCommentsComponent
   ],
   imports: [
     CommonModule,
     CommonComponentsModule,
-    AccountRoutingModule,
+    ArtworksRoutingModule,
     AngularResizedEventModule,
     FormsModule,
+    LazyLoadImageModule,
     ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
@@ -108,7 +147,10 @@ import { ErrorInterceptor } from '../helpers/error.interceptor';
     FileUploadModule,
     ToastrModule.forRoot(),
     NgxChartsModule,
-   
+    ShareModule,
+    ShareButtonModule,
+    ShareButtonsModule.withConfig({ prop: shareProp }),
+    ShareButtonsPopupModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -118,6 +160,11 @@ import { ErrorInterceptor } from '../helpers/error.interceptor';
       useValue: {}
     },
     MatDatepickerModule,
+    { provide: LAZYLOAD_IMAGE_HOOKS, useClass: ScrollHooks },
   ]
 })
-export class AccountModuleModule { }
+export class ArtworksModuleModule { 
+    constructor(iconLibrary: FaIconLibrary) {
+        iconLibrary.addIcons(...icons);
+      }
+}

@@ -51,6 +51,7 @@ import { faLink} from '@fortawesome/free-solid-svg-icons';
 import { faCheck} from '@fortawesome/free-solid-svg-icons';
 import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
 import { ShareButtonModule } from 'ngx-sharebuttons/button';
+
 import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks  } from 'ng-lazyload-image'; 
 
 import {WebSocketService} from './services/websocket.service';
@@ -64,13 +65,13 @@ import { ErrorInterceptor  } from './helpers/error.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-
-import { AdPageComponent } from './ad-page/ad-page.component';
-import { ArtworkComicComponent } from './artwork-comic/artwork-comic.component';
-import { ArtworkDrawingComponent } from './artwork-drawing/artwork-drawing.component';
-import { ArtworkWritingComponent } from './artwork-writing/artwork-writing.component';
+/*import { PopupArtworkComponent } from './popup-artwork/popup-artwork.component';
+import { AdPageComponent } from '.content/ad-pagecontent/ad-page.component';
+import { ArtworkComicComponent } from '.content/artwork-comiccontent/artwork-comic.component';
+import { ArtworkDrawingComponent } from '.content/artwork-drawingcontent/artwork-drawing.component';
+import { ArtworkWritingComponent } from '.content/artwork-writingcontent/artwork-writing.component';
 import { CommentsComponent } from './comments/comments.component';
-import { CommentElementComponent } from './comment-element/comment-element.component';
+import { CommentElementComponent } from './comment-element/comment-element.component';*/
 
 import { FavoritesComponent } from './favorites/favorites.component';
 import { HomeLinkartsComponent } from './home-linkarts/home-linkarts.component';
@@ -84,7 +85,7 @@ import { MediaSeeMoreComicsComponent } from './media-see-more-comics/media-see-m
 import { MediaSeeMoreWritingsComponent } from './media-see-more-writings/media-see-more-writings.component';
 
 
-import { PopupArtworkComponent } from './popup-artwork/popup-artwork.component';
+
 import { PopupAddStoryComponent } from './popup-add-story/popup-add-story.component';
 import { PopupAdPicturesComponent } from './popup-ad-pictures/popup-ad-pictures.component';
 import { PopupAdAttachmentsComponent } from './popup-ad-attachments/popup-ad-attachments.component';
@@ -95,11 +96,10 @@ import { PopupFormComicComponent } from './popup-form-comic/popup-form-comic.com
 import { PopupFormDrawingComponent } from './popup-form-drawing/popup-form-drawing.component';
 import { PopupFormWritingComponent } from './popup-form-writing/popup-form-writing.component';
 import { PopupLikesAndLovesComponent } from './popup-likes-and-loves/popup-likes-and-loves.component';
-import { PopupSubscribingsComponent } from './popup-subscribings/popup-subscribings.component';
-import { PopupSubscribersComponent } from './popup-subscribers/popup-subscribers.component';
+
 import { PopupStoriesComponent } from './popup-stories/popup-stories.component';
-import { PopupArtworkDataComponent } from './popup-artwork-data/popup-artwork-data.component';
-import { PopupCommentsComponent } from './popup-comments/popup-comments.component';
+//import { PopupArtworkDataComponent } from './popup-artwork-data/popup-artwork-data.component';
+//import { PopupCommentsComponent } from './popup-comments/popup-comments.component';
 import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popup-linkcollab-filters.component';
 import { PopupReportComponent } from './popup-report/popup-report.component';
 import { PopupFormAdComponent } from './popup-form-ad/popup-form-ad.component';
@@ -115,8 +115,6 @@ import { TrendingsComponent } from './trendings/trendings.component';
 import { UploaderStoryComponent } from './uploader-story/uploader-story.component';
 import { UploaderAdResponseAttachmentsComponent } from './uploader-ad-response-attachments/uploader-ad-response-attachments.component';
 import { UploaderReportsAttachmentsComponent } from './uploader-reports-attachments/uploader-reports-attachments.component';
-
-
 
 
 import { CommonComponentsModule } from './modules/common-components.module';
@@ -163,9 +161,7 @@ const shareProp = {
     MediaComicsComponent,
     MediaDrawingsComponent,
     MediaWritingsComponent,
-    ArtworkWritingComponent,
-    ArtworkComicComponent,
-    ArtworkDrawingComponent,
+    
     PopupConfirmationComponent,
     SubscribingsComponent,
     TrendingsComponent,
@@ -174,8 +170,7 @@ const shareProp = {
     PopupFormComicComponent,
     PopupFormDrawingComponent,
     PopupFormWritingComponent,
-    CommentsComponent,
-    CommentElementComponent,
+    
     MediaSeeMoreWritingsComponent,
     PopupAddStoryComponent,
     UploaderStoryComponent,
@@ -186,23 +181,23 @@ const shareProp = {
     PopupAdWriteResponsesComponent,
     UploaderAdResponseAttachmentsComponent,
     PopupLikesAndLovesComponent,
-    AdPageComponent,
+    
    // LoginInvitedUserComponent,
     PopupReportComponent,
     UploaderReportsAttachmentsComponent,
     PopupEditCoverComponent,
     FavoritesComponent,
-    PopupArtworkDataComponent,
-    PopupCommentsComponent,
+    //PopupArtworkDataComponent,
+    //PopupCommentsComponent,
     PopupLinkcollabFiltersComponent,
-    PopupArtworkComponent,
-    PopupSubscribingsComponent,
-    PopupSubscribersComponent,
+    
+    
     PopupFormAdComponent,
     PopupContactComponent,
     
   ],
   imports: [
+    CommonComponentsModule,
     AngularResizedEventModule,
     LazyLoadImageModule,
     BrowserModule,
@@ -243,7 +238,7 @@ const shareProp = {
     ShareButtonModule,
     ShareButtonsModule.withConfig({ prop: shareProp }),
     ShareButtonsPopupModule,
-    CommonComponentsModule,
+    
   ],
   providers: [
     ConstantsService,

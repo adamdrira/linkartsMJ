@@ -9,6 +9,7 @@ import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
 import { PopupNavbarDisconnectedComponent } from '../popup-navbar-disconnected/popup-navbar-disconnected.component';
 
+
 import { ThumbnailAdComponent } from '../thumbnail-ad/thumbnail-ad.component';
 import { ThumbnailWritingComponent } from '../thumbnail-writing/thumbnail-writing.component';
 import { ThumbnailArtworkComponent } from '../thumbnail-artwork/thumbnail-artwork.component';
@@ -125,6 +126,7 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     NgxChartsModule,
     ToastrModule,
     PdfViewerModule,
+
     
   ],
   exports: [
@@ -148,6 +150,7 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     KeysPipe,
     FilterAlbumPipe,
     PageNotFoundComponent,
+    
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

@@ -350,9 +350,9 @@ export class ArtworkWritingComponent implements OnInit {
             this.status=r[0].status;
             this.thumbnail_picture=r[0].name_coverpage ;
             let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-            this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`,this.device_info).subscribe();
-            this.location.go(`/artwork-writing/${title_url}/${this.writing_id}`);
-            this.url=`https://www.linkarts.fr/artwork-writing/${title_url}/${this.writing_id}`;
+            this.navbar.add_page_visited_to_history(`content/artwork-writing/${this.title}/${this.writing_id}`,this.device_info).subscribe();
+            this.location.go(`content/artwork-writing/${title_url}/${this.writing_id}`);
+            this.url=`https://www.linkarts.frcontent/artwork-writing/${title_url}/${this.writing_id}`;
             this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
             this.thumbnail_picture_retrieved=true;
@@ -1583,7 +1583,7 @@ pageRendered(e:any) {
   }
 
   add_share_history(category){
-    this.navbar.add_page_visited_to_history(`/artwork-writing-share/${this.title}/${this.writing_id}/${category}`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`content/artwork-writing-share/${this.title}/${this.writing_id}/${category}`,this.device_info).subscribe();
   }
 
 }
