@@ -43,10 +43,6 @@
         box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   
         transition: all 200ms;
-        //background: white;
-        /*background: linear-gradient(to bottom, white 50%, rgb(240,242,250) 50%);
-        background-size: 100% 200%;
-        background-position:right top;*/
   
         span {
           display: flex;
@@ -70,7 +66,7 @@
           margin: auto auto 5px auto;
           font-size: 55px;
           max-width: 55px;
-        overflow: hidden;
+          overflow: hidden;
           transition:color 300ms;
         }
         &:hover {
@@ -86,11 +82,7 @@
           transform: scale(0.98);
         }
         &.opened {
-         
-          //background: linear-gradient(45deg, #f2f2f2, #f7f7f7, #ffffffe6);
           box-shadow: 0px 0px 1px -2px #000000ab, 0px 2px 2px 0px #85869e73, 0px 0px 2px 0px #90909057;
-          //background-position:right bottom;
-          //background:rgb(240,242,250);
           mat-icon {
             color:  #f9f9f9;
           }

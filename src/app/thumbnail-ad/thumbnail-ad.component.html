@@ -223,4 +223,14 @@
         </div>
 
     </a>
+
+    <div *ngIf="response_status" class="bottom-ad">
+        <span>{{response_date}} • </span>
+        <span *ngIf="response_status=='seen'">
+            Consultée
+        </span>
+        <span *ngIf="response_status!='seen'">
+            Non consultée
+        </span>
+    </div>
 </div>

@@ -1599,15 +1599,19 @@
             </div>
 
             <div class="ads-container" *ngIf="opened_section==2 && !mode_visiteur && list_of_ads_responses_added && list_of_ads_responses.length>0 "  [@enterAnimation] [ngClass]="{'really-invisible': opened_category_ad!=1 }">
-                <div class="ad" *ngFor="let item of list_of_ads_responses_data.slice(0,number_of_ads_responses_to_show); let i = index">
+                <div class="ad" *ngFor="let item of list_of_ads_responses_data.slice(0,number_of_ads_responses_to_show); let k = index">
                     <app-thumbnail-ad
                     [item]=item
+                    [response_date]="list_of_ads_responses_dates[k]"
+                    [response_status]=list_of_ads_responses[k].status
                     [now_in_seconds]=now_in_seconds
                     ></app-thumbnail-ad>
+
+                  
                 </div>
             </div>
 
-            <div class="loading-page" *ngIf=" opened_section==2 && !mode_visiteur && opened_category_ad==1"  [@enterAnimation] >
+            <div class="loading-page" *ngIf=" opened_section==2 && !mode_visiteur && loading_responses && opened_category_ad==1"  [@enterAnimation] >
 
                     <mat-spinner diameter="20" ></mat-spinner>
             </div>

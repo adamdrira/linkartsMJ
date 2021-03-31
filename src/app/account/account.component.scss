@@ -1139,11 +1139,38 @@
 
       transition: all 200ms;
 
-      //background: white;
-      //background: linear-gradient(45deg, #c7c7c7, #e6e6e6, #f3f3f3e6);
-      /*background: linear-gradient(to bottom, white 50%, rgb(240,242,250) 50%);
-      background-size: 100% 200%;
-      background-position:right top;*/
+      mat-icon {
+        color: #a8b5c4;
+        height: unset;
+        width: unset;
+        margin: auto auto 5px auto;
+        font-size: 50px;
+        max-width: 50px;
+        overflow: hidden;
+        transition:color 300ms;
+      }
+      &:hover {
+        box-shadow: 0px 0px 1px -2px #000000ab, 0px 2px 2px 0px #85869e73, 0px 0px 2px 0px #90909057;
+        mat-icon {
+          color:  #f9f9f9;
+        }
+        span {
+          color:  #f9f9f9 !important;
+        }
+      }
+      &:active {
+        transform: scale(0.98);
+      }
+      &.opened {
+        box-shadow: 0px 0px 1px -2px #000000ab, 0px 2px 2px 0px #85869e73, 0px 0px 2px 0px #90909057;
+        mat-icon {
+          color:  #f9f9f9;
+        }
+        span {
+          font-weight: bold;
+          color:  #f9f9f9 !important;
+        }
+      }
 
       span {
         display: flex;

@@ -146,6 +146,9 @@ export class ThumbnailAdComponent implements OnInit {
   @Input() for_ad_page: boolean;
   @Input() in_ad_page: any;
   @Input() ad_container: any;
+  @Input() response_date: any;
+  @Input() response_status: any;
+  
   scroll:any;
   type_of_account:string;
   certified_account:boolean;  

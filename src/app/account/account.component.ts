@@ -30,6 +30,8 @@ import { NotificationsService } from '../services/notifications.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import {date_in_seconds, get_date_to_show} from '../helpers/dates';
+import {get_date_to_show_for_ad} from '../helpers/dates';
 declare var $: any;
 
 
@@ -170,6 +172,7 @@ export class AccountComponent implements OnInit {
             let compt=0
             for (let i=0;i<r[0].length;i++){
               this.list_of_ads_responses[i+ len]=r[0][i];
+              this.list_of_ads_responses_dates[i + len]= get_date_to_show_for_ad(date_in_seconds(this.now_in_seconds,r[0][i].createdAt) );
                 this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).subscribe(m=>{
                   this.list_of_ads_responses_data[i+ len]=m[0];
                   this.cd.detectChanges();
@@ -269,6 +272,7 @@ export class AccountComponent implements OnInit {
   list_of_ads:any[]=[];
   list_of_ads_added:boolean=false;
   list_of_ads_responses:any[]=[];
+  list_of_ads_responses_dates:any[]=[];
   list_of_ads_responses_data:any[]=[];
   list_of_ads_responses_added:boolean=false;
   /***************************************** */
@@ -828,10 +832,13 @@ export class AccountComponent implements OnInit {
         let compt=0
         for (let i=0;i<r[0].length;i++){
           this.list_of_ads_responses[i]=r[0][i];
+          this.list_of_ads_responses_dates[i]= get_date_to_show_for_ad(date_in_seconds(this.now_in_seconds,r[0][i].createdAt) ).replace("Envoyée","Réponse envoyée");
             this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).subscribe(m=>{
               this.list_of_ads_responses_data[i]=m[0];
               compt++;
               if(compt==r[0].length){
+                console.log(this.list_of_ads_responses)
+                console.log(this.list_of_ads_responses_dates)
                 this.list_of_ads_responses_added=true;
               }
             })
