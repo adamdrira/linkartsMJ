@@ -43,7 +43,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Titre</mat-label>
                         <input matInput formControlName="fwTitle" maxLength="40" autocomplete="off" (input)="normalize_input(fw, 'fwTitle');">
-                        <mat-error *ngIf="fw.controls['fwTitle'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        <mat-error *ngIf="fw.controls['fwTitle'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
                         </mat-error>
                         <div class="length-indicator">{{fw.controls['fwTitle'].value?.length || 0}}/40</div>
                     </mat-form-field>

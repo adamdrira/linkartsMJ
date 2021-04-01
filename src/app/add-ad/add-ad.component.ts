@@ -408,7 +408,7 @@ export class AddAdComponent implements OnInit {
         this.display_loading=true;
         this.Ads_service.check_if_ad_is_ok(this.fd.value.fdProject_type,this.fd.value.fdMydescription,this.fd.value.fdTargets).subscribe(r=>{
           if(r[0].result=="ok"){
-            this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'),this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1,this.offer_or_demand).subscribe((val)=> {
+            this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.fd.value.fdProject_type,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1,this.offer_or_demand).subscribe((val)=> {
               this.ad_id=val[0].id;
               this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{
                 this.id_ad=l[0].id;

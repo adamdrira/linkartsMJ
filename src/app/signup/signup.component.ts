@@ -1179,8 +1179,8 @@ export class SignupComponent implements OnInit {
       
     }
     this.user.nickname = this.registerForm3.value.nickname;
-    this.user.primary_description = this.registerForm3.value.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n');
-    this.user.primary_description_extended = this.registerForm3.value.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n');
+    this.user.primary_description = this.registerForm3.value.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
+    this.user.primary_description_extended = this.registerForm3.value.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
     this.loading_signup=true;
     if(this.registerForm1.value.gender=='Groupe'){
       if( (this.registerForm2.value.type_of_account=='Artistes' 
@@ -1235,8 +1235,6 @@ export class SignupComponent implements OnInit {
             this.cd.detectChanges()
           }
           else{
-            this.user.list_of_members;
-            this.user.id_admin;
             this.Profile_Edition_Service.addUser( this.user ).subscribe(r=>{
               if(!r[0].error){
                 this.display_email_or_pseudo_found=false;

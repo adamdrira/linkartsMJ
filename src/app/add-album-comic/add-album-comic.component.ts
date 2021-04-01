@@ -296,7 +296,7 @@ export class AddAlbumComicComponent implements OnInit {
       for( let i = 0; i < solution.length; i++) {
           this.album_list_to_send.push(this.album_list[ solution[i] ].instance.bd_element);
           if(i==solution.length-1){
-            this.Albums_service.add_album_comics(this.albumForm.value.formName,this.album_list_to_send).subscribe(information=>{
+            this.Albums_service.add_album_comics(this.albumForm.value.formName.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),this.album_list_to_send).subscribe(information=>{
               if(information[0].found){
                 const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                   data: {showChoice:false, text:'Ce titre est déjà utilisé.'},

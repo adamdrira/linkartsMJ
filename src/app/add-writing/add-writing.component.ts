@@ -245,10 +245,10 @@ export class AddWritingComponent implements OnInit {
     else if ( this.fw.valid  && [0] && this.confirmation_writing_uploaded ) {
        this.display_loading=true;
        this.Writing_Upload_Service.CreateWriting(
-          this.fw.value.fwTitle,
+          this.fw.value.fwTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),
           this.fw.value.fwCategory, 
           this.fw.value.fwTags, 
-          this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n'),  
+          this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),  
           this.monetised,
           total_pages)
         .subscribe( v => {

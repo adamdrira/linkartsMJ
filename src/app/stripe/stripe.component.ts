@@ -140,7 +140,8 @@ export class StripeComponent implements OnInit {
   loading=false;
   step=0;
   display_select=false;
-  stripe = Stripe("pk_test_51IXGypFGsFyjiwAlbgLfAIKuRSkJgKvBfCfFmkdmSKoOAV9INm9lmiHWhfIfHNXpoBpMz15lyA9rr2BuB3wzX1VG00h0IhTM9u");
+  stripe:any;
+  //stripe = Stripe("pk_test_51IXGypFGsFyjiwAlbgLfAIKuRSkJgKvBfCfFmkdmSKoOAV9INm9lmiHWhfIfHNXpoBpMz15lyA9rr2BuB3wzX1VG00h0IhTM9u");
 
   validate_step() {
       if(this.loading){
@@ -160,6 +161,7 @@ export class StripeComponent implements OnInit {
         if(this.StripeForm.valid){
           this.loading = true;
           this.StripeService.create_checkout_session(this.selected_value*100).subscribe(r=>{
+            this.stripe=Stripe(r[0].key)
             return this.stripe.redirectToCheckout({ sessionId: r[0].id });
             
           })

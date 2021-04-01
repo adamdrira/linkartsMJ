@@ -1576,7 +1576,7 @@
         <ng-container *ngIf="list_writings_added && list_drawings_artbook_added
         && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
 
-            <div class="panel-background" *ngIf="!mode_visiteur">
+            <div class="panel-background" *ngIf="!mode_visiteur && opened_section==2 ">
                 <div class="logos-container"  #target [@enterFromTopAnimation]>
                     <button class="logo" [ngClass]="{'opened': opened_category_ad == 0 }" (click)="open_category_ad(0);scroll(target);" #target>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>

@@ -158,7 +158,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Bio</mat-label>
                     <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description');"></textarea>
-                    <mat-error *ngIf="registerForm1.controls['primary_description'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                    <mat-error *ngIf="registerForm1.controls['primary_description'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
                     </mat-error>
                     <div class="length-indicator">{{registerForm1.controls['primary_description'].value?.length || 0}}/100</div>
                 </mat-form-field>
@@ -209,7 +209,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Description principale</mat-label>
                         <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
-                        <mat-error *ngIf="registerForm1.controls['primary_description_extended'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        <mat-error *ngIf="registerForm1.controls['primary_description_extended'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
                         </mat-error>
                         <div class="length-indicator">{{registerForm1.controls['primary_description_extended'].value?.length || 0}}/1000</div>
 
@@ -293,7 +293,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Profession</mat-label>
                         <input matInput formControlName="job" maxLength="100" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'job');">
-                        <mat-error *ngIf="registerForm1.controls['job'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        <mat-error *ngIf="registerForm1.controls['job'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
                         </mat-error>
                         <div class="length-indicator">{{registerForm1.controls['job'].value?.length || 0}}/100</div>
                     </mat-form-field>
@@ -352,7 +352,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Formation ou compétences</mat-label>
                         <textarea matInput cdkTextareaAutosize formControlName="training" maxLength="250" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
-                        <mat-error *ngIf="registerForm1.controls['training'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        <mat-error *ngIf="registerForm1.controls['training'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
                         </mat-error>
                         <div class="length-indicator">{{registerForm1.controls['training'].value?.length || 0}}/250</div>
                     </mat-form-field>
@@ -373,30 +373,6 @@
                     </mat-form-field>
                 </div>
 
-                <!--<div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>Formation ou compétences</mat-label>
-                        <input matInput formControlName="training" maxLength="250" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'training');">
-                        <mat-error *ngIf="registerForm1.controls['training'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
-                        </mat-error>
-                        <div class="length-indicator">{{registerForm1.controls['training'].value?.length || 0}}/100</div>
-                    </mat-form-field>
-                </div>
-                <div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'
-                    [matTooltip]="( training==undefined || training=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-label>{{training}}</mat-label>
-                        <ng-container *ngIf="!( training==undefined || training=='' )">
-                            <textarea matInput cdkTextareaAutosize readonly class="readonly">{{training}}</textarea>
-                        </ng-container>
-                        <ng-container *ngIf=" ( training==undefined || training=='' )">
-                            <textarea matInput cdkTextareaAutosize readonly class="readonly italic">Non renseignée</textarea>
-                        </ng-container>
-                    </mat-form-field>
-                </div>-->
             </ng-container>
 
 

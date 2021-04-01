@@ -165,8 +165,6 @@ export class AccountComponent implements OnInit {
         this.loading_responses=true;
         this.number_of_ads_to_show+=10;
         this.Ads_service.get_all_my_responses(this.pseudo,10, this.number_of_ads_to_show).subscribe(r => {
-          console.log("ads resp more")
-          console.log(r)
           let len= this.list_of_ads_responses.length
           if (r[0].length>0){
             let compt=0
@@ -824,10 +822,7 @@ export class AccountComponent implements OnInit {
     })
 
     this.route.data.subscribe(resp => {
-      console.log("ads resp")
-      
       let r=resp.ads_responses;
-      console.log(r)
       if (r[0].length>0){
         let compt=0
         for (let i=0;i<r[0].length;i++){
@@ -837,8 +832,6 @@ export class AccountComponent implements OnInit {
               this.list_of_ads_responses_data[i]=m[0];
               compt++;
               if(compt==r[0].length){
-                console.log(this.list_of_ads_responses)
-                console.log(this.list_of_ads_responses_dates)
                 this.list_of_ads_responses_added=true;
               }
             })

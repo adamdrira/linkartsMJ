@@ -411,7 +411,7 @@ export class ChatRightContainerComponent implements OnInit {
   add_chat_section_name() {
     if(this.chat_section_group.valid){
       if(this.chat_section_group.value.chat_section_name_added.replace(/\s/g, '').length>0 ){
-        this.addChatSectionName.emit( this.chat_section_group.value.chat_section_name_added );
+        this.addChatSectionName.emit( this.chat_section_group.value.chat_section_name_added.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''));
         this.chat_section_group.reset();
       }
       else{

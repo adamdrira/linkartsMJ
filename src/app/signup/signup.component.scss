@@ -344,6 +344,9 @@
   .loading-dots {
     line-height: 6px;
     display: flex;
+    &.for-search{
+      justify-content: center;
+    }
     span {    
       font-size: 35px;
       line-height: 6px;

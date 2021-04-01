@@ -124,7 +124,7 @@ export class PopupFormDrawingComponent implements OnInit {
     }
 
     if ( this.fd.valid && this.data.format == "one-shot" ) {
-        this.Drawings_Onepage_Service.ModifyDrawingOnePage2(this.data.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'))
+        this.Drawings_Onepage_Service.ModifyDrawingOnePage2(this.data.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''))
         .subscribe(inf=>{
           this.location.go(`/artwork-drawing/one-shot/${this.fd.value.fdTitle}/${this.data.drawing_id}`);
               location.reload();
@@ -132,7 +132,7 @@ export class PopupFormDrawingComponent implements OnInit {
     }
 
     else if ( this.fd.valid && this.data.format == "artbook" ) {
-        this.Drawings_Artbook_Service.ModifyArtbook2(this.data.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'))
+        this.Drawings_Artbook_Service.ModifyArtbook2(this.data.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''))
         .subscribe(inf=>{
           this.location.go(`/artwork-drawing/artbook/${this.fd.value.fdTitle}/${this.data.drawing_id}`);
               location.reload();

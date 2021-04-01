@@ -1,8 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
-import { BdSerieService } from '../services/comics_serie.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 
@@ -17,7 +15,6 @@ export class AddComicsChapterComponent implements OnInit {
     private route: ActivatedRoute, 
     private router:Router,
     public navbar: NavbarService,
-    private BdSerieService:BdSerieService,
     private activatedRoute: ActivatedRoute,
     private sanitizer:DomSanitizer,
   ) { 

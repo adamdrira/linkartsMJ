@@ -2475,10 +2475,16 @@ export class AccountAboutComponent implements OnInit {
 
   loading_validation_form_1=false;
   validate_form_1(){
+
+    console.log(this.registerForm1)
+    console.log(this.registerForm1.valid)
+    console.log(this.loading_validation_form_1)
     if(this.loading_validation_form_1){
+      console.log("if 1")
       return
     }
     if(this.registerForm1.invalid){
+      console.log("if 2")
       this.display_error_validator_1=true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
@@ -2491,8 +2497,8 @@ export class AccountAboutComponent implements OnInit {
     this.display_error_validator_1=false;
     let form =this.registerForm1.value;
     if (this.registerForm1.value.type_of_account.includes('professionnel')){
-   
-      if(!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<14)){
+      console.log("include pro")
+      if(!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<9)){
 
         this.display_error_validator_1=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -2504,8 +2510,8 @@ export class AccountAboutComponent implements OnInit {
       else{
         this.display_error_validator_1=false;
         let siret = form.siret
-        let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
-        let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
+        let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''):'';
+        let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''):'';
         this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,siret,primary ,secondary,form.job,form.training).subscribe(l=>{
           this.type_of_account=form.type_of_account;
           this.primary_description=primary;
@@ -2521,8 +2527,9 @@ export class AccountAboutComponent implements OnInit {
     }
     else{
       this.display_error_validator_1=false;
-      let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
-      let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
+      let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''):'';
+      console.log(primary)
+      let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''):'';
       this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,null,primary,secondary,form.job,form.training).subscribe(l=>{
         this.type_of_account=form.type_of_account;
         this.primary_description=primary;

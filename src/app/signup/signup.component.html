@@ -335,13 +335,9 @@
 
                         <ng-container *ngIf="!display_no_pseudos_found">
                             
-                            <div class="loading-dots" *ngIf="!pseudo_found && registerForm5.value.fdSearchbar">
+                            <div class="loading-dots for-search" *ngIf="!pseudo_found && registerForm5.value.fdSearchbar">
                                 &nbsp; <span>.</span><span>.</span><span>.</span>
                             </div>
-                            <!--<div class="display-message" *ngIf="!pp_found_loaded && !registerForm5.value.fdSearchbar">
-                                Rechercher un artiste
-                             </div>-->
-                             
                             <div class="subscriber-card" *ngIf="pseudo_found" [ngClass]="{'invisible':!pp_found_loaded}" [@enterAnimation]>
                                 <div class="subscriber">
                                     <div class="user-container">

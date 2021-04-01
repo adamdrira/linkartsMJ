@@ -13,7 +13,6 @@ import {get_date_to_show_chat} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { pattern } from '../helpers/patterns';
 
-import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-chat-friends-list',
@@ -84,9 +83,6 @@ export class ChatFriendsListComponent implements OnInit {
     public route: ActivatedRoute, 
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    
-    private title: Title,
-    private meta: Meta
     ){
 
       navbar.visibility_observer_font.subscribe(font=>{
@@ -254,11 +250,6 @@ export class ChatFriendsListComponent implements OnInit {
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
 
   ngOnInit() {
-    
-    this.title.setTitle('LinkArts – BD, Dessins et Ecrits');
-    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
-
-    
     let THIS=this;
     this.active_section = this.route.snapshot.data['section'];
     if(this.active_section==2){
@@ -2453,7 +2444,7 @@ cancel_create_group_chat(){
 group_chat_creation_done(){
  if(this.Groupchat.valid && this.list_of_selected_ids.length>0){
   this.list_of_selected_ids.push(this.current_user)
-  this.chatService.create_group_chat(this.list_of_selected_ids,this.Groupchat.value.Groupchatname).subscribe(r=>{
+  this.chatService.create_group_chat(this.list_of_selected_ids,this.Groupchat.value.Groupchatname.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).subscribe(r=>{
     this.select_group_chat_contacts=false;
     this.get_propositions=false;
     let message_one ={

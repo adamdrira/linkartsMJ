@@ -135,7 +135,7 @@ export class PopupFormComicComponent implements OnInit {
     }
 
     if ( this.f00.valid && this.data.format == "one-shot" ) {
-        this.BdOneShotService.ModifyBdOneShot2(this.data.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n'))
+        this.BdOneShotService.ModifyBdOneShot2(this.data.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''))
         .subscribe(inf=>{
           this.location.go(`/artwork-comic/one-shot/${this.f00.value.f00Title}/${this.data.bd_id}`);
           location.reload();
@@ -143,7 +143,7 @@ export class PopupFormComicComponent implements OnInit {
     }
 
     else if ( this.f00.valid && this.data.format == "serie" ) {
-        this.BdSerieService.ModifyBdSerie2(this.data.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n'))
+        this.BdSerieService.ModifyBdSerie2(this.data.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''))
         .subscribe(inf=>{
           console.log(inf)
           for( let i = 0 ; i < this.data.chapterList.length; i ++ ) {

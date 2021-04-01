@@ -187,7 +187,7 @@ value:string="add";
     this.cd.detectChanges();
     if( (<FormArray>this.form.get('chapters')).controls[i].valid && this.form_number==0) {
 
-      this.componentRef[i].name = this.changeName.nativeElement.value;
+      this.componentRef[i].name = this.changeName.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
 
       this.componentRef[i].swiperInitialized = true;
       this.edit_name = -1;
@@ -212,8 +212,8 @@ value:string="add";
 
       this.edit_name = -1;
       if (this.value=="modify") {
-        this.bdSerieService.modify_chapter_bd_serie2(this.list_of_chapters[i].bd_id,this.list_of_chapters[i].chapter_number,(<FormArray>this.form.get('chapters')).controls[i].value).subscribe(r=>{
-          this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value;
+        this.bdSerieService.modify_chapter_bd_serie2(this.list_of_chapters[i].bd_id,this.list_of_chapters[i].chapter_number,(<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).subscribe(r=>{
+          this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
           this.cd.detectChanges();
           this.display_swiper=true;
           return true;
@@ -221,10 +221,10 @@ value:string="add";
         
       }
       else if (this.value=="add") {
-        this.bdSerieService.add_chapter_bd_serie2(this.list_of_chapters[0].bd_id, i+1 , (<FormArray>this.form.get('chapters')).controls[i].value).subscribe(r=>{
+        this.bdSerieService.add_chapter_bd_serie2(this.list_of_chapters[0].bd_id, i+1 , (<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).subscribe(r=>{
           this.new_chapter_added=true;
           this.number_of_new_chapters+=1;
-          this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value;
+          this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
           this.display_swiper=true;
           return false;
         });
