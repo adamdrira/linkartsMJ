@@ -56,6 +56,9 @@ export function pattern(type: string) {
     if( type == "integer" ) {
         return "[0-9]*";
     }
+    if( type == "integer_sup" ) {
+        return "[1-9]+[0-9]*";
+    }
 
 
 }
