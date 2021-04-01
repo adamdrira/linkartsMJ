@@ -8,8 +8,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { SignupComponent } from '../signup/signup.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
-
 import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
@@ -19,6 +17,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { PopupContactComponent } from '../popup-contact/popup-contact.component';
 
 declare var Swiper: any;
+
 
 @Component({
   selector: 'app-home',
@@ -36,7 +35,6 @@ export class HomeLinkartsComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private cd:ChangeDetectorRef,
     private router: Router,
-    
     private title: Title,
     private meta: Meta
     
@@ -318,5 +316,5 @@ export class HomeLinkartsComponent implements OnInit {
     this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).subscribe();
   }
 
-  
+
 }

@@ -389,9 +389,9 @@ export class ArtworkComicComponent implements OnInit {
               this.thumbnail_picture_retrieved=true;
               this.monetization=r[0].monetization;
               let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-              this.navbar.add_page_visited_to_history(`content/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`,this.device_info).subscribe();
-              this.location.go(`content/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`);
-              this.url=`https://www.linkarts.frcontent/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`;
+              this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`,this.device_info).subscribe();
+              this.location.go(`/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`);
+              this.url=`https://www.linkarts.fr/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`;
               this.location_done=true;
               this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
                 this.pseudo = r[0].nickname;
@@ -615,9 +615,9 @@ export class ArtworkComicComponent implements OnInit {
             this.thumbnail_picture=r[0].name_coverpage;
             this.thumbnail_picture_retrieved=true;
             let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-            this.navbar.add_page_visited_to_history(`content/artwork-comic/one-shot/${this.title}/${this.bd_id}`,this.device_info).subscribe();
-            this.location.go(`content/artwork-comic/one-shot/${title_url}/${this.bd_id}`);
-            this.url=`https://www.linkarts.frcontent/artwork-comic/one-shot/${title_url}/${this.bd_id}`;
+            this.navbar.add_page_visited_to_history(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`,this.device_info).subscribe();
+            this.location.go(`/artwork-comic/one-shot/${title_url}/${this.bd_id}`);
+            this.url=`https://www.linkarts.fr/artwork-comic/one-shot/${title_url}/${this.bd_id}`;
             this.location_done=true;
             this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) )
             
@@ -1412,9 +1412,9 @@ export class ArtworkComicComponent implements OnInit {
     THIS.refresh_swiper_pagination();
     THIS.display_pages=true;
     let title_url=THIS.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    THIS.navbar.add_page_visited_to_history(`content/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
-    THIS.location.go(`content/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`);
-    THIS.url=`https://www.linkarts.frcontent/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
+    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
+    THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`);
+    THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
     
   }
 
@@ -1517,9 +1517,9 @@ export class ArtworkComicComponent implements OnInit {
     THIS.refresh_swiper_pagination();
     THIS.display_pages=true;
     let title_url=THIS.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    THIS.navbar.add_page_visited_to_history(`content/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
-    THIS.location.go(`content/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`);
-    THIS.url=`https://www.linkarts.frcontent/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
+    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
+    THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`);
+    THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
   
   }
 
@@ -1615,9 +1615,9 @@ export class ArtworkComicComponent implements OnInit {
       THIS.refresh_swiper_pagination();
       THIS.display_pages=true;
       let title_url=THIS.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-      THIS.navbar.add_page_visited_to_history(`content/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
-      THIS.location.go(`content/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${parseInt(chapter_number) + 1}`);
-      THIS.url=`https://www.linkarts.frcontent/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
+      THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
+      THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${parseInt(chapter_number) + 1}`);
+      THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
     
     });
 
@@ -2578,7 +2578,7 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   add_share_history(category){
-    this.navbar.add_page_visited_to_history(`content/artwork-comic-share/${this.type}/${this.title}/${this.bd_id}/${this.current_chapter + 1}/${category}`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/artwork-comic-share/${this.type}/${this.title}/${this.bd_id}/${this.current_chapter + 1}/${category}`,this.device_info).subscribe();
   }
 }
 

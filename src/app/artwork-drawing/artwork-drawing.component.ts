@@ -431,9 +431,9 @@ export class ArtworkDrawingComponent implements OnInit {
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
       let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-      this.navbar.add_page_visited_to_history(`content/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
-      this.location.go(`content/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`);
-      this.url=`https://www.linkarts.frcontent/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`;
+      this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
+      this.location.go(`/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`);
+      this.url=`https://www.linkarts.fr/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show =get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
@@ -577,9 +577,9 @@ export class ArtworkDrawingComponent implements OnInit {
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
       let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-      this.navbar.add_page_visited_to_history(`content/artwork-drawing/artbook/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
-      this.location.go(`content/artwork-drawing/artbook/${title_url}/${this.drawing_id}`);
-      this.url=`https://www.linkarts.frcontent/artwork-drawing/artbook/${title_url}/${this.drawing_id}`;
+      this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
+      this.location.go(`/artwork-drawing/artbook/${title_url}/${this.drawing_id}`);
+      this.url=`https://www.linkarts.fr/artwork-drawing/artbook/${title_url}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
@@ -2144,7 +2144,7 @@ export class ArtworkDrawingComponent implements OnInit {
     this.first_comment_pp_loaded=true;
   }
   add_share_history(category){
-    this.navbar.add_page_visited_to_history(`content/artwork-drawing-share/${this.type}/${this.title}/${this.drawing_id}/${category}`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/artwork-drawing-share/${this.type}/${this.title}/${this.drawing_id}/${category}`,this.device_info).subscribe();
   }
 }
 

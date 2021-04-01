@@ -49,6 +49,7 @@ export class PopupContactComponent implements OnInit {
         Validators.compose([
           Validators.required,
           Validators.maxLength(100),
+          Validators.pattern(pattern("mail")),
         ]),
       ],
       firstName: [this.firstname, 
@@ -98,22 +99,16 @@ export class PopupContactComponent implements OnInit {
   loading=false;
   show_done=false;
   validate_step() {
-    
     if(this.loading){
       return
     }
-    
-
     if(this.registerForm1.valid){
       this.loading = true;
-      console.log("send")
       this.Profile_Edition_Service.send_message_contact_us(this.registerForm1.value.firstName,this.registerForm1.value.lastName,this.registerForm1.value.email,this.registerForm1.value.message.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
-        console.log(r);
         this.loading=false;
         this.show_done=true;
       })
     }
-
     
   }
 

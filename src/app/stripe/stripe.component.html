@@ -1,0 +1,131 @@
+
+<div class="fake-navbar">
+
+    <a href="/" class="logo-container">
+        <img class="logo" src='../../assets/img/svg/Logo-LA3-17-01.svg'>
+    </a>
+
+    <div class="payement-secure">
+        <span class="string-secure">PAIEMENT SÉCURISÉ</span>
+        <img class="logo" src='../../assets/img/svg/Stripe-blurple.svg'>
+    </div>
+    
+</div>
+
+
+<div class="main-container">
+
+    <div class="top-container" >
+        <div class="title">
+            Donnation
+        </div>
+        <div class="message">
+            Soutenez le site en faisant un don.
+        </div>
+    </div>
+
+    <div class="middle-container"  [formGroup]="StripeForm" [@enterAnimation] *ngIf="category_index==1">
+
+            <div class="sent-mail-icon" >
+                <img class="logo" src='../../assets/img/svg/fireworks.svg'>
+            </div>
+            <div class="sent-mail-text" >
+                <span>Votre don a été réalisé avec succès !</span>
+                <span>Merci infiniment.</span>
+            </div>
+            <a href="/" class="validate-button" style="width: 230px !important;" >
+                <span class="go-back">Retourner sur LinkArts</span>
+            </a>
+    </div>
+
+    <div class="middle-container"  [formGroup]="StripeForm" [@enterAnimation] *ngIf="category_index==0">
+
+        <div *ngIf="step==0" [@enterFromLeftAnimation]>
+            <div class="title-middle">
+                Choisissez votre montant
+            </div>
+            <div class="list_of_values" >
+                <ng-container  *ngFor="let item of list_of_values; let i=index">
+                    <button class="button-value" *ngIf="item>0" (click)="click_on_value(i)" [ngClass]="{'opened': selected_value == list_of_values[i] }">
+                        {{item}} €
+                    </button>
+                    <button class="button-value" *ngIf="item==0" (click)="click_on_value(i)" [ngClass]="{'opened': selected_value == list_of_values[i] }">
+                        
+                        <input class="input"  (input)="click_on_value(i)" matInput formControlName="donation" maxLength="5" autocomplete="off">&nbsp;€
+                    </button>
+                </ng-container>
+            </div>
+
+            
+            <button class="validate-button" (click)="validate_step()">
+                <div *ngIf="display_select" class="error-value">
+                    <span>Veuillez sélectionner une somme ou en entrer une.</span>
+                </div>
+                Suivant
+            </button>
+        </div>
+       
+
+        <div *ngIf="step==1"  [@enterFromRightAnimation]>
+            <div class="step-back-button" (click)="step_back()">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+            </div>
+            <div class="title-middle">
+                Un petit mot pour l'équipe LinkArts ?
+            </div>
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Votre nom complet</mat-label>
+                    <input matInput formControlName="fullName" autocomplete="off" type="search" (input)="normalize_input(StripeForm, 'fullName');">
+                    <mat-error *ngIf="StripeForm.controls['fullName'].invalid">Veuillez saisir un prénom valide
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            
+            <div class="form-item" style="height:unset !important;">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Message</mat-label>
+                    <textarea matInput cdkTextareaAutosize formControlName="message" maxLength="1000" autocomplete="off" (input)="normalize_input(StripeForm, 'message');"></textarea>
+                    
+                    <mat-error *ngIf="StripeForm.controls['message'].invalid">Veuillez saisir un message valide
+                    </mat-error>
+                    <div class="length-indicator">{{StripeForm.controls['message'].value?.length || 0}}/1000</div>
+                </mat-form-field>
+            </div>
+
+            
+            <button class="validate-button" (click)="validate_step()">
+                <ng-container *ngIf="!loading">Valider</ng-container>
+                <div class="loading-dots" *ngIf="loading">
+                    &nbsp; <span>.</span><span>.</span><span>.</span>
+                </div>
+            </button>
+
+        </div>
+
+      
+
+        <div class="adad-container">
+            <div class="adad">
+            </div>
+        </div>
+
+        <div class="informations">
+            <div class="title-middle">
+                Où va votre don :
+            </div>
+            <div class="content-information">
+                <b> Rémunération des artistes </b>: le site tient à offrir une rémunération quotidienne à ses artistes. Actuellement, le site web ne bénéficie d'aucun partenariat. Ainsi, les dons sont d'une grande aide afin d'assurer la rémunération quotidienne des artistes sur le court-terme.
+            </div>
+            <div class="content-information">
+                <b>Infrastructure </b>: serveurs, bande passante, maintenance, développement; l'équipe LinkArts se charge d'améliorer quotidiennement les performances du site pour vous fournir une expérience de qualité.
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="bottom-container">
+
+    </div>
+</div>

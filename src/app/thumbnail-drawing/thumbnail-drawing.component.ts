@@ -276,7 +276,7 @@ export class ThumbnailDrawingComponent implements OnInit {
   open_popup(event){
     event.preventDefault(); 
     if (event.ctrlKey) {
-      return this.router.navigate(["content/artwork-drawing/"+this.format+"/"+this.title_for_url+"/"+this.drawing_id]);
+      return this.router.navigate(["/artwork-drawing/"+this.format+"/"+this.title_for_url+"/"+this.drawing_id]);
     }
     this.dialog.open(PopupArtworkComponent, {
       data: {

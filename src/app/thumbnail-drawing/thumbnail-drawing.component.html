@@ -2,7 +2,7 @@
 <div class="drawing-container" #drawing_container>
         
     
-    <a class="click-popup" (click)="open_popup($event)"  href="content/artwork-drawing/{{format}}/{{title_for_url}}/{{drawing_id}}" target="_blank" [ngClass]="{ 'for_news':for_news=='yes','shadow-news':for_news=='yes'}">
+    <a class="click-popup" (click)="open_popup($event)"  href="/artwork-drawing/{{format}}/{{title_for_url}}/{{drawing_id}}" target="_blank" [ngClass]="{ 'for_news':for_news=='yes','shadow-news':for_news=='yes'}">
         <div #final_thumbnail class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();" [ngClass]="{'shiny':!show_picture && !prevent_shiny,'for_news':for_news=='yes'}">
 
             <img [src]="thumbnail_picture"  (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'min-height-news':for_news=='yes'}">

@@ -137,7 +137,7 @@ export class PopupFormComicComponent implements OnInit {
     if ( this.f00.valid && this.data.format == "one-shot" ) {
         this.BdOneShotService.ModifyBdOneShot2(this.data.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n'))
         .subscribe(inf=>{
-          this.location.go(`content/artwork-comic/one-shot/${this.f00.value.f00Title}/${this.data.bd_id}`);
+          this.location.go(`/artwork-comic/one-shot/${this.f00.value.f00Title}/${this.data.bd_id}`);
           location.reload();
         });
     }
@@ -149,7 +149,7 @@ export class PopupFormComicComponent implements OnInit {
           for( let i = 0 ; i < this.data.chapterList.length; i ++ ) {
             this.BdSerieService.modify_chapter_bd_serie2(this.data.bd_id,i+1,this.chapters.value[i]).subscribe(r=>{
               if(i==this.data.chapterList.length-1){
-                this.location.go(`content/artwork-comic/serie/${this.f00.value.f00Title}/${this.data.bd_id}/${this.data.current_chapter}`);
+                this.location.go(`/artwork-comic/serie/${this.f00.value.f00Title}/${this.data.bd_id}/${this.data.current_chapter}`);
                 location.reload();
               }
             });

@@ -388,7 +388,7 @@ open_comic(notif:any) {
 }
 get_comic(notif:any) {
   let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    return "content/artwork-comic/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
+    return "/artwork-comic/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
 }
 
 open_comic_chapter(notif:any) {
@@ -398,7 +398,7 @@ open_comic_chapter(notif:any) {
 }
 get_comic_chapter(notif:any) {
   let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-  return "content/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
+  return "/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
 }
 open_drawing(notif:any) {
   this.not_using_chat();
@@ -407,7 +407,7 @@ open_drawing(notif:any) {
 }
 get_drawing(notif:any) {
   let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-  return "content/artwork-drawing/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
+  return "/artwork-drawing/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
 }
 open_writing(notif:any) {
   this.not_using_chat();
@@ -416,7 +416,7 @@ open_writing(notif:any) {
 }
 get_writing(notif:any) {
   let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-  return "content/artwork-writing/" + title_url + "/" + notif.publication_id;
+  return "/artwork-writing/" + title_url + "/" + notif.publication_id;
 }
 open_ad(notif:any) {
   this.not_using_chat();
@@ -425,7 +425,7 @@ open_ad(notif:any) {
 }
 get_ad(notif:any) {
   let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    return "content/ad-page/" + title_url + "/" + notif.publication_id;
+    return "/ad-page/" + title_url + "/" + notif.publication_id;
 }
 
 sort_notifications(msg){

@@ -154,7 +154,7 @@ export class PopupFormAdComponent implements OnInit {
    
     if ( this.fd.valid && !(this.remuneration && this.for_service)) {
       this.Ads_service.edit_primary_information_ad(this.data.item.id,this.fd.value.fdTitle,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'),this.fd.value.fdPreferential_location,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1,this.offer_or_demand).subscribe(r=> {
-        this.location.go(`content/ad-page/${this.fd.value.fdTitle}/${this.data.item.id}`);
+        this.location.go(`/ad-page/${this.fd.value.fdTitle}/${this.data.item.id}`);
         location.reload();         
       });
        
