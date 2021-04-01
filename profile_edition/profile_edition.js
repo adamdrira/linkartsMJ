@@ -10,8 +10,9 @@ var nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const algorithm = 'aes-256-ctr';
 const secretKey = 'vOVH6sdmpNWjRRIqCc7rdJBL1lwHzfr3';
-const stripe_key="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";
-const stripe = require('stripe')(stripe_key);
+const stripe_pv_key="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"
+const stripe_key="pk_live_51IXGypFGsFyjiwAl8D492zOHpbG8GeS42sjQ9nsl9oSmb8jELhvoUlMBhvLSbfnvf00DPS2Zq7Aq8n5CChdlAV3s00KuTQLvL5";
+const stripe = require('stripe')(stripe_pv_key);
 
 module.exports = (router, 
   users,
