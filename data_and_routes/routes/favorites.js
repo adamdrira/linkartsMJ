@@ -14,8 +14,8 @@ const Pool = require('pg').Pool;
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});*/
-
+});
+*/
 const pool = new Pool({
   port: 5432,
   database: 'linkarts',
@@ -109,8 +109,11 @@ function get_current_user(token){
             if(resu[0]){
               response.status(200).send([{favorites:resu}]);
             }
-            generate_favorites();
+            
           })
+        }
+        else{
+          generate_favorites();
         }
         
       }
@@ -242,7 +245,7 @@ function get_current_user(token){
               compteur_done++;
               if(compteur_done==list_of_users.length){
                 
-                return 
+                return response.status(200).json({msg: "done"});	
               }
             })
           }
@@ -250,7 +253,7 @@ function get_current_user(token){
             compteur_done++;
               if(compteur_done==list_of_users.length){
                 
-                return 
+                return response.status(200).json({msg: "done"});	
                   
               }
           }

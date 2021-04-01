@@ -123,8 +123,8 @@ pool.connect((err, client, release) => {
                             })
                             .on("finish", function() {
                               //pour ubuntu
-                              //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings_preview.py', date]);
-                              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings_preview.py', date]);
+                              const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings_preview.py', date]);
+                              //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings_preview.py', date]);
                               pythonProcess.stderr.pipe(process.stderr);
                               pythonProcess.stdout.on('data', (data) => {
                               });
@@ -227,9 +227,12 @@ pool.connect((err, client, release) => {
             if(result){
                response.status(200).send([{"comics_trendings":result.trendings}]);
             }
-            call_python();
+            
             
           })
+        }
+        else{
+          call_python();
         }
 
         function call_python(){
@@ -278,8 +281,8 @@ pool.connect((err, client, release) => {
                               .on("finish", function() {
                                 
                                 //pour ubuntu
-                                //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
-                                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
+                                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
+                                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
                                 pythonProcess.stderr.pipe(process.stderr);
                                 pythonProcess.stdout.on('data', (data) => {
                                 });
@@ -296,6 +299,7 @@ pool.connect((err, client, release) => {
                                             "date":date
                                           }).catch(err => {
                                           }).then(result=>{
+                                            response.status(200).send({json: json});	
                                             add_comics_trendings(json,date);
                                           })
                                         } 
@@ -311,6 +315,7 @@ pool.connect((err, client, release) => {
                                               "date":date
                                             }).catch(err => {
                                             }).then(result=>{
+                                              response.status(200).send({json: json});
                                               add_comics_trendings(json,date);
                                             }) 
                                           } 
