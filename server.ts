@@ -1,4 +1,5 @@
 
+
 /*mes changements*/
 const domino = require('domino');
 const fs = require('fs');
@@ -20,9 +21,19 @@ const template = fs.readFileSync(path.join(__dirname, '..','browser', 'index.htm
 
 /*mes changements*/
 const window = domino.createWindow(template);
+
+window.requestAnimationFrame = function(callback) {
+  setTimeout(callback, 0);
+};
+
 global['window'] = window;
 global['document'] = window.document;
 global['Element'] = Element;
+// tslint:disable-next-line:no-string-literal
+global['HTMLElement'] = window.HTMLElement;
+// tslint:disable-next-line:no-string-literal
+global['navigator'] = window.navigator;
+
 
 
 import 'zone.js/dist/zone-node';
