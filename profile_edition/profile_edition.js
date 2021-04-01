@@ -10,7 +10,8 @@ var nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const algorithm = 'aes-256-ctr';
 const secretKey = 'vOVH6sdmpNWjRRIqCc7rdJBL1lwHzfr3';
-const stripe = require('stripe')('sk_test_51IXGypFGsFyjiwAlrDRi3ekWAsyoOFDlDZunY2yxhwWVMQiVgnyKrYb9FchYf6pmxQzskxq1j8UJyoOrhxrvPTKh00x9lVsvUr');
+const stripe_key="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";
+const stripe = require('stripe')(stripe_key);
 
 module.exports = (router, 
   users,
@@ -3642,10 +3643,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/create_checkout_session', async (req, res) => {
-
-    console.log("create_checkout_session")
     let value=req.body.value;
-    console.log(value)
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       submit_type: 'donate',
@@ -3666,7 +3664,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       success_url: `https://www.linkarts.fr/donation/success`,
       cancel_url: `https://www.linkarts.fr/donation/`,
     });
-    res.status(200).send([{ id: session.id }]);
+    res.status(200).send([{ id: session.id, key:stripe_key}]);
   });
  
 }
