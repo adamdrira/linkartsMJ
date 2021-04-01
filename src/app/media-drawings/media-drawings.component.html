@@ -3,7 +3,11 @@
     <ng-container *ngIf="(item==='Traditionnel' && sorted_artpieces_traditional.length>0)||(item==='Digital' && sorted_artpieces_digital.length>0)">
         
         <div class="category">
-            <a [routerLink]=open_research(item)>
+            <a [routerLink]=open_research(item)
+            matTooltip="Voir du contenu de cette catégorie"
+            matTooltipClass='linkarts-tooltip'
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="200">
                 <span>{{item}}</span>
             </a>
         </div>

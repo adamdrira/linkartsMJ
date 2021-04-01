@@ -5,7 +5,11 @@
         ||(style==='Roman' && sorted_artpieces_roman.length>0)||(style==='Scénario' && sorted_artpieces_scenario.length>0)||(style==='Article' && sorted_artpieces_article.length>0)">
 
         <div class="category">
-            <a [routerLink]=open_research(style)>
+            <a [routerLink]=open_research(style)
+            matTooltip="Voir du contenu de cette catégorie"
+            matTooltipClass='linkarts-tooltip'
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="200">
                 <span>{{style}}</span>
             </a>
         </div>

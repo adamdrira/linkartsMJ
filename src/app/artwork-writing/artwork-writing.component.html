@@ -13,7 +13,7 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!! ARTWORK CONTAINER !!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div class="artwork-container" [@enterFromLeftAnimation] >
+    <div  #artwork_container  class="artwork-container" [@enterFromLeftAnimation] >
 
         <ng-container *ngIf="!item_retrieved ">
             <div class="top-container">
@@ -139,7 +139,7 @@
                     <div class="title">Écrits</div>
                     <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_writings; let i=index">
 
-                        <app-thumbnail-artwork  in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"   [item]=item[0] page='subscribings'
+                        <app-thumbnail-artwork  in_artwork=true [artwork_container]=artwork_container (click)="stop($event);add_time_of_view();close_popup()"   [item]=item[0] page='subscribings'
                             now_in_seconds={{now_in_seconds}} subscribing_category='writing'>
                         </app-thumbnail-artwork>
                     </div>
@@ -165,7 +165,7 @@
 
                 <div class="recommendation-group" *ngIf="list_of_recommendations_by_tag.length>0">
                     <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
-                        <app-thumbnail-artwork  in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"   [item]=item page='subscribings'
+                        <app-thumbnail-artwork  in_artwork=true [artwork_container]=artwork_container (click)="stop($event);add_time_of_view();close_popup()"   [item]=item page='subscribings'
                             now_in_seconds={{now_in_seconds}} subscribing_category='writing'>
                         </app-thumbnail-artwork>
         
@@ -489,7 +489,7 @@
                 <!--************************COMICS************************-->
                 <!--******************************************************-->
                 <a class="type-container" [routerLink]=get_link()
-                matTooltip="Voir du contenu de ce genre"
+                matTooltip="Voir du contenu de ce style"
                 matTooltipClass='linkarts-tooltip'
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
@@ -677,7 +677,7 @@
                         <div class="title">Écrits</div>
                         <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_writings; let i=index">
     
-                            <app-thumbnail-artwork in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"    [item]=item[0] page='subscribings'
+                            <app-thumbnail-artwork in_artwork=true [artwork_container]=artwork_container (click)="stop($event);add_time_of_view();close_popup()"    [item]=item[0] page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='writing'>
                             </app-thumbnail-artwork>
                         </div>
@@ -700,7 +700,7 @@
     
                     <div class="recommendation-group">
                         <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
-                            <app-thumbnail-artwork  in_artwork=true  (click)="stop($event);add_time_of_view();close_popup()"   [item]=item page='subscribings'
+                            <app-thumbnail-artwork  in_artwork=true [artwork_container]=artwork_container (click)="stop($event);add_time_of_view();close_popup()"   [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='writing'>
                             </app-thumbnail-artwork>
             
