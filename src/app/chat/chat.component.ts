@@ -21,7 +21,7 @@ import { merge, fromEvent } from 'rxjs'
 
 declare var $: any;
 
-var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
+var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
@@ -252,7 +252,6 @@ export class ChatComponent implements OnInit  {
   //upload files
   @ViewChild('file_upload') file_upload:ElementRef;
   //validate enter to send message
-  number_of_shift:number=0;
  
   //show messages 
   compteur_image=0;
@@ -1071,17 +1070,17 @@ export class ChatComponent implements OnInit  {
     }
   }
 
+  SHIFT_CLICKED = false;
   on_keydown(event){
+    
+    if(event.key=="Shift"){
+      this.SHIFT_CLICKED=true;
+    }
+
     if(!this.can_show_send_icon){
-      if(event.key=="Shift"){
-        this.number_of_shift=1;
-      }
-      else if(event.key!="Enter"){
-        this.number_of_shift=0;
-      }
-      else if(event.key=="Enter"){
-        if(this.number_of_shift==0){
-          
+      
+      if(event.key=="Enter"){
+        if( !this.SHIFT_CLICKED ){
           if(this.check_if_message_valide() && this.put_messages_visible){
             this.send_message();
           }
@@ -1099,12 +1098,16 @@ export class ChatComponent implements OnInit  {
             return false;
           }  
         }
-        this.number_of_shift=0;
       }
+      
     }
     
+  }
 
-    
+  on_keyup(event) {
+    if(event.key=="Shift"){
+      this.SHIFT_CLICKED=false;
+    }
   }
 
   check_if_message_valide(){
