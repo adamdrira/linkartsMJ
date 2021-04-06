@@ -57,7 +57,14 @@ export class TrendingsComponent implements OnInit {
     private deviceService: DeviceDetectorService,
     private Profile_Edition_Service:Profile_Edition_Service,
 
-    ) { }
+    ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+        }
+      })
+    this.navbar.setActiveSection(0);
+    this.navbar.show();
+  }
 
   subcategory: number = 0; 
   user_id:number=0;
@@ -80,7 +87,7 @@ export class TrendingsComponent implements OnInit {
   now_in_seconds:number= Math.trunc( new Date().getTime()/1000);
   section_chosen=false;
 
-  @Input('status') status: any;
+  
   ngOnChanges(changes: SimpleChanges) {
     if( changes.status) {
       this.cd.detectChanges();

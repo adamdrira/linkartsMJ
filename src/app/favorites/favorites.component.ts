@@ -5,6 +5,7 @@ import { Trending_service } from '../services/trending.service';
 import { Favorites_service } from '../services/favorites.service';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 
 @Component({
@@ -31,7 +32,15 @@ export class FavoritesComponent implements OnInit {
     private NotificationsService:NotificationsService,
     private ChatService:ChatService,
     private Favorites_service:Favorites_service,
-    ) { }
+    private navbar: NavbarService,
+    ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+        }
+      })
+    this.navbar.setActiveSection(0);
+    this.navbar.show();
+  }
 
   subcategory: number = 0; 
   user_id:number=0;

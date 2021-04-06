@@ -41,7 +41,14 @@ export class RecommendationsComponent implements OnInit {
     private Community_recommendation:Community_recommendation,
     private navbar:NavbarService,
     private deviceService: DeviceDetectorService,
-    ) { }
+    ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+        }
+      })
+    this.navbar.setActiveSection(0);
+    this.navbar.show();
+  }
 
   
   
@@ -85,7 +92,7 @@ export class RecommendationsComponent implements OnInit {
   subcategory: number = 0;
   // dropdowns = this._constants.filters;
   sorted_category_retrieved=false;
-  @Input('status') status: any;
+  
   media_status=[];
 
 
@@ -101,7 +108,9 @@ export class RecommendationsComponent implements OnInit {
  
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.width=this.artwork_container.nativeElement.offsetWidth*0.9-20;
+    if(this.artwork_container) {
+      this.width=this.artwork_container.nativeElement.offsetWidth*0.9-20;
+    }
   }
 
 

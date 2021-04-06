@@ -47,6 +47,8 @@ export class SubscribingsComponent implements OnInit {
           this.show_icon=true;
         }
       })
+      this.navbar.setActiveSection(0);
+      this.navbar.show();
 
     }
 

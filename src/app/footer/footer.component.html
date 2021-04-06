@@ -1,0 +1,62 @@
+
+<div class="footer">
+    <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
+
+    <div class="links-container">
+
+        <div class="links">
+            <a class="link" href="/services/1">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">lock</mat-icon>
+                <span>Mentions légales</span>
+            </a>
+            <a class="link" href="/services/4">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">security</mat-icon>
+                <span>Confidentialité et sécurité</span>
+            </a>
+        </div>
+        <div class="links">
+            <a class="link" href="/services/0">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">help</mat-icon>
+                <span>Qui sommes-nous ?</span>
+            </a>
+            <a class="link" href="/services/2">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">menu_book</mat-icon>
+                <span>Conditions d'utilisation</span>
+            </a>
+        </div>
+        <div class="links">
+            <a class="link" (click)="open_popup_contact();">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">email</mat-icon>
+                <span>Nous contacter</span>
+            </a>
+            <a class="link" href="/donation"> 
+                <mat-icon [ngClass]="{'invisible': !show_icon }" >groups</mat-icon>
+                <span>Nous soutenir</span>
+            </a>
+        </div>
+        
+
+    </div>
+
+    <div class="horizontal-bar"></div>
+
+    <div class="logos-container homeLinkarts">
+
+        <a href="http://www.instagram.com/linkarts.fr" target="_blank" class="instagram">
+            <fa-icon [icon]="faInstagram" size="lg"></fa-icon>
+        </a>
+        <a href="http://www.linkedin.com/company/linkarts" target="_blank" class="linkedin">
+            <fa-icon [icon]="faLinkedin" size="lg"></fa-icon>
+        </a>
+        <!--ajouter instagram-->
+        <a href="http://www.facebook.com/linkarts.fr" target="_blank" class="facebook">
+            <fa-icon [icon]="faFacebookSquare" size="lg"></fa-icon>
+        </a>
+
+        
+    </div>
+
+    <span>LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</span>
+    <span>LinkArts © 2021</span>
+</div>
+

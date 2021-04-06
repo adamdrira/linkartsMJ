@@ -12,10 +12,14 @@ import { ArtworkWritingComponent } from './artwork-writing/artwork-writing.compo
 import { ArtworkComicComponent } from './artwork-comic/artwork-comic.component';
 import { ArtworkDrawingComponent } from './artwork-drawing/artwork-drawing.component';
 import { AdPageComponent } from './ad-page/ad-page.component';
+import { RecommendationsComponent } from './recommendations/recommendations.component';
+import { TrendingsComponent } from './trendings/trendings.component';
+import { SubscribingsComponent } from './subscribings/subscribings.component';
+import { FavoritesComponent } from './favorites/favorites.component';
 
 const routes: Routes = [
 
-  {path:'', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { user: UserResolverService }},
+  {path:'', component:RecommendationsComponent,  data: {category: 0}, resolve: { user: UserResolverService }},
 
 
   {path:'account',loadChildren: () => import('./modules/account-module.module').then(mod => mod.AccountModuleModule)},
@@ -26,14 +30,16 @@ const routes: Routes = [
   {path:'services/:article_number', loadChildren: () => import('./modules/terms-module.module').then(mod => mod.TermsModuleModule)},
   {path:'donation', loadChildren: () => import('./modules/donation-module.module').then(mod => mod.DonationModuleModule),  data: {category: 0}, },
   //Catégories Linkarts
-  {path:'recommendations', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { user: UserResolverService }},
   {path:'registration/:id/:password', component:HomeLinkartsComponent,  data: {category: 4}, resolve: { user: UserResolverService }},
-  {path:'trendings', component:HomeLinkartsComponent,  data: {category: 1,section:0}, resolve: { user: UserResolverService }},
-  {path:'trendings/comics', component:HomeLinkartsComponent,  data: {category: 1,section:0}, resolve: { user: UserResolverService }},
-  {path:'trendings/drawings', component:HomeLinkartsComponent,  data: {category: 1,section:1}, resolve: { user: UserResolverService }},
-  {path:'trendings/writings', component:HomeLinkartsComponent,  data: {category: 1,section:2}, resolve: { user: UserResolverService }},
-  {path:'subscribings', component:HomeLinkartsComponent,canActivate: [AuthGuard],  data: {category: 2}, resolve: { user: UserResolverService }},
-  {path:'favorites', component:HomeLinkartsComponent,  data: {category: 3}, resolve: { user: UserResolverService }},
+
+
+  {path:'recommendations', component:RecommendationsComponent, resolve: { user: UserResolverService }},
+  {path:'trendings', component:TrendingsComponent,  data: {category: 1,section:0}, resolve: { user: UserResolverService }},
+  {path:'trendings/comics', component:TrendingsComponent,  data: {category: 1,section:0}, resolve: { user: UserResolverService }},
+  {path:'trendings/drawings', component:TrendingsComponent,  data: {category: 1,section:1}, resolve: { user: UserResolverService }},
+  {path:'trendings/writings', component:TrendingsComponent,  data: {category: 1,section:2}, resolve: { user: UserResolverService }},
+  {path:'subscribings', component:SubscribingsComponent,canActivate: [AuthGuard],  data: {category: 2}, resolve: { user: UserResolverService }},
+  {path:'favorites', component:FavoritesComponent,  data: {category: 3}, resolve: { user: UserResolverService }},
 
   //artwork
   {path:'artwork-writing/:title/:writing_id', component:ArtworkWritingComponent, resolve: { user: UserResolverService }},

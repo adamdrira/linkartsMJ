@@ -1,0 +1,127 @@
+
+.footer {
+    background:rgb(249,249,249);
+    border-top: 2px solid #f1f1f1;
+    display:flex;
+    flex-direction: column;
+    padding:20px 10px 0px 10px;
+    border-top:30px;
+  
+    > img {
+      height: 28px;
+      margin-bottom: 14px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  
+    .links-container {
+      display:flex;
+      justify-content: center;
+  
+      .links {
+  
+        margin-left: 10px;
+        margin-right: 10px;
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+  
+        .link {
+          cursor:pointer;
+          margin-left: 11px;
+          margin-right: 11px;
+          margin-top: 4px;
+          margin-bottom: 4px;
+          display: flex;
+    
+          mat-icon {
+            margin: auto 6px auto 0px;
+            width: unset;
+            height: unset;
+            font-size: 18px;
+            max-width:18px;
+            overflow: hidden;
+            color: #7d7d7d;
+          }
+          span {
+            color: #7d7d7d;
+            font-size: 13px;
+            font-weight: 600;
+            transition:color 200ms;
+          }
+    
+          &:hover {
+            mat-icon {
+              color: rgb(32, 56, 100);
+            }
+            span {
+              color: rgb(32,56,100);
+            }
+          }
+        }
+      }
+      
+  
+      @media (max-width: 800px) {
+        flex-direction: column;
+        margin-left: auto;
+        margin-right: auto;
+        .links {
+          .link {
+  
+            margin-top:2px;
+            margin-bottom:2px;
+            mat-icon {
+              margin-left:auto;
+            }
+            span {
+              margin-right:auto;
+              font-size:11px;
+            }
+          }
+        }
+      }
+  
+    }
+  
+    .horizontal-bar {
+      width: 50px;
+      height: 2px;
+      background: #dcdcdc;
+      margin: 7px auto 10px auto;
+    }
+  
+    .logos-container.homeLinkarts {
+      margin:0px auto 16px auto;
+  
+      a.linkedin {
+        margin: 0px 10px;
+        ::ng-deep fa-icon svg {
+          color: rgb(40, 104, 178);
+        }
+      }
+      a.instagram {
+        margin: 0px 10px;
+        ::ng-deep fa-icon svg {
+          color: #de5877;
+        }
+      }
+      a.facebook {
+        margin: 0px 10px;
+        ::ng-deep fa-icon svg {
+          color: rgb(60, 90, 154);
+        }
+      }
+  
+    }
+  
+    > span {
+      color: #7d7d7d;
+      font-size: 12px;
+      font-weight: 600;
+      max-width: 350px;
+      padding-bottom: 10px;
+      text-align: center;
+      margin: 0px auto 0px auto;
+    }
+  }
