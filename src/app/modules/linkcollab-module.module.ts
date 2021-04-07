@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LinkcolabRoutingModule } from './linkcollab-routing';
 import { HomeLinkcollabComponent } from '../home-linkcollab/home-linkcollab.component';
+import { PopupLinkcollabFiltersComponent } from '../popup-linkcollab-filters/popup-linkcollab-filters.component';
+
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -37,6 +39,7 @@ import { ErrorInterceptor } from '../helpers/error.interceptor';
 @NgModule({
   declarations: [
     HomeLinkcollabComponent,
+    PopupLinkcollabFiltersComponent,
   ],
   imports: [
     CommonModule,

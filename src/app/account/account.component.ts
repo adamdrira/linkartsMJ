@@ -32,6 +32,7 @@ import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import {date_in_seconds, get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
+import * as WebFont from 'webfontloader';
 declare var $: any;
 
 
@@ -382,7 +383,6 @@ export class AccountComponent implements OnInit {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
    
     window.scroll(0,0);
-    
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     if( !( this.pseudo && this.pseudo.length>0)){
       this.page_not_found=true;

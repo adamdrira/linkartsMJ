@@ -80,49 +80,6 @@
                         </mat-form-field>
                     </div>
 
-
-                    <div class="form-item" style="height:50px;">
-                        <div class="monetisation-container">
-                            <mat-slide-toggle [checked]="for_service" (change)="setService( $event )" style="font-weight:bold;">
-                                Annonce de produits ou services
-                            </mat-slide-toggle>
-                        </div>
-                    </div>
-
-                    <div class="form-item monetization"  *ngIf="for_service" [@enterAnimation]>
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>Montant en € (optionnel)</mat-label>
-                            <input matInput formControlName="fdPrice1" maxLength="9" autocomplete="off">
-                            <mat-error *ngIf="fd.controls['fdPrice1'].invalid">Veuillez faire une saisie valide (votre saisie ne doit comporter que des chiffres et des points)
-                            </mat-error>
-                            <div class="length-indicator">{{fd.controls['fdPrice1'].value?.length || 0}}/9</div>
-                        </mat-form-field>
-                    </div>
-                    <div class="form-item monetization" *ngIf="for_service" [@enterAnimation]>
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>Catégorie de l'annonce (optionnel)</mat-label>
-                            <mat-select [compareWith]="compareObjects" (selectionChange)="change_offer_and_demand($event)" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdPrice_type1">
-                                <mat-option  *ngFor="let obj of listOfPriceTypes1" [value]="obj">
-                                    {{ obj }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-error *ngIf="fd.controls['fdPrice_type1'].invalid">Veuillez sélectionner une catégorie</mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="form-item monetization" *ngIf="for_service" [@enterAnimation]>
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>Type d'annonce (optionnel)</mat-label>
-                            <mat-select [compareWith]="compareObjects" (selectionChange)="change_offer_and_demand($event)" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdOffer_demand">
-                                <mat-option  *ngFor="let obj of listOffers" [value]="obj">
-                                    {{ obj }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-error *ngIf="fd.controls['fdOffer_demand'].invalid">Veuillez sélectionner une catégorie</mat-error>
-                        </mat-form-field>
-                    </div>
-                    
-
-                    
                     <div class="form-item">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Objet de l'annonce</mat-label>

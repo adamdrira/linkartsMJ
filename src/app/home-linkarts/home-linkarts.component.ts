@@ -117,16 +117,16 @@ export class HomeLinkartsComponent implements OnInit {
         this.Profile_Edition_Service.check_password_for_registration(id,password).subscribe(r=>{
           this.category_index=0;
           if(r[0].user_found){
-            this.navbar.add_page_visited_to_history(`/recommendations`,this.device_info ).subscribe();
-            this.location.go('/recommendations')
+            this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info ).subscribe();
+            this.location.go('/home/recommendations')
             const dialogRef = this.dialog.open(LoginComponent, {
               data: {usage:"registration",temp_pass:r[0].pass,email:r[0].user_found.email},
               panelClass: "loginComponentClass",
             });
           }
           else{
-            this.navbar.add_page_visited_to_history(`/recommendations`,this.device_info).subscribe();
-            this.location.go('/recommendations')
+            this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).subscribe();
+            this.location.go('/home/recommendations')
           }
         })
       }
@@ -157,22 +157,22 @@ export class HomeLinkartsComponent implements OnInit {
     if( i==0 ) {
       this.category_index = 0;
       this.navbar.add_page_visited_to_history(`/recommendations`,this.device_info).subscribe();
-      this.location.go('/recommendations');
+      this.location.go('/home/recommendations');
     }
     else if( i==1 ) {
       this.category_index = 1;
       this.navbar.add_page_visited_to_history(`/trendings`,this.device_info).subscribe();
-      this.location.go('/trendings')
+      this.location.go('/home/trendings')
     }
     else if( i==2 ) {
       this.category_index = 2;
       this.navbar.add_page_visited_to_history(`/subscribings`,this.device_info).subscribe();
-      this.location.go('/subscribings')
+      this.location.go('/home/subscribings')
     }
     else if( i==3 ) {
       this.category_index = 3;
       this.navbar.add_page_visited_to_history(`/favorites`,this.device_info).subscribe();
-      this.location.go('/favorites')
+      this.location.go('/home/favorites')
     }
     this.status[i]=true;
     this.categories_to_load[i]=true;
@@ -193,16 +193,16 @@ export class HomeLinkartsComponent implements OnInit {
 
   get_category(i : number) {
     if( i==0 ) {
-      return '/recommendations';
+      return '/home/recommendations';
     }
     else if( i==1 ) {
-      return '/trendings';
+      return '/home/trendings';
     }
     else if( i==2 ) {
-      return '/subscribings';
+      return '/home/subscribings';
     }
     else if( i==3 ) {
-      return '/favorites';
+      return '/home/favorites';
     }
     
   }

@@ -218,8 +218,10 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   block_cancel=false;
   validateAll() {
 
-    this.validateButton.nativeElement.disabled = true;
-
+    if(this.display_loading){
+      return
+    }
+    this.display_loading=true;
     let errorMsg1 : string = "Le dessin n'a pas été téléchargé";
     let errorMsg2 : string = "La vignette n'a pas été éditée";
 
@@ -228,7 +230,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
         data: {showChoice:false, text:errorMsg1},
         panelClass: "popupConfirmationClass",
       });
-      this.validateButton.nativeElement.disabled = false;
+      this.display_loading=false;
       this.displayErrors = true;
     }
     else if( !this.imageDestination ) {
@@ -236,11 +238,11 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
         data: {showChoice:false, text:errorMsg2},
         panelClass: "popupConfirmationClass",
       });
-      this.validateButton.nativeElement.disabled = false;
+      this.display_loading=false;
       this.displayErrors = true;
     }
     else {
-      this.display_loading=true;
+      this.displayErrors = false;
       this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).subscribe(res=>{
         this.Drawings_Onepage_Service.send_drawing_height_one_shot(this.thumbnail_height,this.drawing_id).subscribe(r=>{
           this.display_loading=false;

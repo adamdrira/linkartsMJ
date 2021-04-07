@@ -43,7 +43,7 @@
                       
                     </ng-container>
                    
-                </div>*
+                </div>
 
 
                 <div #notifications class="icon-container">
@@ -174,6 +174,21 @@
                             </div>
                           </a>
                         </ng-container>
+                        <!-- ---------------------------welcome----------------------------------->
+                      <!-- ---------------------------welcome----------------------------------->
+                      <ng-container *ngIf="notif.type=='welcome'">
+
+                        <a (click)="close_notifications();not_using_chat();" [routerLink]="get_my_account()">
+                          <div class="left-container">
+                            <img src="../../assets/img/svg/Logo-LA3.svg" >
+                          </div>
+                          <div class="right-container">
+                            <span><b>Bienvenue sur Linkarts !</b> Vous pouvez dès à présent personnaliser votre page de profil et modifier vos informations de compte.</span>
+                          
+                            <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                          </div>
+                        </a>
+                      </ng-container>
                         <!-- ---------------------------favorites----------------------------------->
                         <!-- ---------------------------favorites----------------------------------->
                         <ng-container *ngIf="notif.type=='favorites'">

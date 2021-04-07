@@ -36,7 +36,7 @@ $default-color: #203864;
         }
 
         img{
-            height: 50px;
+            height: 35px;
         }
     }
 }
@@ -222,7 +222,7 @@ $default-color: #203864;
             padding-top: 10px;
             padding-bottom: 10px;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 1px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
             background: linear-gradient( 0turn , rgba(2, 18, 54, 0.9), #203864, #3a6f9c);
@@ -502,14 +502,14 @@ $default-color: #203864;
     
 }
 
-@media (max-width: 635px) {
+@media (max-width: 650px) {
 
     .string-secure{
         display:none;
     }
 }
 
-@media (max-width: 550px) {
+@media (max-width: 575px) {
 
     .middle-container{
         max-width: 370px !important;
@@ -538,7 +538,7 @@ $default-color: #203864;
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 400px) {
     .middle-container{
         max-width: 315px !important;
         .title-middle{

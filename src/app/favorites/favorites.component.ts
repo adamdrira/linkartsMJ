@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChatService } from '../services/chat.service';
 import { NotificationsService } from '../services/notifications.service';
 import { Trending_service } from '../services/trending.service';
 import { Favorites_service } from '../services/favorites.service';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { NavbarService } from '../services/navbar.service';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-favorites',
@@ -24,7 +24,7 @@ import { NavbarService } from '../services/navbar.service';
     ),
   ],
 })
-export class FavoritesComponent implements OnInit {
+export class FavoritesComponent implements OnInit, OnDestroy {
 
   constructor(
     public route: ActivatedRoute, 
@@ -32,15 +32,7 @@ export class FavoritesComponent implements OnInit {
     private NotificationsService:NotificationsService,
     private ChatService:ChatService,
     private Favorites_service:Favorites_service,
-    private navbar: NavbarService,
-    ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
-        if(font){
-        }
-      })
-    this.navbar.setActiveSection(0);
-    this.navbar.show();
-  }
+    ) { }
 
   subcategory: number = 0; 
   user_id:number=0;
@@ -50,9 +42,14 @@ export class FavoritesComponent implements OnInit {
   list_of_users=[];
   favorites_retrieved=false;
   skeleton:boolean=true;
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
   ngOnInit() {
 
-    this.Favorites_service.generate_or_get_favorites().subscribe(info=>{
+    this.Favorites_service.generate_or_get_favorites().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
       if(info[0].favorites){
         for(let i=0;i<info[0].favorites.length;i++){
           this.list_of_users[i]=info[0].favorites[i]
@@ -106,10 +103,10 @@ export class FavoritesComponent implements OnInit {
   }
 
   send_notification(id,rank,format){
-    this.Trending_service.get_date_of_trendings().subscribe(d=>{
+    this.Trending_service.get_date_of_trendings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(d=>{
 
       let date = d[0].date;
-      this.NotificationsService.add_notification_trendings('favorites',1,'Linkarts',id,"favorites","favorites",format,id,rank,date,false,0).subscribe(l=>{
+      this.NotificationsService.add_notification_trendings('favorites',1,'Linkarts',id,"favorites","favorites",format,id,rank,date,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
     
         if(!l[0].found){
           let message_to_send ={

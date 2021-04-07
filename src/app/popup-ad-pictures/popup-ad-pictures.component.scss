@@ -33,6 +33,11 @@
     display:flex;
     flex-direction: column;
 
+    >.swiper-container-loading{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     > .swiper-container {
         position: relative;
         padding: 20px 90px 20px 90px;
@@ -180,6 +185,8 @@
     }
 }
 
+
+
 ::ng-deep {
     .popupDocumentClass {
         max-width: unset !important;
@@ -189,4 +196,11 @@
             background: rgba(0, 0, 0, 0.97);
         }
     }
+
+    .swiper-container-loading{
+        .mat-spinner circle {
+            stroke: #ffffff;
+        }
+    }
+   
 }

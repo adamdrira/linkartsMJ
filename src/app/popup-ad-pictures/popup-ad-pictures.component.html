@@ -4,7 +4,12 @@
 
 
 <div class="component-container">
-    <div #swiperContainer class="swiper-container" *ngIf="list_of_pictures.length >= 1">
+
+    <div class="swiper-container swiper-container-loading" *ngIf="!show_container">
+        <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <div #swiperContainer class="swiper-container" *ngIf="show_container">
         <div #swiperWrapper class="swiper-wrapper">
     
             <div #swiperSlide *ngFor="let item of list_of_pictures; let i = index" class="swiper-slide">
@@ -18,7 +23,7 @@
     </div>
     
     
-    <div class="bottom-thumbnails" *ngIf="list_of_pictures.length >= 1">
+    <div class="bottom-thumbnails" *ngIf="show_container">
         <div class="swiper-thumbnails">
             <div #swiperContainer2 class="swiper-container">
                 <div #swiperWrapper2 class="swiper-wrapper">

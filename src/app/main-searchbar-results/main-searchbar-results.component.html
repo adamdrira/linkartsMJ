@@ -143,7 +143,7 @@
                     
                 </div>
                 
-                <a *ngIf="first_filter_selected!=-1 && !display_title_style_and_tags && display_results && (list_of_real_categories[indice_title_selected]=='Comic' || list_of_real_categories[indice_title_selected]=='Drawing' || list_of_real_categories[indice_title_selected]=='Writing')" [routerLink]=get_style_genre_link(first_filter_selected,second_filter_selected,indice_title_selected) (click)="update_metas(first_filter_selected,second_filter_selected,indice_title_selected);" [@enterAnimation]>
+                <a *ngIf="first_filter_selected!=-1 && !display_title_style_and_tags && display_results && (list_of_real_categories[indice_title_selected]=='Comic' || list_of_real_categories[indice_title_selected]=='Drawing' || list_of_real_categories[indice_title_selected]=='Writing')" [routerLink]=get_style_genre_link(first_filter_selected,second_filter_selected,indice_title_selected) [@enterAnimation]>
                     <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
                     Rechercher par style et par genre
                     <!--<ng-container *ngIf="first_filter_selected!=-1">{{first_filters[indice_title_selected][first_filter_selected]}}</ng-container>

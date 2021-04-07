@@ -18,11 +18,11 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { ResizedEvent } from 'angular-resize-event';
 import { merge, fromEvent } from 'rxjs'
-import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
+//import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
 
 declare var $: any;
 
-var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
+var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
@@ -1433,10 +1433,10 @@ export class ChatComponent implements OnInit  {
 /*************************************Partie gestion des messages***********************************/
 
   edit(e:any) {
-    const dialogRef = this.dialog.open(PopupEditPictureComponent, {
+    /*const dialogRef = this.dialog.open(PopupEditPictureComponent, {
       data: {picture_blob:e,},
       panelClass: "popupEditPictureClass",
-    });
+    });*/
   }
 
   delete_message(i){
@@ -3602,11 +3602,17 @@ remove_contact(){
         if(i==indice){
           new_indice=new_list.length;
         }
-        new_list.push(list[i]);
+        new_list.push(this.list_of_messages[i].attachment_name);
       }
     }
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
-      data: {list_of_pictures:new_list,index_of_picture:new_indice},      
+      data: {
+        for_chat:true,
+        list_of_pictures:new_list,
+        index_of_picture:new_indice,
+        friend_type:(this.friend_type=='user')?'user':'group',
+        chat_friend_id:this.chat_friend_id
+      },      
       panelClass:"popupDocumentClass",
 
     });

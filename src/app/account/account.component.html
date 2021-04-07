@@ -155,11 +155,11 @@
                 <ng-container *ngIf="!mode_visiteur && mode_visiteur_added && story_retrieved">
                     <div *ngIf="story_found" class="change-profile-picture" (click)="watch_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
-                        <span>Voir ma story</span>
+                        <span>Voir ma Story</span>
                     </div>
                     <div  class="change-story-picture" [ngClass]="{'watch-story':!story_found}" (click)="add_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">add_circle_outline</mat-icon>
-                        <span>Publier dans ma story</span>
+                        <span>Publier dans ma Story</span>
                     </div>
                 </ng-container>
                 <ng-container *ngIf="mode_visiteur && mode_visiteur_added && story_retrieved && story_found  && type_of_profile=='account'">

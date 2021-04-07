@@ -92,6 +92,15 @@
         }
     }
 
+    .image-thumb{
+        max-width: 75px;
+        max-height: 75px;
+        cursor: pointer;
+        box-shadow: 0px 1px 2px 0px #203864 ;
+        &:active {
+            transform: scale(0.98);
+        }
+    }
     .chat-right-form {
         padding: 0px 12px;
         

@@ -16,11 +16,8 @@
                        <div class="img-container" [ngClass]="{'invisible': !pp_is_loaded[i]}" >
                                 <img class="img swiper-lazy" [attr.data-src]="list_of_profile_pictures[i]" [lazyLoad]="list_of_profile_pictures[i]"  loading="lazy" (load)="load_pp(i)" [ngClass]="{'new': pp_is_loaded[i] && list_of_state[i],'old':pp_is_loaded[i] && !list_of_state[i],'new-loading':!pp_is_loaded[i] && list_of_state[i],'old-loading':!pp_is_loaded[i] &&!list_of_state[i] }" >
                         </div>
-                        <div class="author2"*ngIf="i==0 && !do_I_have_stories" >
-                            Publier dans ma story
-                        </div>
-                        <div class="author"*ngIf="i==0 && do_I_have_stories" >
-                            Ma story
+                        <div class="author"*ngIf="i==0" >
+                            Ma Story
                         </div>
                         
                         <div class="author" *ngIf="i>0">

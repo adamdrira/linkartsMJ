@@ -35,7 +35,7 @@
                         </button>
                         <button class="validate-button style0" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
                             <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_thumbnail" >crop_free</mat-icon>
-                            <span *ngIf="!loading_thumbnail" >Rogner</span>
+                            <span *ngIf="!loading_thumbnail" >Rogner la miniature</span>
                             <mat-spinner *ngIf="loading_thumbnail" diameter="25"  style="margin:auto;"></mat-spinner>
                         </button>
                     </div>

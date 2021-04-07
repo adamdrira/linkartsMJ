@@ -476,8 +476,10 @@ export class SwiperUploadArtbookComponent  {
 
 
   validateAll() {
+    if(this.display_loading){
+      return
+    }
     
-
     if(this.componentRef.length<2){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Un artbook doit contenir au moins 2 pages.'},
@@ -486,8 +488,7 @@ export class SwiperUploadArtbookComponent  {
       return
     }
 
-    this.validateButton.nativeElement.disabled = true;
-
+    this.display_loading=true;
     let errorMsg : string = "La ou les pages suivantes n'ont pas été téléchargées : "
     let valid : boolean = true;
 
@@ -505,8 +506,7 @@ export class SwiperUploadArtbookComponent  {
         data: {showChoice:false, text:errorMsg},
         panelClass: "popupConfirmationClass",
       });
-      this.validateButton.nativeElement.disabled = false;
-
+      this.display_loading=false;
     }
     else if( !this.confirmation ) {
       errorMsg = "Merci d'éditer la vignette";
@@ -515,11 +515,10 @@ export class SwiperUploadArtbookComponent  {
         data: {showChoice:false, text:errorMsg},
         panelClass: "popupConfirmationClass",
       });
-      this.validateButton.nativeElement.disabled = false;
+      this.display_loading=false;
     }
-    
     else {
-      this.display_loading=true;
+      this.displayErrors = false;
       this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).subscribe(r=>{
         this.Drawings_Artbook_Service.send_drawing_height_artbook(this.thumbnail_height,this.drawing_id).subscribe(sr=>{
           for (let step = 0; step < this.componentRef.length; step++) {

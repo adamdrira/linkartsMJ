@@ -14,7 +14,7 @@ import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Writing_Upload_Service} from '../services/writing.service';
 import {AuthenticationService} from '../services/authentication.service';
 import {LoginComponent} from '../login/login.component';
-import { ActivatedRoute, NavigationEnd, NavigationError, Router, RoutesRecognized } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import {NotificationsService} from '../services/notifications.service';
 import { Ads_service } from '../services/ads.service';
@@ -30,7 +30,7 @@ import * as WebFont from 'webfontloader';
 import { filter } from 'rxjs/operators';
 import { merge, fromEvent } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+declare var $: any;
 declare var Swiper: any;
 
 
@@ -74,22 +74,17 @@ export class NavbarLinkartsComponent implements OnInit {
     private Ads_service:Ads_service,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
-    private route:ActivatedRoute,
+    
     ) {
 
       router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl.push(event.url);
+        this.show_profile_spinner=false;
         let device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-        this.navbar.add_page_visited_to_history(event.url,device_info).subscribe();
-
-        this.url = this.router.url;
-        this.check_category(this.url);
-        this.cd.detectChanges();
-        window.dispatchEvent(new Event('resize'));
+        this.navbar.add_page_visited_to_history(event.url,device_info).subscribe()
       });
-
       
       navbar.connexion.subscribe(r=>{
         if(r!=this.connexion_status){
@@ -276,19 +271,12 @@ export class NavbarLinkartsComponent implements OnInit {
   conditions_retrieved=false;
   current_user_type='';
   change_number=0;
-
-  event_category_index_change:any;
-
   ngOnInit() {
-    
 
     let cookies = this.Profile_Edition_Service.get_cookies();
     if(!cookies){
       this.show_cookies=true;
     }
-
-    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-
 
     let THIS=this;
     WebFont.load({ google: { families: [ 'Material+Icons' ] } , active: function () {
@@ -297,17 +285,15 @@ export class NavbarLinkartsComponent implements OnInit {
     }});
 
     let get_font = setInterval(() => {
-      if(!this.show_icon){
+      if(!THIS.show_icon){
         THIS.show_icon=true;
         THIS.navbar.showfont();
       }
       clearInterval(get_font);
-    }, 5000);
+    }, 8000);
     
     window.addEventListener('scroll', this.scroll, true);
     
-    //this.setHeight();
-    //this.define_margin_top();
     let compteur_conditions=0;
     for(let i=0;i<5;i++){
       this.Writing_Upload_Service.retrieve_writing_for_options(i).subscribe(r=>{
@@ -334,9 +320,6 @@ export class NavbarLinkartsComponent implements OnInit {
             }
             this.type_of_profile_retrieved=true;
             this.initialize_selectors();
-
-            this.cd.detectChanges();
-            this.check_category(this.url);
           }
           
         });
@@ -1039,7 +1022,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_recent){
             this.list_of_last_propositions_history[i]=comic[0];
-            this.BdOneShotService.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
@@ -1060,7 +1043,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.BdSerieService.retrieve_bd_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_recent){
             this.list_of_last_propositions_history[i]=comic[0];
-            this.BdSerieService.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
@@ -1082,7 +1065,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_recent){
             this.list_of_last_propositions_history[i]=comic[0];
-            this.Drawings_Onepage_Service.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
@@ -1102,7 +1085,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_recent){
             this.list_of_last_propositions_history[i]=comic[0];
-            this.Drawings_Artbook_Service.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
@@ -1124,7 +1107,7 @@ export class NavbarLinkartsComponent implements OnInit {
       this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(comic=>{
         if(compteur==this.compteur_recent){
           this.list_of_last_propositions_history[i]=comic[0];
-          this.Writing_Upload_Service.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+          this.Writing_Upload_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               if(compteur==this.compteur_recent){
@@ -1211,7 +1194,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
-            this.BdOneShotService.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
@@ -1232,7 +1215,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.BdSerieService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
-            this.BdSerieService.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
@@ -1254,7 +1237,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
-            this.Drawings_Onepage_Service.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
@@ -1274,7 +1257,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
-            this.Drawings_Artbook_Service.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
@@ -1296,7 +1279,7 @@ export class NavbarLinkartsComponent implements OnInit {
       this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=comic[0];
-          this.Writing_Upload_Service.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
+          this.Writing_Upload_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).subscribe(t=>{
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               if(compteur==this.compteur_research){
@@ -1318,8 +1301,16 @@ export class NavbarLinkartsComponent implements OnInit {
   /**************************************** ACCOUNT NAVIGATION  ***********************************/
   /**************************************** ACCOUNT NAVIGATION  ***********************************/
   /**************************************** ACCOUNT NAVIGATION  ***********************************/
+  show_profile_spinner=false;
   get_my_profile() {
     return "/account/" + this.pseudo ;
+  }
+
+  go_to_profile(){
+    if(this.previousUrl.length>0 && this.previousUrl[this.previousUrl.length-1].includes("account")){
+      return
+    }
+    this.show_profile_spinner=true;
   }
 
   go_to_home(){
@@ -1557,19 +1548,19 @@ export class NavbarLinkartsComponent implements OnInit {
   get_my_trending(category) {
     this.not_using_chat();
     if(category=='comic'){
-      return "/trendings/comics"
+      return "/home/trendings/comics"
     }
     if(category=='drawing'){
-      return "/trendings/drawings"
+      return "/home/trendings/drawings"
     }
     if(category=='writing'){
-      return "/trendings/writings"
+      return "/home/trendings/writings"
     }
   }
 
  
   get_my_favorite() {
-      return "/favorites"
+      return "/home/favorites"
   }
   
   get_account_for_notification(notif:any) {
@@ -1764,11 +1755,13 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
 
-  @ViewChild('fixedTop') fixedTop:ElementRef;
+  @ViewChild('fixedtop')  private fixedtop: ElementRef;
   setHeight() {
-    if(this.fixedTop ) {
-      this.navbar.setHeight( this.fixedTop.nativeElement.offsetHeight );
+    if(this.fixedtop){
+      this.navbar.setHeight(this.fixedtop.nativeElement.offsetHeight);
     }
+    
+  
   }
   
   
@@ -2758,158 +2751,5 @@ change_message_status(event){
 
 
   
-  @ViewChild("homeLinkartsSelect") homeLinkartsSelect;
-  device_info='';
-
-  category_index=-1;
-  url='';
-  check_category(s) {
-    if( s == '/recommendations' || s == '/' ) {
-      this.category_index=0;
-      this.cd.detectChanges();
-      this.initialize_new_swiper();
-    }
-    else if( s == '/trendings' ) {
-      this.category_index=1;
-      this.cd.detectChanges();
-      this.initialize_new_swiper();
-    }
-    else if( s == '/subscribings' ) {
-      this.category_index=2;
-      this.cd.detectChanges();
-      this.initialize_new_swiper();
-    }
-    else if( s == '/favorites' ) {
-      this.category_index=3;
-      this.cd.detectChanges();
-      this.initialize_new_swiper();
-    }
-    else {
-      this.category_index=-1;
-      this.swiperNew=undefined;
-      this.cd.detectChanges();
-    }
-  }
-
   
- 
-  open_category(i : number) {
-    if( i==0 ) {
-      this.navbar.add_page_visited_to_history(`/recommendations`,this.device_info).subscribe();
-      this.router.navigateByUrl('/recommendations');
-    }
-    else if( i==1 ) {
-      this.navbar.add_page_visited_to_history(`/trendings`,this.device_info).subscribe();
-      this.router.navigateByUrl('/trendings')
-    }
-    else if( i==2 ) {
-      this.navbar.add_page_visited_to_history(`/subscribings`,this.device_info).subscribe();
-      this.router.navigateByUrl('/subscribings')
-    }
-    else if( i==3 ) {
-      this.navbar.add_page_visited_to_history(`/favorites`,this.device_info).subscribe();
-      this.router.navigateByUrl('/favorites')
-    }
-    this.cd.detectChanges();
-    window.dispatchEvent(new Event('resize'))
-    
-  }
-
-  swipe_to(i){
-    this.swiperNew.slideTo(i,false,false);
-  }
-
-  swiperNew:any;
-  @ViewChild("swiperCategories3") swiperCategories3: ElementRef;
-  initialize_new_swiper() {
-
-    if (!this.swiperNew && this.swiperCategories3) {
-
-      
-      if (this.type_of_profile == 'account') {
-        this.swiperNew = new Swiper(this.swiperCategories3.nativeElement, {
-          speed: 300,
-          initialSlide: 0,
-
-          breakpoints: {
-            300: {
-              slidesPerView: 2,
-              slidesPerGroup: 2,
-              spaceBetween: 10,
-              simulateTouch: true,
-              allowTouchMove: true,
-            },
-            400: {
-              slidesPerView: 2,
-              slidesPerGroup: 2,
-              spaceBetween: 20,
-              simulateTouch: true,
-              allowTouchMove: true,
-            },
-            500: {
-              slidesPerView: 3,
-              slidesPerGroup: 3,
-              spaceBetween: 20,
-              simulateTouch: true,
-              allowTouchMove: true,
-            },
-            600: {
-              slidesPerView: 4,
-              slidesPerGroup: 4,
-              spaceBetween: 15,
-              simulateTouch: false,
-              allowTouchMove: false,
-            }
-          },
-
-          navigation: {
-            nextEl: '.swiper-button-next.swiperNew',
-            prevEl: '.swiper-button-prev.swiperNew',
-          },
-        })
-      }
-      else {
-        this.swiperNew = new Swiper(this.swiperCategories3.nativeElement, {
-          speed: 300,
-          initialSlide: 0,
-
-          breakpoints: {
-            300: {
-              slidesPerView: 2,
-              slidesPerGroup: 2,
-              spaceBetween: 10,
-              simulateTouch: true,
-              allowTouchMove: true,
-            },
-            400: {
-              slidesPerView: 2,
-              slidesPerGroup: 2,
-              spaceBetween: 20,
-              simulateTouch: true,
-              allowTouchMove: true,
-            },
-            500: {
-              slidesPerView: 3,
-              slidesPerGroup: 3,
-              spaceBetween: 20,
-              simulateTouch: false,
-              allowTouchMove: false,
-            }
-          },
-
-          navigation: {
-            nextEl: '.swiper-button-next.swiperNew',
-            prevEl: '.swiper-button-prev.swiperNew',
-          },
-        })
-      }
-
-      this.cd.detectChanges();
-      if(this.category_index<4){
-        this.swipe_to(this.category_index)
-      }
-    }
-  }
-
-
 }

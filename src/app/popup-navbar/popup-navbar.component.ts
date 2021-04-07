@@ -363,19 +363,19 @@ open_my_trending(){
 get_my_trending(category) {
   this.not_using_chat();
   if(category=='comic'){
-    return "/trendings/comics"
+    return "/home/trendings/comics"
   }
   if(category=='drawing'){
-    return "/trendings/drawings"
+    return "/home/trendings/drawings"
   }
   if(category=='writing'){
-    return "/trendings/writings"
+    return "/home/trendings/writings"
   }
 }
 
 
 get_my_favorite() {
-    return "/favorites"
+    return "/home/favorites"
 }
 
 get_account_for_notification(notif:any) {

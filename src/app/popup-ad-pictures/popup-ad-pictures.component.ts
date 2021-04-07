@@ -1,6 +1,8 @@
 import { Component, OnInit, HostListener, ChangeDetectorRef, Inject } from '@angular/core';
 import {ElementRef, ViewChild} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ChatService } from '../services/chat.service';
 import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 declare var Swiper: any;
@@ -15,6 +17,8 @@ export class PopupAdPicturesComponent implements OnInit {
 
   constructor(
     public navbar: NavbarService,
+    private sanitizer:DomSanitizer,
+    private ChatService:ChatService,
     private cd: ChangeDetectorRef,
     public dialogRef: MatDialogRef<PopupAdPicturesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -32,7 +36,7 @@ export class PopupAdPicturesComponent implements OnInit {
   swiper2: any;
   recommendation_index:number;
   category_index: number = 0;
-  list_of_pictures:any[];
+  list_of_pictures:any[]=[];
 
   @ViewChild( "swiperContainer" ) swiperContainer:ElementRef;
 
@@ -43,14 +47,36 @@ export class PopupAdPicturesComponent implements OnInit {
   /******************** ON INIT ****************** */
   /******************************************************* */
   show_icon=false;
+  show_container=false;
   ngOnInit() {
-    this.list_of_pictures=this.data.list_of_pictures;
-    this.cd.detectChanges();
-
-    if( this.list_of_pictures.length >= 1 ) {
-      this.initialize_swiper();
-      this.initialize_swiper2();
+    if(!this.data.for_chat){
+      this.show_container=true;
+      this.list_of_pictures=this.data.list_of_pictures;
+      this.cd.detectChanges();
+  
+      if( this.list_of_pictures.length >= 1 ) {
+        this.initialize_swiper();
+        this.initialize_swiper2();
+      }
     }
+    else if(this.data.list_of_pictures.length>0){
+      let compt=0;
+      for(let i=0;i<this.data.list_of_pictures.length;i++){
+        this.ChatService.get_attachment_popup(this.data.list_of_pictures[i],this.data.friend_type,this.data.chat_friend_id).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_pictures[i]=SafeURL;
+          compt++;
+          if(compt==this.data.list_of_pictures.length){
+            this.show_container=true;
+            this.cd.detectChanges();
+            this.initialize_swiper();
+            this.initialize_swiper2();
+          }
+        })
+      }
+    }
+   
   }
 
   /******************************************************* */

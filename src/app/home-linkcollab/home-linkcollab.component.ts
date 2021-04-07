@@ -266,8 +266,8 @@ export class HomeLinkcollabComponent implements OnInit {
             allowTouchMove: true,
           },
           700: {
-            slidesPerView: 3,
-            slidesPerGroup: 3,
+            slidesPerView: 2,
+            slidesPerGroup: 2,
             spaceBetween: 20,
             simulateTouch: false,
             allowTouchMove: false,

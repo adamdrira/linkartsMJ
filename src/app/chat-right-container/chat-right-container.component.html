@@ -20,9 +20,7 @@
 
   </div>
 
-    <!--
-      (selectionChange)="change_profile($event)"
-    -->
+    
   <div class="chat-right-form" [formGroup]="chat_section_group">
     
     <div class="step-form" *ngIf="!activate_add_chat_section" [@enterAnimation]>
@@ -83,7 +81,7 @@
 
 
 
-  <div #myScrollContainer class="main-options-container">
+  <div #myScrollContainer class="main-options-container" (scroll)="OnScroll()">
 
 
     <div class="options-container">
@@ -136,7 +134,7 @@
           <mat-list *ngIf="list_of_pictures_retrieved">
             <mat-list-item *ngFor="let file of list_of_pictures,let i=index">
               <div (click)="show_images(i)">
-                <img [src]="list_of_pictures_src[i]" style="max-width:80px;max-height:80px;" (load)=image_loaded(i)
+                <img [src]="list_of_pictures_src[i]" class="image-thumb" (load)=image_loaded(i)
                   [ngClass]="{'invisible':!list_of_images_loaded[i]}">
               </div>
 

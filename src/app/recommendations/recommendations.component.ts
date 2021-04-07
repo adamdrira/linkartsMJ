@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
 import {ElementRef,  ViewChild} from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-recommendations',
@@ -33,7 +34,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 
-export class RecommendationsComponent implements OnInit {
+export class RecommendationsComponent implements OnInit, OnDestroy {
 
   constructor(
     private cd:ChangeDetectorRef,
@@ -41,14 +42,7 @@ export class RecommendationsComponent implements OnInit {
     private Community_recommendation:Community_recommendation,
     private navbar:NavbarService,
     private deviceService: DeviceDetectorService,
-    ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
-        if(font){
-        }
-      })
-    this.navbar.setActiveSection(0);
-    this.navbar.show();
-  }
+    ) { }
 
   
   
@@ -92,7 +86,7 @@ export class RecommendationsComponent implements OnInit {
   subcategory: number = 0;
   // dropdowns = this._constants.filters;
   sorted_category_retrieved=false;
-  
+  @Input('status') status: any;
   media_status=[];
 
 
@@ -108,9 +102,7 @@ export class RecommendationsComponent implements OnInit {
  
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    if(this.artwork_container) {
-      this.width=this.artwork_container.nativeElement.offsetWidth*0.9-20;
-    }
+    this.width=this.artwork_container.nativeElement.offsetWidth*0.9-20;
   }
 
 
@@ -122,9 +114,14 @@ export class RecommendationsComponent implements OnInit {
   check_writings_history=false;
   check_drawings_history=false;
   device_info='';
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.navbar.check_if_contents_clicked().subscribe(r=>{
+    this.navbar.check_if_contents_clicked().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if(r[0].list_of_comics && r[0].list_of_comics.length>0){
         this.check_comics_history=true;
       }
@@ -146,7 +143,7 @@ export class RecommendationsComponent implements OnInit {
         this.manage_styles_recommendation(info,information)
       }
       else{
-        this.Community_recommendation.generate_recommendations().subscribe(r=>{
+        this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           if(r[0].sorted_list_category){
             // normallement on entre ici que la première fois ou navigation privée première fois
             let info=r[0].sorted_list_category;
@@ -162,7 +159,7 @@ export class RecommendationsComponent implements OnInit {
       }
     }
     else{
-      this.Community_recommendation.generate_recommendations().subscribe(r=>{
+      this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(r[0].sorted_list_category){
           // normallement on entre ici que la première fois ou navigation privée première fois
           let info=r[0].sorted_list_category;
@@ -274,7 +271,7 @@ export class RecommendationsComponent implements OnInit {
     }
     else if(this.sorted_category_retrieved){
       if(i==0){
-        this.navbar.add_page_visited_to_history(`/recommendations/comic`,this.device_info).subscribe();
+        this.navbar.add_page_visited_to_history(`/home/recommendations/comic`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.subcategory=i;
         this.type_of_skeleton="comic";
         window.dispatchEvent(new Event('resize'));
@@ -285,7 +282,7 @@ export class RecommendationsComponent implements OnInit {
       }
       else if(i==1){
         this.subcategory=i;  
-        this.navbar.add_page_visited_to_history(`/recommendations/drawing`,this.device_info).subscribe();
+        this.navbar.add_page_visited_to_history(`/home/recommendations/drawing`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.type_of_skeleton="drawing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
@@ -296,7 +293,7 @@ export class RecommendationsComponent implements OnInit {
       }
       else if(i==2){
         this.subcategory=i;
-        this.navbar.add_page_visited_to_history(`/recommendations/writing`,this.device_info).subscribe();
+        this.navbar.add_page_visited_to_history(`/home/recommendations/writing`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.type_of_skeleton="writing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();

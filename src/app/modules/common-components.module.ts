@@ -4,11 +4,19 @@ import { RouterModule} from '@angular/router';
 
 
 import { NavbarLinkartsComponent } from '../navbar-linkarts/navbar-linkarts.component';
-import { PageNotFoundComponent } from '../page-not-found/page-not-found.component';
-import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
 import { PopupNavbarDisconnectedComponent } from '../popup-navbar-disconnected/popup-navbar-disconnected.component';
+import { LoginComponent } from '../login/login.component';
+import { SignupComponent } from '../signup/signup.component';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
+import { PageNotFoundComponent } from '../page-not-found/page-not-found.component';
+
+import { PopupFormComponent } from '../popup-form/popup-form.component';
+import { PopupFormAdComponent } from '../popup-form-ad/popup-form-ad.component';
+import { PopupFormComicComponent } from '../popup-form-comic/popup-form-comic.component';
+import { PopupFormDrawingComponent } from '../popup-form-drawing/popup-form-drawing.component';
+import { PopupFormWritingComponent } from '../popup-form-writing/popup-form-writing.component';
 
 import { ThumbnailAdComponent } from '../thumbnail-ad/thumbnail-ad.component';
 import { ThumbnailWritingComponent } from '../thumbnail-writing/thumbnail-writing.component';
@@ -24,6 +32,10 @@ import { UploaderThumbnailAdComponent } from '../uploader-thumbnail-ad/uploader-
 import { UploaderCoverPictureComponent } from '../uploader-cover-picture/uploader-cover-picture.component';
 import { UploaderProfilePictureComponent } from '../uploader-profile-picture/uploader-profile-picture.component';
 import { UploaderChatProfilePictureComponent } from '../uploader-chat-profile-picture/uploader-chat-profile-picture.component';
+import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
+import { PopupStoriesComponent } from '../popup-stories/popup-stories.component';
+import { StoryViewComponent } from '../story-view/story-view.component';
+import { UploaderStoryComponent } from '../uploader-story/uploader-story.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -51,7 +63,8 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ToastrModule } from 'ngx-toastr';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
-
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 import { KeysPipe } from '../helpers/pipemodule';
 import { FilterAlbumPipe } from '../helpers/pipemodule';
@@ -64,13 +77,14 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
 
 @NgModule({
   declarations: [
+   
+    NavbarLinkartsComponent,
+    PopupNavbarComponent,
+    PopupNavbarDisconnectedComponent,
     UploaderBdCoverComponent,
     UploaderThumbnailAdComponent,
     UploaderCoverWritingComponent,
-    NavbarLinkartsComponent,
     PopupFormComponent,
-    PopupNavbarComponent,
-    PopupNavbarDisconnectedComponent,
     UploaderCoverPictureComponent,
     UploaderProfilePictureComponent,
     UploaderChatProfilePictureComponent,
@@ -81,9 +95,20 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     ThumbnailDrawingComponent,
     ThumbnailSkeletonComponent,
     ThumbnailUserComponent,
+    PageNotFoundComponent,
     KeysPipe,
     FilterAlbumPipe,
-    PageNotFoundComponent,
+    LoginComponent,
+    SignupComponent,
+    PopupConfirmationComponent,
+    PopupFormComicComponent,
+    PopupFormDrawingComponent,
+    PopupFormWritingComponent,
+    PopupFormAdComponent,
+    PopupAddStoryComponent,
+    UploaderStoryComponent,
+    PopupStoriesComponent,
+    StoryViewComponent,
   ],
   imports: [
     RouterModule,
@@ -126,17 +151,17 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     NgxChartsModule,
     ToastrModule,
     PdfViewerModule,
-
-    
+    PickerModule,
+    EmojiModule,
   ],
   exports: [
+    NavbarLinkartsComponent,
+    PopupNavbarComponent,
+    PopupNavbarDisconnectedComponent,
     UploaderBdCoverComponent,
     UploaderThumbnailAdComponent,
     UploaderCoverWritingComponent,
-    NavbarLinkartsComponent,
     PopupFormComponent,
-    PopupNavbarComponent,
-    PopupNavbarDisconnectedComponent,
     UploaderCoverPictureComponent,
     UploaderProfilePictureComponent,
     UploaderChatProfilePictureComponent,
@@ -147,10 +172,20 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     ThumbnailDrawingComponent,
     ThumbnailSkeletonComponent,
     ThumbnailUserComponent,
+    PageNotFoundComponent,
     KeysPipe,
     FilterAlbumPipe,
-    PageNotFoundComponent,
-    
+    LoginComponent,
+    SignupComponent,
+    PopupConfirmationComponent,
+    PopupFormComicComponent,
+    PopupFormDrawingComponent,
+    PopupFormWritingComponent,
+    PopupFormAdComponent,
+    PopupAddStoryComponent,
+    UploaderStoryComponent,
+    PopupStoriesComponent,
+    StoryViewComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

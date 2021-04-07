@@ -73,7 +73,10 @@
 }
 
 .author {
-    margin:13px 10px auto 0px;
+    //margin:13px 10px auto 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 14px;
     font-weight: bold;
     color:white;
@@ -84,7 +87,10 @@
 }
 
 .author2 {
-    margin:13px 10px auto 0px;
+    //margin:13px 10px auto 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 14px;
     font-weight: bold;
     color:white;
@@ -234,7 +240,7 @@
     margin-top:15px;
     display:none;
         
-    background-color: rgb(204,204,204);
+    background-color: gainsboro !important;
     background-image: linear-gradient(
         to right,
         transparent 33%,
@@ -265,11 +271,3 @@
 }
 
 
-@keyframes shine {
-    0% {
-        background-position: right;    
-    }
-    /*100% {
-        background-position: left; it's the default value, no need to define it
-    }*/
-}
