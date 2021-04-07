@@ -1270,24 +1270,24 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 		}).then(page =>  {
   
         if(page && page.file_name){
+          
           let filename = "./data_and_routes/pages_bd_serie/" + page.file_name;
-          fs.readFile( path.join(process.cwd(),filename), function(e,data){
-            if(e){
+          fs.access(filename, fs.F_OK, (err) => {
+            if(err){
               filename = "./data_and_routes/not-found-image.jpg";
-              fs.readFile( path.join(process.cwd(),filename), function(e,data){
-                res.status(200).send(data);
-              } );
-            }
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              not_found.pipe(res);
+            }  
             else{
-              res.status(200).send(data);
-            }
-          } );
+              var pp = fs.createReadStream( path.join(process.cwd(),filename))
+              pp.pipe(res);
+            }     
+          })
         }
         else{
-          let filename = "./data_and_routes/not-found-image.jpg";
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
-            } );
+          filename = "./data_and_routes/not-found-image.jpg";
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              not_found.pipe(res);
         }
         
       });
