@@ -123,6 +123,18 @@ export class BdOneShotService {
       }));
     }
 
+    retrieve_thumbnail_picture_artwork(file_name:string) {
+      return this.httpClient.get(`routes/retrieve_thumbnail_bd_picture_artwork/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+        return information;   
+      }));
+    }
+  
+    retrieve_thumbnail_picture_navbar(file_name:string) {
+      return this.httpClient.get(`routes/retrieve_thumbnail_bd_picture_navbar/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+        return information;   
+      }));
+    }
+
     get_number_of_bd_oneshot(id_user,date_format,compteur){
       return this.httpClient.post('routes/get_number_of_bd_oneshot',{id_user:id_user,date_format:date_format}, {withCredentials:true}).pipe(map(information=>{
       return [information,compteur]

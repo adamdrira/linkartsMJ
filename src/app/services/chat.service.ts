@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, tap, map, delay } from 'rxjs/operators';
-import { CookieService } from 'ngx-cookie-service';
+import {HttpClient} from '@angular/common/http';
+import {  map} from 'rxjs/operators';
 import {WebSocketService} from './websocket.service';
 import {Profile_Edition_Service} from './profile_edition.service';
-import {Subject,Observable, Observer,EMPTY,BehaviorSubject} from 'rxjs';
-import { webSocket,WebSocketSubject } from 'rxjs/webSocket';
-
+import {Subject,Observable,BehaviorSubject} from 'rxjs';
 
 export interface Message{
     id_user:number,
@@ -18,8 +15,6 @@ export interface Message{
 
 export class ChatService {
 
-  private messagesSubject$ = new Subject();
-  private socket$: WebSocketSubject<any>;
 
  public messages:Subject<Message>;
  private chatLisnerSubject: BehaviorSubject<any>;
@@ -33,7 +28,7 @@ export class ChatService {
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
         if(l[0]  && (l[0].status=='visitor' || l[0].status=='account') ){
           this.messages=<Subject<Message>>this.wsService
-          .connect(`ws://localhost:4600/path?id=${l[0].id}`)
+          .connect(`wss://www.linkarts.fr/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               this.wsService.check_state();
               let data = JSON.parse(response.data);
@@ -336,6 +331,18 @@ get_attachment(file_name,friend_type,friend_id):Observable<any>{
   }));
 }
 
+get_attachment_right(file_name,friend_type,friend_id):Observable<any>{
+  return this.httpClient.get(`routes/get_attachment_right/${file_name}/${friend_type}/${friend_id}`, {responseType:'blob'} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_attachment_popup(file_name,friend_type,friend_id):Observable<any>{
+  return this.httpClient.get(`routes/get_attachment_popup/${file_name}/${friend_type}/${friend_id}`, {responseType:'blob'} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
 //right chat
 
 get_all_files(date:string,friend_id,id_chat_section,friend_type):Observable<any>{
@@ -477,7 +484,7 @@ research_chat_sections(text:string,id_friend,is_a_group_chat):Observable<any>{
 //FRIENDS STATUS
 
 get_users_connected_in_the_chat(list_of_friends){
-  return this.httpClient.post('http://localhost:4600/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post('https://www.linkarts.fr/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }

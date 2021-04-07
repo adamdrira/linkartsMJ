@@ -86,7 +86,17 @@ export class Writing_Upload_Service {
     }));
   }
 
+  retrieve_thumbnail_picture_artwork(file_name:string) {
+    return this.httpClient.get(`routes/retrieve_thumbnail_writing_picture_artwork/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+      return information;   
+    }));
+  }
 
+  retrieve_thumbnail_picture_navbar(file_name:string) {
+    return this.httpClient.get(`routes/retrieve_thumbnail_writing_picture_navbar/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+      return information;   
+    }));
+  }
   
 
    //remove the page file from the folder associated

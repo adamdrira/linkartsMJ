@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError,map} from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -14,7 +14,6 @@ export class NavbarService {
     using_chat=false;
     show_font=false;
     connexion_status=true;
-
 
     private notificationSubject: BehaviorSubject<object>;
     public notification: Observable<object>;
