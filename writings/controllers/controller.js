@@ -8,6 +8,7 @@ const imageminPngquant = require("imagemin-pngquant");
 const Sequelize = require('sequelize');
 const Navbar = require('../../navbar/model/sequelize');
 const Notations = require('../../publications_notation/model/sequelize');
+const sharp = require('sharp');
 var list_of_covers={};
 var list_of_writings ={};
 
@@ -905,19 +906,19 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       }
 
         let filename = "./data_and_routes/writings/" + req.params.file_name;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-         
-
-          if(e){
-            let filename = "./data_and_routes/file-not-found.pdf";
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
-            } );
-          }
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/file-not-found.pdf";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
+          }  
           else{
-            res.status(200).send(data);
-          }
-        } );
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(res);
+          }     
+        })
+
+
 
   });
 
@@ -947,22 +948,23 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     if(index==0){
       filename += 'only_conditions.pdf'
     }
-    else if(index==5){
+    else{
       filename += 'only_for_remuneration.pdf'
     }
-    fs.readFile( path.join(process.cwd(),filename), function(e,data){
-     
 
-      if(e){
-        let filename = "./data_and_routes/file-not-found.pdf";
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          res.status(200).send(data);
-        } );
-      }
+    fs.access(filename, fs.F_OK, (err) => {
+      if(err){
+        filename = "./data_and_routes/file-not-found.pdf";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(res);
+      }  
       else{
-        res.status(200).send(data);
-      }
-    } );
+        var pp = fs.createReadStream( path.join(process.cwd(),filename))
+        pp.pipe(res);
+      }     
+    })
+
+   
 
   });
 
@@ -980,20 +982,97 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       }
 
       const file_name = req.params.file_name;
-      let filename = "./data_and_routes/covers_writings/" + file_name ;
-      fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        if(e){
-          let filename = "./data_and_routes/not-found-image.jpg";
-          fs.readFile( path.join(process.cwd(),filename), function(e,data){
-            res.status(200).send(data);
-          } );
-        }
-        else{
-          res.status(200).send(data);
-        }
+      let transform = sharp()
+      transform = transform.resize(200,268)
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
       });
+      let filename = "./data_and_routes/covers_writings/" + file_name ;
+      fs.access(filename, fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/not-found-image.jpg";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(transform);
+        }     
+      })
   });
 
+
+  router.get('/retrieve_thumbnail_writing_picture_artwork/:file_name', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    const file_name = req.params.file_name;
+    let transform = sharp()
+    transform = transform.resize(320,430)
+    .toBuffer((err, buffer, info) => {
+        if (buffer) {
+            res.status(200).send(buffer);
+        }
+    });
+    let filename = "./data_and_routes/covers_writings/" + file_name ;
+    fs.access(filename, fs.F_OK, (err) => {
+      if(err){
+        filename = "./data_and_routes/not-found-image.jpg";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
+      }  
+      else{
+        var pp = fs.createReadStream( path.join(process.cwd(),filename))
+        pp.pipe(transform);
+      }     
+    })
+  });
+
+  router.get('/retrieve_thumbnail_writing_picture_navbar/:file_name', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    const file_name = req.params.file_name;
+    let transform = sharp()
+    transform = transform.resize(35,35)
+    .toBuffer((err, buffer, info) => {
+        if (buffer) {
+            res.status(200).send(buffer);
+        }
+    });
+    let filename = "./data_and_routes/covers_writings/" + file_name ;
+    fs.access(filename, fs.F_OK, (err) => {
+      if(err){
+        filename = "./data_and_routes/not-found-image.jpg";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
+      }  
+      else{
+        var pp = fs.createReadStream( path.join(process.cwd(),filename))
+        pp.pipe(transform);
+      }     
+    })
+  });
   
 
    //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
