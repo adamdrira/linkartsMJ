@@ -13,6 +13,7 @@ const secretKey = 'vOVH6sdmpNWjRRIqCc7rdJBL1lwHzfr3';
 const stripe_pv_key="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"
 const stripe_key="pk_live_51IXGypFGsFyjiwAl8D492zOHpbG8GeS42sjQ9nsl9oSmb8jELhvoUlMBhvLSbfnvf00DPS2Zq7Aq8n5CChdlAV3s00KuTQLvL5";
 const stripe = require('stripe')(stripe_pv_key);
+const sharp = require('sharp');
 
 module.exports = (router, 
   users,
@@ -210,7 +211,7 @@ router.post('/add_cover_pic', function (req, res) {
 
 
 router.get('/retrieve_profile_picture/:user_id', function (req, res) {
-
+  
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -229,26 +230,34 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
         id: user_id,
       }
     }).then(User =>  {
+      let transform = sharp()
+        transform = transform.resize(50,50)
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+        });
       if(User && User.profile_pic_file_name){
+        
+
         let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          if(e){
-            filename = "./data_and_routes/not-found-image.jpg";
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
-            } );
-          }
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(transform)
+          }  
           else{
-            res.status(200).send(data);
-          }
-          
-        } );
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(transform)
+          }     
+        })
+
       }
       else{
-        let filename = "./data_and_routes/not-found-image.jpg";
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          res.status(200).send(data);
-        } );
+        filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
       }
       
     }); 
@@ -271,40 +280,45 @@ router.get('/retrieve_profile_picture_by_pseudo/:pseudo', function (req, res) {
   }
 
 
-const pseudo = req.params.pseudo;
+  const pseudo = req.params.pseudo;
 
-users.findOne({
-  where: {
-    nickname: pseudo,
-  }
-})
-.catch(err => {
-  
-  res.status(500).json({msg: "error", details: err});		
-}).then(User =>  {
-  if(User && User.profile_pic_file_name){
-    let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
-    fs.readFile( path.join(process.cwd(),filename), function(e,data){
-      if(e){
-        filename = "./data_and_routes/not-found-image.jpg";
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          res.status(200).send(data);
-        } );
-      }
-      else{
-        res.status(200).send(data);
-      }
-      
-    } );
-  }
-  else{
-    let filename = "./data_and_routes/not-found-image.jpg";
-    fs.readFile( path.join(process.cwd(),filename), function(e,data){
-      res.status(200).send(data);
-    } );
-  }
-  
-}); 
+  users.findOne({
+    where: {
+      nickname: pseudo,
+    }
+  })
+  .catch(err => {
+    
+    res.status(500).json({msg: "error", details: err});		
+  }).then(User =>  {
+    let transform = sharp()
+        transform = transform.resize(130 ,130)
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+        });
+    if(User && User.profile_pic_file_name){
+      let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
+      fs.access(filename, fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(transform);
+        }     
+      })
+    }
+    else{
+      filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+      var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+      not_found.pipe(transform);
+    }
+    
+  }); 
 
 
 
@@ -336,26 +350,31 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
     
     res.status(500).json({msg: "error", details: err});		
   }).then(User =>  {
+    let transform = sharp()
+        transform = transform.resize(50,50)
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+        });
     if(User && User.profile_pic_file_name){
       let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
-      fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        if(e){
-          filename = "./data_and_routes/not-found-image.jpg";
-          fs.readFile( path.join(process.cwd(),filename), function(e,data){
-            res.status(200).send(data);
-          } );
-        }
+      fs.access(filename, fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+        }  
         else{
-          res.status(200).send(data);
-        }
-        
-      } );
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(transform);
+        }     
+      })
     }
     else{
-      let filename = "./data_and_routes/not-found-image.jpg";
-      fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        res.status(200).send(data);
-      } );
+      filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
     }
     
   }); 
@@ -388,27 +407,79 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
    .then(User =>  {
       if(User && User.cover_pic_file_name  ){
         let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          if(e){
-            filename = "./data_and_routes/not-found-image.jpg";
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
-            } );
-          }
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
+          }  
           else{
-            res.status(200).send(data);
-          }
-          
-        } );
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(res);
+          }     
+        })
       }
       else{
-        let  filename = "./data_and_routes/not-found-image.jpg";
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          res.status(200).send(data);
-        } );
+        filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
       }
      
     }); 
+
+
+});
+
+
+router.get('/retrieve_cover_picture_stories/:user_id', function (req, res) {
+
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
+
+const user_id = parseInt(req.params.user_id);
+
+users.findOne({
+  where: {
+    id: user_id,
+  }
+})
+.then(User =>  {
+  let transform = sharp()
+  transform = transform.resize(200,86)
+  .toBuffer((err, buffer, info) => {
+      if (buffer) {
+          res.status(200).send(buffer);
+      }
+  });
+  if(User && User.cover_pic_file_name  ){
+    let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+    fs.access(filename, fs.F_OK, (err) => {
+      if(err){
+        filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
+      }  
+      else{
+        var pp = fs.createReadStream( path.join(process.cwd(),filename))
+        pp.pipe(transform);
+      }     
+    })
+  }
+  else{
+    filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
+  }
+ 
+}); 
 
 
 });
@@ -440,24 +511,22 @@ users.findOne({
 }).then(User =>  {
   if(User && User.cover_pic_file_name  ){
     let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
-    fs.readFile( path.join(process.cwd(),filename), function(e,data){
-      if(e){
-        filename = "./data_and_routes/not-found-image.jpg";
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          res.status(200).send(data);
-        } );
-      }
+    fs.access(filename, fs.F_OK, (err) => {
+      if(err){
+        filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(res);
+      }  
       else{
-        res.status(200).send(data);
-      }
-      
-    } );
+        var pp = fs.createReadStream( path.join(process.cwd(),filename))
+        pp.pipe(res);
+      }     
+    })
   }
   else{
-    let  filename = "./data_and_routes/not-found-image.jpg";
-    fs.readFile( path.join(process.cwd(),filename), function(e,data){
-      res.status(200).send(data);
-    } );
+    filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+    var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+    not_found.pipe(res);
   }
  
 }); 
@@ -534,24 +603,22 @@ users.findOne({
     }).then(User =>  {
       if(User && User.cover_pic_file_name  ){
         let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          if(e){
-            filename = "./data_and_routes/not-found-image.jpg";
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
-            } );
-          }
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
+          }  
           else{
-            res.status(200).send(data);
-          }
-        
-        } );
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(res);
+          }     
+        })
       }
       else{
-      let filename = "./data_and_routes/not-found-image.jpg";
-      fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        res.status(200).send(data);
-      } );
+        filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(res);
       }
     
     }); 
@@ -2108,7 +2175,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           "nickname":"Utilisateur_introuvable_" +user.id,
           "firstname":"Utilisateur introuvable",
           "lastname":"",
-          "profile_pic_file_name":"default_profile_picture.png",
+          "profile_pic_file_name":"default_cover_picture.png",
 					"cover_pic_file_name":"default_cover_picture.png",
         }).catch(err => {
 			
@@ -3653,7 +3720,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'Donnation pour LinkArts',
+              name: 'Donation pour LinkArts',
               images: ['https://www.linkarts.fr/assets/img/Logo-LA3.png'],
             },
             unit_amount: value,
