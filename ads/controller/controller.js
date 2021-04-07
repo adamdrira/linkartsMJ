@@ -7,6 +7,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 var nodemailer = require('nodemailer');
+const sharp = require('sharp');
 var list_covers_by_id={};
 module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
@@ -299,20 +300,20 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
           return res.status(401).json({msg: "error"});
         }
       }
-            fs.access('./data_and_routes/thumbnails_ads/' + req.params.name, fs.F_OK, (err) => {
-              if(err){
-                return res.status(200).send([{delete:"already_done"}])
-              }
-              const name  = req.params.name;
-              fs.unlink('./data_and_routes/thumbnails_ads/' + name,  function (err) {
-                if (err) {
-                  
-                }  
-                else {
-                  return res.status(200).send([{delete:"done"}]);
-                }
-              });
-            });
+      fs.access('./data_and_routes/thumbnails_ads/' + req.params.name, fs.F_OK, (err) => {
+        if(err){
+          return res.status(200).send([{delete:"already_done"}])
+        }
+        const name  = req.params.name;
+        fs.unlink('./data_and_routes/thumbnails_ads/' + name,  function (err) {
+          if (err) {
+            
+          }  
+          else {
+            return res.status(200).send([{delete:"done"}]);
+          }
+        });
+      });
     });
 
     router.get('/get_thumbnail_ad_name', (req, res)=>{ 
@@ -835,19 +836,24 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/thumbnails_ads/" + file_name ;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          
-          if(e){
-            let filename = "./data_and_routes/not-found-image.jpg";
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
-            } );
-          }
-          else{
-            res.status(200).send(data);
-          }
-          
+        let transform = sharp()
+        transform = transform.resize(200,268)
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
         });
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(transform);
+          }  
+          else{
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(transform);
+          }     
+        })
 
     });
 
@@ -866,18 +872,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/pictures_ads/" + file_name ;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          if(e){
-            let filename = "./data_and_routes/not-found-image.jpg";
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
-            } );
-          }
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
+          }  
           else{
-            res.status(200).send(data);
-          }
-          
-        });
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(res);
+          }     
+        })
     });
 
     router.get('/retrieve_ad_attachment/:file_name', function (req, res) {
@@ -895,18 +900,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/attachments_ads/" + file_name ;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          if(e){
-            let filename = "./data_and_routes/file-not-found.pdf";
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
-            } );
-          }
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
+          }  
           else{
-            res.status(200).send(data);
-          }
-         
-        });
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(res);
+          }     
+        })
     });
 
     router.delete('/delete_ad/:id', function (req, res) {
