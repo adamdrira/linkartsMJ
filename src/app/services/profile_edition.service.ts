@@ -142,6 +142,7 @@ export class Profile_Edition_Service {
   }
 
   get_cookies(){
+    
     return this.CookieService.get('a_cookies');
   }
   
