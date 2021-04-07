@@ -622,18 +622,19 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         }
       }
             let filename = "./data_and_routes/stories/" + req.params.file_name ;
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-                if(e){
-                    filename = "./data_and_routes/not-found-image.jpg";
-                    fs.readFile( path.join(process.cwd(),filename), function(e,data){
-                      res.status(200).send(data);
-                    } );
-                }
+
+            
+            fs.access(filename, fs.F_OK, (err) => {
+                if(err){
+                  filename = "./data_and_routes/not-found-image.jpg";
+                  var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+                  not_found.pipe(res);
+                }  
                 else{
-                res.status(200).send(data);
-                }
-              
-            });
+                  var pp = fs.createReadStream( path.join(process.cwd(),filename))
+                  pp.pipe(res);
+                }     
+              })
         });
 
         router.post('/check_if_story_already_seen', function (req, res) {
@@ -872,6 +873,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
             list_of_views.findAll({
                 where:{
                     id_story:id_story,
+                    id_user_who_looks:{[Op.ne]:current_user},  
                 },
                 order: [
                     ['createdAt', 'DESC']
