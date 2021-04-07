@@ -262,7 +262,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
               this.get_images_to_show();
 
-              this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -304,7 +304,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               
               this.get_images_to_show();
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-              this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -348,7 +348,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.get_images_to_show();
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
 
-              this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -388,7 +388,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.get_images_to_show();
             
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-              this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -437,7 +437,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               });
 
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-              this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              this.Writing_Upload_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -543,7 +543,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.check_archive()
               this.get_images_to_show();
               
-              this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -581,7 +581,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.check_archive()
               this.get_images_to_show();
               
-              this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -624,7 +624,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.get_images_to_show();
               
 
-              this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -662,7 +662,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.get_images_to_show();
 
               
-              this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -709,7 +709,7 @@ export class ThumbnailArtworkComponent implements OnInit {
             this.pdfSrc = URL.createObjectURL(file);
           });
           
-          this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+          this.Writing_Upload_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.thumbnail_picture = url;

@@ -21,6 +21,42 @@
         [ngClass]="{'subscribings-page':page=='subscribings','trendings-page':page=='trendings','avoid-clicks':!display_evenif_reported && thumbnail_picture_received && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)}">
 
 
+        <div class="name show-on-small-screen-title">
+            <span>{{title}}</span>
+            <button *ngIf="type_of_profile=='account' && !(category=='drawing' && !visitor_mode)" class="options-name" tabIndex="-1" [matMenuTriggerFor]="options3"
+                (click)="stop($event)">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
+            </button>
+            <mat-menu #options3="matMenu" xPosition="before" class="thumbnail-artwork-menu">
+                <button (click)="archive()" class="thumbnail-artwork-menu-item" mat-menu-item
+                    *ngIf="visitor_mode && !content_archived">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">save_alt</mat-icon>
+                    <span>Archiver</span>
+                </button>
+                <button (click)="unarchive()" class="thumbnail-artwork-menu-item" mat-menu-item
+                    *ngIf="visitor_mode && content_archived">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">unarchive</mat-icon>
+                    <span>Désarchiver</span>
+                </button>
+                <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
+                    class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
+                    <span>Signaler</span>
+                </button>
+                <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
+                    class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
+                    <span>Annuler le signalement</span>
+                </button>
+                <button *ngIf="!visitor_mode && category!='drawing'" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
+                    (click)="edit_thumbnail()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
+                    <span>Modifier la miniature</span>
+                </button>
+            </mat-menu>
+        </div>
+
+
         <div class="left-container" [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
 
             <img  *ngIf="thumbnail_picture_received " #image [lazyLoad]="thumbnail_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
@@ -75,7 +111,7 @@
                 <span>{{rank}}</span>
             </div>
 
-            <div class="name">
+            <div class="name show-on-large-screen">
                 <span>{{title}}</span>
                 <button *ngIf="type_of_profile=='account' && !(category=='drawing' && !visitor_mode)" class="options-name" tabIndex="-1" [matMenuTriggerFor]="options3"
                     (click)="stop($event)">

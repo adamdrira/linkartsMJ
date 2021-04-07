@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input,ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { SimpleChanges } from '@angular/core';
 import { ChatService } from '../services/chat.service';
 import { NavbarService } from '../services/navbar.service';
@@ -13,7 +13,8 @@ import { Trending_service } from '../services/trending.service';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -40,7 +41,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
     ),
   ],
 })
-export class TrendingsComponent implements OnInit {
+export class TrendingsComponent implements OnInit, OnDestroy {
 
   constructor(
     public route: ActivatedRoute, 
@@ -57,14 +58,7 @@ export class TrendingsComponent implements OnInit {
     private deviceService: DeviceDetectorService,
     private Profile_Edition_Service:Profile_Edition_Service,
 
-    ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
-        if(font){
-        }
-      })
-    this.navbar.setActiveSection(0);
-    this.navbar.show();
-  }
+    ) { }
 
   subcategory: number = 0; 
   user_id:number=0;
@@ -87,35 +81,41 @@ export class TrendingsComponent implements OnInit {
   now_in_seconds:number= Math.trunc( new Date().getTime()/1000);
   section_chosen=false;
 
-  
+  @Input('status') status: any;
   ngOnChanges(changes: SimpleChanges) {
     if( changes.status) {
       this.cd.detectChanges();
     }
   }
   
+  @Input() current_user:any;
   device_info='';
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      if(r[0].id==1){
-        this.Trending_service.get_trendings_for_tomorrow().subscribe(r=>{
-          console.log("trendings for tommorow")
-          console.log(r)
-        })
-      }
-    })
+    
+    if(this.current_user[0].id==1){
+      this.Trending_service.get_trendings_for_tomorrow().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        console.log("trendings for tommorow")
+        console.log(r)
+      })
+    }
 
     this.subcategory = (this.route.snapshot.data['section'])?this.route.snapshot.data['section']:0;
     this.section_chosen=true;
-    this.Trending_service.send_rankings_and_get_trendings_comics().subscribe(info=>{
+    this.Trending_service.send_rankings_and_get_trendings_comics().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
       
       this.load_comics_trendings(info);
       
-      this.Trending_service.get_drawings_trendings().subscribe(info=>{
+      this.Trending_service.get_drawings_trendings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
         this.load_drawing_trendings(info);
       })
-      this.Trending_service.get_writings_trendings().subscribe(info=>{
+      this.Trending_service.get_writings_trendings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
        
         this.load_writing_trendings(info);      
       })
@@ -129,15 +129,15 @@ export class TrendingsComponent implements OnInit {
       return;
     }
     if(i==0){
-      this.navbar.add_page_visited_to_history(`/trendings/comic`,this.device_info).subscribe();
+      this.navbar.add_page_visited_to_history(`/home/trendings/comic`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.subcategory=i;
     }
     else if(i==1){
-      this.navbar.add_page_visited_to_history(`/trendings/drawing`,this.device_info).subscribe();
+      this.navbar.add_page_visited_to_history(`/home/trendings/drawing`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.subcategory=i;  
     }
     else if(i==2){
-      this.navbar.add_page_visited_to_history(`/trendings/writing`,this.device_info).subscribe();
+      this.navbar.add_page_visited_to_history(`/home/trendings/writing`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.subcategory=i;
     }
     return;
@@ -168,10 +168,10 @@ export class TrendingsComponent implements OnInit {
       id=item.writing_id
     }
     
-    this.Trending_service.get_date_of_trendings().subscribe(d=>{
+    this.Trending_service.get_date_of_trendings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(d=>{
 
       let date = d[0].date;
-      this.NotificationsService.add_notification_trendings('trendings',1,'Linkarts',item.authorid,category,item.title,format,id,rank,date,false,0).subscribe(l=>{
+      this.NotificationsService.add_notification_trendings('trendings',1,'Linkarts',item.authorid,category,item.title,format,id,rank,date,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
     
         if(!l[0].found){
           let message_to_send ={
@@ -211,7 +211,7 @@ export class TrendingsComponent implements OnInit {
       for(let i=0; i <this.comics_trendings_length;i++){
         if(info[0].comics_trendings.format[i] =="one-shot"){
           
-          this.BdOneShotService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).subscribe(r=>{
+          this.BdOneShotService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
          
             if(r[0]){
               if(r[0].status=="public"){
@@ -242,7 +242,7 @@ export class TrendingsComponent implements OnInit {
           })
         }
         if(info[0].comics_trendings.format[i] =="serie"){
-          this.BdSerieService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).subscribe(r=>{
+          this.BdSerieService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
      
             if(r[0]){
               if(r[0].status=="public"){
@@ -282,7 +282,7 @@ export class TrendingsComponent implements OnInit {
       this.drawings_trendings_length=length;
       for(let i=0; i < this.drawings_trendings_length;i++){
         if(info[0].drawings_trendings.format[i] =="one-shot"){
-          this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
+          this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(info[0].drawings_trendings.publication_id[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
     
             if(r[0]){
               if(r[0].status=="public"){
@@ -308,7 +308,7 @@ export class TrendingsComponent implements OnInit {
           })
         }
         if(info[0].drawings_trendings.format[i] =="artbook"){
-          this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
+          this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(info[0].drawings_trendings.publication_id[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             
             if(r[0]){
               if(r[0].status=="public"){
@@ -345,7 +345,7 @@ export class TrendingsComponent implements OnInit {
       let length=(this.writings_trendings_length<30)?this.writings_trendings_length:30;
       this.writings_trendings_length=length;
       for(let i=0; i <this.writings_trendings_length;i++){
-        this.Writing_Upload_Service.retrieve_writing_information_by_id(info[0].writings_trendings.publication_id[i]).subscribe(r=>{
+        this.Writing_Upload_Service.retrieve_writing_information_by_id(info[0].writings_trendings.publication_id[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           
           if(r[0]){
             if(r[0].status=="public"){

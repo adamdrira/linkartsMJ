@@ -16,7 +16,6 @@ export class AuthGuard implements CanActivate {
 
         const currentUser = this.authenticationService.currentUserValue;
         if ( currentUser ) {
-            //console.log(currentUser);
             return new Promise(resolve=>{
                 this.authenticationService
                 .tokenCheck()
