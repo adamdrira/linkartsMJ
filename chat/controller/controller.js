@@ -8,7 +8,7 @@ const mkdirp = require('mkdirp')
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
-
+const sharp = require('sharp');
 module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spams,list_of_chat_search,list_of_chat_sections,list_of_subscribings, list_of_users,list_of_chat_groups,list_of_chat_groups_reactions) => {
 
     function get_current_user(token){
@@ -427,9 +427,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                limit:1,
               })
               .catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages =>  {
+                
+                res.status(500).json({msg: "error", details: err});		
+              }).then(messages =>  {
                  list_of_friends_messages[i]=messages[0];
                   compt++;
                   if(compt==list_of_friends_ids.length){
@@ -1577,17 +1577,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let file_name=req.params.file_name;
 
       let filename = "./data_and_routes/chat_images/" +file_name;
-      fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        if(e){
-          filename = "./data_and_routes/not-found-image.jpg";
-          fs.readFile( path.join(process.cwd(),filename), function(e,data){
-            res.status(200).send(data);
-          } );
-        }
-        else{
-          res.status(200).send(data);
-        }
-      } );
+      fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
+          }  
+          else{
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(res);
+          }     
+        })
     
     });
 
@@ -1607,18 +1607,94 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let friend_type=req.params.friend_type;
       let friend_id=parseInt(req.params.friend_id);
       let filename = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
-      fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        if(e){
+
+      let transform = sharp()
+      transform = transform.resize({fit:sharp.fit.contain,height:300})
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
+      });
+      fs.access( path.join(process.cwd(),filename), fs.F_OK, (err) => {
+        if(err){
           filename = "./data_and_routes/not-found-image.jpg";
-          fs.readFile( path.join(process.cwd(),filename), function(e,data){
-            res.status(200).send(data);
-          } );
-        }
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+        }  
         else{
-          res.status(200).send(data);
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(transform);
+        }     
+      })
+    
+    });
+
+
+    router.get('/get_attachment_popup/:file_name/:friend_type/:friend_id', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
         }
-        
-      } );
+      }
+      let file_name=req.params.file_name;
+      let friend_type=req.params.friend_type;
+      let friend_id=parseInt(req.params.friend_id);
+      let filename = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
+     
+      fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/not-found-image.jpg";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(res);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(res);
+        }     
+      })
+    
+    });
+
+    router.get('/get_attachment_right/:file_name/:friend_type/:friend_id', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+      let file_name=req.params.file_name;
+      let friend_type=req.params.friend_type;
+      let friend_id=parseInt(req.params.friend_id);
+      let filename = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
+      let transform = sharp()
+      transform = transform.resize({fit:sharp.fit.contain,height:75})
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
+      });
+      fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/not-found-image.jpg";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(transform);
+        }     
+      })
     
     });
 
@@ -1680,12 +1756,11 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
 
     router.post('/upload_attachments_for_chat/:friend_type/:friend_id/:name', function (req, res) {
-
-      var attachment_name=req.headers.attachment_name;
       let friend_type = req.params.friend_type
       let friend_id = req.params.friend_id;
       let name = req.params.name;
       var current_user = get_current_user(req.cookies.currentUser);
+      
       if(!current_user){
         return res.status(401).json({msg: "error"});
       }
@@ -1712,7 +1787,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       upload_attachment(req, res, function(err){
         (async () => {
           let sufix=path.extname(name).toLowerCase();
-          if(sufix==".jpg" || sufix==".png" || sufix==".jpeg"){
+          if(sufix==".jpg" || sufix==".png" || sufix==".jpeg" || sufix==".gif"){
             let file_name = './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` + name ;
             const files = await imagemin([file_name], {
             destination: './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`,
@@ -3211,37 +3286,25 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
         const chat_profile_pic_name = req.params.chat_profile_pic_name;
         const origin =req.params.origin;
+        let filename=''
         if(origin=="user"){
-      
-            let filename = "./data_and_routes/profile_pics/" + chat_profile_pic_name;
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              if(e){
-                filename = "./data_and_routes/not-found-image.jpg";
-                fs.readFile( path.join(process.cwd(),filename), function(e,data){
-                  res.status(200).send(data);
-                } );
-              }
-              else{
-                res.status(200).send(data);
-              }
-              
-            } );
+            filename = "./data_and_routes/profile_pics/" + chat_profile_pic_name;
         }
         else{
-          let filename = "./data_and_routes/chat_profile_pics/" + chat_profile_pic_name;
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              if(e){
-                filename = "./data_and_routes/not-found-image.jpg";
-                fs.readFile( path.join(process.cwd(),filename), function(e,data){
-                  res.status(200).send(data);
-                } );
-              }
-              else{
-                res.status(200).send(data);
-              }
-             
-            } );
+          filename = "./data_and_routes/chat_profile_pics/" + chat_profile_pic_name;
         }
+
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
+          }  
+          else{
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(res);
+          }     
+        })
         
     
     });
