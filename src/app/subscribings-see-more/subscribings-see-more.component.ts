@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,  HostListener, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input,  HostListener, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
@@ -7,7 +7,8 @@ import { Writing_Upload_Service } from '../services/writing.service';
 import { Ads_service } from '../services/ads.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { trigger, transition, style, animate } from '@angular/animations';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -25,7 +26,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
     ),
   ],
 })
-export class SubscribingsSeeMoreComponent implements OnInit {
+export class SubscribingsSeeMoreComponent implements OnInit,OnDestroy  {
 
   constructor(
     private Ads_service:Ads_service,
@@ -60,6 +61,15 @@ export class SubscribingsSeeMoreComponent implements OnInit {
     }
   }
 
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    // This aborts all HTTP requests.
+    console.log("in ng on destroy")
+    this.ngUnsubscribe.next();
+    // This completes the subject properlly.
+    this.ngUnsubscribe.complete();
+  }
+  
   ngOnInit() {
     this.see_more_contents();
 
@@ -111,13 +121,13 @@ export class SubscribingsSeeMoreComponent implements OnInit {
 
 
   see_more_contents(){
-    this.Subscribing_service.see_more_contents(this.list_of_users,this.last_timestamp).subscribe(r=>{
+    this.Subscribing_service.see_more_contents(this.list_of_users,this.last_timestamp).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if(r[0].length>0){
         let compt=0;
         for (let j=0; j< r[0].length;j++){
           if(r[0][j].publication_category=="comic"){
             if(r[0][j].format=="one-shot"){
-              this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+              this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
                   compt++
@@ -132,7 +142,7 @@ export class SubscribingsSeeMoreComponent implements OnInit {
               })
             }
             if(r[0][j].format=="serie"){
-              this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+              this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
                   compt++
@@ -150,7 +160,7 @@ export class SubscribingsSeeMoreComponent implements OnInit {
 
           if(r[0][j].publication_category=="drawing"){
             if(r[0][j].format=="one-shot"){
-              this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+              this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
                   compt++
@@ -165,7 +175,7 @@ export class SubscribingsSeeMoreComponent implements OnInit {
               })
             }
             if(r[0][j].format=="artbook"){
-              this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
+              this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
                   compt++
@@ -182,7 +192,7 @@ export class SubscribingsSeeMoreComponent implements OnInit {
           }
 
           if(r[0][j].publication_category=="writing"){
-              this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+              this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
                   compt++
@@ -198,7 +208,7 @@ export class SubscribingsSeeMoreComponent implements OnInit {
           }
 
           if(r[0][j].publication_category=="ad"){
-            this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).subscribe(info=>{
+            this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
               if(info[0].status="public"){
                 this.list_of_contents.push(info[0]);
                 compt++
