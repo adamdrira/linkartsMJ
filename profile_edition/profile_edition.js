@@ -243,7 +243,7 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
         let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
         fs.access(filename, fs.F_OK, (err) => {
           if(err){
-            filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+            filename = "./data_and_routes/profile_pics/default_profile_picture.png";
             var not_found = fs.createReadStream( path.join(process.cwd(),filename))
             not_found.pipe(transform)
           }  
@@ -255,7 +255,7 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
 
       }
       else{
-        filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+        filename = "./data_and_routes/profile_pics/default_profile_picture.png";
         var not_found = fs.createReadStream( path.join(process.cwd(),filename))
         not_found.pipe(transform);
       }
@@ -302,7 +302,7 @@ router.get('/retrieve_profile_picture_by_pseudo/:pseudo', function (req, res) {
       let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
       fs.access(filename, fs.F_OK, (err) => {
         if(err){
-          filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+          filename = "./data_and_routes/profile_pics/default_profile_picture.png";
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
           not_found.pipe(transform);
         }  
@@ -313,7 +313,7 @@ router.get('/retrieve_profile_picture_by_pseudo/:pseudo', function (req, res) {
       })
     }
     else{
-      filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+      filename = "./data_and_routes/profile_pics/default_profile_picture.png";
       var not_found = fs.createReadStream( path.join(process.cwd(),filename))
       not_found.pipe(transform);
     }
@@ -361,7 +361,7 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
       let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
       fs.access(filename, fs.F_OK, (err) => {
         if(err){
-          filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+          filename = "./data_and_routes/profile_pics/default_profile_picture.png";
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
           not_found.pipe(transform);
         }  
@@ -372,7 +372,7 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
       })
     }
     else{
-      filename = "./data_and_routes/profile_pics/default_cover_picture.png";
+      filename = "./data_and_routes/profile_pics/default_profile_picture.png";
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
           not_found.pipe(transform);
     }
@@ -2175,7 +2175,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           "nickname":"Utilisateur_introuvable_" +user.id,
           "firstname":"Utilisateur introuvable",
           "lastname":"",
-          "profile_pic_file_name":"default_cover_picture.png",
+          "profile_pic_file_name":"default_profile_picture.png",
 					"cover_pic_file_name":"default_cover_picture.png",
         }).catch(err => {
 			
