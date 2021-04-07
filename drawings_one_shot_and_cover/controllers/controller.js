@@ -8,7 +8,7 @@ const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 const Navbar = require('../../navbar/model/sequelize');
 const Notations = require('../../publications_notation/model/sequelize');
-
+const sharp = require('sharp');
 module.exports = (router, drawings_one_page,list_of_users,trendings_contents) => {
   
   function get_current_user(token){
@@ -1013,19 +1013,94 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
         }
       }
 
-      let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
-      fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        if(e){
-          filename = "./data_and_routes/not-found-image.jpg";
-          fs.readFile( path.join(process.cwd(),filename), function(e,data){
-            res.status(200).send(data);
-          } );
-        }
-        else{
-          res.status(200).send(data);
-        }
-        
+      let transform = sharp()
+      transform = transform.resize({width:200})
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
       });
+      let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
+      fs.access(filename, fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/not-found-image.jpg";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(transform);
+        }     
+      })
+  });
+
+
+  router.get('/retrieve_drawing_thumbnail_picture_artwork/:file_name', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    let transform = sharp()
+      transform = transform.resize({width:320})
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
+      });
+    let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
+    fs.access(filename, fs.F_OK, (err) => {
+      if(err){
+        filename = "./data_and_routes/not-found-image.jpg";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
+      }  
+      else{
+        var pp = fs.createReadStream( path.join(process.cwd(),filename))
+        pp.pipe(transform);
+      }     
+    })
+  });
+
+  router.get('/retrieve_drawing_thumbnail_picture_navbar/:file_name', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    let transform = sharp()
+      transform = transform.resize(35,35)
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
+      });
+    let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
+    fs.access(filename, fs.F_OK, (err) => {
+      if(err){
+        filename = "./data_and_routes/not-found-image.jpg";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
+      }  
+      else{
+        var pp = fs.createReadStream( path.join(process.cwd(),filename))
+        pp.pipe(transform);
+      }     
+    })
   });
 
   router.get('/retrieve_drawing_onepage_by_name/:file_name', function (req, res) {
@@ -1042,18 +1117,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       }
 
         let filename = "./data_and_routes/drawings_one_page/" + req.params.file_name;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          if(e){
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
             filename = "./data_and_routes/not-found-image.jpg";
-            fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
-            } );
-          }
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
+          }  
           else{
-            res.status(200).send(data);
-          }
-         
-        } );
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(res);
+          }     
+        })
 
   });
 
