@@ -288,6 +288,14 @@
                                     </mat-menu>
 
                                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
+
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
+                                            (click)="edit(list_of_messages_pictures[list_of_messages.length -1 - i])">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">edit
+                                            </mat-icon>
+                                            <span>Editer</span>
+                                        </button>
+
                                         <button class="chat-menu-item" mat-menu-item
                                             (click)="delete_message(list_of_messages.length -1 - i)">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline
@@ -393,8 +401,8 @@
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
                                             [customObservable]="scroll"
                                             *ngIf="can_load_images"
-                                                [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
-                                                [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
+                                            [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
+                                            [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
                                         </div>
                                         <div
                                             *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
