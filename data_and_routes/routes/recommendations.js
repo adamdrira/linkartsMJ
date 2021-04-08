@@ -49,6 +49,7 @@ pool.connect((err, client, release) => {
 
 
 const generate_recommendations = (request, response) => {
+  
   if( ! request.headers['authorization'] ) {
     return response.status(401).json({msg: "error"});
   }
@@ -59,7 +60,6 @@ const generate_recommendations = (request, response) => {
       return response.status(401).json({msg: "error"});
     }
   }
-
   var _today = new Date();
   var last_week = new Date();
   last_week.setDate(last_week.getDate() - 350);
@@ -67,12 +67,10 @@ const generate_recommendations = (request, response) => {
 
 
   var user=0;
-    jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
-      user=decoded.id;
-    });
-
+  jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+    user=decoded.id;
+  });
   
-
   pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1  AND "createdAt" ::date <=$2 AND "createdAt" ::date >= $3 limit 100', [user,_today,last_week], (error, results) => {
     if (error) {
       
@@ -85,7 +83,7 @@ const generate_recommendations = (request, response) => {
     .on('error', function(e){
     })
     .on("finish", function() {
-        if(jsonData.length>=1){
+        if(jsonData.length>=1 && user!=80){
           
           //pour ubuntu
           const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
@@ -143,6 +141,7 @@ const generate_recommendations = (request, response) => {
           
         }
         else{
+         
           let PATH = `./data_and_routes/routes/python_files/recommendations-${user}.json`;
           let PATH2 = `./data_and_routes/routes/python_files/recommendations_artpieces-${user}.json`;
           let array_to_convert_in_json={"comic":
@@ -151,98 +150,129 @@ const generate_recommendations = (request, response) => {
                                           {"0":null,"1":null,"2":null},
                                         "writing":
                                           {"0":null,"1":null,"2":null}         
-                                        }
+          }
 
-
-          fs.writeFile(PATH, JSON.stringify(array_to_convert_in_json), (err) => {
-            if (err){
-            } 
-            fs.writeFile(PATH2, JSON.stringify(array_to_convert_in_json), (err) => {
-              if (err){
-                response.status(500).send([{error:err}])
-              } 
+          if(user==80){
+            fs.access(__dirname + `/csvfiles_for_python/classement_python-${user}.csv`, fs.F_OK, (err) => {
+              if(err){
+              }  
               else{
-                var list_bd_os_to_send=[];
-                var list_bd_serie_to_send=[];
-                let compteur_os=0;
-                let compteur_serie=0;
-                
-                complete_recommendation_bd([],response,user,'Manga',"one-shot", (req)=>{
-                  sort_os_styles(req[0])
-                })
-                complete_recommendation_bd([],response,user,'Comics',"one-shot", (req)=>{
-                  sort_os_styles(req[0])
-                })
-                complete_recommendation_bd([],response,user,'BD',"one-shot", (req)=>{
-                  sort_os_styles(req[0])
-                })
-                complete_recommendation_bd([],response,user,'Webtoon',"one-shot", (req)=>{
-                  sort_os_styles(req[0])
-                })
-
-                function sort_os_styles(req){
-                  if(list_bd_os_to_send.length>0){
-                    if(req.length>0){
-                      list_bd_os_to_send = list_bd_os_to_send.concat(req);
-                    }
-                  }
-                  else{
-                    if(req.length>0){
-                      list_bd_os_to_send = req;
-                    }
-                  }
-                  compteur_os++
-                  if(compteur_serie==4 && compteur_os==4){
-                    response.status(200).json([{
-                      "list_bd_os_to_send":list_bd_os_to_send,
-                      "list_bd_serie_to_send":list_bd_serie_to_send
-                    }])
-                  }
-
-                }
-
-                //serie
-                complete_recommendation_bd([],response,user,'Manga',"serie", (req)=>{
-                  sort_serie_styles(req[0])
-                })
-                complete_recommendation_bd([],response,user,'Comics',"serie", (req)=>{
-                  sort_serie_styles(req[0])
-                })
-                complete_recommendation_bd([],response,user,'BD',"serie", (req)=>{
-                  sort_serie_styles(req[0])
-                })
-                complete_recommendation_bd([],response,user,'Webtoon',"serie", (req)=>{
-                  sort_serie_styles(req[0])
-                })
-
-                
-
-                function sort_serie_styles(req){
-                  if(list_bd_serie_to_send.length>0){
-                    if(req.length>0){
-                      list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-                    }
-                  }
-                  else{
-                    if(req.length>0){
-                      list_bd_serie_to_send = req;
-                    }
-                  }
-                  compteur_serie++
-                  if(compteur_serie==4 && compteur_os==4){
-                    response.status(200).json([{
-                      "list_bd_os_to_send":list_bd_os_to_send,
-                      "list_bd_serie_to_send":list_bd_serie_to_send
-                    }])
-                  }
-
-                }
-
-              }
-              
-              
+                fs.unlink(__dirname + `/csvfiles_for_python/classement_python-${user}.csv`,function (err) {
+                  if (err) {
+                  } 
+                });
+              } 
             })
-          }) 
+
+            fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
+              if(err){
+                do_all()
+              }  
+              else{
+                do_all_end()
+              } 
+            })
+          }
+          else{
+            do_all()
+          }
+
+          
+         
+          function do_all(){
+            fs.writeFile(PATH, JSON.stringify(array_to_convert_in_json), (err) => {
+              if (err){
+              } 
+              fs.writeFile(PATH2, JSON.stringify(array_to_convert_in_json), (err) => {
+                if (err){
+                  response.status(500).send([{error:err}])
+                } 
+                else{
+                  do_all_end()
+                }
+              })
+            }) 
+          }
+
+          function do_all_end(){
+            var list_bd_os_to_send=[];
+                  var list_bd_serie_to_send=[];
+                  let compteur_os=0;
+                  let compteur_serie=0;
+                  
+                  complete_recommendation_bd([],response,user,'Manga',"one-shot", (req)=>{
+                    sort_os_styles(req[0])
+                  })
+                  complete_recommendation_bd([],response,user,'Comics',"one-shot", (req)=>{
+                    sort_os_styles(req[0])
+                  })
+                  complete_recommendation_bd([],response,user,'BD',"one-shot", (req)=>{
+                    sort_os_styles(req[0])
+                  })
+                  complete_recommendation_bd([],response,user,'Webtoon',"one-shot", (req)=>{
+                    sort_os_styles(req[0])
+                  })
+  
+                  function sort_os_styles(req){
+                    if(list_bd_os_to_send.length>0){
+                      if(req.length>0){
+                        list_bd_os_to_send = list_bd_os_to_send.concat(req);
+                      }
+                    }
+                    else{
+                      if(req.length>0){
+                        list_bd_os_to_send = req;
+                      }
+                    }
+                    compteur_os++
+                    if(compteur_serie==4 && compteur_os==4){
+                      response.status(200).json([{
+                        "list_bd_os_to_send":list_bd_os_to_send,
+                        "list_bd_serie_to_send":list_bd_serie_to_send
+                      }])
+                    }
+  
+                  }
+  
+                  //serie
+                  complete_recommendation_bd([],response,user,'Manga',"serie", (req)=>{
+                    sort_serie_styles(req[0])
+                  })
+                  complete_recommendation_bd([],response,user,'Comics',"serie", (req)=>{
+                    sort_serie_styles(req[0])
+                  })
+                  complete_recommendation_bd([],response,user,'BD',"serie", (req)=>{
+                    sort_serie_styles(req[0])
+                  })
+                  complete_recommendation_bd([],response,user,'Webtoon',"serie", (req)=>{
+                    sort_serie_styles(req[0])
+                  })
+  
+                  
+  
+                  function sort_serie_styles(req){
+                    if(list_bd_serie_to_send.length>0){
+                      if(req.length>0){
+                        list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
+                      }
+                    }
+                    else{
+                      if(req.length>0){
+                        list_bd_serie_to_send = req;
+                      }
+                    }
+                    compteur_serie++
+                    if(compteur_serie==4 && compteur_os==4){
+                      response.status(200).json([{
+                        "list_bd_os_to_send":list_bd_os_to_send,
+                        "list_bd_serie_to_send":list_bd_serie_to_send
+                      }])
+                    }
+  
+                  }
+  
+          }
+          
         }
       })
     })
@@ -279,7 +309,7 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
       get_it();
     }
   })
- 
+
  
   
   function get_it(){
@@ -702,8 +732,18 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
-  get_it();
+
+    fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
+      if(err){
+        test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-80.json`));
+        get_it();
+      }  
+      else{
+        test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
+        get_it();
+      }
+    })
+ 
 
   var list_drawing_artbook
   function get_it(){
@@ -883,8 +923,16 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
-  get_it();
+    fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
+      if(err){
+        test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-80.json`));
+        get_it();
+      }  
+      else{
+        test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
+        get_it();
+      }
+    })
   var list_drawing_os
   function get_it(){
     if(index_drawing<0){
@@ -1068,8 +1116,16 @@ const get_first_recommendation_writings_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
-  get_it();
+    fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
+      if(err){
+        test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-80.json`));
+        get_it();
+      }  
+      else{
+        test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
+        get_it();
+      }
+    })
  
   var list_writing
   function get_it(){
@@ -1755,9 +1811,6 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
       else{
         const result1 = JSON.parse(JSON.stringify(results1.rows));
         let i=0;
-        console.log("recom_writings")
-        console.log(222)
-        console.log(result1)
         if(result1.length!=0){
           for (let item of result1){
             pool.query('SELECT * FROM liste_writings WHERE writing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_writings WHERE writing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND publication_category=$3))', [item.publication_id,user,'writing'], (error, results2) => {
@@ -1767,11 +1820,6 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
               }
               else {
                 result2 = JSON.parse(JSON.stringify(results2.rows));
-                if(item.publication_id==44){
-                  console.log("rest item")
-                  console.log(22)
-                  console.log(result2)
-                }
                 i++;
                 if (result2.length!=0){
                   list_to_send.push(result2);
