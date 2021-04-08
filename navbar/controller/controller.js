@@ -1,27 +1,23 @@
-const multer = require('multer');
 const Sequelize = require('sequelize');
-const fs = require('fs');
-var glob = require("glob")
-var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
-/*const pool = new Pool({
+const pool = new Pool({
     port: 5432,
     database: 'linkarts',
     user: 'adamdrira',
     password: 'E273adamZ9Qvps',
     host: 'localhost',
-});*/
+});
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
   //dialect: 'postgres'
-});
+});*/
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -148,6 +144,10 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         let list_of_comics=[];
         let list_of_drawings=[];
         let list_of_writings=[];
+
+        if(id_user==80){
+            return res.status(200).send([{list_of_comics:list_of_comics,list_of_drawings:list_of_drawings,list_of_writings:list_of_writings}])
+        }
 
         let compteur=0;
         list_of_navbar_researches.findAll({
