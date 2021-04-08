@@ -19,7 +19,14 @@ export class JwtInterceptor implements HttpInterceptor {
                 }
             });
         }
-        
+        else{
+            currentUser="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaWNrbmFtZSI6InZpc2l0b3IiLCJpZCI6ODAsImlhdCI6MTYxNzg0MjI2NywiZXhwIjoxNjE3ODQzMTY3fQ.OUHmNhx2pLCRNgQVZFCWMq3B1DohJJJ-hKkSV0Pq4QM"
+            request = request.clone({
+                setHeaders: { 
+                    Authorization: `Bearer ${currentUser}`
+                }
+            });
+        }
         return next.handle(request);
     }
 }

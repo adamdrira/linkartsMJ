@@ -25,6 +25,7 @@ const routes: Routes = [
     {path:'lk', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { origin: OriginLkResolverService,user: UserResolverService }},
     {path:'in', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { origin: OriginInResolverService,user: UserResolverService }},
     
+    {path:'**', redirectTo:'recommendations'}
 ];
 
 

@@ -84,7 +84,6 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   
   now_in_seconds:number;
   subcategory: number = 0;
-  // dropdowns = this._constants.filters;
   sorted_category_retrieved=false;
   @Input('status') status: any;
   media_status=[];
@@ -121,6 +120,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    
     this.navbar.check_if_contents_clicked().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if(r[0].list_of_comics && r[0].list_of_comics.length>0){
         this.check_comics_history=true;
@@ -791,9 +791,6 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
       var list_writings_to_send= information[0].list_writings_to_send;
       this.styles_with_contents_already_seen_writings=information[0].styles_with_contents_already_seen
       this.compare_to_compteur_writing+= list_writings_to_send.length;
-      
-      console.log("recom writings")
-      console.log(information)
       if(list_writings_to_send[0] && list_writings_to_send[0].length>0 ){
         for (let i=0;i<list_writings_to_send.length;i++){
           if (list_writings_to_send[i].length>0){

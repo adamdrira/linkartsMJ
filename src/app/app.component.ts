@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import {ElementRef,Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
-
-declare var $:any;
+import { ActivatedRoute, Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
@@ -11,20 +9,14 @@ declare var $:any;
 })
 export class AppComponent {
 
-  constructor(private rd: Renderer2) {}
+  constructor( private route: ActivatedRoute, private router: Router, private CookieService: CookieService) {
 
-  
-
-
-  ngAfterViewInit() {
-    console.log(this.rd);
-    
+    let cook = this.CookieService.get('currentUser')
+    if(!cook){
+      this.CookieService.set('currentUser', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaWNrbmFtZSI6InZpc2l0b3IiLCJpZCI6ODAsImlhdCI6MTYxNzg0MjI2NywiZXhwIjoxNjE3ODQzMTY3fQ.OUHmNhx2pLCRNgQVZFCWMq3B1DohJJJ-hKkSV0Pq4QM", 365*10, '/','www.linkarts.fr',true,'Lax');
+    }
     
   }
-
-  ngOnInit() {
-  }
-
 
 
 

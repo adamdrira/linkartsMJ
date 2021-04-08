@@ -86,6 +86,32 @@ export class NavbarLinkartsComponent implements OnInit {
         this.navbar.add_page_visited_to_history(event.url,device_info).subscribe()
       });
       
+      AuthenticationService.tokenCheck().subscribe(r=>{
+        console.log("navbar")
+        console.log(r)
+        if(r!=this.current_user_type &&  this.change_number<1){
+          this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+            console.log(r[0])
+            if(r[0]){
+              if(r[0].status=="account" || r[0].status=="suspended"){
+                this.type_of_profile=r[0].status;
+                this.retrieve_profile(r);
+              }
+              else{
+                this.data_retrieved=true;
+                this.using_chat_retrieved=true;
+                this.type_of_profile="visitor";
+              }
+              this.type_of_profile_retrieved=true;
+              this.initialize_selectors();
+            }
+            
+          });
+          this.current_user_type=r;
+          this.change_number++;
+        }
+      })
+
       navbar.connexion.subscribe(r=>{
         if(r!=this.connexion_status){
           this.connexion_status=r
@@ -305,28 +331,6 @@ export class NavbarLinkartsComponent implements OnInit {
       })
     }
 
-    this.AuthenticationService.tokenCheck().subscribe(r=>{
-      if(r!=this.current_user_type &&  this.change_number<1){
-        this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-          if(r[0]){
-            if(r[0].status=="account" || r[0].status=="suspended"){
-              this.type_of_profile=r[0].status;
-              this.retrieve_profile(r);
-            }
-            else{
-              this.data_retrieved=true;
-              this.using_chat_retrieved=true;
-              this.type_of_profile="visitor";
-            }
-            this.type_of_profile_retrieved=true;
-            this.initialize_selectors();
-          }
-          
-        });
-        this.current_user_type=r;
-        this.change_number++;
-      }
-    })
     this.get_connection_interval = setInterval(() => {
       if(this.list_of_friends_retrieved && !this.navbar.get_using_chat() && !this.popup_opened){
         this.get_connections_status();
