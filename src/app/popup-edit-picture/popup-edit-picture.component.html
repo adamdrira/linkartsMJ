@@ -1,0 +1,312 @@
+
+<div class="component-container">
+
+
+    <div class="title">
+
+        <div [ngClass]="{'opened': !imageDestination }">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">crop</mat-icon>
+            <span>Rogner</span>
+        </div>
+        
+        <div [ngClass]="{'opened': imageDestination }">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+            <span>Éditer</span>
+        </div>
+
+        <button class="close-button" [mat-dialog-close]="true">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+        </button>
+    </div>
+    
+
+    <div class="edition-container">
+
+
+        <div class="crop-container" *ngIf="!imageDestination">
+            <div class="img-container">
+                <div class="full-crop">
+                    <img #image [src]="picture_blob" crossorigin>
+                </div>
+            </div>
+        </div>
+
+        <div class="edition" *ngIf="imageDestination">
+
+            <div class="add-objects-options">
+                <div class="button" (click)="add_text();">
+                    <span>aA</span>
+                </div>
+                <div class="button" (click)="add_circle();">
+                    <svg height="26" width="26">
+                        <circle cx="13" cy="13" r="10" stroke="white" stroke-width="2" fill="transparent" />
+                    </svg>
+                </div>
+                <div class="button" (click)="add_rectangle();">
+                    <svg height="20" width="20">
+                        <rect x="0" y="0" height="20" width="20" stroke="white" stroke-width="3" fill="transparent"></rect>
+                    </svg>
+                </div>
+            </div>
+
+
+            <div class="image-container">
+                <div class="image-container-fits">
+                    <img [src]="imageDestination" (click)="set_no_activated_objects();">
+
+                    <ng-container *ngFor="let item of texts; let i = index">
+
+                        <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
+                        (click)="set_activated_popup(i);"
+                        cdkDragBoundary=".image-container-fits">
+                            <textarea [@enterAnimation] matInput cdkTextareaAutosize
+                            [ngStyle]="{'font-size': item.font_size + 'px',
+                            'font-style': item.font_italic ? 'italic' : 'unset',
+                            'font-family': item.font_family,
+                            'font-weight': item.font_bold ? 'bold' : '500',
+                            'color': item.font_color,
+                            'background': item.background_color != 'no-background' ? item.background_color : 'unset',
+                            'text-align': item.text_align,
+                            'transform': 'rotate(' + item.rotation + 'deg)'
+                            }">{{item.text}}</textarea>
+
+                            <div class="absolute-square" *ngIf="activated_popup==i" [@enterAnimation]
+                            [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_text(i)">close</mat-icon>
+                            </div>
+
+                        </div>
+
+                    </ng-container>
+
+
+                    <ng-container *ngFor="let item of circles; let i = index">
+                        <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
+                        (click)="set_activated_circle(i);"
+                        cdkDragBoundary=".image-container-fits">
+                            <svg [attr.height]="(item.rayon * 2) + item.stroke_width" [attr.width]="(item.rayon * 2) + item.stroke_width">
+
+                                <circle [attr.cx]="((item.rayon * 2) + item.stroke_width)/2" [attr.cy]="((item.rayon * 2) + item.stroke_width)/2" [attr.r]="item.rayon" 
+                                [attr.stroke]="item.stroke_color" [attr.stroke-width]="item.stroke_width" [attr.fill]="item.background_color != 'no-background' ? item.background_color : 'transparent'" />
+                            </svg>
+
+                            <div class="absolute-square" *ngIf="activated_circle==i" [@enterAnimation]>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_circle(i)">close</mat-icon>
+                            </div>
+
+                        </div>
+                    </ng-container>
+
+
+                    <ng-container *ngFor="let item of rectangles; let i = index">
+                        <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
+                        (click)="set_activated_rectangle(i);"
+                        cdkDragBoundary=".image-container-fits">
+                            <svg [attr.height]="item.height" [attr.width]="item.width"
+                            [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
+                                <rect x="0" y="0" [attr.height]="item.height" [attr.width]="item.width"
+                                [attr.stroke]="item.stroke_color" [attr.stroke-width]="item.stroke_width" [attr.fill]="item.background_color != 'no-background' ? item.background_color : 'transparent'"></rect>
+                            </svg>
+
+                            <div class="absolute-square" *ngIf="activated_rectangle==i" [@enterAnimation]
+                            [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_rectangle(i)">close</mat-icon>
+                            </div>
+                        </div>
+                    </ng-container>
+
+
+
+
+
+                </div>
+
+            </div>
+
+            <div class="text-options">
+                <div class="controller" *ngIf="activated_popup!=-1" [@enterAnimation]>
+                    <button (click)="bigger_size(activated_popup);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_size</mat-icon>
+                    </button>
+                    <button (click)="smaller_size(activated_popup);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">text_fields</mat-icon>
+                    </button>
+                    <button (click)="click_italic(activated_popup);" [ngClass]="{'opened': texts[activated_popup].font_italic}">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_italic</mat-icon>
+                    </button>
+                    <button (click)="click_bold(activated_popup);" [ngClass]="{'opened': texts[activated_popup].font_bold}">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_bold</mat-icon>
+                    </button>
+                    <button (click)="click_align_left(activated_popup);" [ngClass]="{'opened': texts[activated_popup].text_align=='left'}">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_align_left</mat-icon>
+                    </button>
+                    <button (click)="click_align_right(activated_popup);" [ngClass]="{'opened': texts[activated_popup].text_align=='right'}">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_align_right</mat-icon>
+                    </button>
+                    <button (click)="click_align_center(activated_popup);" [ngClass]="{'opened': texts[activated_popup].text_align=='center'}">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_align_center</mat-icon>
+                    </button>
+                    <button (click)="click_align_justify(activated_popup);" [ngClass]="{'opened': texts[activated_popup].text_align=='justify'}">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_align_justify</mat-icon>
+                    </button>
+                    <button (click)="rotate_clockwise(activated_popup);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_right</mat-icon>
+                    </button>
+                    <button (click)="rotate_anticlockwise(activated_popup);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_left</mat-icon>
+                    </button>
+    
+                    <button [matMenuTriggerFor]="textColor">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">format_color_text</mat-icon>
+                    </button>
+                    <mat-menu #textColor="matMenu" class="editPictureColorSelect">
+                        <button class="editPictureColorSelect-item" *ngFor="let item of colors | slice:1" [ngStyle]="{'background-color': item}" (click)="set_font_color(item)" tabIndex="-1" mat-menu-item>
+                        </button>
+                    </mat-menu>
+                    
+                    <button [matMenuTriggerFor]="backgroundColor">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_color_fill</mat-icon>
+                    </button>
+                    <mat-menu #backgroundColor="matMenu" class="editPictureColorSelect">
+                        <button class="editPictureColorSelect-item" *ngFor="let item of colors" [ngClass]="{'no-background': item=='no-background'}" [ngStyle]="{'background-color': item}" (click)="set_background_color(item)" tabIndex="-1" mat-menu-item>
+                        </button>
+                    </mat-menu>
+                    
+                    <button [matMenuTriggerFor]="fontFamily">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">font_download</mat-icon>
+                    </button>
+                    <mat-menu #fontFamily="matMenu" class="editPicturefontSelect">
+                        <button class="editPicturefontSelect-item" *ngFor="let item of fonts" [ngStyle]="{'font-family': item}" (click)="set_font_family(item)" tabIndex="-1" mat-menu-item>
+                            <span>{{item}}</span>
+                        </button>
+                    </mat-menu>
+
+                    <button (click)="put_text_to_front(activated_popup);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">flip_to_front</mat-icon>
+                    </button>
+                        
+                </div>
+
+
+                <div class="controller" *ngIf="activated_circle!=-1" [@enterAnimation]>
+                    <button (click)="bigger_circle_size(activated_circle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">unfold_more</mat-icon>
+                    </button>
+                    <button (click)="smaller_circle_size(activated_circle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">unfold_less</mat-icon>
+                    </button>
+
+                    <button (click)="bigger_circle_stroke(activated_circle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">line_weight</mat-icon>+
+                    </button>
+                    <button (click)="smaller_circle_stroke(activated_circle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">line_weight</mat-icon>-
+                    </button>
+                    
+
+                    <button [matMenuTriggerFor]="textColor">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_color_text</mat-icon>
+                    </button>
+                    <mat-menu #textColor="matMenu" class="editPictureColorSelect">
+                        <button class="editPictureColorSelect-item" *ngFor="let item of colors | slice:1" [ngStyle]="{'background-color': item}" (click)="set_circle_font_color(item)" tabIndex="-1" mat-menu-item>
+                        </button>
+                    </mat-menu>
+
+                    <button [matMenuTriggerFor]="backgroundColor">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_color_fill</mat-icon>
+                    </button>
+                    <mat-menu #backgroundColor="matMenu" class="editPictureColorSelect">
+                        <button class="editPictureColorSelect-item" *ngFor="let item of colors" [ngClass]="{'no-background': item=='no-background'}" [ngStyle]="{'background-color': item}" (click)="set_circle_background_color(item)" tabIndex="-1" mat-menu-item>
+                        </button>
+                    </mat-menu>
+                    
+                    <button (click)="put_circle_to_front(activated_circle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">flip_to_front</mat-icon>
+                    </button>
+
+                        
+                </div>
+
+
+                <div class="controller" *ngIf="activated_rectangle!=-1" [@enterAnimation]>
+                    <button (click)="higher_rectangle(activated_rectangle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">unfold_more</mat-icon>
+                    </button>
+                    <button (click)="larger_rectangle(activated_rectangle);" style="margin:auto 5px;">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                    </button>
+                    <button (click)="less_higher_rectangle(activated_rectangle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">unfold_less</mat-icon>
+                    </button>
+                    <button (click)="thiner_rectangle(activated_rectangle);" style="margin:auto 10px auto 5px;">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+                    </button>
+
+                    <button (click)="bigger_rectangle_stroke(activated_rectangle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">line_weight</mat-icon>+
+                    </button>
+                    <button (click)="smaller_rectangle_stroke(activated_rectangle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">line_weight</mat-icon>-
+                    </button>
+
+                    <button (click)="rotate_rectangle_clockwise(activated_rectangle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_right</mat-icon>
+                    </button>
+                    <button (click)="rotate_rectangle_anticlockwise(activated_rectangle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_left</mat-icon>
+                    </button>
+                    
+                    <button [matMenuTriggerFor]="textColor">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_color_text</mat-icon>
+                    </button>
+                    <mat-menu #textColor="matMenu" class="editPictureColorSelect">
+                        <button class="editPictureColorSelect-item" *ngFor="let item of colors | slice:1" [ngStyle]="{'background-color': item}" (click)="set_rectangle_font_color(item)" tabIndex="-1" mat-menu-item>
+                        </button>
+                    </mat-menu>
+
+                    <button [matMenuTriggerFor]="backgroundColor">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">format_color_fill</mat-icon>
+                    </button>
+                    <mat-menu #backgroundColor="matMenu" class="editPictureColorSelect">
+                        <button class="editPictureColorSelect-item" *ngFor="let item of colors" [ngClass]="{'no-background': item=='no-background'}" [ngStyle]="{'background-color': item}" (click)="set_rectangle_background_color(item)" tabIndex="-1" mat-menu-item>
+                        </button>
+                    </mat-menu>
+                    
+                    <button (click)="put_rectangle_to_front(activated_rectangle);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">flip_to_front</mat-icon>
+                    </button>
+                    
+
+                        
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="buttons-container">
+            <div class="next-button" (click)="set_crop();" *ngIf="!imageDestination">
+                <span>Suivant</span>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward</mat-icon>
+            </div>
+    
+    
+            <div class="next-button" (click)="step_back();" *ngIf="imageDestination">
+                <span>Retour</span>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+            </div>
+            <div class="next-button" *ngIf="imageDestination">
+                <span>Envoyer</span>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--<img [src]="picture_blob">-->
+
+</div>
