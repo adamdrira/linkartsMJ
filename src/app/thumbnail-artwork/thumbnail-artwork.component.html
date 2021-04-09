@@ -57,7 +57,7 @@
         </div>
 
 
-        <div class="left-container" [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
+        <div class="left-container" [ngClass]="{'no-border-style':in_artwork, 'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
 
             <img  *ngIf="thumbnail_picture_received " #image [lazyLoad]="thumbnail_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
 

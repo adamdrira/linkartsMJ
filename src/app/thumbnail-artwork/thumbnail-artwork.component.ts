@@ -182,7 +182,26 @@ export class ThumbnailArtworkComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if(changes.artwork_container ){
+      console.log("changes")
       if(this.artwork_container){
+        console.log("artwork container ")
+        console.log(this.artwork_container)
+        if(this.emphasized){
+          console.log(this.item.publication_id)
+        }
+        else{
+          if(this.category=="comic"){
+            console.log(this.item.bd_id)
+          }
+          else if(this.category=="drawing"){
+            console.log(this.item.drawing_id)
+          }
+          else{
+            console.log(this.item.writing_id)
+          }
+          console.log(this.item.bd_id)
+        }
+       
         this.scroll = merge(
           fromEvent(window, 'scroll'),
           fromEvent(this.artwork_container, 'scroll')
@@ -431,7 +450,7 @@ export class ThumbnailArtworkComponent implements OnInit {
 
               
               
-              this.Writing_Upload_Service.retrieve_writing_by_name(r[0].file_name).subscribe(r=>{
+              this.Writing_Upload_Service.retrieve_writing_by_name_artwork(r[0].file_name).subscribe(r=>{
                 let file = new Blob([r], {type: 'application/pdf'});
                 this.pdfSrc = URL.createObjectURL(file);
               });
@@ -704,7 +723,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
           
 
-          this.Writing_Upload_Service.retrieve_writing_by_name(this.item.file_name).subscribe(r=>{
+          this.Writing_Upload_Service.retrieve_writing_by_name_artwork(this.item.file_name).subscribe(r=>{
             let file = new Blob([r], {type: 'application/pdf'});
             this.pdfSrc = URL.createObjectURL(file);
           });
@@ -920,7 +939,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           let total_pages=(s[0][0].pagesnumber<=3)?s[0][0].pagesnumber:3;
           let compteur=0;
           for( let k=0; k< total_pages; k++ ) {
-            this.BdSerieService.retrieve_bd_page(bd_id,1,k).subscribe(r=>{
+            this.BdSerieService.retrieve_bd_page_artwork(bd_id,1,k).subscribe(r=>{
               let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
               let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_images_to_show[r[1]]= SafeURL;
@@ -941,7 +960,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         let compteur=0;
         let total_pages=(this.pagesnumber<=3)?this.pagesnumber:3;
         for( let k=0; k< total_pages; k++ ) {
-          this.BdOneShotService.retrieve_bd_page(bd_id,k).subscribe(r=>{
+          this.BdOneShotService.retrieve_bd_page_artwork(bd_id,k).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
             let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_images_to_show[r[1]]= SafeURL;
@@ -961,7 +980,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         let compteur=0;
         let total_pages=(this.pagesnumber<=3)?this.pagesnumber:3;
         for( var i=0; i< total_pages; i++ ) {
-          this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i).subscribe(r=>{
+          this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook_artwork(drawing_id,i).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
             let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_images_to_show[r[1]]= SafeURL;
@@ -976,14 +995,14 @@ export class ThumbnailArtworkComponent implements OnInit {
         };
       }
       else{
-        this.Drawings_Onepage_Service.retrieve_drawing_page(this.drawing_name).subscribe(r=>{
+        this.Drawings_Onepage_Service.retrieve_drawing_page_artwork(this.drawing_name).subscribe(r=>{
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.list_of_images_to_show[0]= SafeURL;
           this.list_of_images_to_show_mobile=[0].concat( this.list_of_images_to_show)
           this.list_of_images_to_show_retrieved=true;
           this.cd.detectChanges();
-                this.initialize_swiper();
+          this.initialize_swiper();
         });
       }
     }

@@ -553,6 +553,9 @@
                 width: 100% !important;
                 padding: 20px 20px;
                 min-height: 400px !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
             }
             > .left-container img {
                 width: 100% !important;
@@ -672,7 +675,7 @@
             position: absolute;
             color: #e2e2e2;
             -webkit-text-stroke: 1px #d2d2d2;
-            bottom: 10px;
+            bottom: 15px;
             right: 15px;
             font-size: 40px;
         }

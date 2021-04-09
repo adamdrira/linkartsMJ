@@ -161,7 +161,7 @@ export class ArtworkComicComponent implements OnInit {
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
   @ViewChild('swiperContainer') swiperContainerRef:ElementRef;
-  @ViewChildren('swiperSlide') swiperSlides:QueryList<ElementRef>;
+  @ViewChildren('swiperSlide') swiperSlide:QueryList<ElementRef>;
   @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;
 
  
@@ -1077,13 +1077,16 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   initialize_swiper() {
+    console.log("ini swiper")
     var THIS = this;
 
     if( this.swiper ) {
+      console.log("this swiper")
       this.swiper.update();
       return;
     }
 
+    console.log("else")
     this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
       speed: 500,
       spaceBetween: 100,
@@ -1131,6 +1134,9 @@ export class ArtworkComicComponent implements OnInit {
 
    
       if(this.style=="Manga"){
+        console.log("this manga swiper")
+        console.log(this.pagesnumber)
+        console.log(this.swiperSlide)
         this.swiper.slideTo(this.pagesnumber,false,false);
       }
       else{
@@ -2331,9 +2337,11 @@ export class ArtworkComicComponent implements OnInit {
 
 
   a_drawing_is_loaded(i){
+    console.log("drawing laoded")
     this.display_comics_pages[i]=true;
+    console.log(this.display_comics_pages)
     this.initialize_swiper();
-    
+ 
   }
 
 
