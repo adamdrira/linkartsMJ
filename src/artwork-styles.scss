@@ -1,6 +1,8 @@
 $default-color: #f9f9f9;
 
 
+
+
 .close-popup {
     position: absolute;
     right: 0px;
@@ -380,7 +382,10 @@ $default-color: #f9f9f9;
                 .loading-page {
                     position: absolute;
                     top: 50%;
-                    left: 50%;
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 }
                 .swiper-wrapper {
                     position: relative;
