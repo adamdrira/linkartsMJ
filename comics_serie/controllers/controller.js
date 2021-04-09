@@ -8,8 +8,7 @@ const Notations = require('../../publications_notation/model/sequelize');
 const Sequelize = require('sequelize');
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
-const { servicesVersion } = require('typescript');
-
+const sharp = require('sharp');
 
 
 module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list_of_users,trendings_contents) => {
@@ -1295,5 +1294,67 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
   });
 
 
+  router.get('/retrieve_bd_chapter_page_artwork/:bd_id/:chapter_number/:bd_page', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+
+
+    const bd_id = parseInt(req.params.bd_id);
+    const chapter_number = req.params.chapter_number;
+    const bd_page = parseInt(req.params.bd_page);
+
+    pages_bd_serie.findOne({
+      where: {
+        bd_id: bd_id,
+        chapter_number:chapter_number,
+        page_number:bd_page,
+      }
+    })
+    .catch(err => {
+    
+    res.status(500).json({msg: "error", details: err});		
+  }).then(page =>  {
+
+      let transform = sharp()
+      transform = transform.resize({fit:sharp.fit.inside,height:266,width:266})
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
+      });
+      if(page && page.file_name){
+        
+        let filename = "./data_and_routes/pages_bd_serie/" + page.file_name;
+        fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(transform);
+          }  
+          else{
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(transform);
+          }     
+        })
+      }
+      else{
+        filename = "./data_and_routes/not-found-image.jpg";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
+      }
+      
+    });
+   
+  });
         
 }
