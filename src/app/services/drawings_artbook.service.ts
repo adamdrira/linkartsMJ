@@ -120,6 +120,11 @@ export class Drawings_Artbook_Service {
     }));
   }
 
+  retrieve_drawing_page_ofartbook_artwork(drawing_id,drawing_page){
+    return this.httpClient.get(`routes/retrieve_drawing_page_ofartbook_artwork/${drawing_id}/${drawing_page}`,{responseType:'blob'}).pipe(map(information=>{
+      return [information,drawing_page];   
+    }));
+  }
 
   retrieve_thumbnail_picture(file_name:string) {
     return this.httpClient.get(`routes/retrieve_drawing_thumbnail_picture/${file_name}`,{responseType:'blob'}).pipe(map(information=>{

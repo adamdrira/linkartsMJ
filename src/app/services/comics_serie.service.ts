@@ -170,6 +170,11 @@ export class BdSerieService {
     }));
   }
 
+  retrieve_bd_page_artwork(bd_id,chapter_number,bd_page){
+    return this.httpClient.get(`routes/retrieve_bd_chapter_page_artwork/${bd_id}/${chapter_number}/${bd_page}`,{responseType:'blob'}).pipe(map(information=>{
+        return [information,bd_page];   
+    }));
+  }
 
 
   retrieve_thumbnail_picture(file_name:string) {

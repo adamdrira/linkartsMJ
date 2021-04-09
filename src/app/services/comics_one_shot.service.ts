@@ -116,6 +116,12 @@ export class BdOneShotService {
       }));
     }
 
+    retrieve_bd_page_artwork(bd_id,bd_page){
+      return this.httpClient.get(`routes/retrieve_bd_oneshot_page_artwork/${bd_id}/${bd_page}`,{responseType:'blob'}).pipe(map(information=>{
+         return [information,bd_page];   
+      }));
+    }
+
 
     retrieve_thumbnail_picture(file_name:string) {
       return this.httpClient.get(`routes/retrieve_thumbnail_bd_picture/${file_name}`,{responseType:'blob'}).pipe(map(information=>{

@@ -151,6 +151,12 @@ export class Writing_Upload_Service {
     }));
   }
 
+  retrieve_writing_by_name_artwork(file_name){
+    return this.httpClient.get(`routes/retrieve_writing_by_name_artwork/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+      return information;   
+    }));
+  }
+
   retrieve_writing_for_options(i){
     return this.httpClient.get(`routes/retrieve_writing_for_options/${i}`,{responseType:'blob'}).pipe(map(information=>{
       return information;   

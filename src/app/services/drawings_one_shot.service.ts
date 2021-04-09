@@ -116,6 +116,12 @@ export class Drawings_Onepage_Service {
   }
 
 
+  retrieve_drawing_page_artwork(file_name:string){
+    return this.httpClient.get(`routes/retrieve_drawing_onepage_by_name_artwork/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+      return information;   
+    }));
+  }
+
   retrieve_thumbnail_picture(file_name:string) {
     return this.httpClient.get(`routes/retrieve_drawing_thumbnail_picture/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
       return information;   
