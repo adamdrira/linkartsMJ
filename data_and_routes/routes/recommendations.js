@@ -50,12 +50,13 @@ pool.connect((err, client, release) => {
 
 const generate_recommendations = (request, response) => {
   
+  let user;
   if( ! request.headers['authorization'] ) {
     return response.status(401).json({msg: "error"});
   }
   else {
     let val=request.headers['authorization'].replace(/^Bearer\s/, '')
-    let user= get_current_user(val)
+    user= get_current_user(val)
     if(!user){
       return response.status(401).json({msg: "error"});
     }
@@ -64,12 +65,6 @@ const generate_recommendations = (request, response) => {
   var last_week = new Date();
   last_week.setDate(last_week.getDate() - 350);
 
-
-
-  var user=0;
-  jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
-    user=decoded.id;
-  });
   
   pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1  AND "createdAt" ::date <=$2 AND "createdAt" ::date >= $3 limit 100', [user,_today,last_week], (error, results) => {
     if (error) {
@@ -302,7 +297,14 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
   var test;
   fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
     if(err){
-      response.status(200).send([{reset:true}])
+      test={"comic":
+        {"0":null,"1":null,"2":null},
+      "drawing":
+        {"0":null,"1":null,"2":null},
+      "writing":
+        {"0":null,"1":null,"2":null} 
+      };
+      get_it();
     }  
     else{
       test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
@@ -316,12 +318,12 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
     if(index_bd<0){
       list_bd_os=null;
     }
-    else{
+    else if(test.comic){
       list_bd_os= test.comic[index_bd];
     }
     var compt = 0;
    
-    if (list_bd_os!=null){
+    if (list_bd_os){
       for(let i = 0; i < list_bd_os.length; ++i){
         if(list_bd_os[i][1]=="one-shot"){
           compt=compt + 1;
@@ -518,7 +520,14 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
   var test;
   fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
     if(err){
-      response.status(200).send([{reset:true}])
+      test={"comic":
+        {"0":null,"1":null,"2":null},
+      "drawing":
+        {"0":null,"1":null,"2":null},
+      "writing":
+        {"0":null,"1":null,"2":null} 
+      };
+      get_it();
     }  
     else{
       test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
@@ -530,12 +539,12 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
     if(index_bd<0){
       list_bd=null;
     }
-    else{
+    else if(test.comic){
       list_bd= test.comic[index_bd];
     }
     var compt = 0;
   
-    if (list_bd!=null){
+    if (list_bd){
       for(var i = 0; i < list_bd.length; ++i){
         if(list_bd[i][1]=="serie")
             //list_bd.splice(i, 1);
@@ -735,7 +744,13 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
 
     fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
       if(err){
-        test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-80.json`));
+        test={"comic":
+          {"0":null,"1":null,"2":null},
+        "drawing":
+          {"0":null,"1":null,"2":null},
+        "writing":
+          {"0":null,"1":null,"2":null} 
+        }
         get_it();
       }  
       else{
@@ -750,7 +765,7 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
     if(index_drawing<0){
       list_drawing_artbook=null;
     }
-    else{
+    else if(test.drawing){
       list_drawing_artbook= test.drawing[index_drawing];
     }
    
@@ -925,7 +940,13 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
     });
     fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
       if(err){
-        test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-80.json`));
+        test={"comic":
+          {"0":null,"1":null,"2":null},
+        "drawing":
+          {"0":null,"1":null,"2":null},
+        "writing":
+          {"0":null,"1":null,"2":null} 
+        }
         get_it();
       }  
       else{
@@ -933,18 +954,18 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
         get_it();
       }
     })
-  var list_drawing_os
+  var list_drawing_os;
   function get_it(){
     if(index_drawing<0){
       list_drawing_os=null;
     }
-    else{
+    else if(test.drawing){
       list_drawing_os= test.drawing[index_drawing];
     }
     
     var compt = 0;
   
-    if (list_drawing_os!=null){
+    if (list_drawing_os){
       for(var i = 0; i < list_drawing_os.length; ++i){
         if(list_drawing_os[i][1]=="one-shot")
         compt=compt+1;
@@ -1118,7 +1139,13 @@ const get_first_recommendation_writings_for_user = (request, response) => {
     });
     fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
       if(err){
-        test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-80.json`));
+        test={"comic":
+          {"0":null,"1":null,"2":null},
+        "drawing":
+          {"0":null,"1":null,"2":null},
+        "writing":
+          {"0":null,"1":null,"2":null} 
+        };
         get_it();
       }  
       else{
@@ -1127,12 +1154,12 @@ const get_first_recommendation_writings_for_user = (request, response) => {
       }
     })
  
-  var list_writing
+  var list_writing;
   function get_it(){
     if(index_writing<0){
       list_writing=null;
     }
-    else{
+    else if(test.writing){
       list_writing= test.writing[index_writing];
     }
   
@@ -1144,7 +1171,7 @@ const get_first_recommendation_writings_for_user = (request, response) => {
     
     var list_of_writings_already_seen=[]
     let number_of_contents_by_category=[0,0,0,0,0] // Article,Roman,Illustrated novel,Poetry,Scenario
-    if(list_writing!=null){
+    if(list_writing){
       let k=0;
       for (let item=0; item< list_writing.length;item++){ 
         list_of_writings_already_seen.push(list_writing[item][0]) 
