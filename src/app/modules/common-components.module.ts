@@ -73,11 +73,13 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
 import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
+import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
 
 
 @NgModule({
   declarations: [
    
+    PopupEditPictureComponent,
     NavbarLinkartsComponent,
     PopupNavbarComponent,
     PopupNavbarDisconnectedComponent,
@@ -155,6 +157,7 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     EmojiModule,
   ],
   exports: [
+    PopupEditPictureComponent,
     NavbarLinkartsComponent,
     PopupNavbarComponent,
     PopupNavbarDisconnectedComponent,
