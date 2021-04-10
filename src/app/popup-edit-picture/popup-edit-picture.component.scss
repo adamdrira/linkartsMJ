@@ -157,20 +157,12 @@
                 background: rgb(14 31 64);
 
                 .image-container-fits {
-
-                    width: fit-content;
-                    height:100%;
                     display:flex;
                     margin: auto auto;
-                    
-                    max-width: 100%;
-                    max-height: 100%;
-                    background: white;
-
                     img {
-                        max-width: 100%;
-                        max-height: 100%;
                         object-fit: contain;
+                        height: 100%;
+                        width: 100%;
                         margin: auto auto;
                         
                         user-drag: none; 

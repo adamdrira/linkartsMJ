@@ -51,7 +51,7 @@
 
 
             <div class="image-container">
-                <div class="image-container-fits">
+                <div #image_container class="image-container-fits" [style.width.px]="image_width ? image_width : 200" [style.height.px]="image_height ? image_height : 100">
                     <img [src]="imageDestination" (click)="set_no_activated_objects();">
 
                     <ng-container *ngFor="let item of texts; let i = index">
@@ -298,9 +298,14 @@
                 <span>Retour</span>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
             </div>
-            <div class="next-button" *ngIf="imageDestination">
-                <span>Envoyer</span>
-                <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+            <div class="next-button" (click)="send_picture();" *ngIf="imageDestination">
+
+                <ng-container *ngIf="!loading">
+                    <span>Envoyer</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+                </ng-container>
+                <mat-spinner *ngIf="loading" diameter="20"  style="margin:auto;"></mat-spinner>
+
             </div>
         </div>
     </div>

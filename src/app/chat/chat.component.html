@@ -589,6 +589,15 @@
                                         </button>
                                     </mat-menu>
 
+                                    
+
+                                    <button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);" (click)="edit(list_of_messages_pictures[list_of_messages.length -1 - i])"
+                                        *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')   && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">
+                                            edit</mat-icon>
+                                    </button>
+
+
 
                                     <button (click)="respond_to_message(list_of_messages.length -1 - i)"
                                         *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
@@ -797,6 +806,14 @@
                                     </mat-menu>
 
                                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
+
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
+                                            (click)="edit(list_of_messages_pictures[list_of_messages.length -1 - i])">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">edit
+                                            </mat-icon>
+                                            <span>Editer</span>
+                                        </button>
+
                                         <button class="chat-menu-item" mat-menu-item
                                             (click)="delete_message(list_of_messages.length -1 - i)">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline
@@ -1125,6 +1142,12 @@
                                     </mat-menu>
 
 
+                                    <button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);" (click)="edit(list_of_messages_pictures[list_of_messages.length -1 - i])"
+                                        *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">
+                                            edit</mat-icon>
+                                    </button>
+
                                     <button (click)="respond_to_message(list_of_messages.length -1 - i)"
                                         *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
@@ -1335,6 +1358,13 @@
                         <span [@enterAnimation]><i>{{attachments_name[i]}}</i></span>
 
                     </div>
+
+                    <div *ngIf="attachments && attachments.length==1 && (attachments_type[0]=='picture_message' || attachments_type[0]=='picture_attachment')" 
+                    (click)="edit(attachments[0]);" class="edit-picture" [@enterFromBottomAnimation]>
+                        <mat-icon>edit</mat-icon>
+                        <span>Editer l'image</span>
+                    </div>
+
                 </div>
 
 

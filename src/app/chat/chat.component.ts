@@ -18,7 +18,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { ResizedEvent } from 'angular-resize-event';
 import { merge, fromEvent } from 'rxjs'
-//import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
+import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
 
 declare var $: any;
 
@@ -1433,10 +1433,16 @@ export class ChatComponent implements OnInit  {
 /*************************************Partie gestion des messages***********************************/
 
   edit(e:any) {
-    /*const dialogRef = this.dialog.open(PopupEditPictureComponent, {
+    const dialogRef = this.dialog.open(PopupEditPictureComponent, {
       data: {picture_blob:e,},
       panelClass: "popupEditPictureClass",
-    });*/
+    }).afterClosed().subscribe(result => {
+      this.send_image(result);
+    });
+  }
+  
+  send_image(blob: Blob) {
+    
   }
 
   delete_message(i){

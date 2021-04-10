@@ -1,11 +1,13 @@
 import { trigger, transition, style, animate } from '@angular/animations';
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
 import { Location } from '@angular/common';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { max } from 'rxjs/operators';
+
+import domtoimage from 'dom-to-image';
 
 declare var Cropper;
 
@@ -54,6 +56,11 @@ export class PopupEditPictureComponent implements OnInit {
     step=0;
     imageSource: SafeUrl = "";
     imageDestination: string = "";
+    image_width:number;
+    image_height:number;
+    image_initial_width:number;
+    image_initial_height:number;
+    scale:number;
     cropper: any;
     cropperInitialized: boolean = false;
 
@@ -110,10 +117,107 @@ export class PopupEditPictureComponent implements OnInit {
       canvas.toBlob(blob => {
         if(this.imageDestination==''){
           this.imageDestination = canvas.toDataURL("image/png");
+
+          this.image_width = canvas.width;
+          this.image_height = canvas.height;
+          this.image_initial_width = canvas.width;
+          this.image_initial_height = canvas.height;
+          this.scale= this.image_height / this.image_width;
+
+          if( canvas.height > ((0.85 * window.innerHeight) - 51 - 66 - 80 - 46) ) {
+            this.image_height = ((0.85 * window.innerHeight) - 51 - 66 - 80 - 46);
+          }
+          else {
+            this.image_height = canvas.height;
+          }
+          
+
+          if( canvas.width > 0.8 * window.innerWidth ) {
+            this.image_width = 0.8 * window.innerWidth;
+          }
+          else {
+            this.image_width = canvas.width;
+          }
+          
+
           this.cd.detectChanges();
+          this.update_image_container_size();
         }
       }, "image/png");
       
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+      this.update_image_container_size();
+    }
+    
+
+    //width: 1080
+    //height: 1349
+    update_image_container_size() {
+      if(this.imageDestination) {
+        
+        if( this.image_initial_height < this.get_height_available() && this.image_initial_width < this.get_width_available() ) {
+          this.image_height = this.image_initial_height;
+          this.image_width = this.image_initial_width;
+        }
+
+        if( this.image_initial_height > this.get_height_available() && this.image_initial_width < this.get_width_available() ) {
+          this.image_height = this.get_height_available();
+          this.image_width = this.image_height / this.scale;
+          return;
+        }
+
+        if( this.image_initial_height < this.get_height_available() && this.image_initial_width > this.get_width_available() ) {
+          this.image_width = this.get_width_available();
+          this.image_height = this.scale * this.image_width;
+          return;
+        }
+
+
+        if( this.image_initial_height > this.get_height_available() && this.image_initial_width > this.get_width_available() ) {
+          
+          /*if( (this.image_initial_height - this.get_height_available()) > (this.image_initial_width - this.get_width_available() ) ) {
+            this.image_height = this.get_height_available();
+            this.image_width = this.image_height / this.scale;
+          }
+          else {
+            this.image_width = this.get_width_available();
+            this.image_height = this.scale * this.image_width;
+          }*/
+
+          if( this.scale * this.get_width_available() > this.get_height_available() ) {
+            this.image_height = this.get_height_available();
+            this.image_width = this.image_height / this.scale;
+          }
+          else {
+            this.image_width = this.get_width_available();
+            this.image_height = this.scale * this.image_width;
+          }
+
+        }
+      }
+      
+    }
+
+
+    get_height_available() {
+      if( window.innerWidth > 650 ) {
+        return ((0.85 * window.innerHeight) - 51 - 66 - 80 - 46);
+      }
+      else {
+        return ((window.innerHeight) - 51 - 66 - 80 - 46);
+      }
+    }
+
+    get_width_available() {
+      if( window.innerWidth > 650 ) {
+        return 0.8 * window.innerWidth;
+      }
+      else {
+        return window.innerWidth;
+      }
     }
 
 
@@ -129,7 +233,7 @@ export class PopupEditPictureComponent implements OnInit {
         z_index:this.get_max_index()+1,
       });
       this.set_no_activated_objects();
-      this.activated_circle = this.circles.length - 1;
+      this.activated_rectangle = this.rectangles.length - 1;
     }
 
 
@@ -374,6 +478,7 @@ export class PopupEditPictureComponent implements OnInit {
       if( !this.imageDestination ) {
         return;
       }
+      
       this.cropperInitialized=false;
       this.imageDestination='';
 
@@ -427,5 +532,42 @@ export class PopupEditPictureComponent implements OnInit {
       }
     }
 
+
+
+    filter (node) {
+      return (node.tagName !== 'i');
+    }
+    @ViewChild ('image_container') image_container:ElementRef;
+    loading=false;
+    send_picture() {
+      if(this.loading){
+        return
+      }
+      this.loading=true;
+
+      this.set_no_activated_objects();
+      var THIS = this;
+        
+
+
+      setTimeout(() => domtoimage.toSvg(this.image_container.nativeElement, {filter: THIS.filter})
+      .then(function (svg) {
+
+          const svg_file = svg.replace(/data:image\/svg\+xml;charset=utf-8,/, '');
+          //console.log(svg_file);
+
+          const blob = new Blob([svg_file], {type: ''});
+          THIS.dialogRef.close(blob);
+          THIS.loading=false;
+      })
+      .catch(function (error) {
+        const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+          data: { showChoice: false, text: 'Une erreur est survenue' },
+          panelClass: "popupConfirmationClass",
+        });
+        THIS.loading=false;
+      }), 1000);
+
+    }
     
 }
