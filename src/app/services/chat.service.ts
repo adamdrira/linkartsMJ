@@ -28,7 +28,7 @@ export class ChatService {
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
         if(l[0]  && (l[0].status=='visitor' || l[0].status=='account') ){
           this.messages=<Subject<Message>>this.wsService
-          .connect(`wss://www.linkarts.fr/path?id=${l[0].id}`)
+          .connect(`ws://localhost:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               this.wsService.check_state();
               let data = JSON.parse(response.data);
@@ -305,12 +305,20 @@ add_spam_to_contacts(id):Observable<any>{
 
 
 
-chat_sending_images(blob,terminaison,file_name:string):Observable<any>{
+chat_sending_images(blob,file_name:string):Observable<any>{
     const formData = new FormData();
     formData.append('picture', blob, "image");
-    return this.httpClient.post('routes/chat_sending_images', formData, {withCredentials: true,headers:{'terminaison':terminaison,'file_name':file_name}} ).pipe(map((information)=>{
+    return this.httpClient.post(`routes/chat_sending_images/${file_name}`, formData, {withCredentials: true} ).pipe(map((information)=>{
       return information;
     }));
+}
+
+chat_upload_svg(blob,file_name:string,friend_type,friend_id):Observable<any>{
+  const formData = new FormData();
+  formData.append('picture', blob, "image");
+  return this.httpClient.post(`routes/chat_upload_svg/${file_name}/${friend_type}/${friend_id}`, formData, {withCredentials: true} ).pipe(map((information)=>{
+    return information;
+  }));
 }
 
 get_picture_sent_by_msg(file_name):Observable<any>{
@@ -325,8 +333,22 @@ check_if_file_exists(type_of_friend,friend_id,file_name,value):Observable<any>{
   }));
 }
 
+check_if_file_exists_svg(type_of_friend,friend_id,file_name):Observable<any>{
+  return this.httpClient.get(`routes/check_if_file_exists_svg/${type_of_friend}/${friend_id}/${file_name}`).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+
+
 get_attachment(file_name,friend_type,friend_id):Observable<any>{
   return this.httpClient.get(`routes/get_attachment/${file_name}/${friend_type}/${friend_id}`, {responseType:'blob'} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_attachment_svg(file_name,friend_type,friend_id):Observable<any>{
+  return this.httpClient.get(`routes/get_attachment_svg/${file_name}/${friend_type}/${friend_id}`, {responseType:'blob'} ).pipe(map((information)=>{
     return information;
   }));
 }
@@ -484,7 +506,7 @@ research_chat_sections(text:string,id_friend,is_a_group_chat):Observable<any>{
 //FRIENDS STATUS
 
 get_users_connected_in_the_chat(list_of_friends){
-  return this.httpClient.post('https://www.linkarts.fr/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post('http://localhost:4600/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
