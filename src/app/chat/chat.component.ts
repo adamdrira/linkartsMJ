@@ -22,7 +22,7 @@ import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-pict
 
 declare var $: any;
 
-var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
+var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
@@ -788,36 +788,51 @@ export class ChatComponent implements OnInit  {
             this.list_of_messages_date[i]=this.date_of_message(r[0][0][i].createdAt,0);
             if(this.list_of_messages[i].is_an_attachment){
               if(this.list_of_messages[i].attachment_type=='picture_message' && this.list_of_messages[i].status!="deleted"){
-                //this.compteur_image+=1;
                 this.chatService.get_picture_sent_by_msg(this.list_of_messages[i].attachment_name).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   if(r[1]==this.compteur_get_messages){
                     this.list_of_messages_pictures[i]=url;
                   }
-                 
                 })
               }
               else if(this.list_of_messages[i].attachment_type=='picture_attachment' && this.list_of_messages[i].status!="deleted"){
-                //this.compteur_image+=1;
-                this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
-                  let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  if(r[1]==this.compteur_get_messages){
-                    this.list_of_messages_pictures[i]=url;
+
+               
+                  var re = /(?:\.([^.]+))?$/;
+                  if(re.exec(this.list_of_messages[i].attachment_name.toLowerCase())[1]=="svg"){
+                    this.chatService.get_attachment_svg(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                      let THIS=this;
+                      var reader = new FileReader()
+                      reader.readAsText(t);
+                      reader.onload = function(this) {
+                        let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+                        let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+                        if(r[1]==THIS.compteur_get_messages){
+                          THIS.list_of_messages_pictures[i]=url;
+                        }
+                      }
+                    })
+                    
                   }
+                  else{
+                    this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                      let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                      if(r[1]==this.compteur_get_messages){
+                        this.list_of_messages_pictures[i]=url;
+                      }
+                    })
+                    
+                  }
+                 
                   
-                })
               }
               else if(this.list_of_messages[i].attachment_type=='file_attachment' && this.list_of_messages[i].status!="deleted"){
-                //this.compteur_image+=1;
                 this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   if(r[1]==this.compteur_get_messages){
                     this.list_of_messages_files[i]=SafeURL;
-                    //this.loaded_image(i);
-                    
+                     
                   }
                   
                 })
@@ -854,16 +869,14 @@ export class ChatComponent implements OnInit  {
                 }
                 this.calculate_dates_to_show();
                 this.display_messages=true;
-                //if(this.compteur_pp==0 && this.compteur_image==0){
-                  this.cd.detectChanges();
-                  this.put_messages_visible=true;
-                  this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
-                  this.cd.detectChanges();
-                  this.can_load_images=true;
-                  if(this.list_of_messages.length>0){
-                    this.can_get_other_messages=true;
-                  }
-                //};
+                this.cd.detectChanges();
+                this.put_messages_visible=true;
+                this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
+                this.cd.detectChanges();
+                this.can_load_images=true;
+                if(this.list_of_messages.length>0){
+                  this.can_get_other_messages=true;
+                }
               })
             }
           }
@@ -1051,6 +1064,7 @@ export class ChatComponent implements OnInit  {
         this.attachments_name.push(file_name);
         this.attachments_size.push(size);
         this.attachments_type.push('picture_message');
+       
         this.display_attachments=true;
       }
     }
@@ -1227,8 +1241,9 @@ export class ChatComponent implements OnInit  {
       temporary_id:this.temporary_id,
       is_a_group_chat:(this.friend_type=='user')?false:true,
     };
+    
     this.temporary_id+=1;
-    this.chatService.chat_sending_images(file,re.exec(file.name)[1],file_name).subscribe(l=>{
+    this.chatService.chat_sending_images(file,file_name).subscribe(l=>{
       this.chatService.messages.next(message);
     })
     this.index_of_show_pp_right=this.index_of_show_pp_right+1;
@@ -1272,17 +1287,21 @@ export class ChatComponent implements OnInit  {
           this.uploader.setOptions( uo);
           this.uploader.queue[0].upload();
           let message ={
+            id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
             id_receiver:this.friend_id,  
             message:null,
             attachment_name:r[0].value,
             attachment_type:"picture_attachment",
+            id_chat_section:this.id_chat_section,
+            is_a_response:this.respond_to_a_message,
+            id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
+            message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
             list_of_users_who_saw:[this.current_user_id],
             list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
             is_an_attachment:true,
             is_from_server:false,
             size:this.attachments_size[i],
-            is_a_response:false,
             status:"sent",
             is_a_group_chat:(this.friend_type=='user')?false:true,
           };
@@ -1297,9 +1316,14 @@ export class ChatComponent implements OnInit  {
       else{
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).subscribe(r=>{
           let message ={
+            id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
             id_receiver:this.friend_id,  
             message:null,
+            id_chat_section:this.id_chat_section,
+            is_a_response:this.respond_to_a_message,
+            id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
+            message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
             attachment_name:r[0].value,
             attachment_type:"picture_attachment",
             list_of_users_who_saw:[this.current_user_id],
@@ -1307,7 +1331,6 @@ export class ChatComponent implements OnInit  {
             is_an_attachment:true,
             is_from_server:false,
             size:this.attachments_size[i],
-            is_a_response:false,
             status:"sent",
             is_a_group_chat:(this.friend_type=='user')?false:true,
           };
@@ -1329,16 +1352,20 @@ export class ChatComponent implements OnInit  {
            this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
            this.uploader.queue[0].upload();
            let message ={
+            id_user_name:this.current_user_pseudo,
              id_user:this.current_user_id,   
              id_receiver:this.friend_id,  
              message:null,
+             id_chat_section:this.id_chat_section,
              attachment_name:r[0].value,
              attachment_type:"file_attachment",
+            is_a_response:this.respond_to_a_message,
+            id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
+            message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
              list_of_users_who_saw:[this.current_user_id],
               list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
              is_an_attachment:true,
              size:this.attachments_size[i],
-             is_a_response:false,
              is_from_server:false,
              status:"sent",
              is_a_group_chat:(this.friend_type=='user')?false:true,
@@ -1354,8 +1381,10 @@ export class ChatComponent implements OnInit  {
       else{
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).subscribe(r=>{
            let message ={
+            id_user_name:this.current_user_pseudo,
              id_user:this.current_user_id,   
              id_receiver:this.friend_id,  
+             id_chat_section:this.id_chat_section,
              message:null,
              attachment_name:r[0].value,
              attachment_type:"file_attachment",
@@ -1432,16 +1461,96 @@ export class ChatComponent implements OnInit  {
 /*************************************Partie gestion des messages***********************************/
 /*************************************Partie gestion des messages***********************************/
 
-  edit(e:any) {
-    const dialogRef = this.dialog.open(PopupEditPictureComponent, {
-      data: {picture_blob:e,},
-      panelClass: "popupEditPictureClass",
-    }).afterClosed().subscribe(result => {
-      this.send_image(result);
-    });
+  edit(index:any) {
+    if(index>=0){
+      let attachment_name = this.list_of_messages[index].attachment_name;
+      const dialogRef = this.dialog.open(PopupEditPictureComponent, {
+        data: {
+          modify_chat_after:true,
+          attachment_name:attachment_name,
+          type:(this.list_of_messages[index].attachment_type=="picture_attachment")?"attachment":"message",
+          friend_type:(this.friend_type=='user')?'user':'group',
+          chat_friend_id:this.chat_friend_id
+        },
+        panelClass: "popupEditPictureClass",
+      }).afterClosed().subscribe(result => {
+        if(result){
+          this.send_image(result,attachment_name);
+        }
+       
+      });
+    }
+    else{
+      let picture_blob=this.attachments_safe[0];
+      const dialogRef = this.dialog.open(PopupEditPictureComponent, {
+        data: {
+          modify_chat_before:true,
+          picture_blob:picture_blob,
+          friend_type:(this.friend_type=='user')?'user':'group',
+          chat_friend_id:this.chat_friend_id
+        },
+        panelClass: "popupEditPictureClass",
+      }).afterClosed().subscribe(result => {
+        let attachment_name=this.attachments_name[0];
+        console.log("send image before")
+        if(result){
+          this.send_image(result,attachment_name);
+        }
+      });
+    }
+    
   }
   
-  send_image(blob: Blob) {
+  send_image(blob: Blob,attachment_name) {
+    
+      console.log("after " + attachment_name)
+      this.chatService.check_if_file_exists_svg((this.friend_type=='user')?'user':'group',this.chat_friend_id,attachment_name).subscribe(r=>{
+        let name=r[0].value ;
+        this.chatService.chat_upload_svg(blob,name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(l=>{
+          this.chatService.messages.next(message);
+        })
+        let message ={
+          id_user_name:this.current_user_pseudo,
+          id_user:this.current_user_id,   
+          id_receiver:this.friend_id,  
+          message:null,
+          id_chat_section:this.id_chat_section,
+          attachment_name:name,
+          attachment_type:"picture_attachment",
+          list_of_users_who_saw:[this.current_user_id],
+          list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
+          is_an_attachment:true,
+          is_from_server:false,
+          size:blob.size/1024/1024,
+          is_a_response:false,
+          status:"sent",
+          is_a_group_chat:(this.friend_type=='user')?false:true,
+        };
+        this.index_of_show_pp_right=this.index_of_show_pp_right+1;
+        this.list_of_show_pp_left.splice(0,0,false);
+        var reader = new FileReader()
+        let THIS=this;
+        reader.readAsText(blob);
+        reader.onload = function(this) {
+            let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+            let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+            THIS.list_of_messages_files.splice(0,0,url);
+            THIS.list_of_messages_pictures.splice(0,0,url);
+            THIS.list_of_messages.splice(0,0,message);
+            THIS.list_of_messages_date.splice(0,0,THIS.date_of_message("time",1));
+        }
+        this.attachments_safe=[];
+        this.attachments_type=[];
+        this.attachments_name=[];
+        this.attachments_for_sql=[];
+        this.attachments=[];
+        this.compt_at=0;
+        this.display_attachments=false;
+        this.uploader.queue=[];  
+        
+      })
+    
+    
     
   }
 
@@ -3205,6 +3314,8 @@ chat_service_managment_function(msg){
     }
     //a message from the server to tell that the message has been sent
     else if(msg[0].server_message=="received" ){
+      console.log("received message")
+      console.log(msg[0])
       //ajouter une fonction pour récupérer le message qui n'a pas été envoyé sur ce client
       if(this.user_present){
         if(msg[0].message.is_a_group_chat){
@@ -3600,7 +3711,8 @@ remove_contact(){
 
   show_images(indice){
     let list =this.list_of_messages_pictures
-    let new_list=[]
+    let new_list=[];
+    let new_list_types=[];
     let new_indice;
     let len=list.length;
     for(let i=0;i<len;i++){
@@ -3609,12 +3721,14 @@ remove_contact(){
           new_indice=new_list.length;
         }
         new_list.push(this.list_of_messages[i].attachment_name);
+        new_list_types.push(this.list_of_messages[i].attachment_type);
       }
     }
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {
         for_chat:true,
         list_of_pictures:new_list,
+        list_of_types:new_list_types,
         index_of_picture:new_indice,
         friend_type:(this.friend_type=='user')?'user':'group',
         chat_friend_id:this.chat_friend_id

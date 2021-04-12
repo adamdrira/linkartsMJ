@@ -2,10 +2,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
-import { Location } from '@angular/common';
+import { ChatService } from '../services/chat.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-import { max } from 'rxjs/operators';
 
 import domtoimage from 'dom-to-image';
 
@@ -32,8 +31,8 @@ export class PopupEditPictureComponent implements OnInit {
     private renderer: Renderer2,
     private cd:ChangeDetectorRef,
     public dialogRef: MatDialogRef<PopupEditPictureComponent>,
-    private location: Location,
     public dialog: MatDialog,
+    private ChatService:ChatService,
     private navbar: NavbarService,
     private sanitizer : DomSanitizer,
 
@@ -48,7 +47,7 @@ export class PopupEditPictureComponent implements OnInit {
         }
       })
       dialogRef.disableClose = true;
-      this.picture_blob=this.sanitizer.bypassSecurityTrustUrl(data.picture_blob);
+      
     }
 
     show_icon=false;
@@ -65,14 +64,78 @@ export class PopupEditPictureComponent implements OnInit {
     cropperInitialized: boolean = false;
 
 
-    @ViewChild("image") set imageElement(content: ElementRef) {
-      if( this.picture_blob ) {
-        this.initialize_cropper(content);
-      }
-    }
-    
+    @ViewChild("image")  image : ElementRef;
     
     ngOnInit(): void {
+      console.log("popup");
+      console.log(this.data)
+      if(this.data.modify_chat_after){
+        var re = /(?:\.([^.]+))?$/;
+
+        if(this.data.type=="attachment"){
+          this.ChatService.get_attachment_popup(this.data.attachment_name,this.data.friend_type,this.data.chat_friend_id).subscribe(r=>{
+          
+            if(re.exec(this.data.attachment_name)[1].toLowerCase()=="svg"){
+              let THIS=this;
+              var reader = new FileReader()
+              reader.readAsText(r);
+              reader.onload = function(this) {
+                  let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+                  let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+                  const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
+                  THIS.picture_blob= SafeURL;
+                  console.log(THIS.picture_blob)
+                  THIS.cd.detectChanges();
+                  THIS.initialize_cropper(THIS.image)
+              }
+            }
+            else{
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.picture_blob= SafeURL;
+              this.cd.detectChanges();
+              this.initialize_cropper(this.image)
+            }
+            
+  
+          }) ;
+        }
+        else{
+          this.ChatService.get_picture_sent_by_msg(this.data.attachment_name).subscribe(r=>{
+          
+            if(re.exec(this.data.attachment_name)[1].toLowerCase()=="svg"){
+              let THIS=this;
+              var reader = new FileReader()
+              reader.readAsText(r);
+              reader.onload = function(this) {
+                  let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+                  let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+                  const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
+                  THIS.picture_blob= SafeURL;
+                  console.log(THIS.picture_blob)
+                  THIS.cd.detectChanges();
+                  THIS.initialize_cropper(THIS.image)
+              }
+            }
+            else{
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.picture_blob= SafeURL;
+              this.cd.detectChanges();
+              this.initialize_cropper(this.image)
+            }
+            
+  
+          }) ;
+        }
+        
+      }
+      else if(this.data.modify_chat_before){
+        this.picture_blob=this.data.picture_blob;
+        this.cd.detectChanges();
+        this.initialize_cropper(this.image)
+      }
+      
     }
 
     initialize_cropper(content: ElementRef) {
@@ -552,9 +615,7 @@ export class PopupEditPictureComponent implements OnInit {
 
       setTimeout(() => domtoimage.toSvg(this.image_container.nativeElement, {filter: THIS.filter})
       .then(function (svg) {
-
           const svg_file = svg.replace(/data:image\/svg\+xml;charset=utf-8,/, '');
-          //console.log(svg_file);
 
           const blob = new Blob([svg_file], {type: ''});
           THIS.dialogRef.close(blob);
@@ -570,4 +631,8 @@ export class PopupEditPictureComponent implements OnInit {
 
     }
     
+
+    close_dialog(){
+      this.dialogRef.close();
+    }
 }

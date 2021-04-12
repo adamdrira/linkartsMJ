@@ -4,17 +4,20 @@
 
     <div class="title">
 
-        <div [ngClass]="{'opened': !imageDestination }">
-            <mat-icon [ngClass]="{'invisible': !show_icon }">crop</mat-icon>
-            <span>Rogner</span>
+        <div class="titles-container">
+            <div [ngClass]="{'opened': !imageDestination }">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">crop</mat-icon>
+                <span>Rogner</span>
+            </div>
+            
+            <div [ngClass]="{'opened': imageDestination }">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                <span>Éditer</span>
+            </div>
         </div>
         
-        <div [ngClass]="{'opened': imageDestination }">
-            <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-            <span>Éditer</span>
-        </div>
 
-        <button class="close-button" [mat-dialog-close]="true">
+        <button class="close-button" (click)="close_dialog()">
             <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
         </button>
     </div>
@@ -289,14 +292,15 @@
 
         <div class="buttons-container">
             <div class="next-button" (click)="set_crop();" *ngIf="!imageDestination">
-                <span>Suivant</span>
+                <span>Valider</span>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward</mat-icon>
             </div>
     
     
-            <div class="next-button" (click)="step_back();" *ngIf="imageDestination">
-                <span>Retour</span>
+            <div class="prev-button" (click)="step_back();" *ngIf="imageDestination">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+                <span>Retour</span>
+                
             </div>
             <div class="next-button" (click)="send_picture();" *ngIf="imageDestination">
 
@@ -312,6 +316,5 @@
 
 
 
-    <!--<img [src]="picture_blob">-->
 
 </div>

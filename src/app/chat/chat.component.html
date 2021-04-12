@@ -290,10 +290,10 @@
                                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
 
                                         <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                            (click)="edit(list_of_messages_pictures[list_of_messages.length -1 - i])">
+                                            (click)="edit(list_of_messages.length -1 - i)">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">edit
                                             </mat-icon>
-                                            <span>Editer</span>
+                                            <span>Éditer</span>
                                         </button>
 
                                         <button class="chat-menu-item" mat-menu-item
@@ -387,10 +387,11 @@
                                     </div>
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
-                                            (click)="show_images(list_of_messages.length -1 - i)">
+                                            (click)="show_images(list_of_messages.length -1 - i)"
+                                            class="image-container">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
-                                                style="max-width:140px;max-height:140px;"
+                                               
                                                 [customObservable]="scroll"
                                                 *ngIf="can_load_images"
                                                 [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy"  >
@@ -547,12 +548,13 @@
                                     </div>
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
-                                            (click)="show_images(list_of_messages.length -1 - i)">
+                                            (click)="show_images(list_of_messages.length -1 - i)"
+                                            class="image-container">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
                                             [customObservable]="scroll"
                                             *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
-                                                style="max-width:140px;max-height:140px;"
+                                               
                                                 [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
                                         </div>
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'"
@@ -591,7 +593,7 @@
 
                                     
 
-                                    <button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);" (click)="edit(list_of_messages_pictures[list_of_messages.length -1 - i])"
+                                    <button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);" (click)="edit(list_of_messages.length -1 - i)"
                                         *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')   && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             edit</mat-icon>
@@ -808,10 +810,10 @@
                                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
 
                                         <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                            (click)="edit(list_of_messages_pictures[list_of_messages.length -1 - i])">
+                                            (click)="edit(list_of_messages.length -1 - i)">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">edit
                                             </mat-icon>
-                                            <span>Editer</span>
+                                            <span>Éditer</span>
                                         </button>
 
                                         <button class="chat-menu-item" mat-menu-item
@@ -916,12 +918,13 @@
 
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
-                                            (click)="show_images(list_of_messages.length -1 - i)">
+                                            (click)="show_images(list_of_messages.length -1 - i)"
+                                            class="image-container">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
                                             [customObservable]="scroll"
                                             *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
-                                                style="max-width:140px;max-height:140px;"
+                                               
                                                 [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
                                         </div>
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'"
@@ -1100,12 +1103,13 @@
                                     </div>
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
-                                            (click)="show_images(list_of_messages.length -1 - i)">
+                                            (click)="show_images(list_of_messages.length -1 - i)"
+                                            class="image-container">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)"
                                             [customObservable]="scroll"
                                             *ngIf="can_load_images"
                                                 [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
-                                                style="max-width:140px;max-height:140px;"
+                                               
                                                 [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
                                         </div>
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'"
@@ -1142,7 +1146,7 @@
                                     </mat-menu>
 
 
-                                    <button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);" (click)="edit(list_of_messages_pictures[list_of_messages.length -1 - i])"
+                                    <button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);" (click)="edit(list_of_messages.length -1 - i)"
                                         *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             edit</mat-icon>
@@ -1360,9 +1364,9 @@
                     </div>
 
                     <div *ngIf="attachments && attachments.length==1 && (attachments_type[0]=='picture_message' || attachments_type[0]=='picture_attachment')" 
-                    (click)="edit(attachments[0]);" class="edit-picture" [@enterFromBottomAnimation]>
+                    (click)="edit(-1);" class="edit-picture" [@enterFromBottomAnimation]>
                         <mat-icon>edit</mat-icon>
-                        <span>Editer l'image</span>
+                        <span>Éditer</span>
                     </div>
 
                 </div>

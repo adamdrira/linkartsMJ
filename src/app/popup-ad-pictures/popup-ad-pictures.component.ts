@@ -49,6 +49,8 @@ export class PopupAdPicturesComponent implements OnInit {
   show_icon=false;
   show_container=false;
   ngOnInit() {
+    var re = /(?:\.([^.]+))?$/;
+    console.log(this.data)
     if(!this.data.for_chat){
       this.show_container=true;
       this.list_of_pictures=this.data.list_of_pictures;
@@ -62,18 +64,57 @@ export class PopupAdPicturesComponent implements OnInit {
     else if(this.data.list_of_pictures.length>0){
       let compt=0;
       for(let i=0;i<this.data.list_of_pictures.length;i++){
-        this.ChatService.get_attachment_popup(this.data.list_of_pictures[i],this.data.friend_type,this.data.chat_friend_id).subscribe(r=>{
-          let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.list_of_pictures[i]=SafeURL;
-          compt++;
-          if(compt==this.data.list_of_pictures.length){
-            this.show_container=true;
-            this.cd.detectChanges();
-            this.initialize_swiper();
-            this.initialize_swiper2();
-          }
-        })
+        if(this.data.list_of_types[i]=="picture_attachment"){
+          this.ChatService.get_attachment_popup(this.data.list_of_pictures[i],this.data.friend_type,this.data.chat_friend_id).subscribe(r=>{
+            if(re.exec(this.data.list_of_pictures[i])[1].toLowerCase()=="svg"){
+              let THIS=this;
+              var reader = new FileReader()
+              reader.readAsText(r);
+              reader.onload = function(this) {
+                  let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+                  let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+                  const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
+                  THIS.list_of_pictures[i]=SafeURL;
+                  compt++;
+                  if(compt==THIS.data.list_of_pictures.length){
+                    THIS.show_container=true;
+                    THIS.cd.detectChanges();
+                    THIS.initialize_swiper();
+                    THIS.initialize_swiper2();
+                  }
+              }
+            }
+            else{
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_pictures[i]=SafeURL;
+              compt++;
+              if(compt==this.data.list_of_pictures.length){
+                console.log(this.list_of_pictures)
+                this.show_container=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
+                this.initialize_swiper2();
+              }
+            }
+          })
+        }
+        else{
+          this.ChatService.get_picture_sent_by_msg(this.data.list_of_pictures[i]).subscribe(r=>{
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_pictures[i]=SafeURL;
+              compt++;
+              if(compt==this.data.list_of_pictures.length){
+                console.log(this.list_of_pictures)
+                this.show_container=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
+                this.initialize_swiper2();
+              }
+          })
+        }
+        
       }
     }
    

@@ -226,7 +226,7 @@ export class ChatRightContainerComponent implements OnInit {
               let length =this.list_of_files_src.length;
               let compt=0;
                 for(let i=0;i<r[0].length;i++){
-                  this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                  this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
                     let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                     const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                     this.list_of_files_src[length+i]=SafeURL;
@@ -257,22 +257,52 @@ export class ChatRightContainerComponent implements OnInit {
               this.list_of_pictures=this.list_of_pictures.concat(r[0]);
               let length =this.list_of_pictures_src.length;
               let compt=0;
+              var re = /(?:\.([^.]+))?$/;
                 for(let i=0;i<r[0].length;i++){
-                  this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
-                    let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                    const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                    this.list_of_pictures_src[length+i]=SafeURL;
-                    this.list_of_pictures_names[length+i]=r[0][i].attachment_name
-                    compt++;
-                    if(compt==r[0].length){
-                      this.date_of_last_picture=r[0][r[0].length-1].createdAt;
-                      this.show_scroll_pictures=false;
-                      if(compt<14){
-                        this.can_get_other_pictures=false;
+
+                  if(re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg"){
+                    this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{
+                      
+                      let THIS=this;
+                      var reader = new FileReader()
+                      reader.readAsText(r);
+                      reader.onload = function(this) {
+                          let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+                          let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+                          let SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
+                          THIS.list_of_pictures_src[length+i]=SafeURL;
+                          THIS.list_of_pictures_names[length+i]=r[0][i].attachment_name
+                          compt++;
+                          if(compt==r[0].length){
+                            THIS.date_of_last_picture=r[0][r[0].length-1].createdAt;
+                            THIS.show_scroll_pictures=false;
+                            if(compt<14){
+                              THIS.can_get_other_pictures=false;
+                            }
+                            THIS.cd.detectChanges();
+                          }
                       }
-                      this.cd.detectChanges();
-                    }
-                  })
+        
+                    })
+                  }
+                  else{
+                    this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                      let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                      this.list_of_pictures_src[length+i]=SafeURL;
+                      this.list_of_pictures_names[length+i]=r[0][i].attachment_name
+                      compt++;
+                      if(compt==r[0].length){
+                        this.date_of_last_picture=r[0][r[0].length-1].createdAt;
+                        this.show_scroll_pictures=false;
+                        if(compt<14){
+                          this.can_get_other_pictures=false;
+                        }
+                        this.cd.detectChanges();
+                      }
+                    })
+                  }
+                  
                 }
             }
             else{
@@ -298,7 +328,7 @@ export class ChatRightContainerComponent implements OnInit {
       let compt=0;
       if(l[0].length>0){
         for(let i=0;i<l[0].length;i++){
-          this.chatService.get_attachment_right(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{
+          this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_files_src[i]=SafeURL;
@@ -322,22 +352,51 @@ export class ChatRightContainerComponent implements OnInit {
     this.chatService.get_all_pictures("now",this.friend_id,id_chat_section,this.friend_type).subscribe(l=>{
       this.list_of_pictures=l[0];
       let compt=0;
+      var re = /(?:\.([^.]+))?$/;
       if(l[0].length>0){
         for(let i=0;i<l[0].length;i++){
-          this.chatService.get_attachment_right(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{
-            let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_pictures_src[i]=SafeURL;
-            this.list_of_pictures_names[i]=l[0][i].attachment_name;
-            compt++;
-            if(compt==l[0].length){
-              this.date_of_last_picture=l[0][l[0].length-1].createdAt;
-              if(compt>=14){
-                this.can_get_other_pictures=true
+
+          if(re.exec(l[0][i].attachment_name)[1].toLowerCase()=="svg"){
+            this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{
+              
+              let THIS=this;
+              var reader = new FileReader()
+              reader.readAsText(r);
+              reader.onload = function(this) {
+                  let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+                  let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+                  let SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
+                  THIS.list_of_pictures_src[i]=SafeURL;
+                  THIS.list_of_pictures_names[i]=l[0][i].attachment_name;
+                  compt++;
+                  if(compt==l[0].length){
+                    THIS.date_of_last_picture=l[0][l[0].length-1].createdAt;
+                    if(compt>=14){
+                      THIS.can_get_other_pictures=true
+                    }
+                    THIS.list_of_pictures_retrieved=true;
+                  }
               }
-              this.list_of_pictures_retrieved=true;
-            }
-          })
+
+            })
+          }
+          else{
+            this.chatService.get_attachment_right(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_pictures_src[i]=SafeURL;
+              this.list_of_pictures_names[i]=l[0][i].attachment_name;
+              compt++;
+              if(compt==l[0].length){
+                this.date_of_last_picture=l[0][l[0].length-1].createdAt;
+                if(compt>=14){
+                  this.can_get_other_pictures=true
+                }
+                this.list_of_pictures_retrieved=true;
+              }
+            })
+          }
+         
         }
       }
       else{
@@ -370,6 +429,7 @@ export class ChatRightContainerComponent implements OnInit {
 
   show_images(indice){
     let list_of_pics=[];
+    let new_list_types=Array(15).fill("picture_attachment");
     if(indice<=7){
       list_of_pics=this.list_of_pictures_names.slice(0,15)
     }
@@ -379,6 +439,7 @@ export class ChatRightContainerComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {
         list_of_pictures:list_of_pics,
+        list_of_types:new_list_types,
         index_of_picture:indice,
         for_chat:true,
         friend_type:(this.friend_type=='user')?'user':'group',

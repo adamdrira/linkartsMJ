@@ -20,18 +20,29 @@
 
     .title {
         display: flex;
-        padding:12px;
+        padding:10px;
         text-align: center;
         position: relative;
         justify-content: center;
 
+        .titles-container{
+            max-width: 245px;
+            margin-left: unset !important;
+            margin-right: unset !important;
+        }
+
         div {
             display:flex;
+            margin-left: 10px;
+            margin-right: 10px;
             mat-icon {
                 height: unset;
+                display: flex;
+                align-items: center;
                 width: unset;
-                font-size: 26px;
+                font-size: 20px;
                 color: #abb6ca;
+                margin-right: 5px;
             }
             span {
                 color: #abb6ca;
@@ -56,7 +67,6 @@
             border: none;
             display: flex;
             right: 20px;
-            padding: 5px;
             position: absolute;
             border-radius: 50px;
 
@@ -64,6 +74,7 @@
                 margin: auto;
                 width: unset !important;
                 height: unset !important;
+
                 font-size: 22px !important;
                 color: #203864 !important;
             }
@@ -313,7 +324,7 @@
                 width: 175px;
                 margin: 14px 10px 14px 10px;
                 padding: 7px 22px 7px 32px;
-                background: #dbe3ef;
+                background: #0e1f40;
                 border-radius: 30px;
                 transition: background-color 200ms;
                 cursor: pointer;
@@ -322,23 +333,46 @@
                 span {
                     margin:auto 5px auto auto;
                     font-weight: 600;
-                    color: rgb(32,56,100);
+                    color: white;
                 }
                 mat-icon { 
-                    color: rgb(32,56,100);
+                    color: white;
                     height: unset;
                     width: unset;
                     margin:auto auto auto 5px;
                 }
     
-                &:hover {
-                    background: #bbc8dc;
-                    span {
-                        color: rgb(17, 37, 73);
-                    }
-                }
                 &:active {
-                    background: #afbed4;
+                    transform: scale(0.96);
+                }
+            }
+
+            .prev-button {
+                display: flex;
+                width: 175px;
+                margin: 14px 10px 14px 10px;
+                justify-content: center;
+                background: #0e1f40;
+                border-radius: 30px;
+                transition: background-color 200ms;
+                cursor: pointer;
+                user-select: none;
+    
+                span {
+                    margin:auto auto auto 5px;
+                    font-weight: 600;
+                    color: white;
+                }
+                mat-icon { 
+                    color:white;
+                    height: unset;
+                    width: unset;
+                    margin: auto 5px auto auto;
+                }
+    
+               
+                &:active {
+                    transform: scale(0.96);
                 }
             }
         }
