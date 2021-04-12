@@ -1521,13 +1521,12 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       })
   });
 
-  router.post('/chat_sending_images', function (req, res) {
-
+  router.post('/chat_sending_images/:file_name', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
     if(!current_user){
       return res.status(401).json({msg: "error"});
     }
-    let file_name = req.headers.file_name;
+    let file_name = req.params.file_name;
     const PATH2= './data_and_routes/chat_images';
     let storage2 = multer.diskStorage({
       destination: (req, file, cb) => {
@@ -1629,6 +1628,38 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     
     });
 
+    
+
+    router.get('/get_attachment_svg/:file_name/:friend_type/:friend_id', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+      let file_name=req.params.file_name;
+      let friend_type=req.params.friend_type;
+      let friend_id=parseInt(req.params.friend_id);
+      let filename = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
+
+      fs.access( path.join(process.cwd(),filename), fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/not-found-image.jpg";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(res);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(res);
+        }     
+      })
+    
+    });
 
     router.get('/get_attachment_popup/:file_name/:friend_type/:friend_id', function (req, res) {
 
@@ -1755,9 +1786,55 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     });
 
 
+    router.get('/check_if_file_exists_svg/:friend_type/:friend_id/:attachment_name', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+
+      let attachment_name=req.params.attachment_name;
+      let friend_type = req.params.friend_type
+      let friend_id = parseInt(req.params.friend_id);
+      const PATH= '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
+      glob(process.cwd() + PATH + attachment_name, function (er, files) {
+        if(er){
+          res.status(200).send([{"value":attachment_name}])
+        }
+        else{
+          if(files.length>0){
+            glob(process.cwd() + PATH + attachment_name.split('.')[0] +'(' +'*([0-9])'+').svg', function (er, files2) {
+              if(er){
+                res.status(200).send([{"value":attachment_name.split('.')[0] +'.svg'}])
+              }
+              else{
+                if(files2.length>0){
+                  let num =files2.length+1;
+                  res.status(200).send([{"value":attachment_name.split('.')[0] +`(${num}).svg`}])
+                }
+                else{
+                    res.status(200).send([{"value":attachment_name.split('.')[0] +'.svg'}])
+                }
+              }
+            })
+          }
+          else{
+            res.status(200).send([{"value":attachment_name.split('.')[0] +'.svg'}])
+          };
+        }
+      })
+    
+    });
+
     router.post('/upload_attachments_for_chat/:friend_type/:friend_id/:name', function (req, res) {
       let friend_type = req.params.friend_type
-      let friend_id = req.params.friend_id;
+      let friend_id = parseInt(req.params.friend_id);
       let name = req.params.name;
       var current_user = get_current_user(req.cookies.currentUser);
       
@@ -1805,7 +1882,47 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       
     });
 
-    
+    router.post('/chat_upload_svg/:file_name/:friend_type/:friend_id', function (req, res) {
+      let current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        return res.status(401).json({msg: "error"});
+      }
+      let file_name = req.params.file_name;
+      let friend_type = req.params.friend_type
+      let friend_id = parseInt(req.params.friend_id);
+
+      const PATH2= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
+      let storage2 = multer.diskStorage({
+        destination: (req, file, cb) => {
+          cb(null, PATH2);
+        },
+      
+        filename: (req, file, cb) => {
+          cb(null, file_name);
+          //enlever nickname
+        }
+      });
+      
+      let upload_cover = multer({
+        storage: storage2
+      }).any();
+  
+      upload_cover(req, res, function(err){
+        (async () => {
+          let filename = './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`; + file_name ;
+          const files = await imagemin([filename], {
+          destination: './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`,
+          plugins: [
+            imageminPngquant({
+              quality: [0.8, 0.9]
+          })
+          ]
+          });
+          res.status(200).send(([{ "file_name": file_name}]))
+        })();
+        
+        });
+      });
 
     router.get('/get_size_of_files/:friend_id/:id_chat_section/:friend_type', function (req, res) {
 
