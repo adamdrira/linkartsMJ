@@ -20,6 +20,7 @@ const list_of_chat_sections= tables.list_of_messages(sequelize, Sequelize).list_
 const list_of_chat_groups= tables.list_of_messages(sequelize, Sequelize).list_of_chat_groups;
 const list_of_chat_groups_reactions= tables.list_of_messages(sequelize, Sequelize).list_of_chat_groups_reactions;
 const list_of_chat_emails= tables.list_of_messages(sequelize, Sequelize).list_of_chat_emails;
+const list_of_chat_folders= tables.list_of_messages(sequelize, Sequelize).list_of_chat_folders;
 //Pass { force: true } as option if you want to force delete and recreate.
 sequelize.sync() 
   .then(() => {
@@ -36,6 +37,7 @@ module.exports = {
   list_of_chat_emails,
   list_of_chat_search,
   list_of_chat_sections,
+  list_of_chat_folders,
   sequelize
 }
 

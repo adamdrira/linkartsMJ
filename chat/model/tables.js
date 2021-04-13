@@ -29,7 +29,7 @@ exports.list_of_messages = (sequelize, DataTypes) => {
       emoji_reaction_user:DataTypes.STRING,
       emoji_reaction_receiver:DataTypes.STRING,
       list_of_names_added:DataTypes.ARRAY(DataTypes.STRING),
-      
+      id_folder:DataTypes.INTEGER,
     },
     {
       freezeTableName: true // Model tableName will be the same as the model name
@@ -151,6 +151,21 @@ var list_of_chat_emails= sequelize.define('list_of_chat_emails', {
   }
 )
   
+var list_of_chat_folders = sequelize.define('list_of_chat_folders', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  id_user: DataTypes.INTEGER,
+  id_chat_friend: DataTypes.INTEGER,
+  title:DataTypes.STRING,
+  number_of_files:DataTypes.INTEGER,
+},
+{
+  freezeTableName: true // Model tableName will be the same as the model name
+}
+)
 
 User.hasMany(list_of_messages, {
   foreignKey: 'id_user',
@@ -172,6 +187,7 @@ list_of_messages.belongsTo(User, {
   list_of_chat_spams,
   list_of_chat_search,
   list_of_chat_emails,
-  list_of_chat_sections};
+  list_of_chat_sections,
+  list_of_chat_folders};
 }
 
