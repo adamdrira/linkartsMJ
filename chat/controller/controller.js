@@ -4851,7 +4851,7 @@ router.post('/get_files_by_folder',function(req,res){
 
       }
       else{
-        res.status(200).send([{error:err}])
+        res.status(200).send([{error:"not_found"}])
       }
     })
   })
