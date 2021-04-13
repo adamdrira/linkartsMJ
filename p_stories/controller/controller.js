@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 const multer = require('multer');
 const fs = require('fs');
 var path = require('path');
-
+const sharp = require('sharp');
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 
@@ -67,8 +67,8 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                 var mm = String(today.getMonth() + 1).padStart(2, '0'); 
                 var yyyy = today.getFullYear();
                 let Today = yyyy + mm + dd + hh+ mi + ss + ms;
-                file_name = current_user + '-' + Today + '.svg';
-                cb(null, current_user + '-' + Today + '.svg');
+                file_name = current_user + '-' + Today + '.png';
+                cb(null, current_user + '-' + Today + '.png');
                 }
             });
             
@@ -609,35 +609,47 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
            
             });
 
-        router.get('/retrieve_story/:file_name', function (req, res) {
+    router.get('/retrieve_story/:file_name/:width', function (req, res) {
 
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
         }
-      }
-            let filename = "./data_and_routes/stories/" + req.params.file_name ;
-
-            
-            fs.access(filename, fs.F_OK, (err) => {
-                if(err){
-                  filename = "./data_and_routes/not-found-image.jpg";
-                  var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-                  not_found.pipe(res);
-                }  
-                else{
-                  var pp = fs.createReadStream( path.join(process.cwd(),filename))
-                  pp.pipe(res);
-                }     
-              })
+        else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+            return res.status(401).json({msg: "error"});
+            }
+        }
+        let filename = "./data_and_routes/stories/" + req.params.file_name ;
+        const width = parseInt(req.params.width)
+        let transform = sharp()
+        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
         });
+        fs.access(filename, fs.F_OK, (err) => {
+            if(err){
+                filename = "./data_and_routes/not-found-image.jpg";
+                var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+                not_found.pipe(transform);
+            }  
+            else{
+                var pp = fs.createReadStream( path.join(process.cwd(),filename))
+                
+                if(req.params.file_name.includes(".svg")){
+                    pp.pipe(res);
+                }
+                else{
+                    pp.pipe(transform);
+                }
+            }     
+            })
+    });
 
-        router.post('/check_if_story_already_seen', function (req, res) {
+    router.post('/check_if_story_already_seen', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -665,9 +677,9 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
 		}).then(story=>{res.status(200).send([story])})        
     
           
-        });
+    });
 
-        router.post('/add_view', function (req, res) {
+    router.post('/add_view', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
