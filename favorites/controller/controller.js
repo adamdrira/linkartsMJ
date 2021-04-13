@@ -34,9 +34,14 @@ module.exports = (router, favorites,users) => {
         let date=new Date();
     
         if(date_format==0){
+            date.setDate(date.getDate() - 7);
+        }
+        else if(date_format==1){
             date.setDate(date.getDate() - 30);
         }
-        
+        else if(date_format==2){
+            date.setDate(date.getDate() - 365);
+        }
         users.findOne({
             where:{
                 id:id_user,
@@ -48,7 +53,7 @@ module.exports = (router, favorites,users) => {
                 if(user.gender=="Groupe"){
                     favorites.findAll({
                         where:{
-                            createdAt: (date_format<1)?{[Op.gte]: date}:{[Op.lte]: date},
+                            createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
                             id_user:id_user,
                             shares:{[Op.not]: null}
                         }
@@ -66,7 +71,7 @@ module.exports = (router, favorites,users) => {
                 else{
                     favorites.findAll({
                         where:{
-                            createdAt: (date_format<1)?{[Op.gte]: date}:{[Op.lte]: date},
+                            createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
                             id_user:id_user,
                         }
                         ,order: [
