@@ -519,17 +519,24 @@ export class ArchivesComponent implements OnInit {
       if (r[0].length>0){
         let compt=0
         for (let i=0;i<r[0].length;i++){
-          this.Story_service.retrieve_story(r[0][i].file_name).subscribe(info=>{
+          this.Story_service.retrieve_story(r[0][i].file_name,window.innerWidth ).subscribe(info=>{
 
-                
-            var reader = new FileReader()
-            reader.readAsText(info);
-            reader.onload = function(this) {
-                let blob = new Blob([reader.result], {type: 'image/svg+xml'});
-                let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
-                const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
-                THIS.list_of_stories[i]=SafeURL;
+            if(r[0][i].file_name.includes(".svg")){
+              var reader = new FileReader()
+              reader.readAsText(info);
+              reader.onload = function(this) {
+                  let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+                  let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+                  const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
+                  THIS.list_of_stories[i]=SafeURL;
+              }
             }
+            else{
+              let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
+              const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
+              THIS.list_of_stories[i]=SafeURL;
+            }
+            
           });
           this.Story_service.get_list_of_viewers_for_story(r[0][i].id).subscribe(m=>{
             this.number_of_views_by_story[i]=m[0].length;

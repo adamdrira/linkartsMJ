@@ -10,7 +10,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import { merge, fromEvent } from 'rxjs';
-import { R } from '@angular/cdk/keycodes';
 
 
 declare var Swiper:any;
@@ -136,16 +135,22 @@ ngOnInit() {
 
     for (let i=0;i<this.list_of_data.length;i++){
 
-      this.Story_service.retrieve_story(this.list_of_data[i].file_name).subscribe(info=>{
+      this.Story_service.retrieve_story(this.list_of_data[i].file_name,window.innerWidth).subscribe(info=>{
 
-        var reader = new FileReader()
-        reader.readAsText(info);
-        reader.onload = function(this) {
-            let blob = new Blob([reader.result], {type: 'image/svg+xml'});
-            let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
-            const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
-            THIS.list_of_contents[i]=url;
+        if(this.list_of_data[i].file_name.includes(".svg")){
+          var reader = new FileReader()
+          reader.readAsText(info);
+          reader.onload = function(this) {
+              let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+              THIS.list_of_contents[i]=url;
+          }
         }
+        else{
+          let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
+          THIS.list_of_contents[i]=url;
+        }
+        
         
         k++;
         if(k== this.list_of_data.length ){

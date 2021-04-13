@@ -92,8 +92,8 @@ export class AccountMyAccountComponent implements OnInit {
   date_format_trendings_groups=3;
 
 
-  date_format_favorites=1;
-  date_format_favorites_groups=1;
+  date_format_favorites=3;
+  date_format_favorites_groups=3;
   concerned_by_favorites=false;
 
   @ViewChild("chartContainer") chartContainer:ElementRef;
@@ -1097,8 +1097,14 @@ export class AccountMyAccountComponent implements OnInit {
       if($(this).val()=="Depuis 1 mois"){
         THIS.date_format_favorites=0;
       }
+      else if($(this).val()=="Depuis 1 semaine"){
+        THIS.date_format_favorites=0;
+      }
+      else if($(this).val()=="Depuis 1 an"){
+        THIS.date_format_favorites=2;
+      }
       else{
-        THIS.date_format_favorites=1;
+        THIS.date_format_favorites=3;
       }
       THIS.cd.detectChanges();
       if(old_date!=THIS.date_format_favorites){
@@ -1110,10 +1116,16 @@ export class AccountMyAccountComponent implements OnInit {
     $(".Sumo_favorites_groups").change(function(){
       let old_date=THIS.date_format_favorites_groups;
       if($(this).val()=="Depuis 1 mois"){
+        THIS.date_format_favorites_groups=1;
+      }
+      else if($(this).val()=="Depuis 1 semaine"){
         THIS.date_format_favorites_groups=0;
       }
+      else if($(this).val()=="Depuis 1 an"){
+        THIS.date_format_favorites_groups=2;
+      }
       else{
-        THIS.date_format_favorites_groups=0;
+        THIS.date_format_favorites_groups=3;
       }
       THIS.cd.detectChanges();
       if(old_date!=THIS.date_format_favorites_groups){

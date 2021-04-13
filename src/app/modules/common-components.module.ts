@@ -35,7 +35,6 @@ import { UploaderChatProfilePictureComponent } from '../uploader-chat-profile-pi
 import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
 import { PopupStoriesComponent } from '../popup-stories/popup-stories.component';
 import { StoryViewComponent } from '../story-view/story-view.component';
-import { UploaderStoryComponent } from '../uploader-story/uploader-story.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -106,7 +105,6 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     PopupFormWritingComponent,
     PopupFormAdComponent,
     PopupAddStoryComponent,
-    UploaderStoryComponent,
     PopupStoriesComponent,
     StoryViewComponent,
     PopupEditPictureComponent
@@ -184,7 +182,6 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     PopupFormWritingComponent,
     PopupFormAdComponent,
     PopupAddStoryComponent,
-    UploaderStoryComponent,
     PopupStoriesComponent,
     StoryViewComponent,
     PopupEditPictureComponent
