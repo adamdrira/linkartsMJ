@@ -110,8 +110,8 @@ export class BdOneShotService {
       
     }
 
-    retrieve_bd_page(bd_id,bd_page){
-      return this.httpClient.get(`routes/retrieve_bd_oneshot_page/${bd_id}/${bd_page}`,{responseType:'blob'}).pipe(map(information=>{
+    retrieve_bd_page(bd_id,bd_page,width){
+      return this.httpClient.get(`routes/retrieve_bd_oneshot_page/${bd_id}/${bd_page}/${width}`,{responseType:'blob'}).pipe(map(information=>{
          return [information,bd_page];   
       }));
     }

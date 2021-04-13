@@ -28,7 +28,7 @@ export class ChatService {
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
         if(l[0]  && (l[0].status=='visitor' || l[0].status=='account') ){
           this.messages=<Subject<Message>>this.wsService
-          .connect(`ws://localhost:4600/path?id=${l[0].id}`)
+          .connect(`wss://www.linkarts.fr/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               this.wsService.check_state();
               let data = JSON.parse(response.data);
@@ -333,8 +333,8 @@ check_if_file_exists(type_of_friend,friend_id,file_name,value):Observable<any>{
   }));
 }
 
-check_if_file_exists_svg(type_of_friend,friend_id,file_name):Observable<any>{
-  return this.httpClient.get(`routes/check_if_file_exists_svg/${type_of_friend}/${friend_id}/${file_name}`).pipe(map((information)=>{
+check_if_file_exists_png(type_of_friend,friend_id,file_name):Observable<any>{
+  return this.httpClient.get(`routes/check_if_file_exists_png/${type_of_friend}/${friend_id}/${file_name}`).pipe(map((information)=>{
     return information;
   }));
 }
@@ -390,6 +390,52 @@ get_all_pictures(date,friend_id,id_chat_section,friend_type){
     return information;
   }));
 }
+
+
+add_chat_folder(id_chat_friend,title):Observable<any>{
+  return this.httpClient.post('routes/add_chat_folder',{id_chat_friend:id_chat_friend,title:title},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+get_chat_folders(id_chat_friend):Observable<any>{
+  return this.httpClient.post('routes/get_chat_folders',{id_chat_friend:id_chat_friend},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+get_files_by_folder(id_folder,offset):Observable<any>{
+  return this.httpClient.post('routes/get_files_by_folder',{id_folder:id_folder,offset:offset},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+archive_chat_message(id_message,id_folder):Observable<any>{
+  return this.httpClient.post('routes/archive_chat_message',{id_message:id_message,id_folder:id_folder},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+unarchive_chat_message(id_message,id_folder):Observable<any>{
+  return this.httpClient.post('routes/unarchive_chat_message',{id_message:id_message,id_folder:id_folder},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+
+remove_folder(id_folder,id_chat_friend):Observable<any>{
+  return this.httpClient.post('routes/remove_folder',{id_chat_friend:id_chat_friend,id_folder:id_folder},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+rename_chat_folder(id_folder,title,chat_friend_id):Observable<any>{
+  console.log("rename " + id_folder + " " + title + " " + chat_friend_id)
+  return this.httpClient.post('routes/rename_chat_folder',{id_folder:id_folder,title:title,chat_friend_id:chat_friend_id},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
 
 /**********************************************MESSAGES MANAGMENT ***************************************/
 /**********************************************MESSAGES MANAGMENT ***************************************/
@@ -506,7 +552,7 @@ research_chat_sections(text:string,id_friend,is_a_group_chat):Observable<any>{
 //FRIENDS STATUS
 
 get_users_connected_in_the_chat(list_of_friends){
-  return this.httpClient.post('http://localhost:4600/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post('https://www.linkarts.fr/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }

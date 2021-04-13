@@ -15,8 +15,7 @@ export class ConstantsService {
   "Réaliste","Religion","Retro","Romantique","Rural","SF","Sociologie","Spatial","Sport","Survie","Transports","Urbanisme","Véhicules","Villes","Voitures","Voyage","Western"]
   writings_filters=["Action","Animaux","Animés","Art","Aventure","Autobiographie","BD","Caricatural","Cartoons","Comics","Drame","Enigmatique","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Mangas","Pensées","Philosophie","Polar",
   "Policier","Réaliste","Réflexions","Religion","Romantique","Satirique","SF","Sociologie","Spatial","Spiritualité","Sport","Survie","Thriller","Voyage","Webtoon","Western"];
-  comics_filters=["Action","Animaux","Art","Aventure","Biographie","Caricatural","Drame","Enigmatique","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kawaii","Kodomo","Nekketsu","Pantso shoto","Philosophie","Photographie",
-  ,"Polar","Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Spatial","Sport","Survie","Thriller","Voyage","Western","Yaoi","Yuri"];
+  comics_filters=["Action","Animaux","Art","Aventure","Biographie","Caricatural","Drame","Enigmatique","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kawaii","Kodomo","Nekketsu","Pantso shoto","Philosophie","Photographie","Polar","Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Spatial","Sport","Survie","Thriller","Voyage","Western","Yaoi","Yuri"];
   
   type_of_accounts=["Artistes","Artistes professionnels", "Artiste", "Artiste professionnel","Artiste professionnelle", "Maison d'édition",
   "Editeur","Editrice","Professionnels non artistes","Professionnel non artiste","Professionnelle non artiste","Passionné","Passionnée"];

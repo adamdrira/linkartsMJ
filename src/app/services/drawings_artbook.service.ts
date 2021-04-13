@@ -114,8 +114,8 @@ export class Drawings_Artbook_Service {
     
   }
 
-  retrieve_drawing_page_ofartbook(drawing_id,drawing_page){
-    return this.httpClient.get(`routes/retrieve_drawing_page_ofartbook/${drawing_id}/${drawing_page}`,{responseType:'blob'}).pipe(map(information=>{
+  retrieve_drawing_page_ofartbook(drawing_id,drawing_page,width){
+    return this.httpClient.get(`routes/retrieve_drawing_page_ofartbook/${drawing_id}/${drawing_page}/${width}`,{responseType:'blob'}).pipe(map(information=>{
       return [information,drawing_page];   
     }));
   }

@@ -164,8 +164,8 @@ export class BdSerieService {
     
   }
 
-  retrieve_bd_page(bd_id,chapter_number,bd_page){
-    return this.httpClient.get(`routes/retrieve_bd_chapter_page/${bd_id}/${chapter_number}/${bd_page}`,{responseType:'blob'}).pipe(map(information=>{
+  retrieve_bd_page(bd_id,chapter_number,bd_page,width){
+    return this.httpClient.get(`routes/retrieve_bd_chapter_page/${bd_id}/${chapter_number}/${bd_page}/${width}`,{responseType:'blob'}).pipe(map(information=>{
         return [information,bd_page];   
     }));
   }

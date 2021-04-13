@@ -109,8 +109,8 @@ export class Drawings_Onepage_Service {
     
   }
 
-  retrieve_drawing_page(file_name:string){
-    return this.httpClient.get(`routes/retrieve_drawing_onepage_by_name/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+  retrieve_drawing_page(file_name:string,width){
+    return this.httpClient.get(`routes/retrieve_drawing_onepage_by_name/${file_name}/${width}`,{responseType:'blob'}).pipe(map(information=>{
       return information;   
     }));
   }
