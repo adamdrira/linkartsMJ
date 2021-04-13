@@ -1114,7 +1114,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
 
 });
 
-  router.get('/retrieve_bd_oneshot_page/:bd_id/:bd_page', function (req, res) {
+  router.get('/retrieve_bd_oneshot_page/:bd_id/:bd_page/:width', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1129,6 +1129,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
 
       const bd_id = parseInt(req.params.bd_id);
       const bd_page = parseInt(req.params.bd_page);
+      const width = parseInt(req.params.width)-20;
        pages_bd_os.findOne({
         where: {
           bd_id: bd_id,
@@ -1138,7 +1139,13 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
       .catch(err => {	
         res.status(500).json({msg: "error", details: err});		
       }).then(page =>  {
-        
+        let transform = sharp()
+        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+        });
         if(page && page.file_name){
           let filename = "./data_and_routes/pages_bd_oneshot/" + page.file_name;
           
@@ -1146,18 +1153,18 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
             if(err){
               filename = "./data_and_routes/not-found-image.jpg";
               var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-              not_found.pipe(res);
+              not_found.pipe(transform);
             }  
             else{
               var pp = fs.createReadStream( path.join(process.cwd(),filename))
-              pp.pipe(res);
+              pp.pipe(transform);
             }     
           })
         }
         else{
           filename = "./data_and_routes/not-found-image.jpg";
               var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-              not_found.pipe(res);
+              not_found.pipe(transform);
         }
         
       });
