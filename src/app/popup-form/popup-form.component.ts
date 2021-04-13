@@ -57,6 +57,9 @@ export class PopupFormComponent implements OnInit {
 
   number_of_artists:number;
   show_icon=false;
+
+  list_of_folders=[];
+  message:any;
   ngOnInit() {
     if(this.data.type=='add_artist'){
       this.initialize_add_artist();
@@ -68,6 +71,10 @@ export class PopupFormComponent implements OnInit {
       this.id_retrieved=true;
     }
 
+    if(this.data.type=="for_archive"){
+      this.list_of_folders=this.data.list_of_folders;
+      this.message=this.data.message;
+    }
   }
 
   /************************************************** ADD ARTIST  **************************************/
@@ -278,5 +285,27 @@ export class PopupFormComponent implements OnInit {
       return
     }
     this.dialogRef.close();
+  }
+
+
+
+  /*********************************************** ARCHIVES  ******************************************/
+
+  archive(i){
+    this.loading=true;
+    this.ChatService.archive_chat_message(this.message.id,this.list_of_folders[i].id).subscribe(r=>{
+      this.loading=false;
+      this.message.id_folder=this.list_of_folders[i].id;
+      this.dialogRef.close(true);
+    })
+  }
+
+  unarchive(i){
+    this.loading=true;
+    this.ChatService.unarchive_chat_message(this.message.id,this.list_of_folders[i].id).subscribe(r=>{
+      this.loading=false;
+      this.message.id_folder=0;
+      this.dialogRef.close(true);
+    })
   }
 }

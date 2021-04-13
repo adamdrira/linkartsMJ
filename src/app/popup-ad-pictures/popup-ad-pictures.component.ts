@@ -50,7 +50,6 @@ export class PopupAdPicturesComponent implements OnInit {
   show_container=false;
   ngOnInit() {
     var re = /(?:\.([^.]+))?$/;
-    console.log(this.data)
     if(!this.data.for_chat){
       this.show_container=true;
       this.list_of_pictures=this.data.list_of_pictures;
@@ -90,7 +89,6 @@ export class PopupAdPicturesComponent implements OnInit {
               this.list_of_pictures[i]=SafeURL;
               compt++;
               if(compt==this.data.list_of_pictures.length){
-                console.log(this.list_of_pictures)
                 this.show_container=true;
                 this.cd.detectChanges();
                 this.initialize_swiper();
@@ -106,7 +104,6 @@ export class PopupAdPicturesComponent implements OnInit {
               this.list_of_pictures[i]=SafeURL;
               compt++;
               if(compt==this.data.list_of_pictures.length){
-                console.log(this.list_of_pictures)
                 this.show_container=true;
                 this.cd.detectChanges();
                 this.initialize_swiper();

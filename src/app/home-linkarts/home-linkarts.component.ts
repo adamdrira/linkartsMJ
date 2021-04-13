@@ -156,12 +156,12 @@ export class HomeLinkartsComponent implements OnInit {
   open_category(i : number) {
     if( i==0 ) {
       this.category_index = 0;
-      this.navbar.add_page_visited_to_history(`/recommendations`,this.device_info).subscribe();
+      this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).subscribe();
       this.location.go('/home/recommendations');
     }
     else if( i==1 ) {
       this.category_index = 1;
-      this.navbar.add_page_visited_to_history(`/trendings`,this.device_info).subscribe();
+      this.navbar.add_page_visited_to_history(`/home/trendings`,this.device_info).subscribe();
       this.location.go('/home/trendings')
     }
     else if( i==2 ) {

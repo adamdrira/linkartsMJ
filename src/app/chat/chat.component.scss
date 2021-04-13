@@ -965,149 +965,6 @@
     }
 }
 
-/*
-
-
-
-.discussions-container {
-    display: flex;
-    justify-content: space-between;
-    border-radius: 0px 0px 8px 8px;
-    height: 100%;
-    min-width: 350px;
-}
-
-.options-container {
-    color: white;
-    position: relative;
-    margin: auto auto;
-    height: 60%;
-    width: 100%;
-    max-width: 450px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-left: 15px;
-    padding-right: 15px;
-    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
-    border-radius: 25px;
-    background-color: #203864;
-}
-
-
-.show-notification-message {
-    position: absolute;
-    right: -10px;
-    top: -10px;
-}
-
-.notification-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #ff0000;
-    width: 25px;
-    height: 25px;
-    font-size: 13px;
-    color: white;
-    //box-shadow: 0 0px 3px rgba(0, 0, 0, 0.75);
-    border-radius: 20px;
-}
-.dropdown-container {
-    height: 100%;
-    display: flex;
-    width: calc(100% - 120px);
-    align-items: center;
-    border-left: 2px solid #21314e;
-    //padding-left: 10px;
-}
-
-.chat-section-container.sumo {
-    display: flex;
-}
-
-::ng-deep .discussions-container .SumoSelect > .CaptionCont > label > i {
-    background-image: none !important;
-    background-color: rgb(218, 227, 243);
-    -webkit-mask: url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
-    mask: url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
-}
-
-::ng-deep .discussions-container .SumoSelect > .CaptionCont > label {
-    width: 30px;
-}
-
-::ng-deep .discussions-container .SumoSelect {
-    width: 100%;
-    margin: auto auto;
-}
-
-::ng-deep .discussions-container .SumoSelect.open {
-    background: rgb(32, 56, 100);
-    border-radius: 5px 5px 0px 0px;
-}
-
-::ng-deep .discussions-container .SumoSelect > p.CaptionCont > span {
-    color: white;
-    margin: auto 0px auto 0px;
-    height: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 0px;
-    width: 92%;
-    display: flex;
-    align-items: center;
-}
-
-::ng-deep .discussions-container .SumoSelect .optWrapper {
-    left: -2px;
-    width: 100%;
-    border-radius: 0px 0px 10px 10px;
-    border: unset;
-    z-index: 0;
-    background: unset;
-}
-
-::ng-deep .discussions-container .SumoSelect > .optWrapper > .options li.opt {
-    background-color: rgb(32, 56, 100);
-    border-bottom: 1px solid #334f82;
-    padding-left: 14px;
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: pointer;
-}
-
-::ng-deep .discussions-container .SumoSelect > .optWrapper > .options li.opt.disabled {
-    display: none;
-}
-
-::ng-deep .discussions-container .SumoSelect > .CaptionCont > span.placeholder {
-    font-style: unset !important;
-}
-
-
-
-.show-container-research-chat {
-    position: absolute;
-    top: 50px;
-    background-color: white;
-    border-radius: 5px 5px 10px 10px;
-    width: 280px;
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
-    max-height: 250px;
-    min-height: 30px;
-    overflow-y: auto;
-}
-
-.mat-line-hover {
-    cursor: pointer;
-}
-
-.mat-line-hover:hover {
-    background-color: #e5f1f3;
-}*/
-
 //code propre
 .text-in-middle {
     width: 100%;
@@ -1267,7 +1124,8 @@ button.show-more {
 
                 a {
                     color:unset;
-                    font-weight: 800;
+                    font-weight: 700;
+                    text-decoration: underline;
                 }
                 .response-content {
                     border-left: 2px solid #20386496;
@@ -1344,7 +1202,8 @@ button.show-more {
 
                 a {
                     color:unset;
-                    font-weight: 800;
+                    font-weight: 700;
+                    text-decoration: underline;
                 }
                 .response-content {
                     border-left: 2px solid #ffffff96;

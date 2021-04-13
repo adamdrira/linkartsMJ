@@ -92,7 +92,11 @@ export class MediaComicsComponent implements OnInit {
       this.number_of_comics_to_show=(n<6)?n:6;
     }
     else{
-      this.number_of_comics_to_show=6;
+      this.number_of_comics_to_show=4;
+      this.sorted_artpieces_bd=this.sorted_artpieces_bd.slice(0,4);
+      this.sorted_artpieces_manga=this.sorted_artpieces_manga.slice(0,4);
+      this.sorted_artpieces_comics=this.sorted_artpieces_comics.slice(0,4);
+      this.sorted_artpieces_webtoon=this.sorted_artpieces_webtoon.slice(0,4);
     }
     this.current_number_of_comics_to_show=this.number_of_comics_to_show;
     this.get_history_recommendation();

@@ -46,7 +46,12 @@ export class MediaWritingsComponent implements OnInit {
           this.number_of_writings_to_show=(n<6)?n:6;
         }
         else{
-          this.number_of_writings_to_show=6;
+          this.number_of_writings_to_show=4;
+          this.sorted_artpieces_article=this.sorted_artpieces_article.slice(0,4);
+          this.sorted_artpieces_scenario=this.sorted_artpieces_scenario.slice(0,4);
+          this.sorted_artpieces_poetry=this.sorted_artpieces_poetry.slice(0,4);
+          this.sorted_artpieces_roman=this.sorted_artpieces_roman.slice(0,4);
+          this.sorted_artpieces_illustrated_novel=this.sorted_artpieces_illustrated_novel.slice(0,4);
         }
 
         if(this.current_number_of_writings_to_show!= this.number_of_writings_to_show){

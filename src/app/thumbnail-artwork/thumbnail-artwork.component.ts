@@ -24,6 +24,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
 
 declare var Swiper:any;
+declare var $:any;
+
 @Component({
   selector: 'app-thumbnail-artwork',
   templateUrl: './thumbnail-artwork.component.html',
@@ -182,29 +184,11 @@ export class ThumbnailArtworkComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if(changes.artwork_container ){
-      console.log("changes")
       if(this.artwork_container){
-        console.log("artwork container ")
-        console.log(this.artwork_container)
-        if(this.emphasized){
-          console.log(this.item.publication_id)
-        }
-        else{
-          if(this.category=="comic"){
-            console.log(this.item.bd_id)
-          }
-          else if(this.category=="drawing"){
-            console.log(this.item.drawing_id)
-          }
-          else{
-            console.log(this.item.writing_id)
-          }
-          console.log(this.item.bd_id)
-        }
-       
         this.scroll = merge(
           fromEvent(window, 'scroll'),
-          fromEvent(this.artwork_container, 'scroll')
+          fromEvent(this.artwork_container, 'scroll'),
+          fromEvent($('.popupArtworkClass mat-dialog-container'), 'scroll')
         );
       }
     }

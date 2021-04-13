@@ -117,8 +117,6 @@ export class PopupNavbarComponent implements OnInit {
 
   show_icon=false;
   ngOnInit() {
-    let THIS=this;
-
     if(!this.list_of_friends_retrieved){
       this.chatService.get_number_of_unseen_messages().subscribe(a=>{
         if(a[0]){
@@ -189,9 +187,13 @@ export class PopupNavbarComponent implements OnInit {
   }
 
   chat_scroll(event){
+    console.log("chat scroll")
     if(this.show_chat_messages){
+      console.log("in show chat")
       if(this.myScrollContainer_chat && (this.myScrollContainer_chat.nativeElement.scrollTop + this.myScrollContainer_chat.nativeElement.offsetHeight >= this.myScrollContainer_chat.nativeElement.scrollHeight*0.8)){
+        console.log("in other if")
         if(this.number_of_friends_to_show<this.list_of_friends_ids.length){
+          console.log(" this.number_of_friends_to_show+=10;")
           this.number_of_friends_to_show+=10;
         }
       }
@@ -727,6 +729,7 @@ scroll_chat:any;
 open_messages(){
   
   if(this.show_chat_messages){
+    console.log("return")
     this.show_chat_messages=false;
     return;
   }
@@ -768,7 +771,7 @@ sort_friends_list() {
 
  
 
-  this.chatService.get_list_of_users_I_talk_to().subscribe(r=>{
+  this.chatService.get_list_of_users_I_talk_to_navbar().subscribe(r=>{
 
     let friends=r[0].friends;
     if(friends.length>0){
@@ -858,7 +861,7 @@ sort_friends_list() {
 
 sort_friends_groups_chats_list(){
   let len =this.list_of_friends_ids.length;
-  this.chatService.get_my_list_of_groups().subscribe(l=>{
+  this.chatService.get_my_list_of_groups_navbar().subscribe(l=>{
     let list_of_names=[]
     if(l[0].length>0){
       for(let k=0;k<l[0].length;k++){

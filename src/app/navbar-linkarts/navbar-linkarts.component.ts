@@ -87,11 +87,8 @@ export class NavbarLinkartsComponent implements OnInit {
       });
       
       AuthenticationService.tokenCheck().subscribe(r=>{
-        console.log("navbar")
-        console.log(r)
         if(r!=this.current_user_type &&  this.change_number<1){
           this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-            console.log(r[0])
             if(r[0]){
               if(r[0].status=="account" || r[0].status=="suspended"){
                 this.type_of_profile=r[0].status;
@@ -427,11 +424,8 @@ export class NavbarLinkartsComponent implements OnInit {
         if(r[0].length>0){
           for(let i=0;i<r[0].length;i++){
             this.list_of_notifications[i]=r[0][i];
-            if(i==r[0].length-1){
-              this.get_final_list_of_notifications_to_show("initialize");
-            
-            }
           }
+          this.get_final_list_of_notifications_to_show("initialize");
         }
         else{
           this.data_retrieved=true;

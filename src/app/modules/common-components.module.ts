@@ -11,7 +11,7 @@ import { SignupComponent } from '../signup/signup.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 import { PageNotFoundComponent } from '../page-not-found/page-not-found.component';
-
+import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupFormAdComponent } from '../popup-form-ad/popup-form-ad.component';
 import { PopupFormComicComponent } from '../popup-form-comic/popup-form-comic.component';
@@ -73,13 +73,11 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
 import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
-import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
 
 
 @NgModule({
   declarations: [
    
-    PopupEditPictureComponent,
     NavbarLinkartsComponent,
     PopupNavbarComponent,
     PopupNavbarDisconnectedComponent,
@@ -111,6 +109,7 @@ import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-pict
     UploaderStoryComponent,
     PopupStoriesComponent,
     StoryViewComponent,
+    PopupEditPictureComponent
   ],
   imports: [
     RouterModule,
@@ -157,7 +156,6 @@ import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-pict
     EmojiModule,
   ],
   exports: [
-    PopupEditPictureComponent,
     NavbarLinkartsComponent,
     PopupNavbarComponent,
     PopupNavbarDisconnectedComponent,
@@ -189,6 +187,7 @@ import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-pict
     UploaderStoryComponent,
     PopupStoriesComponent,
     StoryViewComponent,
+    PopupEditPictureComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

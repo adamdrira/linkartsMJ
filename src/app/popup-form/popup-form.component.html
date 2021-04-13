@@ -113,7 +113,37 @@
     </div>
 </div>
 
+<div class="popup-add-group-member" *ngIf="data.type=='for_archive'">
 
+    <div class="step-name">
+        <span>Dans quel dossier voulez-vous archiver ce fichier ?</span>
+    </div>
+
+
+    <div class="step-form" >
+
+        <div class="subscriber-card" *ngFor=" let item of list_of_folders;let i=index" [@enterAnimation]>
+            <div class="subscriber">
+                <div class="user-container">
+                    <div>
+                        <div class="right-container">
+                            <span class="author-name"> {{list_of_folders[i].title}} </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="unsubscribe-button" (click)="archive(i)" *ngIf="message.id_folder!=list_of_folders[i].id">
+                <span>Archiver</span>
+            </button>
+            <button class="unsubscribe-button" (click)="unarchive(i)"  *ngIf="message.id_folder==list_of_folders[i].id">
+                <span>Désarchiver</span>
+            </button>
+        </div>
+
+        
+    </div>
+</div>
 
 <ng-container *ngIf="data.type=='edit_cover_picture'">
     <app-uploader-cover-picture></app-uploader-cover-picture>

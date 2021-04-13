@@ -68,8 +68,6 @@ export class PopupEditPictureComponent implements OnInit {
     @ViewChild("image")  image : ElementRef;
     
     ngOnInit(): void {
-      console.log("popup");
-      console.log(this.data)
       if(this.data.modify_chat_after){
         var re = /(?:\.([^.]+))?$/;
 
@@ -85,7 +83,6 @@ export class PopupEditPictureComponent implements OnInit {
                   let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                   const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
                   THIS.picture_blob= SafeURL;
-                  console.log(THIS.picture_blob)
                   THIS.cd.detectChanges();
                   THIS.initialize_cropper(THIS.image)
               }
@@ -113,7 +110,6 @@ export class PopupEditPictureComponent implements OnInit {
                   let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                   const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
                   THIS.picture_blob= SafeURL;
-                  console.log(THIS.picture_blob)
                   THIS.cd.detectChanges();
                   THIS.initialize_cropper(THIS.image)
               }

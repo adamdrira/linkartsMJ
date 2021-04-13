@@ -264,12 +264,12 @@
                                 <div class="options margin-left" [ngClass]="{ 'opacity1': myMessageOpenedOptions==i }">
 
                                     <button  (menuClosed)="myMessageOptionsClosed();" (menuOpened)="myMessageOptionsOpened(i);"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" [matMenuTriggerFor]="artworkOptions">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].id && list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" [matMenuTriggerFor]="artworkOptions">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             more_horiz</mat-icon>
                                     </button>
                                     <button (click)="respond_to_message(list_of_messages.length -1 - i)"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
+                                        *ngIf=" list_of_messages[list_of_messages.length -1 - i].id && list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             reply</mat-icon>
                                     </button>
@@ -289,11 +289,25 @@
 
                                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
 
-                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && !list_of_messages[list_of_messages.length -1 - i].attachment_name.includes('.svg')"
                                             (click)="edit(list_of_messages.length -1 - i)">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">edit
                                             </mat-icon>
                                             <span>Éditer</span>
+                                        </button>
+
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && (list_of_messages[list_of_messages.length -1 - i].id_folder==0 || !list_of_messages[list_of_messages.length -1 - i].id_folder)"
+                                            (click)="archive(list_of_messages.length -1 - i)">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in
+                                            </mat-icon>
+                                            <span>Archiver</span>
+                                        </button>
+
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && list_of_messages[list_of_messages.length -1 - i].id_folder>0"
+                                            (click)="unarchive(list_of_messages.length -1 - i)">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in_not
+                                            </mat-icon>
+                                            <span>Désarchiver</span>
                                         </button>
 
                                         <button class="chat-menu-item" mat-menu-item
@@ -772,23 +786,16 @@
                                     </span>
                                 </div>
 
-                                <!--<div #emojis_reactions class="main-container-reactions closed"
-                                    [ngClass]="{'my-reactions':list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id,'friend-reactions':list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id }">
-                                    <div class="container-reactions" *ngFor="let emoji of emojis_list; let j=index">
-                                        <ngx-emoji (emojiClick)="reaction_click($event,list_of_messages.length -1 - i)"
-                                            useButton="true" set="apple" emoji="{{emoji}}" size="30"></ngx-emoji>
-                                    </div>
-                                </div>-->
 
                                 <div class="options margin-left" [ngClass]="{ 'opacity1': myMessageOpenedOptions==i }">
                                     <button (menuClosed)="myMessageOptionsClosed();" (menuOpened)="myMessageOptionsOpened(i);"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"[matMenuTriggerFor]="artworkOptions">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].id && list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"[matMenuTriggerFor]="artworkOptions">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             more_horiz</mat-icon>
                                     </button>
                                     
                                     <button (click)="respond_to_message(list_of_messages.length -1 - i)"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].id && list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             reply</mat-icon>
                                     </button>
@@ -809,11 +816,26 @@
 
                                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
 
-                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' || list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message')  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && !list_of_messages[list_of_messages.length -1 - i].attachment_name.includes('.svg')"
                                             (click)="edit(list_of_messages.length -1 - i)">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">edit
                                             </mat-icon>
                                             <span>Éditer</span>
+                                        </button>
+
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && (list_of_messages[list_of_messages.length -1 - i].id_folder==0 || !list_of_messages[list_of_messages.length -1 - i].id_folder)"
+                                            (click)="archive(list_of_messages.length -1 - i)">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in
+                                            </mat-icon>
+                                            <span>Archiver</span>
+                                        </button>
+
+
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && list_of_messages[list_of_messages.length -1 - i].id_folder>0"
+                                            (click)="unarchive(list_of_messages.length -1 - i)">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in_not
+                                            </mat-icon>
+                                            <span>Désarchiver</span>
                                         </button>
 
                                         <button class="chat-menu-item" mat-menu-item
@@ -1442,6 +1464,7 @@
             (cancelAddSection)="cancel_add_section()"
             (changeSection)="changed_section($event)"
             (arrowBack)="change_right_container()"
+            (folders_emitter)="get_folders_emitter($event)"
             >
         </app-chat-right-container>
 

@@ -41,8 +41,6 @@
             }
             &.no-border-style img {
                 box-shadow: unset !important;
-               
-                //border-radius: unset !important;
             }
             .skeleton {
                 width: 200px !important;
@@ -552,7 +550,7 @@
             > .left-container {
                 width: 100% !important;
                 padding: 20px 20px;
-                min-height: 400px !important;
+                min-height: 230px !important;
                 display: flex !important;
                 justify-content: center !important;
                 align-items: center !important;
@@ -946,7 +944,8 @@
     @media (max-width: 400px) {
         .global-container {
             > .left-container {
-                min-height: 340px !important;
+                padding: 10px 10px !important;
+                min-height: 230px !important;
             }
             > .left-container img {
                    

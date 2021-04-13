@@ -1,4 +1,4 @@
-<div class="main-right-container">
+<div  #myScrollContainer class="main-right-container" (scroll)="OnScroll()">
 
 
   <div class="display-flex" *ngIf="spam=='false'">
@@ -21,7 +21,7 @@
   </div>
 
     
-  <div class="chat-right-form" [formGroup]="chat_section_group">
+  <div class="chat-right-form" >
     
     <div class="step-form" *ngIf="!activate_add_chat_section" [@enterAnimation]>
 
@@ -58,8 +58,13 @@
       <span>Créer une nouvelle discussion</span>
     </button>
 
+    <button (click)="add_chat_section_archives();" *ngIf="!activate_add_chat_section_archives" [@enterAnimation]>
+      <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+      <span>Ajouter un dossier aux archives</span>
+    </button>
+
     <ng-container *ngIf="activate_add_chat_section">
-      <div class="form-item" [@enterAnimation]>
+      <div class="form-item" [@enterAnimation] [formGroup]="chat_section_group">
         <mat-form-field floatLabel='never'>
             <mat-label>Nom de la discussion</mat-label>
             <input matInput formControlName="chat_section_name_added" maxLength="30" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="search">
@@ -77,11 +82,42 @@
       </button>
     </ng-container>
 
+
+    <ng-container *ngIf="activate_add_chat_section_archives">
+      <div class="form-item" [@enterAnimation] [formGroup]="chat_section_group_archives">
+        <mat-form-field floatLabel='never'>
+            <mat-label>Nom du dossier</mat-label>
+            <input matInput formControlName="chat_section_name_added_archives" maxLength="30" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="search">
+            <mat-error *ngIf="chat_section_group_archives.controls['chat_section_name_added_archives'].invalid">Veuillez saisir un nom valide</mat-error>
+            <div class="length-indicator">{{chat_section_group_archives.controls['chat_section_name_added_archives'].value?.length || 0}}/30</div>
+        </mat-form-field>
+      </div>
+      <button (click)="cancel_add_section_archives();" [@enterAnimation]  *ngIf="!in_rename_folder">
+        <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+        <span>Annuler</span>
+      </button>
+      <button (click)="add_chat_section_name_archives();" [@enterAnimation] *ngIf="!in_rename_folder">
+        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_chat_section_name_archives">done_all</mat-icon>
+        <span *ngIf="!loading_chat_section_name_archives">Ajouter</span>
+        <mat-spinner diameter="20" style="margin: auto;" *ngIf="loading_chat_section_name_archives"></mat-spinner>
+      </button>
+
+      <button (click)="cancel_rename_folder();" [@enterAnimation]  *ngIf="in_rename_folder">
+        <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+        <span>Annuler</span>
+      </button>
+      <button (click)="validate_rename_folder();" [@enterAnimation] *ngIf="in_rename_folder">
+        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_chat_section_name_archives">done_all</mat-icon>
+        <span *ngIf="!loading_chat_section_name_archives">Renommer</span>
+        <mat-spinner diameter="20" style="margin: auto;" *ngIf="loading_chat_section_name_archives"></mat-spinner>
+      </button>
+    </ng-container>
+
   </div>
 
 
 
-  <div #myScrollContainer class="main-options-container" (scroll)="OnScroll()">
+  <div class="main-options-container" >
 
 
     <div class="options-container">
@@ -115,8 +151,9 @@
           <div class="show-more" *ngIf="show_scroll_files">
             <mat-spinner diameter="20"></mat-spinner>
           </div>
-
         </mat-expansion-panel>
+
+
         <mat-expansion-panel (opened)="panelOpenState_1 = true" (closed)="panelOpenState_1 = false">
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -149,9 +186,101 @@
         </mat-expansion-panel>
 
 
+        <mat-expansion-panel (opened)="panelOpenState_2 = true" (closed)="panelOpenState_2 = false" class="folder-expansion">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Mes archives
+            </mat-panel-title>
+            <mat-panel-description [ngClass]="{'invisible':!list_of_folders_retrieved }" *ngIf="list_of_folders.length>1">
+              {{list_of_folders.length}} dossiers
+             </mat-panel-description>
+             <mat-panel-description [ngClass]="{'invisible':!list_of_folders_retrieved }" *ngIf="list_of_folders.length==1">
+              {{list_of_folders.length}} dossier
+             </mat-panel-description>
+             <mat-panel-description [ngClass]="{'invisible':!list_of_folders_retrieved }"  *ngIf="list_of_folders.length==0">
+              Aucun dossier
+             </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div *ngIf="!list_of_folders_retrieved">
+            <div class="show-more">
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
+          </div>
+          <mat-list *ngIf="list_of_folders_retrieved">
+            <mat-expansion-panel  *ngFor="let folder of list_of_folders,let i=index" class="mat-expansion-child" [expanded]="list_of_folders_opened[i]" (opened)="open_folder(i)"  (closed)="list_of_folders_opened[i]=false">
 
+              <mat-expansion-panel-header>
+                <mat-panel-title style="font-size: 14px;">
+                  {{folder.title}}
+                </mat-panel-title>
+                <mat-panel-description  *ngIf="list_of_folders[i].number_of_files>1">
+                  {{list_of_folders[i].number_of_files}} fichiers
+                </mat-panel-description>
+                <mat-panel-description  *ngIf="list_of_folders[i].number_of_files==1">
+                  {{list_of_folders[i].number_of_files}} fichier
+                </mat-panel-description>
+                <mat-panel-description  *ngIf="!list_of_folders[i].number_of_files || list_of_folders[i].number_of_files==0">
+                  Aucun fichier
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <div *ngIf="!list_of_files_retrieved_by_folder[i] || !show_files_of_folder[i]">
+                <div class="show-more">
+                  <mat-spinner diameter="20"></mat-spinner>
+                </div>
+              </div>
+              <mat-list *ngIf="list_of_files_retrieved_by_folder[i] && show_files_of_folder[i]" style="padding-left: 25px; ">
+                <mat-list-item class="modify" (click)="rename_folder(i)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                  <span>Renommer ce dossier</span>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item class="modify" (click)="remove_folder(i)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }">delete</mat-icon>
+                  <span>Supprimer ce dossier</span>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item *ngFor="let file of list_of_files_object_by_folder[i],let j=index" class="for-file">
+                  <ng-container *ngIf="list_of_files_types_by_folder[i][j]=='picture_attachment'">
+                    
+                    <mat-list-item>
+                      <div mat-line>
+                        <a [href]="list_of_files_by_folder[i][j]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
+                      </div>
+                      <div mat-line> {{file.createdAt | date}}</div>
+                      <div mat-line>{{file.size | number:'.2' }} MB</div>
+                      <div mat-line class="unarchive" (click)="unarchive(i,j)" >Désarchiver</div>
+                    </mat-list-item>
+                    <div (click)="show_images_of_folder(i,j)">
+                      <img [src]="list_of_files_by_folder[i][j]" class="image-thumb" (load)=load_picture_of_file(i,j)
+                        [ngClass]="{'invisible':!list_of_pictures_loaded_by_folder[i][j]}">
+                    </div>
+                    
+                  </ng-container>
+                  <ng-container *ngIf="list_of_files_types_by_folder[i][j]=='file_attachment'">
+                    
+                    <mat-list-item >
+                      <div mat-line>
+                        <a [href]="list_of_files_by_folder[i][j]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
+                      </div>
+                      <div mat-line> {{file.createdAt | date}}</div>
+                      <div mat-line>{{file.size | number:'.2' }} MB</div>
+                      <div mat-line class="unarchive" (click)="unarchive(i,j)" >Désarchiver</div>
+                    </mat-list-item>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }"  mat-list-icon>folder</mat-icon>
+                  </ng-container>
+                  <mat-divider></mat-divider>
+                </mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+          </mat-list>
+        </mat-expansion-panel>
 
       </mat-accordion>
+      <div *ngIf="show_scroll_pictures || show_scroll_files || show_scroll_archives">
+        <div class="show-more">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+      </div>
     </div>
 
   </div>

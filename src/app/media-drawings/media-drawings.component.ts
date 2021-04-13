@@ -240,7 +240,7 @@ export class MediaDrawingsComponent implements OnInit {
         this.number_of_drawings_variable=(n<6)?n:6;
       }
       else{
-        this.number_of_drawings_variable=6;
+        this.number_of_drawings_variable=4;
       }
       
       this.got_number_of_drawings_to_show=true;
@@ -262,7 +262,7 @@ export class MediaDrawingsComponent implements OnInit {
         variable=(n<6)?n:6;
       }
       else{
-        variable=6;
+        variable=4;
       }
       if(variable!=this.number_of_drawings_variable && variable>0){
         this.prevent_see_more=true;

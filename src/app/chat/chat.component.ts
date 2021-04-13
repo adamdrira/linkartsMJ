@@ -110,6 +110,9 @@ export class ChatComponent implements OnInit  {
       this.reload_list_of_files_subject = new BehaviorSubject<boolean>(false);
       this.reload_list_of_files = this.reload_list_of_files_subject.asObservable();
 
+      this.reload_list_of_archives_subject = new BehaviorSubject<any>({reload:false});
+      this.reload_list_of_archives = this.reload_list_of_archives_subject.asObservable();
+
       //message received
       navbar.connexion.subscribe(r=>{
         if(r!=this.connexion_status){
@@ -131,6 +134,11 @@ export class ChatComponent implements OnInit  {
   //for chat-right
   private reload_list_of_files_subject: BehaviorSubject<boolean>;
   public reload_list_of_files: Observable<boolean>;
+
+  private reload_list_of_archives_subject: BehaviorSubject<any>;
+  public reload_list_of_archives: Observable<any>;
+
+  
 
   //click lisner for emojis, and research chat
   @HostListener('document:click', ['$event.target'])
@@ -357,6 +365,7 @@ export class ChatComponent implements OnInit  {
     this.compteur_chat_section=0;
     this.list_of_chat_sections=["Discussion principale"];
     this.number_of_sections_unseen=0;
+    this.list_of_folders_retrieved=false;
     this.cd.detectChanges();
     this.get_messages(this.id_chat_section,false);
     this.change_number=0;
@@ -407,6 +416,7 @@ export class ChatComponent implements OnInit  {
     this.list_of_chat_sections_notifications=[];
     this.list_of_chat_sections_id=[1];
     this.compteur_chat_section=0;
+    this.list_of_folders_retrieved=false;
     this.list_of_chat_sections=["Discussion principale"];
     //this.top_pp_loaded=false;
     
@@ -827,7 +837,7 @@ export class ChatComponent implements OnInit  {
                   
               }
               else if(this.list_of_messages[i].attachment_type=='file_attachment' && this.list_of_messages[i].status!="deleted"){
-                this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   if(r[1]==this.compteur_get_messages){
@@ -1344,7 +1354,6 @@ export class ChatComponent implements OnInit  {
       this.cd.detectChanges();
     }
     else if(this.attachments_type[i]=="file_attachment"){
-      this.compt_at+=1;
       if(this.compt_at==1){
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).subscribe(r=>{
            let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
@@ -1492,7 +1501,6 @@ export class ChatComponent implements OnInit  {
         panelClass: "popupEditPictureClass",
       }).afterClosed().subscribe(result => {
         let attachment_name=this.attachments_name[0];
-        console.log("send image before")
         if(result){
           this.send_image(result,attachment_name);
         }
@@ -1502,9 +1510,7 @@ export class ChatComponent implements OnInit  {
   }
   
   send_image(blob: Blob,attachment_name) {
-    
-      console.log("after " + attachment_name)
-      this.chatService.check_if_file_exists_svg((this.friend_type=='user')?'user':'group',this.chat_friend_id,attachment_name).subscribe(r=>{
+      this.chatService.check_if_file_exists_png((this.friend_type=='user')?'user':'group',this.chat_friend_id,attachment_name).subscribe(r=>{
         let name=r[0].value ;
         this.chatService.chat_upload_svg(blob,name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(l=>{
           this.chatService.messages.next(message);
@@ -1528,17 +1534,13 @@ export class ChatComponent implements OnInit  {
         };
         this.index_of_show_pp_right=this.index_of_show_pp_right+1;
         this.list_of_show_pp_left.splice(0,0,false);
-        var reader = new FileReader()
         let THIS=this;
-        reader.readAsText(blob);
-        reader.onload = function(this) {
-            let blob = new Blob([reader.result], {type: 'image/svg+xml'});
-            let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
-            THIS.list_of_messages_files.splice(0,0,url);
-            THIS.list_of_messages_pictures.splice(0,0,url);
-            THIS.list_of_messages.splice(0,0,message);
-            THIS.list_of_messages_date.splice(0,0,THIS.date_of_message("time",1));
-        }
+        let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+        THIS.list_of_messages_files.splice(0,0,url);
+        THIS.list_of_messages_pictures.splice(0,0,url);
+        THIS.list_of_messages.splice(0,0,message);
+        THIS.list_of_messages_date.splice(0,0,THIS.date_of_message("time",1));
+        
         this.attachments_safe=[];
         this.attachments_type=[];
         this.attachments_name=[];
@@ -2123,13 +2125,13 @@ changed_section(e:any) {
 
 
 activate_add_chat_section=false;
+adding_chat_section_name=false;
 add_chat_section(){
   this.activate_add_chat_section=true;
 }
 
 
 
-adding_chat_section_name=false;
 add_chat_section_name(e: any){
   
   if(this.adding_chat_section_name){
@@ -2654,7 +2656,7 @@ get_picture_for_message(i){
       })
     }
     else if(this.list_of_messages[i].attachment_type=='file_attachment'){
-      this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+      this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.list_of_messages_files[i]=SafeURL;
@@ -3035,7 +3037,7 @@ chat_service_managment_function(msg){
           else if(msg[0].attachment_type=="file_attachment" ){
             this.chatService.get_group_chat_as_friend(msg[0].id_user).subscribe(m=>{
               let chat_friend_id=m[0].id
-              this.chatService.get_attachment(msg[0].attachment_name,'group',chat_friend_id).subscribe(r=>{
+              this.chatService.get_attachment_popup(msg[0].attachment_name,'group',chat_friend_id).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_files.splice(0,0,SafeURL)
@@ -3180,7 +3182,7 @@ chat_service_managment_function(msg){
               
               this.chatService.get_chat_friend(msg[0].id_user,false).subscribe(m=>{
                 let chat_friend_id=m[0].id
-                this.chatService.get_attachment(msg[0].attachment_name,'false',chat_friend_id).subscribe(r=>{
+                this.chatService.get_attachment_popup(msg[0].attachment_name,'false',chat_friend_id).subscribe(r=>{
                   let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.list_of_messages_files.splice(0,0,SafeURL)
@@ -3314,8 +3316,6 @@ chat_service_managment_function(msg){
     }
     //a message from the server to tell that the message has been sent
     else if(msg[0].server_message=="received" ){
-      console.log("received message")
-      console.log(msg[0])
       //ajouter une fonction pour récupérer le message qui n'a pas été envoyé sur ce client
       if(this.user_present){
         if(msg[0].message.is_a_group_chat){
@@ -3882,6 +3882,31 @@ onResized(event: ResizedEvent) {
   @Output() arrowBack = new EventEmitter<any>();
   arrow_back() {
     this.arrowBack.emit();
+  }
+
+
+  list_of_folders=[];
+  list_of_folders_retrieved=false;
+  get_folders_emitter(event){
+    this.list_of_folders=event.folders;
+    this.list_of_folders_retrieved=true;
+  }
+  archive(index){
+    const dialogRef = this.dialog.open(PopupFormComponent, {
+      data: {type:"for_archive",message:this.list_of_messages[index],list_of_folders:this.list_of_folders},
+      panelClass: 'popupUploadPictureClass',
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.reload_list_of_archives_subject.next({reload:true,add:true,id_folder:this.list_of_messages[index].id_folder})
+      }
+    });
+  }
+
+  unarchive(index){
+    this.chatService.unarchive_chat_message(this.list_of_messages[index].id,this.list_of_messages[index].id_folder).subscribe(r=>{
+      this.reload_list_of_archives_subject.next({reload:true,remove:true,id_folder:this.list_of_messages[index].id_folder})
+    });
   }
 }
 
