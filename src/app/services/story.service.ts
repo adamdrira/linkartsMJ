@@ -52,8 +52,8 @@ export class Story_service {
       }));
   };
 
- retrieve_story(file_name){
-    return this.httpClient.get(`routes/retrieve_story/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+ retrieve_story(file_name,width){
+    return this.httpClient.get(`routes/retrieve_story/${file_name}/${width}`,{responseType:'blob'}).pipe(map(information=>{
         return information
     }));
 };
