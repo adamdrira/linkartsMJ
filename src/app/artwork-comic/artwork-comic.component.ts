@@ -708,9 +708,10 @@ export class ArtworkComicComponent implements OnInit {
 
 
   get_comic_oneshot_pages(bd_id,total_pages) {
-    
+    console.log("inner width")
+    console.log(window.innerWidth)
     for( var i=0; i< total_pages; i++ ) {
-      this.BdOneShotService.retrieve_bd_page(bd_id,i).subscribe(r=>{
+      this.BdOneShotService.retrieve_bd_page(bd_id,i,window.innerWidth).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         if(this.style=="Manga"){
@@ -875,7 +876,7 @@ export class ArtworkComicComponent implements OnInit {
 
     let compteur=0;
     for( let k=0; k< total_pages; k++ ) {
-      this.BdSerieService.retrieve_bd_page(bd_id,chapter_number,k).subscribe(r=>{
+      this.BdSerieService.retrieve_bd_page(bd_id,chapter_number,k,window.innerWidth).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         if(this.style=="Manga"){
@@ -1077,16 +1078,12 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   initialize_swiper() {
-    console.log("ini swiper")
     var THIS = this;
 
     if( this.swiper ) {
-      console.log("this swiper")
       this.swiper.update();
       return;
     }
-
-    console.log("else")
     this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
       speed: 500,
       spaceBetween: 100,
@@ -1116,6 +1113,7 @@ export class ArtworkComicComponent implements OnInit {
       on: {
         observerUpdate: function () {
           THIS.refresh_swiper_pagination();
+          THIS.slide_to_initial();
           window.dispatchEvent(new Event("resize"));
         },
         slideChange: function () {
@@ -1134,9 +1132,6 @@ export class ArtworkComicComponent implements OnInit {
 
    
       if(this.style=="Manga"){
-        console.log("this manga swiper")
-        console.log(this.pagesnumber)
-        console.log(this.swiperSlide)
         this.swiper.slideTo(this.pagesnumber,false,false);
       }
       else{
@@ -1145,6 +1140,11 @@ export class ArtworkComicComponent implements OnInit {
 
   }
 
+  slide_to_initial(){
+    if(this.style=="Manga" &&  !this.display_comics_pages[this.pagesnumber-1]){
+      this.swiper.slideTo(this.pagesnumber,false,false);
+    }
+  }
 
   refresh_swiper_pagination() {
     if( this.swiper ) {
@@ -2337,11 +2337,8 @@ export class ArtworkComicComponent implements OnInit {
 
 
   a_drawing_is_loaded(i){
-    console.log("drawing laoded")
     this.display_comics_pages[i]=true;
-    console.log(this.display_comics_pages)
     this.initialize_swiper();
- 
   }
 
 
