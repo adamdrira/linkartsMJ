@@ -607,16 +607,20 @@ export class PopupEditPictureComponent implements OnInit {
     
     send_picture() {
       if(this.loading){
-        return
+        return;
       }
+      this.set_no_activated_objects();
       this.loading=true;
 
       this.set_no_activated_objects();
+      this.cd.detectChanges();
+      
       var THIS = this;
       
       html2canvas( this.image_container.nativeElement ).then(canvas => {
         canvas.toBlob(
           blob => {
+            THIS.set_no_activated_objects();
             THIS.dialogRef.close(blob);
           },
           'image/png',
