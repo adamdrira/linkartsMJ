@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChi
 
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
+import { Story_service } from '../services/story.service';
 
 import html2canvas from 'html2canvas';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -36,6 +37,7 @@ export class PopupAddStoryComponent implements OnInit {
     private cd:ChangeDetectorRef,
     private navbar: NavbarService,
     private sanitizer : DomSanitizer,
+    private Story_service: Story_service,
     ) { 
     dialogRef.disableClose = true;
     navbar.visibility_observer_font.subscribe(font=>{
@@ -623,7 +625,39 @@ export class PopupAddStoryComponent implements OnInit {
       canvas.toBlob(
         blob => {
           THIS.set_no_activated_objects();
-          THIS.dialogRef.close(blob);
+          
+          THIS.cd.detectChanges();
+          
+          THIS.Story_service.upload_story( blob ).subscribe(res => {
+            console.log(res)
+            if(!res[0].num && !res[0].error && !res[0].msg){
+              location.reload();
+            }
+            else if(res[0].num){
+              const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+                data: { showChoice: false, text: 'Vous ne pouvez pas ajouer plus de 15 stories par jour' },
+                panelClass: "popupConfirmationClass",
+              });
+              THIS.loading=false;
+
+            }
+            else{
+              const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+                data: { showChoice: false, text: 'Une erreur est survenue' },
+                panelClass: "popupConfirmationClass",
+              });
+              THIS.loading=false;
+            }
+            
+          },
+          error => {
+            THIS.loading = false;
+              const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+                data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+                panelClass: "popupConfirmationClass",
+              });
+          });
+
         },
         'image/png',
         1,
