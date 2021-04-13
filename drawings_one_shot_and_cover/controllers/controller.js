@@ -1103,7 +1103,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     })
   });
 
-  router.get('/retrieve_drawing_onepage_by_name/:file_name', function (req, res) {
+  router.get('/retrieve_drawing_onepage_by_name/:file_name/:width', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1115,17 +1115,24 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
           return res.status(401).json({msg: "error"});
         }
       }
-
+        const width = parseInt(req.params.width)-20;
         let filename = "./data_and_routes/drawings_one_page/" + req.params.file_name;
+        let transform = sharp()
+        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+        });
         fs.access(filename, fs.F_OK, (err) => {
           if(err){
             filename = "./data_and_routes/not-found-image.jpg";
             var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            not_found.pipe(res);
+            not_found.pipe(transform);
           }  
           else{
             var pp = fs.createReadStream( path.join(process.cwd(),filename))
-            pp.pipe(res);
+            pp.pipe(transform);
           }     
         })
 
