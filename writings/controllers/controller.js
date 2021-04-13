@@ -906,7 +906,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       }
 
         let filename = "./data_and_routes/writings/" + req.params.file_name;
-        fs.access(filename, fs.F_OK, (err) => {
+        fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
           if(err){
             filename = "./data_and_routes/file-not-found.pdf";
             var not_found = fs.createReadStream( path.join(process.cwd(),filename))
@@ -925,6 +925,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
   router.get('/retrieve_writing_by_name_artwork/:file_name', function (req, res) {
 
+    console.log("retrieve_writing_by_name_artwork")
     if( ! req.headers['authorization'] ) {
       return res.status(401).json({msg: "error"});
     }
@@ -935,24 +936,18 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
         return res.status(401).json({msg: "error"});
       }
     }
-
+      console.log("retrieve_writing_by_name_artwork pass")
       let filename = "./data_and_routes/writings/" + req.params.file_name;
-      let transform = sharp()
-      transform = transform.resize({fit:sharp.fit.inside,height:266,width:266})
-      .toBuffer((err, buffer, info) => {
-          if (buffer) {
-              res.status(200).send(buffer);
-          }
-      });
-      fs.access(filename, fs.F_OK, (err) => {
+      fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
         if(err){
           filename = "./data_and_routes/file-not-found.pdf";
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-          not_found.pipe(transform);
+          not_found.pipe(res);
         }  
         else{
+          console.log("retrieve_writing_by_name_artwork found")
           var pp = fs.createReadStream( path.join(process.cwd(),filename))
-          pp.pipe(transform);
+          pp.pipe(res);
         }     
       })
 
