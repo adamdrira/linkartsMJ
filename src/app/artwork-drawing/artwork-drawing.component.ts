@@ -498,7 +498,7 @@ export class ArtworkDrawingComponent implements OnInit {
    
       
 
-      this.Drawings_Onepage_Service.retrieve_drawing_page(drawing_name).subscribe(r=>{
+      this.Drawings_Onepage_Service.retrieve_drawing_page(drawing_name,window.innerWidth).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.drawing_one_shot=SafeURL;
@@ -663,7 +663,7 @@ export class ArtworkDrawingComponent implements OnInit {
   get_drawing_artbook_pages(drawing_id,total_pages) {
     
     for( var i=0; i< total_pages; i++ ) {
-      this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i).subscribe(r=>{
+      this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i,window.innerWidth).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.list_drawing_pages[r[1]]=url;
