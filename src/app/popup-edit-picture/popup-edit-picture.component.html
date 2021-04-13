@@ -54,76 +54,73 @@
 
 
             <div class="image-container">
-                <div #image_container class="image-container-fits" [style.width.px]="image_width ? image_width : 200" [style.height.px]="image_height ? image_height : 100">
-                    <img [src]="imageDestination" (click)="set_no_activated_objects();">
+                <div class="image-container-fits" [style.width.px]="image_width ? image_width : 200" [style.height.px]="image_height ? image_height : 100">
+                    <div #image_container class="image-container2">
+                        <img [src]="imageDestination" (click)="set_no_activated_objects();">
 
-                    <ng-container *ngFor="let item of texts; let i = index">
+                        <ng-container *ngFor="let item of texts; let i = index">
 
-                        <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
-                        (click)="set_activated_popup(i);"
-                        cdkDragBoundary=".image-container-fits">
-                            <textarea [@enterAnimation] matInput cdkTextareaAutosize
-                            [ngStyle]="{'font-size': item.font_size + 'px',
-                            'font-style': item.font_italic ? 'italic' : 'unset',
-                            'font-family': item.font_family,
-                            'font-weight': item.font_bold ? 'bold' : '500',
-                            'color': item.font_color,
-                            'background': item.background_color != 'no-background' ? item.background_color : 'unset',
-                            'text-align': item.text_align,
-                            'transform': 'rotate(' + item.rotation + 'deg)'
-                            }">{{item.text}}</textarea>
+                            <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
+                            (click)="set_activated_popup(i);"
+                            cdkDragBoundary=".image-container-fits">
+                                <textarea [@enterAnimation] matInput cdkTextareaAutosize
+                                [ngStyle]="{'font-size': item.font_size + 'px',
+                                'font-style': item.font_italic ? 'italic' : 'unset',
+                                'font-family': item.font_family,
+                                'font-weight': item.font_bold ? 'bold' : '500',
+                                'color': item.font_color,
+                                'background': item.background_color != 'no-background' ? item.background_color : 'unset',
+                                'text-align': item.text_align,
+                                'transform': 'rotate(' + item.rotation + 'deg)'
+                                }">{{item.text}}</textarea>
 
-                            <div class="absolute-square" *ngIf="activated_popup==i" [@enterAnimation]
-                            [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_text(i)">close</mat-icon>
+                                <div class="absolute-square" *ngIf="activated_popup==i" [@enterAnimation]
+                                [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_text(i)">close</mat-icon>
+                                </div>
+
                             </div>
 
-                        </div>
-
-                    </ng-container>
+                        </ng-container>
 
 
-                    <ng-container *ngFor="let item of circles; let i = index">
-                        <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
-                        (click)="set_activated_circle(i);"
-                        cdkDragBoundary=".image-container-fits">
-                            <svg [attr.height]="(item.rayon * 2) + item.stroke_width" [attr.width]="(item.rayon * 2) + item.stroke_width">
+                        <ng-container *ngFor="let item of circles; let i = index">
+                            <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
+                            (click)="set_activated_circle(i);"
+                            cdkDragBoundary=".image-container-fits">
+                                <svg [attr.height]="(item.rayon * 2) + item.stroke_width" [attr.width]="(item.rayon * 2) + item.stroke_width">
 
-                                <circle [attr.cx]="((item.rayon * 2) + item.stroke_width)/2" [attr.cy]="((item.rayon * 2) + item.stroke_width)/2" [attr.r]="item.rayon" 
-                                [attr.stroke]="item.stroke_color" [attr.stroke-width]="item.stroke_width" [attr.fill]="item.background_color != 'no-background' ? item.background_color : 'transparent'" />
-                            </svg>
+                                    <circle [attr.cx]="((item.rayon * 2) + item.stroke_width)/2" [attr.cy]="((item.rayon * 2) + item.stroke_width)/2" [attr.r]="item.rayon" 
+                                    [attr.stroke]="item.stroke_color" [attr.stroke-width]="item.stroke_width" [attr.fill]="item.background_color != 'no-background' ? item.background_color : 'transparent'" />
+                                </svg>
 
-                            <div class="absolute-square" *ngIf="activated_circle==i" [@enterAnimation]>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_circle(i)">close</mat-icon>
+                                <div class="absolute-square" *ngIf="activated_circle==i" [@enterAnimation]>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_circle(i)">close</mat-icon>
+                                </div>
+
                             </div>
-
-                        </div>
-                    </ng-container>
+                        </ng-container>
 
 
-                    <ng-container *ngFor="let item of rectangles; let i = index">
-                        <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
-                        (click)="set_activated_rectangle(i);"
-                        cdkDragBoundary=".image-container-fits">
-                            <svg [attr.height]="item.height" [attr.width]="item.width"
-                            [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
-                                <rect x="0" y="0" [attr.height]="item.height" [attr.width]="item.width"
-                                [attr.stroke]="item.stroke_color" [attr.stroke-width]="item.stroke_width" [attr.fill]="item.background_color != 'no-background' ? item.background_color : 'transparent'"></rect>
-                            </svg>
+                        <ng-container *ngFor="let item of rectangles; let i = index">
+                            <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
+                            (click)="set_activated_rectangle(i);"
+                            cdkDragBoundary=".image-container-fits">
+                                <svg [attr.height]="item.height" [attr.width]="item.width"
+                                [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
+                                    <rect x="0" y="0" [attr.height]="item.height" [attr.width]="item.width"
+                                    [attr.stroke]="item.stroke_color" [attr.stroke-width]="item.stroke_width" [attr.fill]="item.background_color != 'no-background' ? item.background_color : 'transparent'"></rect>
+                                </svg>
 
-                            <div class="absolute-square" *ngIf="activated_rectangle==i" [@enterAnimation]
-                            [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_rectangle(i)">close</mat-icon>
+                                <div class="absolute-square" *ngIf="activated_rectangle==i" [@enterAnimation]
+                                [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_rectangle(i)">close</mat-icon>
+                                </div>
                             </div>
-                        </div>
-                    </ng-container>
+                        </ng-container>
 
-
-
-
-
+                    </div>
                 </div>
-
             </div>
 
             <div class="text-options">

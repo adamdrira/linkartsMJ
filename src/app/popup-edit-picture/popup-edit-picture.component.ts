@@ -546,7 +546,7 @@ export class PopupEditPictureComponent implements OnInit {
       this.imageDestination='';
 
       this.cd.detectChanges();
-      //this.initialize_cropper(this.imageElement);
+      this.initialize_cropper(this.image);
     }
 
     set_no_activated_objects() {
@@ -556,9 +556,9 @@ export class PopupEditPictureComponent implements OnInit {
     }
 
     get_max_index() {
-      let max_of_texts:number = 0;
-      let max_of_circles:number = 0;
-      let max_of_rectangles:number = 0;
+      let max_of_texts:number = 1010;
+      let max_of_circles:number = 1010;
+      let max_of_rectangles:number = 1010;
 
       if(this.texts) {
         for(let i=0; i<this.texts.length; i++) {
