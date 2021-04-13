@@ -903,7 +903,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
   
     });
 
-  router.get('/retrieve_drawing_page_ofartbook/:drawing_id/:drawing_page', function (req, res) {
+  router.get('/retrieve_drawing_page_ofartbook/:drawing_id/:drawing_page/:width', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -920,7 +920,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 
       const drawing_id = parseInt(req.params.drawing_id);
       const drawing_page = parseInt(req.params.drawing_page);
-
+      const width = parseInt(req.params.width)-20;
       pages_artbook.findOne({
         where: {
           drawing_id: drawing_id,
@@ -931,24 +931,31 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(page =>  {
+      let transform = sharp()
+        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+        });
         if(page && page.file_name){
           let filename = "./data_and_routes/drawings_pages_artbook/" + page.file_name;
           fs.access(filename, fs.F_OK, (err) => {
             if(err){
               filename = "./data_and_routes/not-found-image.jpg";
               var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-              not_found.pipe(res);
+              not_found.pipe(transform);
             }  
             else{
               var pp = fs.createReadStream( path.join(process.cwd(),filename))
-              pp.pipe(res);
+              pp.pipe(transform);
             }     
           })
         }
         else{
           filename = "./data_and_routes/not-found-image.jpg";
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-          not_found.pipe(res);
+          not_found.pipe(transform);
         }
        
       });
