@@ -24,7 +24,7 @@
     
             </div>
     
-            <div class="content-container swiper-artwork-writing">
+            <div class="content-container swiper-artwork-writing" style="padding: 10px;">
                 <div class="loading-pic2 dark-shiny swiper-artwork-writing">
     
                 </div>
@@ -78,7 +78,7 @@
             </div>
         </div>
 
-        <div #leftContainer class="content-container swiper-artwork-writing" [ngClass]="{'really-invisible': !item_retrieved}">
+        <div #leftContainer class="content-container swiper-artwork-writing" [ngClass]="{'really-invisible': !item_retrieved}" >
           
             <div #swiperContainer class="swiper-container swiper-artwork-writing">
                 <div #swiperWrapper class="swiper-wrapper swiper-artwork-writing">
@@ -98,7 +98,6 @@
                         [original-size]='true' 
 
                         [fit-to-page]='true' 
-                        [render-text]='false'
                         (page-rendered)="pageRendered($event)"
                         (after-load-complete)="afterLoadComplete($event)"></pdf-viewer>
                     </div>

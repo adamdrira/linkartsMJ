@@ -17,16 +17,6 @@
 }
 
 
-/*&.isFirefox {
-    ::ng-deep {
-        .ng2-pdf-viewer-container {
-            .pdfViewer {
-                padding-right:8px;
-            }
-        }
-    }
-}*/
-
 .swiper-slide-writing {
 
     width:fit-content;
@@ -45,7 +35,7 @@
         background-color:#091731;
     }
     &::-webkit-scrollbar-thumb {
-        background-color: #a9a9a9;
+        background-color: #2e4063;
     }
 
     ::ng-deep {
