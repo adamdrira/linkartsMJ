@@ -948,7 +948,7 @@ export class ChatRightContainerComponent implements OnInit {
     else{
 
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:"Voulez-vous vraiment supprimer ce dossier ? Tous les fichiers resteront disponibles dans les fichiers et images partagés."},
+        data: {showChoice:true, text:"Voulez-vous vraiment supprimer ce dossier ? Tous les fichiers resteront disponibles dans les fichiers et images partagés."},
         panelClass: "popupConfirmationClass",
       });
       dialogRef.afterClosed().subscribe(result => {
@@ -1067,6 +1067,7 @@ export class ChatRightContainerComponent implements OnInit {
             });
           }
           else{
+            this.folders_emitter.emit({folders:this.list_of_folders});
             this.list_of_folders=r[0];
             this.list_of_folders_retrieved=true;
           }

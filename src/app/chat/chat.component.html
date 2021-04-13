@@ -296,7 +296,7 @@
                                             <span>Éditer</span>
                                         </button>
 
-                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && (list_of_messages[list_of_messages.length -1 - i].id_folder==0 || !list_of_messages[list_of_messages.length -1 - i].id_folder)"
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && list_of_folders.length>0 && (list_of_messages[list_of_messages.length -1 - i].id_folder==0 || !list_of_messages[list_of_messages.length -1 - i].id_folder)"
                                             (click)="archive(list_of_messages.length -1 - i)">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in
                                             </mat-icon>
@@ -823,7 +823,7 @@
                                             <span>Éditer</span>
                                         </button>
 
-                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && (list_of_messages[list_of_messages.length -1 - i].id_folder==0 || !list_of_messages[list_of_messages.length -1 - i].id_folder)"
+                                        <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && list_of_folders.length>0 && (list_of_messages[list_of_messages.length -1 - i].id_folder==0 || !list_of_messages[list_of_messages.length -1 - i].id_folder)"
                                             (click)="archive(list_of_messages.length -1 - i)">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in
                                             </mat-icon>
