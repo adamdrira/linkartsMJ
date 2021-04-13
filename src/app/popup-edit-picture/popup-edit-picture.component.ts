@@ -68,6 +68,8 @@ export class PopupEditPictureComponent implements OnInit {
     @ViewChild("image")  image : ElementRef;
     
     ngOnInit(): void {
+      console.log("popup");
+      console.log(this.data)
       if(this.data.modify_chat_after){
         var re = /(?:\.([^.]+))?$/;
 
@@ -83,6 +85,7 @@ export class PopupEditPictureComponent implements OnInit {
                   let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                   const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
                   THIS.picture_blob= SafeURL;
+                  console.log(THIS.picture_blob)
                   THIS.cd.detectChanges();
                   THIS.initialize_cropper(THIS.image)
               }
@@ -110,6 +113,7 @@ export class PopupEditPictureComponent implements OnInit {
                   let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                   const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
                   THIS.picture_blob= SafeURL;
+                  console.log(THIS.picture_blob)
                   THIS.cd.detectChanges();
                   THIS.initialize_cropper(THIS.image)
               }
@@ -184,14 +188,15 @@ export class PopupEditPictureComponent implements OnInit {
           this.image_initial_height = canvas.height;
           this.scale= this.image_height / this.image_width;
 
-          if( canvas.height > ((0.85 * window.innerHeight) - 51 - 66 - 80 - 46) ) {
-            this.image_height = ((0.85 * window.innerHeight) - 51 - 66 - 80 - 46);
+
+          if( canvas.height > ((0.85 * window.innerHeight) - 51 - 63) ) {
+            this.image_height = ((0.85 * window.innerHeight) - 51 - 63);
           }
           else {
             this.image_height = canvas.height;
           }
           
-
+  
           if( canvas.width > 0.8 * window.innerWidth ) {
             this.image_width = 0.8 * window.innerWidth;
           }
@@ -212,6 +217,7 @@ export class PopupEditPictureComponent implements OnInit {
       this.update_image_container_size();
     }
     
+
 
     //width: 1080
     //height: 1349
@@ -264,10 +270,10 @@ export class PopupEditPictureComponent implements OnInit {
 
     get_height_available() {
       if( window.innerWidth > 650 ) {
-        return ((0.85 * window.innerHeight) - 51 - 66 - 80 - 46);
+        return ((0.85 * window.innerHeight) - 51 - 63);
       }
       else {
-        return ((window.innerHeight) - 51 - 66 - 80 - 46);
+        return ((window.innerHeight) - 51 - 63);
       }
     }
 
@@ -610,7 +616,7 @@ export class PopupEditPictureComponent implements OnInit {
 
       this.set_no_activated_objects();
       this.cd.detectChanges();
-      
+
       var THIS = this;
       
       html2canvas( this.image_container.nativeElement ).then(canvas => {
@@ -632,4 +638,9 @@ export class PopupEditPictureComponent implements OnInit {
     close_dialog(){
       this.dialogRef.close();
     }
+
+    stop(e: Event) {
+      e.preventDefault();
+      e.stopPropagation();
+    };
 }
