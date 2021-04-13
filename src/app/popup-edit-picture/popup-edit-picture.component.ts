@@ -7,6 +7,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 import domtoimage from 'dom-to-image';
+import html2canvas from 'html2canvas';
 
 declare var Cropper;
 
@@ -602,6 +603,8 @@ export class PopupEditPictureComponent implements OnInit {
     }
     @ViewChild ('image_container') image_container:ElementRef;
     loading=false;
+
+    
     send_picture() {
       if(this.loading){
         return
@@ -610,24 +613,18 @@ export class PopupEditPictureComponent implements OnInit {
 
       this.set_no_activated_objects();
       var THIS = this;
-        
+      
+      html2canvas( this.image_container.nativeElement ).then(canvas => {
+        canvas.toBlob(
+          blob => {
+            THIS.dialogRef.close(blob);
+          },
+          'image/png',
+          1,
+        );
 
-
-      setTimeout(() => domtoimage.toSvg(this.image_container.nativeElement, {filter: THIS.filter})
-      .then(function (svg) {
-          const svg_file = svg.replace(/data:image\/svg\+xml;charset=utf-8,/, '');
-
-          const blob = new Blob([svg_file], {type: ''});
-          THIS.dialogRef.close(blob);
-          THIS.loading=false;
-      })
-      .catch(function (error) {
-        const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-          data: { showChoice: false, text: 'Une erreur est survenue' },
-          panelClass: "popupConfirmationClass",
-        });
         THIS.loading=false;
-      }), 1000);
+      });
 
     }
     
