@@ -955,16 +955,17 @@ export class ChatRightContainerComponent implements OnInit {
         if(result){
           this.list_of_folders_retrieved=false;
           this.chatService.remove_folder(this.list_of_folders[index].id,this.chat_friend_id).subscribe(r=>{
+            this.list_of_folders_retrieved=true;
+              this.list_of_folders_opened=[];
+              this.show_files_of_folder=[];
+              this.list_of_files_retrieved_by_folder=[];
+              this.list_of_files_loading=[];
             if(!r[0].error){
               if( r[0].length>0){
                 this.list_of_folders=r[0];
               }
               this.folders_emitter.emit({folders:this.list_of_folders});
-              this.list_of_folders_retrieved=true;
-              this.list_of_folders_opened=[];
-              this.show_files_of_folder=[];
-              this.list_of_files_retrieved_by_folder=[];
-              this.list_of_files_loading=[];
+              
             }
             else{
               const dialogRef = this.dialog.open(PopupConfirmationComponent, {
