@@ -181,7 +181,8 @@ controller_chat(router,chat_seq.list_of_messages,
   subscribings_seq.list_of_subscribings,
   authentification.users,
   chat_seq.list_of_chat_groups,
-  chat_seq.list_of_chat_groups_reactions
+  chat_seq.list_of_chat_groups_reactions,
+  chat_seq.list_of_chat_folders,
   );
 controller_trendings(router,trendings_seq.trendings_comics,trendings_seq.trendings_drawings,trendings_seq.trendings_writings,trendings_seq.trendings_contents)
 controller_favorites(router,favorites_seq.favorites,authentification.users)
