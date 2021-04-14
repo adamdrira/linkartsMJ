@@ -232,8 +232,11 @@ pool.connect((err, client, release) => {
           })
         }
         else{
-          call_python();
+          call_python()
         }
+        
+          
+        
 
         function call_python(){
           let Path1=`/csvfiles_for_python/view_rankings.csv`;
@@ -349,16 +352,22 @@ pool.connect((err, client, release) => {
 
 
 const get_drawings_trendings = (request, response) => {
-  if( ! request.headers['authorization'] ) {
-    return response.status(401).json({msg: "error"});
-  }
-  else {
-    let val=request.headers['authorization'].replace(/^Bearer\s/, '')
-    let user= get_current_user(val)
-    if(!user){
+  console.log("get_drawings_trendings")
+
+  if(request.body.password!="Le-Site-De-Mokhtar-Le-Pdg-For-Trendings" ||  request.body.email!="legroupelinkarts@linkarts.fr"){
+    if( ! request.headers['authorization'] ) {
       return response.status(401).json({msg: "error"});
     }
+    else {
+      let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return response.status(401).json({msg: "error"});
+      }
+    }
+
   }
+  
 
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, '0');
@@ -374,10 +383,11 @@ const get_drawings_trendings = (request, response) => {
       date:date
     }
   }).catch(err => {
-				
+				console.log(err)
 					
 		}).then(result=>{
     if(result){
+      console.log("result")
       response.status(200).send([{"drawings_trendings":result.trendings}]);
     }
     else{
@@ -403,21 +413,29 @@ const get_drawings_trendings = (request, response) => {
           }
         })
       }
+      else{
+        call_python();
+      }
 
 
-      fs.access(__dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
-        if(!err){
-          let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`));
-          trendings_seq.trendings_drawings.create({
-            "trendings":json,
-            "date":date
-            }).then(result=>{
-              if(result){
-                add_drawings_trendings(json,date,set_money)
-              }
-          })
-        }
-      })
+      function call_python(){
+        fs.access(__dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
+          if(!err){
+            let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`));
+            trendings_seq.trendings_drawings.create({
+              "trendings":json,
+              "date":date
+              }).then(result=>{
+                if(result){
+                  response.status(200).send([{type:"drawing",json:json,data:date}]);
+                  add_drawings_trendings(json,date,set_money)
+                }
+            })
+          }
+        })
+      }
+
+     
      
     }
   })
@@ -429,16 +447,19 @@ const get_drawings_trendings = (request, response) => {
 
 const get_writings_trendings = (request, response) => {
 
-  if( ! request.headers['authorization'] ) {
-    return response.status(401).json({msg: "error"});
-  }
-  else {
-    let val=request.headers['authorization'].replace(/^Bearer\s/, '')
-    let user= get_current_user(val)
-    if(!user){
+  if(request.body.password!="Le-Site-De-Mokhtar-Le-Pdg-For-Trendings" ||  request.body.email!="legroupelinkarts@linkarts.fr"){
+    if( ! request.headers['authorization'] ) {
       return response.status(401).json({msg: "error"});
     }
+    else {
+      let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return response.status(401).json({msg: "error"});
+      }
+    }
   }
+  
 
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, '0');
@@ -486,22 +507,29 @@ const get_writings_trendings = (request, response) => {
           }
         })
       }
+      else{
+        call_python()
+      }
 
+      function call_python(){
+        fs.access(__dirname + `/python_files/writings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
+          if(!err){
+            let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/writings_rankings_for_trendings-${date}.json`));
+            trendings_seq.trendings_writings.create({
+              "trendings":json,
+              "date":date
+              }).catch(err => {
+              }).then(result=>{
+                if(result){
+                  response.status(200).send([{type:"writing",json:json,data:date}]);
+                  add_writings_trendings(json,date,set_money)
+                }
+            })
+          }
+        })
+      }
 
-      fs.access(__dirname + `/python_files/writings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
-        if(!err){
-          let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/writings_rankings_for_trendings-${date}.json`));
-          trendings_seq.trendings_writings.create({
-            "trendings":json,
-            "date":date
-            }).catch(err => {
-            }).then(result=>{
-              if(result){
-                add_writings_trendings(json,date,set_money)
-              }
-          })
-        }
-      })
+     
 
       
     }
@@ -774,7 +802,7 @@ const get_writings_trendings = (request, response) => {
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Cliquez sur le bouton ci-dessous pour accéder aux tendances et découvrir le classement de votre œuvre : </p>
       
                             <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                                <a href="https://linkarts.fr/trendings/comics" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                <a href="https://linkarts.fr/home/trendings/comics" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                                     Accéder aux tendances
                                 </a>
                             </div>
@@ -821,11 +849,11 @@ const get_writings_trendings = (request, response) => {
                   html: mail_to_send, // html body
               };
         
-              transport.sendMail(mailOptions, (error, info) => {
+              /*transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   }
-              })
+              })*/
 
              }
               
@@ -1096,7 +1124,7 @@ const get_writings_trendings = (request, response) => {
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Cliquez sur le bouton ci-dessous pour accéder aux tendances et découvrir le classement de votre œuvre : </p>
       
                             <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                                <a href="https://linkarts.fr/trendings/drawings" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                <a href="https://linkarts.fr/home/trendings/drawings" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                                     Accéder aux tendances
                                 </a>
                             </div>
@@ -1143,11 +1171,11 @@ const get_writings_trendings = (request, response) => {
                   html: mail_to_send, // html body
               };
         
-              transport.sendMail(mailOptions, (error, info) => {
+              /*transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   }
-              })
+              })*/
 
              }
 
@@ -1354,7 +1382,7 @@ const get_writings_trendings = (request, response) => {
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Cliquez sur le bouton ci-dessous pour accéder aux tendances et découvrir le classement de votre œuvre : </p>
       
                             <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                                <a href="https://linkarts.fr/trendings/writings" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                <a href="https://linkarts.fr/home/trendings/writings" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                                     Accéder aux tendances
                                 </a>
                             </div>
@@ -1401,11 +1429,11 @@ const get_writings_trendings = (request, response) => {
                   html: mail_to_send, // html body
               };
         
-              transport.sendMail(mailOptions, (error, info) => {
+              /*transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   }
-              })
+              })*/
         
              }
             }
