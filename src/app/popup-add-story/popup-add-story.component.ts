@@ -160,21 +160,22 @@ export class PopupAddStoryComponent implements OnInit {
         this.image_initial_height = canvas.height;
         this.scale= this.image_height / this.image_width;
 
+
         if( canvas.height > ((window.innerHeight) - 51 - 63) ) {
-          this.image_height = ((window.innerHeight) - 51 - 63);
+          this.image_height = Math.trunc(((window.innerHeight) - 51 - 63));
         }
         else {
-          this.image_height = canvas.height;
+          this.image_height = Math.trunc(canvas.height);
         }
         
 
         if( canvas.width > 0.8 * window.innerWidth ) {
-          this.image_width = 0.8 * window.innerWidth;
+          this.image_width = Math.trunc(0.8 * window.innerWidth);
         }
         else {
-          this.image_width = canvas.width;
+          this.image_width = Math.trunc(canvas.width);
         }
-        
+
 
         this.cd.detectChanges();
         this.update_image_container_size();
@@ -189,26 +190,26 @@ export class PopupAddStoryComponent implements OnInit {
     this.update_image_container_size();
   }
 
-
+  
   //width: 1080
   //height: 1349
   update_image_container_size() {
     if(this.imageDestination) {
       
       if( this.image_initial_height < this.get_height_available() && this.image_initial_width < this.get_width_available() ) {
-        this.image_height = this.image_initial_height;
-        this.image_width = this.image_initial_width;
+        this.image_height = Math.trunc(this.image_initial_height);
+        this.image_width = Math.trunc(this.image_initial_width);
       }
 
       if( this.image_initial_height > this.get_height_available() && this.image_initial_width < this.get_width_available() ) {
-        this.image_height = this.get_height_available();
-        this.image_width = this.image_height / this.scale;
+        this.image_height = Math.trunc(this.get_height_available());
+        this.image_width = Math.trunc(this.image_height / this.scale);
         return;
       }
 
       if( this.image_initial_height < this.get_height_available() && this.image_initial_width > this.get_width_available() ) {
-        this.image_width = this.get_width_available();
-        this.image_height = this.scale * this.image_width;
+        this.image_width = Math.trunc(this.get_width_available());
+        this.image_height = Math.trunc(this.scale * this.image_width);
         return;
       }
 
@@ -225,18 +226,19 @@ export class PopupAddStoryComponent implements OnInit {
         }*/
 
         if( this.scale * this.get_width_available() > this.get_height_available() ) {
-          this.image_height = this.get_height_available();
-          this.image_width = this.image_height / this.scale;
+          this.image_height = Math.trunc(this.get_height_available());
+          this.image_width = Math.trunc(this.image_height / this.scale);
         }
         else {
-          this.image_width = this.get_width_available();
-          this.image_height = this.scale * this.image_width;
+          this.image_width = Math.trunc(this.get_width_available());
+          this.image_height = Math.trunc(this.scale * this.image_width);
         }
 
       }
     }
     
   }
+
 
 
   get_height_available() {

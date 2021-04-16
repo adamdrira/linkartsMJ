@@ -175,18 +175,18 @@ export class PopupEditPictureComponent implements OnInit {
 
 
           if( canvas.height > ((window.innerHeight) - 51 - 63) ) {
-            this.image_height = ((window.innerHeight) - 51 - 63);
+            this.image_height = Math.trunc(((window.innerHeight) - 51 - 63));
           }
           else {
-            this.image_height = canvas.height;
+            this.image_height = Math.trunc(canvas.height);
           }
           
   
           if( canvas.width > 0.8 * window.innerWidth ) {
-            this.image_width = 0.8 * window.innerWidth;
+            this.image_width = Math.trunc(0.8 * window.innerWidth);
           }
           else {
-            this.image_width = canvas.width;
+            this.image_width = Math.trunc(canvas.width);
           }
           
 
@@ -210,19 +210,19 @@ export class PopupEditPictureComponent implements OnInit {
       if(this.imageDestination) {
         
         if( this.image_initial_height < this.get_height_available() && this.image_initial_width < this.get_width_available() ) {
-          this.image_height = this.image_initial_height;
-          this.image_width = this.image_initial_width;
+          this.image_height = Math.trunc(this.image_initial_height);
+          this.image_width = Math.trunc(this.image_initial_width);
         }
 
         if( this.image_initial_height > this.get_height_available() && this.image_initial_width < this.get_width_available() ) {
-          this.image_height = this.get_height_available();
-          this.image_width = this.image_height / this.scale;
+          this.image_height = Math.trunc(this.get_height_available());
+          this.image_width = Math.trunc(this.image_height / this.scale);
           return;
         }
 
         if( this.image_initial_height < this.get_height_available() && this.image_initial_width > this.get_width_available() ) {
-          this.image_width = this.get_width_available();
-          this.image_height = this.scale * this.image_width;
+          this.image_width = Math.trunc(this.get_width_available());
+          this.image_height = Math.trunc(this.scale * this.image_width);
           return;
         }
 
@@ -239,12 +239,12 @@ export class PopupEditPictureComponent implements OnInit {
           }*/
 
           if( this.scale * this.get_width_available() > this.get_height_available() ) {
-            this.image_height = this.get_height_available();
-            this.image_width = this.image_height / this.scale;
+            this.image_height = Math.trunc(this.get_height_available());
+            this.image_width = Math.trunc(this.image_height / this.scale);
           }
           else {
-            this.image_width = this.get_width_available();
-            this.image_height = this.scale * this.image_width;
+            this.image_width = Math.trunc(this.get_width_available());
+            this.image_height = Math.trunc(this.scale * this.image_width);
           }
 
         }
@@ -594,7 +594,6 @@ export class PopupEditPictureComponent implements OnInit {
       var THIS = this;
       document.documentElement.classList.add("edit-picture-hide-scrollbar");
       html2canvas( this.image_container.nativeElement, {
-        scale: 1,
         scrollX: 0,
         scrollY: -window.scrollY,
         windowWidth: document.documentElement.offsetWidth,
