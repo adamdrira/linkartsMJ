@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild, } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren, } from '@angular/core';
 
 
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -150,21 +150,6 @@ export class PopupAddStoryComponent implements OnInit {
 
     const canvas = this.cropper.getCroppedCanvas();
 
-    if( ((canvas.height / canvas.width) < (180/300)) ) {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, higher_crop:true, text:"Veuillez augmenter la hauteur, ou réduire la largeur du rognage"},
-        panelClass: "popupConfirmationClass",
-      });
-      return;
-    }
-    else if( ((canvas.height / canvas.width) > (600/300)) ) {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, larger_crop:true, text:"Veuillez augmenter la largeur, ou réduire la hauteur du rognage"},
-        panelClass: "popupConfirmationClass",
-      });
-      return;
-    }
-
     canvas.toBlob(blob => {
       if(this.imageDestination==''){
         this.imageDestination = canvas.toDataURL("image/png");
@@ -175,8 +160,8 @@ export class PopupAddStoryComponent implements OnInit {
         this.image_initial_height = canvas.height;
         this.scale= this.image_height / this.image_width;
 
-        if( canvas.height > ((0.85 * window.innerHeight) - 51 - 63) ) {
-          this.image_height = ((0.85 * window.innerHeight) - 51 - 63);
+        if( canvas.height > ((window.innerHeight) - 51 - 63) ) {
+          this.image_height = ((window.innerHeight) - 51 - 63);
         }
         else {
           this.image_height = canvas.height;
@@ -256,7 +241,7 @@ export class PopupAddStoryComponent implements OnInit {
 
   get_height_available() {
     if( window.innerWidth > 650 ) {
-      return ((0.85 * window.innerHeight) - 51 - 63);
+      return ((window.innerHeight) - 51 - 63);
     }
     else {
       return ((window.innerHeight) - 51 - 63);
@@ -281,7 +266,6 @@ export class PopupAddStoryComponent implements OnInit {
       background_color:'transparent',
       height:50,
       width:50,
-      rotation:0,
       stroke_width:6,
       z_index:this.get_max_index()+1,
     });
@@ -318,17 +302,6 @@ export class PopupAddStoryComponent implements OnInit {
   }
   smaller_rectangle_stroke(i: number) {
     this.rectangles[i].stroke_width--;
-    this.cd.detectChanges();
-    window.dispatchEvent(new Event('resize'));
-  }
-
-  rotate_rectangle_clockwise(i: number) {
-    this.rectangles[i].rotation = this.rectangles[i].rotation + 10;
-    this.cd.detectChanges();
-    window.dispatchEvent(new Event('resize'));
-  }
-  rotate_rectangle_anticlockwise(i: number) {
-    this.rectangles[i].rotation = this.rectangles[i].rotation - 10;
     this.cd.detectChanges();
     window.dispatchEvent(new Event('resize'));
   }
@@ -425,13 +398,14 @@ export class PopupAddStoryComponent implements OnInit {
       background:'white',
       font_family:'system-ui',
       font_size:14,
-      rotation:0,
       font_bold:false,//600 or bold
       font_italic:false,
       font_color:'black',
       text_align:'center',//left,right,center,justified
       background_color:'white',
       z_index:this.get_max_index()+1,
+      textareaHeight:0,
+      textareaWidth:0,
 
     });
     this.set_no_activated_objects();
@@ -478,17 +452,7 @@ export class PopupAddStoryComponent implements OnInit {
     this.cd.detectChanges();
     window.dispatchEvent(new Event('resize'));
   }
-  rotate_clockwise(i: number) {
-    this.texts[i].rotation = this.texts[i].rotation + 10;
-    this.cd.detectChanges();
-    window.dispatchEvent(new Event('resize'));
-  }
-  rotate_anticlockwise(i: number) {
-    this.texts[i].rotation = this.texts[i].rotation - 10;
-    this.cd.detectChanges();
-    window.dispatchEvent(new Event('resize'));
-  }
-  
+
   colors: any[] = ["no-background","white","silver","gray","black","red","maroon","yellow","olive","lime","green","aqua","teal","blue","navy","fuchsia","purple"];
   set_font_color(s: string) {
     this.texts[ this.activated_popup ].font_color = s;
@@ -608,64 +572,48 @@ export class PopupAddStoryComponent implements OnInit {
   @ViewChild ('image_container') image_container:ElementRef;
   loading=false;
 
-  
+  @ViewChildren('textarea') textareas: QueryList<any>;
+    
+
   send_picture() {
     if(this.loading){
       return;
     }
     this.set_no_activated_objects();
-    this.loading=true;
 
+    for(let i=0;i<this.textareas.toArray().length;i++) {
+      this.texts[i].textareaHeight = this.textareas.toArray()[i].nativeElement.offsetHeight;
+      this.texts[i].textareaWidth = this.textareas.toArray()[i].nativeElement.offsetWidth;
+
+      console.log( this.texts[i].textareaHeight );
+      console.log( this.texts[i].textareaWidth );
+    }
+
+    this.loading=true;
+    
     this.set_no_activated_objects();
     this.cd.detectChanges();
-    
+
     var THIS = this;
-    
-    html2canvas( this.image_container.nativeElement ).then(canvas => {
-      canvas.toBlob(
-        blob => {
-          THIS.set_no_activated_objects();
-          
-          THIS.cd.detectChanges();
-          
-          THIS.Story_service.upload_story( blob ).subscribe(res => {
-            console.log(res)
-            if(!res[0].num && !res[0].error && !res[0].msg){
-              location.reload();
-            }
-            else if(res[0].num){
-              const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-                data: { showChoice: false, text: 'Vous ne pouvez pas ajouer plus de 15 stories par jour' },
-                panelClass: "popupConfirmationClass",
-              });
-              THIS.loading=false;
+    document.documentElement.classList.add("edit-picture-hide-scrollbar");
+    html2canvas( this.image_container.nativeElement, {
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      windowWidth: document.documentElement.offsetWidth,
+      windowHeight: document.documentElement.offsetHeight,
+    }).then(canvas => {
+            canvas.toBlob(
+              blob => {
+                THIS.set_no_activated_objects();
+                THIS.dialogRef.close(blob);
+              },
+              'image/png',
+              1,
+            );
 
-            }
-            else{
-              const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-                data: { showChoice: false, text: 'Une erreur est survenue' },
-                panelClass: "popupConfirmationClass",
-              });
-              THIS.loading=false;
-            }
-            
-          },
-          error => {
-            THIS.loading = false;
-              const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-                data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
-                panelClass: "popupConfirmationClass",
-              });
-          });
-
-        },
-        'image/png',
-        1,
-      );
-
-      THIS.loading=false;
+            THIS.loading=false;
     });
-
+    document.documentElement.classList.remove("edit-picture-hide-scrollbar");
   }
   
 
@@ -673,11 +621,9 @@ export class PopupAddStoryComponent implements OnInit {
     this.dialogRef.close();
   }
 
-
   stop(e: Event) {
     e.preventDefault();
     e.stopPropagation();
   };
-
 
 }

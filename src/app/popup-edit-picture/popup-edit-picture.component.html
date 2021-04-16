@@ -7,12 +7,12 @@
         <div class="titles-container">
             <div [ngClass]="{'opened': !imageDestination }">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">crop</mat-icon>
-                <span>Rogner</span>
+                <span>Rognage</span>
             </div>
             
             <div [ngClass]="{'opened': imageDestination }">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-                <span>Éditer</span>
+                <span>Édition</span>
             </div>
         </div>
         
@@ -62,12 +62,6 @@
                     </button>
                     <button (click)="click_align_justify(activated_popup);" [ngClass]="{'opened': texts[activated_popup].text_align=='justify'}">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">format_align_justify</mat-icon>
-                    </button>
-                    <button (click)="rotate_clockwise(activated_popup);">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_right</mat-icon>
-                    </button>
-                    <button (click)="rotate_anticlockwise(activated_popup);">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_left</mat-icon>
                     </button>
     
                     <button [matMenuTriggerFor]="textColor">
@@ -162,13 +156,7 @@
                     <button (click)="smaller_rectangle_stroke(activated_rectangle);">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">line_weight</mat-icon>-
                     </button>
-
-                    <button (click)="rotate_rectangle_clockwise(activated_rectangle);">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_right</mat-icon>
-                    </button>
-                    <button (click)="rotate_rectangle_anticlockwise(activated_rectangle);">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_left</mat-icon>
-                    </button>
+                    
                     
                     <button [matMenuTriggerFor]="textColor">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">format_color_text</mat-icon>
@@ -207,7 +195,17 @@
                             <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
                             (click)="set_activated_popup(i);stop($event);"
                             cdkDragBoundary=".image-container-fits">
-                                <textarea [@enterAnimation] matInput cdkTextareaAutosize
+                                <textarea [@enterAnimation] matInput cdkTextareaAutosize class="textarea" *ngIf="!loading" [(ngModel)]="item.text" #textarea
+                                [ngStyle]="{'font-size': item.font_size + 'px',
+                                'font-style': item.font_italic ? 'italic' : 'unset',
+                                'font-family': item.font_family,
+                                'font-weight': item.font_bold ? 'bold' : '500',
+                                'color': item.font_color,
+                                'background': item.background_color != 'no-background' ? item.background_color : 'unset',
+                                'text-align': item.text_align
+                                }">{{item.text}}</textarea>
+
+                                <div matInput cdkTextareaAutosize class="textarea" *ngIf="loading"
                                 [ngStyle]="{'font-size': item.font_size + 'px',
                                 'font-style': item.font_italic ? 'italic' : 'unset',
                                 'font-family': item.font_family,
@@ -215,11 +213,12 @@
                                 'color': item.font_color,
                                 'background': item.background_color != 'no-background' ? item.background_color : 'unset',
                                 'text-align': item.text_align,
-                                'transform': 'rotate(' + item.rotation + 'deg)'
-                                }">{{item.text}}</textarea>
+                                'width': item.textareaWidth+'px',
+                                'height': item.textareaHeight+'px'
+                                }">{{item.text}}</div>
 
-                                <div class="absolute-square" *ngIf="activated_popup==i" [@enterAnimation]
-                                [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
+
+                                <div class="absolute-square" *ngIf="activated_popup==i" [@enterAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_text(i)">close</mat-icon>
                                 </div>
 
@@ -250,14 +249,12 @@
                             <div cdkDrag [ngStyle]="{'z-index': item.z_index}"
                             (click)="set_activated_rectangle(i);stop($event);"
                             cdkDragBoundary=".image-container-fits">
-                                <svg [attr.height]="item.height" [attr.width]="item.width"
-                                [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
+                                <svg [attr.height]="item.height" [attr.width]="item.width">
                                     <rect x="0" y="0" [attr.height]="item.height" [attr.width]="item.width"
                                     [attr.stroke]="item.stroke_color" [attr.stroke-width]="item.stroke_width" [attr.fill]="item.background_color != 'no-background' ? item.background_color : 'transparent'"></rect>
                                 </svg>
 
-                                <div class="absolute-square" *ngIf="activated_rectangle==i" [@enterAnimation]
-                                [ngStyle]="{'transform': 'rotate(' + item.rotation + 'deg)'}">
+                                <div class="absolute-square" *ngIf="activated_rectangle==i" [@enterAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="remove_rectangle(i)">close</mat-icon>
                                 </div>
                             </div>

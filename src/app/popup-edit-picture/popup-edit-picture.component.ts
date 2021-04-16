@@ -1,5 +1,5 @@
 import { trigger, transition, style, animate } from '@angular/animations';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
 import { ChatService } from '../services/chat.service';
@@ -162,21 +162,6 @@ export class PopupEditPictureComponent implements OnInit {
     
 
       const canvas = this.cropper.getCroppedCanvas();
-  
-      if( ((canvas.height / canvas.width) < (180/300)) ) {
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, higher_crop:true, text:"Veuillez augmenter la hauteur, ou réduire la largeur du rognage"},
-          panelClass: "popupConfirmationClass",
-        });
-        return;
-      }
-      else if( ((canvas.height / canvas.width) > (600/300)) ) {
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, larger_crop:true, text:"Veuillez augmenter la largeur, ou réduire la hauteur du rognage"},
-          panelClass: "popupConfirmationClass",
-        });
-        return;
-      }
 
       canvas.toBlob(blob => {
         if(this.imageDestination==''){
@@ -189,8 +174,8 @@ export class PopupEditPictureComponent implements OnInit {
           this.scale= this.image_height / this.image_width;
 
 
-          if( canvas.height > ((0.85 * window.innerHeight) - 51 - 63) ) {
-            this.image_height = ((0.85 * window.innerHeight) - 51 - 63);
+          if( canvas.height > ((window.innerHeight) - 51 - 63) ) {
+            this.image_height = ((window.innerHeight) - 51 - 63);
           }
           else {
             this.image_height = canvas.height;
@@ -270,7 +255,7 @@ export class PopupEditPictureComponent implements OnInit {
 
     get_height_available() {
       if( window.innerWidth > 650 ) {
-        return ((0.85 * window.innerHeight) - 51 - 63);
+        return ((window.innerHeight) - 51 - 63);
       }
       else {
         return ((window.innerHeight) - 51 - 63);
@@ -294,7 +279,6 @@ export class PopupEditPictureComponent implements OnInit {
         background_color:'transparent',
         height:50,
         width:50,
-        rotation:0,
         stroke_width:6,
         z_index:this.get_max_index()+1,
       });
@@ -331,17 +315,6 @@ export class PopupEditPictureComponent implements OnInit {
     }
     smaller_rectangle_stroke(i: number) {
       this.rectangles[i].stroke_width--;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-
-    rotate_rectangle_clockwise(i: number) {
-      this.rectangles[i].rotation = this.rectangles[i].rotation + 10;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    rotate_rectangle_anticlockwise(i: number) {
-      this.rectangles[i].rotation = this.rectangles[i].rotation - 10;
       this.cd.detectChanges();
       window.dispatchEvent(new Event('resize'));
     }
@@ -438,13 +411,14 @@ export class PopupEditPictureComponent implements OnInit {
         background:'white',
         font_family:'system-ui',
         font_size:14,
-        rotation:0,
         font_bold:false,//600 or bold
         font_italic:false,
         font_color:'black',
         text_align:'center',//left,right,center,justified
         background_color:'white',
         z_index:this.get_max_index()+1,
+        textareaHeight:0,
+        textareaWidth:0,
 
       });
       this.set_no_activated_objects();
@@ -488,16 +462,6 @@ export class PopupEditPictureComponent implements OnInit {
     }
     click_align_justify(i: number) {
       this.texts[i].text_align = 'justify';
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    rotate_clockwise(i: number) {
-      this.texts[i].rotation = this.texts[i].rotation + 10;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    rotate_anticlockwise(i: number) {
-      this.texts[i].rotation = this.texts[i].rotation - 10;
       this.cd.detectChanges();
       window.dispatchEvent(new Event('resize'));
     }
@@ -606,32 +570,48 @@ export class PopupEditPictureComponent implements OnInit {
     @ViewChild ('image_container') image_container:ElementRef;
     loading=false;
 
+    @ViewChildren('textarea') textareas: QueryList<any>;
     
     send_picture() {
       if(this.loading){
         return;
       }
       this.set_no_activated_objects();
-      this.loading=true;
 
+      for(let i=0;i<this.textareas.toArray().length;i++) {
+        this.texts[i].textareaHeight = this.textareas.toArray()[i].nativeElement.offsetHeight;
+        this.texts[i].textareaWidth = this.textareas.toArray()[i].nativeElement.offsetWidth;
+
+        console.log( this.texts[i].textareaHeight );
+        console.log( this.texts[i].textareaWidth );
+      }
+
+      this.loading=true;
+      
       this.set_no_activated_objects();
       this.cd.detectChanges();
 
       var THIS = this;
-      
-      html2canvas( this.image_container.nativeElement ).then(canvas => {
-        canvas.toBlob(
-          blob => {
-            THIS.set_no_activated_objects();
-            THIS.dialogRef.close(blob);
-          },
-          'image/png',
-          1,
-        );
+      document.documentElement.classList.add("edit-picture-hide-scrollbar");
+      html2canvas( this.image_container.nativeElement, {
+        scale: 1,
+        scrollX: 0,
+        scrollY: -window.scrollY,
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight,
+      }).then(canvas => {
+              canvas.toBlob(
+                blob => {
+                  THIS.set_no_activated_objects();
+                  THIS.dialogRef.close(blob);
+                },
+                'image/png',
+                1,
+              );
 
-        THIS.loading=false;
+              THIS.loading=false;
       });
-
+      document.documentElement.classList.remove("edit-picture-hide-scrollbar");
     }
     
 
