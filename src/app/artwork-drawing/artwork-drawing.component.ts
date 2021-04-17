@@ -910,7 +910,13 @@ export class ArtworkDrawingComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.openOption(-1);
+    
+    if( event.target.innerWidth != this.actualWidth ) {
+      this.openOption(-1);
+    }
+    this.actualHeight = event.target.innerHeight;
+    this.actualWidth = event.target.innerWidth;
+
     if(this.full_compt==1){
       this.full_compt=2;
     }
@@ -920,6 +926,11 @@ export class ArtworkDrawingComponent implements OnInit {
     }
   }
 
+
+  // Actual space available in navigator
+  actualHeight = window.innerHeight;
+  actualWidth = window.innerWidth;
+  
   see_description() {
     this.in_other_popup=true;
     let dialogRef= this.dialog.open(PopupArtworkDataComponent, {
