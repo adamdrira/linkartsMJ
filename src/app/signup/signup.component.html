@@ -102,20 +102,29 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never' class="select-class">
                     <mat-label>Type de compte*</mat-label>
-                    <mat-select *ngIf="registerForm1.value.gender=='Groupe'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass">
-                        <mat-option  *ngFor="let obj of listOfAccounts_group" [value]="obj">
-                            {{ obj }}
-                        </mat-option>
+                    <mat-select *ngIf="registerForm1.value.gender=='Groupe'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
+                        <div *ngFor="let obj of listOfAccounts_group; let i = index">
+                            <mat-option [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                            <span>{{listOfAccounts_group_description[i]}}</span>
+                        </div>
                     </mat-select>
-                    <mat-select *ngIf="registerForm1.value.gender=='Homme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass">
-                        <mat-option  *ngFor="let obj of listOfAccounts_male" [value]="obj">
-                            {{ obj }}
-                        </mat-option>
+                    <mat-select *ngIf="registerForm1.value.gender=='Homme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
+                        <div *ngFor="let obj of listOfAccounts_male; let i = index">
+                            <mat-option  [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                            <span>{{listOfAccounts_male_description[i]}}</span>
+                        </div>
                     </mat-select>
-                    <mat-select *ngIf="registerForm1.value.gender=='Femme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass">
-                        <mat-option  *ngFor="let obj of listOfAccounts_female" [value]="obj">
-                            {{ obj }}
-                        </mat-option>
+                    <mat-select *ngIf="registerForm1.value.gender=='Femme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
+                        <div *ngFor="let obj of listOfAccounts_female; let i = index" >
+                            <mat-option [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                            <span>{{listOfAccounts_female_description[i]}}</span>
+                        </div>
                     </mat-select>
                     <mat-error *ngIf="registerForm2.controls['type_of_account'].invalid">Veuillez sélectionner un type de compte</mat-error>
                 </mat-form-field>

@@ -892,6 +892,33 @@
         font-weight: 600;
     }
     
+    &.options-with-description {
+      > div {
+        position:relative;
+
+        &:hover {
+          background:#f6fafd !important;
+        }
+        .mat-option {
+          height:4em;
+          padding-bottom: 19px;
+          z-index: 1000;
+          background: unset !important;
+        }
+        .mat-option:hover:not(.mat-option-disabled):not(.mat-active), .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
+          background:unset !important;
+        }
+        > span {
+          position: absolute;
+          bottom: 8px;
+          font-size: 12px;
+          left: 16px;
+          color: #5a5a5a;
+          font-weight: 600;
+        }
+      }
+    }
+
     scrollbar-color: #b7e1fb white;
     &::-webkit-scrollbar {
       width: 6px;

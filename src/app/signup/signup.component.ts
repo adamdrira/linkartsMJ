@@ -362,6 +362,12 @@ export class SignupComponent implements OnInit {
   listOfAccounts_group = ["Artistes","Artistes professionnels","Maison d'édition","Professionnels non artistes"];
   listOfAccounts_male = ["Artiste","Artiste professionnel","Editeur","Professionnel non artiste","Passionné"];
   listOfAccounts_female = ["Artiste","Artiste professionnelle","Editrice","Professionnelle non artiste","Passionnée"];
+
+  listOfAccounts_group_description = ["Artistes","Artistes professionnels","Maison d'édition","Professionnels non artistes"];
+  listOfAccounts_male_description = ["Artiste","Artiste professionnel","Editeur","Professionnel non artiste","Passionné"];
+  listOfAccounts_female_description = ["Artiste","Artiste professionnelle","Editrice","Professionnelle non artiste","Passionnée"];
+
+
   compareObjects(o1: any, o2: any): boolean {
     return o1 === o2;
   }
