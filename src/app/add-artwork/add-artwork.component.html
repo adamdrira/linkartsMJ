@@ -78,8 +78,8 @@
             [pseudo]=pseudo 
             [profile_picture]=profile_picture
             [type_of_account]=type_of_account
-            (hideNavbar)="hide_fake_navbar($event);"
-            (showNavbar)="show_fake_navbar($event);"
+            (hideNavbar)="hide_fake_navbar();"
+            (showNavbar)="show_fake_navbar();"
             (stepChanged)="step_changed($event);"
             (cancelled)="step_back($event);">
         </app-add-comic>
@@ -95,8 +95,8 @@
             [profile_picture]=profile_picture
             [type_of_account]=type_of_account
             (stepChanged)="step_changed($event);"
-            (hideNavbar)="hide_fake_navbar($event);"
-            (showNavbar)="show_fake_navbar($event);"
+            (hideNavbar)="hide_fake_navbar();"
+            (showNavbar)="show_fake_navbar();"
             (cancelled)="step_back($event);">
         </app-add-drawing>
     </div>
@@ -110,8 +110,8 @@
             [user_id]=user_id
             [profile_picture]=profile_picture
             [type_of_account]=type_of_account
-            (hideNavbar)="hide_fake_navbar($event);"
-            (showNavbar)="show_fake_navbar($event);"
+            (hideNavbar)="hide_fake_navbar();"
+            (showNavbar)="show_fake_navbar();"
             (stepChanged)="step_changed($event);"
             (cancelled)="step_back($event);">
         </app-add-writing>
