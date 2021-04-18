@@ -478,9 +478,6 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/delete_chapter_bd_serie/:chapter_number/:bd_id', function (req, res) {
-        console.log("delete_chapter_bd_serie")
-        console.log(req.params.chapter_number)
-        console.log(req.params.bd_id)
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -599,10 +596,6 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
   
     router.delete('/remove_all_pages_from_bd_chapter/:chapter/:bd_id', function (req, res) {
-
-      console.log("remove_all_pages")
-      console.log(parseInt(req.params.chapter))
-      console.log(parseInt(req.params.bd_id))
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
