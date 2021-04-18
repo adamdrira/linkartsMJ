@@ -922,7 +922,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         const category = req.body.category;
         const format = req.body.format;
         const publication_id = parseInt(req.body.publication_id);
-        const chapter_number = req.body.chapter_number;
         const status=req.body.status;
         list_of_contents.findOne({
             where: {
@@ -930,7 +929,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 publication_category:category,
                 format: format,
                 publication_id: publication_id,
-                chapter_number: chapter_number
             },
         }).catch(err => {
 			res.status(500).json({msg: "error", details: err});		
@@ -989,8 +987,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         })    
     });
 
-    router.delete('/remove_content/:category/:format/:publication_id/:chapter_number', function (req, res) {
-
+    router.delete('/remove_content/:category/:format/:publication_id', function (req, res) {
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1006,7 +1003,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         const category = req.params.category;
         const format = req.params.format;
         const publication_id = parseInt(req.params.publication_id);
-        const chapter_number = parseInt(req.params.chapter_number);
 
       list_of_contents.findOne({
             where: {
@@ -1014,7 +1010,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 publication_category:category,
                 format: format,
                 publication_id: publication_id,
-                chapter_number: chapter_number
             },
         })
         .catch(err => {
@@ -1025,7 +1020,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                     truncate: false
                 })
             }
-            res.status(200).send([{"done":done}]);
+            res.status(200).send([{"done":"done"}]);
             })
         
     });
@@ -1153,7 +1148,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         const category = req.body.category;
         const format = req.body.format;
         const publication_id = parseInt(req.body.publication_id);
-        const chapter_number = req.body.chapter_number;
         list_of_contents.findOne({
             where: {
                 id_user:current_user,
@@ -1224,14 +1218,12 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         const category = req.body.category;
         const format = req.body.format;
         const publication_id = parseInt(req.body.publication_id);
-        const chapter_number = req.body.chapter_number;
         contents = await list_of_contents.findOne({
             where: {
                 id_user:current_user,
                 publication_category:category,
                 publication_id:publication_id,
                 format:format,
-                chapter_number:chapter_number,
                 emphasize:"yes"
             },
         }).catch(err => {
