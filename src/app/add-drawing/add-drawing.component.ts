@@ -140,13 +140,21 @@ export class AddDrawingComponent implements OnInit {
    }
   }
 
+  
+  @Output() hideNavbar = new EventEmitter<any>();
+  @Output() showNavbar = new EventEmitter<any>();
+
   read_conditions() {
+
+    this.hideNavbar.emit();
+
     this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
       panelClass: "popupDocumentClass",
     }).afterClosed().subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
+      this.showNavbar.emit();
     });
   }
 

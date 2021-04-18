@@ -73,6 +73,15 @@ export class AddArtworkComponent implements OnInit {
   pp_loaded=false;
   
 
+  fake_navbar_hidden:boolean = false;
+
+
+  hide_fake_navbar() {
+    this.fake_navbar_hidden = true;
+  }
+  show_fake_navbar() {
+    this.fake_navbar_hidden = false;
+  }
   
   //********************************************************************************************************* */
   //*******************************************ng functions************************************************** */

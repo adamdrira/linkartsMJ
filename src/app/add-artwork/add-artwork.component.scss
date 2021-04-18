@@ -33,6 +33,10 @@
         0px 0px 14px 0px rgb(109, 109, 109, 0.2);
     z-index: 1010;
 
+
+    &.fake-navbar-hidden {
+        z-index:-1;
+    }
     .invisible {
         visibility: hidden;
         pointer-events: none;
