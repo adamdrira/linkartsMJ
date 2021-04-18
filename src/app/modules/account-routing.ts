@@ -61,6 +61,7 @@ const routes: Routes = [
     {path:':pseudo/my_account', component:AccountComponent,  data: {section: 7}, resolve: accountResolvers},
     {path:':pseudo/:id/my_account/:password', component:AccountComponent,  data: {section: 8}, resolve: accountResolvers},
     {path:'for_chat/:pseudo/:id/:pseudo_friend/:id_friend', component:AccountComponent,  data: {section: 9}, resolve: accountResolvers},
+    {path:':pseudo/my_account/email/management', component:AccountComponent,  data: {section: 10}, resolve: accountResolvers},
      
 ];
 

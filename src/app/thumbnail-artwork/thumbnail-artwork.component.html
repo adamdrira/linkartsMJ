@@ -23,14 +23,32 @@
 
         <div class="name show-on-small-screen-title">
             <span>{{title}}</span>
-            <button *ngIf="type_of_profile=='account' && !(category=='drawing' && !visitor_mode)" class="options-name" tabIndex="-1" [matMenuTriggerFor]="options3"
+            <button *ngIf="type_of_profile=='account' " class="options-name" tabIndex="-1" [matMenuTriggerFor]="options3"
                 (click)="stop($event)">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
             </button>
             <mat-menu #options3="matMenu" xPosition="before" class="thumbnail-artwork-menu">
+
+                <button *ngIf="!content_emphasized && !visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="emphasize()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">trending_up</mat-icon>
+                    <span>Mettre l'oeuvre en avant</span>
+                </button>
+                <button *ngIf="content_emphasized  && !visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="remove_emphasizing()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">trending_down</mat-icon>
+                    <span>Annuler la mise en avant</span>
+                </button>
+                <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="set_private();">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark</mat-icon>
+                    <span>Archiver</span>
+                </button>
+                <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="remove_artwork();">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline</mat-icon>
+                    <span>Supprimer</span>
+                </button>
+
                 <button (click)="archive()" class="thumbnail-artwork-menu-item" mat-menu-item
                     *ngIf="visitor_mode && !content_archived">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">save_alt</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">bookmark</mat-icon>
                     <span>Archiver</span>
                 </button>
                 <button (click)="unarchive()" class="thumbnail-artwork-menu-item" mat-menu-item
@@ -38,20 +56,20 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">unarchive</mat-icon>
                     <span>Désarchiver</span>
                 </button>
-                <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
+                <button *ngIf="visitor_mode  && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
                     class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                     <span>Signaler</span>
                 </button>
                 <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
                     class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">outlined_flag</mat-icon>
                     <span>Annuler le signalement</span>
                 </button>
                 <button *ngIf="!visitor_mode && category!='drawing'" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
                     (click)="edit_thumbnail()">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
-                    <span>Modifier la miniature</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
+                    <span>Éditer la miniature</span>
                 </button>
             </mat-menu>
         </div>
@@ -78,9 +96,26 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                 </button>
                 <mat-menu #options="matMenu" xPosition="before" class="thumbnail-artwork-menu">
+                    <button *ngIf="!content_emphasized && !visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="emphasize()">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">trending_up</mat-icon>
+                        <span>Mettre l'oeuvre en avant</span>
+                    </button>
+                    <button *ngIf="content_emphasized  && !visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="remove_emphasizing()">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">trending_down</mat-icon>
+                        <span>Annuler la mise en avant</span>
+                    </button>
+                    <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="set_private();">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark</mat-icon>
+                        <span>Archiver</span>
+                    </button>
+                    <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="remove_artwork();">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline</mat-icon>
+                        <span>Supprimer</span>
+                    </button>
+
                     <button (click)="archive()" class="thumbnail-artwork-menu-item" mat-menu-item
                         *ngIf="visitor_mode && !content_archived">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">save_alt</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">bookmark</mat-icon>
                         <span>Archiver</span>
                     </button>
                     <button (click)="unarchive()" class="thumbnail-artwork-menu-item" mat-menu-item
@@ -95,13 +130,13 @@
                     </button>
                     <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
                         class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">outlined_flag</mat-icon>
                         <span>Annuler le signalement</span>
                     </button>
                     <button *ngIf="!visitor_mode && category!='drawing'" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
                         (click)="edit_thumbnail()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
-                        <span>Modifier la miniature</span>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
+                        <span>Éditer la miniature</span>
                     </button>
                 </mat-menu>
             </div>
@@ -113,14 +148,33 @@
 
             <div class="name show-on-large-screen">
                 <span>{{title}}</span>
-                <button *ngIf="type_of_profile=='account' && !(category=='drawing' && !visitor_mode)" class="options-name" tabIndex="-1" [matMenuTriggerFor]="options3"
+                <button *ngIf="type_of_profile=='account' " class="options-name" tabIndex="-1" [matMenuTriggerFor]="options3"
                     (click)="stop($event)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                 </button>
                 <mat-menu #options3="matMenu" xPosition="before" class="thumbnail-artwork-menu">
+                     <button *ngIf="!content_emphasized && !visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="emphasize()">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">trending_up</mat-icon>
+                        <span>Mettre l'oeuvre en avant</span>
+                    </button>
+                    <button *ngIf="content_emphasized  && !visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="remove_emphasizing()">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">trending_down</mat-icon>
+                        <span>Annuler la mise en avant</span>
+                    </button>
+                    <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="set_private();">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark</mat-icon>
+                        <span>Archiver</span>
+                    </button>
+                    <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" mat-menu-item (click)="remove_artwork();">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline</mat-icon>
+                        <span>Supprimer</span>
+                    </button>
+                    
+                   
+
                     <button (click)="archive()" class="thumbnail-artwork-menu-item" mat-menu-item
                         *ngIf="visitor_mode && !content_archived">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">save_alt</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">bookmark</mat-icon>
                         <span>Archiver</span>
                     </button>
                     <button (click)="unarchive()" class="thumbnail-artwork-menu-item" mat-menu-item
@@ -135,13 +189,13 @@
                     </button>
                     <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
                         class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">outlined_flag</mat-icon>
                         <span>Annuler le signalement</span>
                     </button>
                     <button *ngIf="!visitor_mode && category!='drawing'" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
                         (click)="edit_thumbnail()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
-                        <span>Modifier la miniature</span>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
+                        <span>Éditer la miniature</span>
                     </button>
                 </mat-menu>
             </div>

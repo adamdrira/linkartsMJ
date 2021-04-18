@@ -363,9 +363,18 @@ export class SignupComponent implements OnInit {
   listOfAccounts_male = ["Artiste","Artiste professionnel","Editeur","Professionnel non artiste","Passionné"];
   listOfAccounts_female = ["Artiste","Artiste professionnelle","Editrice","Professionnelle non artiste","Passionnée"];
 
-  listOfAccounts_group_description = ["Artistes","Artistes professionnels","Maison d'édition","Professionnels non artistes"];
-  listOfAccounts_male_description = ["Artiste","Artiste professionnel","Editeur","Professionnel non artiste","Passionné"];
-  listOfAccounts_female_description = ["Artiste","Artiste professionnelle","Editrice","Professionnelle non artiste","Passionnée"];
+  listOfAccounts_group_description = [
+    "Partagez vos œuvres, gagnez en visibilité, profitez des rémunérations, et collaborez avec des maisons d'édition ou d'autres artistes.",
+    "Partagez vos œuvres, gagnez en visibilité, profitez des rémunérations, et collaborez avec des maisons d'édition ou d'autres artistes, tout en profitant du statut professionnel.",
+    "Gagnez en visibilité pour votre maison d'édition, faites la promotion de vos produits, et dénichez des artistes talentueux avec qui collaborer en toute simplicité.",
+    "Faites la promotion de vos produits et collaborez avec des artistes talentueux.",];
+  listOfAccounts_male_description = [
+    "Partagez vos œuvres, gagnez en visibilité, profitez des rémunérations, et collaborez avec des maisons d'édition ou d'autres artistes.",
+    "Partagez vos œuvres, gagnez en visibilité, profitez des rémunérations, et collaborez avec des maisons d'édition ou d'autres artistes, tout en profitant du statut professionnel.",
+    "Gagnez en visibilité pour votre maison d'édition, et dénichez des artistes talentueux avec qui collaborer en toute simplicité.",
+    "Faites la promotion de vos produits et collaborez avec des artistes talentueux.",
+    "Découvrez les œuvres d'artistes de talents et soutenez vos artistes préférés."];
+  
 
 
   compareObjects(o1: any, o2: any): boolean {

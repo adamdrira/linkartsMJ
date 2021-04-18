@@ -535,7 +535,7 @@
                         <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
                             <button class="artwork-button-menu-item" mat-menu-item (click)="edit_information();">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-                                <span>Modifier les informations</span>
+                                <span>Éditer les informations</span>
                             </button>
                             <button *ngIf="type=='serie'" class="artwork-button-menu-item" mat-menu-item (click)="edit_chapters();add_time_of_view();close_popup()">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">extension</mat-icon>
@@ -543,7 +543,7 @@
                             </button>
                             <button class="artwork-button-menu-item" mat-menu-item (click)="edit_thumbnail()">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">view_carousel</mat-icon>
-                                <span>Modifier la miniature</span>
+                                <span>Éditer la miniature</span>
                             </button>
                             <button *ngIf="!content_emphasized && status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="emphasize()">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">trending_up</mat-icon>
@@ -558,11 +558,11 @@
                                 <span>Archiver</span>
                             </button>
                             <button *ngIf="status=='private'" class="artwork-button-menu-item" mat-menu-item (click)="set_public();">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in_not</mat-icon>
                                 <span>Désarchiver</span>
                             </button>
                             <button class="artwork-button-menu-item" mat-menu-item (click)="remove_artwork();">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">clear</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline</mat-icon>
                                 <span>Supprimer</span>
                             </button>
                             <button class="artwork-button-menu-item" mat-menu-item *ngIf="monetization=='true' && status=='public'" disabled>
@@ -583,7 +583,7 @@
                             </button>
                             <button *ngIf="mode_visiteur && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)"
                                 class="artwork-button-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">outlined_flag</mat-icon>
                                 <span>Annuler le signalement</span>
                             </button>
                             <button (click)="archive()" class="artwork-button-menu-item" mat-menu-item *ngIf="!content_archived">
@@ -591,7 +591,7 @@
                                 <span>Archiver</span>
                             </button>
                             <button (click)="unarchive()" class="artwork-button-menu-item" mat-menu-item *ngIf="content_archived">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in_not</mat-icon>
                                 <span>Désarchiver</span>
                             </button>
                             <button class="artwork-button-menu-item" mat-menu-item (click)="open_chat_link();add_time_of_view();close_popup()">

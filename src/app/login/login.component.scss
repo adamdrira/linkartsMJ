@@ -45,7 +45,6 @@
 }
 
 .popup-login {
-
   position: relative;
   padding:24px 24px 24px 24px;
   @media (max-width: 400px) {
@@ -286,6 +285,21 @@
     }
   }
 
+  .not-error{
+    width: 100%;
+    text-align:center;
+    margin-top: 10px;
+    padding: 0px 10px;
+    line-height: 16px;
+    span {
+      font-size: 12px;
+
+      &.green {
+        color:rgb(0, 89, 0);
+      }
+    }
+  }
+
   .step-back {
     display: flex;
     height: 40px;
@@ -440,7 +454,8 @@
 
   mat-dialog-container {
     max-height: 96vh;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding:0px;
   }
 }

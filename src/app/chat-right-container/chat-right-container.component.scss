@@ -304,8 +304,12 @@
         }
 
         ::ng-deep {
+
             .mat-expansion-panel {
                 box-shadow: none !important;
+            }
+            .mat-expansion-panel-spacing {
+                margin: 0px !important;
             }
 
             .mat-content {
@@ -313,6 +317,9 @@
             }
             .mat-expansion-panel {
                 background: unset !important;
+            }
+            .mat-expansion-panel-header {
+                height: 48px !important;
             }
             .mat-expansion-panel-header-title {
                 display: flex;

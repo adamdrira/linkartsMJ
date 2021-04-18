@@ -1884,7 +1884,7 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Emphasize_service.emphasize_content("drawing",this.type,this.drawing_id,0).subscribe(r=>{
+    this.Emphasize_service.emphasize_content("drawing",this.type,this.drawing_id).subscribe(r=>{
       this.content_emphasized=true;
       this.archive_loading=false;
     });
@@ -1895,7 +1895,7 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Emphasize_service.remove_emphasizing("drawing",this.type,this.drawing_id,0).subscribe(t=>{
+    this.Emphasize_service.remove_emphasizing("drawing",this.type,this.drawing_id).subscribe(t=>{
       this.content_emphasized=false;
       this.archive_loading=false;
     });
@@ -1908,22 +1908,6 @@ export class ArtworkDrawingComponent implements OnInit {
   a_drawing_is_loaded(i){
     this.display_drawings[i]=true;
     this.initialize_swiper();
-    /*let compt=0;
-    if(this.type=='artbook'){
-      for(let j=0;j<this.list_drawing_pages.length;j++){
-        if(this.display_drawings[j]){
-          compt+=1;
-        }
-        if(compt==this.list_drawing_pages.length){
-          this.initialize_swiper();
-          this.swiper.slideTo(0,false,false);
-          this.display_pages=true;
-        }
-      }
-    }
-    else{
-      this.display_pages=true;
-    }*/
    
   }
 
@@ -1994,7 +1978,7 @@ export class ArtworkDrawingComponent implements OnInit {
       if( result ) {
         if( result ) {
           if(this.type=="one-shot"){
-            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"private").subscribe(r=>{
+            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"private").subscribe(r=>{
               this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"private").subscribe(r=>{
                 this.status="private";
                 this.archive_loading=false;
@@ -2003,7 +1987,7 @@ export class ArtworkDrawingComponent implements OnInit {
            
           }
           else{
-            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"private").subscribe(r=>{
+            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"private").subscribe(r=>{
               this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"private").subscribe(r=>{
                 this.status="private";
                 this.archive_loading=false;
@@ -2034,7 +2018,7 @@ export class ArtworkDrawingComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
-          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"ok").subscribe(r=>{
+          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"ok").subscribe(r=>{
             this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"public").subscribe(r=>{
               this.status="public";
               this.archive_loading=false;
@@ -2043,7 +2027,7 @@ export class ArtworkDrawingComponent implements OnInit {
           
         }
         else{
-          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"ok").subscribe(r=>{
+          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"ok").subscribe(r=>{
             this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"public").subscribe(r=>{
               this.status="public";
               this.archive_loading=false;

@@ -110,14 +110,14 @@
                 </div>
 
                 <!--mat menu ici-->
-                <div class="right-container">
-                    <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
+                <div class="right-container" >
+                    <button class="optionsMenu" [matMenuTriggerFor]="commentOptions" *ngIf="visitor_id==item.author_id || !visitor_mode">
                         <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                     </button>
                     <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
                         <button *ngIf="!loading_edit" class="comments-button-menu-item" tabIndex="-1" (click)="edit_response(i)" mat-menu-item>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-                            <span>Editer</span>
+                            <span>Éditer</span>
                         </button>
                         <button class="comments-button-menu-item" tabIndex="-1" (click)="remove_comment_answer(i)" mat-menu-item>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>

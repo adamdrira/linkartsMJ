@@ -19,11 +19,11 @@
             </button>
             <mat-menu #options="matMenu" xPosition="before" class="thumbnail-ad-menu">
                 <button mat-menu-item (click)="archive()" *ngIf="!ad_archived && visitor_mode" class="thumbnail-ad-menu-item">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark</mat-icon>
                     <span>Archiver</span>
                 </button>
                 <button mat-menu-item (click)="unarchive()" *ngIf="ad_archived && visitor_mode" class="thumbnail-ad-menu-item">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
                     <span>Désarchiver</span>
                 </button>
                 <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="thumbnail-ad-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
@@ -31,12 +31,17 @@
                     <span>Signaler</span>
                 </button>
                 <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="thumbnail-ad-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">outlined_flag</mat-icon>
                     <span>Annuler le signalement</span>
                 </button>
+
                 <button *ngIf="!visitor_mode" mat-menu-item (click)="edit_thumbnail()" class="thumbnail-ad-menu-item">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
-                    <span>Editer la miniature</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">view_carousel</mat-icon>
+                    <span>Éditer la miniature</span>
+                </button>
+                <button *ngIf="!visitor_mode" mat-menu-item (click)="delete()" class="thumbnail-ad-menu-item">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline</mat-icon>
+                    <span>Supprimer</span>
                 </button>
             </mat-menu>
         </div>

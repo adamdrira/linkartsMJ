@@ -1,4 +1,4 @@
-<div class="panel-background">
+<div class="panel-background" *ngIf="!for_reset_password">
     <div class="logos-container"  #target [@enterFromTopAnimation]>
         <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
             <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
@@ -12,7 +12,149 @@
 </div>
 
 
-<div class="account-my-account">
+<div class="account-my-account" *ngIf="for_reset_password">
+
+
+    <div *ngIf="!password_retrieved" >
+
+        <div class="account-title-container">
+            <!--TITRE + BOUTON EDITER/CACHER-->
+            <div class="category">
+                <div class="category-title shiny">
+                </div>
+            </div>
+        </div>
+
+        <div class="account-form-container height-loading" >
+
+
+            <div class="form-item " >
+                <div class="category2">
+                    <div class="category-title2 shiny">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-item " >
+                <div class="category2">
+                    <div class="category-title2 shiny">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-item " >
+                <div class="category2">
+                    <div class="category-title2 shiny">
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+
+        <div class="account-title-container">
+            <!--TITRE + BOUTON EDITER/CACHER-->
+            <div class="category">
+                <div class="category-title shiny">
+                </div>
+            </div>
+        </div>
+
+        <div class="account-form-container height-loading" >
+
+
+            <div class="form-item " >
+                <div class="category2">
+                    <div class="category-title2 shiny">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-item " >
+                <div class="category2">
+                    <div class="category-title2 shiny">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-item " >
+                <div class="category2">
+                    <div class="category-title2 shiny">
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+
+    </div>
+
+    <div [ngClass]="{'invisible':!password_retrieved }">
+        <div class="account-form-container" [formGroup]="registerForm1">
+            
+
+
+            <button class="validate-form-button" *ngIf="!registerForm1_activated" (click)="edit_password();" [@enterAnimation]>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">lock</mat-icon>
+                <span>Changer mon mot de passe</span>
+            </button>
+
+            <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
+
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Mot de passe actuel</mat-label>
+                    <input matInput formControlName="old_password" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off">
+                    <mat-error *ngIf="registerForm1.controls['old_password'].invalid ">Mot de passe incorrect
+                    </mat-error>
+                    <div class="length-indicator">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Nouveau mot de passe</mat-label>
+                    <input matInput formControlName="password" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off">
+                    <mat-error *ngIf="registerForm1.controls['password'].invalid ">Minimum : 8 caractères, une minuscule, une majuscule et un chiffre
+                    </mat-error>
+                    <div class="length-indicator">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Confirmation du nouveau mot de passe</mat-label>
+                    <input matInput formControlName="confirmPassword" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off">
+                    <mat-error>Confirmation incorrecte
+                    </mat-error>
+                    <div class="length-indicator">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>
+                    </div>
+                </mat-form-field>
+
+                
+                <button class="validate-form-button" (click)="validate_edit_password();" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!checking_password">done_all</mat-icon>
+                    <span *ngIf="!checking_password" >Changer mon mot de passe</span>
+                    <div class="loading-dots" *ngIf="checking_password" >
+                        &nbsp; <span>.</span><span>.</span><span>.</span>
+                    </div>
+                </button>
+
+                
+            </div>
+
+        
+        </div>
+
+    </div>
+   
+</div>
+
+
+
+<div class="account-my-account" *ngIf="!for_reset_password">
 
 
 
@@ -242,16 +384,22 @@
 
             <button class="validate-form-button" *ngIf="!email_agreement" (click)="change_mailing_agreement()" [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
-                <span>Autoriser l'envoi de e-mails</span>
+                <span>Autoriser l'envoi d'e-mails</span>
             </button>
             <button class="validate-form-button" *ngIf="email_agreement" (click)="change_mailing_agreement()" [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">block</mat-icon>
-                <span>Ne plus autoriser l'envoi de e-mails</span>
+                <span>Ne plus autoriser l'envoi d'e-mails</span>
             </button>
             <div class="text-lines"  [@enterAnimation]>
-                <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
-                <span>L'autorisation ou le refut de recevoir des emails ne concerne que les points suivants :  </span>
-                <span> &nbsp;  - réception des e-mails pour promouvoir un partenaire ou un produit commercial </span>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" style="cursor: pointer;" (click)="change_show_email_infos()">info_outline</mat-icon>
+                <ng-container *ngIf="show_infos_email">
+                    <span style="margin-bottom:10px">L'autorisation ou le refut de recevoir des e-mails ne concerne que les e-mails informatifs suivants: </span>
+                    <span> &nbsp;  - classement dans les Tendances </span>
+                    <span> &nbsp;  - classement dans les Coups de cœurs </span>
+                    <span> &nbsp;  - réception de réponses à vos annonces </span>
+                    <span> &nbsp;  - réception de messages dans la messagerie après 2 jours sans connexion</span>
+                </ng-container>
+                
                
             </div>
         </div>

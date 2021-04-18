@@ -1332,7 +1332,7 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Emphasize_service.emphasize_content("writing","unknown",this.writing_id,0).subscribe(r=>{
+    this.Emphasize_service.emphasize_content("writing","unknown",this.writing_id).subscribe(r=>{
       this.content_emphasized=true;
       this.archive_loading=false;
     });
@@ -1343,7 +1343,7 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-      this.Emphasize_service.remove_emphasizing("writing","unknown",this.writing_id,0).subscribe(t=>{
+      this.Emphasize_service.remove_emphasizing("writing","unknown",this.writing_id).subscribe(t=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
@@ -1483,7 +1483,7 @@ pageRendered(e:any) {
     this.archive_loading=true;
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
-        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,0,"private").subscribe(r=>{
+        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,"private").subscribe(r=>{
           this.Writing_Upload_Service.change_writing_status(this.writing_id,"private").subscribe(r=>{
             this.status="private";
             this.archive_loading=false;
@@ -1509,7 +1509,7 @@ pageRendered(e:any) {
     this.archive_loading=true;
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
-        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,0,"ok").subscribe(r=>{
+        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,"ok").subscribe(r=>{
           this.Writing_Upload_Service.change_writing_status(this.writing_id,"public").subscribe(r=>{
             this.status="public";
             this.archive_loading=false;

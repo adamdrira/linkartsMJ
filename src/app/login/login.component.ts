@@ -197,6 +197,10 @@ export class LoginComponent implements OnInit {
     this.hide=!this.hide;
   }
 
+  close_dialog(){
+    this.dialogRef.close();
+  }
+
   signup() {
     this.dialog.closeAll();
     const dialogRef = this.dialog.open(SignupComponent, {
@@ -410,7 +414,7 @@ export class LoginComponent implements OnInit {
         if(data.token){
           this.Community_recommendation.delete_recommendations_cookies();
           this.Community_recommendation.generate_recommendations().subscribe(r=>{
-            this.dialogRef.close();
+            this.dialogRef.close(true);
           })
         }
         else{

@@ -1,5 +1,5 @@
 
-<button class="close-button" [mat-dialog-close]="true">
+<button class="close-button" (click)="close_dialog()">
     <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
 </button>
 
@@ -27,11 +27,12 @@
 
        
         
-        <div class="error">
-            <span *ngIf="display_error_reset" [@enterAnimation]>Veuillez nous excuser, une erreur est survenue... </span>
-            
+        <div class="error" *ngIf="display_error_reset"  [@enterAnimation]>
+            <span >Veuillez nous excuser, une erreur est survenue... </span>
         </div>
-
+        <div class="not-error" *ngIf="!display_error_reset"  [@enterAnimation]>
+            <span >Connexion en cours</span>
+        </div>
 
     </ng-container>
 

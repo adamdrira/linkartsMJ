@@ -69,6 +69,7 @@
             <div class="left-container">
                 <app-comment-element
                     [visitor_id]="visitor_id"
+                    [visitor_mode]="visitor_mode"
                     [visitor_name]="visitor_name"
                     [title]="title"
                     [type_of_account]="type_of_account"
@@ -82,20 +83,15 @@
             </div>
 
             <div class="right-container">
-                <!--options pour un visiteur -->
-                <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
+                <button class="optionsMenu" [matMenuTriggerFor]="commentOptions"  *ngIf="!loading_edit && (visitor_id==comments_list[0].author_id_who_comments || !visitor_mode)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
-                    <button class="comments-button-menu-item" tabIndex="-1" mat-menu-item>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
-                        <span>Signaler</span>
+                    <button  class="comments-button-menu-item" tabIndex="-1" (click)="edit_comment(0)" mat-menu-item>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                        <span>Éditer</span>
                     </button>
-                    <button class="comments-button-menu-item" tabIndex="-1" mat-menu-item>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
-                        <span>Annuler le signalement</span>
-                    </button>
-                    <button *ngIf="!visitor_mode && category!='ad'" (click)="remove_other_comment(0)" class="comments-button-menu-item" mat-menu-item>
+                    <button class="comments-button-menu-item"   tabIndex="-1" (click)="remove_comment(0)" mat-menu-item>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                         <span>Supprimer</span>
                     </button>
@@ -111,6 +107,7 @@
             <div class="left-container">
                 <app-comment-element
                     [visitor_id]="visitor_id"
+                    [visitor_mode]="visitor_mode"
                     [visitor_name]="visitor_name"
                     [visitor_profile_picture]="profile_picture"
                     [title]="title"
@@ -124,16 +121,16 @@
                 </app-comment-element>
             </div>
             
-            <div class="right-container">
-                <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
+            <div class="right-container" >
+                <button class="optionsMenu" [matMenuTriggerFor]="commentOptions" *ngIf="!loading_edit && (visitor_id==item.author_id_who_comments || !visitor_mode)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
-                    <button  *ngIf="!loading_edit" class="comments-button-menu-item" tabIndex="-1" (click)="edit_comment(i)" mat-menu-item>
+                    <button  class="comments-button-menu-item" tabIndex="-1" (click)="edit_comment(i)" mat-menu-item>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-                        <span>Editer</span>
+                        <span>Éditer</span>
                     </button>
-                    <button class="comments-button-menu-item" tabIndex="-1" (click)="remove_comment(i)" mat-menu-item>
+                    <button class="comments-button-menu-item"   tabIndex="-1" (click)="remove_comment(i)" mat-menu-item>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                         <span>Supprimer</span>
                     </button>
@@ -150,6 +147,7 @@
                 <app-comment-element
                     [visitor_id]="visitor_id"
                     [visitor_name]="visitor_name"
+                    [visitor_mode]="visitor_mode"
                     [title]="title"
                     [type_of_account]="type_of_account"
                     [visitor_profile_picture]="profile_picture"
@@ -161,16 +159,16 @@
                 </app-comment-element>
             </div>
             
-            <div class="right-container">
-                <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
+            <div class="right-container" >
+                <button class="optionsMenu" [matMenuTriggerFor]="commentOptions" *ngIf="!loading_edit && (visitor_id==item.author_id_who_comments || !visitor_mode)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
-                    <button class="comments-button-menu-item" tabIndex="-1" mat-menu-item>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
-                        <span>Signaler</span>
+                    <button  class="comments-button-menu-item" tabIndex="-1" (click)="edit_comment(i)" mat-menu-item>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                        <span>Éditer</span>
                     </button>
-                    <button class="comments-button-menu-item" tabIndex="-1" (click)="remove_other_comment(i)" mat-menu-item>
+                    <button class="comments-button-menu-item"   tabIndex="-1" (click)="remove_comment(i)" mat-menu-item>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                         <span>Supprimer</span>
                     </button>

@@ -899,6 +899,7 @@
         <app-chat
         [id_chat_section]="id_chat_section"
         [spam]="spam"
+        [list_of_spams_ids]="list_of_spams_ids"
         [list_of_users_blocked]="list_of_users_blocked"
         [user_present]="user_present"
         [current_user_id]="current_user" 
@@ -921,7 +922,9 @@
         (change_message_status)="change_message_status( $event );"
         (blocking_managment)="blocking_managment($event)"
         (add_a_friend_to_the_group)="add_a_friend_to_the_group( $event );"
+        (remove_friend_from_list)="remove_friend_from_contact( $event );"
         (display_exit)="display_exit($event)"
+        (unblock_user_emit)="unblock_user_receive($event)"
         (arrowBack)="change_chat_right_container()"></app-chat>
     </div>
 
@@ -930,6 +933,7 @@
         <app-chat *ngIf="active_section_done"
         [id_chat_section]="id_chat_section"
         [spam]="spam"
+        [list_of_spams_ids]="list_of_spams_ids"
         [list_of_users_blocked]="list_of_users_blocked"
         [user_present]="user_present"
         [current_user_id]="current_user" 
@@ -951,7 +955,9 @@
         (change_message_status)="change_message_status( $event );"
         (blocking_managment)="blocking_managment($event)"
         (add_a_friend_to_the_group)="add_a_friend_to_the_group( $event );"
+        (remove_friend_from_list)="remove_friend_from_contact( $event );"
         (display_exit)="display_exit($event)"
+        (unblock_user_emit)="unblock_user_receive($event)"
         (arrowBack)="change_chat_right_container()"></app-chat>
     </div>
 

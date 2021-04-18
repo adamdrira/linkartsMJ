@@ -32,7 +32,6 @@ import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import {date_in_seconds, get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
-import * as WebFont from 'webfontloader';
 declare var $: any;
 
 
@@ -98,7 +97,19 @@ export class AccountComponent implements OnInit {
     };
 
     this.navbar.setActiveSection(-1);
-    this.navbar.show();
+    route.data.subscribe(resp => {
+      let r=resp.user_data_by_pseudo;
+      this.user_id =r[0].id;
+      this.user_data=r[0];
+    })
+    
+    let section =  route.snapshot.data['section'];
+    if(section==8 ){
+      this.for_reset_password=true;
+    }
+    else{
+      this.navbar.show();
+    }
   }
 
   @HostListener('window:focus', ['$event'])
@@ -138,6 +149,7 @@ export class AccountComponent implements OnInit {
    
   }
 
+  for_reset_password=false;
   width:number;
   new_contents_loading=false;
   number_of_ads_to_show=10;
@@ -384,18 +396,123 @@ export class AccountComponent implements OnInit {
    
     window.scroll(0,0);
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
+    
     if( !( this.pseudo && this.pseudo.length>0)){
       this.page_not_found=true;
       return
     }
 
     this.route.data.subscribe(resp => {
-      let r=resp.user_data_by_pseudo;
-      this.user_id =r[0].id;
-      this.user_data=r[0];
+      let r=resp.user_pp_pseudo;
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.profile_picture = SafeURL;
     })
 
+    this.route.data.subscribe(resp => {
+      let r=resp.user_cp_pseudo;
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.cover_picture = SafeURL;
+    })
+   
 
+    if(!this.for_reset_password){
+      this.initialize_page_for_visitor()
+      this.get_contents_infos();
+      this.get_subscribings_infos();
+
+    }
+    else{
+      this.location.go(`account/${this.pseudo}`)
+      this.route.data.subscribe( resp => {
+        let s = resp.user;
+        let user=this.user_data;
+        this.visitor_id=s[0].id
+        this.visitor_name=s[0].nickname;
+        this.type_of_profile=s[0].status;
+        this.type_of_profile_retrieved=true;
+    
+       
+        if( user  && this.visitor_id==user.id){
+          this.mode_visiteur = false;
+        }
+        this.mode_visiteur_added = true;
+  
+        if( !user || user.status=="visitor") {
+          this.page_not_found=true;
+          return
+        }
+        else if(user && user.status=="deleted"){
+          
+          this.profile_not_found=true;
+          this.author_name = user.firstname + ' ' + user.lastname;
+          this.navbar.delete_research_from_navbar("Account","unknown",this.user_id).subscribe(l=>{
+          });
+          
+          this.user_blocked=false;
+          this.mode_visiteur_added = true;
+          this.user_blocked_retrieved=true;
+          this.list_writings_added=true; 
+          this.list_drawings_artbook_added=true;
+          this.list_drawings_onepage_added=true;
+          this.list_bd_series_added=true;
+          this.list_bd_oneshot_added=true;
+          this.cd.detectChanges();
+          this.update_background_position( this.opened_section );
+          return
+        }
+        else if( this.pseudo != user.nickname ) {
+          this.page_not_found=true;
+          return
+        }
+        else{
+          this.author=user;
+          this.author_name = user.firstname + ' ' + user.lastname;
+          this.gender=user.gender;
+          this.firstName=user.firstname;
+          this.lastName=user.lastname;
+          this.primary_description=user.primary_description;
+          this.type_of_account=user.type_of_account;
+          this.primary_description_extended=user.primary_description_extended;
+          this.certified_account=user.certified_account;
+          this.user_location=user.location;
+          
+          this.user_blocked_retrieved=true;
+          this.list_writings_added=true; 
+          this.list_drawings_artbook_added=true;
+          this.list_drawings_onepage_added=true;
+          this.list_bd_series_added=true;
+          this.list_bd_oneshot_added=true;
+
+          this.navbar.add_page_visited_to_history(`/account/reset_password/${this.visitor_id}/${this.visitor_name}/for/${this.user_id}/${this.pseudo}`, this.device_info).subscribe();
+
+          let id = parseInt(this.route.snapshot.paramMap.get('id'));
+          let password = this.route.snapshot.paramMap.get('password');
+          this.Profile_Edition_Service.check_password_for_registration2(id,password).subscribe(r=>{
+            if(r[0].user_found){
+              this.opened_section=8;
+              this.cd.detectChanges()
+            }
+            else{
+              this.page_not_found=true;
+              this.cd.detectChanges();
+            }
+          })
+        }
+      });
+    }
+
+
+    
+
+    
+
+    
+   
+  }
+
+  initialize_page_for_visitor(){
 
     this.Profile_Edition_Service.retrieve_profile_data_links(this.user_id).subscribe(l=>{
       if(l[0].length>0){
@@ -413,22 +530,6 @@ export class AccountComponent implements OnInit {
       this.primary_description_extended_privacy=l[0].primary_description_extended;
     })
 
-    this.route.data.subscribe(resp => {
-      let r=resp.user_pp_pseudo;
-      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.profile_picture = SafeURL;
-    })
-
-    this.route.data.subscribe(resp => {
-      let r=resp.user_cp_pseudo;
-      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.cover_picture = SafeURL;
-    })
-   
-    
-
     this.Story_service.check_stories_for_account(this.user_id).subscribe(r => {
       if(r[0] && r[0].story_found){
         this.list_of_stories[0]=r[0].stories_retrieved;
@@ -441,8 +542,6 @@ export class AccountComponent implements OnInit {
       }
       this.story_retrieved=true;
     })
-
-    
 
     this.route.data.subscribe( resp => {
       let s = resp.user;
@@ -587,36 +686,41 @@ export class AccountComponent implements OnInit {
         }
         else if(this.route.snapshot.data['section']>5){
           if(this.mode_visiteur){
-            if(this.route.snapshot.data['section']==8){
-              //après le click du lien envoyé par mail pour confirmer inscription
-              let id = parseInt(this.route.snapshot.paramMap.get('id'));
-              let password = this.route.snapshot.paramMap.get('password');
-              this.Profile_Edition_Service.check_password_for_registration2(id,password).subscribe(r=>{
-                if(r[0].user_found){
-                  this.open_section( 7,true );
-                  const dialogRef = this.dialog.open(LoginComponent, {
-                    data: {usage:"rest_pass",email:r[0].user_found.email,temp_pass:r[0].pass},
-                    panelClass: "loginComponentClass",
-                  });
-                }
-                else{
-                  this.open_section( 1,true );
-                  this.cd.detectChanges();
-                  this.update_background_position(this.opened_section)
-                }
-              })
-            }
-            else if(this.route.snapshot.data['section']==9){
+            if(this.route.snapshot.data['section']==9){
+              this.open_section( 0,true );
+              this.cd.detectChanges();
+              this.update_background_position(this.opened_section);
               let id_friend = parseInt(this.route.snapshot.paramMap.get('id_friend'));
               let pseudo_friend = this.route.snapshot.paramMap.get('pseudo_friend');
+              this.update_background_position(0)
               const dialogRef = this.dialog.open(LoginComponent, {
                 data: {usage:"for_chat"},
                 panelClass: "loginComponentClass",
               });
               dialogRef.afterClosed().subscribe(result => {
-                this.location.go("/chat/" + pseudo_friend + '/' + id_friend)
-                location.reload();
-                return
+                if(result){
+                  this.location.go("/chat/" + pseudo_friend + '/' + id_friend)
+                  location.reload();
+                  return
+                }
+                
+              })
+            }
+            else if(this.route.snapshot.data['section']==10){
+              this.open_section( 0,true );
+              this.cd.detectChanges();
+              this.update_background_position(this.opened_section);
+              let pseudo= this.route.snapshot.paramMap.get('pseudo');
+              const dialogRef = this.dialog.open(LoginComponent, {
+                data: {usage:"for_chat"},
+                panelClass: "loginComponentClass",
+              });
+              dialogRef.afterClosed().subscribe(result => {
+                if(result){
+                  this.location.go("/account/" + pseudo + '/my_account')
+                  location.reload();
+                  return
+                }
               })
             }
             else{
@@ -634,17 +738,26 @@ export class AccountComponent implements OnInit {
               location.reload();
               return
             }
-            let cat = this.route.snapshot.data['category']
-            if(cat>=0){
-              this.opened_category=cat;
-              this.open_section( this.route.snapshot.data['section'],false );
+            else if(this.route.snapshot.data['section']==10){
+              let section =7;
+              this.open_section( section,true );
+              this.cd.detectChanges();
+              this.update_background_position(this.opened_section)
             }
             else{
-              this.open_section( this.route.snapshot.data['section'],true );
+              let cat = this.route.snapshot.data['category']
+              let section =this.route.snapshot.data['section'];
+              if(cat>=0){
+                this.opened_category=cat;
+                this.open_section( section,false );
+              }
+              else{
+                this.open_section( section,true );
+              }
+              this.cd.detectChanges();
+              this.update_background_position(this.opened_section)
             }
-           
-            this.cd.detectChanges();
-            this.update_background_position(this.opened_section)
+            
           }
 
         }
@@ -663,11 +776,50 @@ export class AccountComponent implements OnInit {
 
       }
     });
+  }
 
-   
-    /**************************************  CONTENTS  **********************************/
-    /**************************************  CONTENTS  **********************************/
+  /**************************************  SUBSCRIBINGS  **********************************/
+  /**************************************  SUBSCRIBINGS  **********************************/
+  get_subscribings_infos(){
 
+
+    this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information => {
+      if(information[0].value){
+        this.already_subscribed=true;
+        this.subscribtion_checked=true;
+        
+        this.cd.detectChanges();
+        this.update_background_position(this.opened_section)
+      }
+    }); 
+
+    this.route.data.subscribe(resp => {
+      let information=resp.subscribers;
+      if(Object.keys(information).length>0){
+        this.subscribed_users_list=information[0];
+      }
+      this.cd.detectChanges();
+      this.update_background_position(this.opened_section)
+    });
+
+    this.route.data.subscribe(resp => {
+      let information=resp.subscribings;
+      this.users_subscribed_to_list= information[0];
+      this.cd.detectChanges();
+      this.update_background_position(this.opened_section)
+    });
+  }
+
+  /****************************************** CONTENTS INFOS ****************************************/
+  /****************************************** CONTENTS INFOS ****************************************/
+  /****************************************** CONTENTS INFOS ****************************************/
+
+  new_contents_added=false;
+  display_new_comic_contents=false;
+  display_new_writing_contents=false;
+  display_new_drawing_contents=false;
+  no_new_contents=false;
+  get_contents_infos(){
     this.Emphasize_service.get_emphasized_content(this.user_id).subscribe(r=>{
       if (r[0]!=null){
         this.emphasized_artwork=r[0];
@@ -845,39 +997,12 @@ export class AccountComponent implements OnInit {
       this.update_background_position(this.opened_section)
     })
 
-    /**************************************  SUBSCRIBINGS  **********************************/
-    /**************************************  SUBSCRIBINGS  **********************************/
-
-    this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information => {
-      if(information[0].value){
-        this.already_subscribed=true;
-        this.subscribtion_checked=true;
-        
-        this.cd.detectChanges();
-        this.update_background_position(this.opened_section)
-      }
-    }); 
-
-    this.route.data.subscribe(resp => {
-      let information=resp.subscribers;
-      if(Object.keys(information).length>0){
-        this.subscribed_users_list=information[0];
-      }
-      this.cd.detectChanges();
-      this.update_background_position(this.opened_section)
-    });
-
-    this.route.data.subscribe(resp => {
-      let information=resp.subscribings;
-      this.users_subscribed_to_list= information[0];
-      this.cd.detectChanges();
-      this.update_background_position(this.opened_section)
-    });
 
     /*********************************ALBUMS  ******************************************/
     /*********************************ALBUMS  ******************************************/
     /*********************************ALBUMS  ******************************************/
 
+    /*********************************** COMICS *************************************/
   
     this.route.data.subscribe(resp => {
       let r=resp.comics_os;
@@ -965,18 +1090,11 @@ export class AccountComponent implements OnInit {
         }
       })
     });
-
-    
-
-      
   }
 
 
-  new_contents_added=false;
-  display_new_comic_contents=false;
-  display_new_writing_contents=false;
-  display_new_drawing_contents=false;
-  no_new_contents=false;
+
+  
   check_new_contents(){
     if(this.new_drawing_contents_added && this.new_writing_contents_added && this.new_comic_contents_added){
       if(!this.display_new_drawing_contents && !this.display_new_comic_contents && !this.display_new_writing_contents){
@@ -1197,23 +1315,25 @@ export class AccountComponent implements OnInit {
   show_icon=false;
   ngAfterViewInit() {
     
+    if(!this.for_reset_password){
+      this.update_background_position( this.opened_section );
+      if(this.main_container.nativeElement.offsetWidth<570){
+        this.show_selector_for_album=true;
+      }
+      else{
+        this.show_selector_for_album=false;
+      }
+      this.width=this.main_container.nativeElement.offsetWidth*0.9;
+      this.update_new_contents();
+      this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
+        this.showEditCoverPic = false;
+      });
+      this.profileHovered.nativeElement.addEventListener('mouseleave', e => {
+  
+        this.showEditCoverPic = true;
+      });
+    }
     
-    this.update_background_position( this.opened_section );
-    if(this.main_container.nativeElement.offsetWidth<570){
-      this.show_selector_for_album=true;
-    }
-    else{
-      this.show_selector_for_album=false;
-    }
-    this.width=this.main_container.nativeElement.offsetWidth*0.9;
-    this.update_new_contents();
-    this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
-      this.showEditCoverPic = false;
-    });
-    this.profileHovered.nativeElement.addEventListener('mouseleave', e => {
-
-      this.showEditCoverPic = true;
-    });
 
   }
 

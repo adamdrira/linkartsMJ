@@ -123,22 +123,16 @@
                             <mat-option [value]="obj">
                                 {{ obj }}
                             </mat-option>
-                            <span>{{listOfAccounts_female_description[i]}}</span>
+                            <span>{{listOfAccounts_male_description[i]}}</span>
                         </div>
                     </mat-select>
                     <mat-error *ngIf="registerForm2.controls['type_of_account'].invalid">Veuillez sélectionner un type de compte</mat-error>
                 </mat-form-field>
             </div>
             
-            <div class="warning" *ngIf="registerForm2.value.type_of_account && !registerForm2.value.type_of_account.includes('Artiste')">
+            <!--<div class="warning" *ngIf="registerForm2.value.type_of_account && !registerForm2.value.type_of_account.includes('Artiste')">
                 <span>Attention ! L'option de rémunération n'est pas permise pour ce type de compte</span>
-            </div>
-            <div class="warning" *ngIf="registerForm1.value.type_of_account && (( registerForm1.value.type_of_account.includes('Artiste') && registerForm1.value.type_of_account.includes('professionnel')) || registerForm1.value.type_of_account.includes('Maison'))">
-                <span>Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre statut PRO</span>
-            </div>
-            <div class="warning" *ngIf="registerForm1.value.type_of_account && registerForm1.value.type_of_account.includes('non professionnel')">
-                <span>Une vérification ultérieure sera réalisée avant l'obtention de votre statut PRO</span>
-            </div>
+            </div>-->
 
             <div class="form-item" *ngIf="registerForm2.value.type_of_account && (registerForm2.value.type_of_account.includes('Artiste professionnel') ||registerForm2.value.type_of_account.includes('Maison'))">
                 <mat-form-field floatLabel='never'>

@@ -360,6 +360,30 @@ export class ThumbnailAdComponent implements OnInit {
   update(){
     //fonction pour mettre à jour une annonce, possible que chaque semaine, gratuit au début
   }
+
+  loading_option=false;
+  delete(){
+    
+    if(this.loading_option){
+      return
+    }
+    this.loading_option=true;
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette annonce ?'},
+      panelClass: "popupConfirmationClass",
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.Ads_service.delete_ad(this.item.id).subscribe(l=>{
+          this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+            this.loading_option=false;
+            location.reload()
+          })
+        })
+      }
+    })
+   
+  };
   
   get_ad_contents(item){
     let u=0;
@@ -556,6 +580,7 @@ export class ThumbnailAdComponent implements OnInit {
     });
   }
 
+  
   check_archive(){
     this.Subscribing_service.check_if_publication_archived("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
       if(r[0].value){

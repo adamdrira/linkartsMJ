@@ -228,14 +228,6 @@ export class ChatRightContainerComponent implements OnInit {
           }
           this.folders_emitter.emit({folders:this.list_of_folders});
           this.list_of_folders_retrieved=true;
-          if(event.add){
-            let index =this.list_of_folders.findIndex(x => x.id==event.id_folder)
-            this.list_of_folders[index].number_of_files+=1;
-          }
-          if(event.remove){
-            let index =this.list_of_folders.findIndex(x => x.id==event.id_folder)
-            this.list_of_folders[index].number_of_files-=1;
-          }
           this.cd.detectChanges()
         })
         this.list_of_folders_opened=[];
@@ -264,7 +256,7 @@ export class ChatRightContainerComponent implements OnInit {
               let length =this.list_of_files_src.length;
               let compt=0;
                 for(let i=0;i<r[0].length;i++){
-                  this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                  this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
                     let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                     const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                     this.list_of_files_src[length+i]=SafeURL;
@@ -299,7 +291,7 @@ export class ChatRightContainerComponent implements OnInit {
               var re = /(?:\.([^.]+))?$/;
               for(let i=0;i<r[0].length;i++){
                 if(re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg"){
-                  this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{ 
+                  this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(r=>{ 
                     let THIS=this;
                     var reader = new FileReader()
                     reader.readAsText(r);
@@ -323,7 +315,7 @@ export class ChatRightContainerComponent implements OnInit {
                   })
                 }
                 else{
-                  this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                  this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
                     let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                     const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                     this.list_of_pictures_src[length+i]=SafeURL;
@@ -366,7 +358,7 @@ export class ChatRightContainerComponent implements OnInit {
                 for(let i=0;i<r[0].length;i++){
                   this.list_of_files_object_by_folder[index][i+length]=r[0][i];
                   if((re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg" && r[0][i].attachment_type=="picture_attachment") || r[0][i].attachment_type=="file_attachment" ){
-                    this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{ 
+                    this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{ 
                       let THIS=this;
                       if(re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg"){
                         var reader = new FileReader()
@@ -408,7 +400,7 @@ export class ChatRightContainerComponent implements OnInit {
                     })
                   }
                   else if(r[0][i].attachment_type=="picture_attachment" && re.exec(r[0][i].attachment_name)[1].toLowerCase()!="svg"){
-                    this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                    this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
                       let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                       this.list_of_files_by_folder[index][i+length]=SafeURL;
@@ -469,7 +461,7 @@ export class ChatRightContainerComponent implements OnInit {
       let compt=0;
       if(l[0].length>0){
         for(let i=0;i<l[0].length;i++){
-          this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{
+          this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_files_src[i]=SafeURL;
@@ -498,7 +490,7 @@ export class ChatRightContainerComponent implements OnInit {
         for(let i=0;i<l[0].length;i++){
 
           if(re.exec(l[0][i].attachment_name)[1].toLowerCase()=="svg"){
-            this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{
+            this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).subscribe(r=>{
               
               let THIS=this;
               var reader = new FileReader()
@@ -522,7 +514,7 @@ export class ChatRightContainerComponent implements OnInit {
             })
           }
           else{
-            this.chatService.get_attachment_right(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(r=>{
+            this.chatService.get_attachment_right(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).subscribe(r=>{
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures_src[i]=SafeURL;
@@ -757,7 +749,7 @@ export class ChatRightContainerComponent implements OnInit {
           for(let i=0;i<r[0].length;i++){
             this.list_of_files_object_by_folder[index][i]=r[0][i];
             if((re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg" && r[0][i].attachment_type=="picture_attachment") || r[0][i].attachment_type=="file_attachment" ){
-              this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{ 
+              this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{ 
                 let THIS=this;
                 if(re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg"){
                   var reader = new FileReader()
@@ -803,7 +795,7 @@ export class ChatRightContainerComponent implements OnInit {
               })
             }
             else if(r[0][i].attachment_type=="picture_attachment" && re.exec(r[0][i].attachment_name)[1].toLowerCase()!="svg"){
-              this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+              this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_files_by_folder[index][i]=SafeURL;
@@ -964,6 +956,9 @@ export class ChatRightContainerComponent implements OnInit {
               if( r[0].length>0){
                 this.list_of_folders=r[0];
               }
+              else{
+                this.list_of_folders=[];
+              }
               this.folders_emitter.emit({folders:this.list_of_folders});
               
             }
@@ -1051,9 +1046,9 @@ export class ChatRightContainerComponent implements OnInit {
     }
    
 
-    if(this.list_of_folders.length>=15){
+    if(this.list_of_folders.length>=50){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Vous ne pouvez pas crééer plus de 15 dossiers.'},
+          data: {showChoice:false, text:'Vous ne pouvez pas crééer plus de 50 dossiers.'},
           panelClass: "popupConfirmationClass",
         });
     }
@@ -1068,9 +1063,9 @@ export class ChatRightContainerComponent implements OnInit {
             });
           }
           else{
-            this.folders_emitter.emit({folders:this.list_of_folders});
             this.list_of_folders=r[0];
             this.list_of_folders_retrieved=true;
+            this.folders_emitter.emit({folders:this.list_of_folders});
           }
           this.activate_add_chat_section_archives=false;
           this.loading_chat_section_name_archives=false;

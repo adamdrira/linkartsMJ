@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 import { ResizedEvent } from 'angular-resize-event';
 import { merge, fromEvent } from 'rxjs'
 import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
-
+import { Location } from '@angular/common';
 declare var $: any;
 
 var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
@@ -90,6 +90,7 @@ export class ChatComponent implements OnInit  {
     private cd: ChangeDetectorRef,
     public dialog: MatDialog,
     private renderer: Renderer2,
+    private location: Location,
     private navbar :NavbarService,
     private Profile_Edition_Service:Profile_Edition_Service
     ){
@@ -177,7 +178,8 @@ export class ChatComponent implements OnInit  {
   @Output() add_a_friend_to_the_group = new EventEmitter<object>();
   @Output() display_exit = new EventEmitter<object>();
   @Output() blocking_managment = new EventEmitter<object>();
-  
+  @Output() remove_friend_from_list = new EventEmitter<object>();
+  @Output() unblock_user_emit = new EventEmitter<object>();
   
   
   @ViewChild('input') input:ElementRef;
@@ -224,6 +226,7 @@ export class ChatComponent implements OnInit  {
   //friends
   @Input() list_of_friends_ids:any[];
   @Input() list_of_friends_types:any[];
+  @Input() list_of_spams_ids:any[];
   
   //if the other person has already sent a message
   response_exist=false;
@@ -367,6 +370,7 @@ export class ChatComponent implements OnInit  {
     this.number_of_sections_unseen=0;
     this.list_of_folders_retrieved=false;
     this.cd.detectChanges();
+    this.update_middle_container_height();
     this.get_messages(this.id_chat_section,false);
     this.change_number=0;
     if(this.user_present && this.spam=='false'){
@@ -605,7 +609,7 @@ export class ChatComponent implements OnInit  {
     
     //uploader_managment
     this.uploader.onAfterAddingFile = async (file) => {
-
+      this.input.nativeElement.focus();
       if(this.chat_friend_id==0){
         this.chatService.get_chat_friend(this.friend_id,(this.friend_type=='group')?true:false).subscribe(r=>{
           if(r[0]){
@@ -692,6 +696,7 @@ export class ChatComponent implements OnInit  {
           status:"sent",
           temporary_id:this.temporary_id,
           is_a_group_chat:(this.friend_type=='user')?false:true,
+          chat_friend_id:this.chat_friend_id,
         };
         this.temporary_id+=1;
         this.chatService.messages.next(message);
@@ -734,16 +739,15 @@ export class ChatComponent implements OnInit  {
   /*******************************************get messages ************************** */
   compteur_selector=0;
   compteur_get_messages=0;
-  get_messages(id_chat_section,bool){
+  get_messages(id_chat_section,is_group){
     this.compteur_get_messages++;
     this.compteur_image=0;
     this.compteur_loaded=0;
-    if(!bool){
+    if(!is_group){
       this.display_messages=false;
       this.put_messages_visible=false;
       this.index_of_show_pp_right=-1;
       this.list_of_show_pp_left=[];
-
       for(let i=0;i<this.list_of_users_blocked.length;i++){
 
         if(this.friend_id==this.list_of_users_blocked[i].id_user && this.current_user_id==this.list_of_users_blocked[i].id_user_blocked && this.friend_type=='user'){
@@ -765,7 +769,7 @@ export class ChatComponent implements OnInit  {
     this.list_of_time=[];
     this.compteur_pp=0;
     if(this.spam=='false' && this.user_present){
-      this.chatService.let_all_friend_messages_to_seen(this.friend_id,id_chat_section,bool).subscribe(l=>{
+      this.chatService.let_all_friend_messages_to_seen(this.friend_id,id_chat_section,is_group).subscribe(l=>{
         if(!(l[0].message)){
           let message_to_send ={
             id_user_name:this.current_user_pseudo,
@@ -787,8 +791,8 @@ export class ChatComponent implements OnInit  {
       })
     }
     this.get_chat_sections();
-    this.chatService.get_first_messages(this.current_user_id,this.friend_id,id_chat_section,bool,this.compteur_get_messages).subscribe(r=>{
-      if(bool){
+    this.chatService.get_first_messages(this.current_user_id,this.friend_id,id_chat_section,is_group,this.compteur_get_messages).subscribe(r=>{
+      if(is_group){
         this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
       }
       if(r[1]==this.compteur_get_messages){
@@ -807,10 +811,9 @@ export class ChatComponent implements OnInit  {
               }
               else if(this.list_of_messages[i].attachment_type=='picture_attachment' && this.list_of_messages[i].status!="deleted"){
 
-               
                   var re = /(?:\.([^.]+))?$/;
                   if(re.exec(this.list_of_messages[i].attachment_name.toLowerCase())[1]=="svg"){
-                    this.chatService.get_attachment_svg(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                    this.chatService.get_attachment_svg(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
                       let THIS=this;
                       var reader = new FileReader()
                       reader.readAsText(t);
@@ -825,7 +828,7 @@ export class ChatComponent implements OnInit  {
                     
                   }
                   else{
-                    this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                    this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
                       let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                       if(r[1]==this.compteur_get_messages){
                         this.list_of_messages_pictures[i]=url;
@@ -837,7 +840,7 @@ export class ChatComponent implements OnInit  {
                   
               }
               else if(this.list_of_messages[i].attachment_type=='file_attachment' && this.list_of_messages[i].status!="deleted"){
-                this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+                this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   if(r[1]==this.compteur_get_messages){
@@ -849,7 +852,7 @@ export class ChatComponent implements OnInit  {
               }
             }
             
-            if(!bool && !r[0][0][i].is_from_server){
+            if(!is_group && !r[0][0][i].is_from_server){
               if(i==0 && r[0][0][i].id_user==this.friend_id && this.current_user_id!=this.friend_id){
                 this.list_of_show_pp_left[i]=true;
                 this.compteur_pp+=1;
@@ -868,7 +871,7 @@ export class ChatComponent implements OnInit  {
             }
             
             if(i==r[0][0].length-1){
-              this.chatService.check_if_response_exist(this.friend_id,id_chat_section,bool).subscribe(l=>{
+              this.chatService.check_if_response_exist(this.friend_id,id_chat_section,is_group).subscribe(l=>{
                 if(l[0].value){
                   this.response_exist=true;
                   this.response_exist_retrieved=true;
@@ -924,7 +927,7 @@ export class ChatComponent implements OnInit  {
       this.cd.detectChanges()
     }
     if(this.list_of_messages.length<=50){
-      if(i>=0 && i<=3){
+      if(i>=0 && i<2){
         this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
       }
     }
@@ -1199,6 +1202,7 @@ export class ChatComponent implements OnInit  {
       status:"sent",
       temporary_id:this.temporary_id,
       is_a_group_chat:(this.friend_type=='user')?false:true,
+      chat_friend_id:this.chat_friend_id,
     }
     this.temporary_id+=1;
     this.respond_to_a_message=false;
@@ -1250,6 +1254,7 @@ export class ChatComponent implements OnInit  {
       status:"sent",
       temporary_id:this.temporary_id,
       is_a_group_chat:(this.friend_type=='user')?false:true,
+      chat_friend_id:this.chat_friend_id,
     };
     
     this.temporary_id+=1;
@@ -1314,6 +1319,7 @@ export class ChatComponent implements OnInit  {
             size:this.attachments_size[i],
             status:"sent",
             is_a_group_chat:(this.friend_type=='user')?false:true,
+            chat_friend_id:this.chat_friend_id,
           };
           this.index_of_show_pp_right=this.index_of_show_pp_right+1;
           this.list_of_show_pp_left.splice(0,0,false);
@@ -1343,6 +1349,7 @@ export class ChatComponent implements OnInit  {
             size:this.attachments_size[i],
             status:"sent",
             is_a_group_chat:(this.friend_type=='user')?false:true,
+            chat_friend_id:this.chat_friend_id,
           };
           this.index_of_show_pp_right=this.index_of_show_pp_right+1;
           this.list_of_show_pp_left.splice(0,0,false);
@@ -1378,6 +1385,7 @@ export class ChatComponent implements OnInit  {
              is_from_server:false,
              status:"sent",
              is_a_group_chat:(this.friend_type=='user')?false:true,
+             chat_friend_id:this.chat_friend_id,
            };
            this.index_of_show_pp_right=this.index_of_show_pp_right+1;
            this.list_of_show_pp_left.splice(0,0,false);
@@ -1405,6 +1413,7 @@ export class ChatComponent implements OnInit  {
              is_a_response:false,
              status:"sent",
              is_a_group_chat:(this.friend_type=='user')?false:true,
+             chat_friend_id:this.chat_friend_id,
            };
            this.index_of_show_pp_right=this.index_of_show_pp_right+1;
            this.list_of_show_pp_left.splice(0,0,false);
@@ -1431,12 +1440,18 @@ export class ChatComponent implements OnInit  {
     event.target.value = '';
   }
 
-/*************************************Partie gestion des spams***********************************/
-/*************************************Partie gestion des spams***********************************/
-/*************************************Partie gestion des spams***********************************/
-/*************************************Partie gestion des spams***********************************/
-/*************************************Partie gestion des spams***********************************/
+  /*************************************Partie gestion des spams***********************************/
+  /*************************************Partie gestion des spams***********************************/
+  /*************************************Partie gestion des spams***********************************/
+  /*************************************Partie gestion des spams***********************************/
+  /*************************************Partie gestion des spams***********************************/
+  show_spinner_add=false;
   add_to_contacts(){
+    if(this.show_spinner_add){
+      return
+    }
+    this.show_spinner_add=true;
+    this.cd.detectChanges();
     this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).subscribe(r=>{
       this.chatService.add_spam_to_contacts(this.friend_id).subscribe(l=>{
         let message_one ={
@@ -1455,6 +1470,7 @@ export class ChatComponent implements OnInit  {
           is_an_attachment:false,
           is_a_group_chat:(this.friend_type=='user')?false:true,
           is_a_response:false,
+          chat_friend_id:l[0].id,
         };
         this.chatService.messages.next(message_one);
       })
@@ -1510,11 +1526,11 @@ export class ChatComponent implements OnInit  {
   }
   
   send_image(blob: Blob,attachment_name) {
+      var re = /(?:\.([^.]+))?$/;
+      attachment_name=attachment_name.replace(re.exec(attachment_name)[1],"png");
       this.chatService.check_if_file_exists_png((this.friend_type=='user')?'user':'group',this.chat_friend_id,attachment_name).subscribe(r=>{
         let name=r[0].value ;
-        this.chatService.chat_upload_svg(blob,name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(l=>{
-          this.chatService.messages.next(message);
-        })
+        this.myScrollContainer.nativeElement.focus();
         let message ={
           id_user_name:this.current_user_pseudo,
           id_user:this.current_user_id,   
@@ -1531,15 +1547,21 @@ export class ChatComponent implements OnInit  {
           is_a_response:false,
           status:"sent",
           is_a_group_chat:(this.friend_type=='user')?false:true,
+          chat_friend_id:this.chat_friend_id,
         };
-        this.index_of_show_pp_right=this.index_of_show_pp_right+1;
-        this.list_of_show_pp_left.splice(0,0,false);
-        let THIS=this;
-        let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
-        THIS.list_of_messages_files.splice(0,0,url);
-        THIS.list_of_messages_pictures.splice(0,0,url);
-        THIS.list_of_messages.splice(0,0,message);
-        THIS.list_of_messages_date.splice(0,0,THIS.date_of_message("time",1));
+        this.chatService.chat_upload_png(blob,name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+          this.index_of_show_pp_right=this.index_of_show_pp_right+1;
+          this.list_of_show_pp_left.splice(0,0,false);
+          let THIS=this;
+          let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+          THIS.list_of_messages_files.splice(0,0,url);
+          THIS.list_of_messages_pictures.splice(0,0,url);
+          THIS.list_of_messages.splice(0,0,message);
+          THIS.list_of_messages_date.splice(0,0,THIS.date_of_message("time",1));
+          this.chatService.messages.next(message);
+        })
+        
+      
         
         this.attachments_safe=[];
         this.attachments_type=[];
@@ -1602,6 +1624,7 @@ export class ChatComponent implements OnInit  {
             message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
             status:"delete_message",
             is_a_group_chat:(this.friend_type=='user')?false:true,
+            chat_friend_id:this.chat_friend_id,
           }
           this.chatService.messages.next(message);
           this.cd.detectChanges();
@@ -1951,6 +1974,7 @@ reaction_click($event,i) {
         message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
         status:"emoji",
         is_a_group_chat:true,
+        chat_friend_id:this.chat_friend_id,
       }
       this.chatService.messages.next(message);
       this.cd.detectChanges();
@@ -1976,6 +2000,7 @@ reaction_click($event,i) {
       message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
       status:"emoji",
       is_a_group_chat:false,
+      chat_friend_id:this.chat_friend_id,
     }
     if(this.list_of_messages[i].id_user==this.current_user_id){
       if(this.list_of_messages[i].emoji_reaction_user==$event.emoji.id){
@@ -2159,6 +2184,7 @@ add_chat_section_name(e: any){
         is_a_response:false,
         is_an_attachment:false,
         is_a_group_chat:true,
+        chat_friend_id:this.chat_friend_id,
       };
       this.chatService.messages.next(message_one);
       this.list_of_chat_sections.push(name);
@@ -2227,7 +2253,6 @@ delete_chat_section(){
         this.deleting_chat_section=true;
         this.chatService.delete_chat_section(this.id_chat_section,this.friend_id,(this.friend_type=='user')?false:true).subscribe(r=>{
           if(r[0].is_ok){
-            //location.reload();
             this.deleting_chat_section=false;
             this.router.navigateByUrl('/chat');
           }
@@ -2649,18 +2674,17 @@ get_picture_for_message(i){
       })
     }
     else if(this.list_of_messages[i].attachment_type=='picture_attachment'){
-      this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+      this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.list_of_messages_pictures[i]=url;
       })
     }
     else if(this.list_of_messages[i].attachment_type=='file_attachment'){
-      this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
+      this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.list_of_messages_files[i]=SafeURL;
-        //this.loaded_image(i);
       })
     }
 }
@@ -2845,6 +2869,7 @@ exit_group(){
           attachment_type:"none",
           is_an_attachment:false,
           is_a_group_chat:true,
+          chat_friend_id:this.chat_friend_id,
         };
         this.chatService.messages.next(message_one);
         location.reload();
@@ -3020,7 +3045,7 @@ chat_service_managment_function(msg){
           else if(msg[0].attachment_type=="picture_attachment" ){
             this.chatService.get_group_chat_as_friend(msg[0].id_user).subscribe(m=>{
               let chat_friend_id=m[0].id
-              this.chatService.get_attachment(msg[0].attachment_name,'group',chat_friend_id).subscribe(r=>{
+              this.chatService.get_attachment(msg[0].attachment_name,'group',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_pictures.splice(0,0,url)
@@ -3037,7 +3062,7 @@ chat_service_managment_function(msg){
           else if(msg[0].attachment_type=="file_attachment" ){
             this.chatService.get_group_chat_as_friend(msg[0].id_user).subscribe(m=>{
               let chat_friend_id=m[0].id
-              this.chatService.get_attachment_popup(msg[0].attachment_name,'group',chat_friend_id).subscribe(r=>{
+              this.chatService.get_attachment_popup(msg[0].attachment_name,'group',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_files.splice(0,0,SafeURL)
@@ -3152,7 +3177,7 @@ chat_service_managment_function(msg){
             else if(msg[0].attachment_type=="picture_attachment" ){
               this.chatService.get_chat_friend(msg[0].id_user,false).subscribe(m=>{
                 let chat_friend_id=m[0].id
-                this.chatService.get_attachment(msg[0].attachment_name,'user',chat_friend_id).subscribe(r=>{
+                this.chatService.get_attachment(msg[0].attachment_name,'user',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).subscribe(r=>{
                   let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.list_of_messages_pictures.splice(0,0,url)
@@ -3182,7 +3207,7 @@ chat_service_managment_function(msg){
               
               this.chatService.get_chat_friend(msg[0].id_user,false).subscribe(m=>{
                 let chat_friend_id=m[0].id
-                this.chatService.get_attachment_popup(msg[0].attachment_name,'false',chat_friend_id).subscribe(r=>{
+                this.chatService.get_attachment_popup(msg[0].attachment_name,'false',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).subscribe(r=>{
                   let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.list_of_messages_files.splice(0,0,SafeURL)
@@ -3297,6 +3322,7 @@ chat_service_managment_function(msg){
       
     }
     else if(msg[0].server_message=="received_new"){
+      this.show_spinner_add=false;
       if(msg[0].message.is_a_group_chat){
         if(!this.user_present){
           if(this.friend_type=='group' && this.friend_id==msg[0].id_receiver){
@@ -3313,6 +3339,7 @@ chat_service_managment_function(msg){
           this.new_sort_friends_list.emit({friend_id:msg[0].message.id_receiver,message:msg[0].message,friend_type:'user'});
         }
       }
+
     }
     //a message from the server to tell that the message has been sent
     else if(msg[0].server_message=="received" ){
@@ -3530,9 +3557,9 @@ chat_service_managment_function(msg){
     }
     else if(msg[0].server_message=="block" ){
       if(this.friend_type=='user' && this.friend_id==msg[0].id_user_blocking){
-        location.reload();
+        //location.reload();
       }
-      this.blocking_managment.emit({friend_id:msg[0].id_user_blocking})
+      this.blocking_managment.emit({friend_id:msg[0].id_user_blocking,who_is_blocked:"me"})
     }
     else if(msg[0].server_message=="emoji" ){
       if(!msg[0].group_chat_id && this.friend_id==msg[0].real_id_user &&  msg[0].message.id_message>=this.list_of_messages[this.list_of_messages.length-1].id){
@@ -3660,7 +3687,8 @@ block_user(){
                   is_a_response:false,
                 }
                 this.chatService.messages.next(message_to_send);
-                this.router.navigateByUrl('/chat');
+                this.blocking_managment.emit({friend_id:this.friend_id,who_is_blocked:"else"})
+                //this.remove_friend_from_list.emit({friend_id:this.friend_id,friend_type:"user"})
               })
             })
           });
@@ -3676,12 +3704,21 @@ block_user(){
 unblock_user(){
   this.Profile_Edition_Service.unblock_user(this.friend_id).subscribe(r=>{
     if(r[0].date){
+      //ancien contact
       this.chatService.add_chat_friend(this.friend_id,r[0].date).subscribe(r=>{
-        this.router.navigateByUrl('/chat');
+        let message=r[0].message;
+        message.chat_id=r[0].friend.id
+        this.new_sort_friends_list.emit({friend_id:this.friend_id,message:message,friend_type:'user'});
+        this.unblock_user_emit.emit({id_user:this.friend_id});
+        
+        this.block_chat=false;
+        this.cd.detectChanges;
       })
     }
     else{
-      this.router.navigateByUrl('/chat');
+      this.unblock_user_emit.emit({id_user:this.friend_id});
+      this.block_chat=false;
+      this.cd.detectChanges;
     }
     
   })
@@ -3698,7 +3735,7 @@ remove_contact(){
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.chatService.remove_friend(this.friend_id).subscribe(r=>{
-          this.router.navigateByUrl('/chat');
+          this.remove_friend_from_list.emit({friend_id:this.friend_id,friend_type:"user"})
         })
       }
     })
@@ -3868,9 +3905,16 @@ remove_contact(){
 @ViewChild("middleContainer", {read: ElementRef, static:false}) middleContainer:ElementRef;
 @ViewChild("bottomContainer", {read: ElementRef, static:false}) bottomContainer:ElementRef;
 update_middle_container_height() {
-  if( this.middleContainer.nativeElement && this.bottomContainer.nativeElement ) {
-    this.renderer.setStyle(  this.bottomContainer.nativeElement, "width", this.middleContainer.nativeElement.offsetWidth +"px" );
-    this.renderer.setStyle(  this.middleContainer.nativeElement, "height", "calc(100% - 65px - "+ this.bottomContainer.nativeElement.offsetHeight +"px" );
+  if( this.middleContainer && this.bottomContainer ) {
+    if(this.block_chat){
+      this.renderer.setStyle(  this.bottomContainer.nativeElement, "width", this.middleContainer.nativeElement.offsetWidth +"px" );
+      this.renderer.setStyle(  this.middleContainer.nativeElement, "height", "calc(100% - 65px)" );
+    }
+    else{
+      this.renderer.setStyle(  this.bottomContainer.nativeElement, "width", this.middleContainer.nativeElement.offsetWidth +"px" );
+      this.renderer.setStyle(  this.middleContainer.nativeElement, "height", "calc(100% - 65px - "+ this.bottomContainer.nativeElement.offsetHeight +"px" );
+    }
+    
   }
 }
 
@@ -3905,6 +3949,7 @@ onResized(event: ResizedEvent) {
 
   unarchive(index){
     this.chatService.unarchive_chat_message(this.list_of_messages[index].id,this.list_of_messages[index].id_folder).subscribe(r=>{
+      this.list_of_messages[index].id_folder=0;
       this.reload_list_of_archives_subject.next({reload:true,remove:true,id_folder:this.list_of_messages[index].id_folder})
     });
   }

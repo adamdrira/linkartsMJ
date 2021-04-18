@@ -14,7 +14,8 @@
     flex-wrap: wrap;
     padding-bottom: 5px;
     padding-top: 5px;
-    background-image:linear-gradient(0.02turn, rgb(128,145,184), rgb(72,95,137), rgb(129,146,185));
+    //background-image:linear-gradient(0.02turn, rgb(128,145,184), rgb(72,95,137), rgb(129,146,185));
+    background-image: linear-gradient( 0turn, #020536, #133364,);
 }
 
  .chapters-title > span {
@@ -165,8 +166,13 @@
     margin-right:10px;
     margin-top:auto;
     margin-bottom:auto;
-    background: rgb(73, 95, 137);
-    border: 1px solid #546b9e;
+    box-shadow: 0px 3px 1px -2px #20386447, 0px 0px 2px 0px #2038646e, 0px 1px 2px 0px #2038643b;
+    background: linear-gradient( 0.125turn, rgba(2, 18, 54, 0.85), rgba(19, 51, 100, 0.85), rgba(44, 114, 164, 0.85));
+
+    &:active {
+        transform: scale(0.96);
+    }
+
 }
 
 
@@ -186,6 +192,10 @@
     border-radius:4px;
     background:white;
     cursor:pointer;
+
+    &:active {
+        transform: scale(0.96);
+    }
 }
 
  .chapters-list .chapter .button-name {
@@ -197,6 +207,10 @@
     border-radius:4px;
     background:white;
     cursor:pointer;
+
+    &:active {
+        transform: scale(0.96);
+    }
 }
 
  .chapters-list .chapter .button-name .validate-icon {

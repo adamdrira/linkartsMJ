@@ -78,6 +78,7 @@ export class AccountMyAccountComponent implements OnInit {
   @Input('id_user') id_user:number;
   @Input('visitor_mode') visitor_mode:boolean;
   @Input('author') author:any;
+  @Input('for_reset_password') for_reset_password:any;
 
   email='';
   gender:string;
@@ -112,24 +113,69 @@ export class AccountMyAccountComponent implements OnInit {
   ngOnInit(): void {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     
-        this.status=this.author.status;
-        this.gender=this.author.gender;
-        this.type_of_account=this.author.type_of_account;
-        this.list_of_members=this.author.list_of_members;
-        this.email=this.author.email;
+    this.status=this.author.status;
+    this.gender=this.author.gender;
+    this.type_of_account=this.author.type_of_account;
+    this.list_of_members=this.author.list_of_members;
+    this.email=this.author.email;
+    if(this.author.email_authorization=="false"){
+      this.email_agreement=false
+    }
+    this.mailing_retrieved=true;
 
-        if(this.type_of_account.includes('Artiste') ){
-          this.concerned_by_favorites=true;
+    if(this.type_of_account.includes('Artiste') ){
+      this.concerned_by_favorites=true;
+    }
+
+    if(this.for_reset_password){
+      this.registerForm1 = this.formBuilder.group({
+        old_password_real_value: ['',
+          Validators.compose([
+            Validators.pattern(pattern("password")),
+            Validators.maxLength(50),
+          ]),
+        ],
+        old_password: ['',
+          Validators.compose([
+            Validators.required,
+            Validators.pattern(pattern("password")),
+            Validators.maxLength(50),
+          ]),
+        ],
+        password: ['',
+          Validators.compose([
+            Validators.required,
+            Validators.pattern(pattern("password")),
+            Validators.maxLength(50),
+          ]),
+        ],
+        confirmPassword: ['', Validators.required],
+        }, {
+          validators: [MustMatch('password', 'confirmPassword'),MustMatch('old_password_real_value', 'old_password')],
+       });
+  
+  
+      this.Profile_Edition_Service.decrypt_password(this.id_user).subscribe(r=>{
+        if(r[0].password){
+          this.password=r[0].password
+          this.registerForm1.controls['old_password_real_value'].setValue(r[0].password)
         }
+        else{
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Une erreur est survenue. Veuillez réinitialiser votre mot de passe.'},
+            panelClass: "popupConfirmationClass",
+          });
+        }
+        this.password_retrieved=true;
+        this.registerForm1_activated=true;
+      })
+    }
+    else{
+      this.initialize_forms();
+      this.get_my_list_of_groups_from_users();
+    }
+   
         
-        
-        
-        this.initialize_forms();
-        this.get_my_list_of_groups_from_users();
-        
-        
-       
-    
   }
 
   show_icon=false;
@@ -185,7 +231,7 @@ export class AccountMyAccountComponent implements OnInit {
 
   password_retrieved=false;
   mailing_retrieved=false;
-  email_agreement=false;
+  email_agreement=true;
   list_of_real_visitors_type=["Maison d'édition","Artiste","Professionnel"];
   list_of_visitors_type=["Maison d'édition/Editeur/Editrice","Artiste vérifié(e)","Professionnel(le) vérifié(e)"];
   special_visitor_type:string;
@@ -248,28 +294,21 @@ export class AccountMyAccountComponent implements OnInit {
     });
 
     this.registerForm.controls['email'].setValue(this.email);
-    this.Profile_Edition_Service.decrypt_password().subscribe(r=>{
+    this.Profile_Edition_Service.decrypt_password(this.id_user).subscribe(r=>{
       if(r[0].password){
         this.password=r[0].password
-        this.registerForm1.controls['password'].setValue(r[0].password)
         this.registerForm1.controls['old_password_real_value'].setValue(r[0].password)
       }
       else{
-        this.registerForm1.controls['password'].setValue("adamdrira")
-        this.registerForm1.controls['old_password_real_value'].setValue("adamdrira")
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Une erreur est survenue. Veuillez réinitialiser votre mot de passe.'},
+          panelClass: "popupConfirmationClass",
+        });
       }
       this.password_retrieved=true;
     })
 
-    if(this.type_of_account!="Passionné" && this.type_of_account!="Passionnée"){
-      this.Profile_Edition_Service.get_mailing_managment().subscribe(r=>{
-        this.email_agreement=r[0].agreement?r[0].agreement:false;
-        this.mailing_retrieved=true;
-      })
-    }
-    else{
-      this.mailing_retrieved=true;
-    }
+  
     
   }
 
@@ -309,13 +348,19 @@ export class AccountMyAccountComponent implements OnInit {
           this.checking_password=false;
         }
         if(data.msg=="error"){
-          this.Profile_Edition_Service.edit_password(this.registerForm1.value.password).subscribe(r=>{
-            this.password=this.registerForm1.value.password;
-            this.registerForm1.controls['confirmPassword'].setValue('')
-            this.registerForm1.controls['old_password'].setValue('')
-            this.registerForm1.controls['old_password_real_value'].setValue(this.registerForm1.value.password)
-            this.registerForm1_activated=false;
-            this.checking_password=false;
+          this.Profile_Edition_Service.edit_password(this.registerForm1.value.password,this.id_user).subscribe(r=>{
+           
+            if(this.for_reset_password){
+              location.reload();
+            }
+            else{
+              this.password=this.registerForm1.value.password;
+              this.registerForm1.controls['confirmPassword'].setValue('')
+              this.registerForm1.controls['old_password'].setValue('')
+              this.registerForm1.controls['old_password_real_value'].setValue(this.registerForm1.value.password)
+              this.registerForm1_activated=false;
+              this.checking_password=false;
+            }
             this.cd.detectChanges();
           })
         }
@@ -352,7 +397,7 @@ export class AccountMyAccountComponent implements OnInit {
       return
     }
     else{
-      this.Profile_Edition_Service.edit_password(this.registerForm1.value.password).subscribe(r=>{
+      this.Profile_Edition_Service.edit_password(this.registerForm1.value.password,this.id_user).subscribe(r=>{
         this.password=this.registerForm1.value.password;
         this.registerForm1.controls['confirmPassword'].setValue('')
         this.registerForm1.controls['old_password'].setValue('')
@@ -375,6 +420,10 @@ export class AccountMyAccountComponent implements OnInit {
   /********************************************** MAILING **************************************/
  
   loading_email_changes=false;
+  show_infos_email=false;
+  change_show_email_infos(){
+    this.show_infos_email=!this.show_infos_email;
+  }
   change_mailing_agreement(){
     this.loading_email_changes=true;
     this.Profile_Edition_Service.change_mailing_managment(!this.email_agreement).subscribe(r=>{

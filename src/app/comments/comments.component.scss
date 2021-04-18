@@ -148,6 +148,7 @@ $default-color: rgb(218,220,225);
             width: stretch;
         }
         .right-container {
+            min-width: 29px;
             .optionsMenu {
                 outline: none;
                 border: none;

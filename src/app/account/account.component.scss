@@ -3,7 +3,26 @@
 @import "../../unsecured-ng-deeps.scss";
 
 
+.fake-navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  background: #f7f8f9;
+  height: 66px;
+  box-shadow: 0px 3px 0px -2px rgba(150, 150, 150, 0.11), 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 14px 0px rgba(109, 109, 109, 0.2);
+  z-index: 1000;
 
+  a {
+      margin: auto auto;
+      img {
+          margin: auto auto;
+          width: 130px;
+      }
+  }
+
+}
 
 .container-fluid {
   padding-left: 0;
@@ -84,6 +103,40 @@
     max-width: 500px;
     min-width: 420px;
 
+    .change-profile-picture{
+      cursor: pointer;
+      z-index: 300;
+      top: 25px;
+      left: 25px;
+      position: absolute;
+      display: -webkit-box;
+      display: flex;
+      width: 36px;
+      height: 36px;
+      margin: auto 10px auto 0px;
+      border-radius: 40px;
+      border: none;
+      box-shadow: 0px 0px 0px 2px #f9f9f959;
+      background: linear-gradient(0.125turn, rgba(2, 18, 54, 0.95), rgba(19, 51, 100, 0.95),rgba(44, 114, 164, 0.95));
+      outline: none !important;
+
+      &:active {
+        transform: scale(0.96);
+      }
+
+      mat-icon{
+        background-repeat: no-repeat;
+        display: inline-block;
+        fill: currentColor;
+        height: 22px;
+        font-size: 22px;
+        margin: auto auto;
+        color: #ffffff;
+        width: 22px;
+        overflow: hidden;
+      }
+    }
+
     .new-story{
       box-shadow: 0px 0px 1px 3px #4bc7ff !important;
       border: 2px solid #23395f00!important;
@@ -106,12 +159,13 @@
         object-fit: cover;
       }
 
-      &:hover .change-profile-picture,
+      &:hover .watch-top-story,
       &:hover .change-story-picture {
         opacity: 1;
       }
 
-      .change-profile-picture {
+      
+      .watch-top-story {
         position: absolute;
         box-shadow: none !important;
         border: unset;
@@ -226,16 +280,14 @@
       position: absolute;
       right: 22px;
       padding: 0px;
-      top: 22px;
+      top: 18px;
       background: #415b8300;
       transition: background-color 200ms, opacity 100ms;
-      //background: #415b83;
-      //box-shadow: 0px 0px 2px 1px #294a7d;
       border: unset;
       color: #ffffff;
-      height: 23px;
+      height: 25px;
       border-radius: 50px;
-      width: 23px;
+      width: 25px;
       outline: none;
 
       &:hover {
@@ -550,6 +602,71 @@
           }
         }
       }
+    }
+  }
+  .middle-container-password {
+    display: flex;
+    width: max-content;
+    padding: 5px 20px;
+    white-space: nowrap;
+    margin: auto auto;
+    position: relative;
+
+    
+    .loading {
+      width: 108.5px;
+      border-radius: 50px;
+      height: 36px;
+      margin: auto 10px auto 10px;
+    }
+
+    button {
+      color: rgb(32, 56, 100);
+      display: flex;
+      height: 100%;
+      padding: 6px 14px;
+
+      margin-left: 4px;
+      margin-right: 4px;
+
+      justify-content: center;
+      align-content: center;
+      text-align: center;
+      background: none;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      border-radius: 30px;
+
+      transition: background-color 200ms, box-shadow 200ms;
+
+      &:hover {
+        text-shadow: -0.01ex 0 rgb(32, 56, 100), 0.01ex 0 rgb(32, 56, 100);
+      }
+      &:active {
+        background: #5680c338;
+      }
+
+      mat-icon {
+        margin: auto 5px auto auto;
+        font-size: 22px;
+        max-width:22px;
+          overflow: hidden;
+        width: unset;
+        height: unset;
+      }
+      span {
+        margin: auto auto auto 0px;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      
+    }
+
+    .opened {
+      transition: color 300ms cubic-bezier(0.79, 0.03, 0.85, 0.24);
+      color: white !important;
     }
   }
   .middle-container {
@@ -985,6 +1102,11 @@
   max-width: 1650px;
   margin-left: auto;
   margin-right: auto;
+
+  &.no-max-width{
+    max-width: unset;
+  }
+
   .name-container {
     font-weight: bold;
     margin: 30px auto 0px 0px;

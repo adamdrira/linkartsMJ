@@ -259,6 +259,8 @@
                 
                 padding: 0px 15px;
                 display: flex;
+
+               
                 .message {
                     margin: auto auto;
                     display: flex;
@@ -275,6 +277,9 @@
                         width: unset;
                         color: rgb(32, 56, 100);
                     }
+
+                    
+            
                     > span {
                         cursor: default;
                         font-size: 14px;
@@ -305,6 +310,14 @@
                             width: unset;
                             color: white;
                         }
+
+                        ::ng-deep {
+                            .mat-spinner circle {
+                                stroke: white !important;
+                            }
+                        }
+
+        
                         &:active {
                             transform: scale(0.96);
                         }
@@ -409,10 +422,10 @@
                 background:white;
     
                 mat-spinner{
-                margin:auto auto;
-                circle {
-                    stroke: rgb(32,56,100);
-                }
+                    margin:auto auto;
+                    circle {
+                        stroke: rgb(32,56,100);
+                    }
                 }
             }
             .emojis-main-container {
@@ -1068,6 +1081,7 @@ button.show-more {
         display: flex;
         flex-direction: column;
 
+        
         .message-search-style {
             background-color: rgb(209,224,251);
             padding-top: 16px;

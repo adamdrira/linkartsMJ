@@ -7,11 +7,14 @@ import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service'
 import { Writing_Upload_Service } from '../services/writing.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Subscribing_service} from '../services/subscribing.service';
+import {ChatService} from '../services/chat.service';
+import {Emphasize_service} from '../services/emphasize.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import {get_date_to_show} from '../helpers/dates';
 import {Reports_service} from '../services/reports.service';
 import {NotationService} from '../services/notation.service';
+import {NotificationsService} from '../services/notifications.service';
 import { merge, fromEvent } from 'rxjs';
 import { interval, Subscription } from 'rxjs';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
@@ -66,12 +69,14 @@ export class ThumbnailArtworkComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
     public dialog: MatDialog,
+    private NotificationsService:NotificationsService,
     private rd:Renderer2,
     private router:Router,
     private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
+    private Emphasize_service:Emphasize_service,
     private navbar: NavbarService,
-
+    private chatService:ChatService,
     ) { 
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
@@ -239,6 +244,27 @@ export class ThumbnailArtworkComponent implements OnInit {
           
           
           this.certified_account=r[0].certified_account;
+        });
+
+        this.Emphasize_service.get_emphasized_content(this.item.id_user).subscribe(l=>{
+          if (l[0]!=null && l[0]!=undefined){
+            if(this.category=="comic"){
+              if (l[0].publication_id==this.item.publication_id && l[0].publication_category== "comic" && l[0].format==this.format){
+                this.content_emphasized=true;
+              }
+            }
+            else if(this.category=="drawing"){
+              if (l[0].publication_id==this.item.publication_id && l[0].publication_category== "drawing" && l[0].format==this.format){
+                this.content_emphasized=true;
+              }
+            }
+            else{
+              if (l[0].publication_id==this.item.publication_id && l[0].publication_category== "writing" ){
+                this.content_emphasized=true;
+              }
+            }
+          }
+          this.emphasized_contend_retrieved=true;
         });
 
         if(this.category=="comic"){
@@ -466,6 +492,8 @@ export class ThumbnailArtworkComponent implements OnInit {
         this.category=this.subscribing_category;
         this.format=this.subscribing_format;
 
+        
+
         if(this.in_artwork){
           this.Profile_Edition_Service.get_current_user().subscribe(r=>{
             this.user_id=r[0].id;
@@ -507,6 +535,27 @@ export class ThumbnailArtworkComponent implements OnInit {
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.profile_picture = url;
           this.profile_picture_safe=SafeURL;
+        });
+
+        this.Emphasize_service.get_emphasized_content(this.item.authorid).subscribe(l=>{
+          if (l[0]!=null && l[0]!=undefined){
+            if(this.category=="comic"){
+              if (l[0].publication_id==this.item.bd_id && l[0].publication_category== "comic" && l[0].format==this.format){
+                this.content_emphasized=true;
+              }
+            }
+            else if(this.category=="drawing"){
+              if (l[0].publication_id==this.item.drawing_id && l[0].publication_category== "drawing" && l[0].format==this.format){
+                this.content_emphasized=true;
+              }
+            }
+            else{
+              if (l[0].publication_id==this.item.writing_id && l[0].publication_category== "writing" ){
+                this.content_emphasized=true;
+              }
+            }
+          }
+          this.emphasized_contend_retrieved=true;
         });
 
         this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).subscribe(r=> {
@@ -1058,6 +1107,337 @@ export class ThumbnailArtworkComponent implements OnInit {
     this.Subscribing_service.unarchive( this.category,this.format,id).subscribe(r=>{
       this.content_archived=false;
     });
+  }
+
+  archive_loading=false;
+  content_emphasized=false;
+  emphasized_contend_retrieved=false;
+  emphasize(){
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
+    let id=0;
+    if(this.category=="comic"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
+      this.Emphasize_service.emphasize_content( "comic",this.format,id).subscribe(r=>{
+        this.content_emphasized=true;
+        this.archive_loading=false;
+      });
+    }
+    else if(this.category=="drawing"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
+      this.Emphasize_service.emphasize_content( "drawing",this.format,id).subscribe(r=>{
+        this.content_emphasized=true;
+        this.archive_loading=false;
+      });
+    }
+    else{
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
+      this.Emphasize_service.emphasize_content( "writing",this.format,id).subscribe(r=>{
+        this.content_emphasized=true;
+        this.archive_loading=false;
+      });
+    }
+    
+      
+  }
+
+  remove_emphasizing(){
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
+    let id=0;
+    if(this.category=="comic"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
+      this.Emphasize_service.remove_emphasizing( "comic",this.format,id).subscribe(r=>{
+        this.content_emphasized=false;
+        this.archive_loading=false;
+      });
+    }
+    else if(this.category=="drawing"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
+      this.Emphasize_service.remove_emphasizing( "drawing",this.format,id).subscribe(r=>{
+        this.content_emphasized=false;
+        this.archive_loading=false;
+      });
+    }
+    else{
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
+      this.Emphasize_service.remove_emphasizing( "writing",this.format,id).subscribe(r=>{
+        this.content_emphasized=false;
+        this.archive_loading=false;
+      });
+    }
+    
+  }
+
+  remove_artwork(){
+
+    let id=0;
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
+      panelClass: "popupConfirmationClass",
+    });
+    if(this.category=="comic"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
+      dialogRef.afterClosed().subscribe(result => {
+        if( result ) {
+          if(this.format=="one-shot"){
+            this.navbar.delete_publication_from_research("Comic",this.format,id).subscribe(r=>{
+             
+              this.BdOneShotService.RemoveBdOneshot(id).subscribe(r=>{
+                this.NotificationsService.remove_notification('add_publication','comic','one-shot',id,0,false,0).subscribe(l=>{
+                  let message_to_send ={
+                    for_notifications:true,
+                    type:"add_publication",
+                    id_user_name:this.author_pseudo,
+                    id_user:this.author_id, 
+                    publication_category:'comic',
+                    format:'one-shot',
+                    publication_id:id,
+                    chapter_number:0,
+                    information:"remove",
+                    is_comment_answer:false,
+                    comment_id:0,
+                  }
+                  this.archive_loading=false;
+                  this.chatService.messages.next(message_to_send);
+                  location.reload();
+                  return;
+                })
+              
+              });
+            })
+           
+          }
+          else{
+            this.navbar.delete_publication_from_research("Comic",this.format,id).subscribe(r=>{
+              this.BdSerieService.RemoveBdSerie(id).subscribe(r=>{
+                this.NotificationsService.remove_notification('add_publication','comic','serie',id,0,false,0).subscribe(l=>{
+                  let message_to_send ={
+                    for_notifications:true,
+                    type:"add_publication",
+                    id_user_name:this.author_pseudo,
+                    id_user:this.author_id, 
+                    publication_category:'comic',
+                    format:'serie',
+                    publication_id:id,
+                    chapter_number:0,
+                    information:"remove",
+                    is_comment_answer:false,
+                    comment_id:0,
+                  }
+                  this.archive_loading=false;
+                  this.chatService.messages.next(message_to_send);
+                  location.reload();
+                  return;
+                })
+              });
+              
+            })
+          }
+  
+        }
+        else{
+          this.archive_loading=false;
+        }
+      });
+    }
+    else if(this.category=="drawing"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
+      dialogRef.afterClosed().subscribe(result => {
+        if( result ) {
+          if(this.format=="one-shot"){
+            this.navbar.delete_publication_from_research("Drawing",this.format,id).subscribe(r=>{
+              this.Drawings_Onepage_Service.remove_drawing_from_sql(id).subscribe(r=>{
+                this.NotificationsService.remove_notification('add_publication','drawing',this.format,id,0,false,0).subscribe(l=>{
+                  let message_to_send ={
+                    for_notifications:true,
+                    type:"add_publication",
+                    id_user_name:this.author_pseudo,
+                    id_user:this.author_id, 
+                    publication_category:'drawing',
+                    format:this.format,
+                    publication_id:id,
+                    chapter_number:0,
+                    information:"remove",
+                    status:"unchecked",
+                    is_comment_answer:false,
+                    comment_id:0,
+                  }
+                  this.archive_loading=false;
+                  this.chatService.messages.next(message_to_send);
+                  location.reload()
+                  return;
+                })
+              });
+              
+            })
+            
+          }
+          else{
+            this.navbar.delete_publication_from_research("Drawing",this.format,id).subscribe(r=>{
+              this.Drawings_Artbook_Service.RemoveDrawingArtbook(id).subscribe(r=>{
+                this.NotificationsService.remove_notification('add_publication','drawing',this.format,id,0,false,0).subscribe(l=>{
+                  let message_to_send ={
+                    for_notifications:true,
+                    type:"add_publication",
+                    id_user_name:this.author_pseudo,
+                    id_user:this.author_id, 
+                    publication_category:'drawing',
+                    format:this.format,
+                    publication_id:id,
+                    chapter_number:0,
+                    information:"remove",
+                    status:"unchecked",
+                    is_comment_answer:false,
+                    comment_id:0,
+                  }
+                  this.archive_loading=false;
+                  this.chatService.messages.next(message_to_send);
+                  location.reload()
+                  return;
+                })
+              });
+              
+            })
+          }
+  
+        }
+        else{
+          this.archive_loading=false;
+        }
+      });
+    }
+    else{
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
+      dialogRef.afterClosed().subscribe(result => {
+        if( result ) {
+          this.navbar.delete_publication_from_research("Writing","unknown",id).subscribe(r=>{
+            this.Writing_Upload_Service.Remove_writing(id).subscribe(r=>{
+              this.NotificationsService.remove_notification('add_publication','writing','unknown',id,0,false,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"add_publication",
+                  id_user_name:this.author_pseudo,
+                  id_user:this.author_id, 
+                  publication_category:'writing',
+                  format:'unknown',
+                  publication_id:id,
+                  chapter_number:0,
+                  information:"remove",
+                  status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
+                }
+                this.archive_loading=false;
+                this.chatService.messages.next(message_to_send);
+                location.reload();
+                return;
+              })
+            });
+            
+          })
+  
+        }
+        else{
+          this.archive_loading=false;
+        }
+      });
+    }
+  }
+
+  set_private(){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir archiver cette œuvre ? Elle ne sera visible que par vous dans les archives.'},
+      panelClass: "popupConfirmationClass",
+    });
+
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
+    let id;
+    if(this.category=="comic"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
+      dialogRef.afterClosed().subscribe(result => {
+        if( result ) {
+          if(this.format=="one-shot"){
+            this.Subscribing_service.change_content_status( "comic",this.format,id,"private").subscribe(r=>{
+              this.BdOneShotService.change_oneshot_comic_status(id,"private").subscribe(r=>{
+                this.archive_loading=false;
+                location.reload()
+              });
+            })
+          }
+          else{
+            this.Subscribing_service.change_content_status( "comic",this.format,id,"private").subscribe(r=>{
+              this.BdSerieService.change_serie_comic_status(id,"private").subscribe(r=>{
+                this.archive_loading=false;
+                location.reload()
+              });
+            })
+          }
+  
+        }
+        else{
+          this.archive_loading=false;
+        }
+      });
+    }
+    else if(this.category=="drawing"){
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
+      dialogRef.afterClosed().subscribe(result => {
+        if( result ) {
+          if(this.format=="one-shot"){
+            this.Subscribing_service.change_content_status( "drawing",this.format,id,"private").subscribe(r=>{
+              this.BdOneShotService.change_oneshot_comic_status(id,"private").subscribe(r=>{
+                this.archive_loading=false;
+                location.reload()
+              });
+            })
+          }
+          else{
+            this.Subscribing_service.change_content_status( "drawing",this.format,id,"private").subscribe(r=>{
+              this.BdSerieService.change_serie_comic_status(id,"private").subscribe(r=>{
+                this.archive_loading=false;
+                location.reload()
+              });
+            })
+          }
+  
+        }
+        else{
+          this.archive_loading=false;
+        }
+      });
+    }
+    else{
+      id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
+      dialogRef.afterClosed().subscribe(result => {
+        if( result ) {
+          this.Subscribing_service.change_content_status("writing","unknown",id,"private").subscribe(r=>{
+            this.Writing_Upload_Service.change_writing_status(id,"private").subscribe(r=>{
+              this.archive_loading=false;
+              location.reload()
+            });
+          })
+  
+        }
+        else{
+          this.archive_loading=false;
+        }
+      });
+    }
+
+    
+   
   }
 
   edit_thumbnail() {

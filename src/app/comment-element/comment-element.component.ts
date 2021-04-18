@@ -89,7 +89,8 @@ export class CommentElementComponent implements OnInit {
   @Input() editable_comment:number;
   edit_comment:boolean = false;
 
-  @Input() comment_id;
+  @Input() comment_id:any;
+  @Input() visitor_mode:boolean;
   @Input() comment_information:any;
   @Input() visitor_name:string;
   @Input() visitor_id:number;
@@ -124,7 +125,6 @@ export class CommentElementComponent implements OnInit {
   liked:boolean=false;
   likes_checked=false;
 
-  visitor_mode=true;
 
   
   responses_list:any[] = [];

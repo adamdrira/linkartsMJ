@@ -100,8 +100,6 @@ value:string="add";
   display_chapters=false;
   show_icon=false;
   ngOnInit() {
-    console.log("for se")
-    console.log(this.user_id)
     window.scroll(0,0);
     if(this.form_number==1){
       this.current_chapter==this.list_of_chapters[this.list_of_chapters.length-1].chapter_number-1;
@@ -183,12 +181,9 @@ value:string="add";
   number_of_new_chapters=0;
 
   validate_name(i: number) {
-
     this.cd.detectChanges();
     if( (<FormArray>this.form.get('chapters')).controls[i].valid && this.form_number==0) {
-
       this.componentRef[i].name = this.changeName.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
-
       this.componentRef[i].swiperInitialized = true;
       this.edit_name = -1;
 
@@ -361,31 +356,46 @@ value:string="add";
   
       this.deleteChapter();
       this.bdSerieService.delete_chapter_bd_serie(this.bd_id,i+1).subscribe(r=>{
-        this.Subscribing_service.remove_content('comic', 'serie', this.bd_id,i+1).subscribe(r=>{
+        this.bdSerieService.remove_all_pages_from_bd_chapter(this.bd_id,i+1).subscribe(r=>{
           this.chapter_creation_in_progress=false;
         })
         
       });
+      
     }
     else{
       if(i+1==this.list_of_chapters[this.list_of_chapters.length-1].chapter_number){
         
         this.deleteChapter();
         this.chapter_creation_in_progress=false;
+        let done_1=false;
+        let done_2=false;
         this.bdSerieService.delete_chapter_bd_serie2(this.list_of_chapters[0].bd_id,this.list_of_chapters[this.list_of_chapters.length-1].chapter_number).subscribe(r=>{
-          this.Subscribing_service.remove_content('comic', 'serie', this.list_of_chapters[0].bd_id,this.list_of_chapters[this.list_of_chapters.length-1].chapter_number).subscribe(r=>{
-            this.list_of_chapters.splice(this.list_of_chapters.length-1,1);
-            if(this.new_chapter_added){
-              this.number_of_new_chapters-=1;
-              this.list_of_new_chapters.splice(this.list_of_new_chapters.length-1,1);
-              if(this.number_of_new_chapters==0){
-                this.new_chapter_added=false;
+          done_1=true;
+          check_all(this)
+        });
+
+        this.bdSerieService.remove_all_pages_from_bd_chapter(this.list_of_chapters[0].bd_id,this.list_of_chapters[this.list_of_chapters.length-1].chapter_number).subscribe(r=>{
+          done_2=true;
+          check_all(this)
+        })
+
+       
+
+        function check_all(THIS){
+          if(done_1 && done_2){
+            THIS.list_of_chapters.splice(THIS.list_of_chapters.length-1,1);
+            if(THIS.new_chapter_added){
+              THIS.number_of_new_chapters-=1;
+              THIS.list_of_new_chapters.splice(THIS.list_of_new_chapters.length-1,1);
+              if(THIS.number_of_new_chapters==0){
+                THIS.new_chapter_added=false;
               }
             }
-            this.cd.detectChanges();
-          })
+            THIS.cd.detectChanges();
+          }
           
-        });
+        }
       }
     }
       
@@ -571,7 +581,7 @@ value:string="add";
       if(this.form_number==0){
         for( let j = 0; j< this.componentRef.length; j++ ) {
           this.bdSerieService.delete_chapter_bd_serie(this.bd_id,j+1).subscribe(r=>{
-            this.Subscribing_service.remove_content('comic', 'serie', this.bd_id,j+1).subscribe(r=>{
+            this.Subscribing_service.remove_content('comic', 'serie', this.bd_id).subscribe(r=>{
               this.chapter_creation_in_progress=false;
             })
           });
@@ -584,7 +594,7 @@ value:string="add";
             if(!this.list_of_chapters_validated[i] ||indice>0){
               indice=i;
               this.bdSerieService.delete_chapter_bd_serie2(this.list_of_chapters[0].bd_id,this.list_of_chapters[i].chapter_number).subscribe(r=>{
-                this.Subscribing_service.remove_content('comic', 'serie', this.list_of_chapters[0].bd_id,this.list_of_chapters[i].chapter_number).subscribe(r=>{
+                this.Subscribing_service.remove_content('comic', 'serie', this.list_of_chapters[0].bd_id).subscribe(r=>{
                 })
               });
             }

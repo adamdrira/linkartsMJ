@@ -2297,13 +2297,13 @@ export class ArtworkComicComponent implements OnInit {
     }
     this.archive_loading=true;
     if(this.type=="serie"){
-      this.Emphasize_service.emphasize_content( "comic",this.type,this.bd_id,this.current_chapter + 1).subscribe(t=>{
+      this.Emphasize_service.emphasize_content( "comic",this.type,this.bd_id).subscribe(t=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
     }
     else{
-      this.Emphasize_service.emphasize_content( "comic",this.type,this.bd_id,0).subscribe(r=>{
+      this.Emphasize_service.emphasize_content( "comic",this.type,this.bd_id).subscribe(r=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
@@ -2316,13 +2316,13 @@ export class ArtworkComicComponent implements OnInit {
     }
     this.archive_loading=true;
     if(this.type=="serie"){
-      this.Emphasize_service.remove_emphasizing( "comic",this.type,this.bd_id,this.current_chapter + 1).subscribe(t=>{
+      this.Emphasize_service.remove_emphasizing( "comic",this.type,this.bd_id).subscribe(t=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
     }
     else{
-      this.Emphasize_service.remove_emphasizing( "comic",this.type,this.bd_id,0).subscribe(t=>{
+      this.Emphasize_service.remove_emphasizing( "comic",this.type,this.bd_id).subscribe(t=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
@@ -2428,7 +2428,7 @@ export class ArtworkComicComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
-          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,0,"private").subscribe(r=>{
+          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"private").subscribe(r=>{
             this.BdOneShotService.change_oneshot_comic_status(this.bd_id,"private").subscribe(r=>{
               this.status="private";
               this.archive_loading=false;
@@ -2436,7 +2436,7 @@ export class ArtworkComicComponent implements OnInit {
           })
         }
         else{
-          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,this.chapterList.length,"private").subscribe(r=>{
+          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"private").subscribe(r=>{
             this.BdSerieService.change_serie_comic_status(this.bd_id,"private").subscribe(r=>{
               this.status="private";
               this.archive_loading=false;
@@ -2464,7 +2464,7 @@ export class ArtworkComicComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
-          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,0,"ok").subscribe(r=>{
+          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"ok").subscribe(r=>{
             this.BdOneShotService.change_oneshot_comic_status(this.bd_id,"public").subscribe(r=>{
               this.status="public";
               this.archive_loading=false;
@@ -2473,7 +2473,7 @@ export class ArtworkComicComponent implements OnInit {
           
         }
         else{
-          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,this.chapterList.length,"ok").subscribe(r=>{
+          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"ok").subscribe(r=>{
             this.BdSerieService.change_serie_comic_status(this.bd_id,"public").subscribe(r=>{
               this.status="public";
               this.archive_loading=false;

@@ -5,6 +5,12 @@
     <app-page-not-found></app-page-not-found>
 </div>
 
+<div class="fake-navbar" *ngIf="for_reset_password">
+    <a href="/" class="logo-container">
+        <img class="logo" src='../../assets/img/svg/Logo-LA3-17-01.svg'>
+    </a>
+</div>
+
 <div #main_container class="container-fluid account" *ngIf="!(list_writings_added && list_drawings_artbook_added
 && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && user_blocked_retrieved) && !page_not_found">
         
@@ -83,7 +89,7 @@
 
         <img [src]="cover_picture" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }">
 
-        <button *ngIf="!mode_visiteur && showEditCoverPic" class="change-cover-picture" (click)="change_cover_picture();">
+        <button *ngIf="!mode_visiteur && showEditCoverPic && !for_reset_password" class="change-cover-picture" (click)="change_cover_picture();">
             <mat-icon [ngClass]="{'invisible': !show_icon }">camera_alt</mat-icon>
             <span>Changer ma photo de couverture</span>
         </button>
@@ -95,7 +101,7 @@
         <!--------------------------------------------------------------------------------->
         <div #profileHovered class="profile">
 
-            <ng-container *ngIf="!user_blocked && !profile_not_found && user_blocked_retrieved">
+            <ng-container *ngIf="!user_blocked && !profile_not_found && user_blocked_retrieved && !for_reset_password">
                 <div *ngIf="mode_visiteur && type_of_profile_retrieved " class="visitor-buttons-container">
                     <button (click)="open_chat_link()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }" >send</mat-icon>
@@ -134,26 +140,28 @@
             </mat-menu>
 
 
-            <button *ngIf="!profile_not_found && !mode_visiteur" class="profile-mat-menu" [ngClass]="{'opacity1': openedMenu=='0profile' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(0,'profile');" [matMenuTriggerFor]="options1">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
+            <button *ngIf="!profile_not_found && !mode_visiteur && !for_reset_password" class="profile-mat-menu" [ngClass]="{'opacity1': openedMenu=='0profile' }" (click)="open_section(5,true);">
+                <mat-icon [ngClass]="{'invisible': !show_icon }"
+                matTooltip="Éditer mon profil" 
+                matTooltipClass='linkarts-tooltip' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">edit</mat-icon>
             </button>
-            <mat-menu #options1="matMenu" xPosition='before' class="account-mat-menu">
-                <button  class="account-mat-menu-item" tabIndex="-1" mat-menu-item  (click)="change_profile_picture();">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">camera_alt</mat-icon>
-                    <span>Changer ma photo de profil</span>
-                </button>
-                <button  class="account-mat-menu-item" tabIndex="-1" mat-menu-item  (click)="open_section(5,true);">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">help</mat-icon>
-                    <span>Éditer mon profil</span>
-                </button>
-            </mat-menu>
 
+            <button *ngIf="!profile_not_found && !mode_visiteur && !for_reset_password" class="change-profile-picture"   (click)="change_profile_picture();" [ngClass]="{'invisible': !show_icon || !pp_is_loaded }">
+                <mat-icon 
+                matTooltip="Changer ma photo de profil" 
+                matTooltipClass='linkarts-tooltip' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">camera_alt</mat-icon>
+            </button>
 
             <div class="profile-picture" [ngClass]="{'visiteur': mode_visiteur && (!story_retrieved || !story_found),'new-story': story_state }">
                 
                 <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
-                <ng-container *ngIf="!mode_visiteur && mode_visiteur_added && story_retrieved">
-                    <div *ngIf="story_found" class="change-profile-picture" (click)="watch_story();">
+                
+                <ng-container *ngIf="!mode_visiteur && mode_visiteur_added && story_retrieved && !for_reset_password">
+                    <div *ngIf="story_found" class="watch-top-story" (click)="watch_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                         <span>Voir ma Story</span>
                     </div>
@@ -162,7 +170,7 @@
                         <span>Publier dans ma Story</span>
                     </div>
                 </ng-container>
-                <ng-container *ngIf="mode_visiteur && mode_visiteur_added && story_retrieved && story_found  && type_of_profile=='account'">
+                <ng-container *ngIf="mode_visiteur && mode_visiteur_added && story_retrieved && story_found  && type_of_profile=='account' && !for_reset_password">
                     <div  class="change-story-picture  watch-story" (click)="watch_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                         <span>Voir la story</span>
@@ -258,7 +266,7 @@
     
     <!--------------------------------------------------------------------------------->
     <!--------------------------------------------------------------------------------->
-    <div class="panel-controller" *ngIf="!user_blocked && user_blocked_retrieved && !profile_not_found">
+    <div class="panel-controller" *ngIf="!user_blocked && user_blocked_retrieved && !profile_not_found && !for_reset_password">
         
         <div class="middle-container">
             <div class="absolute-background-color" #absoluteBackgroundColor></div>
@@ -315,7 +323,7 @@
                 </button>
             </div>
             
-            <a [routerLink]=get_add_artwork_link() *ngIf="!my_profile_is_suspended">
+            <a href="/add-artwork" *ngIf="!my_profile_is_suspended">
                 <button *ngIf="!mode_visiteur">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">add_circle_outline</mat-icon>
                     <span>Publier</span> 
@@ -410,6 +418,21 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+        </div>
+    </div>
+
+    <div class="panel-controller" *ngIf="for_reset_password">
+        <div class="middle-container-password">
+            <div #buttonSection>
+                <button *ngIf="!page_not_found">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
+                    <span >Réinitialisation du mot de passe</span>
+                </button>
+                <button *ngIf="page_not_found">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
+                    <span >Session expirée</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -595,7 +618,7 @@
                     <span class="visitor">Aucune œuvre disponible</span>
                 </div>
 
-                <div *ngIf="display_new_comic_contents" class="bd-container" >
+                <div *ngIf="display_new_comic_contents" class="bd-container no-max-width" >
                     <div class="artwork-type-title">
                         <span>Bandes dessinées</span>
                     </div>
@@ -622,7 +645,7 @@
                     </div>
                 </div>
 
-                <div *ngIf="display_new_drawing_contents" class="bd-container" >
+                <div *ngIf="display_new_drawing_contents" class="bd-container no-max-width" >
                     <div class="artwork-type-title">
                         <span>Dessins</span>
                     </div>
@@ -647,7 +670,7 @@
                     </div>
                 </div>
 
-                <div *ngIf="display_new_writing_contents" class="bd-container">
+                <div *ngIf="display_new_writing_contents" class="bd-container no-max-width">
                     <div class="artwork-type-title">
                         <span>Écrits</span>
                     </div>
@@ -1655,6 +1678,16 @@
 
             <div *ngIf="opened_section==7 && !mode_visiteur ">
                 <app-account-my-account
+                [pseudo]=pseudo
+                [id_user]=user_id
+                [author]=author
+                [visitor_mode]=mode_visiteur
+                ></app-account-my-account>
+            </div>
+
+            <div *ngIf="opened_section==8">
+                <app-account-my-account
+                [for_reset_password]=for_reset_password
                 [pseudo]=pseudo
                 [id_user]=user_id
                 [author]=author

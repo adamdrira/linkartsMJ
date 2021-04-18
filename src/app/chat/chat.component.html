@@ -63,20 +63,20 @@
                 <!-- --------------------------------POUR LES UTILISATEURS--------------------------------- -->
                 <ng-container *ngIf="friend_type=='user' && friend_id!=current_user_id">
 
-                    <button [matMenuTriggerFor]="artworkOptions" [@enterAnimation]>
+                    <button [matMenuTriggerFor]="artworkOptions" [@enterAnimation] *ngIf="!(3>=friend_id && friend_type=='user')">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">more_horiz</mat-icon>
                     </button>
 
                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
-                        <button  class="chat-menu-item" *ngIf="spam!='true' && !(3>=friend_id && friend_type=='user')" mat-menu-item  (click)="remove_contact()">
+                        <button  class="chat-menu-item" *ngIf="spam!='true' && chat_friend_id>0 && list_of_friends_ids.includes(friend_id)" mat-menu-item  (click)="remove_contact()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
                             <span>Retirer de mes contacts</span>
                         </button>
-                        <button class="chat-menu-item" *ngIf="spam=='true'" mat-menu-item  (click)="remove_spam()">
+                        <button class="chat-menu-item" *ngIf="spam=='true' && list_of_spams_ids.includes(friend_id)" mat-menu-item  (click)="remove_spam()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
                             <span>Retier de mes invitations</span>
                         </button>
-                        <button *ngIf="!block_chat && !(3>=friend_id && friend_type=='user')" class="chat-menu-item" mat-menu-item (click)="block_user()">
+                        <button *ngIf="!block_chat" class="chat-menu-item" mat-menu-item (click)="block_user()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">block</mat-icon>
                             <span>Bloquer l'utilisateur</span>
                         </button>
@@ -155,8 +155,9 @@
                         {{friend_name}} ne fait pas partie de vos contacts. Voulez-vous l'ajouter ?
                     </span>
                     <button (click)="add_to_contacts()">
-                        <span>Ajouter</span>
-                        <mat-icon>person_add</mat-icon>
+                        <span *ngIf="!show_spinner_add">Ajouter</span>
+                        <mat-icon *ngIf="!show_spinner_add">person_add</mat-icon>
+                        <mat-spinner diameter="20" *ngIf="show_spinner_add" ></mat-spinner>
                     </button>
                 </div>
             </div>
@@ -298,7 +299,7 @@
 
                                         <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && list_of_folders.length>0 && (list_of_messages[list_of_messages.length -1 - i].id_folder==0 || !list_of_messages[list_of_messages.length -1 - i].id_folder)"
                                             (click)="archive(list_of_messages.length -1 - i)">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark
                                             </mat-icon>
                                             <span>Archiver</span>
                                         </button>
@@ -825,7 +826,7 @@
 
                                         <button class="chat-menu-item" mat-menu-item *ngIf="(list_of_messages[list_of_messages.length -1 - i].is_an_attachment) && list_of_folders_retrieved  && list_of_messages[list_of_messages.length -1 - i].status!='deleted' && list_of_folders.length>0 && (list_of_messages[list_of_messages.length -1 - i].id_folder==0 || !list_of_messages[list_of_messages.length -1 - i].id_folder)"
                                             (click)="archive(list_of_messages.length -1 - i)">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">bookmark
                                             </mat-icon>
                                             <span>Archiver</span>
                                         </button>
@@ -1454,6 +1455,7 @@
             [friend_pseudo]="friend_pseudo" [friend_name]="friend_name" [friend_picture]="friend_picture"
 
             [list_of_chat_sections]="list_of_chat_sections"
+            
             [number_of_sections_unseen]="number_of_sections_unseen"
             [list_of_chat_sections_notifications]="list_of_chat_sections_notifications"
             [show_notification_message]="show_notification_message"

@@ -62,11 +62,15 @@
                         <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                         <span>S'abonner</span>
                     </button>
-                    <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
+                    <button *ngIf="list_of_check_subscribtion[i] && visitor_id!=author_id"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active</mat-icon>
                         <span *ngIf="list_of_subscribings_information[i].gender=='Homme'">Abonné</span>
                         <span *ngIf="list_of_subscribings_information[i].gender=='Femme'">Abonnée</span>
                         <span *ngIf="list_of_subscribings_information[i].gender=='Groupe'">Abonnés</span>
+                    </button>
+                    <button *ngIf="visitor_id==author_id"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">person_remove</mat-icon>
+                        <span >Se désabonner</span>
                     </button>
                 </ng-container>
                 

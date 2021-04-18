@@ -52,6 +52,9 @@ export class PopupSubscribingsComponent implements OnInit {
   list_of_subscribings_information:any[]=[];
   list_of_check_subscribtion:any[]=[];
   list_of_profile_pictures:SafeUrl[]=[];
+  list_of_data_retrieved=[];
+  list_of_sub_retrieved=[];
+  list_of_all_retrieved=[];
   subscribtion_info_added=false;
   type_of_profile=this.data.type_of_profile;
   visitor_id=this.data.visitor_id;
@@ -59,9 +62,7 @@ export class PopupSubscribingsComponent implements OnInit {
   visitor_name=this.data.visitor_name;
   show_icon=false;
 
-  list_of_data_retrieved=[];
-  list_of_sub_retrieved=[];
-  list_of_all_retrieved=[];
+ 
   first_check=false;
   number_of_subs_to_show=10;
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
@@ -234,6 +235,16 @@ export class PopupSubscribingsComponent implements OnInit {
              
               this.loading_subscribtion=false;
               this.chatService.messages.next(message_to_send);
+              if(this.visitor_id==this.author_id){
+                this.list_of_check_subscribtion.splice(i,1)
+                this.list_of_subscribings.splice(i,1)
+                this.list_of_subscribings_information.splice(i,1)
+                this.list_of_check_subscribtion.splice(i,1)
+                this.list_of_profile_pictures.splice(i,1)
+                this.list_of_data_retrieved.splice(i,1)
+                this.list_of_sub_retrieved.splice(i,1)
+                this.list_of_all_retrieved.splice(i,1)
+              }
               this.cd.detectChanges();
             })
           });
