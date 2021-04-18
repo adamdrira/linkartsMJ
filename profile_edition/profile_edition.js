@@ -1329,6 +1329,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       }
     }
   let current_user = get_current_user(req.cookies.currentUser);
+  let device_info=req.body.device_info;
   const page=req.body.page;
   users.findOne({
     where:{
@@ -1342,6 +1343,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       users_visited_pages.create({
         "id_user":current_user,
         "nickname":user_found.nickname,
+        "device_info":device_info,
          "url_page":page,
       }).catch(err => {
     
@@ -2896,11 +2898,34 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         }
       }
     let current_user = get_current_user(req.cookies.currentUser);
-    let value=req.body.value
-    const Op = Sequelize.Op;
-    users_mailing.findOne({
+    let value=req.body.value;
+    users.fi
+    users.findOne({
+      where:{
+        id:current_user,
+      } 
+    }).catch(err => {
+			
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
+      if(user){
+        if(value){
+          user.update({
+            "email_authorization":"true",
+          })
+        }
+        else{
+          user.update({
+            "email_authorization":"false",
+          })
+        }
+        res.status(200).send([user])
+      }
+    })
+
+    /*users_mailing.findOne({
       where: {
-        id_user: current_user ,
+        id_user: current_user,
       }
     })
     .catch(err => {
@@ -2943,7 +2968,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         })
         
       }
-    }); 
+    }); */
 
    
   });
@@ -3131,7 +3156,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   router.post('/send_email_for_account_creation', function (req, res) {
 
-      if( ! req.headers['authorization'] ) {
+    if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
       else {
@@ -3141,10 +3166,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           return res.status(401).json({msg: "error"});
         }
       }
-    let id = req.body.id;
+  let id = req.body.id;
+
     users.findOne({
       where:{
-        id:id
+        id:id,
       }
     }).then(user=>{
       if(user){
@@ -3156,12 +3182,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
             mail_to_send+=`
             <table style="width:100%;margin-bottom:20px">
-                <tr id="tr1">
-                    <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
-                        <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
-                    </td>
-                </tr>
-
 
                 <tr id="tr2" >
                     <td  align="center" style="background: rgb(2, 18, 54)">
@@ -3172,7 +3192,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 </tr>
             </table>`;
 
-            let name = user.firstname + ' ' + user.lastname;
+            
+            let name = user.firstname + " " + user.lastname;
+            if(!user.lastname || user.lastname==''){
+              name=user.firstname
+            }
             let start=''
             if(user.gender=="Homme"){
               start=`Cher ${name},`
@@ -3193,7 +3217,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous souhaitons la bienvenue sur LinkArts. Veuillez cliquer sur le bouton ci-dessous pour confirmer votre inscription : </p>
 
                       <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                          <a href="https://www.linkarts.fr/registration/${user.id}/${password}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                          <a href="https://www.linkarts.fr/home/registration/${user.id}/${password}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                               Confirmer mon inscription
                           </a>
                       </div>`
@@ -3239,7 +3263,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             mail_to_send+=`
             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Nous vous remercions pour votre inscription et vous souhaitons une très agréable aventure au sein de LinkArts !</p>
             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                      <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                      <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
                   </td>
 
               </tr>
@@ -3251,6 +3275,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                     <td align="center">
                         <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
                         <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                        
                     </td>
 
                 </tr>
@@ -3292,7 +3317,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             if (error) {
                 res.status(200).send([{error:error}])
             } else {
-                res.status(200).send([{sent:'Message sent ' + info.messageId}])
+                res.status(200).send([{sent:'Message sent ' + info.messageId,user:user}])
             }
             
 
@@ -3354,12 +3379,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
                 mail_to_send+=`
                 <table style="width:100%;margin-bottom:20px">
-                    <tr id="tr1">
-                        <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
-                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
-                        </td>
-                    </tr>
-
 
                     <tr id="tr2" >
                         <td  align="center" style="background: rgb(2, 18, 54)">
@@ -3370,7 +3389,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                     </tr>
                 </table>`;
 
-                let name = user_found.firstname + ' ' + user_found.lastname;
+                let name = user_found.firstname + " " + user_found.lastname;
+                if(!user_found.lastname || user_found.lastname==''){
+                  name=user_found.firstname
+                }
                 let start=''
                 if(user_found.gender=="Homme"){
                   start=`Cher ${name},`
@@ -3398,7 +3420,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                           </div>
 
                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                          <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                          <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
                       </td>
 
                   </tr>
@@ -3502,12 +3524,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
                 mail_to_send+=`
                 <table style="width:100%;margin-bottom:20px">
-                    <tr id="tr1">
-                        <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
-                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
-                        </td>
-                    </tr>
-
 
                     <tr id="tr2" >
                         <td  align="center" style="background: rgb(2, 18, 54)">
@@ -3518,7 +3534,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                     </tr>
                 </table>`;
 
-                let name = user_found.firstname + ' ' + user_found.lastname;
+                let name = user_found.firstname + " " + user_found.lastname;
+                if(!user_found.lastname || user_found.lastname==''){
+                  name=user_found.firstname
+                }
                 admin_name=name;
                 let start=''
                 if(user_found.gender=="Homme"){
@@ -3547,7 +3566,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                           </div>
 
                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                          <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                          <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
                       </td>
 
                   </tr>
@@ -3605,13 +3624,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
                   mail_to_send+=`
                   <table style="width:100%;margin-bottom:20px">
-                      <tr id="tr1">
-                          <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
-                              <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
-                          </td>
-                      </tr>
-
-
                       <tr id="tr2" >
                           <td  align="center" style="background: rgb(2, 18, 54)">
                               <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
@@ -3621,7 +3633,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       </tr>
                   </table>`;
 
-                  let name = user_found.firstname + ' ' + user_found.lastname;
+                  let name = user_found.firstname + " " + user_found.lastname;
+                  if(!user_found.lastname || user_found.lastname==''){
+                    name=user_found.firstname
+                  }
                   let start=''
                   if(user_found.gender=="Homme"){
                     start=`Cher ${name},`
@@ -3649,7 +3664,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                             </div>
 
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                            <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="20" style="height:20px;max-height: 20px;float: left;" />
                         </td>
 
                     </tr>
