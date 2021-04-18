@@ -23,8 +23,8 @@ export class Emphasize_service {
 
 
  
-    emphasize_content(category:string,format:string,publication_id:number,chapter_number:number){
-        return this.httpClient.post('routes/emphasize_content', {category:category,format:format,publication_id:publication_id,chapter_number:chapter_number}, {withCredentials:true}).pipe(map((information)=>{
+    emphasize_content(category:string,format:string,publication_id:number){
+        return this.httpClient.post('routes/emphasize_content', {category:category,format:format,publication_id:publication_id}, {withCredentials:true}).pipe(map((information)=>{
             return information;
         }));
     }
@@ -36,8 +36,8 @@ export class Emphasize_service {
       }));
   };
 
-   remove_emphasizing(category:string,format:string,publication_id:number,chapter_number:number) {
-    return this.httpClient.post('routes/remove_emphasizing', {category:category,format:format,publication_id:publication_id,chapter_number:chapter_number}, {withCredentials:true}).pipe(map(information=>{
+   remove_emphasizing(category:string,format:string,publication_id:number) {
+    return this.httpClient.post('routes/remove_emphasizing', {category:category,format:format,publication_id:publication_id}, {withCredentials:true}).pipe(map(information=>{
       return information;
     }));
    };

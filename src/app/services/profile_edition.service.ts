@@ -293,8 +293,8 @@ export class Profile_Edition_Service {
     }));
   }
 
-  decrypt_password(){
-    return this.httpClient.post('api/users/decrypt_password',{},{withCredentials:true} ).pipe(map((information)=>{
+  decrypt_password(id){
+    return this.httpClient.post('api/users/decrypt_password',{id:id},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }
@@ -305,8 +305,8 @@ export class Profile_Edition_Service {
     }));
   }
 
-  edit_password(password){
-    return this.httpClient.post('api/users/edit_password',{password:password},{withCredentials:true} ).pipe(map((information)=>{
+  edit_password(password,id){
+    return this.httpClient.post('api/users/edit_password',{password:password,id:id},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }

@@ -74,12 +74,16 @@ export class BdSerieService {
   }
 
   delete_chapter_bd_serie(bd_id,chapter_number: number){
-    
       return this.httpClient.delete(`routes/delete_chapter_bd_serie/${chapter_number}/${bd_id}`, {withCredentials:true}).pipe(map((information)=>{
         return information
       }));
-   
   }
+
+  remove_all_pages_from_bd_chapter(bd_id,chapter_number: number){
+    return this.httpClient.delete(`routes/remove_all_pages_from_bd_chapter/${chapter_number}/${bd_id}`, {withCredentials:true}).pipe(map((information)=>{
+      return information
+    }));
+}
 
   delete_chapter_bd_serie2(bd_id,chapter_number: number){
       return this.httpClient.delete(`routes/delete_chapter_bd_serie/${chapter_number}/${bd_id}`, {withCredentials:true}).pipe(map(information=>{

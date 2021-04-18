@@ -100,14 +100,14 @@ export class Subscribing_service {
     }));
   }
 
-  change_content_status(category:string, format, publication_id,chapter_number,status):Observable<any>{
-    return this.httpClient.post(`routes/change_content_status`,{category:category, format:format, publication_id:publication_id, chapter_number:chapter_number,status:status}, {withCredentials:true}).pipe(map((information)=>{
+  change_content_status(category:string, format, publication_id,status):Observable<any>{
+    return this.httpClient.post(`routes/change_content_status`,{category:category, format:format, publication_id:publication_id,status:status}, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }
 
-  remove_content(category, format, publication_id,chapter_number){
-    return this.httpClient.delete(`routes/remove_content/${category}/${format}/${publication_id}/${chapter_number}`, {withCredentials:true}).pipe(map((information)=>{
+  remove_content(category, format, publication_id){
+    return this.httpClient.delete(`routes/remove_content/${category}/${format}/${publication_id}`, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }
