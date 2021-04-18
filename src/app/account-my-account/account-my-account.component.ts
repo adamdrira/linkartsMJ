@@ -690,10 +690,10 @@ export class AccountMyAccountComponent implements OnInit {
       
       compt+=(this.list_of_members_shares_by_group[id_group][i])?Number(this.list_of_members_shares_by_group[id_group][i]):0;
     }
-    if(compt!=100){
+    if(compt<99 || compt>100){
       this.validation_all=false;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'La somme des gains doit être égale à 100. Elle est actuellement égale à : ' + compt},
+        data: {showChoice:false, text:'La somme des gains doit être compris entre 99 et 100. Elle est actuellement égale à : ' + compt},
         panelClass: "popupConfirmationClass",
       });
     }
