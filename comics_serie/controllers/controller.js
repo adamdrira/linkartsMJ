@@ -478,7 +478,9 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/delete_chapter_bd_serie/:chapter_number/:bd_id', function (req, res) {
-
+        console.log("delete_chapter_bd_serie")
+        console.log(req.params.chapter_number)
+        console.log(req.params.bd_id)
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -502,7 +504,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(bd =>  {
-          let chaptersnumber=bd.chaptersnumber-=1;
+          let chaptersnumber=(bd.chaptersnumber>0)?bd.chaptersnumber-1:0;
           bd.update({
             "chaptersnumber":chaptersnumber
           })
@@ -528,6 +530,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       var file_name ='';
 
       const PATH1= './data_and_routes/pages_bd_serie';
+      
 
       let storage = multer.diskStorage({
         destination: (req, file, cb) => {
@@ -595,9 +598,34 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     });
 
   
+    router.delete('/remove_all_pages_from_bd_chapter/:chapter/:bd_id', function (req, res) {
+
+      console.log("remove_all_pages")
+      console.log(parseInt(req.params.chapter))
+      console.log(parseInt(req.params.bd_id))
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+ 
+        pages_bd_serie.destroy({
+          where: {
+            chapter_number: req.params.chapter,
+            bd_id: parseInt(req.params.bd_id),
+            },
+          truncate: false
+        })
+        res.status(200).send([{done:"done"}])
+    });
 
       //on supprime le fichier de la base de donnée postgresql
-      router.delete('/remove_page_bdserie_from_data/:page/:chapter/:bd_id', function (req, res) {
+    router.delete('/remove_page_bdserie_from_data/:page/:chapter/:bd_id', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -610,12 +638,12 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
         }
       }
  
-          const page  = req.params.page;
+          const page  = parseInt(req.params.page);
           pages_bd_serie.destroy({
             where: {
               page_number:page,
               chapter_number: req.params.chapter,
-              bd_id: bd_id 
+              bd_id: parseInt(req.params.bd_id)
               },
             truncate: false
           })
