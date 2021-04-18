@@ -1499,23 +1499,40 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 			
 			res.status(500).json({msg: "error", details: err});		
 		}).then( spam=>{
+      if(spam){
         spam.destroy({
           truncate: false
         })
-        var now = new Date();
+      }
+      var now = new Date();
+      list_of_chat_friends.findOne({
+        where:{
+          is_a_group_chat:{[Op.not]: true},
+          [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
+        }
+      }).catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(friend=>{
+        if(friend){
+          friend.destroy({
+            truncate: false
+          })
+        }
         list_of_chat_friends.create({
           "id_user":id_user,
           "id_receiver":id_friend,
           "date":now,
         }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(
-          friend=>{
+      
+            res.status(500).json({msg: "error", details: err});		
+          }).then(friend=>{
             res.status(200).send([friend]);
-          }
-        )
+          })
+        })
       })
+
+      
   });
 
   router.post('/chat_sending_images/:file_name', function (req, res) {
@@ -1816,13 +1833,13 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                   res.status(200).send([{"value":attachment_name.split('.')[0] +`(${num}).png`}])
                 }
                 else{
-                    res.status(200).send([{"value":attachment_name.split('.')[0] +'.png'}])
+                    res.status(200).send([{"value":attachment_name.split('.')[0] +'(1).png'}])
                 }
               }
             })
           }
           else{
-            res.status(200).send([{"value":attachment_name.split('.')[0] +'.svg'}])
+            res.status(200).send([{"value":attachment_name.split('.')[0] +'.png'}])
           };
         }
       })
@@ -1879,7 +1896,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       
     });
 
-    router.post('/chat_upload_svg/:file_name/:friend_type/:friend_id', function (req, res) {
+    router.post('/chat_upload_png/:file_name/:friend_type/:friend_id', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
       if(!current_user){
         return res.status(401).json({msg: "error"});
@@ -1911,11 +1928,20 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           destination: './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`,
           plugins: [
             imageminPngquant({
-              quality: [0.8, 0.9]
+              quality: [1, 1]
           })
           ]
           });
-          res.status(200).send(([{ "file_name": file_name}]))
+          let transform = sharp()
+          transform = transform.resize({fit:sharp.fit.contain,height:300})
+          .toBuffer((err, buffer, info) => {
+              if (buffer) {
+                  res.status(200).send(buffer);
+              }
+          });
+          let filename2 = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
+          var pp = fs.createReadStream( path.join(process.cwd(),filename2))
+          pp.pipe(transform);
         })();
         
         });
@@ -4510,17 +4536,47 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friend=>{
     if(friend){
-      res.status(200).send([{add:'done'}])
+      list_of_messages.findAll({
+        where: {
+           is_a_group_chat:{[Op.not]: true},
+           [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
+        },
+        order: [
+            ['createdAt', 'DESC']
+          ],
+       limit:1,
+      })
+      .catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(message =>  {
+            res.status(200).send([{message:message[0],friend:friend}])
+      });
     }
     else{
       list_of_chat_friends.create({
         "id_user":id_user,
         "id_receiver":id_friend,
         "date":final_date,
-      }).catch(err => {
-			res.status(500).json({msg: "error", details: err});		
-		}).then(r=>{
-        res.status(200).send([r])
+        }).catch(err => {
+        res.status(500).json({msg: "error", details: err});		
+      }).then(r=>{
+        list_of_messages.findAll({
+          where: {
+             is_a_group_chat:{[Op.not]: true},
+             [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
+          },
+          order: [
+              ['createdAt', 'DESC']
+            ],
+         limit:1,
+        })
+        .catch(err => {
+          
+          res.status(500).json({msg: "error", details: err});		
+        }).then(message =>  {
+              res.status(200).send([{message:message[0],friend:r}])
+        });
       })
     }
     
@@ -4749,23 +4805,27 @@ router.post('/get_files_by_folder',function(req,res){
       {where:{
         id:id_message,
       }
+    }).catch(err => {
+      res.status(500).send([{error:err}])
+    }).then(message=>{
+      list_of_messages.count({
+        where: {
+          id_folder:id_folder,
+        },
+      }).catch(err => {
+          res.status(500).send([{error:err}])
+      }).then(num=>{
+        list_of_chat_folders.update({
+          "number_of_files":num},
+          {where:{
+            id:id_folder,
+          }
+        })
+        res.status(200).send([{done:"done"}])
+      })
     })
 
-    list_of_messages.count({
-      where: {
-        id_folder:id_folder,
-      },
-    }).catch(err => {
-        res.status(500).send([{error:err}])
-    }).then(num=>{
-      list_of_chat_folders.update({
-        "number_of_files":num},
-        {where:{
-          id:id_folder,
-        }
-      })
-      res.status(200).send([{done:"done"}])
-    })
+    
     
   })
 
@@ -4788,22 +4848,28 @@ router.post('/get_files_by_folder',function(req,res){
       {where:{
         id:id_message,
       }
-    })
-    list_of_messages.count({
-      where: {
-        id_folder:id_folder,
-      },
     }).catch(err => {
-        res.status(500).send([{error:err}])
-    }).then(num=>{
-      list_of_chat_folders.update({
-        "number_of_files":num},
-        {where:{
-          id:id_folder,
-        }
+      res.status(500).send([{error:err}])
+    }).then(message=>{
+      list_of_messages.count({
+        where: {
+          id_folder:id_folder,
+        },
+      }).catch(err => {
+          res.status(500).send([{error:err}])
+      }).then(num=>{
+        list_of_chat_folders.update({
+          "number_of_files":num},
+          {where:{
+            id:id_folder,
+          }
+        })
+        res.status(200).send([{done:"done"}])
       })
-      res.status(200).send([{done:"done"}])
     })
+
+
+    
   })
 
 
