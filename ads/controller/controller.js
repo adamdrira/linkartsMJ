@@ -1661,7 +1661,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
       id:author_id
     }
   }).then(user=>{
-    if(user){
+    if(user && user.email_authorization!="false"){
         const transport = nodemailer.createTransport({
           host: "pro2.mail.ovh.net",
           port: 587,
@@ -1679,13 +1679,6 @@ router.post('/send_email_for_ad_answer', function (req, res) {
           mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
             mail_to_send+=`
             <table style="width:100%;margin-bottom:20px">
-                <tr id="tr1">
-                    <td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
-                        <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
-                    </td>
-                </tr>
-
-
                 <tr id="tr2" >
                     <td  align="center" style="background: rgb(2, 18, 54)">
                         <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
@@ -1696,6 +1689,9 @@ router.post('/send_email_for_ad_answer', function (req, res) {
             </table>`;
 
             let name = user.firstname + ' ' + user.lastname;
+            if(!user.lastname || user.lastname==''){
+              name=user.firstname
+            }
             let start=''
             if(user.gender=="Homme"){
               start=`Cher ${name},`
@@ -1723,7 +1719,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
                       </div>
 
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                      <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                      <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
                   </td>
 
               </tr>
@@ -1734,7 +1730,8 @@ router.post('/send_email_for_ad_answer', function (req, res) {
                 <tr id="tr4">
                     <td align="center">
                         <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                        <p style="margin: 10px auto 5px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+								<a style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;" href="https://www.linkarts.fr/account/${user.nickname}/my_account/email/management">Gérer mes e-mails.</a>
                     </td>
 
                 </tr>
