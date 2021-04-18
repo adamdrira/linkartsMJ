@@ -339,7 +339,7 @@ exports.decrypt_password = (req, res) => {
           return res.status(401).json({msg: "error"});
         }
       }
-	let id_user= get_current_user(req.cookies.currentUser)
+	let id_user= req.body.id;
 
 	User_passwords.findAll({
 		where: {
@@ -423,12 +423,6 @@ exports.reset_password = (req, res) => {
 				mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
 					mail_to_send+=`
 					<table style="width:100%;margin-bottom:20px">
-						<tr id="tr1">
-							<td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
-								<img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
-							</td>
-						</tr>
-
 
 						<tr id="tr2" >
 							<td  align="center" style="background: rgb(2, 18, 54)">
@@ -440,6 +434,9 @@ exports.reset_password = (req, res) => {
 					</table>`;
 
 					let name = user_found.firstname + ' ' + user_found.lastname;
+					if(!user_found.lastname || user_found.lastname==''){
+						name=user_found.firstname
+					  }
 					let start=''
 					if(user_found.gender=="Homme"){
 					start=`Cher ${name},`
@@ -457,17 +454,17 @@ exports.reset_password = (req, res) => {
 
 						<td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
 							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
-							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Votre nouveau mot de de passe temporaire est le suivant : <b> ${pass}</b>.</p>
-							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Pour accéder à votre compte et modifier votre mot de passe, cliquez sur le bouton ci-dessous : </p>
+							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Votre nouveau mot de de passe temporaire est le suivant : <b> ${pass}</b></p>
+							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Pour accéder à votre compte et réinitialiser votre mot de passe, cliquez sur le bouton ci-dessous : </p>
 
 							<div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-								<a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}/my_account/${password_registration}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
-									Consulter mon compte
+								<a href="https://www.linkarts.fr/account/${user_found.nickname}/${user_found.id}/my_account/${password_registration}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+								Réinitialiser mon mot de passe
 								</a>
 							</div>
 
 							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-							<img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+							<img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
 						</td>
 
 					</tr>
@@ -478,7 +475,7 @@ exports.reset_password = (req, res) => {
 						<tr id="tr4">
 							<td align="center">
 								<p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-								<p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+								<p style="margin: 10px auto 5px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
 							</td>
 
 						</tr>
@@ -575,7 +572,7 @@ exports.edit_password = (req, res) => {
           return res.status(401).json({msg: "error"});
         }
       }
-	let id_user= get_current_user(req.cookies.currentUser)
+	let id_user= req.body.id;
 	var passwordhash;
 
 	bcrypt.hash(req.body.password,10,function(err,hash){
@@ -935,11 +932,6 @@ exports.login = async (req, res) => {
 										mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
 											mail_to_send+=`
 											<table style="width:100%;margin-bottom:20px">
-												<tr id="tr1">
-													<td align="center" style="padding-top:25px;padding-bottom:15px;text-align:center;">
-														<img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3.svg" height="36" width="36" style="margin:auto auto;height:36px;width:36px;max-height: 36px;max-width:36px" />
-													</td>
-												</tr>
 
 
 												<tr id="tr2" >
@@ -952,6 +944,9 @@ exports.login = async (req, res) => {
 											</table>`;
 
 											let name = user.firstname + ' ' + user.lastname;
+											if(!user.lastname || user.lastname==''){
+												name=user.firstname
+											  }
 											let start=''
 											if(user.gender=="Homme"){
 											start=`Cher ${name},`
@@ -994,7 +989,7 @@ exports.login = async (req, res) => {
 											mail_to_send+=`
 											<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Si celà n'est pas possible, nous sommes dans le regret de vous inviter à crééer un nouveau compte et à nous répondre à cet e-mail pour avoir plus d'informations sur ce sujet.</br></br> Si par contre, vous êtes bien le responsable de cette connexion, il n'y a pas de crainte à avoir.</p>
 											<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-													  <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+													  <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
 												  </td>
 								
 											  </tr>
@@ -1129,7 +1124,6 @@ exports.logout = (req,res) =>{
 }
 
 exports.check_email_and_password = async (req, res) => {
-	console.log("check check_email_and_password")
 	if( ! req.headers['authorization'] ) {
 		return res.status(401).json({msg: "error"});
 	}
@@ -1290,24 +1284,18 @@ exports.check_invited_user =async(req,res)=>{
 
 // to have current user's identifications
 exports.getCurrentUser = async (req, res) => {
-
-	
-	let value = req.cookies;
-	
-	if( ! req.headers['authorization'] ) {
+	let value='';
+	if( !req.headers['authorization'] ) {
 		return res.status(401).json({msg: "error"});
-	}
-	else {
-		let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-		let user= get_current_user(val)
+		}
+		else {
+		value=req.headers['authorization'].replace(/^Bearer\s/, '');
+		let user= get_current_user(value);
 		if(!user){
 			return res.status(401).json({msg: "error"});
 		}
-	}
-
-	
-
-	jwt.verify(value.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
+	};
+	jwt.verify(value, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
 		if(err){
 			return res.status(200).json({msg: "error"});
 		}
@@ -1377,7 +1365,7 @@ exports.getCurrentUser = async (req, res) => {
 exports.checkToken = async (req, res) => {
 
 	jwt.verify(req.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
-		if(err){
+		if(err || (decoded && decoded.id==80)){
 			User.create({
 				"nickname":"visitor",
 				"status":"visitor",
@@ -1399,7 +1387,7 @@ exports.checkToken = async (req, res) => {
 				return res.status(401).json({msg: "TOKEN_ERROR"});
 			}
 			else if (decoded.exp < new Date().getTime()/1000) {
-				const refreshed_token = jwt.sign( {nickname: decoded.nickname, id: decoded.id}, SECRET_TOKEN, {expiresIn: 60*15 /*expires in 15 minutes*/ });
+				const refreshed_token = jwt.sign( {nickname: decoded.nickname, id: decoded.id}, SECRET_TOKEN, {expiresIn: 60*15 });
 				return res.status(200).json( { msg: "TOKEN_REFRESH", token: refreshed_token,"status": user.status} );
 			}
 			else if (!err) {

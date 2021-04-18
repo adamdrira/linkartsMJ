@@ -9,6 +9,7 @@ module.exports = (sequelize, Sequelize) => {
 		email: {type: Sequelize.STRING},
 		email_about: {type: Sequelize.STRING},
 		email_checked:{type: Sequelize.BOOLEAN},
+		email_authorization:{type: Sequelize.STRING},
 		nickname: {type: Sequelize.STRING},
 		firstname: {type: Sequelize.STRING},
 		lastname: {type: Sequelize.STRING},
