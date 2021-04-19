@@ -5,6 +5,7 @@ import {Writing_Upload_Service} from '../services/writing.service';
 import { NavbarService } from '../services/navbar.service';
 import { merge, fromEvent } from 'rxjs';
 
+declare var $:any;
 
 @Component({
   selector: 'app-media-writings',
@@ -251,5 +252,24 @@ export class MediaWritingsComponent implements OnInit {
       }
     }
   }
+
+
+  click_right_absolute_arrow(e:any) {
+    var n = Math.floor( ($('.container-homepage.container-writings.recent').scrollLeft()+1) / (this.width / Math.floor(this.width/250))  );
+    
+      console.log(n);
+      $('.container-homepage.container-writings.recent').animate({
+        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      }, 300, 'swing');
+  }
+
+  click_right_absolute_arrow2(e:any, i:number) {
+    var n = Math.floor( ($('.container-homepage.container-writings.not-recent.'+i).scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
+
+      $('.container-homepage.container-writings.not-recent').animate({
+        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      }, 300, 'swing');
+  }
+  
 
 }

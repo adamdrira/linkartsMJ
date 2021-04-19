@@ -1,5 +1,5 @@
 
-<div *ngFor="let style of sorted_style_list; index as i1" class="main-media-container" [@enterAnimation]>
+<div *ngFor="let style of sorted_style_list; let i1 = index" class="main-media-container" [@enterAnimation]>
 
     <ng-container *ngIf="(style==='Poésie' && sorted_artpieces_poetry.length>0)
         ||(style==='Roman' && sorted_artpieces_roman.length>0)||(style==='Scénario' && sorted_artpieces_scenario.length>0)||(style==='Article' && sorted_artpieces_article.length>0)">
@@ -14,7 +14,7 @@
             </a>
         </div>
 
-        <div #myScrollContainer class="container-homepage container-writings" style="transition:opacity 1s;" >
+        <div #myScrollContainer [class]="'container-homepage container-writings not-recent '+i1" style="transition:opacity 1s;" >
 
             <ng-container *ngIf="style==='Roman illustré'">
                 <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel.slice(0,number_of_writings_to_show); let i = index">
@@ -74,7 +74,7 @@
 
 
             <ng-container>
-                <div *ngIf="!show_more[sorted_style_list.indexOf(style)] && see_more_writings(style)" class="see-more" (click)="see_more(style)">
+                <div *ngIf="!show_more[sorted_style_list.indexOf(style)] && see_more_writings(style) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more" (click)="see_more(style)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">expand_more</mat-icon>
                 </div>
                 <ng-container *ngIf="show_more[sorted_style_list.indexOf(style)]">
@@ -98,6 +98,10 @@
                 </ng-container>        
             </ng-container>                
 
+            <div (click)="click_right_absolute_arrow2(myScrollContainer,i1);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+            </div>
+            
         </div>
         
     </ng-container>
@@ -128,7 +132,7 @@
                 <span>Récemment consultés</span>
         </div>
         
-        <div #myScrollContainer2 class="container-homepage container-writings " style="transition:opacity 1s;" >
+        <div #myScrollContainer2 class="container-homepage container-writings recent" style="transition:opacity 1s;" >
     
             
                 <ng-container *ngFor="let item of last_consulted_writings; let i = index">
@@ -141,9 +145,13 @@
                     ></app-thumbnail-writing>
                 </ng-container>
     
-                <div *ngIf="can_show_more_history" class="see-more" (click)="show_more_history()">
+                <div *ngIf="can_show_more_history && !(-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth)" class="see-more" (click)="show_more_history()">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_more_loading" class="icon">expand_more</mat-icon>
                     <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
+                </div>
+
+                <div (click)="click_right_absolute_arrow(myScrollContainer2);" *ngIf="-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth " class="right-absolute-arrow">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
                 </div>
         </div>
     </div>

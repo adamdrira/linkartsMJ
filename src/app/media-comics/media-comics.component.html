@@ -1,6 +1,6 @@
 
 
-<div *ngFor="let item of sorted_style_list; index as i1" class="main-media-container"  [@enterAnimation]>
+<div *ngFor="let item of sorted_style_list; let i1 = index" class="main-media-container"  [@enterAnimation]>
 
     <ng-container *ngIf="(item==='BD' && sorted_artpieces_bd.length>0)||(item==='Manga' && sorted_artpieces_manga.length>0)
         ||(item==='Comics' && sorted_artpieces_comics.length>0)||(item==='Webtoon' && sorted_artpieces_webtoon.length>0)">
@@ -18,7 +18,7 @@
 
 
         
-        <div #myScrollContainer class="container-homepage container-comics not-recent" style="transition:opacity 1s;" >
+        <div #myScrollContainer [class]="'container-homepage container-comics not-recent '+i1" style="transition:opacity 1s;" >
 
             <ng-container *ngIf="item==='BD'">
                 <ng-container *ngFor="let item of sorted_artpieces_bd.slice(0,number_of_comics_to_show); let i = index">
@@ -93,7 +93,7 @@
                 </div>        
             </ng-container>                
 
-            <div (click)="click_right_absolute_arrow2(myScrollContainer);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+            <div (click)="click_right_absolute_arrow2(myScrollContainer, i1);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
             </div>
         </div>

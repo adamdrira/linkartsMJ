@@ -6,6 +6,28 @@
     display:flex;
     transition:opacity 500ms;
     justify-content: center;
+
+    .right-absolute-arrow {
+      position:absolute;
+      margin: 10px auto 30px auto;
+      right: -30px;
+      top: 49%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 276px;
+      display:flex;
+      cursor:pointer;
+      z-index: 1;
+      border-radius: 30px;
+      mat-icon {
+        margin: auto;
+        width: unset;
+        height: unset;
+        font-size: 36px;
+        color: #b1b1b1;
+        transform:rotate(270deg);
+      }
+    }
   }
   .thumbnail-component-container {
     overflow:hidden;
@@ -13,6 +35,7 @@
 
   .main-media-container{
     width:calc(100% + 1px);
+    position: relative;
   }
   
   
@@ -38,8 +61,6 @@
     outline: none;
     background: unset;
     transition: background-color 100ms, border-color 100ms;
-    
-  
     &:hover {
       border-bottom: 4px solid rgb(56, 81, 129);
       background-color: rgb(235, 235, 235);
@@ -60,22 +81,25 @@
   }
 
   @media (max-width: 1135px) {
-
     .see-more {
-      width: unset;
-      height: unset;
+      position: absolute;
+      right: -30px;
+      top: 49%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 276px;
+      display: flex;
+      cursor: pointer;
+      z-index: 1;
       border-bottom: unset;
     }
-
     .see-more:hover {
       border-bottom:unset;
       background-color:rgb(235, 235, 235);
     }
-
     .see-more .icon {
       transform: rotate(270deg);
     }
-
     .container-homepage {
       justify-content: left !important;
       overflow-x: auto ;

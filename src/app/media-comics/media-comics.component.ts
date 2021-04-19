@@ -4,6 +4,8 @@ import { NavbarService } from '../services/navbar.service';
 import {BdOneShotService} from '../services/comics_one_shot.service';
 import {BdSerieService} from '../services/comics_serie.service';
 
+declare var $:any;
+
 @Component({
   selector: 'app-media-comics',
   templateUrl: './media-comics.component.html',
@@ -281,10 +283,10 @@ export class MediaComicsComponent implements OnInit {
       }, 300, 'swing');
   }
 
-  click_right_absolute_arrow2(e:any) {
-    var n = Math.floor( ($('.container-homepage.container-comics.not-recent').scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
+  click_right_absolute_arrow2(e:any, i:number) {
+    var n = Math.floor( ($('.container-homepage.container-comics.not-recent.'+i).scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
 
-      $('.container-homepage.container-comics.not-recent').animate({
+      $('.container-homepage.container-comics.not-recent.'+i).animate({
         scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
       }, 300, 'swing');
   }
