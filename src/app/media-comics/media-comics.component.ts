@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, ChangeDetectorRef, SimpleChanges, ElementRef, ViewChild, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, Input, HostListener, ChangeDetectorRef, SimpleChanges, ElementRef, ViewChild } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import {BdOneShotService} from '../services/comics_one_shot.service';
@@ -100,7 +100,7 @@ export class MediaComicsComponent implements OnInit {
     }
     this.current_number_of_comics_to_show=this.number_of_comics_to_show;
     this.get_history_recommendation();
-      
+    
   }
 
 
@@ -270,4 +270,23 @@ export class MediaComicsComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+
+  
+  click_right_absolute_arrow(e:any) {
+    var n = Math.floor( ($('.container-homepage.container-comics.recent').scrollLeft()+1) / (this.width / Math.floor(this.width/250))  );
+    
+      console.log(n);
+      $('.container-homepage.container-comics.recent').animate({
+        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      }, 300, 'swing');
+  }
+
+  click_right_absolute_arrow2(e:any) {
+    var n = Math.floor( ($('.container-homepage.container-comics.not-recent').scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
+
+      $('.container-homepage.container-comics.not-recent').animate({
+        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      }, 300, 'swing');
+  }
+  
 }

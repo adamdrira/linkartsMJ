@@ -18,7 +18,7 @@
 
 
         
-        <div #myScrollContainer class="container-homepage container-comics " style="transition:opacity 1s;" >
+        <div #myScrollContainer class="container-homepage container-comics not-recent" style="transition:opacity 1s;" >
 
             <ng-container *ngIf="item==='BD'">
                 <ng-container *ngFor="let item of sorted_artpieces_bd.slice(0,number_of_comics_to_show); let i = index">
@@ -70,7 +70,7 @@
         
 
             <ng-container >
-                <div *ngIf="!show_more[sorted_style_list.indexOf(item)] && see_more_comics(item)" class="see-more" (click)="see_more(item)">
+                <div *ngIf="!show_more[sorted_style_list.indexOf(item)] && see_more_comics(item) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more" (click)="see_more(item)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">expand_more</mat-icon>
                 </div>
 
@@ -93,6 +93,9 @@
                 </div>        
             </ng-container>                
 
+            <div (click)="click_right_absolute_arrow2(myScrollContainer);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+            </div>
         </div>
 
     </ng-container>
@@ -124,31 +127,36 @@
                     <span>Récemment consultés</span>
             </div>
     
-            <div #myScrollContainer2 class="container-homepage container-comics " style="transition:opacity 1s;"    [@enterAnimation]>
+            <div #myScrollContainer2 class="container-homepage container-comics recent" style="transition:opacity 1s;"    [@enterAnimation]>
     
-                    <ng-container *ngFor="let item of last_consulted_comics; let i = index">
-                        <app-thumbnail-comics class="thumbnail-component-container" 
-                            *ngIf="item && item.chaptersnumber == null"
-                            [item]=item
-                            [width]=width
-                            [myScrollContainer]=myScrollContainer2
-                            format='one-shot'
-                            now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-comics>
-                        <app-thumbnail-comics  class="thumbnail-component-container" 
-                            *ngIf="item && item.chaptersnumber >=0"
-                            [item]=item 
-                            [width]=width
-                            [myScrollContainer]=myScrollContainer2
-                            format='serie'
-                            now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-comics>
-                    </ng-container>
-    
-                    <div *ngIf="can_show_more_history" class="see-more" (click)="show_more_history()">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_more_loading" class="icon">expand_more</mat-icon>
-                        <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
-                    </div>
+                <ng-container *ngFor="let item of last_consulted_comics; let i = index">
+                    <app-thumbnail-comics class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber == null"
+                        [item]=item
+                        [width]=width
+                        [myScrollContainer]=myScrollContainer2
+                        format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-comics>
+                    <app-thumbnail-comics  class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber >=0"
+                        [item]=item 
+                        [width]=width
+                        [myScrollContainer]=myScrollContainer2
+                        format='serie'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-comics>
+                </ng-container>
+
+                <div *ngIf="can_show_more_history && !(-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth)" class="see-more" (click)="show_more_history()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_more_loading" class="icon">expand_more</mat-icon>
+                    <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
+                </div>
+
+                
+                <div (click)="click_right_absolute_arrow(myScrollContainer2);" *ngIf="-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth " class="right-absolute-arrow">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                </div>
             </div>
     </div>
 </ng-container>
