@@ -476,10 +476,6 @@
           <!--Barre de recherche FIN -->
           <!--Barre de recherche FIN -->
           <!--Barre de recherche FIN -->
-          <!--Barre de recherche FIN -->
-          <!--Barre de recherche FIN -->
-          <!--Barre de recherche FIN -->
-
 
 
 
@@ -887,7 +883,7 @@
                   <div
                     *ngFor="let notif of final_list_of_notifications_to_show.slice(0,index_of_notifications_to_show),let i=index"
                     class="subscriber-card"
-                    [ngClass]="{'really-invisible':!final_list_of_notifications_to_show[i],'not-seen':list_of_notifications[i].status!='checked','seen':list_of_notifications[i].status=='checked'}">
+                    [ngClass]="{'really-invisible':!final_list_of_notifications_to_show[i],'not-seen':list_of_notifications[i].status!='checked'}">
 
 
                     <div class="author-container" *ngIf="notif">

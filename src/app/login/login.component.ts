@@ -230,7 +230,7 @@ export class LoginComponent implements OnInit {
     }
 
     if(this.display_connexion_not_allowed){
-      let time = 30 - (Math.trunc(new Date().getTime()/1000)  - this.time_first_connexion_not_allowed)
+      let time = 5 - (Math.trunc(new Date().getTime()/1000)  - this.time_first_connexion_not_allowed)
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:`3 tentatives échouées. Veuillez patienter ${time} secondes`},
         panelClass: "popupConfirmationClass",
@@ -240,7 +240,7 @@ export class LoginComponent implements OnInit {
 
     if(this.number_of_connexions_tried==3){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'3 tentatives échouées. Veuillez patienter 30 secondes'},
+        data: {showChoice:false, text:'3 tentatives échouées. Veuillez patienter 5 secondes'},
         panelClass: "popupConfirmationClass",
       });
       this.display_connexion_not_allowed=true;
@@ -249,7 +249,7 @@ export class LoginComponent implements OnInit {
         this.number_of_connexions_tried=0;
         this.display_connexion_not_allowed=false;
         clearInterval(this.time_between_connexions)
-      }, 30000);
+      }, 5000);
 
       return
     }

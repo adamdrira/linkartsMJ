@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 
 let accents = "àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇÅåÆæœ";
 let special_characters = "\,\;\:\!\?\.\§\%\>\<\^\$\£\*\&\~\#\{\}\'\’\"\(\)\\[\\]\|\`\@\°\+\=_-";
-
+let special_characters2 = "\.\&\_-";
 export function pattern(type: string) {
     
     if( type == "mail" ) {
@@ -16,11 +16,11 @@ export function pattern(type: string) {
     //Doit commencer par une lettre (avec accents), doit finir par une lettre.
     //Peut contenir au milieu un espace ou un tiret (max 1).
     if( type == "name" ) {
-        return "[a-zA-Z"+accents+"]\{1,}[a-zA-Z"+accents+" -]\{0,}[a-zA-Z"+accents+"]\{1,}";
+        return "[a-zA-Z"+accents+"]\{1,}[a-zA-Z"+accents+" -]\{0,}[a-zA-Z "+accents+"]\{1,}";
     }
     //alpha numérique + accents + pas plus de deux tirets ou underscore à la suite
     if( type == "nickname" ) {
-        return "^(?=.*[a-zA-Z0-9"+accents+"_-])(?!.*[_-]{3})[a-zA-Z0-9"+accents+"_-]+([a-zA-Z0-9"+accents+special_characters+"])$";
+        return "^(?=.*[a-zA-Z0-9"+accents+"_-])(?!.*[_-]{3})[a-zA-Z0-9"+accents+special_characters2+"_-]+([a-zA-Z0-9"+accents+special_characters2+"])$";
     }
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace
     if( type == "text" ) {

@@ -131,10 +131,7 @@
   .SMALL-SCREEN-SECTIONS {
     display: none;
     margin: auto auto auto 10px;
-    //border: 1px solid #cbcbcb;
     border-radius: 50%;
-    //background: #ffffff;
-    //box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
     a {    
       display: flex;
       cursor:pointer;
@@ -241,7 +238,6 @@
   .fixed-top {
     box-shadow: 0px -4px 8px 4px #c5c8c8;
     background-color: #f9f9f9;
-    //background-color:#f5f7fa;
     z-index: 1000;
     user-select:none;
   }
@@ -251,9 +247,7 @@
     box-shadow: 0px -4px 15px 4px #c5c8c8;
   }
 
-  /*Navbar : ligne 1*/
 
-  // Linkarts logo
   .navbar {
     position: relative;
     display: flex;
@@ -305,7 +299,6 @@
     background: white;
     display: flex;
     margin: auto;
-    //border: 1px solid #cbcbcb;
     box-shadow: 0px 2px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12),
       0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     display: flex;
@@ -363,7 +356,6 @@
         overflow: hidden;
 
         .swiper-wrapper {
-          //justify-content: center;
           height:unset !important;
           padding: 10px 0px;
           .swiper-slide {
@@ -423,8 +415,6 @@
         height:50px;
         width: 50px;
         background-image: linear-gradient(to right, #f9f9f9, #f9f9f9, #ffffff6e,#ffffff17, #ffffff00);
-        //width:200px;
-        //background-image:linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 90%) ;
       }
       .button-next-shadow {
         position:absolute;
@@ -434,20 +424,16 @@
         height:50px;
         width: 50px;
         background-image: linear-gradient(to right, #ffffff00, #ffffff17, #ffffff6e, #f9f9f9, #f9f9f9);
-        //width:200px;
-        //background-image:linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 90%) ;
       }
       .swiper-button-next, .swiper-button-prev {
         position: absolute;
         top: 4px;
         color:  #203864;
-        //background: #203864;
         border-radius: 50px;
         height: 34px;
         width: 15px;
         margin-top: unset !important;
         outline: none !important;
-        //box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
       }
       .swiper-button-next {
         right:0;
@@ -496,7 +482,6 @@
     justify-content: center;
   }
 
-  //other container
   .author-container {
     display: flex;
     width: 100%;
@@ -556,16 +541,12 @@
       height: 13px;
       background: #00cc00;
       border: 2px solid #f9f9f9;
-      //background: linear-gradient(0.02turn, #00b52f, #00cc19e6, #04ff00);
       border-radius: 50px;
       top: 31px;
       right: 1px;
-      //border: 1px solid #008404;
     }
     .last-connection {
       position: absolute;
-      //border: 1px solid #4f6285;
-      //background: white;
       box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
       background: #f9f9f9;
       padding: 2px 3px 4px 3px;
@@ -642,25 +623,7 @@
     white-space: normal;
     -webkit-line-clamp: 3;
   }
-  /*.author-container .right-container div.last-message {
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
-    //max-width: 70%;
-  }
-
-  .author-container .date-container {
-    margin: auto 0px auto auto;
-    min-width: fit-content;
-    font-size: 12px;
-  }
-
-  .author-container .right-container div.last-message div {
-    white-space: nowrap;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
-  }*/
+  
 
   .item-row {
     display: flex;
@@ -727,10 +690,6 @@
     }
     &:hover {
       background: #f3f3f3;
-      //text-shadow: -0.04ex 0 rgb(32,56,100), 0.04ex 0 rgb(32,56,100);
-      .name-container {
-        //text-shadow: -0.04ex 0 rgb(32, 56, 100), 0.04ex 0 rgb(32, 56, 100);
-      }
     }
   }
 
@@ -830,7 +789,6 @@
     height: 100%;
     font-size: 13px;
     padding: 2px 5px;
-    //padding: 10px 20px 10px 20px;
     color: #5b6b87;
     display: block;
     width: calc(100% - 30px);
@@ -847,7 +805,6 @@
     font-size: 12px;
   }
 
-  // Icones
   .navbar-l1-icons-container {
     font-size: 13px;
     margin: auto 0px auto 0px;
@@ -930,7 +887,6 @@
     &:hover span {
       transition: color 200ms ease;
       color: white;
-      //text-shadow: -0.1px 0 white, 0.1px 0 white;
     }
     
     &.SMALL-SCREEN-PP {
@@ -973,7 +929,7 @@
   .icon-home {
     width:15px !important;
     height:14px !important;
-    margin:auto 10px auto 0px;
+    margin:auto 6px auto 0px;
     background-color: #203864;
     mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
   }
@@ -990,7 +946,7 @@
   .icon-collaboration {
     width:15px !important;
     height:14px !important;
-    margin:auto 10px auto 0px;
+    margin:auto 6px auto 0px;
     background-color: #203864;
     mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
   }
@@ -1088,7 +1044,6 @@
   }
 
   .navbar .icon-container {
-    //background: rgb(32,56,100);
     border-radius: 50%;
     position: relative;
     display: flex;
@@ -1153,15 +1108,13 @@
     color: #203864;
     display: flex;
     justify-content: space-evenly;
-    //margin-left: 240px;
-    //margin-right: 240px;
     font-size: 12px;
     margin-left: 10px;
     margin-right: 10px;
     .category {
       height: 33px;
       padding: 0px 10px 0px 10px;
-      font-size: 11px;
+      font-size: 12px;
       color: #203864;
       transition: color 200ms;
       font-weight: 600;
@@ -1171,7 +1124,6 @@
       transition: border 300ms, transform 200ms;
       cursor: pointer;
       text-align: center;
-      //margin-left:10px;
       margin-right: 5px;
       transition: all 200ms;
       user-select: none;
@@ -1283,8 +1235,6 @@
   
   .navbar2 .category:hover {
     color: #203864;
-    //text-shadow: -0.03ex 0 #203864, 0.03ex 0 #203864;
-    //border-bottom:4px solid rgb(255, 255, 255);
   }
 
   .navbar2 .category:hover .icon-home {
@@ -1309,10 +1259,7 @@
 
   .navbar-margin {
     position: relative;
-    //height: 54px;
   }
-
-  /* Category selector : */
 
   ::placeholder {
     color: #53627d;
@@ -1450,7 +1397,6 @@
 
         .mat-form-field-wrapper {
           color: #203864;
-          //text-shadow: -0.04ex 0 #203864, 0.04ex 0 #203864;
           background: white;
           padding-bottom: unset !important;
           height: 100%;
@@ -1554,7 +1500,6 @@
   .invisible {
     visibility: hidden !important;
     pointer-events: none !important;
-    //opacity:0;
   }
   
   .really-invisible {
@@ -1584,14 +1529,9 @@
     visibility: visible;
     opacity: 1;
     position: absolute;
-    //overflow: hidden;
-    
     left: 50%;
     transform: translate(-50%, 0);
     width: 350px;
-    
-    //border-left: 1px solid #bbbbbb;
-    //border-right: 1px solid #bbbbbb;
     border-top: 1px solid #cacaca;
     top: 43px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
@@ -1646,12 +1586,10 @@
   }
 
   .not-seen {
-    //ajouter code ici.
+    background: #efecec;
   }
 
-  .seen {
-    //ajouter code ici.
-  }
+ 
 
   .notif-size-0 {
     height: 8px;

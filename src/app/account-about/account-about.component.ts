@@ -2767,7 +2767,7 @@ export class AccountAboutComponent implements OnInit {
         birthday = this.registerForm3.value.birthday._i[2] + '-'+ this.registerForm3.value.birthday._i[1] +'-'+ this.registerForm3.value.birthday._i[0];
       }
     }
-    this.Profile_Edition_Service.edit_account_about_3(form.firstName,form.lastName,birthday).subscribe(l=>{
+    this.Profile_Edition_Service.edit_account_about_3(form.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),form.lastName.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),birthday).subscribe(l=>{
       this.firstName=form.firstName;
       this.lastName=form.lastName;
       this.birthday=this.find_age(birthday)

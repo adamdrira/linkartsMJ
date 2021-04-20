@@ -68,9 +68,13 @@
                     <span>
                         {{item.title}}
                     </span>
-                    <button *ngIf="visitor_mode_added && visitor_mode" (click)="respond();" [@enterAnimation]>
+                    <button *ngIf="visitor_mode_added && visitor_mode && response_checked && !response_found" (click)="respond();" [@enterAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">post_add</mat-icon>
                         <span>Répondre à l'annonce</span>
+                    </button>
+                    <button *ngIf="visitor_mode_added && visitor_mode && response_checked && response_found" (click)="respond();" [@enterAnimation]>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">post_add</mat-icon>
+                        <span>Réponse envoyée</span>
                     </button>
                     <button *ngIf="visitor_mode_added && !visitor_mode && see_responses==0" (click)="responses();" [@enterAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_down</mat-icon>
@@ -300,7 +304,7 @@
                                 <button (click)="stop($event);see_response(i);" [@enterAnimation]>
                                     <span>Voir la réponse</span>
                                 </button>
-                                <a [routerLink]="get_response_author_chat(i)" (click)="stop($event);close_popup()" class="message" matTooltip="Écrire"
+                                <a href="/chat/{{list_of_pseudos[i]}}/{{list_of_ids[i]}}" target="_blank"  class="message" matTooltip="Écrire"
                                 matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200" [@enterAnimation]>
                                     <div class="icon-messenger" >
                                     </div>
@@ -663,7 +667,7 @@
                                     <span>Archiver</span>
                                 </button>
                                 <button class="artwork-button-menu-item" mat-menu-item (click)="unarchive();" *ngIf="ad_archived">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">turned_in_not</mat-icon>
                                     <span>Désarchiver</span>
                                 </button>
                                 <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="artwork-button-menu-item" mat-menu-item (click)="report();">
@@ -671,7 +675,7 @@
                                     <span>Signaler</span>
                                 </button>
                                 <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="artwork-button-menu-item" mat-menu-item (click)="cancel_report();">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">outlined_flag</mat-icon>
                                     <span>Annuler le signalement</span>
                                 </button>
                             </mat-menu>
@@ -682,14 +686,14 @@
                             <mat-menu #artworkOptions02="matMenu" class="artwork-mat-menu">
                                 <button class="artwork-button-menu-item" mat-menu-item (click)="edit_information();">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-                                    <span>Modifier les informations</span>
+                                    <span>Éditer les informations</span>
                                 </button>
                                 <button class="artwork-button-menu-item" mat-menu-item (click)="edit_thumbnail();">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">view_carousel</mat-icon>
-                                    <span>Modifier la miniature</span>
+                                    <span>Éditer la miniature</span>
                                 </button>
                                 <button class="artwork-button-menu-item" mat-menu-item (click)="delete();">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">clear</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline</mat-icon>
                                     <span>Supprimer</span>
                                 </button>
                             </mat-menu>

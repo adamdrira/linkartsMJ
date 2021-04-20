@@ -1,6 +1,6 @@
 <img src="../../assets/img/svg/Logo-LA3-18-01.svg" class="invisible invisible-height">
 
-<div class="home-linkarts" *ngIf="type_of_profile_retrieved">
+<div class="home-linkarts" *ngIf="type_of_profile_retrieved && category_index>=0 && 4>category_index">
 
     <div class="categories-container" [ngClass]="{'visitor': type_of_profile!='account' }">
 
@@ -162,7 +162,7 @@
 
 
 
-<div class="footer" *ngIf="type_of_profile_retrieved || category_index!=-1">
+<div class="footer" *ngIf="(type_of_profile_retrieved || category_index!=-1) && category_index>=0 && 4>category_index">
     <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
 
     <div class="links-container">

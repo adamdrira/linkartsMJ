@@ -282,9 +282,11 @@ export class AdPageComponent implements OnInit {
       this.type_of_account_retrieved=true;
       this.current_user_retrieved=true;
       this.check_view_after_current();
-    })
+    });
+    this.check_response()
 
 
+    
     this.Ads_service.retrieve_ad_by_id(this.ad_id).subscribe(m=>{
       var re = /(?:\.([^.]+))?$/;
       if(m[0].number_of_attachments>0){
@@ -940,6 +942,16 @@ export class AdPageComponent implements OnInit {
   /********************************************RESPONSE MANAGMENT ************************* */
   /********************************************RESPONSE MANAGMENT ************************* */
 
+  response_checked=false;
+  response_found=false;
+  check_response(){
+    this.Ads_service.check_if_response_sent(this.ad_id).subscribe(r=>{
+      if(r[0].response){
+        this.response_found=true;
+      }
+      this.response_checked=true;
+    })
+  }
 
   checking_response=false;
   respond(){
@@ -948,31 +960,29 @@ export class AdPageComponent implements OnInit {
         return
       }
       this.checking_response=true;
-      this.Ads_service.check_if_response_sent(this.item.id).subscribe(r=>{
+      if(this.response_found){
+        this.in_other_popup=true;
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Vous avez déjà répondu à cette annonce.'},
+          panelClass: "popupConfirmationClass",
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
         
-        if(r[0].response){
-          this.in_other_popup=true;
-          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:'Vous avez déjà répondu à cette annonce'},
-            panelClass: "popupConfirmationClass",
-          });
-          dialogRef.afterClosed().subscribe(result => {
-            this.in_other_popup=false;
-          })
-          
-        }
-        else{
-          this.in_other_popup=true;
-          const dialogRef = this.dialog.open(PopupAdWriteResponsesComponent, {
-            data: {item:this.item},
-            panelClass: 'popupAdWriteReponsesClass',
-          });
-          dialogRef.afterClosed().subscribe(result => {
-            this.in_other_popup=false;
-          })
-        }
-        this.checking_response=false;
-      })
+      }
+      else{
+        this.in_other_popup=true;
+        const dialogRef = this.dialog.open(PopupAdWriteResponsesComponent, {
+          data: {item:this.item},
+          panelClass: 'popupAdWriteReponsesClass',
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          this.in_other_popup=false;
+        })
+      }
+      this.checking_response=false;
+      
       
     }
     else {
@@ -1065,7 +1075,6 @@ export class AdPageComponent implements OnInit {
 
 
     this.Ads_service.set_all_responses_to_seen(this.item.id).subscribe(r=>{
-      console.log(r)
     })
   }
 

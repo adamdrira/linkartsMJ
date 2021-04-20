@@ -136,8 +136,6 @@ export class HomeLinkcollabComponent implements OnInit {
   /*********************************************************************** */
   ngOnInit() {
     
-
-    let THIS=this;
     window.scroll(0,0);
     this.open_category(0, true);
 
@@ -210,6 +208,10 @@ export class HomeLinkcollabComponent implements OnInit {
     if( this.category_index==i && check_no_same_change ) {
       return;
     }
+    
+    this.current_page=1;
+    this.number_of_pages=1;
+    this.number_of_results=0;
     this.type_of_project="none";
     this.author="none";
     this.target="none";

@@ -27,8 +27,6 @@ import { DeviceDetectorService } from 'ngx-device-detector';
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
   providers: [
-    // The locale would typically be provided on the root module of your application. We do it at
-    // the component level here, due to limitations of our example generation script.
     {provide: MAT_DATE_LOCALE, useValue: 'fr'},
     {
       provide: DateAdapter,
@@ -242,9 +240,6 @@ export class SignupComponent implements OnInit {
       nickname: ['', 
         Validators.compose([
           Validators.required,
-          //Au moins une lettre
-          //ne commence pas par "- ou _", ne terme pas par "- ou _", ne contient pas plus de deux "- ou _" à la suite
-          //peut contenir des lettres et des chiffres
           Validators.pattern(pattern("nickname")),
           Validators.minLength(3),
           Validators.maxLength(20),
@@ -1162,9 +1157,9 @@ export class SignupComponent implements OnInit {
     else{
       this.user.siret=null;
     }
-    this.user.firstname = this.capitalizeFirstLetter( this.registerForm2.value.firstName.toLowerCase() );
+    this.user.firstname = this.capitalizeFirstLetter( this.registerForm2.value.firstName.toLowerCase() ).replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
     if(this.registerForm2.controls['lastName'] && this.registerForm2.value.lastName){
-      this.user.lastname = this.capitalizeFirstLetter( this.registerForm2.value.lastName.toLowerCase() );
+      this.user.lastname = this.capitalizeFirstLetter( this.registerForm2.value.lastName.toLowerCase() ).replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
     }
     else{
       this.user.lastname = '';

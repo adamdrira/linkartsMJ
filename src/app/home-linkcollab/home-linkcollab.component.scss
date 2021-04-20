@@ -399,27 +399,6 @@
     position: absolute;
     user-select: none;
     overflow: hidden;
-    
-    /*&:after, &:before {
-      position: absolute;
-      content: " ";
-      margin-left: -8px;
-      width: 0;
-      height: 0;
-      border-style: solid;
-    }
-    &:after {
-      top: -21px;
-      left: 40%;
-      border-color: transparent transparent #fff transparent;
-      border-width: 11px;
-    }
-    &:before {
-      top: -22px;
-      left: 40%;
-      border-color: transparent transparent #b1b1b1 transparent;
-      border-width: 11px;
-    }*/
 
     width: 270px !important;
     top: 26px;
@@ -482,7 +461,7 @@
     position:relative;
     margin-top:15px;
     margin-bottom:40px;
-
+    max-width: 95%;
     .swiper-item {
       padding:5px 35px;
       overflow: hidden;

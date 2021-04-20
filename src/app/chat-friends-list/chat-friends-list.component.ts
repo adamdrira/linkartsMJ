@@ -644,7 +644,10 @@ export class ChatFriendsListComponent implements OnInit {
         }
        
       }
-      this.friend_picture=this.list_of_friends_profile_pictures[ind];
+      
+      if(this.active_section==1){
+        this.friend_picture=this.list_of_friends_profile_pictures[ind];
+      }
       this.list_of_pp_sorted=true;
     }
     else{
@@ -724,7 +727,6 @@ export class ChatFriendsListComponent implements OnInit {
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.friend_picture=SafeURL;
             pp_retrieved=true;
-            
           })
 
           this.chatService.get_group_chat_information(this.active_section_user_id).subscribe(s=>{
