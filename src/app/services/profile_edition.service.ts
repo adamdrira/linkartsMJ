@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, tap, map, delay } from 'rxjs/operators';
+import { catchError, tap, map, delay, shareReplay } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { User } from './user';
 
 const httpOptions = {
@@ -17,11 +17,12 @@ const httpOptions = {
 
 export class Profile_Edition_Service {
 
-  private usersUrl = 'api';  // URL to web api
+    // URL to web api
   constructor(private httpClient: HttpClient, private CookieService: CookieService,) {
     httpClient.options
   }
   
+  cache={};
 
   send_profile_pic_todata(profile_pic:Blob){
     const formData = new FormData();
@@ -48,8 +49,17 @@ export class Profile_Edition_Service {
 
 
   retrieve_profile_picture(user_id: number){
-    return this.httpClient.get(`routes/retrieve_profile_picture/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
-      return information;
+    
+    let code=`routes/retrieve_profile_picture/${user_id}`;
+    if (this.cache[code]) {
+      return this.cache[code];
+    }
+    
+    return this.cache[code] = this.httpClient.get(code, {responseType:'blob'} ).pipe(
+      shareReplay(1),
+      catchError(err => {
+          delete this.cache[code];
+          return EMPTY;
     }));
   }
 
