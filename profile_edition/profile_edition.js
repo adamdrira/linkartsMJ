@@ -3262,7 +3262,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
             mail_to_send+=`
             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Nous vous remercions pour votre inscription et vous souhaitons une très agréable aventure au sein de LinkArts !</p>
-            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement, </br>L'équipe LinkArts</p>
                       <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
                   </td>
 
@@ -3419,7 +3419,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                               </a>
                           </div>
 
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;">L'équipe LinkArts</p>
                           <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
                       </td>
 
@@ -3565,7 +3566,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                               </a>
                           </div>
 
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;">L'équipe LinkArts</p>
                           <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
                       </td>
 
@@ -3663,8 +3665,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                 </a>
                             </div>
 
-                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                            <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="20" style="height:20px;max-height: 20px;float: left;" />
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;">L'équipe LinkArts</p>
+                            <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
                         </td>
 
                     </tr>
