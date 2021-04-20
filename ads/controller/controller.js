@@ -1291,19 +1291,35 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         where: {
             id: id_ad,
         }
-        })
-        .catch(err => {
+    }).catch(err => {
 				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(ad =>  {
-        const number = ad.number_of_responses + 1;
-        ad.update({
-            "number_of_responses":number,
-        })})
-        .catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then( ad=>{
+      
+        
+
+      list_of_ads_responses.findOne({
+        where:{
+          id_ad: id_ad,
+          id_user:current_user,
+        }
+      }).then(found=>{
+        if(found){
+          list_of_ads_responses.findAll({
+            where:{
+              id_ad: id_ad,
+            }
+          }).then(all=>{
+            if(all){
+              ad.update({
+                "number_of_responses":all.length,
+              })
+            }
+            res.status(200).send([found]);
+          })
+         
+        } 
+        else{
           list_of_ads_responses.create({
             "id_ad": id_ad,
             "status":"public",
@@ -1311,12 +1327,28 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             "description": description,
             }).catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(adr=>{
+            res.status(500).json({msg: "error", details: err});		
+          }).then(adr=>{
+              list_of_ads_responses.findAll({
+                where:{
+                  id_ad: id_ad,
+                }
+              }).then(all=>{
+                if(all){
+                  ad.update({
+                    "number_of_responses":all.length,
+                  })
+                }
                 res.status(200).send([adr]);
-        })
-        } );
-});
+              })
+             
+          })
+        } 
+      })
+      
+          
+    });
+  });
 
 
 
@@ -1338,7 +1370,7 @@ router.post('/check_if_response_sent', function (req, res) {
     const id_ad = req.body.id_ad;
     list_of_ads_responses.findOne({
         where: {
-            id: id_ad,
+            id_ad: id_ad,
             id_user:current_user,
         }
         })
@@ -1718,7 +1750,8 @@ router.post('/send_email_for_ad_answer', function (req, res) {
                           </a>
                       </div>
 
-                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;">L'équipe LinkArts</p>
                       <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
                   </td>
 
