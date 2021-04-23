@@ -9,6 +9,9 @@ export class NavbarService {
     active_section: number=-1;
     height: number;//in px
     public visible: boolean=false;
+
+    public visible_help: boolean=true;
+
     account: string;
     component_visible=false;
     using_chat=false;
@@ -23,6 +26,9 @@ export class NavbarService {
 
     private visibilitySubject: BehaviorSubject<boolean>;
     public visibility_observer: Observable<boolean>;
+
+    private visibilityHelp: BehaviorSubject<boolean>;
+    public visibility_observer_help: Observable<boolean>;
 
     private visibilitySubjectFont: BehaviorSubject<boolean>;
     public visibility_observer_font: Observable<boolean>;
@@ -42,6 +48,9 @@ export class NavbarService {
 
         this.visibilitySubject = new BehaviorSubject<boolean>(false);
         this.visibility_observer = this.visibilitySubject.asObservable();
+
+        this.visibilityHelp = new BehaviorSubject<boolean>(false);
+        this.visibility_observer_help = this.visibilityHelp.asObservable();
 
         this.visibilitySubjectFont = new BehaviorSubject<boolean>(this.show_font);
         this.visibility_observer_font = this.visibilitySubjectFont.asObservable();
@@ -63,7 +72,17 @@ export class NavbarService {
     show() {
       this.visibilitySubject.next(true);
       this.visible = true;
-     }
+    }
+
+    show_help() {
+      this.visibilityHelp.next(true);
+      this.visible_help = true;
+    }
+    hide_help() {
+      this.visibilityHelp.next(false);
+      this.visible_help = false;
+    }
+    
     showfont(){
       this.show_font=true;
       this.visibilitySubjectFont.next(true);
