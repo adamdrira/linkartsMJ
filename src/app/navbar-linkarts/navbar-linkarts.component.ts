@@ -14,7 +14,7 @@ import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Writing_Upload_Service} from '../services/writing.service';
 import {AuthenticationService} from '../services/authentication.service';
 import {LoginComponent} from '../login/login.component';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import {NotificationsService} from '../services/notifications.service';
 import { Ads_service } from '../services/ads.service';
@@ -30,6 +30,8 @@ import * as WebFont from 'webfontloader';
 import { filter } from 'rxjs/operators';
 import { merge, fromEvent } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { PopupContactComponent } from '../popup-contact/popup-contact.component';
+import { PopupShareComponent } from '../popup-share/popup-share.component';
 declare var $: any;
 declare var Swiper: any;
 
@@ -46,7 +48,7 @@ declare var Swiper: any;
           animate('150ms', style({opacity: 1}))
         ])
       ],
-    )
+    ),
   ]
 })
 
@@ -55,6 +57,7 @@ export class NavbarLinkartsComponent implements OnInit {
   
   constructor(
     private Community_recommendation:Community_recommendation,
+    private route: ActivatedRoute, 
     private location: Location,
     private CookieService:CookieService,
     private cd: ChangeDetectorRef,
@@ -76,6 +79,7 @@ export class NavbarLinkartsComponent implements OnInit {
     private NotificationsService:NotificationsService,
     
     ) {
+
 
       router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -294,7 +298,17 @@ export class NavbarLinkartsComponent implements OnInit {
   conditions_retrieved=false;
   current_user_type='';
   change_number=0;
+
+  device_info='';
+  current_user:any;
+
+
   ngOnInit() {
+
+    this.route.data.subscribe(resp => {
+      this.current_user=resp.user;
+    });
+
 
     let cookies = this.Profile_Edition_Service.get_cookies();
     if(!cookies){
@@ -2750,4 +2764,19 @@ change_message_status(event){
 
   
   
+  open_share() {
+    const dialogRef = this.dialog.open(PopupShareComponent, {
+      panelClass:"popupShareClass"
+    });
+  }
+  open_contact() {
+    const dialogRef = this.dialog.open(PopupContactComponent, {
+      data:{current_user:this.current_user},
+      panelClass:"popupContactComponentClass"
+    });
+    this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).subscribe();
+  }
+  open_donation() {
+    this.router.navigate(['/donation']);
+  }
 }

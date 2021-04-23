@@ -15,10 +15,13 @@ import {Writing_Upload_Service} from '../services/writing.service';
 import {AuthenticationService} from '../services/authentication.service';
 import {NavbarService} from '../services/navbar.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import {trigger, style, animate, transition} from '@angular/animations';
+import { PopupContactComponent } from '../popup-contact/popup-contact.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { PopupShareComponent } from '../popup-share/popup-share.component';
 
 
 @Component({
@@ -27,14 +30,55 @@ import {trigger, style, animate, transition} from '@angular/animations';
   styleUrls: ['./popup-navbar.component.scss'],
   animations: [
     trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromLeftAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromBottomAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
       'enterAnimation', [
         transition(':enter', [
           style({opacity: 0}),
-          animate('150ms', style({opacity: 1}))
+          animate('400ms', style({opacity: 1}))
+        ])
+      ],
+    ),
+    //LEAVING ANIMATIONS
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateX(0%)', opacity: 1}),
+          animate('200ms ease-in-out', style({transform: 'translateX(-30px)', opacity: 0}))
         ])
       ],
     )
-  ]
+  ],
 })
 export class PopupNavbarComponent implements OnInit {
   constructor(
@@ -43,7 +87,9 @@ export class PopupNavbarComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
     private router:Router,
+    private route:ActivatedRoute,
     public dialog: MatDialog,
+    private deviceService: DeviceDetectorService,
     private location: Location,
     private CookieService:CookieService,
     private Community_recommendation:Community_recommendation,
@@ -116,7 +162,15 @@ export class PopupNavbarComponent implements OnInit {
   }
 
   show_icon=false;
+  device_info='';
+  current_user:any;
+
   ngOnInit() {
+
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    this.route.data.subscribe(resp => {
+      this.current_user=resp.user;
+    });
     if(!this.list_of_friends_retrieved){
       this.chatService.get_number_of_unseen_messages().subscribe(a=>{
         if(a[0]){
@@ -1281,6 +1335,29 @@ change_message_status(event){
     this.show_chat_messages=false;
     this.show_notifications=false;
     this.dialogRef.close();
+  }
+
+  open_share() {
+    this.close_dialog();
+    const dialogRef = this.dialog.open(PopupShareComponent, {
+      panelClass:"popupShareClass"
+    });
+  }
+  open_contact() {
+    this.close_dialog();
+    const dialogRef = this.dialog.open(PopupContactComponent, {
+      data:{current_user:this.current_user},
+      panelClass:"popupContactComponentClass"
+    });
+    this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).subscribe();
+  }
+
+  my_groups_opened:boolean = false;
+  close_my_groups() {
+    this.my_groups_opened = false;
+  }
+  open_my_groups() {
+    this.my_groups_opened = true;
   }
 
 }

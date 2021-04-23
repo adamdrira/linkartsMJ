@@ -84,7 +84,7 @@
 <div #main_container class="scrollable-container-popup">
 
 
-    <div class="scrollable-container-options">
+    <div class="scrollable-container-options" *ngIf="!my_groups_opened">
  
 
             <div class="option-element option-element2" (click)="go_to_home()">
@@ -103,6 +103,13 @@
               <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'shiny': !pp_is_loaded }">
               <span>Mon profil</span>
             </div>
+
+            <!--ngif si au moins 1 groupe-->
+            <div class="option-element" (click)="open_my_groups()">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">group</mat-icon>
+              <span>Mes groupes</span>
+            </div>
+
             <div class="option-element" (click)="really_open_my_account()">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
               <span>Mon compte</span>
@@ -124,6 +131,22 @@
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
               <span>Confidentialité et sécurité</span>
             </a>
+
+            <div class="option-element" (click)="open_share()">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
+              <span>Partager le site</span>
+            </div>
+
+            <div class="option-element" (click)="open_contact()">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">mail</mat-icon>
+              <span>Nous contacter</span>
+            </div>
+            
+            <a routerLink="/donation" (click)="close_dialog();" class="option-element">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">groups</mat-icon>
+              <span>Nous soutenir</span>
+            </a>
+            
             <div class="option-element" (click)="logout()">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>
               <span>Se déconnecter</span>
@@ -131,6 +154,26 @@
 
     </div>
     
+
+    <div class="scrollable-container-options" *ngIf="my_groups_opened" [@enterFromRightAnimation]>
+
+      <div class="option-element" (click)="close_my_groups()">
+        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">arrow_back_ios</mat-icon>
+        <span>Retour</span>
+      </div>
+      <div class="option-element">
+        <img [src]="profile_picture" [ngClass]="{'shiny': !pp_is_loaded }">
+        <span>Groupe 1</span>
+      </div>
+      <div class="option-element">
+        <img [src]="profile_picture" [ngClass]="{'shiny': !pp_is_loaded }">
+        <span>Groupe 1</span>
+      </div>
+    </div>
+
+
+
+
     <div class="navbar-component ">
         <div class="connected-user">
             <div class="navbar-l1-icons-container notifications-block">

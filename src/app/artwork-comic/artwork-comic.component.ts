@@ -126,6 +126,10 @@ export class ArtworkComicComponent implements OnInit {
     this.add_time_of_view();
   }
 
+  ngOnDestroy() {
+    this.navbar.show_help();
+  }
+  
   @ViewChild('artwork') artwork:ElementRef;
   @ViewChild('close') close:ElementRef;
 
@@ -293,6 +297,9 @@ export class ArtworkComicComponent implements OnInit {
   /******************************************************* */
   device_info='';
   ngOnInit() {
+
+    this.navbar.hide_help();
+
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
 

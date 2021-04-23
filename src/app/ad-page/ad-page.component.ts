@@ -239,6 +239,10 @@ export class AdPageComponent implements OnInit {
       
   }
 
+  
+  ngOnDestroy() {
+    this.navbar.show_help();
+  }
 
   close_popup(){
     if(this.ad_id_input){
@@ -269,6 +273,9 @@ export class AdPageComponent implements OnInit {
   location_done=false;
   device_info='';
   ngOnInit() {
+    
+    this.navbar.hide_help();
+
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
   
     window.scroll(0,0);

@@ -163,10 +163,15 @@ export class MediaWritingsComponent implements OnInit {
     this.cd.detectChanges();
   }
 
- see_more(item) {
+ see_more(item,e,i) {
    
     let index = this.sorted_style_list.indexOf(item);
     this.show_more[index]=true;
+
+    this.cd.detectChanges();
+
+    setTimeout( () => { 
+      this.click_right_absolute_arrow2(e,i,true); }, 10 );
   }
 
     
@@ -203,7 +208,7 @@ export class MediaWritingsComponent implements OnInit {
   show_more_loading=false;
   can_show_more_history=true;
   new_last_consulted_writings=[];
-  show_more_history(){
+  show_more_history(e:any){
     if(this.show_more_loading){
       return
     }
@@ -226,10 +231,18 @@ export class MediaWritingsComponent implements OnInit {
               if(list.length>0){
                 this.last_consulted_writings=this.last_consulted_writings.concat(this.new_last_consulted_writings);
                 this.show_more_loading=false;
+                this.cd.detectChanges();
+                          
+                setTimeout( () => { 
+                  this.click_right_absolute_arrow(e,true); }, 10 );
               }
               else{
                 this.show_more_loading=false;
                 this.can_show_more_history=false;
+                this.cd.detectChanges();
+                          
+                setTimeout( () => { 
+                  this.click_right_absolute_arrow(e,true); }, 10 );
               }
             }
           })
@@ -239,6 +252,10 @@ export class MediaWritingsComponent implements OnInit {
       else{
         this.show_more_loading=false;
         this.can_show_more_history=false;
+        this.cd.detectChanges();
+                  
+        setTimeout( () => { 
+          this.click_right_absolute_arrow(e,true); }, 10 );
       }
     })
   }
@@ -254,22 +271,34 @@ export class MediaWritingsComponent implements OnInit {
   }
 
 
-  click_right_absolute_arrow(e:any) {
+  click_right_absolute_arrow(e:any, b:boolean) {
     var n = Math.floor( ($('.container-homepage.container-writings.recent').scrollLeft()+1) / (this.width / Math.floor(this.width/250))  );
     
-      console.log(n);
-      $('.container-homepage.container-writings.recent').animate({
-        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
-      }, 300, 'swing');
+      if(!b) {
+        $('.container-homepage.container-writings.recent').animate({
+          scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+        }, 300, 'swing');
+      }
+      else {
+        $('.container-homepage.container-writings.recent').animate({
+          scrollLeft: (n+2) * this.width / Math.floor(this.width/250)
+        }, 300, 'swing');
+      }
   }
 
-  click_right_absolute_arrow2(e:any, i:number) {
+  click_right_absolute_arrow2(e:any, i:number, b:boolean) {
     var n = Math.floor( ($('.container-homepage.container-writings.not-recent.'+i).scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
 
+    if(!b) {
       $('.container-homepage.container-writings.not-recent').animate({
         scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
       }, 300, 'swing');
+    }
+    else {
+      $('.container-homepage.container-writings.not-recent').animate({
+        scrollLeft: (n+2) * this.width / Math.floor(this.width/250)
+      }, 300, 'swing');
+    }
   }
   
-
 }

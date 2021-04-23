@@ -15,6 +15,7 @@ import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 import { Meta, Title } from '@angular/platform-browser';
 import { PopupContactComponent } from '../popup-contact/popup-contact.component';
+import { PopupShareComponent } from '../popup-share/popup-share.component';
 
 declare var Swiper: any;
 
@@ -313,6 +314,25 @@ export class HomeLinkartsComponent implements OnInit {
       panelClass:"popupContactComponentClass"
     });
     this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).subscribe();
+  }
+
+  open_share() {
+    const dialogRef = this.dialog.open(PopupShareComponent, {
+      panelClass:"popupShareClass"
+    });
+  }
+  
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event) {
+    if ((document.body.clientHeight + window.scrollY + 200) >= document.body.scrollHeight) {
+      this.navbar.hide_help();
+    }
+    else {
+      this.navbar.show_help();
+    }
+  }
+  ngOnDestroy() {
+    this.navbar.show_help();
   }
 
 

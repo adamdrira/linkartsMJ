@@ -221,6 +221,10 @@ export class ChatFriendsListComponent implements OnInit {
 
 
 
+  ngOnDestroy() {
+    this.navbar.show_help();
+  }
+
   @HostListener('window:focus', ['$event'])
   onFocus(event: any): void {
     this.user_present=true;
@@ -250,6 +254,9 @@ export class ChatFriendsListComponent implements OnInit {
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
 
   ngOnInit() {
+    
+    this.navbar.hide_help();
+
     let THIS=this;
     this.active_section = this.route.snapshot.data['section'];
     if(this.active_section==2){

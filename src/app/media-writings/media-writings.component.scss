@@ -64,8 +64,8 @@
     &:hover {
       border-bottom: 4px solid rgb(56, 81, 129);
       background-color: rgb(235, 235, 235);
-      mat-icon {
-        color: rgb(56, 81, 129);
+      mat-icon, span {
+        color: rgb(56, 81, 129) !important;
       }
     }
     &:active {
@@ -77,6 +77,19 @@
       height: unset;
       font-size: 36px;
       color: #b1b1b1;
+    }
+
+    &.with-span {
+      mat-icon {
+        margin: auto 5px auto auto;
+        font-size: 27px;
+      }
+      span {
+        margin: auto auto auto 0px;
+        font-size: 14px;
+        color: #b1b1b1;
+        font-weight: 600;
+      }
     }
   }
 
@@ -92,6 +105,12 @@
       cursor: pointer;
       z-index: 1;
       border-bottom: unset;
+
+      &.with-span {
+        span {
+          display:none;
+        }
+      }
     }
     .see-more:hover {
       border-bottom:unset;
@@ -149,7 +168,7 @@
   }
 
   .category span {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: bold;
   }
 

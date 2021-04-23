@@ -1,0 +1,404 @@
+.button-container-close {
+    margin: auto 0px auto auto;
+    position: absolute;
+    right: 22px;
+    top: 20px;
+}
+
+.close-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 30px;
+
+    mat-icon {
+        color: rgb(32, 56, 100);
+    }
+}
+
+.popup-share {
+    padding: 40px 60px 15px 60px;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    color: rgb(32, 56, 100);
+
+    > span {
+        text-align: center;
+        font-weight: 600;
+        font-size: 20px;
+    }
+
+    .group {
+        max-width: 300px;
+        margin: 30px auto auto auto;
+        display: flex;
+        flex-direction: column;
+        mat-icon {
+            width: unset;
+            height: unset;
+            font-size: 34px;
+            margin: auto auto 4px auto;
+        }
+        span {
+            text-align: center;
+            font-size: 15px;
+            margin: 0px auto auto auto;
+            line-height: 20px;
+        }
+    }
+
+    .mail-scent {
+        height:180px;
+        display:flex;
+        flex-direction: column;
+        mat-icon {
+            width: unset;
+            height: unset;
+            font-size: 30px;
+            margin: auto auto 0px auto;
+        }
+        span {
+            text-align: center;
+            font-size: 12px;
+            margin: 0px auto auto auto;
+            line-height: 20px;
+            max-width: 300px;
+        }
+    }
+
+    .mail-form-container {
+        
+        height:180px;
+        position:relative;
+        display:flex;
+        flex-direction: column;
+
+        .step-form {
+            font-size: 14px;
+            margin-top: auto;
+    
+            .form-title {
+                text-align: center;
+                font-weight: 600;
+            }
+    
+            .step-name {
+                display: flex;
+                height: 35px;
+                width: 100%;
+                span {
+                    font-size: 18px;
+                    font-weight: bold;
+                    margin: auto auto auto 5px;
+                }
+            }
+            .form-item {
+                width: 100%;
+                height: 50px;
+                margin-top: 15px;
+                margin-bottom: 10px;
+    
+                &.links {
+                    height: unset !important;
+                }
+    
+                .remove-red-eye {
+                    margin: auto auto;
+                    position: absolute;
+                    right: 5px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    cursor: pointer;
+    
+                    mat-icon {
+                        color: #203864;
+                        font-size: 20px;
+                        max-width: 20px;
+                        overflow: hidden;
+                    }
+                }
+    
+                .length-indicator {
+                    position: absolute;
+                    right: 10px;
+                    color: grey;
+                    font-size: 13px;
+                    font-weight: 400;
+                    top: 5px;
+                }
+            }
+    
+            .form-item-flex {
+                display: flex;
+                width: 100%;
+                .left-container {
+                    width: stretch;
+                    margin-right: 10px;
+                }
+                .right-container {
+                    width: stretch;
+                    height: 80px;
+                }
+            }
+    
+            .links-container {
+                display: block;
+                max-height: 120px;
+                overflow-y: auto;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+    
+                .link {
+                    display: flex;
+                    text-overflow: ellipsis;
+                    background: #ebf6fb;
+                    border-radius: 3px;
+                    padding-left: 9px;
+                    font-size: 14px;
+                    > span {
+                        margin: auto auto auto 5px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        cursor: default;
+                    }
+                    .mat-icon-button {
+                        margin: auto 5px auto auto;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+    
+        .share-button {
+            margin-left:auto;
+            margin-right:auto;
+            margin-bottom:auto;
+            outline:none;
+            height: 45px;
+            width:150px;
+            border-radius: 50px;
+            background:linear-gradient(0turn, rgba(2, 18, 54, 0.9), #203864, #3a6f9c);
+            border: 1px solid #d2e0e6;
+            display:flex;
+            cursor:pointer;
+            transition:transform 200ms;
+            
+    
+            mat-icon {
+                height:unset;
+                width:unset;
+                font-size:20px;
+                color:white;
+                margin:auto 5px auto auto;
+            }
+            span {
+                margin:auto auto auto 0px;
+                font-size: 16px;
+                color:white;
+            }
+            &:active {
+                transform:scale(0.98);
+            }
+        }
+    
+        mat-error {
+            font-size: 11px;
+            position: absolute;
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+
+
+    /*.copy-link {
+        display:flex;
+        height: 40px;
+        margin-top: 30px;
+        margin-left: 20px;
+        margin-right: 20px;
+        border-radius: 50px;
+        outline:none;
+        background:white;
+        font-size: 14px;
+        color: rgb(32,56,100);
+        cursor:pointer;
+        
+        box-shadow: 1px 2px 0 -2px hsl(0deg 0% 59% / 11%), 0 1px 2px 0 rgb(0 0 0 / 14%), 0 0 8px 0 hsl(0deg 0% 43% / 20%);
+
+        fa-icon {
+            margin: auto 6px auto auto;
+        }
+        span {
+            margin: auto auto auto 2px;
+            font-weight: 600;
+        }
+        &:hover {
+            background: rgb(250, 250, 252);
+        }
+        &:active {
+            background: rgb(246, 246, 248);
+        }
+    }
+
+    .buttons-container {
+        margin-top:24px;
+
+        .share-button {
+            margin-left:20px;
+            margin-right:20px;
+
+            width:95px;
+            height:95px;
+            
+            outline:none;
+            border-radius:10px;
+            box-shadow: 1px 2px 0 -2px hsl(0deg 0% 59% / 11%), 0 1px 2px 0 rgb(0 0 0 / 14%), 0 0 14px 0 hsl(0deg 0% 43% / 20%);
+            background:white;
+            border: unset;
+            
+            mat-icon {
+                margin: auto auto;
+                font-size:24px;
+                color:rgb(32,56,100);
+            }
+
+            &:hover {
+                background: rgb(250, 250, 252);
+            }
+            &:active {
+                background: rgb(246, 246, 248);
+            }
+        }
+
+        @media (max-width: 650px) {
+            margin-top:28px;
+            display:flex;
+
+            .share-button {
+                margin-left:auto;
+                margin-right:auto;
+            }
+        }
+        @media (max-width: 400px) {
+            margin-top: 45px;        
+            .share-button {
+                width: 82px;
+                height: 82px;
+            }
+        }
+    }*/
+}
+
+
+.buttons-container {
+    margin-top: 10px;
+    display: flex;
+    padding: 10px;
+    background: rgb(32,56,100);
+    button {
+        margin: auto auto;
+        background: #16284e;
+        box-shadow: 0px 0px 2px 2px rgb(32 56 100);
+    }
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+::ng-deep {
+    .popupShareClass {
+        max-width: unset !important;
+        .mat-dialog-container {
+            padding: 0px;
+            overflow: hidden;
+        }
+    }
+    @media (max-width: 650px) {
+        .popupShareClass {
+            width: 100% !important;
+            border-radius: 0px !important;
+            position: absolute !important;
+
+            bottom: 0px;
+            transition: bottom 200ms !important;
+        }
+    }
+}
+
+//************************************************************
+//Secured ng-deep
+//************************************************************
+::ng-deep .popup-share .form-item {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+
+    .mat-input-element {
+        font-size: 14px;
+        line-height: 22px !important;
+        padding-right: 70px !important;
+    }
+
+    mat-form-field .mat-form-field-wrapper {
+        padding-bottom: 25px !important;
+    }
+
+    .mat-form-field-label {
+        color:rgb(32,56,100);
+    }
+    .mat-form-field {
+        width: 100%;
+        line-height: 1.4;
+    }
+
+    .mat-form-field-underline {
+        display: none !important;
+    }
+
+    .mat-form-field-suffix {
+        button.mat-icon-button {
+            outline: none;
+        }
+    }
+
+    .mat-form-field .mat-form-field-flex {
+        background: rgb(255 255 255) !important;
+        font-weight: 600;
+        border: 1px solid #d2e0e6;
+        border-radius: 30px;
+        padding-right: 10px !important;
+        padding-left: 20px !important;
+        padding-bottom: 4px !important;
+        transition: box-shadow 200ms;
+    }
+
+    .mat-form-field.mat-focused .mat-form-field-flex {
+        box-shadow: 0px 0px 0px 2px rgb(204, 233, 251), 0px 0px 2px 4px rgb(179, 224, 251);
+        border: 1px solid #c3e6fb;
+    }
+
+    .mat-form-field-appearance-legacy .mat-form-field-subscript-wrapper {
+        margin-top: 0px;
+        padding-right: 20px !important;
+        padding-left: 20px !important;
+    }
+
+    .mat-form-field-infix {
+        border-top: 6px solid transparent !important;
+    }
+    .select-class {
+        .mat-form-field-flex {
+            padding-bottom: 6px !important;
+        }
+        .mat-form-field-infix {
+            border-top: 6px solid transparent !important;
+        }
+    }
+}

@@ -124,6 +124,10 @@ export class ArtworkDrawingComponent implements OnInit {
     this.add_time_of_view();
   }
 
+  ngOnDestroy() {
+    this.navbar.show_help();
+  }
+  
   @HostListener('window:popstate', ['$event'])
   onPopState(event) {
     this.add_time_of_view();
@@ -292,6 +296,9 @@ export class ArtworkDrawingComponent implements OnInit {
   device_info='';
   in_other_popup=false;
   ngOnInit() {
+    
+    this.navbar.hide_help();
+
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
 

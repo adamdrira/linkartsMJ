@@ -1,0 +1,110 @@
+
+ <div class="button-container-close">
+    <button mat-button class="mat-icon-button close-button" (click)="close_dialog()" tabIndex="-1">
+        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" >close</mat-icon>
+    </button>
+</div>
+
+<div class="popup-share">
+
+
+    <span>INVITER UN AMI</span>
+
+
+    
+    <div class="group">
+        <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
+        <span>Faîtes grandir la communauté LinkArts en invitant des membres de votre réseau</span>
+    </div>
+
+    <div class="group">
+        <mat-icon [ngClass]="{'invisible': !show_icon }">palette</mat-icon>
+        <span>Inviter à découvrir votre profil et faites savoir que vous êtes sur LinkArts</span>
+    </div>
+
+
+    
+    <div *ngIf="!mail_scent" class="mail-form-container">
+        <div class="step-form" [formGroup]="registerForm1">
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Adresse mail</mat-label>
+                    <input matInput formControlName="email" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'email');" tabindex="-1">
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="share-button" (click)="validate();">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+            <span>Inviter</span>
+        </div>
+        <mat-error *ngIf="show_mail_error" [@enterAnimation]>Veuillez saisir un e-mail valide
+        </mat-error>
+
+    </div>
+    
+
+    <div class="mail-scent" *ngIf="mail_scent" [@enterFromRightAnimation]>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+        <span>
+            Une invitation a été envoyée à l'adresse mail suivante :
+            <br>
+            {{registerForm1.value.email}}
+        </span>
+    </div>
+
+</div>
+
+<div class="buttons-container">
+
+    <button mat-icon-button tabindex="-1"
+        style="outline: none !important;" class="share-button2"
+        shareButton="facebook"
+        #fbBtn="shareButton"
+        [style.color]="fbBtn?.color"
+        url="https://www.linkarts.fr/">
+        <fa-icon *ngIf="fbBtn" [icon]="fbBtn.icon" size="lg"></fa-icon>
+    </button>
+    <button mat-icon-button tabindex="-1"
+        style="outline: none !important;" class="share-button2"
+        shareButton="twitter"
+        #twtBtn="shareButton"
+        [style.color]="twtBtn?.color"
+        url="https://www.linkarts.fr/">
+        <fa-icon *ngIf="twtBtn" [icon]="twtBtn.icon" size="lg"></fa-icon>
+    </button>
+    <button mat-icon-button tabindex="-1"
+        style="outline: none !important;" class="share-button2"
+        shareButton="pinterest"
+        #pinBtn="shareButton"
+        [style.color]="pinBtn?.color"
+        url="https://www.linkarts.fr/">
+        <fa-icon *ngIf="pinBtn" [icon]="pinBtn.icon" size="lg"></fa-icon>
+    </button>
+
+    <button mat-icon-button tabindex="-1"
+        style="outline: none !important;" class="share-button2"
+        shareButton="whatsapp"
+        #whaBtn="shareButton"
+        [style.color]="whaBtn?.color"
+        url="https://www.linkarts.fr/">
+        <fa-icon *ngIf="whaBtn" [icon]="whaBtn.icon" size="lg"></fa-icon>
+    </button>
+    <button mat-icon-button tabindex="-1"
+        style="outline: none !important;" class="share-button2"
+        shareButton="linkedin"
+        #msgBtn="shareButton"
+        [style.color]="msgBtn?.color"
+        url="https://www.linkarts.fr/">
+        <fa-icon *ngIf="msgBtn" [icon]="msgBtn.icon" size="lg"></fa-icon>
+    </button>
+    <button mat-icon-button tabindex="-1"
+        style="outline: none !important;" class="share-button2"
+        shareButton="copy"
+        #insBtn="shareButton"
+        [style.color]="insBtn?.color"
+        url="https://www.linkarts.fr/">
+        <fa-icon *ngIf="insBtn" [icon]="insBtn.icon" size="lg"></fa-icon>
+    </button>
+    
+</div>

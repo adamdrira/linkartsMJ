@@ -57,6 +57,22 @@
               <span>Confidentialité et sécurité</span>
             </a>
 
+            <div class="option-element" (click)="open_share()">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
+              <span>Partager le site</span>
+            </div>
+            
+            <div class="option-element" (click)="open_contact()">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">mail</mat-icon>
+              <span>Nous contacter</span>
+            </div>
+
+            <a routerLink="/donation" (click)="close_dialog();" class="option-element">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">groups</mat-icon>
+              <span>Nous soutenir</span>
+            </a>
+            
+
     </div>
    
     

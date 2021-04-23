@@ -18,6 +18,8 @@
 .home-linkarts {
 
 
+  
+
  /* @keyframes opened-button {
     from {
       background-color: white;
@@ -573,15 +575,29 @@
   }
 
   .horizontal-bar {
-    width: 50px;
+    width: 125px;
     height: 2px;
     background: #dcdcdc;
-    margin: 7px auto 10px auto;
+    margin: 7px auto 20px auto;
   }
 
   .logos-container.homeLinkarts {
-    margin:0px auto 16px auto;
+    margin: 0px auto 16px auto;
+    display: flex;
 
+    > div {
+      color: gray;
+      font-size: 14px;
+      cursor:pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    > span {
+      margin: 0px 8px 0px 12px;
+      color: #bbbbbb;
+      line-height: 18px;
+    }
     a.linkedin {
       margin: 0px 10px;
       ::ng-deep fa-icon svg {
