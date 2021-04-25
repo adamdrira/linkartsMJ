@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 let accents = "àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇÅåÆæœ";
 let special_characters = "\,\;\:\!\?\.\§\%\>\<\^\$\£\*\&\~\#\{\}\'\’\"\(\)\\[\\]\|\`\@\°\+\=_-";
 let special_characters2 = "\.\&\_-";
+let special_characters3 = "\,\;\:\!\?\/\.\§\%\>\<\^\$\£\*\&\~\#\{\}\'\’\"\(\)\\[\\]\|\`\@\°\+\=_-";
 export function pattern(type: string) {
     
     if( type == "mail" ) {
@@ -25,6 +26,9 @@ export function pattern(type: string) {
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace
     if( type == "text" ) {
         return "^([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9 "+accents+special_characters+"]+([a-zA-Z0-9 "+accents+special_characters+"])$";
+    }
+    if( type == "text_title" ) {
+        return "^([a-zA-Z0-9"+accents+special_characters3+"])[a-zA-Z0-9 "+accents+special_characters3+"]+([a-zA-Z0-9 "+accents+special_characters3+"])$";
     }
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace
     if( type == "text_with_linebreaks" ) {

@@ -806,13 +806,13 @@ export class ThumbnailArtworkComponent implements OnInit {
   get_artwork() {
     if(this.title){
       if(this.subscribing_category=='comic') {
-        return "/artwork-comic/"+this.subscribing_format+"/"+this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')+"/"+this.content_id;
+        return "/artwork-comic/"+this.subscribing_format+"/"+this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F')+"/"+this.content_id;
       }
       else if(this.subscribing_category=='drawing') {
-        return "/artwork-drawing/"+this.subscribing_format+"/"+this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')+"/"+this.content_id;
+        return "/artwork-drawing/"+this.subscribing_format+"/"+this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F')+"/"+this.content_id;
       }
       else {
-        return "/artwork-writing"+"/"+this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')+"/"+this.content_id;
+        return "/artwork-writing"+"/"+this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F')+"/"+this.content_id;
       }
     }
    

@@ -25,12 +25,12 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { ShareButtonsPopupModule } from 'ngx-sharebuttons/popup';
 import { ShareModule } from 'ngx-sharebuttons';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
 import { faPinterest } from '@fortawesome/free-brands-svg-icons';
 import { faPinterestP } from '@fortawesome/free-brands-svg-icons';
-import { faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { faInstagramSquare } from '@fortawesome/free-brands-svg-icons';
 import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 import { faLink} from '@fortawesome/free-solid-svg-icons';
@@ -78,25 +78,26 @@ import { CommonComponentsModule } from './modules/common-components.module';
 import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
 import { PopupShareComponent } from './popup-share/popup-share.component';
 
+
 const icons = [
   faPinterest,
   faPinterestP,
-  faTwitter,
-  faFacebook,
+  faTwitterSquare,
+  faFacebookSquare,
   faCheck,
   faLinkedinIn,
   faLinkedin,
   faLink,
-  faInstagram,
+  faInstagramSquare,
   faWhatsapp,
 ];
 
 const shareProp = {
   facebook: {
-    icon: ['fab', 'facebook']
+    icon: ['fab', 'facebook-square']
   },
   twitter: {
-    icon: ['fab', 'twitter']
+    icon: ['fab', 'twitter-square']
   },
 };
 

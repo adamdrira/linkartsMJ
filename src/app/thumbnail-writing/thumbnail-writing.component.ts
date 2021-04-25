@@ -113,7 +113,7 @@ export class ThumbnailWritingComponent implements OnInit {
     this.file_name = this.item.name_coverpage;
     this.total_pages=this.item.total_pages;
     this.title = this.item.title;
-    this.title_for_url=this.item.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    this.title_for_url=this.item.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     this.category = this.item.category;
     this.highlight = this.item.highlight.slice(0,290);
     this.firsttag = this.item.firsttag;

@@ -55,7 +55,7 @@ import { CommonComponentsModule } from '../modules/common-components.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
-
+import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
 
 
 @NgModule({
@@ -79,6 +79,7 @@ import { ErrorInterceptor } from '../helpers/error.interceptor';
     AccountRoutingModule,
     AngularResizedEventModule,
     FormsModule,
+    LazyLoadImageModule,
     ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
@@ -118,6 +119,7 @@ import { ErrorInterceptor } from '../helpers/error.interceptor';
       useValue: {}
     },
     MatDatepickerModule,
+    { provide: LAZYLOAD_IMAGE_HOOKS, useClass: ScrollHooks },
   ]
 })
 export class AccountModuleModule { }
