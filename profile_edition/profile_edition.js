@@ -211,7 +211,7 @@ router.post('/add_cover_pic', function (req, res) {
 
 
 router.get('/retrieve_profile_picture/:user_id', function (req, res) {
-  
+      console.log("retrieve_profile_picture/ " + req.params.user_id)
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -231,7 +231,7 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
       }
     }).then(User =>  {
       let transform = sharp()
-        transform = transform.resize(50,50)
+        transform = transform.resize(60,60)
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -351,7 +351,7 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
     res.status(500).json({msg: "error", details: err});		
   }).then(User =>  {
     let transform = sharp()
-        transform = transform.resize(50,50)
+        transform = transform.resize(60,60)
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -1376,7 +1376,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     const Op = Sequelize.Op;
     users.findOne({
       where: {
-        nickname:pseudo ,
+        nickname:pseudo,
         status:"account",
         type_of_account:["Artiste professionnel","Artiste professionnelle","Artiste"],
       }
@@ -1392,16 +1392,16 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         users.findOne({
           where: {
             nickname:{[Op.iLike]:'%'+ pseudo + '%'},
-            type_of_account:["Artiste profession,el","Artiste professionnelle","Artiste"],
+            type_of_account:["Artiste professionnel","Artiste professionnelle","Artiste"],
             status:"account",
             gender:{[Op.ne]:'Groupe'}
           }
         }).catch(err => {
 			
 			res.status(500).json({msg: "error", details: err});		
-		}).then(User=>{
-          if(User){
-            res.status(200).send([User])
+		}).then(User2=>{
+          if(User2){
+            res.status(200).send([User2])
           }
           else{
             res.status(200).send([{"nothing":"nothing"}])
@@ -3225,11 +3225,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       if(user.type_of_account.includes("Artiste")){
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">En tant qu'${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
                         <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Rémunération</b> : Vous pouvez générer des gains proportionnels à votre nombre d'abonnés grâce à vos apparitions en tendances.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Rémunération</b> : Vous pouvez générer des gains proportionnels à votre nombre d'abonnés grâce à vos apparitions en Tendances et Coups de cœur.</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : Si vous écrivez, que vous dessinez ou que vous faites les deux, LinkArts vous permet d'organiser et de mettre en avant les œuvres que vous publiez. LinkArts vous offre aussi une visibilité supplémentaire dans les coups de cœur si votre compte a moins de 6 mois d'existence et qu'il commence à gagner en popularité. Si de plus, vous faites partie du top 15 des coups de cœur le premier du mois, vous générez alors des gains bonus !</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y retrouver des annonces pour tous types de collaborations principalement en lien avec le monde de l'édition. LinkArts met aussi à votre disposition une messagerie vous permettant d'échanger avec de potentiels collaborateurs ou tout simplement avec vos contacts.</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Exploration </b>: Regorgeant d'artistes du monde de l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommandant des œuvres qui sont adaptées à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres. </li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Exploration </b>: Regorgeant d'artistes du monde de l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommandant des œuvres qui sont adaptées à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres afin d'enrichir votre créativité. </li>
                         </ol>`
                       }
                       else if(user.type_of_account.includes("non art")){
@@ -3257,13 +3257,14 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                         </ol>`
                       }
                       else {
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Regorgeant d'artistes du monde de l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommandant des œuvres qui sont adaptées à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres.</p> `
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Regorgeant d'artistes du monde de l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommandant des œuvres qui sont adaptées à vos préférences. Vous pouvez ainsi soutenir vos artistes favoris ou simplement profiter de la plateforme pour vous divertir et enrichir votre créativité.</p> `
                       }
 
             mail_to_send+=`
             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Nous vous remercions pour votre inscription et vous souhaitons une très agréable aventure au sein de LinkArts !</p>
-            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement, </br>L'équipe LinkArts</p>
-                      <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
+            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                      <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
                   </td>
 
               </tr>
@@ -3317,7 +3318,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             if (error) {
                 res.status(200).send([{error:error}])
             } else {
-                res.status(200).send([{sent:'Message sent ' + info.messageId,user:user}])
+                res.status(200).send([{sent:'Message sent ' + info.messageId}])
             }
             
 
@@ -3329,6 +3330,126 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       }
 
     })
+   
+  });
+
+
+  router.post('/send_share_email', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+    let name = req.body.name;
+    let email = req.body.email;
+          let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+          mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+            mail_to_send+=`
+            <table style="width:100%;margin-bottom:20px">
+
+                <tr id="tr2" >
+                    <td  align="center" style="background: rgb(2, 18, 54)">
+                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                        <div style="height:1px;width:20px;background:white;"></div>
+                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Invitation</p>
+                    </td>
+                </tr>
+            </table>`;
+
+            
+            
+            let start=`Madame, monsieur,`
+            let emitter=name;
+
+            mail_to_send+=`
+            <table style="width:100%;margin:25px auto;">
+              <tr id="tr3">
+
+                  <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${emitter} vous invite à rejoindre Linkarts, le site web dedié à la collaboration et à la promotion éditoriale. Cliquer sur le bouton ci-dessous pour accéder au site : </p>
+
+                      <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                          <a href="https://www.linkarts.fr" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                              Accéder au site
+                          </a>
+                      </div>`
+
+                      
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Selon votre profil, Linkarts met à votre disposition différents outils permettant de répondre à vos besoins : </p>
+                        <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Artiste</b> : En tant qu'artiste vous pouvez partager vos œuvres, gagner en visibilité, profiter des rémunérations et collaborer avec des maisons d'édition ou d'autres artistes.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Maison d'édition</b> : En tant que maison d'édition ou professionel de l'édition, vous pouvez faire gagner en visibilité votre maison d'édition, faire la promotion de vos produits, et dénicher des artistes talentueux avec qui collaborer en toute simplicité.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Professionnel hors édition</b> : En tant que professionel vous pouvez faire la promotion de vos produits, et collaborer avec des artistes talentueux et populaires afin de promouvoir votre marque.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Passionné</b> : En tant que passionné, vous pouvez faire la découverte d'œuvres et d'artistes de talents afin de fructifier votre créativité et votre futur réseau. Vous pouvez aussi soutenir vos artistes préférés afin de les aider à réaliser leur rêve de succès éditorial.</li>
+                         </ol>`
+                      
+                     
+                     
+
+            mail_to_send+=`
+            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Nous vous remercions pour votre inscription et vous souhaitons une très agréable aventure au sein de LinkArts !</p>
+            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                      <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
+                  </td>
+
+              </tr>
+            </table>`
+
+            mail_to_send+=`
+            <table style="width:100%;margin:25px auto;">
+                <tr id="tr4">
+                    <td align="center">
+                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                        
+                    </td>
+
+                </tr>
+            </table>`
+
+          mail_to_send+='</div>'
+          mail_to_send+='</div>'
+
+          const transport = nodemailer.createTransport({
+            host: "pro2.mail.ovh.net",
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+              user: "services@linkarts.fr", // compte expéditeur
+              pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+            },
+                tls:{
+                  ciphers:'SSLv3'
+            }
+          });
+
+        
+          var mailOptions = {
+            from: 'Linkarts <services@linkarts.fr>', 
+            to: email, // my mail
+            //to:"appaloosa-adam@hotmail.fr",
+            subject: `Bienvenue sur LinkArts !`, 
+            html:  mail_to_send,
+          };
+      
+       
+        transport.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                res.status(200).send([{error:error}])
+            } else {
+                res.status(200).send([{sent:'Message sent ' + info.messageId}])
+            }
+            
+
+        })
    
   });
 
@@ -3366,108 +3487,135 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     }).then(user=>{
       if(user){
           let compt=0;
-          for(let i=0; i<list_of_ids.length;i++){
-            users.findOne({
-              where:{
-                id:list_of_ids[i],
-                status:"account",
+
+          let admin_name='';
+          users.findOne({
+            where:{
+              id:user.id_admin
+            }
+          }).then(user_admin=>{
+            if(user_admin){
+              admin_name=user_admin.firstname;
+              if(user_admin.lastname){
+                admin_name=user_admin.firstname+ ' ' + user_admin.lastname;
               }
-            }).then(user_found=>{
+              send_emails();
+            }
+          })
 
-            
-              let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
-              mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
-                mail_to_send+=`
-                <table style="width:100%;margin-bottom:20px">
 
-                    <tr id="tr2" >
-                        <td  align="center" style="background: rgb(2, 18, 54)">
-                            <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
-                            <div style="height:1px;width:20px;background:white;"></div>
-                            <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Adhésion à un groupe</p>
-                        </td>
-                    </tr>
-                </table>`;
-
-                let name = user_found.firstname + " " + user_found.lastname;
-                if(!user_found.lastname || user_found.lastname==''){
-                  name=user_found.firstname
+          function send_emails(){
+            for(let i=0; i<list_of_ids.length;i++){
+              users.findOne({
+                where:{
+                  id:list_of_ids[i],
+                  status:"account",
                 }
-                let start=''
-                if(user_found.gender=="Homme"){
-                  start=`Cher ${name},`
-                }
-                else if(user_found.gender=="Femme"){
-                  start=`Chère ${name},</p>`
-                }
-                else if(user_found.gender=="Groupe"){
-                  start=`Chers membres du groupe ${name},`
-                }
-
-                mail_to_send+=`
-                <table style="width:100%;margin:25px auto;">
-                  <tr id="tr3">
-
-                      <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous venez d'être ajouté au groupe <b>${user.firstname}</b>.</p>
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez confirmer ou rejeter votre adhésion au groupe en cliquant sur le bouton ci-dessous : </p>
-
-                          <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                              <a href="https://linkarts.fr/account/${user_found.nickname}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
-                                  Gérer mon adhésion
-                              </a>
-                          </div>
-
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px">Très sincèrement,</p>
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;">L'équipe LinkArts</p>
-                          <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
-                      </td>
-
-                  </tr>
-                </table>`
-
-                mail_to_send+=`
-                <table style="width:100%;margin:25px auto;">
-                    <tr id="tr4">
-                        <td align="center">
-                            <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-                            <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
-                        </td>
-
-                    </tr>
-                </table>`
-
-            mail_to_send+='</div>'
-            mail_to_send+='</div>'
-
-              var mailOptions = {
-                from: 'Linkarts <services@linkarts.fr>', // sender address
-                to: user_found.email, // my mail
-                //to:"appaloosa-adam@hotmail.fr",
-                subject: `Adhésion à un groupe`, // Subject line
-                html: mail_to_send , // html body
-              };
+              }).then(user_found=>{
+  
               
-             
+                let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+                mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+                  mail_to_send+=`
+                  <table style="width:100%;margin-bottom:20px">
+  
+                      <tr id="tr2" >
+                          <td  align="center" style="background: rgb(2, 18, 54)">
+                              <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                              <div style="height:1px;width:20px;background:white;"></div>
+                              <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Adhésion à un groupe</p>
+                          </td>
+                      </tr>
+                  </table>`;
+  
+                  let name = user_found.firstname + " " + user_found.lastname;
+                  if(!user_found.lastname || user_found.lastname==''){
+                    name=user_found.firstname
+                  }
+                  let start=''
+                  if(user_found.gender=="Homme"){
+                    start=`Cher ${name},`
+                  }
+                  else if(user_found.gender=="Femme"){
+                    start=`Chère ${name},</p>`
+                  }
+                  else if(user_found.gender=="Groupe"){
+                    start=`Chers membres du groupe ${name},`
+                  }
+  
+                  mail_to_send+=`
+                  <table style="width:100%;margin:25px auto;">
+                    <tr id="tr3">
+  
+                        <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;"><b>${admin_name}</b> vous invite à rejoindre le groupe <b>${user.firstname}</b>.</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez confirmer ou rejeter votre adhésion au groupe en cliquant sur le bouton ci-dessous : </p>
+  
+                            <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                                <a href="https://linkarts.fr/account/${user_found.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                    Gérer mon adhésion
+                                </a>
+                            </div>
+  
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Informations utilises à savoir : </p>
+                            <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                                    <li style="margin-top: 5px;margin-bottom: 15px;">Tous les gains générés avec ce compte seront répartis de la façon désirée par l'administrateur</li>
+                                    <li style="margin-top: 5px;margin-bottom: 15px;">Il vous est possible de récupérer vos gains personnels en vous connectant depuis votre compte personnel d'artiste</li>
+                                    <li style="margin-top: 5px;margin-bottom: 15px;">Tous les membres du groupes seront notifiés à chaque fois que l'administrateur modifie la répartition des gains</li>
+                            </ol>
 
-              transport.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    compt++;
-                    if(compt==list_of_ids.length){
-                      res.status(200).send([{error:error}])
-                    }
-                   
-                } else {
-                    compt++;
-                    if(compt==list_of_ids.length){
-                      res.status(200).send([{sent:'Message sent ' + info.messageId}])
-                    }
-                  
-                }
-            })
-            })
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                            <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
+                        </td>
+  
+                    </tr>
+                  </table>`
+  
+                  mail_to_send+=`
+                  <table style="width:100%;margin:25px auto;">
+                      <tr id="tr4">
+                          <td align="center">
+                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                          </td>
+  
+                      </tr>
+                  </table>`
+  
+              mail_to_send+='</div>'
+              mail_to_send+='</div>'
+  
+                var mailOptions = {
+                  from: 'Linkarts <services@linkarts.fr>', // sender address
+                  to: user_found.email, // my mail
+                  //to:"appaloosa-adam@hotmail.fr",
+                  subject: `Adhésion à un groupe`, // Subject line
+                  html: mail_to_send , // html body
+                };
+                
+               
+  
+                transport.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                      compt++;
+                      if(compt==list_of_ids.length){
+                        res.status(200).send([{error:error}])
+                      }
+                     
+                  } else {
+                      compt++;
+                      if(compt==list_of_ids.length){
+                        res.status(200).send([{sent:'Message sent ' + info.messageId}])
+                      }
+                    
+                  }
+              })
+              })
+            }
           }
+          
 
 
       }
@@ -3558,17 +3706,24 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous venez de crééer le groupe <b>${user.firstname}</b>.</p>
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous devez confirmer la création du groupe en cliquant sur le bouton ci-dessous : </p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez désormais éditer la répartition des gains et gérer la liste des membres du groupe en cliquant sur le bouton ci-dessous : </p>
 
                           <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                              <a href="https://linkarts.fr/account/${user_found.nickname}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
-                                  Confirmer mon adhésion
+                              <a href="https://linkarts.fr/account/${user_found.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                  Gérer mon compte
                               </a>
                           </div>
 
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px">Très sincèrement,</p>
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;">L'équipe LinkArts</p>
-                          <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Informations utilises à savoir : </p>
+                          <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                                  <li style="margin-top: 5px;margin-bottom: 15px;">En tant qu'administrateur, tous les gains générés avec ce compte seront répartis de la façon dont vous désirez</li>
+                                  <li style="margin-top: 5px;margin-bottom: 15px;">Il vous est possible de récupérer vos gains personnels en vous connectant depuis votre compte personnel d'artiste</li>
+                                  <li style="margin-top: 5px;margin-bottom: 15px;">Tous les membres du groupes seront notifiés à chaque fois que vous modifierez la répartition des gains</li>
+                          </ol>
+
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                          <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
                       </td>
 
                   </tr>
@@ -3656,18 +3811,25 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
                         <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
-                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Le groupe <b>${user.firstname}</b> vient d'être créé par <b>${admin_name}</b></p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;"><b>${admin_name}</b> vous invite à rejoindre le groupe ${user.firstname}</b>.</p>
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez confirmer ou rejeter votre adhésion au groupe en cliquant sur le bouton ci-dessous : </p>
 
                             <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                                <a href="https://linkarts.fr/account/${user_found.nickname}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                <a href="https://linkarts.fr/account/${user_found.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                                     Gérer mon adhésion
                                 </a>
                             </div>
 
-                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px">Très sincèrement,</p>
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;">L'équipe LinkArts</p>
-                            <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Informations utilises à savoir : </p>
+                            <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                                    <li style="margin-top: 5px;margin-bottom: 15px;">Tous les gains générés avec ce compte seront répartis de la façon désirée par l'administrateur</li>
+                                    <li style="margin-top: 5px;margin-bottom: 15px;">Il vous est possible de récupérer vos gains personnels en vous connectant depuis votre compte personnel d'artiste</li>
+                                    <li style="margin-top: 5px;margin-bottom: 15px;">Tous les membres du groupes seront notifiés à chaque fois que l'administrateur modifie la répartition des gains</li>
+                            </ol>
+
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                            <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
                         </td>
 
                     </tr>
