@@ -1752,7 +1752,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
 
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px">Très sincèrement,</p>
                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;">L'équipe LinkArts</p>
-                      <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
+                      <img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
                   </td>
 
               </tr>
