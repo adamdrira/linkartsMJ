@@ -145,7 +145,7 @@ value:string="add";
     return this.form.get('chapters') as FormArray; 
   }
   addChapter() { 
-    this.chapters.push(new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ] )); 
+    this.chapters.push(new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text_title") ) ] )); 
   }
   deleteChapter() { 
     this.chapters.removeAt( this.chapters.length - 1 ); 

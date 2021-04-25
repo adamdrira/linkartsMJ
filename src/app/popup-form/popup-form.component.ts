@@ -25,7 +25,15 @@ declare var $:any;
           animate('150ms', style({opacity: 1}))
         ])
       ],
-    )
+    ),
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ]
+    ),
   ]
 })
 export class PopupFormComponent implements OnInit {

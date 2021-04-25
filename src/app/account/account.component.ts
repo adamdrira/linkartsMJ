@@ -33,7 +33,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import {date_in_seconds, get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 declare var $: any;
-
+declare var Swiper:any;
 
 @Component({
   selector: 'app-account',
@@ -503,16 +503,17 @@ export class AccountComponent implements OnInit {
       });
     }
 
-
-    
-
-    
-
-    
    
   }
 
+
+  
+ 
+
+
   initialize_page_for_visitor(){
+
+    
 
     this.Profile_Edition_Service.retrieve_profile_data_links(this.user_id).subscribe(l=>{
       if(l[0].length>0){
@@ -613,6 +614,7 @@ export class AccountComponent implements OnInit {
         this.author=user;
         this.author_name = user.firstname + ' ' + user.lastname;
         this.gender=user.gender;
+        this.list_of_members=user.list_of_members;
         this.firstName=user.firstname;
         this.lastName=user.lastname;
         this.primary_description=user.primary_description;
@@ -651,6 +653,11 @@ export class AccountComponent implements OnInit {
           })
                   
         };
+
+        if(this.gender=="Groupe"){
+          this.get_list_of_members_data();
+        }
+       
 
         this.route.data.subscribe(resp => {
           let r=resp.number_of_contents;
@@ -1000,7 +1007,6 @@ export class AccountComponent implements OnInit {
 
     /*********************************ALBUMS  ******************************************/
     /*********************************ALBUMS  ******************************************/
-    /*********************************ALBUMS  ******************************************/
 
     /*********************************** COMICS *************************************/
   
@@ -1189,6 +1195,113 @@ export class AccountComponent implements OnInit {
 
 
 
+  /******************************************** GROUP DATA  *******************************************/
+  /******************************************** GROUP DATA  *******************************************/
+
+  list_of_members=[];
+  list_of_members_names=[];
+  list_of_members_pseudos=[];
+  list_of_members_data_retrieved=false;
+  list_of_profile_pictures=[];
+  list_of_cover_pictures=[];
+  list_of_pp_loaded=[];
+  list_of_covers_loaded=[];
+
+  load_cover_list(i){
+    this.list_of_covers_loaded[i]=true;
+  }
+
+  load_pp_list(i){
+    this.list_of_pp_loaded[i]=true;
+  }
+
+  get_member_url(i){
+    this.router.navigateByUrl('/account/' + this.list_of_members_pseudos[i]);
+  }
+
+  get_list_of_members_data(){
+    let compt=0;
+    for(let i=0;i<this.list_of_members.length;i++){
+
+      this.Profile_Edition_Service.retrieve_profile_data(this.list_of_members[i]).subscribe(r=> {
+        this.list_of_members_names[i] = r[0].firstname + ' ' + r[0].lastname;
+        this.list_of_members_pseudos[i] = r[0].nickname;
+        compt++;
+        if(compt==this.list_of_members.length){
+          this.list_of_members_data_retrieved=true;
+          this.initialize_swiper();
+        }
+      });
+
+      this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_members[i]).subscribe(t=> {
+        let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+        this.list_of_profile_pictures[i]=url;
+      });
+
+      this.Profile_Edition_Service.retrieve_cover_picture_stories( this.list_of_members[i]).subscribe(v=> {
+        let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
+        this.list_of_cover_pictures[i]=url;
+      });
+    }
+  }
+
+  swiper:any;
+  initialize_swiper() {
+    console.log("ini swiper")
+    this.cd.detectChanges();
+
+    this.swiper = new Swiper('.story-swiper-container', {
+      speed: 500,
+      slidesPerView: 1,
+      preloadImages: false,
+      lazy: {
+        loadOnTransitionStart: true,
+        checkInView:true,
+      },
+      watchSlidesVisibility:true,
+      breakpoints: {
+        0: {
+          slidesPerView: 1,
+          slidesPerGroup: 1,
+          spaceBetween: 50,
+          simulateTouch: true,
+          allowTouchMove: true,
+        },
+        600: {
+          slidesPerView: 2,
+          slidesPerGroup: 2,
+          spaceBetween: 20,
+          simulateTouch: true,
+          allowTouchMove: true,
+        },
+        800: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+          simulateTouch: false,
+          allowTouchMove: false,
+        },
+      },
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+      },
+      navigation: {
+        nextEl: '.swiper-button-next.stories-button',
+        prevEl: '.swiper-button-prev.stories-button',
+      },
+      keyboard: {
+        enabled: false,
+      },
+      observer: true,
+    });
+   
+    this.cd.detectChanges();
+  }
+
   /******************************************* END ON INIT ********************************************/
   /******************************************* END ON INIT ********************************************/
   /******************************************* END ON INIT ********************************************/
@@ -1362,6 +1475,10 @@ export class AccountComponent implements OnInit {
     this.opened_section_small=i;
     this.cd.detectChanges();
     this.update_background_position(i);
+    if(this.opened_section==0 && this.list_of_members_data_retrieved){
+      console.log("in reset swiper")
+      this.initialize_swiper()
+    }
     if(not_first){
       if(this.opened_category<0 && this.opened_section==1){
         let interval = setInterval(() => {

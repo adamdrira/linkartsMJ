@@ -22,6 +22,7 @@ import {trigger, style, animate, transition} from '@angular/animations';
 import { PopupContactComponent } from '../popup-contact/popup-contact.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupShareComponent } from '../popup-share/popup-share.component';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 
 @Component({
@@ -96,11 +97,6 @@ export class PopupNavbarComponent implements OnInit {
     private navbar : NavbarService,
     private AuthenticationService:AuthenticationService,
     private cd: ChangeDetectorRef,
-    private BdOneShotService:BdOneShotService,
-    private BdSerieService:BdSerieService,
-    private Drawings_Artbook_Service:Drawings_Artbook_Service,
-    private Drawings_Onepage_Service:Drawings_Onepage_Service,
-    private Writing_Upload_Service:Writing_Upload_Service,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<PopupNavbarComponent>,
    
@@ -135,7 +131,12 @@ export class PopupNavbarComponent implements OnInit {
   number_of_empties=this.data.number_of_empties
  
   list_of_conditions=this.data.list_of_conditions;
-  
+  list_of_account_groups_names=this.data.list_of_account_groups_names;
+  list_of_account_groups_ids=this.data.list_of_account_groups_ids;
+  list_of_account_groups_status=this.data.list_of_account_groups_status;
+  list_of_account_groups_pp=this.data.list_of_account_groups_pp;
+  pp_group_loaded=this.data.pp_group_loaded;
+  user_is_in_a_group=this.data.user_is_in_a_group;
 
 
   @ViewChild('chat') chat:ElementRef;
@@ -168,8 +169,8 @@ export class PopupNavbarComponent implements OnInit {
   ngOnInit() {
 
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.route.data.subscribe(resp => {
-      this.current_user=resp.user;
+    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+      this.current_user=r;
     });
     if(!this.list_of_friends_retrieved){
       this.chatService.get_number_of_unseen_messages().subscribe(a=>{
@@ -241,13 +242,9 @@ export class PopupNavbarComponent implements OnInit {
   }
 
   chat_scroll(event){
-    console.log("chat scroll")
     if(this.show_chat_messages){
-      console.log("in show chat")
       if(this.myScrollContainer_chat && (this.myScrollContainer_chat.nativeElement.scrollTop + this.myScrollContainer_chat.nativeElement.offsetHeight >= this.myScrollContainer_chat.nativeElement.scrollHeight*0.8)){
-        console.log("in other if")
         if(this.number_of_friends_to_show<this.list_of_friends_ids.length){
-          console.log(" this.number_of_friends_to_show+=10;")
           this.number_of_friends_to_show+=10;
         }
       }
@@ -443,7 +440,7 @@ open_comic(notif:any) {
   this.close_dialog();
 }
 get_comic(notif:any) {
-  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     return "/artwork-comic/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
 }
 
@@ -453,7 +450,7 @@ open_comic_chapter(notif:any) {
   this.close_dialog();
 }
 get_comic_chapter(notif:any) {
-  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
   return "/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
 }
 open_drawing(notif:any) {
@@ -462,7 +459,7 @@ open_drawing(notif:any) {
   this.close_dialog();
 }
 get_drawing(notif:any) {
-  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
   return "/artwork-drawing/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
 }
 open_writing(notif:any) {
@@ -471,7 +468,7 @@ open_writing(notif:any) {
   this.close_dialog();
 }
 get_writing(notif:any) {
-  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
   return "/artwork-writing/" + title_url + "/" + notif.publication_id;
 }
 open_ad(notif:any) {
@@ -480,7 +477,7 @@ open_ad(notif:any) {
   this.close_dialog();
 }
 get_ad(notif:any) {
-  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+  let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     return "/ad-page/" + title_url + "/" + notif.publication_id;
 }
 
@@ -783,7 +780,6 @@ scroll_chat:any;
 open_messages(){
   
   if(this.show_chat_messages){
-    console.log("return")
     this.show_chat_messages=false;
     return;
   }
@@ -1340,8 +1336,10 @@ change_message_status(event){
   open_share() {
     this.close_dialog();
     const dialogRef = this.dialog.open(PopupShareComponent, {
+      data:{type_of_profile:"account"},
       panelClass:"popupShareClass"
     });
+    this.navbar.add_page_visited_to_history(`/open-share-maile/account/${this.user_id}/`,this.device_info ).subscribe();
   }
   open_contact() {
     this.close_dialog();
@@ -1360,4 +1358,42 @@ change_message_status(event){
     this.my_groups_opened = true;
   }
 
+  load_pp_group(k){
+    this.pp_group_loaded[k]=true;
+  }
+  loading_connexion_unit=false;
+  open_group(i){
+   if(this.loading_connexion_unit){
+     return
+   }
+   if(!this.list_of_account_groups_status[i]){
+     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+       data: {showChoice:false, text:"Connexion impossible. La création de ce groupe n'a pas encore été validée par tous ses membres."},
+       panelClass: "popupConfirmationClass",
+     });
+     return
+   }
+   this.loading_connexion_unit=true;
+   this.disconnecting=true;
+   this.navbar.add_page_visited_to_history(`/navbar/${this.pseudo}/${this.user_id}/switch_to_group/${this.list_of_account_groups_names[i]}/${this.list_of_account_groups_ids[i]}`, this.device_info).subscribe();
+   this.AuthenticationService.login_group_as_member(this.list_of_account_groups_ids[i],this.user_id).subscribe( data => {
+     if(data.token){
+       this.Community_recommendation.delete_recommendations_cookies();
+       this.Community_recommendation.generate_recommendations().subscribe(r=>{
+         this.loading_connexion_unit=false;
+         this.disconnecting=false;
+         this.location.go("/account/" + this.list_of_account_groups_names[i])
+         location.reload();
+       })
+     }
+     else{
+       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+         data: {showChoice:false, text:"Une erreur est survenue. Veuillez réessayer ultérieurement."},
+         panelClass: "popupConfirmationClass",
+       });
+       this.loading_connexion_unit=false;
+       this.disconnecting=false;
+     }
+   })
+  }
 }

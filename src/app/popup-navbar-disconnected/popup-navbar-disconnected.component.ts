@@ -3,7 +3,7 @@ import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dial
 import { ActivatedRoute, Router } from '@angular/router';
 import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
 import { NavbarService } from '../services/navbar.service';
-
+import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {LoginComponent} from '../login/login.component';
 import { SignupComponent } from '../signup/signup.component';
 import { PopupContactComponent } from '../popup-contact/popup-contact.component';
@@ -21,7 +21,7 @@ export class PopupNavbarDisconnectedComponent implements OnInit {
     public dialog: MatDialog,
     private router:Router,
     private deviceService: DeviceDetectorService,
-    private route:ActivatedRoute,
+    private Profile_Edition_Service:Profile_Edition_Service,
     private navbar : NavbarService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<PopupNavbarComponent>,
@@ -41,8 +41,8 @@ export class PopupNavbarDisconnectedComponent implements OnInit {
   ngOnInit() {
 
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.route.data.subscribe(resp => {
-      this.current_user=resp.user;
+    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+      this.current_user=r;
     });
   }
     
@@ -91,8 +91,13 @@ export class PopupNavbarDisconnectedComponent implements OnInit {
   open_share() {
     this.close_dialog();
     const dialogRef = this.dialog.open(PopupShareComponent, {
+      data:{type_of_profile:"visitor"},
       panelClass:"popupShareClass"
     });
+    if(this.current_user && this.current_user.id){
+      this.navbar.add_page_visited_to_history(`/open-share-maile/visitor/${this.current_user.id}/`,this.device_info ).subscribe();
+    }
+    
   }
   open_contact() {
     this.close_dialog();

@@ -622,7 +622,6 @@ export class AccountAboutComponent implements OnInit {
     this.Trending_service.get_all_trendings_by_user(this.date_format_trendings,this.id_user,this.compteur_trendings).subscribe(r=>{
       if(r[1]== this.compteur_trendings){
         if(Object.keys(r[0][0].list_of_contents).length>0){
-
           this.number_of_comics_trendings=Object.keys(r[0][0].list_of_comics).length;
           this.number_of_drawings_trendings=Object.keys(r[0][0].list_of_drawings).length;
           this.number_of_writings_trendings=Object.keys(r[0][0].list_of_writings).length;

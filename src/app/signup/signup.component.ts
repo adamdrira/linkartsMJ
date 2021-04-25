@@ -43,7 +43,15 @@ import { DeviceDetectorService } from 'ngx-device-detector';
           animate('150ms', style({opacity: 1}))
         ])
       ],
-    )
+    ),
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ]
+    ),
   ]
 })
 
@@ -779,7 +787,7 @@ export class SignupComponent implements OnInit {
   
   @HostListener('document:click', ['$event.target'])
   clickout(btn) {
-    if(this.research_member_loading){
+    if(this.research_member_loading && this.research){
       if (!this.research.nativeElement || !this.research.nativeElement.contains(btn)){
         this.research_member_loading=false;
       }
@@ -1349,7 +1357,7 @@ export class SignupComponent implements OnInit {
 
 
   finish() {
-    location.reload();
+    this.dialogRef.close();
   }
   normalize_input(fg: FormGroup, fc: string) {
     if(!fg || !fc) {

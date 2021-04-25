@@ -136,10 +136,8 @@
                 
                 <button class="validate-form-button" (click)="validate_edit_password();" [@enterAnimation]>
                     <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!checking_password">done_all</mat-icon>
-                    <span *ngIf="!checking_password" >Changer mon mot de passe</span>
-                    <div class="loading-dots" *ngIf="checking_password" >
-                        &nbsp; <span>.</span><span>.</span><span>.</span>
-                    </div>
+                    <span *ngIf="!checking_password" >Valider</span>
+                    <mat-spinner diameter="25" *ngIf="checking_password" style="margin:auto;"></mat-spinner>
                 </button>
 
                 
@@ -291,10 +289,8 @@
                 
                 <button class="validate-form-button" (click)="validate_edit_password();" [@enterAnimation]>
                     <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!checking_password">done_all</mat-icon>
-                    <span *ngIf="!checking_password" >Changer mon mot de passe</span>
-                    <div class="loading-dots" *ngIf="checking_password" >
-                        &nbsp; <span>.</span><span>.</span><span>.</span>
-                    </div>
+                    <span *ngIf="!checking_password" >Valider</span>
+                    <mat-spinner diameter="25" *ngIf="checking_password" style="margin:auto;"></mat-spinner>
                 </button>
                 <button class="validate-form-button" (click)="cancel_edit_password();" [@enterAnimation]>
                     <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
@@ -368,8 +364,9 @@
 
                     
                 <button class="validate-form-button" (click)="validate_edit_email();" [@enterAnimation]>
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
-                    <span>Valider</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_email">done</mat-icon>
+                    <span  *ngIf="!loading_email">Valider</span>
+                    <mat-spinner diameter="25" style="margin:auto;" *ngIf="loading_email"></mat-spinner>
                 </button>
                 <button class="validate-form-button" (click)="cancel_edit_email();" [@enterAnimation]>
                     <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
@@ -451,7 +448,12 @@
                         <div class="group">
                             <mat-icon [ngClass]="{'invisible': !show_icon }" class="group-icon">group</mat-icon>
     
-                            <span>{{group}}</span>
+                            <span *ngIf="!loading_connexion[i]" (click)="open_group(i)"
+                            matTooltip="Se connecter au groupe"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">{{group}}</span>
+                            <mat-spinner diameter="20"  *ngIf="loading_connexion[i]" style="margin:auto 15px auto 0px;"></mat-spinner>
                             <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_groups_status[i]" class="group-status-icon" [@enterAnimation]
                             matTooltip="Groupe créé"
                             matTooltipClass='tooltip-account-about-profile' 
@@ -572,8 +574,9 @@
                                 *ngIf="(group_in_edition[list_of_groups_ids[i]] && list_of_groups_admins_ids[i]==id_user) || ( list_of_members_status_by_group[list_of_groups_ids[i]][list_of_members_ids_by_group[list_of_groups_ids[i]].indexOf(id_user)]!='validated')"
                                 (click)="validate_all(list_of_groups_ids[i])"
                                 [@enterAnimation]>
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
-                                    <span>Valider</span>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!validation_all">done</mat-icon>
+                                    <span  *ngIf="!validation_all">Valider</span>
+                                    <mat-spinner diameter="25" style="margin:auto;" *ngIf="validation_all"></mat-spinner>
                                 </button>
                                 <button class="validate-form-button" 
                                 *ngIf=" list_of_groups_admins_ids[i]==id_user && list_of_members_status_by_group[list_of_groups_ids[i]][list_of_members_ids_by_group[list_of_groups_ids[i]].indexOf(id_user)]=='validated'
@@ -755,7 +758,7 @@
 
                 <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
                     <ngx-charts-line-chart
-                    [view]="view_size"
+                   
                     [scheme]="colorScheme"
                     [results]="multi_trendings_1"
                     [gradient]="gradient"
@@ -771,7 +774,7 @@
 
                 <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
                     <ngx-charts-line-chart
-                    [view]="view_size"
+                   
                     [scheme]="colorScheme"
                     [results]="multi_trendings_2"
                     [gradient]="gradient"
@@ -846,7 +849,7 @@
                 
                 <div class="chart-container" #chartContainer *ngIf="trendings_found_groups && trendings_loaded_groups">
                     <ngx-charts-line-chart
-                    [view]="view_size"
+                   
                     [scheme]="colorScheme"
                     [results]="multi_trendings_groups_1"
                     [gradient]="gradient"
@@ -862,7 +865,7 @@
 
                 <div class="chart-container" #chartContainer *ngIf="trendings_found_groups && trendings_loaded_groups">
                     <ngx-charts-line-chart
-                    [view]="view_size"
+                   
                     [scheme]="colorScheme"
                     [results]="multi_trendings_groups_2"
                     [gradient]="gradient"
@@ -906,7 +909,7 @@
                     <ng-container *ngIf="favorites_loaded && !visitor_mode">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                         <span>
-                            Vous n'avez encore jamais atteint pas atteint le top 15 des coups de cœur. 
+                            Vous n'avez pas encore atteint le top 15 des coups de cœur. 
                         </span>
                     </ng-container>
                     <div *ngIf="!favorites_loaded">
@@ -923,7 +926,7 @@
 
                 <div class="chart-container" #chartContainer *ngIf="trendings_found_groups && trendings_loaded_groups">
                     <ngx-charts-line-chart
-                    [view]="view_size"
+                   
                     [scheme]="colorScheme"
                     [results]="multi_favorites_1"
                     [gradient]="gradient"
@@ -971,7 +974,7 @@
                     <ng-container *ngIf="favorites_loaded_groups">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                         <span>
-                            Vous n'avez encore jamais atteint pas atteint le top 15 des coups de cœur avec ce groupe. 
+                            Vous n'avez pas encore atteint le top 15 des coups de cœur avec ce groupe. 
                         </span>
                     </ng-container>
                     <div *ngIf="!favorites_loaded_groups">
@@ -988,7 +991,7 @@
 
                 <div class="chart-container"  #chartContainer *ngIf="favorites_found_groups && favorites_loaded_groups">
                     <ngx-charts-line-chart
-                    [view]="view_size"
+                   
                     [scheme]="colorScheme"
                     [results]="multi_favorites_groups_1"
                     [gradient]="gradient"

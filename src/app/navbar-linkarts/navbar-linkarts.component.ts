@@ -94,6 +94,7 @@ export class NavbarLinkartsComponent implements OnInit {
         if(r!=this.current_user_type &&  this.change_number<1){
           this.Profile_Edition_Service.get_current_user().subscribe(r=>{
             if(r[0]){
+              this.current_user=r;
               if(r[0].status=="account" || r[0].status=="suspended"){
                 this.type_of_profile=r[0].status;
                 this.retrieve_profile(r);
@@ -201,6 +202,7 @@ export class NavbarLinkartsComponent implements OnInit {
   author_name:string;
   author_certification:any;
   pseudo:string;
+  gender:string;
   data_retrieved=false;
   type_of_profile:string;
   type_of_profile_retrieved=false;
@@ -305,9 +307,6 @@ export class NavbarLinkartsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.route.data.subscribe(resp => {
-      this.current_user=resp.user;
-    });
 
 
     let cookies = this.Profile_Edition_Service.get_cookies();
@@ -410,19 +409,90 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   
+  check_group_done=false;
+  list_of_account_groups_names=[];
+  list_of_account_groups_ids=[];
+  list_of_account_groups_status=[];
+  list_of_account_groups_pp=[];
+  pp_group_loaded=[]
+  user_is_in_a_group=false;
+  load_pp_group(k){
+    this.pp_group_loaded[k]=true;
+  }
+  loading_connexion_unit=false;
+  open_group(i){
+   if(this.loading_connexion_unit){
+     return
+   }
+   if(!this.list_of_account_groups_status[i]){
+     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+       data: {showChoice:false, text:"Connexion impossible. La création de ce groupe n'a pas encore été validée par tous ses membres."},
+       panelClass: "popupConfirmationClass",
+     });
+     return
+   }
+   this.loading_connexion_unit=true;
+   this.disconnecting=true;
+   this.navbar.add_page_visited_to_history(`/navbar/${this.pseudo}/${this.user_id}/switch_to_group/${this.list_of_account_groups_names[i]}/${this.list_of_account_groups_ids[i]}`, this.device_info).subscribe();
+   this.AuthenticationService.login_group_as_member(this.list_of_account_groups_ids[i],this.user_id).subscribe( data => {
+     if(data.token){
+       this.Community_recommendation.delete_recommendations_cookies();
+       this.Community_recommendation.generate_recommendations().subscribe(r=>{
+         this.loading_connexion_unit=false;
+         this.disconnecting=false;
+         this.location.go("/account/" + this.list_of_account_groups_names[i])
+         location.reload();
+       })
+     }
+     else{
+       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+         data: {showChoice:false, text:"Une erreur est survenue. Veuillez réessayer ultérieurement."},
+         panelClass: "popupConfirmationClass",
+       });
+       this.loading_connexion_unit=false;
+       this.disconnecting=false;
+     }
+   })
+  }
 
   retrieve_profile(r){
       this.user_id=r[0].id;
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.author_certification=r[0].certified_account;
       this.pseudo=r[0].nickname;
+      this.gender=r[0].gender;
       this.author_first_name=r[0].firstname ;
+
       this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
         this.profile_picture_unsafe=url;
       });
+
+      if(this.gender!="Groupe"){
+        this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.user_id).subscribe(r=>{
+          if(r[0].length>0){
+            for(let i=0;i<r[0].length;i++){
+              this.list_of_account_groups_names[i]=(r[0][i].nickname)
+              this.list_of_account_groups_ids[i]=(r[0][i].id)
+              if(!r[0][i].list_of_members_validations || (r[0][i].list_of_members_validations && r[0][i].list_of_members_validations.length!=r[0][i].list_of_members.length)){
+                this.list_of_account_groups_status[i]=false
+              }
+              else{
+                this.list_of_account_groups_status[i]=true
+              }
+              this.Profile_Edition_Service.retrieve_profile_picture(r[0][i].id).subscribe(t=> {
+                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.list_of_account_groups_pp[i] = SafeURL;
+              });
+            }
+            this.user_is_in_a_group=true;
+          }
+          this.check_group_done=true;
+        })
+      }
 
       this.chatService.get_number_of_unseen_messages().subscribe(a=>{
         if(a[0]){
@@ -1410,7 +1480,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   get_ad_last_propositions(i:number) {
-    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     return "/ad-page/"+title_url +"/"+ this.list_of_last_propositions[i].id;
   }
 
@@ -1420,14 +1490,14 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     let ad =this.list_of_last_propositions_history[i];
     this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
-      let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+      let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
       this.router.navigate([`/ad-page/${title_url}/${this.list_of_last_propositions_history[i].id}`]);
       this.loading_research=false;
       return
     })
   }
   get_ad_last_propositions_history(i: number) {
-    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     return "/ad-page/" + title_url + "/" + this.list_of_last_propositions_history[i].id;
   }
 
@@ -1438,7 +1508,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     let artwork=this.list_of_last_propositions[i];
     this.not_using_chat();
-    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
         this.router.navigate([`/artwork-writing/${title_url}/${s.target_id}`]);
@@ -1457,7 +1527,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
   get_artwork_last_proposition(s:any, i:number) {
-    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     if(s.publication_category=="Writing") {
       return "/artwork-" + s.publication_category.toLowerCase() + "/" + title_url+ "/" + s.target_id;
     }
@@ -1472,7 +1542,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     let artwork=this.list_of_last_propositions_history[i];
     this.not_using_chat();
-    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
         this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${title_url}/${s.target_id}`]);
@@ -1492,7 +1562,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   get_artwork_last_proposition_history(s:any, i:number) {
-    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     if(s.publication_category=="Writing") {
       return "/artwork-" + s.publication_category.toLowerCase() + "/" + title_url + "/" + s.target_id;
     }
@@ -1583,7 +1653,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.close_notifications();
   }
   get_comic(notif:any) {
-    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     return "/artwork-comic/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
   }
 
@@ -1592,7 +1662,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.close_notifications();
   }
   get_comic_chapter(notif:any) {
-    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     return "/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
   }
   open_drawing(notif:any) {
@@ -1600,7 +1670,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.close_notifications();
   }
   get_drawing(notif:any) {
-    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     return "/artwork-drawing/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
   }
   open_writing(notif:any) {
@@ -1609,7 +1679,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
   get_writing(notif:any) {
     if(notif.publication_name){
-      let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+      let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
       return "/artwork-writing/" + title_url + "/" + notif.publication_id;
     }
  
@@ -1619,7 +1689,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.close_notifications();
   }
   get_ad(notif:any) {
-    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     return "/ad-page/" + title_url + "/" + notif.publication_id;
   }
 
@@ -1639,7 +1709,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.cancel_research();
     this.not_using_chat();
     this.loading_research=true;
-    let value=this.input.nativeElement.value.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29')
+    let value=this.input.nativeElement.value.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F')
     this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       this.router.navigate([`/main-research/1/${value}/${this.publication_category}`]);
       this.loading_research=false;
@@ -1662,7 +1732,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   get_trending_message(i) {
     let str=this.most_researched_propositions[i].research_string;
-    let value=str.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    let value=str.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
     return "/main-research/1/" + value + "/All";
   }
 
@@ -2695,7 +2765,7 @@ change_message_status(event){
 
   popup_opened=false;
   open_menu_for_phone(){
-    if(this.data_retrieved && this.using_chat_retrieved && this.conditions_retrieved){
+    if(this.data_retrieved && this.using_chat_retrieved && this.conditions_retrieved && this.check_group_done){
       this.popup_opened=true;
       const dialogRef = this.dialog.open(PopupNavbarComponent, {
         data: {
@@ -2750,6 +2820,14 @@ change_message_status(event){
           can_sort_list_of_profile_pictures:this.can_sort_list_of_profile_pictures,
           list_of_pictures_by_ids_users:this.list_of_pictures_by_ids_users,
           list_of_pictures_by_ids_groups:this.list_of_pictures_by_ids_groups,
+
+
+          list_of_account_groups_names:this.list_of_account_groups_names,
+          list_of_account_groups_ids:this.list_of_account_groups_ids,
+          list_of_account_groups_status:this.list_of_account_groups_status,
+          list_of_account_groups_pp:this.list_of_account_groups_pp,
+          pp_group_loaded:this.pp_group_loaded,
+          user_is_in_a_group:this.user_is_in_a_group,
         },
         panelClass: 'popupMenuNavbar',
       });
@@ -2766,8 +2844,10 @@ change_message_status(event){
   
   open_share() {
     const dialogRef = this.dialog.open(PopupShareComponent, {
+      data:{type_of_profile:this.type_of_profile},
       panelClass:"popupShareClass"
     });
+    this.navbar.add_page_visited_to_history(`/open-share-maile/${this.type_of_profile}/${this.user_id}/`,this.device_info ).subscribe();
   }
   open_contact() {
     const dialogRef = this.dialog.open(PopupContactComponent, {

@@ -244,7 +244,7 @@
     padding: 8px 28px 10px 28px;
     border-radius: 35px;
     border: 1px solid #88a5c3;
-    background: #203864;
+    background-image: linear-gradient(0turn, #020536, #133364);
     color: #ffffff;
     outline: none;
     display: flex;
@@ -364,6 +364,31 @@
     }
   }
 
+  .loading-dots2 {
+    line-height: 6px;
+    margin-top: 22px;
+    margin-bottom: 44px;
+    display: flex;
+    &.for-search{
+      justify-content: center;
+    }
+    span {    
+      font-size: 35px;
+      line-height: 6px;
+      margin-bottom: 20px;
+      animation-name: blink;
+      animation-duration: 1.4s;
+      animation-iteration-count: infinite;
+      animation-fill-mode: both;
+    }
+    span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
+
   @keyframes blink {
     0% {
       opacity: 0.2;
@@ -396,8 +421,8 @@
     line-height: 16px;
 
     &.add-group-members {
-      margin-top:0px;
-      margin-bottom:30px;
+      margin-top: 24px;
+      margin-bottom: 52px;
     }
     span {
       color: #f44336;
@@ -1027,6 +1052,7 @@
   padding: 10px 16px;
   border: 1px solid #d2e0e6;
   border-radius: 20px;
+  color: #203864;
 }
 
 .status-container {

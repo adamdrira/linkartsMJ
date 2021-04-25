@@ -978,8 +978,7 @@
                           <div class="right-container">
                             <span *ngIf="user_id!=notif.id_user"><b>{{notif.id_user_name}}</b> a créé le groupe
                               <b>"{{notif.publication_name}}"</b> et attend votre confirmation</span>
-                            <span *ngIf="user_id==notif.id_user">Vous avez une demande de confirmation en attente
-                              concernant le groupe <b>"{{notif.publication_name}}"</b></span>
+                            <span *ngIf="user_id==notif.id_user">Le groupe <b>"{{notif.publication_name}}"</b> a été créé avec succès ! Consultez votre compte pour gérer le groupe.</span>
                             <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
                           </div>
                         </a>
@@ -2450,7 +2449,7 @@
                 </button>
                 
                 <!--ajouter ngif si au moins 1 groupe-->
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item *ngIf="(type_of_profile=='account' || type_of_profile=='suspended')" [matMenuTriggerFor]="myGroups">
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && check_group_done && user_is_in_a_group" [matMenuTriggerFor]="myGroups">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">group</mat-icon>
                   <span>Mes groupes</span>
                 </button>
@@ -2488,15 +2487,12 @@
 
 
             <mat-menu #myGroups="matMenu" class="navbar-mat-menu sub-menu">
-              <!--ngfor avec ng-container + ajouter fonction avec l'index-->
-              <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                <img src="../../assets/img/svg/Logo-LA3.svg">
-                <span>Nom de groupe</span>
-              </button>
-              <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                <img src="../../assets/img/svg/Logo-LA3.svg">
-                <span>Nom de groupe</span>
-              </button>
+              <ng-container *ngFor="let group of list_of_account_groups_names; let k=index">
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_group(k)">
+                  <img [src]="list_of_account_groups_pp[k]" (load)="load_pp_group(k)"[ngClass]="{'invisible': !pp_group_loaded[k]}" >
+                  <span>{{group}}</span>
+                </button>
+              </ng-container>
             </mat-menu>
 
 
@@ -2552,7 +2548,7 @@
   <div #navbarMargin class="navbar-margin"></div>
 
 
-  <div *ngIf="navbar.visible_help" class="help-container" tabIndex="-1" [matMenuTriggerFor]="helpOptions" [@enterAnimation]>
+  <div *ngIf="navbar.visible_help && type_of_profile_retrieved" class="help-container" tabIndex="-1" [matMenuTriggerFor]="helpOptions" [@enterAnimation]>
     <span>?</span>
   </div>
   <mat-menu yPosition="above" xPosition="before" #helpOptions="matMenu" class="navbar-mat-menu help">

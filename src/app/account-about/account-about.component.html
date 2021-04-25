@@ -899,7 +899,7 @@
                         <ng-container *ngIf="trendings_loaded && !visitor_mode">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span>
-                                Vous n'avez aucune œuvre en tendances sur cette période. 
+                                Vous n'avez eu aucune œuvre en Tendances sur cette période. 
                             </span>
                         </ng-container>
                         <div *ngIf="!trendings_loaded ">
@@ -910,15 +910,15 @@
                     <div class="stats-number-container" *ngIf="trendings_found && trendings_loaded">
                         <div>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                            <span>Nombre total de bandes dessinées en tendances : <b>{{number_of_comics_trendings}}</b></span>
+                            <span>Apparition en Tendances pour la catégorie Bbandes dessinées : <b>{{number_of_comics_trendings}}</b></span>
                         </div>
                         <div>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                            <span>Nombre total de tendances dessins en tendances : <b>{{number_of_drawings_trendings}}</b></span>
+                            <span>Apparition en Tendances pour la catégorie Dessins : <b>{{number_of_drawings_trendings}}</b></span>
                         </div>
                         <div>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                            <span>Nombre total d'écrits en tendances : <b>{{number_of_writings_trendings}}</b></span>
+                            <span>Apparition en Tendances pour la catégorie Écrits : <b>{{number_of_writings_trendings}}</b></span>
                         </div>
                     </div>
 
@@ -927,7 +927,7 @@
                     <!------------>
                     <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
                         <ngx-charts-line-chart
-                        [view]="view_size"
+                        
                         [scheme]="colorScheme"
                         [results]="multi_trendings_1"
                         [gradient]="gradient"
@@ -944,7 +944,7 @@
 
                     <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
                         <ngx-charts-line-chart
-                        [view]="view_size"
+                        
                         [scheme]="colorScheme"
                         [results]="multi_trendings_2"
                         [gradient]="gradient"
@@ -1079,7 +1079,7 @@
             
                         <div class="chart-container" *ngIf="single_ad_stats_retrieved">
                             <ngx-charts-line-chart
-                            [view]="view_size"
+                            
                             [scheme]="colorScheme"
                             [results]="multi_ad_stats"
                             [gradient]="gradient"
@@ -1213,7 +1213,7 @@
 
                     <div class="chart-container" #chartContainer *ngIf="single_comics_stats_retrieved">
                         <ngx-charts-line-chart
-                        [view]="view_size"
+                        
                         [scheme]="colorScheme"
                         [results]="multi_comics_contents"
                         [gradient]="gradient"
@@ -1347,7 +1347,7 @@
 
                         <div class="chart-container" #chartContainer *ngIf="single_drawings_stats_retrieved">
                             <ngx-charts-line-chart
-                            [view]="view_size"
+                            
                             [scheme]="colorScheme"
                             [results]="multi_drawings_contents"
                             [gradient]="gradient"
@@ -1484,7 +1484,7 @@
 
                     <div class="chart-container" #chartContainer *ngIf="single_writings_stats_retrieved">
                         <ngx-charts-line-chart
-                        [view]="view_size"
+                        
                         [scheme]="colorScheme"
                         [results]="multi_writings_contents"
                         [gradient]="gradient"
@@ -1581,7 +1581,7 @@
                     <ng-container *ngIf="profile_stats_number_of_viewers_retrieved && profile_stats_nb_visitors_found">
                         <div class="chart-container" #chartContainer>
                             <ngx-charts-line-chart
-                            [view]="view_size"
+                            
                             [scheme]="colorScheme"
                             [results]="multi_profile_stats_nb_visitors"
                             [gradient]="gradient"
@@ -1604,7 +1604,7 @@
                         </div>
                         <div class="chart-container" #chartContainer>
                             <ngx-charts-pie-chart
-                            [view]="view_size"
+                            
                             [scheme]="colorScheme_viewers_stats"
                             [results]="single_viewers_profiles_stats"
                             [gradient]="gradient"
@@ -1625,7 +1625,7 @@
                         </div>
                         <div class="chart-container" #chartContainer>
                             <ngx-charts-pie-chart
-                            [view]="view_size"
+                            
                             [scheme]="colorScheme_viewers_stats"
                             [results]="single_viewers_accounts_stats"
                             [gradient]="gradient"
@@ -1646,7 +1646,7 @@
                         </div>
                         <div class="chart-container" #chartContainer>
                             <ngx-charts-pie-chart
-                            [view]="view_size"
+                            
                             [scheme]="colorScheme_viewers_stats"
                             [results]="single_viewers_age_stats"
                             [gradient]="gradient"
@@ -1667,7 +1667,7 @@
                         </div>
                         <div class="chart-container" #chartContainer>
                             <ngx-charts-pie-chart
-                            [view]="view_size"
+                            
                             [scheme]="colorScheme_viewers_stats"
                             [results]="single_viewers_locations_stats"
                             [gradient]="gradient"

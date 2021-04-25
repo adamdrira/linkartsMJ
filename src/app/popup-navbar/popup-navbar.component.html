@@ -161,14 +161,12 @@
         <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">arrow_back_ios</mat-icon>
         <span>Retour</span>
       </div>
-      <div class="option-element">
-        <img [src]="profile_picture" [ngClass]="{'shiny': !pp_is_loaded }">
-        <span>Groupe 1</span>
-      </div>
-      <div class="option-element">
-        <img [src]="profile_picture" [ngClass]="{'shiny': !pp_is_loaded }">
-        <span>Groupe 1</span>
-      </div>
+      <ng-container *ngFor="let group of list_of_account_groups_names; let k=index">
+        <button class="option-element" tabIndex="-1" mat-menu-item (click)="open_group(k)">
+          <img [src]="list_of_account_groups_pp[k]" (load)="load_pp_group(k)" [ngClass]="{'invisible': !pp_group_loaded[k]}" >
+          <span>{{group}}</span>
+        </button>
+      </ng-container>
     </div>
 
 
@@ -290,8 +288,7 @@
                             <div class="right-container">
                               <span *ngIf="user_id!=notif.id_user"><b>{{notif.id_user_name}}</b> a créé le groupe
                                 <b>"{{notif.publication_name}}"</b> et attend votre confirmation</span>
-                              <span *ngIf="user_id==notif.id_user">Vous avez une demande de confirmation en attente
-                                concernant le groupe <b>"{{notif.publication_name}}"</b></span>
+                                <span *ngIf="user_id==notif.id_user">Le groupe <b>"{{notif.publication_name}}"</b> a été créé avec succès ! Consultez votre compte pour gérer le groupe</span>
                               <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
                             </div>
                           </a>

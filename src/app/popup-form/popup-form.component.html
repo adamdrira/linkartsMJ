@@ -69,11 +69,11 @@
 
                 <ng-container *ngIf="!display_no_pseudos_found">
                     
-                    <div class="loading-dots" *ngIf="!pseudo_found && registerForm5.value.fdSearchbar">
+                    <div class="loading-dots2" *ngIf="!pseudo_found && registerForm5.value.fdSearchbar" [@enterAnimation]>
                         &nbsp; <span>.</span><span>.</span><span>.</span>
                     </div>
                         
-                    <div class="subscriber-card" *ngIf="pseudo_found" [ngClass]="{'invisible':!pp_found_loaded}" [@enterAnimation]>
+                    <div class="subscriber-card" *ngIf="pseudo_found" [ngClass]="{'invisible':!pp_found_loaded}" [@enterFromTopAnimation]>
                         <div class="subscriber">
                             <div class="user-container">
                                 <div>
@@ -90,7 +90,7 @@
                         </div>
 
                         <ng-container *ngIf="check_if_pseudos_added()">
-                            <button class="subscribe-button" (click)="add_member()">
+                            <button class="unsubscribe-button" (click)="add_member()">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                                 <span>Ajouter</span>
                             </button>
@@ -103,7 +103,6 @@
     </div>
 
     <button class="submit-button" (click)="validate_add();">
-        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading">done_all</mat-icon>
         <span *ngIf="!loading">Valider</span>
         <mat-spinner *ngIf="loading" diameter="25"  style="margin:auto;"></mat-spinner>
     </button>

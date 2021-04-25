@@ -319,7 +319,7 @@ export class AdPageComponent implements OnInit {
         }
       }
       this.item=m[0];
-      let title_url=this.item.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29');
+      let title_url=this.item.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
       this.navbar.add_page_visited_to_history(`/ad-page/${this.item.title}/${this.ad_id}`,this.device_info).subscribe();
       this.location.go(`/ad-page/${title_url}/${this.ad_id}`);
       this.url=`https://www.linkarts.fr/ad-page/${title_url}/${this.ad_id}`;

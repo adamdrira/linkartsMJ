@@ -17,6 +17,9 @@ import { LoginComponent } from '../login/login.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { SignupComponent } from '../signup/signup.component';
 import { NavbarService } from '../services/navbar.service';
+import { Location } from '@angular/common';
+import { Community_recommendation } from '../services/recommendations.service';
+import { AuthenticationService } from '../services/authentication.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 declare var $: any;
 @Component({
@@ -52,9 +55,12 @@ export class AccountMyAccountComponent implements OnInit {
     private ChatService:ChatService,
     private Favorites_service:Favorites_service,
     private cd: ChangeDetectorRef,
+    private location: Location,
+    private AuthenticationService:AuthenticationService,
     private Trending_service:Trending_service,
     private Profile_Edition_Service: Profile_Edition_Service,
     private sanitizer:DomSanitizer,
+    private Community_recommendation:Community_recommendation,
     private NotificationsService:NotificationsService,
     private deviceService: DeviceDetectorService,
     public dialog: MatDialog,
@@ -299,7 +305,7 @@ export class AccountMyAccountComponent implements OnInit {
         this.password=r[0].password
         this.registerForm1.controls['old_password_real_value'].setValue(r[0].password)
       }
-      else{
+      else if(this.id_user>3){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Une erreur est survenue. Veuillez réinitialiser votre mot de passe.'},
           panelClass: "popupConfirmationClass",
@@ -334,7 +340,25 @@ export class AccountMyAccountComponent implements OnInit {
   checking_password=false;
   loading_new_pass=false;
   validate_edit_password(){
-    if(this.registerForm1.invalid || this.checking_password){
+    if(this.checking_password){
+      return
+    }
+
+    this.checking_password=true;
+    if(this.registerForm1.invalid){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Mot de passe invalide.'},
+        panelClass: "popupConfirmationClass",
+      });
+      this.checking_password=false;
+      return
+    }
+    else if(this.registerForm1.value.password==this.registerForm1.value.old_password){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Votre mot de passe doit être différent du mot de passe actuel'},
+        panelClass: "popupConfirmationClass",
+      });
+      this.checking_password=false;
       return
     }
     else{
@@ -342,7 +366,7 @@ export class AccountMyAccountComponent implements OnInit {
       this.Profile_Edition_Service.check_password(this.email, this.registerForm1.value.password).subscribe(data => {
         if(data.token){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:'Votre mot de passe doit être différent du mot de passe actuel'},
+            data: {showChoice:false, text:'Mot de passe invalide.'},
             panelClass: "popupConfirmationClass",
           });
           this.checking_password=false;
@@ -355,9 +379,10 @@ export class AccountMyAccountComponent implements OnInit {
             }
             else{
               this.password=this.registerForm1.value.password;
+              this.registerForm1.reset();
               this.registerForm1.controls['confirmPassword'].setValue('')
               this.registerForm1.controls['old_password'].setValue('')
-              this.registerForm1.controls['old_password_real_value'].setValue(this.registerForm1.value.password)
+              this.registerForm1.controls['old_password_real_value'].setValue(this.password)
               this.registerForm1_activated=false;
               this.checking_password=false;
             }
@@ -399,9 +424,10 @@ export class AccountMyAccountComponent implements OnInit {
     else{
       this.Profile_Edition_Service.edit_password(this.registerForm1.value.password,this.id_user).subscribe(r=>{
         this.password=this.registerForm1.value.password;
+        this.registerForm1.reset();
         this.registerForm1.controls['confirmPassword'].setValue('')
         this.registerForm1.controls['old_password'].setValue('')
-        this.registerForm1.controls['old_password_real_value'].setValue(this.registerForm1.value.password)
+        this.registerForm1.controls['old_password_real_value'].setValue(this.password)
         this.registerForm1_activated=false;
         this.cd.detectChanges();
       })
@@ -409,7 +435,7 @@ export class AccountMyAccountComponent implements OnInit {
     
   }
   cancel_edit_password(){
-    this.registerForm1.controls['password'].setValue(this.password);
+    this.registerForm1.reset();
     this.registerForm1_activated=false;
     this.cd.detectChanges()
   }
@@ -436,14 +462,50 @@ export class AccountMyAccountComponent implements OnInit {
     this.registerForm_activated=true;
   }
 
+  loading_email=false;
   validate_edit_email(){
+    if(this.loading_email){
+      return
+    }
+    this.loading_email=true;
+
     if(this.registerForm.invalid){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Veuillez saisir un e-mail valide.'},
+        panelClass: "popupConfirmationClass",
+      });
+      this.loading_email=false;
+    }
+    else if(this.email==this.registerForm.value.email){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Adresse e-mail identique.'},
+        panelClass: "popupConfirmationClass",
+      });
+      this.loading_email=false;
+      this.cd.detectChanges()
     }
     else{
-      this.Profile_Edition_Service.edit_email(this.registerForm.value.email).subscribe(r=>{
-        this.registerForm_activated=false;
-        this.cd.detectChanges();
+      this.Profile_Edition_Service.check_email({email:this.registerForm.value.email},0).subscribe(r=>{
+        if(r[0][0].msg=="found" ){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Cette adresse e-mail est déjà utilisée par un autre utilisateur.'},
+            panelClass: "popupConfirmationClass",
+          });
+          this.loading_email=false;
+          this.cd.detectChanges()
+        }
+        else{
+          this.Profile_Edition_Service.edit_email(this.registerForm.value.email).subscribe(r=>{
+            this.registerForm_activated=false;
+            this.email=this.registerForm.value.email
+            this.loading_email=false;
+            this.cd.detectChanges();
+          })
+        }
+
+        
       })
+     
     }
   }
 
@@ -699,7 +761,6 @@ export class AccountMyAccountComponent implements OnInit {
     }
     else{
         this.Profile_Edition_Service.validate_group_creation_and_shares(id_group,this.list_of_members_ids_by_group[id_group],this.list_of_members_shares_by_group[id_group]).subscribe(r=>{
-          
           if(r[0].error){
             
             if(r[0].error=="already_validated"){
@@ -759,6 +820,7 @@ export class AccountMyAccountComponent implements OnInit {
             })
           }
           this.validation_all=false;
+          this.group_in_edition[id_group]=false;
         });
         
     }
@@ -1064,6 +1126,43 @@ export class AccountMyAccountComponent implements OnInit {
    
  }
 
+
+ loading_connexion=[];
+ loading_connexion_unit=false;
+ open_group(i){
+  if(this.loading_connexion_unit){
+    return
+  }
+  if(!this.list_of_groups_status[i]){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:false, text:"Connexion impossible. La création de ce groupe n'a pas encore été validée par tous ses membres."},
+      panelClass: "popupConfirmationClass",
+    });
+    return
+  }
+  this.loading_connexion_unit=true;
+  this.loading_connexion[i]=true;
+  this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/switch_to_group/${this.list_of_groups_names[i]}/${this.list_of_groups_ids[i]}`, this.device_info).subscribe();
+  this.AuthenticationService.login_group_as_member(this.list_of_groups_ids[i],this.id_user).subscribe( data => {
+    if(data.token){
+      this.Community_recommendation.delete_recommendations_cookies();
+      this.Community_recommendation.generate_recommendations().subscribe(r=>{
+        this.loading_connexion_unit=false;
+        this.loading_connexion[i]=false;
+        this.location.go("/account/" + this.list_of_groups_names[i])
+        location.reload();
+      })
+    }
+    else{
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Une erreur est survenue. Veuillez réessayer ultérieurement."},
+        panelClass: "popupConfirmationClass",
+      });
+      this.loading_connexion_unit=false;
+      this.loading_connexion[i]=false;
+    }
+  })
+ }
 
 
   /************************************* TRENDINGS GAINS  **************************************/

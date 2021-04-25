@@ -148,7 +148,7 @@
                 [matTooltipShowDelay]="200">edit</mat-icon>
             </button>
 
-            <button *ngIf="!profile_not_found && !mode_visiteur && !for_reset_password" class="change-profile-picture"   (click)="change_profile_picture();" [ngClass]="{'invisible': !show_icon || !pp_is_loaded }">
+            <button *ngIf="!profile_not_found && !mode_visiteur && !for_reset_password" class="change-profile-picture"   (click)="change_profile_picture();" [ngClass]="{'invisible': !show_icon || !pp_is_loaded,'more-left':links.length==0 }">
                 <mat-icon 
                 matTooltip="Changer ma photo de profil" 
                 matTooltipClass='linkarts-tooltip' 
@@ -475,6 +475,52 @@
             && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !profile_not_found && !my_profile_is_suspended " >
         
 
+            <ng-container *ngIf="gender=='Groupe'">
+                <div class="account-title medium-icon" style="margin-bottom: 15px;">
+                    <span>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" >group</mat-icon>
+                        Liste des membres
+                    </span>
+                </div>
+                
+                <div *ngIf="!list_of_members_data_retrieved" class="skeletons-container" [@enterAnimation]>
+                    <div class="skeleton-story"></div>
+                    <div class="skeleton-story"></div>
+                    <div class="skeleton-story"></div>
+                </div>
+
+                <div class="stories-container" *ngIf="list_of_members_data_retrieved" [@enterAnimation]>
+
+                    <div class="stories-bar">
+                        <div class="story-swiper-container">
+                            <div class="swiper-wrapper">
+                    
+                                <div class="swiper-slide" *ngFor="let item of  list_of_members;let i=index">
+                                    <div class="story" (click)="get_member_url(i)">
+                                        <img class="background-image swiper-lazy"  [attr.data-src]="list_of_cover_pictures[i]" [lazyLoad]="list_of_cover_pictures[i]" loading="lazy" (load)="load_cover_list(i)" [ngClass]="{'invisible': !list_of_covers_loaded[i]}" >
+                                       <div class="img-container" [ngClass]="{'shiny': !list_of_pp_loaded[i]}" >
+                                                <img class="img swiper-lazy" [attr.data-src]="list_of_profile_pictures[i]" [lazyLoad]="list_of_profile_pictures[i]"  loading="lazy" (load)="load_pp_list(i)" [ngClass]="{'invisible': !list_of_pp_loaded[i] }" style=" border:unset;   box-shadow: 0px 0px 2px 2px #f9f9f959;">
+                                        </div>
+                                        
+                                        <div class="author" >
+                                            {{list_of_members_names[i]}}
+                                        </div>
+                                    </div>
+                                </div>
+                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- Add Arrows -->
+                    <div class="button-prev-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isBeginning }"></div>
+                    <div class="button-next-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isEnd }"></div>
+                    <div class="swiper-button-next stories-button" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+                    <div class="swiper-button-prev stories-button" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+                </div>
+               
+            </ng-container>
+
             <ng-container *ngIf="primary_description_extended && primary_description_extended_privacy=='public' && primary_description_extended.length>0">
                 <div class="account-title medium-icon">
                     <span>
@@ -484,6 +530,7 @@
                 </div>
                 
                 <div class="account-form-container">
+                    <img class="background-image " [src]="cover_picture" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }" >
                     <div class="form-item"  [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
                             <mat-label>{{primary_description_extended}}</mat-label>
@@ -1638,6 +1685,7 @@
 
                     <mat-spinner diameter="20" ></mat-spinner>
             </div>
+
 
             <div class="add-artwork-button" *ngIf="opened_section==2 && !mode_visiteur  && list_of_ads_added && list_of_ads.length==0 && opened_category_ad==0" >
                 <a [routerLink]=get_add_artwork_link()>
