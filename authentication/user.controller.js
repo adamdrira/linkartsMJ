@@ -6,6 +6,7 @@ const User_cookies = db.users_cookies;
 const User_links = db.user_links;
 const users_mailing = db.users_mailing;
 const users_information_privacy = db.users_information_privacy;
+const users_groups_managment = db.user_groups_managment; //att
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
@@ -40,7 +41,7 @@ exports.create = (req, res) => {
 	const Op = Sequelize.Op;
 
 	if(req.body.gender=="Groupe" && req.body.type_of_account.includes("Artiste")){
-		start_creation();
+		start_creation(0);
 	}
 	else{
 		User.findOne({
@@ -53,13 +54,13 @@ exports.create = (req, res) => {
 				res.status(200).json([{error: "similar user found"}])
 			}
 			else{
-				start_creation();
+				start_creation(1); //att
 			}
 		})
 	
 	}
 	
-	function start_creation(){
+	function start_creation(indice){
 		var passwordhash;
 
 		bcrypt.hash(req.body.password,10,function(err,hash){
@@ -113,6 +114,28 @@ exports.create = (req, res) => {
 						"iv":password.iv,
 						"content":password.content,
 					})
+					if(indice==0){
+						let list_of_members_validations=[req.body.id_admin];
+						User.update({
+							"list_of_members_validations":list_of_members_validations
+						},{
+							where: {
+							id:r.id,
+							}
+						});
+						
+						let id_group=r.id;
+						let list_of_ids=req.body.list_of_members;
+						let share =(100/list_of_ids.length).toFixed(2);
+						for( let i=0;i<list_of_ids.length;i++){
+							users_groups_managment.create({
+								"id_group":id_group,
+								"id_user":list_of_ids[i],
+								"share":share,
+								"status":(list_of_ids[i]==req.body.id_admin)?"validated":null,
+							})
+						}
+					}
 					after_creation(r)
 				})
 			}
@@ -463,8 +486,9 @@ exports.reset_password = (req, res) => {
 								</a>
 							</div>
 
-							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-							<img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
+							<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+							<img src="https://www.linkarts.fr/assets/img/logo_long_1.png"  height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
 						</td>
 
 					</tr>
@@ -624,7 +648,7 @@ exports.edit_email = (req, res) => {
       }
 	let id_user= get_current_user(req.cookies.currentUser);
 	User.update({
-		"email":req.boy.email},
+		"email":req.body.email},
 		{where:{
 			id:id_user,
 		}
@@ -988,8 +1012,9 @@ exports.login = async (req, res) => {
 								
 											mail_to_send+=`
 											<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Si celà n'est pas possible, nous sommes dans le regret de vous inviter à crééer un nouveau compte et à nous répondre à cet e-mail pour avoir plus d'informations sur ce sujet.</br></br> Si par contre, vous êtes bien le responsable de cette connexion, il n'y a pas de crainte à avoir.</p>
-											<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-													  <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="32" style="height:32px;max-height: 32px;float: left;margin-left:2px" />
+											<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                         					<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+													  <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
 												  </td>
 								
 											  </tr>
@@ -1085,6 +1110,53 @@ exports.login = async (req, res) => {
 
 	
 	
+};
+
+
+exports.login_group_as_member = async (req, res) => {
+	console.log("login_group_as_member")
+	if( ! req.headers['authorization'] ) {
+		return res.status(401).json({msg: "error"});
+	}
+	else {
+			let val=req.headers['authorization'].replace(/^Bearer\s/, '');
+			let user= get_current_user(val);
+			if(!user){
+					return res.status(401).json({msg: "error"});
+			}
+	}
+	const Op = Sequelize.Op;
+	const id_group= req.body.id_group;
+	User.findOne( {
+		where: { 
+		   [Op.or]:[{status:"account"},{status:"suspended"}],
+		   id:req.body.id_group,
+		   } 
+	}).catch(err => {
+		console.log(err)	
+		res.status(500).json({msg: "error", details: err});		
+	}).then(group=>{
+		if(group){
+			let list_of_members=group.list_of_members;
+			if(list_of_members.indexOf(req.body.id_user)>=0){
+				let now = new Date();
+				let connexion_time = now.toString();
+				db.users_connexions.create({
+						"id_user":id_group,
+						"connexion_time":connexion_time,
+						"status":"switch_to_group",
+						"nickname":group.nickname,
+						"ip":null,
+				})
+
+				const token = jwt.sign( {nickname: group.nickname, id: group.id}, SECRET_TOKEN, {expiresIn: 30 } )
+				return res.status(200).json( { token:token,user:group } );
+			}
+			else{
+				res.status(200).json({msg: "error", details: "not allowed"});	
+			}
+		}
+	})
 };
 
 exports.logout = (req,res) =>{
