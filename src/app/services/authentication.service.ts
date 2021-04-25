@@ -57,12 +57,10 @@ export class AuthenticationService {
 
     check_invited_user(){
         return this.http.post<any>('api/users/check_invited_user', {}, {withCredentials:true}).pipe(map(res => {
-            //console.log(res)
             if(res.msg=="TOKEN_OK"){
                 return true
             }
             else if( res.msg == "TOKEN_REFRESH" ) {
-                //this.CookieService.delete('currentUser','/');
                 this.CookieService.set('inviteduser', res.token, 365*10, '/','localhost',undefined,'Lax');
                 return true;
             }
@@ -75,25 +73,21 @@ export class AuthenticationService {
 
     check_email_checked(username, password) {
         return this.http.post<any>('api/users/check_email_checked', { mail_or_username: username, password: password }).pipe(map(res => {
-            console.log(res);
             return res
         }))
 
     }
 
     get_ip(){
-        console.log("getting ip")
         return this.http.get<any>("https://api.ipify.org/?format=json",{headers:httpOptions.headers}).pipe(map(res => {
-            console.log(res)
             return res
         }))
     }
 
     login(username, password) {
+
         return this.http.post<any>('api/users/login', { mail_or_username: username, password: password}).pipe(map(res => {
-                console.log(res);
                 if(!res.msg){
-                    //console.log("reset cookie")
                     this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
                     this.currentUserSubject.next( this.CookieService.get('currentUser') );
                     this.currentUserTypeSubject.next("account");
@@ -109,8 +103,21 @@ export class AuthenticationService {
             }));
     }
 
+
+    login_group_as_member(id_group,id_user){
+
+        return this.http.post<any>('api/users/login_group_as_member',{id_group:id_group,id_user:id_user}, {withCredentials:true}).pipe(map(res => {
+            if(!res.msg){
+                this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
+                this.currentUserSubject.next( this.CookieService.get('currentUser') );
+                this.currentUserTypeSubject.next("account");
+
+            }
+            return res;
+        }));
+      }
+
     reset_password(mail){
-        // check if mail exists and return error if no, send mail if yes
         return this.http.post<any>('api/users/reset_password', { email: mail}).pipe(map(res => {
                 return res;
             }));
@@ -118,7 +125,6 @@ export class AuthenticationService {
 
     
     create_visitor() {
-        console.log("debut creation visitor 35");
         return this.http.post<any>('api/users/create_visitor', { })
             .pipe(map(res => {
                 this.CookieService.set('currentVisitor', res.token, 365*10, '/','localhost',undefined,'Lax');
@@ -153,23 +159,17 @@ export class AuthenticationService {
     }
 
     tokenCheck() {
-        //console.log("checking token 65")
         return this.http.post<any>('api/users/checkToken', {},{withCredentials:true} )
             .pipe(map(res => {
-                //console.log(res);
                 if( res.msg == "TOKEN_UNKNOWN" ) {
-                    //console.log("token unknown")
                     this.create_visitor().subscribe(l=>{
-                        //console.log(l);
                     });
                 }
                 if( res.msg == "TOKEN_REFRESH" ) {
-                    //this.CookieService.delete('currentUser','/');
                     this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
                     
                 }
                 else if(res.status=="visitor"){
-                    //console.log("visitor mode");
                     if(res.token){
                         this.CookieService.set('currentVisitor', res.token, 365*10, '/','localhost',undefined,'Lax');
                         this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
