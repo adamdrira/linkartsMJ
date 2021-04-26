@@ -367,7 +367,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
 
     });
 
-    router.get('/get_stories_by_user_id/:user_id', function (req, res) {
+    router.post('/get_stories_by_user_id/:user_id', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -525,7 +525,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                 }); 
     });
 
-    router.get('/check_if_all_stories_seen/:user_id', function (req, res) {
+    router.post('/check_if_all_stories_seen/:user_id', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -572,7 +572,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         })();
     });
 
-        router.get('/get_total_number_of_views/:authorid', function (req, res) {
+    router.post('/get_total_number_of_views/:authorid', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
