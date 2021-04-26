@@ -14,16 +14,15 @@
 
 .archives {
 
+
   .panel-background {
     padding: 15px 10px;
-    //background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
-    //box-shadow: 0px 3px 5px 3px #28436d4a;
-    
     overflow: hidden;
     margin-top: 0px;
     margin-bottom: 30px;
   
-    //Category filter
+    
+  
     .logos-container {
       display: flex;
       justify-content: center;
@@ -33,13 +32,13 @@
         cursor: pointer;
         outline: none;
         border: none;
-        padding: 10px 20px 10px 20px;
+        padding: 10px 15px 10px 15px;
         width: 145px;
         height: 145px;
         margin-left: 15px;
         margin-right: 15px;
         border-radius: 150px;
-        background-image: linear-gradient(0.0turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+        background:linear-gradient(0.5turn, rgba(255, 255, 255, 0.9), #e6ebf1);
         box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   
         transition: all 200ms;
@@ -50,13 +49,25 @@
           width: 100%;
           height: 28px;
           font-weight: 600;
-          color: #6286a4;
+          color: #53627d;
           margin: 0px auto auto auto;
           text-align: center;
           align-items: center;
           justify-content: center;
   
-          transition: all 300ms;
+          //transition: all 300ms;
+          &.short-title {
+            display:none;
+          }
+          
+          @media (max-width: 700px) {
+            &.short-title {
+              display:flex;
+            }
+            &.long-title {
+              display:none;
+            }
+          }
         }
   
         mat-icon {
@@ -64,15 +75,15 @@
           height: unset;
           width: unset;
           margin: auto auto 5px auto;
-          font-size: 55px;
-          max-width: 55px;
+          font-size: 50px;
+          max-width: 50px;
           overflow: hidden;
           transition:color 300ms;
         }
         &:hover {
           box-shadow: 0px 0px 1px -2px #000000ab, 0px 2px 2px 0px #85869e73, 0px 0px 2px 0px #90909057;
           mat-icon {
-            color:  #f9f9f9;
+            color:  rgb(32,56,100);
           }
           span {
             color:  #f9f9f9 !important;
@@ -91,6 +102,62 @@
             color:  #f9f9f9 !important;
           }
         }
+  
+        .image1 {
+          height: calc(100% - 80px);
+          width: 100%;
+          margin: auto auto 5px auto;
+          //background: #7891ad;
+            background:#53627d;
+          //transition: all 300ms;
+          mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
+        }
+        .image2 {
+          height: calc(100% - 80px);
+          width: 100%;
+          margin: auto auto 5px auto;
+          //background: #7891ad;
+            background:#53627d;
+          //transition: all 300ms;
+          mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
+        }
+        .image3 {
+          height: calc(100% - 80px);
+          width: 100%;
+          margin: auto auto 5px auto;
+         //background: #7891ad;
+            background:#53627d;
+          //transition: all 300ms;
+          mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
+        }
+  
+        &:hover {
+          box-shadow: 0px 0px 1px -2px #000000ab, 0px 2px 2px 0px #85869e73, 0px 0px 2px 0px #90909057;
+          .image1,
+          .image2,
+          .image3 {
+            background:rgb(32,56,100);
+          }
+          span {
+            color: rgb(32,56,100) !important;
+          }
+        }
+        &:active {
+          transform: scale(0.98);
+        }
+        &.opened {
+          box-shadow: 0px 0px 1px -2px #000000ab, 0px 2px 2px 0px #85869e73, 0px 0px 2px 0px #90909057;
+          background-image: linear-gradient(0.0turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+  
+          .image1,
+          .image2,
+          .image3 {
+            background: #f9f9f9;
+          }
+          span {
+            color: #f9f9f9 !important;
+          }
+        }
       }
     }
   }
@@ -100,10 +167,9 @@
         .logo {
           width: 130px;
           height: 130px;
-          mat-icon {
-            font-size:45px;
-            max-width: 45px;
-        overflow: hidden;
+  
+          .image1,.image2,.image3 {
+            height: calc(100% - 70px);
           }
           span {
             font-size:12px;
@@ -121,10 +187,10 @@
           height: 100px;
           margin-left: 5px;
           margin-right: 5px;
-          mat-icon {
-            font-size:40px;
-            max-width: 40px;
-        overflow: hidden;
+  
+          .image1,.image2,.image3 {
+            height: calc(100% - 45px);
+            margin: auto auto 0px auto;
           }
           span {
             font-size:9px;
@@ -133,10 +199,19 @@
         }
       }
     }
-  
   }
-
-
+  
+  @media (max-width: 350px) {
+    .panel-background {
+      .logos-container {
+        .logo {
+          height:90px;
+          width:90px;
+        }
+      }
+    }
+  }
+  
 
   .results {
     min-height:1000px;

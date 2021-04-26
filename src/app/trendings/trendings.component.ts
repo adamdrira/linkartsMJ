@@ -39,6 +39,14 @@ import { takeUntil } from 'rxjs/operators';
         ])
       ]
     ),
+    trigger(
+      'enterFromTop', [
+        transition(':enter', [
+          style({transform: 'translateY(-100px)', opacity: 0}),
+          animate('200ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ]
+    ),
   ],
 })
 export class TrendingsComponent implements OnInit, OnDestroy {

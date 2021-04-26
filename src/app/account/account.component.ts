@@ -2656,6 +2656,33 @@ report(){
     }
     this.opened_category_ad=i;
   }
+
+  
+
+  click_right_absolute_arrow1(e:any) {
+    var n = Math.floor( ($('.container-comics.container-small-screen.new-comics').scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
+
+      $('.container-comics.container-small-screen.new-comics').animate({
+        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      }, 300, 'swing');
+  }
+
+  click_right_absolute_arrow2(e:any) {
+    var n = Math.floor( ($('.container-account.container-drawings.newDrawings.container-small-screen').scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
+
+      $('.container-account.container-drawings.newDrawings.container-small-screen').animate({
+        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      }, 300, 'swing');
+  }
+
+  click_right_absolute_arrow3(e:any) {
+    var n = Math.floor( ($('.container-account.container-writings.newWritings.container-small-screen').scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
+
+      $('.container-account.container-writings.newWritings.container-small-screen').animate({
+        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      }, 300, 'swing');
+  }
+
 }
 
 

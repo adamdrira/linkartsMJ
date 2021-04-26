@@ -1,7 +1,7 @@
 
 
 <div class="panel-background">
-    <div class="logos-container" [@enterFromTopAnimation]>
+    <div class="logos-container" *ngIf="status" [@enterFromTopAnimation]>
         <button class="logo" [ngClass]="{'opened': subcategory == 0 }" (click)="open_subcategory(0);">
             <div class="image1"></div>
             <span class="long-title">Bandes dessinées</span>
@@ -17,6 +17,8 @@
         </button>
     </div>
 </div>
+
+<div class="horizontal-bar" *ngIf="status" [@enterFromTop]></div>
 
 <div class="trendings-global-container">
         

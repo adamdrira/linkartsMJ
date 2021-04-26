@@ -9,9 +9,32 @@
 }
 
 
+.page {
+  background: linear-gradient(0.5turn, rgba(255, 255, 255, 0.9), #e6ebf1);
+  .component-container {
+    width: 90%;
+    margin: auto;
+    padding-bottom: 20px;
+    transform: translateY(-100px);
+    border-radius: 14px;
+    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    padding-top: 16px;
+    background: #fdfdfd;
+
+    @media (max-width: 700px) {
+      width:100%;
+      border-radius:0px;
+    }
+
+  }
+}
+
 .home-linkcollab {
 
 
+  padding-top: 30px;
+  padding-bottom: 96px;
+  background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), #203864, #3a6f9c);
 
   @keyframes flip {
     from {
@@ -48,16 +71,16 @@
   .swiper-container {
 
     position:relative;
-    height: 44px;
+    height: 50px;
     margin-left:auto;
     margin-right:auto;
     margin-top:15px;
-    margin-bottom:5px;
+    margin-bottom: 42px;
     width: 95%;
   
 
     .swiper-item {
-      height: 44px;
+      height: 50px;
       width:100%;
       padding-left: 40px;
       padding-right: 40px;
@@ -135,7 +158,6 @@
 
   .categories-container {
     display: flex;
-    margin-top: 30px;
     justify-content: center;
     padding-left: 5px;
     padding-right: 5px;
@@ -146,12 +168,12 @@
       width: 240px !important;
       border-radius: 50px;
       display: flex;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding-top: 13px;
+      padding-bottom: 13px;
       margin:auto auto;
 
       box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-      background-image: linear-gradient( 0.5turn, rgba(224, 224, 224, 0.7), rgba(239, 239, 239, 0.6), rgba(245, 245, 245, 0.5));
+      background-image: linear-gradient(0.5turn, rgba(255, 255, 255, 0.9), #e6ebf1);
       span {
         color: rgb(83, 98, 125);
       }
@@ -202,10 +224,11 @@
     .select-container ::ng-deep {
       position: relative;
       display: flex;
+      height: 41px;
       width: 270px;
       margin-left: auto;
       margin-right: auto;
-      margin: auto auto;
+      margin-bottom: 33px;
 
       .mat-form-field {
           height: 100%;
@@ -232,7 +255,7 @@
           }
           .mat-form-field-flex {
               height: 100%;
-              padding: 12px 24px !important;
+              padding: 0px 24px !important;
               width: 100% !important;
 
               transition: box-shadow 200ms;
@@ -401,7 +424,7 @@
     overflow: hidden;
 
     width: 270px !important;
-    top: 26px;
+    top: 31px;
     left: -8px;
     border-top: 1px solid rgb(218,218,218);
     max-height: 270px;
@@ -750,6 +773,7 @@
 
 .no-proposition-container {
   margin-top: 60px;
+  min-height: calc(100vh - 420px);
   display: flex;
   flex-direction: column;
   padding: 30px;

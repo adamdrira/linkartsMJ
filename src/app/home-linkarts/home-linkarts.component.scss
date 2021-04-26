@@ -5,6 +5,7 @@
 .invisible {
   visibility: hidden !important;
   pointer-events: none !important;
+  display:flex;
   //opacity:0;
 }
 
@@ -15,10 +16,31 @@
 }
 
 
+.page {
+  background: linear-gradient(0.5turn, rgba(255, 255, 255, 0.9), #e6ebf1);
+  .component-container {
+    width: 90%;
+    margin: auto;
+    transform: translateY(-100px);
+    border-radius: 14px;
+    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    padding-top: 16px;
+    background: #fdfdfd;
+
+    @media (max-width: 599px) {
+      width:100%;
+      border-radius:0px;
+    }
+
+  }
+}
 .home-linkarts {
 
 
   
+  padding-top: 30px;
+  padding-bottom: 96px;
+  background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), #203864, #3a6f9c);
 
  /* @keyframes opened-button {
     from {
@@ -84,14 +106,14 @@
 
     position:relative;
     width:100%;
-    height: 44px;
+    height: 50px;
     margin-left:auto;
     margin-right:auto;
     margin-top:15px;
-    margin-bottom:35px;
+    margin-bottom:42px;
 
     .swiper-item {
-      height: 44px;
+      height: 50px;
       width:100%;
       padding-left: 40px;
       padding-top: 2px;
@@ -114,7 +136,7 @@
       z-index:10;
       height:50px;
       width: 35px;
-      background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffffdb, #ffffff00);
+      background-image: linear-gradient(190deg, #1d2f53, #1f355f);
      }
     .button-next-shadow {
       position:absolute;
@@ -123,14 +145,14 @@
       z-index:10;
       height:50px;
       width: 35px;
-      background-image: linear-gradient(to right, #ffffff00,#ffffffdb, #ffffff, #ffffff, #ffffff);
+      background-image: linear-gradient(190deg, #1d2f53, #1f355f);
      }
 
     .swiper-button-prev,
     .swiper-button-next {
 
         outline: none !important;
-        color: #203864 !important;
+        color: white !important;
         width: 30px;
         height: 30px;
         border-radius: 50px;
@@ -170,11 +192,12 @@
       width: 185px !important;
       border-radius: 50px;
       display: flex;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding-top: 13px;
+      padding-bottom: 13px;
       margin:auto auto;
       box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-      background-image: linear-gradient( 0.5turn, rgba(224, 224, 224, 0.7), rgba(239, 239, 239, 0.6), rgba(245, 245, 245, 0.5));
+      background: linear-gradient(0.5turn, rgba(255, 255, 255, 0.9), #e6ebf1);
+
       span {
         color: rgb(83, 98, 125);
       }
@@ -223,12 +246,12 @@
       
     .select-container ::ng-deep {
       position: relative;
-      height: 33px;
+      height: 41px;
       width: 230px;
       margin-left:auto;
       margin-right:auto;
       margin-top:0px;
-      margin-bottom: 22px;
+      margin-bottom: 33px;
 
       .mat-form-field {
           height: 100%;
@@ -413,7 +436,7 @@
     overflow: hidden;
 
     width: 230px !important;
-    top: 26px;
+    top: 31px;
     left: -14px;
     border-top: 1px solid rgb(218,218,218);
     max-height: 270px;
