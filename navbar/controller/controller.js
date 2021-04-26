@@ -2,22 +2,22 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
-const pool = new Pool({
+/*const pool = new Pool({
     port: 5432,
     database: 'linkarts',
     user: 'adamdrira',
     password: 'E273adamZ9Qvps',
     host: 'localhost',
-});
+});*/
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
   //dialect: 'postgres'
-});*/
+});
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -96,7 +96,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
      });
 
 
-     router.get('/get_last_researched_navbar_for_recommendations/:category/:offset/:limit', function (req, res) {
+     router.post('/get_last_researched_navbar_for_recommendations/:category/:offset/:limit', function (req, res) {
         
         if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -128,7 +128,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
 
-    router.get('/check_if_contents_clicked', function (req, res) {
+    router.post('/check_if_contents_clicked', function (req, res) {
         
         if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -194,7 +194,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
     
 
-    router.get('/get_last_researched_navbar/:category', function (req, res) {
+    router.post('/get_last_researched_navbar/:category', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -496,6 +496,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
     router.get('/get_number_of_results_by_category/:category/:text', function (req, res) {
 
+      console.log("get_number_of_results_by_category")
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
