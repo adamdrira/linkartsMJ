@@ -43,7 +43,7 @@
                 <div *ngIf="!( sorted_artpieces_traditional.length>number_of_drawings_to_show_by_category[0] && !(detect_new_compteur_drawings && category_clicked_for_see_more==0) )" [routerLink]=open_research(item)
                     class="see-more with-span" [ngClass]="{'invisible':!all_drawings_loaded}">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">add_circle_outline</mat-icon>
-                    <span>Voir du contenu de ce genre</span>
+                    <span>Voir tout</span>
                 </div>
 
                 <div *ngIf="detect_new_compteur_drawings && category_clicked_for_see_more==0" 

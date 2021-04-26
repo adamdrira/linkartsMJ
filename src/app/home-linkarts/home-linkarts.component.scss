@@ -42,18 +42,7 @@
   padding-bottom: 96px;
   background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), #203864, #3a6f9c);
 
- /* @keyframes opened-button {
-    from {
-      background-color: white;
-      box-shadow: 0px 0px 0px white;
-    }
-    to {
-      background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
-      //background-color: rgb(32, 56, 100);
-      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-        0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-    }
-  }*/
+
   @keyframes flip {
     from {
       transform: rotateY(0deg);
@@ -136,7 +125,8 @@
       z-index:10;
       height:50px;
       width: 35px;
-      background-image: linear-gradient(190deg, #1d2f53, #1f355f);
+      //background-image: linear-gradient(190deg, #1d2f53, #1f355f);
+      background-image: linear-gradient(190deg, #22385b, #274469);
      }
     .button-next-shadow {
       position:absolute;
@@ -145,7 +135,8 @@
       z-index:10;
       height:50px;
       width: 35px;
-      background-image: linear-gradient(190deg, #1d2f53, #1f355f);
+      //background-image: linear-gradient(190deg, #1d2f53, #1f355f);
+      background-image: linear-gradient(190deg, #22385b, #274469);
      }
 
     .swiper-button-prev,
@@ -196,7 +187,7 @@
       padding-bottom: 13px;
       margin:auto auto;
       box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-      background: linear-gradient(0.5turn, rgba(255, 255, 255, 0.9), #e6ebf1);
+      background: linear-gradient(0.5turn, rgba(254, 254, 254), #e6ebf1);
 
       span {
         color: rgb(83, 98, 125);
@@ -409,6 +400,11 @@
     }
   }
 
+  @media (max-width: 600px) {
+    background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), #3a6f9c);
+  }
+
+  
 }
 
 

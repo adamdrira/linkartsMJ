@@ -80,7 +80,7 @@
                 
                 <div [routerLink]=open_research(style) *ngIf="!( !show_more[sorted_style_list.indexOf(style)] && see_more_writings(style) ) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more with-span" (click)="see_more(style,myScrollContainer, i1)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">add_circle_outline</mat-icon>
-                    <span>Voir du contenu de ce genre</span>
+                    <span>Voir tout</span>
                 </div>
 
                 <ng-container *ngIf="show_more[sorted_style_list.indexOf(style)]">
