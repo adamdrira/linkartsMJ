@@ -578,7 +578,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     });
     
 
-    router.get('/get_ads_by_pseudo/:pseudo', function (req, res) {
+    router.post('/get_ads_by_pseudo/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -653,7 +653,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
          }); 
    });
 
-   router.get('/get_all_responses/:id_ad', function (req, res) {
+   router.post('/get_all_responses/:id_ad', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
