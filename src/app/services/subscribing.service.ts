@@ -35,19 +35,19 @@ export class Subscribing_service {
  };
 
  check_if_publication_archived(publication_category,format,publication_id){
-  return this.httpClient.get(`routes/check_if_publication_archived/${publication_category}/${format}/${publication_id}`, {withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post(`routes/check_if_publication_archived/${publication_category}/${format}/${publication_id}`, {withCredentials:true}).pipe(map(information=>{
       return information;
     }));
 };
 
  get_all_users_subscribed_to_before_today(id_user){
-    return this.httpClient.get(`routes/get_all_users_subscribed_to/${id_user}`, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_all_users_subscribed_to/${id_user}`, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
 
   get_all_users_subscribed_to_today(id_user){
-    return this.httpClient.get(`routes/get_all_users_subscribed_to_today/${id_user}`, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_all_users_subscribed_to_today/${id_user}`, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
@@ -65,25 +65,25 @@ export class Subscribing_service {
   }
 
   get_all_subscribed_users(id_user){
-    return this.httpClient.get(`routes/get_all_subscribed_users/${id_user}`, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_all_subscribed_users/${id_user}`, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
 
   get_all_subscribers_by_pseudo(pseudo){
-    return this.httpClient.get(`routes/get_all_subscribers_by_pseudo/${pseudo}`, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_all_subscribers_by_pseudo/${pseudo}`, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
  
   check_if_visitor_susbcribed(id_user_to_check){
-    return this.httpClient.get(`routes/check_if_visitor_susbcribed/${id_user_to_check}`, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/check_if_visitor_susbcribed/${id_user_to_check}`, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
  
   check_if_susbcribed_to_visitor(id_user_to_check){
-    return this.httpClient.get(`routes/check_if_susbcribed_to_visitor/${id_user_to_check}`, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/check_if_susbcribed_to_visitor/${id_user_to_check}`, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
@@ -119,7 +119,7 @@ export class Subscribing_service {
   };
 
   get_last_contents_of_a_subscribing(id_user){
-    return this.httpClient.get(`routes/get_last_contents_of_a_subscribing/${id_user}`).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_last_contents_of_a_subscribing/${id_user}`,{}).pipe(map(information=>{
         return information;
       }));
   };
@@ -145,25 +145,25 @@ export class Subscribing_service {
 
 
   get_archives_comics(){
-    return this.httpClient.get('routes/list_of_archives_comics', {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post('routes/list_of_archives_comics', {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   }
 
   get_archives_drawings(){
-    return this.httpClient.get('routes/list_of_archives_drawings', {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post('routes/list_of_archives_drawings', {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   }
 
   get_archives_writings(){
-    return this.httpClient.get('routes/list_of_archives_drawings', {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post('routes/list_of_archives_drawings', {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   }
 
   get_archives_ads(): Observable<Object>{
-    return this.httpClient.get('routes/list_of_archives_ads', {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post('routes/list_of_archives_ads', {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   }
@@ -171,19 +171,19 @@ export class Subscribing_service {
   
 
   get_new_drawing_contents(pseudo){
-    return this.httpClient.get(`routes/get_new_drawing_contents/${pseudo}`).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_new_drawing_contents/${pseudo}`,{}).pipe(map(information=>{
         return information;
       }));
   };
 
   get_new_writing_contents(pseudo){
-    return this.httpClient.get(`routes/get_new_writing_contents/${pseudo}`).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_new_writing_contents/${pseudo}`,{}).pipe(map(information=>{
         return information;
       }));
   };
 
   get_new_comic_contents(pseudo){
-    return this.httpClient.get(`routes/get_new_comic_contents/${pseudo}`).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_new_comic_contents/${pseudo}`,{}).pipe(map(information=>{
         return information;
       }));
   };

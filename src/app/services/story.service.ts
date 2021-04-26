@@ -35,7 +35,7 @@ export class Story_service {
   }
 
   get_stories_by_user_id(id_user){
-    return this.httpClient.get(`routes/get_stories_by_user_id/${id_user}`, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_stories_by_user_id/${id_user}`, {withCredentials:true}).pipe(map(information=>{
           return information
       }));
   };
@@ -65,13 +65,13 @@ check_if_story_already_seen(id_story){
 }
 
 check_if_all_stories_seen(id_user){
-  return this.httpClient.get(`routes/check_if_all_stories_seen/${id_user}`, {withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post(`routes/check_if_all_stories_seen/${id_user}`, {withCredentials:true}).pipe(map(information=>{
         return information
     }));
 };
 
 get_total_number_of_views(authorid){
-  return this.httpClient.get(`routes/get_total_number_of_views/${authorid}`, {withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post(`routes/get_total_number_of_views/${authorid}`, {withCredentials:true}).pipe(map(information=>{
         return information
     }));
 };

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, tap, map, delay, shareReplay } from 'rxjs/operators';
+import { catchError, tap, map, delay, shareReplay, publishReplay, refCount } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import { EMPTY, Observable } from 'rxjs';
 import { User } from './user';
@@ -49,17 +49,8 @@ export class Profile_Edition_Service {
 
 
   retrieve_profile_picture(user_id: number){
-    
-    let code=`routes/retrieve_profile_picture/${user_id}`;
-    if (this.cache[code]) {
-      return this.cache[code];
-    }
-    
-    return this.cache[code] = this.httpClient.get(code, {responseType:'blob'} ).pipe(
-      shareReplay(1),
-      catchError(err => {
-          delete this.cache[code];
-          return EMPTY;
+    return this.httpClient.get(`routes/retrieve_profile_picture/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
+      return information;
     }));
   }
 
@@ -391,6 +382,11 @@ export class Profile_Edition_Service {
   }
 
  
+  send_share_email(email,name){
+    return this.httpClient.post('routes/send_share_email',{email:email,name:name},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
 
   send_email_for_account_creation(id){
     return this.httpClient.post('routes/send_email_for_account_creation',{id:id},{withCredentials:true} ).pipe(map((information)=>{

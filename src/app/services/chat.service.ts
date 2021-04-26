@@ -57,20 +57,20 @@ public get chatLisnerValue(): any {
 
 
 get_list_of_users_I_talk_to():Observable<any>{
-    return this.httpClient.get('routes/get_list_of_users_I_talk_to',{withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post('routes/get_list_of_users_I_talk_to',{withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
 }
 
 get_list_of_users_I_talk_to_navbar():Observable<any>{
-  return this.httpClient.get('routes/get_list_of_users_I_talk_to_navbar',{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_list_of_users_I_talk_to_navbar',{withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
 }
 
 
 get_list_of_spams():Observable<any>{
-    return this.httpClient.get('routes/get_list_of_spams',{withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post('routes/get_list_of_spams',{withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
 }
@@ -78,7 +78,7 @@ get_list_of_spams():Observable<any>{
 
 
 get_first_messages(id_1,id_2,id_chat_section,is_a_group_chat,compteur):Observable<any>{
-    return this.httpClient.get(`routes/get_first_messages/${id_1}/${id_2}/${id_chat_section}/${is_a_group_chat}`).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_first_messages/${id_1}/${id_2}/${id_chat_section}/${is_a_group_chat}`,{}).pipe(map(information=>{
         return [information,compteur];   
       }));
 }
@@ -132,32 +132,32 @@ add_to_chat_searchbar_history(id_receiver:number,friend_type):Observable<any>{
 
 
 get_searching_propositions(text:string,compteur_research:number,is_for_chat):Observable<any>{
-    return this.httpClient.get(`routes/get_searching_propositions/${text}/${is_for_chat}`,{withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/get_searching_propositions/${text}/${is_for_chat}`,{withCredentials:true}).pipe(map(information=>{
         return [information,compteur_research];   
       }));
 }
 
 get_all_searching_propositions(text:string,compteur_research:number,is_for_chat,limit,offset):Observable<any>{
-  return this.httpClient.get(`routes/get_all_searching_propositions/${text}/${is_for_chat}/${limit}/${offset}`,{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post(`routes/get_all_searching_propositions/${text}/${is_for_chat}/${limit}/${offset}`,{withCredentials:true}).pipe(map(information=>{
       return [information,compteur_research];   
     }));
 }
 
 get_searching_propositions_group(text:string,compteur_research:number):Observable<any>{
-  return this.httpClient.get(`routes/get_searching_propositions_group/${text}`,{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post(`routes/get_searching_propositions_group/${text}`,{withCredentials:true}).pipe(map(information=>{
       return [information,compteur_research];   
     }));
 }
 
 
 get_first_searching_propositions():Observable<any>{
-    return this.httpClient.get('routes/get_first_searching_propositions',{withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post('routes/get_first_searching_propositions',{withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
 }
 
 get_chat_history(compteur):Observable<any>{
-  return this.httpClient.get('routes/get_chat_history',{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_chat_history',{withCredentials:true}).pipe(map(information=>{
       return [information,compteur];   
     }));
 }
@@ -183,13 +183,13 @@ get_group_chat_name(id):Observable<any>{
 }
 
 get_my_list_of_groups():Observable<any>{
-  return this.httpClient.get('routes/get_my_list_of_groups',{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_my_list_of_groups',{withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
 }
 
 get_my_list_of_groups_navbar():Observable<any>{
-  return this.httpClient.get('routes/get_my_list_of_groups_navbar',{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_my_list_of_groups_navbar',{withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
 }
@@ -272,13 +272,13 @@ add_new_friends_to_a_group(friend_id,list_of_friends):Observable<any>{
 }
 
 get_chat_first_propositions_group(compteur):Observable<any>{
-  return this.httpClient.get('routes/get_chat_first_propositions_group',{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_chat_first_propositions_group',{withCredentials:true}).pipe(map(information=>{
         return [information,compteur];   
       }));
 }
 
 get_group_chat_information(id):Observable<any>{
-  return this.httpClient.get(`routes/get_group_chat_information/${id}`,{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post(`routes/get_group_chat_information/${id}`,{withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
 }
@@ -328,13 +328,13 @@ get_picture_sent_by_msg(file_name):Observable<any>{
 }
 
 check_if_file_exists(type_of_friend,friend_id,file_name,value):Observable<any>{
-  return this.httpClient.get(`routes/check_if_file_exists/${type_of_friend}/${friend_id}/${file_name}/${value}`).pipe(map((information)=>{
+  return this.httpClient.post(`routes/check_if_file_exists/${type_of_friend}/${friend_id}/${file_name}/${value}`,{}).pipe(map((information)=>{
     return information;
   }));
 }
 
 check_if_file_exists_png(type_of_friend,friend_id,file_name):Observable<any>{
-  return this.httpClient.get(`routes/check_if_file_exists_png/${type_of_friend}/${friend_id}/${file_name}`).pipe(map((information)=>{
+  return this.httpClient.post(`routes/check_if_file_exists_png/${type_of_friend}/${friend_id}/${file_name}`,{}).pipe(map((information)=>{
     return information;
   }));
 }
@@ -368,25 +368,25 @@ get_attachment_popup(file_name,friend_type,friend_id):Observable<any>{
 //right chat
 
 get_all_files(date:string,friend_id,id_chat_section,friend_type):Observable<any>{
-  return this.httpClient.get(`routes/get_all_files/${date}/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_all_files/${date}/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
 
 get_size_of_files(friend_id,id_chat_section,friend_type):Observable<any>{
-  return this.httpClient.get(`routes/get_size_of_files/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_size_of_files/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
 
 get_size_of_pictures(friend_id,id_chat_section,friend_type):Observable<any>{
-  return this.httpClient.get(`routes/get_size_of_pictures/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_size_of_pictures/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
 
 get_all_pictures(date,friend_id,id_chat_section,friend_type){
-  return this.httpClient.get(`routes/get_all_pictures/${date}/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_all_pictures/${date}/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
@@ -456,13 +456,13 @@ get_other_messages(compteur,id_friend,id_last_message,id_chat_section,list_of_me
 }
 
 get_other_messages_more(id_friend,id_last_message,id_chat_section,friend_type):Observable<any>{
-  return this.httpClient.get(`routes/get_other_messages_more/${id_friend}/${id_last_message}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_other_messages_more/${id_friend}/${id_last_message}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
 
 get_less_messages(id_friend,id_first_message,id_last_message,id_chat_section,friend_type):Observable<any>{
-  return this.httpClient.get(`routes/get_less_messages/${id_friend}/${id_first_message}/${id_last_message}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_less_messages/${id_friend}/${id_first_message}/${id_last_message}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
@@ -501,13 +501,13 @@ get_reactions_by_user(id_message):Observable<any>{
 
 
 get_messages_from_research(message,id_chat_section,id_friend,friend_type){
-  return this.httpClient.get(`routes/get_messages_from_research/${message}/${id_chat_section}/${id_friend}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_messages_from_research/${message}/${id_chat_section}/${id_friend}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
 
 get_messages_around(id_message,id_chat_section,id_friend,friend_type){
-  return this.httpClient.get(`routes/get_messages_around/${id_message}/${id_chat_section}/${id_friend}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_messages_around/${id_message}/${id_chat_section}/${id_friend}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
@@ -519,7 +519,7 @@ get_messages_around(id_message,id_chat_section,id_friend,friend_type){
 
 
 get_chat_sections(id_friend,is_a_group_chat,compteur){
-  return this.httpClient.get(`routes/get_chat_sections/${id_friend}/${is_a_group_chat}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_chat_sections/${id_friend}/${is_a_group_chat}`, {withCredentials:true} ).pipe(map((information)=>{
     return [information,compteur];
   }));
 }
@@ -537,13 +537,13 @@ delete_chat_section(id_chat_section,id_friend,is_a_group_chat){
 }
 
 get_notifications_section(id_chat_section,id_friend,is_a_group_chat){
-  return this.httpClient.get(`routes/get_notifications_section/${id_chat_section}/${id_friend}/${is_a_group_chat}`, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post(`routes/get_notifications_section/${id_chat_section}/${id_friend}/${is_a_group_chat}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
 
 research_chat_sections(text:string,id_friend,is_a_group_chat):Observable<any>{
-  return this.httpClient.get(`routes/research_chat_sections/${text}/${id_friend}/${is_a_group_chat}`,{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post(`routes/research_chat_sections/${text}/${id_friend}/${is_a_group_chat}`,{withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
 }
@@ -561,13 +561,13 @@ get_users_connected_in_the_chat(list_of_friends){
 /**********************************************NOTIFICATIONS CHAT ***************************************/
 
 get_number_of_unseen_messages(){
-  return this.httpClient.get('routes/get_number_of_unseen_messages',{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_number_of_unseen_messages',{withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
 }
 
 get_number_of_unseen_messages_spams(){
-  return this.httpClient.get('routes/get_number_of_unseen_messages_spams',{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_number_of_unseen_messages_spams',{withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
 }

@@ -113,7 +113,7 @@ export class Ads_service {
     }
 
     get_ads_by_pseudo(pseudo: string) {
-      return this.httpClient.get(`routes/get_ads_by_pseudo/${pseudo}`).pipe(map(information=>{
+      return this.httpClient.post(`routes/get_ads_by_pseudo/${pseudo}`,{}).pipe(map(information=>{
         return information;   
       }));
     }
@@ -176,7 +176,7 @@ export class Ads_service {
     }
 
     get_all_responses(id_ad): Observable<Object>{
-      return this.httpClient.get(`routes/get_all_responses/${id_ad}`).pipe(map(information=>{
+      return this.httpClient.post(`routes/get_all_responses/${id_ad}`,{}).pipe(map(information=>{
         return information;   
       }));
     }

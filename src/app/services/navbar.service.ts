@@ -135,19 +135,19 @@ export class NavbarService {
       }
 
     get_last_researched_navbar(category,compteur){
-      return this.httpClient.get(`routes/get_last_researched_navbar/${category}`, {withCredentials:true}).pipe(map((information)=>{
+      return this.httpClient.post(`routes/get_last_researched_navbar/${category}`, {withCredentials:true}).pipe(map((information)=>{
         return [information,compteur];
       }));
     }
 
     get_last_researched_navbar_for_recommendations(category,offset,limit){
-      return this.httpClient.get(`routes/get_last_researched_navbar_for_recommendations/${category}/${offset}/${limit}`, {withCredentials:true}).pipe(map(information=>{
+      return this.httpClient.post(`routes/get_last_researched_navbar_for_recommendations/${category}/${offset}/${limit}`, {withCredentials:true}).pipe(map(information=>{
           return information;
         }));
     };
     
     check_if_contents_clicked(){
-      return this.httpClient.get(`routes/check_if_contents_clicked`, {withCredentials:true}).pipe(map(information=>{
+      return this.httpClient.post(`routes/check_if_contents_clicked`, {withCredentials:true}).pipe(map(information=>{
           return information;
         }));
     };
