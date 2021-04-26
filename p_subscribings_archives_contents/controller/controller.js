@@ -83,7 +83,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     
     
 
-    router.get('/check_if_publication_archived/:publication_category/:format/:publication_id', function (req, res) {
+    router.post('/check_if_publication_archived/:publication_category/:format/:publication_id', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -125,7 +125,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         }); 
     });
 
-    router.get('/list_of_archives_comics', function (req, res) {
+    router.post('/list_of_archives_comics', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -157,7 +157,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     
     });
 
-    router.get('/list_of_archives_drawings', function (req, res) {
+    router.post('/list_of_archives_drawings', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -189,7 +189,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
    
     });
 
-    router.get('/list_of_archives_writings', function (req, res) {
+    router.post('/list_of_archives_writings', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -221,7 +221,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
    
     });
 
-    router.get('/list_of_archives_ads', function (req, res) {
+    router.post('/list_of_archives_ads', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -566,7 +566,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     
 
 
-    router.get('/get_all_users_subscribed_to_today/:id_user', function (req, res) {
+    router.post('/get_all_users_subscribed_to_today/:id_user', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -602,7 +602,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
 
-    router.get('/get_all_users_subscribed_to/:id_user', function (req, res) {
+    router.post('/get_all_users_subscribed_to/:id_user', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -636,7 +636,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         }); 
     });
 
-    router.get('/get_all_subscribed_users/:id_user', function (req, res) {
+    router.post('/get_all_subscribed_users/:id_user', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -666,7 +666,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         });    
     });
 
-    router.get('/get_all_subscribers_by_pseudo/:pseudo', function (req, res) {
+    router.post('/get_all_subscribers_by_pseudo/:pseudo', function (req, res) {
 
         if( ! req.headers['authorization'] ) {
           return res.status(401).json({msg: "error"});
@@ -709,7 +709,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             
       });
 
-    router.get('/check_if_visitor_susbcribed/:id_user_to_check', function (req, res) {
+    router.post('/check_if_visitor_susbcribed/:id_user_to_check', function (req, res) {
         if( ! req.headers['authorization'] ) {
             return res.status(401).json({msg: "error"});
         }
@@ -741,7 +741,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     
     });
 
-    router.get('/check_if_susbcribed_to_visitor/:id_user_to_check', function (req, res) {
+    router.post('/check_if_susbcribed_to_visitor/:id_user_to_check', function (req, res) {
         if( ! req.headers['authorization'] ) {
             return res.status(401).json({msg: "error"});
         }
@@ -1058,7 +1058,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
          
     });
 
-    router.get('/get_last_contents_of_a_subscribing/:id_user', function (req, res) {
+    router.post('/get_last_contents_of_a_subscribing/:id_user', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1269,7 +1269,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         
     });
 
-    router.get('/get_new_comic_contents/:pseudo', function (req, res) {
+    router.post('/get_new_comic_contents/:pseudo', function (req, res) {
 
         if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1310,7 +1310,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         })  
     });
 
-    router.get('/get_new_writing_contents/:pseudo', function (req, res) {
+    router.post('/get_new_writing_contents/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1352,7 +1352,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
        
     });
 
-    router.get('/get_new_drawing_contents/:pseudo', function (req, res) {
+    router.post('/get_new_drawing_contents/:pseudo', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
