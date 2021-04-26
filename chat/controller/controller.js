@@ -20,7 +20,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     };
 
     
-    router.get('/get_list_of_users_I_talk_to', function (req, res) {
+    router.post('/get_list_of_users_I_talk_to', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -50,7 +50,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
            }); 
      });
 
-     router.get('/get_list_of_users_I_talk_to_navbar', function (req, res) {
+     router.post('/get_list_of_users_I_talk_to_navbar', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -81,7 +81,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
            }); 
      });
 
-     router.get('/get_number_of_unseen_messages',function(req,res){
+     router.post('/get_number_of_unseen_messages',function(req,res){
        if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -204,7 +204,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
          }); 
      })
 
-     router.get('/get_number_of_unseen_messages_spams',function(req,res){
+     router.post('/get_number_of_unseen_messages_spams',function(req,res){
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -276,7 +276,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
          }); 
      })
 
-     router.get('/get_list_of_spams', function (req, res) {
+     router.post('/get_list_of_spams', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -310,7 +310,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      
 
      
-     router.get('/get_first_messages/:id_1/:id_2/:id_chat_section/:is_a_group_chat', function (req, res) {
+     router.post('/get_first_messages/:id_1/:id_2/:id_chat_section/:is_a_group_chat', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -785,7 +785,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
    })
 
-     router.get('/get_first_searching_propositions', function (req, res) {
+     router.post('/get_first_searching_propositions', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -879,7 +879,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       
    });
 
-   router.get('/get_chat_history', function (req, res) {
+   router.post('/get_chat_history', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -952,7 +952,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
 
    
-   router.get('/get_searching_propositions/:text/:is_for_chat', function (req, res) {
+   router.post('/get_searching_propositions/:text/:is_for_chat', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1109,7 +1109,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
   });
 
 
-  router.get('/get_all_searching_propositions/:text/:is_for_chat/:limit/:offset', function (req, res) {
+  router.post('/get_all_searching_propositions/:text/:is_for_chat/:limit/:offset', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1379,7 +1379,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     
   });
 
-  router.get('/get_searching_propositions_group/:text', function (req, res) {
+  router.post('/get_searching_propositions_group/:text', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1419,7 +1419,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
   
 
-  router.get('/research_chat_sections/:text/:id_friend/:is_a_group_chat', function (req, res) {
+  router.post('/research_chat_sections/:text/:id_friend/:is_a_group_chat', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1743,7 +1743,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     
     });
 
-    router.get('/check_if_file_exists/:friend_type/:friend_id/:attachment_name/:value', function (req, res) {
+    router.post('/check_if_file_exists/:friend_type/:friend_id/:attachment_name/:value', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1800,7 +1800,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     });
 
 
-    router.get('/check_if_file_exists_png/:friend_type/:friend_id/:attachment_name', function (req, res) {
+    router.post('/check_if_file_exists_png/:friend_type/:friend_id/:attachment_name', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1947,7 +1947,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         });
       });
 
-    router.get('/get_size_of_files/:friend_id/:id_chat_section/:friend_type', function (req, res) {
+    router.post('/get_size_of_files/:friend_id/:id_chat_section/:friend_type', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2001,7 +2001,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       
    });
 
-   router.get('/get_size_of_pictures/:friend_id/:id_chat_section/:friend_type', function (req, res) {
+   router.post('/get_size_of_pictures/:friend_id/:id_chat_section/:friend_type', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2056,7 +2056,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
  });
 
 
-    router.get('/get_all_files/:date/:friend_id/:id_chat_section/:friend_type', function (req, res) {
+    router.post('/get_all_files/:date/:friend_id/:id_chat_section/:friend_type', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2132,7 +2132,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       
    });
 
-   router.get('/get_all_pictures/:date/:friend_id/:id_chat_section/:friend_type', function (req, res) {
+   router.post('/get_all_pictures/:date/:friend_id/:id_chat_section/:friend_type', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2594,7 +2594,7 @@ router.post('/get_reactions_by_user',function(req,res){
   })
 })
 
-router.get('/get_other_messages_more/:id_friend/:id_last_message/:id_chat_section/:friend_type', function (req, res) {
+router.post('/get_other_messages_more/:id_friend/:id_last_message/:id_chat_section/:friend_type', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2659,7 +2659,7 @@ router.get('/get_other_messages_more/:id_friend/:id_last_message/:id_chat_sectio
 
 
 
-router.get('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id_chat_section/:friend_type', function (req, res) {
+router.post('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id_chat_section/:friend_type', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2773,7 +2773,7 @@ router.get('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id
 
         
 
-router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:friend_type', function (req, res) {
+router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:friend_type', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2831,7 +2831,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
   });
 
   
-  router.get('/get_messages_around/:id_message/:id_chat_section/:id_friend/:friend_type', function (req, res) {
+  router.post('/get_messages_around/:id_message/:id_chat_section/:id_friend/:friend_type', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2965,7 +2965,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
     
 
-    router.get('/get_chat_sections/:id_friend/:is_a_group_chat', function (req, res) {
+    router.post('/get_chat_sections/:id_friend/:is_a_group_chat', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -3281,7 +3281,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
     
 
-    router.get('/get_notifications_section/:id_chat_section/:id_friend/:is_a_group_chat', function (req, res) {
+    router.post('/get_notifications_section/:id_chat_section/:id_friend/:is_a_group_chat', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -3659,7 +3659,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     });
 
 
-    router.get('/get_my_list_of_groups', function (req, res) {
+    router.post('/get_my_list_of_groups', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -3692,7 +3692,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       
 
 
-    router.get('/get_my_list_of_groups_navbar', function (req, res) {
+    router.post('/get_my_list_of_groups_navbar', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -4217,7 +4217,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
 
 
-router.get('/get_chat_first_propositions_group', function (req, res) {
+router.post('/get_chat_first_propositions_group', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -4305,7 +4305,7 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 
 
 
- router.get('/get_group_chat_information/:id', function (req, res) {
+ router.post('/get_group_chat_information/:id', function (req, res) {
 
     if( ! req.headers['authorization'] ) {
       return res.status(401).json({msg: "error"});
