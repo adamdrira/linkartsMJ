@@ -1,7 +1,8 @@
 <div class="trendings-global-container">
 
     
-    <div class="favorites-container">
+    <div class="favorites-container"  [@enterAnimation]>
+        <img class="background-image " src="https://www.linkarts.fr/assets/img/logo_long_1.png" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }" >
         <span>
             Bienvenue dans la section Coups de cœur !
             <br>
@@ -15,7 +16,7 @@
 
     <ng-container *ngIf="!favorites_retrieved">
         <ng-container *ngFor="let item of skeleton_array; let i = index">
-            <div class="ranked-thumbnail-container" [@enterAnimation]>
+            <div class="ranked-thumbnail-container">
                 <app-thumbnail-user 
                     [skeleton]="skeleton"
                 ></app-thumbnail-user> 

@@ -71,6 +71,11 @@ export class FavoritesComponent implements OnInit, OnDestroy {
   }
 
 
+  cover_is_loaded=false;
+  cover_loaded(){
+    this.cover_is_loaded=true;
+  }
+  
   delete_empty_elements(list,list_of_rankings){
     let length1=list.length;
     if(list.length>0){
