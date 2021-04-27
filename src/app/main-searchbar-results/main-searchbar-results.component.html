@@ -82,7 +82,10 @@
                             <ng-container *ngIf="!display_title_style_and_tags">
                                 <div class="swiper-slide" (click)="change_first_filter_selected(i)" *ngFor="let item of first_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': first_filter_selected==i }">
                                     <div class="element first-filter">
-                                        <span>{{item}}</span>
+                                        <span *ngIf="item!='Artistes' && item!='Professionnels non artistes' && item!='Artistes professionnels'">{{item}}</span>
+                                        <span *ngIf="item=='Artistes'">Groupe d'artistes</span>
+                                        <span *ngIf="item=='Professionnels non artistes'">Groupe de pros.</span>
+                                        <span *ngIf="item=='Artistes professionnels'">Groupe d'artistes pro.</span>
                                     </div>
                                 </div>
                                 <div class="swiper-slide" (click)="change_second_filter_selected(i)" *ngFor="let item of second_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': second_filter_selected==i }">
@@ -94,7 +97,10 @@
                             <ng-container *ngIf="display_title_style_and_tags">
                                 <div class="swiper-slide" (click)="change_first_filter_selected_sg(i)" *ngFor="let item of first_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': first_filter_selected==i }">
                                     <div class="element first-filter">
-                                        <span>{{item}}</span>
+                                        <span *ngIf="item!='Artistes' && item!='Professionnels non artistes' && item!='Artistes professionnels'">{{item}}</span>
+                                        <span *ngIf="item=='Artistes'">Groupe d'artistes</span>
+                                        <span *ngIf="item=='Professionnels non artistes'">Groupe de pros.</span>
+                                        <span *ngIf="item=='Artistes professionnels'">Groupe d'artistes pro.</span>
                                     </div>
                                 </div>
                                 <div class="swiper-slide" (click)="change_second_filter_selected_sg(i)" *ngFor="let item of second_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': second_filter_selected==i }">
@@ -163,9 +169,7 @@
                         <a *ngIf="first_filter_selected!=-1 && !display_title_style_and_tags && display_results && (list_of_real_categories[indice_title_selected]=='Comic' || list_of_real_categories[indice_title_selected]=='Drawing' || list_of_real_categories[indice_title_selected]=='Writing')" [routerLink]=get_style_genre_link(first_filter_selected,second_filter_selected,indice_title_selected) [@enterAnimation]>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
                             Rechercher par style et par genre
-                            <!--<ng-container *ngIf="first_filter_selected!=-1">{{first_filters[indice_title_selected][first_filter_selected]}}</ng-container>
-                            <ng-container *ngIf="first_filter_selected!=-1 && second_filter_selected!=-1">,&nbsp;{{second_filters[indice_title_selected][second_filter_selected]}}</ng-container>-->
-                        </a>
+                         </a>
 
                         <a *ngIf="(first_filter_selected!=-1) && display_results && list_of_real_categories[indice_title_selected]=='Ad'" [routerLink]=get_linkcollab(first_filter_selected,second_filter_selected,indice_title_selected) [@enterAnimation]>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>

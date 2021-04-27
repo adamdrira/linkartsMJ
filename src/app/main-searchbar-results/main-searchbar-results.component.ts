@@ -78,7 +78,7 @@ export class MainSearchbarResultsComponent implements OnInit {
   list_of_real_categories=["Account","Ad","Comic","Drawing","Writing"];
 
 
-  first_filters_accounts=this.constants.type_of_accounts.map(x => x=(x=="Artiste")?"Groupe d'artistes":x);
+  first_filters_accounts=this.constants.type_of_accounts;
   first_filters_ads=["B.D.","BD euro.","Comics","Manga","Webtoon","Dessin","Dessin dig.","Dessin trad.","Ecrit","Article","Poésie","Roman","Roman il."];
   first_filters_comics=["Comics", "BD", "Manga","Webtoon"];
   first_filters_drawings=["Traditionnel", "Digital"];
