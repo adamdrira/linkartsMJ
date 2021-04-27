@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
-
+import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
 
@@ -70,6 +70,7 @@ export class PopupShareComponent implements OnInit {
     private cd: ChangeDetectorRef,
     public navbar: NavbarService,
     public dialogRef: MatDialogRef<PopupShareComponent,any>,
+    private Profile_Edition_Service:Profile_Edition_Service,
     private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -83,12 +84,14 @@ export class PopupShareComponent implements OnInit {
       })
   }
 
+  type_of_profile=this.data.type_of_profile;
   show_icon=false;
   registerForm1: FormGroup;
   
-
+  current_user:any;
   ngOnInit(): void {
 
+    
     this.registerForm1 = this.formBuilder.group({
       email: ['', 
         Validators.compose([
@@ -96,7 +99,13 @@ export class PopupShareComponent implements OnInit {
           Validators.pattern(pattern("mail")),
           Validators.maxLength(100),
         ]),
-      ]
+      ],
+      name: ['', 
+      Validators.compose([
+        Validators.pattern(pattern("name")),
+        Validators.maxLength(40),
+      ]),
+    ]
     });
 
 
@@ -106,20 +115,92 @@ export class PopupShareComponent implements OnInit {
     this.dialogRef.close();
   }
   
+
+  show_name_error=false;
   show_mail_error:boolean = false;
   mail_scent:boolean = false;
+  loading_email=false;
   validate() {
+    if(this.loading_email){
+      return 
+    }
+   
+
     if(!this.registerForm1.valid) {
-      this.show_mail_error = true;
+      if(this.registerForm1.controls.email.status=='INVALID'){
+        this.show_mail_error = true;
+      }
+      else{
+        this.show_name_error=true;
+      }
+      
       return;
     }
-    else {
+    else if(this.registerForm1.value.name=='' && this.type_of_profile!='account'){
+      console.log("no name")
       this.show_mail_error = false;
-
-
-
-      this.mail_scent = true;
+      this.show_name_error=true;
+      this.cd.detectChanges()
+      return
     }
+    else {
+      this.loading_email=true;
+      this.show_mail_error = false;
+      this.show_name_error=false;
+      let name='';
+      if(this.type_of_profile=="account"){
+        this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+          if(r[0].lastname!=''){
+            name=r[0].firstname + ' ' + r[0].lastname;
+          }
+          else{
+            name=r[0].firstname;
+          }
+          console.log("retrieve current user")
+          console.log(name);
+          this.send_mail(name)
+        })
+      }
+      else{
+        name=this.registerForm1.value.name;
+        this.send_mail(name)
+      }
+
+      
+      
+    
+    }
+  }
+
+  send_mail(name){
+    
+    name=this.capitalizeFirstLetter(name);
+    console.log("send mail")
+    console.log(name)
+    console.log(this.registerForm1.value.email)
+    this.navbar.add_page_visited_to_history(`/share-maile/${this.type_of_profile}/${name}/${this.registerForm1.value.email}/`,'' ).subscribe();
+    /*this.Profile_Edition_Service.send_share_email(this.registerForm1.value.email,name).subscribe(r=>{
+      console.log(r[0]);
+      if(r[0].error){
+        this.show_mail_error = false;
+      }
+      else{
+        
+        this.mail_scent = true;
+      }
+      this.loading_email=false;
+    
+    })*/
+  }
+
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  back(){
+    this.registerForm1.reset();
+    this.mail_scent=false;
+    this.cd.detectChanges()
   }
   
   normalize_input(fg: FormGroup, fc: string) {

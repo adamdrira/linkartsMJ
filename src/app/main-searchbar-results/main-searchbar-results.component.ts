@@ -78,7 +78,7 @@ export class MainSearchbarResultsComponent implements OnInit {
   list_of_real_categories=["Account","Ad","Comic","Drawing","Writing"];
 
 
-  first_filters_accounts=this.constants.type_of_accounts;
+  first_filters_accounts=this.constants.type_of_accounts.map(x => x=(x=="Artiste")?"Groupe d'artistes":x);
   first_filters_ads=["B.D.","BD euro.","Comics","Manga","Webtoon","Dessin","Dessin dig.","Dessin trad.","Ecrit","Article","Poésie","Roman","Roman il."];
   first_filters_comics=["Comics", "BD", "Manga","Webtoon"];
   first_filters_drawings=["Traditionnel", "Digital"];
@@ -642,6 +642,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.loading_propositions=true;
     this.display_no_propositions=false;
     this.show_propositions=false;
+    this.compteur_propositions=0;
     if(i==0){
       this.navbar.get_propositions_after_research_navbar(this.category,this.research_string,5,offset,compteur).subscribe(r=>{
         if(r[0][0].length>0){
@@ -717,7 +718,6 @@ export class MainSearchbarResultsComponent implements OnInit {
   
 
   get_propositions(i,compteur){
-    this.compteur_propositions=0;
     if(this.list_of_first_propositions[i].publication_category=="Account"){
       this.Profile_Edition_Service.retrieve_profile_picture(this.list_of_first_propositions[i].target_id).subscribe(t=> {
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
@@ -950,6 +950,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.loading_propositions=true;
     this.display_no_propositions=false;
     this.show_propositions=false;
+    this.compteur_propositions=0;
     if(i==0){
       this.navbar.get_propositions_after_research_navbar_sg(this.category,this.first_filter,5,offset,compteur).subscribe(r=>{
         if(r[0][0].length>0){

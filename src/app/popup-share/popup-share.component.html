@@ -24,23 +24,31 @@
 
 
     
-    <div *ngIf="!mail_scent" class="mail-form-container">
+    <div *ngIf="!mail_scent" class="mail-form-container"  [@enterFromLeftAnimation]>
         <div class="step-form" [formGroup]="registerForm1">
+            <div class="form-item" *ngIf="type_of_profile!='account'">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Votre nom complet</mat-label>
+                    <input matInput formControlName="name" maxLength="40" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'name');" tabindex="-1">
+                </mat-form-field>
+            </div>
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Adresse mail</mat-label>
-                    <input matInput formControlName="email" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'email');" tabindex="-1">
+                    <input matInput formControlName="email" maxLength="100" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'email');" tabindex="-1">
                 </mat-form-field>
             </div>
         </div>
 
         <div class="share-button" (click)="validate();">
-            <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
-            <span>Inviter</span>
+            <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="!loading_email" >done_all</mat-icon>
+            <span *ngIf="!loading_email" >Inviter</span>
+            <mat-spinner *ngIf="loading_email" diameter="20"  style="margin:auto;"></mat-spinner>
         </div>
-        <mat-error *ngIf="show_mail_error" [@enterAnimation]>Veuillez saisir un e-mail valide
+        <mat-error *ngIf="show_mail_error" [@enterAnimation]>Veuillez saisir un e-mail valide.
         </mat-error>
-
+        <mat-error *ngIf="show_name_error" [@enterAnimation]>Veuillez saisir un nom valide.
+        </mat-error>
     </div>
     
 
@@ -51,6 +59,9 @@
             <br>
             {{registerForm1.value.email}}
         </span>
+        <button mat-button class="mat-icon-button close-button" style="margin: 0px auto 0px auto;" (click)="back()" tabIndex="-1">
+            <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" >arrow_back</mat-icon>
+        </button>
     </div>
 
 </div>
