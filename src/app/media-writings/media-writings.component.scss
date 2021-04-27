@@ -131,9 +131,9 @@
       border-bottom: unset;
 
       mat-icon {
-        margin: unset;
+        margin: unset !important;
         width: 36px;
-        height: 36px;
+        height: 16px;
       }
 
       &.with-span {
