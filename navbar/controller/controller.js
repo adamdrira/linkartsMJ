@@ -2,22 +2,22 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
-/*const pool = new Pool({
+const pool = new Pool({
     port: 5432,
     database: 'linkarts',
     user: 'adamdrira',
     password: 'E273adamZ9Qvps',
     host: 'localhost',
-});*/
+});
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
   //dialect: 'postgres'
-});
+});*/
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -542,15 +542,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
+
+      console.log("get_number_of_results_by_category1")
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
         let category =req.params.category;
         let text=(req.params.text).toLowerCase();
         let text_to_search= "'%"+ text + "%'";
-        pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,research_string,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND style=$3 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id,research_string  ORDER BY count(*) DESC) as t1', [category,first_filter], (error, results) => {
+        pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,research_string,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND style=$3 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id,research_string  ORDER BY count(*) DESC) as t1', [category,status,first_filter], (error, results) => {
             if (error) {
-                
+                    console.log(error)
                     res.status(500).send([{error:error}]);
             }
             else{
