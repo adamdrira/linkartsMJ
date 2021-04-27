@@ -298,18 +298,18 @@ export class MediaWritingsComponent implements OnInit {
 
     if( s=='right' ) {
       if(!b) {
-        $('.container-homepage.container-writings.not-recent').animate({
+        $('.container-homepage.container-writings.not-recent.'+i).animate({
           scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
         }, 300, 'swing');
       }
       else {
-        $('.container-homepage.container-writings.not-recent').animate({
+        $('.container-homepage.container-writings.not-recent.'+i).animate({
           scrollLeft: (n+2) * this.width / Math.floor(this.width/250)
         }, 300, 'swing');
       }
     }
     else {
-      $('.container-homepage.container-writings.not-recent').animate({
+      $('.container-homepage.container-writings.not-recent.'+i).animate({
         scrollLeft: (n-1) * this.width / Math.floor(this.width/250)
       }, 300, 'swing');
     }
