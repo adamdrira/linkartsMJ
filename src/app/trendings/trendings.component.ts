@@ -131,6 +131,10 @@ export class TrendingsComponent implements OnInit, OnDestroy {
   }
 
 
+  cover_is_loaded=false;
+  cover_loaded(){
+    this.cover_is_loaded=true;
+  }
 
   open_subcategory(i) {
     if( this.subcategory==i ) {

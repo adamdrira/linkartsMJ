@@ -23,7 +23,8 @@
 <div class="trendings-global-container">
         
 
-    <div class="trendings-container">
+    <div class="trendings-container" [@enterAnimation]>
+        <img class="background-image " src="https://www.linkarts.fr/assets/img/logo_long_1.png" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }" >
         <span>
             Bienvenue dans la section Tendances !
             <br>
