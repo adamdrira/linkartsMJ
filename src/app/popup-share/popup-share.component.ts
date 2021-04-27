@@ -137,7 +137,6 @@ export class PopupShareComponent implements OnInit {
       return;
     }
     else if(this.registerForm1.value.name=='' && this.type_of_profile!='account'){
-      console.log("no name")
       this.show_mail_error = false;
       this.show_name_error=true;
       this.cd.detectChanges()
@@ -156,8 +155,6 @@ export class PopupShareComponent implements OnInit {
           else{
             name=r[0].firstname;
           }
-          console.log("retrieve current user")
-          console.log(name);
           this.send_mail(name)
         })
       }
@@ -175,12 +172,8 @@ export class PopupShareComponent implements OnInit {
   send_mail(name){
     
     name=this.capitalizeFirstLetter(name);
-    console.log("send mail")
-    console.log(name)
-    console.log(this.registerForm1.value.email)
     this.navbar.add_page_visited_to_history(`/share-maile/${this.type_of_profile}/${name}/${this.registerForm1.value.email}/`,'' ).subscribe();
-    /*this.Profile_Edition_Service.send_share_email(this.registerForm1.value.email,name).subscribe(r=>{
-      console.log(r[0]);
+    this.Profile_Edition_Service.send_share_email(this.registerForm1.value.email,name).subscribe(r=>{
       if(r[0].error){
         this.show_mail_error = false;
       }
@@ -190,7 +183,7 @@ export class PopupShareComponent implements OnInit {
       }
       this.loading_email=false;
     
-    })*/
+    })
   }
 
   capitalizeFirstLetter(string) {
