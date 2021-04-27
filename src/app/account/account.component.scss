@@ -105,8 +105,6 @@
     max-width: 500px;
     min-width: 420px;
 
-    
-
     .more-left{
       top: 20px !important;
       left: 20px !important;
@@ -150,28 +148,6 @@
       background: linear-gradient(0.125turn, rgba(2, 18, 54, 0.95), rgba(19, 51, 100, 0.95),rgba(44, 114, 164, 0.95));
       outline: none !important;
 
-      @media (max-width: 500px) {
-        left: 34% !important;
-      }
-      @media (max-width: 450px) {
-        left: 33% !important;
-      }
-      @media (max-width: 400px) {
-        left: 32% !important;
-      }
-      @media (max-width: 375px) {
-        left: 31% !important;
-      }
-      @media (max-width: 350px) {
-        left: 30% !important;
-      }
-      @media (max-width: 310px) {
-        left: 28% !important;
-      }
-      @media (max-width: 275px) {
-        left: 25% !important;
-      }
-      
       &:active {
         transform: scale(0.96);
       }
@@ -1214,7 +1190,8 @@
   .right-absolute-arrow {
     position:absolute;
     margin: 10px auto 30px auto;
-    right: -20px;
+    align-items:center;
+    right: -22px;
     top: 49%;
     transform: translateY(-50%);
     width: 40px;
@@ -1224,9 +1201,9 @@
     z-index: 1;
     border-radius: 30px;
     mat-icon {
-      margin: auto;
-      width: unset;
-      height: unset;
+      margin: unset;
+      width: 36px;
+      height: 36px;
       font-size: 36px;
       color: #b1b1b1;
       transform:rotate(270deg);

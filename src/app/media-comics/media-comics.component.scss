@@ -45,6 +45,7 @@
     .right-absolute-arrow {
       position:absolute;
       margin: 10px auto 30px auto;
+      align-items:center;
       right: -30px;
       top: 49%;
       transform: translateY(-50%);
@@ -55,9 +56,9 @@
       z-index: 1;
       border-radius: 30px;
       mat-icon {
-        margin: auto;
-        width: unset;
-        height: unset;
+        margin: unset;
+        width: 36px;
+        height: 36px;
         font-size: 36px;
         color: #b1b1b1;
         transform:rotate(270deg);
@@ -119,6 +120,7 @@
   @media (max-width: 1135px) {
     .see-more {
       position: absolute;
+      align-items:center;
       right: -30px;
       top: 49%;
       transform: translateY(-50%);
@@ -128,6 +130,12 @@
       cursor: pointer;
       z-index: 1;
       border-bottom: unset;
+
+      mat-icon {
+        margin: unset;
+        width: 36px;
+        height: 36px;
+      }
 
       &.with-span {
         span {
