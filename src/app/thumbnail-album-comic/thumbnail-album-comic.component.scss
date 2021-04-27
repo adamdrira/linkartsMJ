@@ -3,6 +3,10 @@
 @import '../../thumbnail-comic-styles.scss';
 
 
+.component-container{
+  transform: translate3d(0,0,0);
+}
+
 .component-container.album-comic {
     width:100%;
     display:flex;

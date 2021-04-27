@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener, Output, EventEmitter, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input,  Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Writing_Upload_Service } from '../services/writing.service';
@@ -7,7 +7,7 @@ import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
-declare var $:any;
+
 
 @Component({
   selector: 'app-thumbnail-album-writing',
@@ -27,10 +27,8 @@ declare var $:any;
 export class ThumbnailAlbumWritingComponent implements OnInit {
 
   constructor(
-    private cd:ChangeDetectorRef,
     private sanitizer:DomSanitizer,
     private Profile_Edition_Service:Profile_Edition_Service,
-    private rd:Renderer2,
     private Writing_Upload_Service:Writing_Upload_Service,
     private navbar: NavbarService,
 
@@ -77,6 +75,8 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
   
     show_icon=false;
     ngOnInit() {
+      console.log("pseudo thum")
+      console.log(this.pseudo)
     this.viewnumber = number_in_k_or_m(this.writing_element.viewnumber)
     this.likesnumber = number_in_k_or_m(this.writing_element.likesnumber)
     this.lovesnumber = number_in_k_or_m(this.writing_element.lovesnumber)

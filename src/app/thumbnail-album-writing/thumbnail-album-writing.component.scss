@@ -3,6 +3,10 @@
 @import '../../thumbnail-writing-styles.scss';
 
 
+.component-container{
+  transform: translate3d(0,0,0);
+}
+
 .component-container.album-writing {
     width:100%;
     display:flex;

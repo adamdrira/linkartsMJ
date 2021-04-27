@@ -690,7 +690,9 @@
                             ></app-thumbnail-comics>
                         </div>
 
-                   
+                        <div (click)="click_right_absolute_arrow1(myScrollContainer);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                        </div>
                     </div>
                 </div>
 
@@ -717,6 +719,9 @@
                             ></app-thumbnail-drawing>
                         </div>
 
+                        <div (click)="click_right_absolute_arrow2(myScrollContainer);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                        </div>
                     </div>
                 </div>
 
@@ -735,6 +740,9 @@
                             ></app-thumbnail-writing>
                         </div>
                         
+                        <div (click)="click_right_absolute_arrow3(myScrollContainer);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                        </div>
                     </div>
                 </div>
             </ng-container >
