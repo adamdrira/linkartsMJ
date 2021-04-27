@@ -171,7 +171,7 @@ export class MediaWritingsComponent implements OnInit {
     this.cd.detectChanges();
 
     setTimeout( () => { 
-      this.click_right_absolute_arrow2(e,i,true); }, 10 );
+      this.click_absolute_arrow2(e,i,true,'right'); }, 10 );
   }
 
     
@@ -234,7 +234,7 @@ export class MediaWritingsComponent implements OnInit {
                 this.cd.detectChanges();
                           
                 setTimeout( () => { 
-                  this.click_right_absolute_arrow(e,true); }, 10 );
+                  this.click_absolute_arrow(e,true,'right'); }, 10 );
               }
               else{
                 this.show_more_loading=false;
@@ -242,7 +242,7 @@ export class MediaWritingsComponent implements OnInit {
                 this.cd.detectChanges();
                           
                 setTimeout( () => { 
-                  this.click_right_absolute_arrow(e,true); }, 10 );
+                  this.click_absolute_arrow(e,true,'right'); }, 10 );
               }
             }
           })
@@ -255,7 +255,7 @@ export class MediaWritingsComponent implements OnInit {
         this.cd.detectChanges();
                   
         setTimeout( () => { 
-          this.click_right_absolute_arrow(e,true); }, 10 );
+          this.click_absolute_arrow(e,true,'right'); }, 10 );
       }
     })
   }
@@ -271,9 +271,10 @@ export class MediaWritingsComponent implements OnInit {
   }
 
 
-  click_right_absolute_arrow(e:any, b:boolean) {
+  click_absolute_arrow(e:any, b:boolean,s:string) {
     var n = Math.floor( ($('.container-homepage.container-writings.recent').scrollLeft()+1) / (this.width / Math.floor(this.width/250))  );
     
+    if( s=='right' ) {
       if(!b) {
         $('.container-homepage.container-writings.recent').animate({
           scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
@@ -284,19 +285,32 @@ export class MediaWritingsComponent implements OnInit {
           scrollLeft: (n+2) * this.width / Math.floor(this.width/250)
         }, 300, 'swing');
       }
+    }
+    else {
+        $('.container-homepage.container-writings.recent').animate({
+          scrollLeft: (n-1) * this.width / Math.floor(this.width/250)
+        }, 300, 'swing');
+    }
   }
 
-  click_right_absolute_arrow2(e:any, i:number, b:boolean) {
+  click_absolute_arrow2(e:any, i:number, b:boolean, s:string) {
     var n = Math.floor( ($('.container-homepage.container-writings.not-recent.'+i).scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
 
-    if(!b) {
-      $('.container-homepage.container-writings.not-recent').animate({
-        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
-      }, 300, 'swing');
+    if( s=='right' ) {
+      if(!b) {
+        $('.container-homepage.container-writings.not-recent').animate({
+          scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+        }, 300, 'swing');
+      }
+      else {
+        $('.container-homepage.container-writings.not-recent').animate({
+          scrollLeft: (n+2) * this.width / Math.floor(this.width/250)
+        }, 300, 'swing');
+      }
     }
     else {
       $('.container-homepage.container-writings.not-recent').animate({
-        scrollLeft: (n+2) * this.width / Math.floor(this.width/250)
+        scrollLeft: (n-1) * this.width / Math.floor(this.width/250)
       }, 300, 'swing');
     }
   }

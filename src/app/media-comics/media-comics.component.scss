@@ -64,6 +64,28 @@
         transform:rotate(270deg);
       }
     }
+    .left-absolute-arrow {
+      position:absolute;
+      margin: 10px auto 30px auto;
+      align-items:center;
+      left: -30px;
+      top: 49%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 276px;
+      display:flex;
+      cursor:pointer;
+      z-index: 1;
+      border-radius: 30px;
+      mat-icon {
+        margin: unset;
+        width: 36px;
+        height: 36px;
+        font-size: 36px;
+        color: #b1b1b1;
+        transform:rotate(-270deg);
+      }
+    }
   }
   .thumbnail-component-container {
     overflow:hidden;

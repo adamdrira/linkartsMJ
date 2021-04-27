@@ -671,6 +671,11 @@
                     </div>
                     
                     <div #myScrollContainer class="container-account container-comics container-small-screen new-comics">
+
+                        <div (click)="click_absolute_arrow1(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                        </div>
+
                         <div *ngFor="let item of new_comic_contents.slice(0,number_of_new_contents_to_show),let i=index" >
                             <app-thumbnail-comics 
                             *ngIf="item.chaptersnumber == null" 
@@ -690,7 +695,7 @@
                             ></app-thumbnail-comics>
                         </div>
 
-                        <div (click)="click_right_absolute_arrow1(myScrollContainer);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                        <div (click)="click_absolute_arrow1(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
                         </div>
                     </div>
@@ -702,6 +707,11 @@
                     </div>
 
                     <div #myScrollContainer class="container-account container-drawings newDrawings container-small-screen ">
+
+                        <div (click)="click_absolute_arrow2(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                        </div>
+
                         <div *ngFor="let item of new_drawing_contents.slice(0,number_of_new_contents_to_show)" class="drawing-container" >
                             <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                 [item]=item
@@ -719,7 +729,7 @@
                             ></app-thumbnail-drawing>
                         </div>
 
-                        <div (click)="click_right_absolute_arrow2(myScrollContainer);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                        <div (click)="click_absolute_arrow2(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
                         </div>
                     </div>
@@ -731,6 +741,10 @@
                     </div>
 
                     <div #myScrollContainer class="container-account container-writings newWritings container-small-screen ">
+
+                        <div (click)="click_absolute_arrow3(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                        </div>
                         <div *ngFor="let item of new_writing_contents.slice(0,number_of_new_contents_to_show)" >
                             <app-thumbnail-writing
                             [item]=item
@@ -740,7 +754,7 @@
                             ></app-thumbnail-writing>
                         </div>
                         
-                        <div (click)="click_right_absolute_arrow3(myScrollContainer);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                        <div (click)="click_absolute_arrow3(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
                         </div>
                     </div>

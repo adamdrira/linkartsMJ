@@ -16,6 +16,10 @@
 
         <div #myScrollContainer [class]="'container-homepage container-writings not-recent '+i1" style="transition:opacity 1s;" >
 
+            <div (click)="click_absolute_arrow2(myScrollContainer,i1,false,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+            </div>
+
             <ng-container *ngIf="style==='Roman illustré'">
                 <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
@@ -77,11 +81,6 @@
                 <div *ngIf="!show_more[sorted_style_list.indexOf(style)] && see_more_writings(style) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more" (click)="see_more(style,myScrollContainer, i1)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">expand_more</mat-icon>
                 </div>
-                
-                <div [routerLink]=open_research(style) *ngIf="!( !show_more[sorted_style_list.indexOf(style)] && see_more_writings(style) ) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more with-span" (click)="see_more(style,myScrollContainer, i1)">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">add_circle_outline</mat-icon>
-                    <span>Voir tout</span>
-                </div>
 
                 <ng-container *ngIf="show_more[sorted_style_list.indexOf(style)]">
                     
@@ -102,9 +101,14 @@
                         ></app-media-see-more-writings>
                     </div>
                 </ng-container>        
+                
+                <div [routerLink]=open_research(style) *ngIf="!( !show_more[sorted_style_list.indexOf(style)] && see_more_writings(style) ) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more with-span" (click)="see_more(style,myScrollContainer, i1)">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">add_circle_outline</mat-icon>
+                    <span>Voir tout</span>
+                </div>
             </ng-container>                
 
-            <div (click)="click_right_absolute_arrow2(myScrollContainer,i1,false);" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+            <div (click)="click_absolute_arrow2(myScrollContainer,i1,false,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
             </div>
             
@@ -140,6 +144,9 @@
         
         <div #myScrollContainer2 class="container-homepage container-writings recent" style="transition:opacity 1s;" >
     
+                <div (click)="click_absolute_arrow(myScrollContainer2,false,'left');" *ngIf="myScrollContainer2.scrollLeft > 100" class="left-absolute-arrow">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                </div>
             
                 <ng-container *ngFor="let item of last_consulted_writings; let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
@@ -156,7 +163,7 @@
                     <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
                 </div>
 
-                <div (click)="click_right_absolute_arrow(myScrollContainer2,false);" *ngIf="-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth " class="right-absolute-arrow">
+                <div (click)="click_absolute_arrow(myScrollContainer2,false,'right');" *ngIf="-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth " class="right-absolute-arrow">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
                 </div>
         </div>
