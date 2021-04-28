@@ -211,7 +211,6 @@ router.post('/add_cover_pic', function (req, res) {
 
 
 router.get('/retrieve_profile_picture/:user_id', function (req, res) {
-      console.log("retrieve_profile_picture/ " + req.params.user_id)
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3436,7 +3435,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             from: 'Linkarts <services@linkarts.fr>', 
             to: email, // my mail
             //to:"appaloosa-adam@hotmail.fr",
-            subject: `Bienvenue sur LinkArts !`, 
+            subject: `Invitation LinkArts !`, 
             html:  mail_to_send,
           };
       
