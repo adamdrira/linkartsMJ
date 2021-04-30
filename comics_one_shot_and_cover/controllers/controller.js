@@ -902,42 +902,6 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               res.status(500).json({msg: "error", details: err});		
             }).then(bd =>  {
               if(bd){
-                trendings_contents.findOne({
-                  where:{
-                    publication_category:"comics",
-                    format:"one-shot",
-                    publication_id:bd.bd_id
-                  }
-                }).catch(err => {
-                  	
-                  res.status(500).json({msg: "error", details: err});		
-                }).then(tren=>{
-                  if(tren){
-                    if(bd.trending_rank){
-                      if(bd.trending_rank<tren.rank){
-                        bd.update({
-                          "trending_rank":tren.rank
-                        })
-                        res.status(200).send([bd]);
-                      }
-                      else{
-                        res.status(200).send([bd]);
-                      }
-                    }
-                    else{
-                      bd.update({
-                        "trending_rank":tren.rank
-                      })
-                      res.status(200).send([bd]);
-                    }
-                   
-                  }
-                  else{
-                    res.status(200).send([bd]);
-                  }
-                })
-              }
-              else{
                 res.status(200).send([bd]);
               }
             }); 
@@ -968,42 +932,6 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
              res.status(500).json({msg: "error", details: err});		
            }).then(bd =>  {
              if(bd){
-               trendings_contents.findOne({
-                 where:{
-                   publication_category:"comics",
-                   format:"one-shot",
-                   publication_id:bd.bd_id
-                 }
-               }).catch(err => {
-                 	
-                 res.status(500).json({msg: "error", details: err});		
-               }).then(tren=>{
-                 if(tren){
-                   if(bd.trending_rank){
-                     if(bd.trending_rank<tren.rank){
-                       bd.update({
-                         "trending_rank":tren.rank
-                       })
-                       res.status(200).send([{current_user:current_user,data:[bd]}]);
-                     }
-                     else{
-                      res.status(200).send([{current_user:current_user,data:[bd]}]);
-                     }
-                   }
-                   else{
-                     bd.update({
-                       "trending_rank":tren.rank
-                     })
-                     res.status(200).send([{current_user:current_user,data:[bd]}]);
-                   }
-                  
-                 }
-                 else{
-                  res.status(200).send([{current_user:current_user,data:[bd]}]);
-                 }
-               })
-             }
-             else{
               res.status(200).send([{current_user:current_user,data:[bd]}]);
              }
            }); 
