@@ -230,7 +230,7 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
       }
     }).then(User =>  {
       let transform = sharp()
-        transform = transform.resize(60,60)
+        transform = transform.resize(78,78)
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
