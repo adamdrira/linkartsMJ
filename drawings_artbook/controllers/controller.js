@@ -791,43 +791,6 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
             res.status(500).json({msg: "error", details: err});		
           }).then(drawing =>  {
               if(drawing){
-              
-                trendings_contents.findOne({
-                  where:{
-                    publication_category:"drawing",
-                    format:"artbook",
-                    publication_id:drawing.drawing_id
-                  }
-                }).catch(err => {
-                  	
-                  res.status(500).json({msg: "error", details: err});		
-                }).then(tren=>{
-                  if(tren){
-                    if(drawing.trending_rank){
-                      if(drawing.trending_rank<tren.rank){
-                        drawing.update({
-                          "trending_rank":tren.rank
-                        })
-                        res.status(200).send([drawing]);
-                      }
-                      else{
-                        res.status(200).send([drawing]);
-                      }
-                    }
-                    else{
-                      drawing.update({
-                        "trending_rank":tren.rank
-                      })
-                      res.status(200).send([drawing]);
-                    }
-                   
-                  }
-                  else{
-                    res.status(200).send([drawing]);
-                  }
-                })
-              }
-              else{
                 res.status(200).send([drawing]);
               }
             }); 
@@ -860,43 +823,6 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
           res.status(500).json({msg: "error", details: err});		
         }).then(drawing =>  {
             if(drawing){
-            
-              trendings_contents.findOne({
-                where:{
-                  publication_category:"drawing",
-                  format:"artbook",
-                  publication_id:drawing.drawing_id
-                }
-              }).catch(err => {
-                	
-                res.status(500).json({msg: "error", details: err});		
-              }).then(tren=>{
-                if(tren){
-                  if(drawing.trending_rank){
-                    if(drawing.trending_rank<tren.rank){
-                      drawing.update({
-                        "trending_rank":tren.rank
-                      })
-                      res.status(200).send([{current_user:current_user,data:[drawing]}]);
-                    }
-                    else{
-                      res.status(200).send([{current_user:current_user,data:[drawing]}]);
-                    }
-                  }
-                  else{
-                    drawing.update({
-                      "trending_rank":tren.rank
-                    })
-                    res.status(200).send([{current_user:current_user,data:[drawing]}]);
-                  }
-                  
-                }
-                else{
-                  res.status(200).send([{current_user:current_user,data:[drawing]}]);
-                }
-              })
-            }
-            else{
               res.status(200).send([{current_user:current_user,data:[drawing]}]);
             }
           }); 
