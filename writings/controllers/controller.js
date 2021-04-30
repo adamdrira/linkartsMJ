@@ -778,45 +778,9 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
             })
             .catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(writing =>  {
+              res.status(500).json({msg: "error", details: err});		
+            }).then(writing =>  {
               if(writing){
-                trendings_contents.findOne({
-                  where:{
-                    publication_category:"writing",
-                    publication_id:writing.writing_id
-                  }
-                }).catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(tren=>{
-                  if(tren){
-                    if(writing.trending_rank){
-                      if(writing.trending_rank<tren.rank){
-                        writing.update({
-                          "trending_rank":tren.rank
-                        })
-                        res.status(200).send([writing]);
-                      }
-                      else{
-                        res.status(200).send([writing]);
-                      }
-                    }
-                    else{
-                      writing.update({
-                        "trending_rank":tren.rank
-                      })
-                      res.status(200).send([writing]);
-                    }
-                    
-                  }
-                  else{
-                    res.status(200).send([writing]);
-                  }
-                })
-                
-              }
-              else{
                 res.status(200).send([writing]);
               }
             }); 
@@ -849,42 +813,6 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
             res.status(500).json({msg: "error", details: err});		
           }).then(writing =>  {
              if(writing){
-               trendings_contents.findOne({
-                 where:{
-                   publication_category:"writing",
-                   publication_id:writing.writing_id
-                 }
-               }).catch(err => {
-                	
-                res.status(500).json({msg: "error", details: err});		
-              }).then(tren=>{
-                 if(tren){
-                   if(writing.trending_rank){
-                     if(writing.trending_rank<tren.rank){
-                       writing.update({
-                         "trending_rank":tren.rank
-                       })
-                       res.status(200).send([{current_user:current_user,data:[writing]}]);
-                     }
-                     else{
-                      res.status(200).send([{current_user:current_user,data:[writing]}]);
-                     }
-                   }
-                   else{
-                     writing.update({
-                       "trending_rank":tren.rank
-                     })
-                     res.status(200).send([{current_user:current_user,data:[writing]}]);
-                   }
-                   
-                 }
-                 else{
-                  res.status(200).send([{current_user:current_user,data:[writing]}]);
-                 }
-               })
-               
-             }
-             else{
               res.status(200).send([{current_user:current_user,data:[writing]}]);
              }
            }); 
@@ -983,7 +911,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       filename += 'only_for_remuneration.pdf'
     }
 
-    fs.access(filename, fs.F_OK, (err) => {
+    fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
       if(err){
         filename = "./data_and_routes/file-not-found.pdf";
         var not_found = fs.createReadStream( path.join(process.cwd(),filename))
