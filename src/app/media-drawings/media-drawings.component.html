@@ -40,7 +40,7 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon" >expand_more</mat-icon>
                 </div>
 
-                <div *ngIf="!( sorted_artpieces_traditional.length>number_of_drawings_to_show_by_category[0] && !(detect_new_compteur_drawings && category_clicked_for_see_more==0) )" [routerLink]=open_research(item)
+                <div *ngIf="!( sorted_artpieces_traditional.length>number_of_drawings_to_show_by_category[0] && !(detect_new_compteur_drawings && category_clicked_for_see_more==0) ) && !(detect_new_compteur_drawings && category_clicked_for_see_more==0)" [routerLink]=open_research(item)
                     class="see-more with-span" [ngClass]="{'invisible':!all_drawings_loaded}">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">add_circle_outline</mat-icon>
                     <span>Voir tout</span>
@@ -79,7 +79,7 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon" >expand_more</mat-icon>
                 </div>
 
-                <div *ngIf="!( sorted_artpieces_digital.length>number_of_drawings_to_show_by_category[1] && !(detect_new_compteur_drawings && category_clicked_for_see_more==1) )" [routerLink]=open_research(item)
+                <div *ngIf="!( sorted_artpieces_digital.length>number_of_drawings_to_show_by_category[1] && !(detect_new_compteur_drawings && category_clicked_for_see_more==1) ) && !(detect_new_compteur_drawings && category_clicked_for_see_more==1)" [routerLink]=open_research(item)
                     class="see-more with-span" [ngClass]="{'invisible':!all_drawings_loaded}">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">add_circle_outline</mat-icon>
                     <span>Voir tout</span>
@@ -98,10 +98,41 @@
 </div>
 
 
+<div class="top-artists-container" *ngIf="top_artists_drawing && top_artists_drawing.length>0 && top_artists_retrieved">
+   
+    <div class="title-artists no-cursor">
+        <span>Artistes du moment</span>
+    </div>
+    <ng-container *ngIf="top_artists_drawing">
+        <ng-container *ngFor="let item of top_artists_drawing; let i = index">
+            <div class="artist-container" [@enterAnimation]>
+                <app-thumbnail-user 
+                    [item]=item
+                ></app-thumbnail-user> 
+            </div>
+        </ng-container>
+    </ng-container>
+</div>
+
+
+
+<div class="top-artists-container" *ngIf="!top_artists_retrieved" >
+    <div class="title-artists no-cursor" [@enterAnimation]>
+        <div class="category-title shiny"></div>
+    </div>
+    <ng-container *ngFor="let item of skeleton_array; let i = index">
+        <div class="artist-container" [@enterAnimation]>
+            <app-thumbnail-user 
+                [skeleton]="skeleton"
+            ></app-thumbnail-user> 
+        </div>
+    </ng-container>
+</div>
+
 <ng-container *ngIf="check_drawings_history">
     <div *ngIf="!last_consulted_drawings_retrieved" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
-                <span>Récemment consultés</span>
+                <span>Historique</span>
         </div>
         
         <div class="container-homepage2 newDrawings container-skeletons2 " style="transition:opacity 1s;"   [@enterAnimation] >

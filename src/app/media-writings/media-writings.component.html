@@ -20,30 +20,9 @@
                 <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
             </div>
 
-            <ng-container *ngIf="style==='Roman illustré'">
-                <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel.slice(0,number_of_writings_to_show); let i = index">
-                    <app-thumbnail-writing class="thumbnail-component-container" 
-                        [item]=item
-                        [myScrollContainer]=myScrollContainer
-                        [width]=width
-                        now_in_seconds={{now_in_seconds}}
-                    ></app-thumbnail-writing>
-                </ng-container>
-            </ng-container>
-
-            <ng-container *ngIf="style==='Poésie'">
-                <ng-container *ngFor="let item of sorted_artpieces_poetry.slice(0,number_of_writings_to_show); let i = index">
-                    <app-thumbnail-writing class="thumbnail-component-container" 
-                        [item]=item
-                        [myScrollContainer]=myScrollContainer
-                        [width]=width
-                        now_in_seconds={{now_in_seconds}}
-                    ></app-thumbnail-writing>
-                </ng-container>
-            </ng-container>
 
             <ng-container *ngIf="style==='Roman'">
-                <ng-container *ngFor="let item of sorted_artpieces_roman.slice(0,number_of_writings_to_show); let i = index">
+                <ng-container *ngFor="let item of sorted_artpieces_roman.slice(0,number_of_writings_to_show_by_style[0]); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
                         [myScrollContainer]=myScrollContainer
@@ -55,7 +34,7 @@
 
 
             <ng-container *ngIf="style==='Scénario'">
-                <ng-container *ngFor="let item of sorted_artpieces_scenario.slice(0,number_of_writings_to_show); let i = index">
+                <ng-container *ngFor="let item of sorted_artpieces_scenario.slice(0,number_of_writings_to_show_by_style[1]); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
                         [myScrollContainer]=myScrollContainer
@@ -66,7 +45,7 @@
             </ng-container>
 
             <ng-container *ngIf="style==='Article'">
-                <ng-container *ngFor="let item of sorted_artpieces_article.slice(0,number_of_writings_to_show); let i = index">
+                <ng-container *ngFor="let item of sorted_artpieces_article.slice(0,number_of_writings_to_show_by_style[2]); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
                         [myScrollContainer]=myScrollContainer
@@ -76,33 +55,26 @@
                 </ng-container>
             </ng-container>
 
+            
+
+            <ng-container *ngIf="style==='Poésie'">
+                <ng-container *ngFor="let item of sorted_artpieces_poetry.slice(0,number_of_writings_to_show_by_style[3]); let i = index">
+                    <app-thumbnail-writing class="thumbnail-component-container" 
+                        [item]=item
+                        [myScrollContainer]=myScrollContainer
+                        [width]=width
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-writing>
+                </ng-container>
+            </ng-container>
 
             <ng-container>
-                <div *ngIf="!show_more[sorted_style_list.indexOf(style)] && see_more_writings(style) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more" (click)="see_more(style,myScrollContainer, i1)">
+                <div *ngIf="can_see_more_writings[sorted_style_list.indexOf(style)]  && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more" (click)="see_more(style,myScrollContainer, i1)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">expand_more</mat-icon>
                 </div>
-
-                <ng-container *ngIf="show_more[sorted_style_list.indexOf(style)]">
-                    
-                   
-
-                    <div  style="transition:opacity 1s;">
-                        <app-media-see-more-writings
-                            [style]=style
-                            [width]=width
-                            [myScrollContainer]=myScrollContainer
-                            [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel.slice(0,6)
-                            [sorted_artpieces_roman]=sorted_artpieces_roman.slice(0,6)
-                            [sorted_artpieces_scenario]=sorted_artpieces_scenario.slice(0,6)
-                            [sorted_artpieces_article]=sorted_artpieces_article.slice(0,6)
-                            [sorted_artpieces_poetry]=sorted_artpieces_poetry.slice(0,6)
-                            [number_of_writings_to_show]=number_of_writings_to_show
-                            now_in_seconds={{now_in_seconds}}
-                        ></app-media-see-more-writings>
-                    </div>
-                </ng-container>        
+     
                 
-                <div [routerLink]=open_research(style) *ngIf="!( !show_more[sorted_style_list.indexOf(style)] && see_more_writings(style) ) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more with-span" (click)="see_more(style,myScrollContainer, i1)">
+                <div [routerLink]=open_research(style) *ngIf="!can_see_more_writings[sorted_style_list.indexOf(style)] && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more with-span" (click)="see_more(style,myScrollContainer, i1)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">add_circle_outline</mat-icon>
                     <span>Voir tout</span>
                 </div>
@@ -118,10 +90,42 @@
 
 </div>
 
+
+<div class="top-artists-container" *ngIf="top_artists_writing && top_artists_writing.length>0 && top_artists_retrieved">
+   
+    <div class="title-artists no-cursor">
+        <span>Artistes du moment</span>
+    </div>
+    <ng-container *ngIf="top_artists_writing">
+        <ng-container *ngFor="let item of top_artists_writing; let i = index">
+            <div class="artist-container" [@enterAnimation]>
+                <app-thumbnail-user 
+                    [item]=item
+                ></app-thumbnail-user> 
+            </div>
+        </ng-container>
+    </ng-container>
+</div>
+
+
+
+<div class="top-artists-container" *ngIf="!top_artists_retrieved" >
+    <div class="title-artists no-cursor" [@enterAnimation]>
+        <div class="category-title shiny"></div>
+    </div>
+    <ng-container *ngFor="let item of skeleton_array; let i = index">
+        <div class="artist-container" [@enterAnimation]>
+            <app-thumbnail-user 
+                [skeleton]="skeleton"
+            ></app-thumbnail-user> 
+        </div>
+    </ng-container>
+</div>
+
 <ng-container *ngIf="check_writings_history">
     <div *ngIf="!last_consulted_writings_retrieved" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
-                <span>Récemment consultés</span>
+                <span>Historique</span>
         </div>
         
         <div class="container-homepage container-writings container-skeletons " style="transition:opacity 1s;"   [@enterAnimation] >

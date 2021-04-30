@@ -39,20 +39,50 @@ export class MediaWritingsComponent implements OnInit {
   }
 
 
+  
+
+  current_number_of_writings_to_show:number;
+
+  @Output() send_number_of_thumbnails2 = new EventEmitter<object>();
+  @Output() list_of_writings_retrieved_emitter = new EventEmitter<object>();
+  cancelled: number;
+
+  @Input() sorted_style_list: any[];
+  @Input() check_writings_history: any;
+  @Input() sorted_artpieces_roman: any[];
+  @Input() sorted_artpieces_scenario: any[];
+  @Input() sorted_artpieces_article: any[];
+  @Input() sorted_artpieces_poetry: any[];
+  last_consulted_writings: any[]=[];
+  last_consulted_writings_retrieved: boolean;
+  @Input() width: number;
+  @Input() now_in_seconds: number;
+
+  @Input() top_artists_writing: any[];
+  
+  number_of_writings_to_show=0;
+  show_more=[false,false,false,false];
+  list_of_contents_sorted:boolean=false;
+  show_icon=false;
+  number_of_writings_for_history=5;
+
+  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
+  scroll:any;
+
+  number_of_writings_to_show_by_style=[];
   ngOnChanges(changes: SimpleChanges) {
     if( changes.width) {
       if(this.width>0){
         var n = Math.floor(this.width/250);
         if(n>3){
-          this.number_of_writings_to_show=(n<6)?n:6;
+          this.number_of_writings_to_show=(n<6)?n:5;
         }
         else{
           this.number_of_writings_to_show=4;
-          this.sorted_artpieces_article=this.sorted_artpieces_article.slice(0,4);
-          this.sorted_artpieces_scenario=this.sorted_artpieces_scenario.slice(0,4);
-          this.sorted_artpieces_poetry=this.sorted_artpieces_poetry.slice(0,4);
-          this.sorted_artpieces_roman=this.sorted_artpieces_roman.slice(0,4);
-          this.sorted_artpieces_illustrated_novel=this.sorted_artpieces_illustrated_novel.slice(0,4);
+        }
+
+        for(let i=0;i<4;i++){
+          this.number_of_writings_to_show_by_style[i]= this.number_of_writings_to_show;
         }
 
         if(this.current_number_of_writings_to_show!= this.number_of_writings_to_show){
@@ -63,60 +93,27 @@ export class MediaWritingsComponent implements OnInit {
       }
     }
 
+    if(changes.top_artists_writing){
+      this.top_artists_retrieved=true;
+    }
+
   }
 
-  current_number_of_writings_to_show:number;
-
-  @Output() send_number_of_thumbnails2 = new EventEmitter<object>();
-  @Output() list_of_writings_retrieved_emitter = new EventEmitter<object>();
-  cancelled: number;
-
-  @Input() sorted_style_list: any[];
-  @Input() check_writings_history: any;
-  @Input() sorted_artpieces_illustrated_novel: any[];
-  @Input() sorted_artpieces_roman: any[];
-  @Input() sorted_artpieces_scenario: any[];
-  @Input() sorted_artpieces_article: any[];
-  @Input() sorted_artpieces_poetry: any[];
-  @Input() can_see_more_writings: any[];
-  last_consulted_writings: any[]=[];
-  last_consulted_writings_retrieved: boolean;
-  @Input() width: number;
-  @Input() now_in_seconds: number;
-
-  number_of_writings_to_show=0;
-  show_more=[false,false,false,false];
-  list_of_contents_sorted:boolean=false;
-  show_icon=false;
-  number_of_writings_for_history=5;
-
-  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
-  scroll:any;
-
+  skeleton=true;
+  top_artists_retrieved=false;
   ngOnInit() {
     window.scroll(0,0);
     var n = Math.floor(this.width/250);
     if(n>3){
-      this.number_of_writings_to_show=(n<6)?n:6;
+      this.number_of_writings_to_show=(n<6)?n:5;
     }
     else{
-      this.number_of_writings_to_show=6;
+      this.number_of_writings_to_show=4;
     }
 
-    let scroll_observer = setInterval(() => {
-
-      if(!this.scroll){
-        if(this.myScrollContainer){
-          this.scroll = merge(
-            fromEvent(window, 'scroll'),
-            fromEvent(this.myScrollContainer.nativeElement, 'scroll')
-          );
-        }
-      }
-      else{
-        clearInterval(scroll_observer)
-      }
-    }, 500);
+    for(let i=0;i<4;i++){
+      this.number_of_writings_to_show_by_style[i]= this.number_of_writings_to_show;
+    }
 
     this.current_number_of_writings_to_show!= this.number_of_writings_to_show;
     this.get_history_recommendation();
@@ -124,6 +121,48 @@ export class MediaWritingsComponent implements OnInit {
   }
 
   
+  
+  can_see_more_writings=[true,true,true,true];
+  see_more(item,e,i) {
+    let index = this.sorted_style_list.indexOf(item);
+
+    if(item=="Roman"){
+      this.number_of_writings_to_show_by_style[0]+=this.number_of_writings_to_show;
+      if(this.sorted_artpieces_roman.length<=this.number_of_writings_to_show_by_style[0] || this.number_of_writings_to_show_by_style[0]==3*this.number_of_writings_to_show){
+        this.can_see_more_writings[index]=false;
+      }
+    }
+    if(item=="Scénario"){
+      this.number_of_writings_to_show_by_style[1]+=this.number_of_writings_to_show;
+      if(this.sorted_artpieces_scenario.length<=this.number_of_writings_to_show_by_style[1] || this.number_of_writings_to_show_by_style[1]==3*this.number_of_writings_to_show){
+        this.can_see_more_writings[index]=false;
+      }
+    }
+    if(item=="Article"){
+      this.number_of_writings_to_show_by_style[2]+=this.number_of_writings_to_show;
+      if(this.sorted_artpieces_article.length<=this.number_of_writings_to_show_by_style[2] || this.number_of_writings_to_show_by_style[2]==3*this.number_of_writings_to_show){
+        this.can_see_more_writings[index]=false;
+      }
+    }
+    
+    if(item=="Poésie"){
+      this.number_of_writings_to_show_by_style[3]+=this.number_of_writings_to_show;
+      if(this.sorted_artpieces_poetry.length<=this.number_of_writings_to_show_by_style[3] || this.number_of_writings_to_show_by_style[3]==3*this.number_of_writings_to_show){
+        this.can_see_more_writings[index]=false;
+      }
+    }
+    this.cd.detectChanges();
+
+    setTimeout( () => { 
+      this.click_absolute_arrow2(e,i,true,'right'); 
+    }, 10 );
+  }
+
+
+
+
+
+
   get_history_recommendation(){
     this.last_consulted_writings_retrieved=false;
     this.cd.detectChanges();
@@ -155,7 +194,7 @@ export class MediaWritingsComponent implements OnInit {
   }
 
 
-  skeleton_array = Array(6);
+  skeleton_array = Array(5);
   number_of_skeletons_per_line = 1;
   type_of_skeleton:string="writing";
   send_number_of_skeletons(object) {
@@ -163,40 +202,6 @@ export class MediaWritingsComponent implements OnInit {
     this.cd.detectChanges();
   }
 
- see_more(item,e,i) {
-   
-    let index = this.sorted_style_list.indexOf(item);
-    this.show_more[index]=true;
-
-    this.cd.detectChanges();
-
-    setTimeout( () => { 
-      this.click_absolute_arrow2(e,i,true,'right'); }, 10 );
-  }
-
-    
-  see_more_writings(category){
-    if(category=='Roman illustré' && this.can_see_more_writings[2]){
-      return true;
-    }
-    else if(category=='Poésie' && this.can_see_more_writings[3]){
-      return true;
-    }
-    else if(category=='Roman' && this.can_see_more_writings[1]){
-      return true;
-    }
-    else if(category=='Scénario' && this.can_see_more_writings[4]){
-      return true;
-    }
-    else if(category=='Article' && this.can_see_more_writings[0]){
-      return true;
-    }
-    else{
-      return false
-    }
-    
-    
-  }
 
 
   open_research(item:any) {

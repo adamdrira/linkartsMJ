@@ -7,8 +7,6 @@ import { HomeLinkartsComponent } from '../home-linkarts/home-linkarts.component'
 import { MediaComicsComponent } from '../media-comics/media-comics.component';
 import { MediaDrawingsComponent } from '../media-drawings/media-drawings.component';
 import { MediaWritingsComponent } from '../media-writings/media-writings.component';
-import { MediaSeeMoreComicsComponent } from '../media-see-more-comics/media-see-more-comics.component';
-import { MediaSeeMoreWritingsComponent } from '../media-see-more-writings/media-see-more-writings.component';
 import { RecommendationsComponent } from '../recommendations/recommendations.component';
 import { StoriesComponent } from '../stories/stories.component';
 import { SubscribingsComponent } from '../subscribings/subscribings.component';
@@ -93,8 +91,6 @@ const icons = [
     MediaWritingsComponent,
     SubscribingsComponent,
     SubscribingsSeeMoreComponent,
-    MediaSeeMoreComicsComponent,
-    MediaSeeMoreWritingsComponent,
   ],
   imports: [
     CommonModule,

@@ -587,6 +587,10 @@
     }
   }
  
+  @media (max-width: 500px) {
+    overflow:unset !important;
+  }
+ 
 
   .absolute-background-color {
     position: absolute;

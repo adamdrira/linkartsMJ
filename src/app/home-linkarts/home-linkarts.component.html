@@ -144,14 +144,18 @@
         <app-recommendations
         [status]="status[0]"></app-recommendations>
     </div>
+    <div *ngIf="type_of_profile=='account' && categories_to_load[2] && allow_sub" class="title-container"  >
+        <span>Fil d'actualité</span>
+    </div>
     <div *ngIf="categories_to_load[1]" class="component-container"  style="padding-top: unset;" [ngClass]="{'really-invisible':category_index!=1}" >
         <app-trendings
         [current_user]=current_user
         [status]="status[1]"></app-trendings>
     </div>
-    <div *ngIf="type_of_profile=='account' && categories_to_load[2]" class="component-container"  [ngClass]="{'really-invisible':category_index!=2}">
+    <div *ngIf="type_of_profile=='account' && categories_to_load[2]" class="component-container"  [ngClass]="{'really-invisible':category_index!=2 && !allow_sub}">
         <app-subscribings
         [current_user]=current_user
+        [allow_sub]=allow_sub
         ></app-subscribings>
     </div>
     <div  *ngIf="categories_to_load[3]"  class="component-container" style="padding-top: unset;" [ngClass]="{'really-invisible':category_index!=3}">

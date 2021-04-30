@@ -25,49 +25,87 @@
                 <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
             </div>
             
-            <ng-container *ngIf="item==='BD'">
-                <ng-container *ngFor="let item of sorted_artpieces_bd.slice(0,number_of_comics_to_show); let i = index">
+            
+
+            <ng-container *ngIf="item==='Manga'">
+                <ng-container *ngFor="let item of sorted_artpieces_manga.slice(0,number_of_comics_to_show_by_style[0]); let i = index">
                     <app-thumbnail-comics class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber == null"
                         [item]=item
                         [width]=width
                         [myScrollContainer]="myScrollContainer"
-                        [format]=sorted_artpieces_bd_format[i]
+                        format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-comics>
+                        <app-thumbnail-comics class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber >= 0"
+                        [item]=item
+                        [width]=width
+                        [myScrollContainer]="myScrollContainer"
+                        format='serie'
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-comics>
                 </ng-container>
             </ng-container>
 
-            <ng-container *ngIf="item==='Manga'">
-                <ng-container *ngFor="let item of sorted_artpieces_manga.slice(0,number_of_comics_to_show); let i = index">
+            <ng-container *ngIf="item==='BD'">
+                <ng-container *ngFor="let item of sorted_artpieces_bd.slice(0,number_of_comics_to_show_by_style[1]); let i = index">
                     <app-thumbnail-comics class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber == null"
                         [item]=item
                         [width]=width
                         [myScrollContainer]="myScrollContainer"
-                        [format]=sorted_artpieces_manga_format[i]
+                        format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-comics>
+                        <app-thumbnail-comics class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber >= 0"
+                        [item]=item
+                        [width]=width
+                        [myScrollContainer]="myScrollContainer"
+                        format='serie'
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-comics>
                 </ng-container>
-                </ng-container>
+            </ng-container>
         
-                <ng-container *ngIf="item==='Comics'">
-                <ng-container *ngFor="let item of sorted_artpieces_comics.slice(0,number_of_comics_to_show); let i = index">
-                    <app-thumbnail-comics  class="thumbnail-component-container" 
+            <ng-container *ngIf="item==='Comics'">
+                <ng-container *ngFor="let item of sorted_artpieces_comics.slice(0,number_of_comics_to_show_by_style[2]); let i = index">
+                    <app-thumbnail-comics class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber == null"
                         [item]=item
                         [width]=width
                         [myScrollContainer]="myScrollContainer"
-                        [format]=sorted_artpieces_comics_format[i]
+                        format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-comics>
+                        <app-thumbnail-comics class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber >= 0"
+                        [item]=item
+                        [width]=width
+                        [myScrollContainer]="myScrollContainer"
+                        format='serie'
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-comics>
                 </ng-container>
             </ng-container>
 
             <ng-container *ngIf="item==='Webtoon'">
-                <ng-container *ngFor="let item of sorted_artpieces_webtoon.slice(0,number_of_comics_to_show); let i = index">
+                <ng-container *ngFor="let item of sorted_artpieces_webtoon.slice(0,number_of_comics_to_show_by_style[3]); let i = index">
                     <app-thumbnail-comics class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber == null"
                         [item]=item
                         [width]=width
                         [myScrollContainer]="myScrollContainer"
-                        [format]=sorted_artpieces_webtoon_format[i]
+                        format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-comics>
+                        <app-thumbnail-comics class="thumbnail-component-container" 
+                        *ngIf="item && item.chaptersnumber >= 0"
+                        [item]=item
+                        [width]=width
+                        [myScrollContainer]="myScrollContainer"
+                        format='serie'
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-comics>
                 </ng-container>
@@ -75,31 +113,12 @@
         
 
             <ng-container >
-                <div *ngIf="!show_more[sorted_style_list.indexOf(item)] && see_more_comics(item) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more" (click)="see_more(item,myScrollContainer, i1)">
+                <div *ngIf="can_see_more_comics[sorted_style_list.indexOf(item)] && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more" (click)="see_more(item,myScrollContainer, i1)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">expand_more</mat-icon>
                 </div>
 
 
-
-                <div *ngIf="show_more[sorted_style_list.indexOf(item)]" >
-                                
-                
-                    <div style="transition:opacity 1s;">
-                        <app-media-see-more-comics
-                        [style]=item
-                        [width]=width
-                        [myScrollContainer]=myScrollContainer
-                        [sorted_artpieces_bd]=sorted_artpieces_bd.slice(0,6)
-                        [sorted_artpieces_manga]=sorted_artpieces_manga.slice(0,6)
-                        [sorted_artpieces_comics]=sorted_artpieces_comics.slice(0,6)
-                        [sorted_artpieces_webtoon]=sorted_artpieces_webtoon.slice(0,6)
-                        [number_of_comics_to_show]=number_of_comics_to_show
-                        now_in_seconds={{now_in_seconds}}
-                        ></app-media-see-more-comics>
-                    </div>
-                </div>        
-
-                <div [routerLink]=open_research(item) *ngIf="!( !show_more[sorted_style_list.indexOf(item)] && see_more_comics(item) ) && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more with-span" (click)="see_more(item,myScrollContainer, i1)">
+                <div [routerLink]=open_research(item) *ngIf=" !can_see_more_comics[sorted_style_list.indexOf(item)] && !(-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth)" class="see-more with-span" (click)="see_more(item,myScrollContainer, i1)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">add_circle_outline</mat-icon>
                     <span>Voir tout</span>
                 </div>
@@ -116,10 +135,42 @@
 </div>
 
 
+<div class="top-artists-container" *ngIf="top_artists_comic && top_artists_comic.length>0 && top_artists_retrieved">
+   
+    <div class="title-artists no-cursor">
+        <span>Artistes du moment</span>
+    </div>
+    <ng-container *ngIf="top_artists_comic">
+        <ng-container *ngFor="let item of top_artists_comic; let i = index">
+            <div class="artist-container" [@enterAnimation]>
+                <app-thumbnail-user 
+                    [item]=item
+                ></app-thumbnail-user> 
+            </div>
+        </ng-container>
+    </ng-container>
+</div>
+
+
+
+<div class="top-artists-container" *ngIf="!top_artists_retrieved" >
+    <div class="title-artists no-cursor" [@enterAnimation]>
+        <div class="category-title shiny"></div>
+    </div>
+    <ng-container *ngFor="let item of skeleton_array; let i = index">
+        <div class="artist-container" [@enterAnimation]>
+            <app-thumbnail-user 
+                [skeleton]="skeleton"
+            ></app-thumbnail-user> 
+        </div>
+    </ng-container>
+</div>
+
+
 <ng-container *ngIf="check_comics_history">
     <div *ngIf="!last_consulted_comics_retrieved" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
-                <span>Récemment consultés</span>
+                <span>Historique</span>
         </div>
         
         <div class="container-homepage container-comics container-skeletons " style="transition:opacity 1s;"   [@enterAnimation] >
@@ -177,3 +228,5 @@
             </div>
     </div>
 </ng-container>
+
+

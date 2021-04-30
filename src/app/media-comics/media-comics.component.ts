@@ -39,25 +39,7 @@ export class MediaComicsComponent implements OnInit {
   }
 
 
-  ngOnChanges(changes: SimpleChanges) {
-    if( changes.width) {
-      if(this.width>0){
-        var n = Math.floor(this.width/250);
-        if(n>3){
-          this.number_of_comics_to_show=(n<6)?n:6;
-        }
-        else{
-          this.number_of_comics_to_show=6;
-        }
-        if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show && this.last_consulted_comics_retrieved){
-          this.get_history_recommendation();
-        }
-        this.current_number_of_comics_to_show=this.number_of_comics_to_show;
-        this.cd.detectChanges()
-      }
-    }
-
-  }
+  
 
   current_number_of_comics_to_show:number;
   cancelled: number;
@@ -68,18 +50,15 @@ export class MediaComicsComponent implements OnInit {
   @Input() sorted_artpieces_manga: any[];
   @Input() sorted_artpieces_comics: any[];
   @Input() sorted_artpieces_webtoon: any[];
+  number_of_comics_to_show_by_style=[];
   
-  @Input() sorted_artpieces_manga_format: string[];
-  @Input() sorted_artpieces_comics_format: string[];
-  @Input() sorted_artpieces_webtoon_format: string[];
-  @Input() sorted_artpieces_bd_format: string[];
   @Input() width: number;
   @Input() check_comics_history: any;
   @Input() now_in_seconds: number;
+  @Input() top_artists_comic: any;
   last_consulted_comics: any[]=[];
   last_consulted_comics_retrieved: boolean;
   
-  @Input() can_see_more_comics: any[];
   number_of_comics_to_show=0;
   show_more=[false,false,false,false];
   list_of_contents_sorted:boolean=false;
@@ -87,24 +66,90 @@ export class MediaComicsComponent implements OnInit {
 
   show_icon=false;
   number_of_comics_for_history=5;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if( changes.width) {
+      if(this.width>0){
+        var n = Math.floor(this.width/250);
+        if(n>3){
+          this.number_of_comics_to_show=(n<6)?n:5;
+        }
+        else{
+          this.number_of_comics_to_show=4;
+        }
+        for(let i=0;i<4;i++){
+          this.number_of_comics_to_show_by_style[i]= this.number_of_comics_to_show;
+        }
+        if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show && this.last_consulted_comics_retrieved){
+          this.get_history_recommendation();
+        }
+        this.current_number_of_comics_to_show=this.number_of_comics_to_show;
+        this.cd.detectChanges()
+      }
+    }
+
+    if(changes.top_artists_comic){
+      this.top_artists_retrieved=true;
+    }
+
+  }
+
+  top_artists_retrieved=false;
   ngOnInit() {
     window.scroll(0,0);
     var n = Math.floor(this.width/250);
     if(n>3){
-      this.number_of_comics_to_show=(n<6)?n:6;
+      this.number_of_comics_to_show=(n<6)?n:5;
     }
     else{
       this.number_of_comics_to_show=4;
-      this.sorted_artpieces_bd=this.sorted_artpieces_bd.slice(0,4);
-      this.sorted_artpieces_manga=this.sorted_artpieces_manga.slice(0,4);
-      this.sorted_artpieces_comics=this.sorted_artpieces_comics.slice(0,4);
-      this.sorted_artpieces_webtoon=this.sorted_artpieces_webtoon.slice(0,4);
+    }
+
+    for(let i=0;i<4;i++){
+      this.number_of_comics_to_show_by_style[i]= this.number_of_comics_to_show;
     }
     this.current_number_of_comics_to_show=this.number_of_comics_to_show;
     this.get_history_recommendation();
+    this.get_artists()
     
   }
 
+  
+  can_see_more_comics=[true,true,true,true];
+  see_more(item,e,i) {
+    let index = this.sorted_style_list.indexOf(item);
+
+    if(item=="Manga"){
+      this.number_of_comics_to_show_by_style[0]+=this.number_of_comics_to_show;
+      if(this.sorted_artpieces_manga.length<=this.number_of_comics_to_show_by_style[0] || this.number_of_comics_to_show_by_style[0]==3*this.number_of_comics_to_show){
+        this.can_see_more_comics[index]=false;
+      }
+    }
+    if(item=="BD"){
+      this.number_of_comics_to_show_by_style[1]+=this.number_of_comics_to_show;
+      if(this.sorted_artpieces_bd.length<=this.number_of_comics_to_show_by_style[1] || this.number_of_comics_to_show_by_style[1]==3*this.number_of_comics_to_show){
+        this.can_see_more_comics[index]=false;
+      }
+    }
+    if(item=="Comics"){
+      this.number_of_comics_to_show_by_style[2]+=this.number_of_comics_to_show;
+      if(this.sorted_artpieces_comics.length<=this.number_of_comics_to_show_by_style[2] || this.number_of_comics_to_show_by_style[2]==3*this.number_of_comics_to_show){
+        this.can_see_more_comics[index]=false;
+      }
+    }
+    
+    if(item=="Webtoon"){
+      this.number_of_comics_to_show_by_style[3]+=this.number_of_comics_to_show;
+      if(this.sorted_artpieces_webtoon.length<=this.number_of_comics_to_show_by_style[3] || this.number_of_comics_to_show_by_style[3]==3*this.number_of_comics_to_show){
+        this.can_see_more_comics[index]=false;
+      }
+    }
+    this.cd.detectChanges();
+
+    setTimeout( () => { 
+      this.click_absolute_arrow2(e,i,true,'right'); 
+    }, 10 );
+  }
 
   get_history_recommendation(){
     this.number_of_skeletons_per_line=this.number_of_comics_to_show;
@@ -154,38 +199,7 @@ export class MediaComicsComponent implements OnInit {
 
   }
 
-  //Other
-  see_more(item,e,i) {
-    let index = this.sorted_style_list.indexOf(item);
-    this.show_more[index]=true;
-    
-    this.cd.detectChanges();
-
-    setTimeout( () => { 
-      this.click_absolute_arrow2(e,i,true,'right'); }, 10 );
-  }
-
-
   
-  see_more_comics(category){
-    if(category=='Manga' && this.can_see_more_comics[0]){
-      return true;
-    }
-    else if(category=='BD' && this.can_see_more_comics[2]){
-      return true;
-    }
-    else if(category=='Webtoon' && this.can_see_more_comics[3]){
-      return true;
-    }
-    else if(category=='Comics' && this.can_see_more_comics[2]){
-      return true;
-    }
-    else{
-      return false;
-    }
-    
-    
-  }
 
   open_research(item:any) {
     return "/main-research/styles/tags/1/Comic/"+item+"/all";
@@ -281,6 +295,19 @@ export class MediaComicsComponent implements OnInit {
   }
 
 
+  /*************************************** ARTISTS  *******************************************/
+  /*************************************** ARTISTS  *******************************************/
+  /*************************************** ARTISTS  *******************************************/
+
+
+  show_artists=false;
+  get_artists(){
+    /*console.log("get artists")
+    this.navbar.get_top_artists("comic").subscribe(r=>{
+      console.log(r)
+    })*/
+  }
+
   delete_null_elements_of_list(list){
     let len=list.length;
     for(let i=0;i<len;i++){
@@ -290,7 +317,8 @@ export class MediaComicsComponent implements OnInit {
     }
   }
 
-  skeleton_array = Array(6);
+  skeleton_array = Array(5);
+  skeleton:boolean=true;
   number_of_skeletons_per_line = 1;
   type_of_skeleton:string="comic";
   send_number_of_skeletons(object) {

@@ -46,12 +46,10 @@ export class MediaDrawingsComponent implements OnInit {
   @Input() sorted_artpieces_traditional: any[];
   @Input() sorted_artpieces_digital: any[];
   
-  @Input() sorted_artpieces_traditional_format: string[];
-  @Input() sorted_artpieces_digital_format: string[];
   @Input() width: number;
   @Input() check_drawings_history: any;
   width_to_send:number;
-
+  @Input() top_artists_drawing: any[];
   @Input() now_in_seconds: number;
   @Output() list_of_drawings_retrieved_emitter = new EventEmitter<object>();
   show_more=[false,false];
@@ -70,12 +68,15 @@ export class MediaDrawingsComponent implements OnInit {
         this.update_number_of_drawings_to_show();
       }
       this.current_number_of_drawings_to_show= this.number_of_drawings_to_show;
-      
-     
     }
 
+    if(changes.top_artists_drawing){
+      this.top_artists_retrieved=true;
+    }
   }
   
+  skeleton=true;
+  top_artists_retrieved=false;
   show_icon=false;
   number_of_drawings_to_show=5;
   ngOnInit() {
@@ -99,10 +100,10 @@ export class MediaDrawingsComponent implements OnInit {
     if(this.width>0){
       var n = Math.floor(this.width/250);
       if(n>3){
-        this.number_of_drawings_to_show=(n<6)?n:6;
+        this.number_of_drawings_to_show=(n<6)?n:5;
       }
       else{
-        this.number_of_drawings_to_show=6;
+        this.number_of_drawings_to_show=4;
       
       }
     }
@@ -152,7 +153,7 @@ export class MediaDrawingsComponent implements OnInit {
   }
 
   show_other_one=true;
-  skeleton_array = Array(6);
+  skeleton_array = Array(5);
   number_of_skeletons_per_line = 1;
   type_of_skeleton:string="new-drawing";
   send_number_of_skeletons(object) {
@@ -237,7 +238,7 @@ export class MediaDrawingsComponent implements OnInit {
     if(width>0 && !this.got_number_of_drawings_to_show){
       let n =Math.floor(width/210)
       if(n>3){
-        this.number_of_drawings_variable=(n<6)?n:6;
+        this.number_of_drawings_variable=(n<6)?n:5;
       }
       else{
         this.number_of_drawings_variable=4;
@@ -259,7 +260,7 @@ export class MediaDrawingsComponent implements OnInit {
       let n =Math.floor(width/210)
       let variable;
       if(n>3){
-        variable=(n<6)?n:6;
+        variable=(n<6)?n:5;
       }
       else{
         variable=4;

@@ -32,7 +32,7 @@ import { merge, fromEvent } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupContactComponent } from '../popup-contact/popup-contact.component';
 import { PopupShareComponent } from '../popup-share/popup-share.component';
-declare var $: any;
+
 declare var Swiper: any;
 
 
@@ -904,13 +904,9 @@ export class NavbarLinkartsComponent implements OnInit {
           if(m[1]==this.compteur_research){
             this.show_researches_propositions=true;
             this.list_of_first_propositions=m[0][0];
-            
             this.cd.detectChanges();
             this.initialize_swiper();
             this.initialize_swiper2();
-            //this.swiper.update();
-            //this.swiper2.update();
-            
             this.cd.detectChanges();
 
             if(m[0][0].length<10){
@@ -929,6 +925,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
         let global_result:any;
         this.navbar.get_global_propositions_navbar(this.publication_category,this.input.nativeElement.value,10,this.compteur_research).subscribe(r=>{
+
           global_result=r[0][0]
           global_retrieved=true;
           if(r[1]==this.compteur_research && specific_retrieved){
@@ -2857,6 +2854,7 @@ change_message_status(event){
     this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).subscribe();
   }
   open_donation() {
-    this.router.navigate(['/donation']);
+    this.location.go("/donation/")
+    location.reload();
   }
 }

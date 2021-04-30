@@ -15,7 +15,6 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
 import * as WebFont from 'webfontloader';
-import { R } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-add-artwork',
@@ -33,7 +32,6 @@ export class AddArtworkComponent implements OnInit {
     private Ads_service:Ads_service,
     private _upload: UploadService,
     private cd: ChangeDetectorRef,
-    private Profile_Edition_Service: Profile_Edition_Service,
     private Bd_CoverService: Bd_CoverService,
     private navbar: NavbarService,
     private location: Location,

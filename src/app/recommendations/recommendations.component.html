@@ -46,42 +46,36 @@
         <div class="media-container"  *ngIf="bd_is_loaded && sorted_category_retrieved && subcategory==0 " >
             <app-media-comics 
                 [sorted_style_list]=sorted_style_list_bd
-                [sorted_artpieces_manga_format]=sorted_artpieces_manga_format
                 [sorted_artpieces_manga]=sorted_artpieces_manga
-                [sorted_artpieces_comics_format]=sorted_artpieces_comics_format
-                [sorted_artpieces_comics]=sorted_artpieces_comics
-                [sorted_artpieces_webtoon_format]=sorted_artpieces_webtoon_format
-                [sorted_artpieces_webtoon]=sorted_artpieces_webtoon
-                [sorted_artpieces_bd_format]=sorted_artpieces_bd_format 
                 [sorted_artpieces_bd]=sorted_artpieces_bd
-                [can_see_more_comics]=can_see_more_comics
+                [sorted_artpieces_comics]=sorted_artpieces_comics
+                [sorted_artpieces_webtoon]=sorted_artpieces_webtoon
                 [now_in_seconds]=now_in_seconds
                 [check_comics_history]=check_comics_history
+                [top_artists_comic]=top_artists_comic
                 [width]=width></app-media-comics>
         </div>
         <div class="media-container" *ngIf="drawing_is_loaded && sorted_category_retrieved  && subcategory==1 " >
             <app-media-drawings 
                 [sorted_style_list]=sorted_style_list_drawing
                 [sorted_artpieces_traditional]=sorted_artpieces_traditional
-                [sorted_artpieces_traditional_format]=sorted_artpieces_traditional_format
                 [sorted_artpieces_digital]=sorted_artpieces_digital
-                [sorted_artpieces_digital_format]=sorted_artpieces_digital_format 
                 [now_in_seconds]=now_in_seconds
                 [check_drawings_history]=check_drawings_history
                 [width]=width
+                [top_artists_drawing]=top_artists_drawing
                 (list_of_drawings_retrieved_emitter)="list_of_drawings_retrieved_receiver($event)"></app-media-drawings>
         </div>
         <div class="media-container" *ngIf="writing_is_loaded && sorted_category_retrieved && subcategory==2" >
             <app-media-writings 
                 [sorted_style_list]=sorted_style_list_writing
-                [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel
                 [sorted_artpieces_roman]=sorted_artpieces_roman 
                 [sorted_artpieces_scenario]=sorted_artpieces_scenario
                 [sorted_artpieces_article]=sorted_artpieces_article 
                 [sorted_artpieces_poetry]=sorted_artpieces_poetry
-                [can_see_more_writings]=can_see_more_writings
                 [now_in_seconds]=now_in_seconds
                 [check_writings_history]=check_writings_history
+                [top_artists_writing]=top_artists_writing
                 [width]=width></app-media-writings>
         </div>
     </div>

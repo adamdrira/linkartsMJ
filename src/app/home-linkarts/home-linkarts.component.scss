@@ -18,6 +18,22 @@
 
 .page {
   background: linear-gradient(0.5turn, rgba(255, 255, 255, 0.9), #e6ebf1);
+
+  .title-container{
+    width: 90%;
+    margin: 30px auto;
+    max-width: 1700px;
+    display: flex;
+    justify-content: center;
+    transform: translateY(-100px);
+
+    span{
+      font-size: 20px;
+      font-weight: bold;
+      color: #203864;
+    }
+  }
+
   .component-container {
     width: 90%;
     margin: auto;
@@ -600,13 +616,13 @@
 
     > div {
       color: #7d7d7d;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
     }
     > span {
       margin: 0px 8px 0px 12px;
       color: #bbbbbb;
-      line-height: 18px;
+      line-height: 19px;
     }
     a.linkedin {
       margin: 0px 10px;

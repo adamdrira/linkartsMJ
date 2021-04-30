@@ -144,7 +144,11 @@
                                 <span *ngIf="list_of_real_categories[indice_title_selected]=='Comic' || list_of_real_categories[indice_title_selected]=='Drawing' || list_of_real_categories[indice_title_selected]=='Writing'">
                                     <b>Genre :</b> {{second_filters[indice_title_selected][second_filter_selected]}}
                                 </span> 
-                                <span *ngIf="list_of_real_categories[indice_title_selected]=='Account'">
+                                <span *ngIf="list_of_real_categories[indice_title_selected]=='Account'"
+                                matTooltip="Contenus principaux des utilisateurs" 
+                                matTooltipClass='linkarts-tooltip' 
+                                [matTooltipPosition]="'below'"
+                                [matTooltipShowDelay]="200">
                                     <b>Préférence :</b> {{second_filters[indice_title_selected][second_filter_selected]}}
                                 </span> 
                                 <span *ngIf="list_of_real_categories[indice_title_selected]=='Ad'">

@@ -57,12 +57,8 @@ export class HomeLinkartsComponent implements OnInit {
 
   @ViewChild("homeLinkartsSelect") homeLinkartsSelect;
 
-  @HostListener('window:scroll', ['$event']) 
-  function(event) {
-    if( this.homeLinkartsSelect ) {
-      this.homeLinkartsSelect.close();
-    }
-  };
+ 
+
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     if( this.homeLinkartsSelect ) {
@@ -154,6 +150,7 @@ export class HomeLinkartsComponent implements OnInit {
   
  
   open_category(i : number) {
+    this.allow_sub=false;
     if( i==0 ) {
       this.category_index = 0;
       this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).subscribe();
@@ -304,6 +301,7 @@ export class HomeLinkartsComponent implements OnInit {
   }
   
 
+  allow_sub=false;
   sectionChange2(e:any) {
     this.router.navigate([ this.get_category(e) ]);
   }
@@ -329,6 +327,25 @@ export class HomeLinkartsComponent implements OnInit {
     }
     else {
       this.navbar.show_help();
+    }
+
+   
+    if( this.homeLinkartsSelect ) {
+      this.homeLinkartsSelect.close();
+    }
+
+    let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
+    let max = document.documentElement.scrollHeight;
+    let compare=(max*0.8 - 400 >=0)?(max*0.8 - 400):(max*0.8);
+    if(pos>= compare ){
+      console.log("in compage");
+      console.log(this.categories_to_load)
+      console.log(this.type_of_profile)
+      if( this.categories_to_load[0] && !this.categories_to_load[2] && this.type_of_profile_retrieved && this.type_of_profile=='account')   {
+        console.log("load sub");
+        this.categories_to_load[2]=true;
+        this.allow_sub=true;
+      }
     }
   }
   ngOnDestroy() {
