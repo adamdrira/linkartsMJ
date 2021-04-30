@@ -190,82 +190,10 @@ const generate_recommendations = (request, response) => {
           }
 
           function do_all_end(){
-            var list_bd_os_to_send=[];
-                  var list_bd_serie_to_send=[];
-                  let compteur_os=0;
-                  let compteur_serie=0;
-                  
-                  complete_recommendation_bd([],response,user,'Manga',"one-shot", (req)=>{
-                    sort_os_styles(req[0])
-                  })
-                  complete_recommendation_bd([],response,user,'Comics',"one-shot", (req)=>{
-                    sort_os_styles(req[0])
-                  })
-                  complete_recommendation_bd([],response,user,'BD',"one-shot", (req)=>{
-                    sort_os_styles(req[0])
-                  })
-                  complete_recommendation_bd([],response,user,'Webtoon',"one-shot", (req)=>{
-                    sort_os_styles(req[0])
-                  })
-  
-                  function sort_os_styles(req){
-                    if(list_bd_os_to_send.length>0){
-                      if(req.length>0){
-                        list_bd_os_to_send = list_bd_os_to_send.concat(req);
-                      }
-                    }
-                    else{
-                      if(req.length>0){
-                        list_bd_os_to_send = req;
-                      }
-                    }
-                    compteur_os++
-                    if(compteur_serie==4 && compteur_os==4){
-                      response.status(200).json([{
-                        "list_bd_os_to_send":list_bd_os_to_send,
-                        "list_bd_serie_to_send":list_bd_serie_to_send
-                      }])
-                    }
-  
-                  }
-  
-                  //serie
-                  complete_recommendation_bd([],response,user,'Manga',"serie", (req)=>{
-                    sort_serie_styles(req[0])
-                  })
-                  complete_recommendation_bd([],response,user,'Comics',"serie", (req)=>{
-                    sort_serie_styles(req[0])
-                  })
-                  complete_recommendation_bd([],response,user,'BD',"serie", (req)=>{
-                    sort_serie_styles(req[0])
-                  })
-                  complete_recommendation_bd([],response,user,'Webtoon',"serie", (req)=>{
-                    sort_serie_styles(req[0])
-                  })
-  
-                  
-  
-                  function sort_serie_styles(req){
-                    if(list_bd_serie_to_send.length>0){
-                      if(req.length>0){
-                        list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-                      }
-                    }
-                    else{
-                      if(req.length>0){
-                        list_bd_serie_to_send = req;
-                      }
-                    }
-                    compteur_serie++
-                    if(compteur_serie==4 && compteur_os==4){
-                      response.status(200).json([{
-                        "list_bd_os_to_send":list_bd_os_to_send,
-                        "list_bd_serie_to_send":list_bd_serie_to_send
-                      }])
-                    }
-  
-                  }
-  
+
+            get_all_comics_recommendations(user,(list_of_comics)=>{
+              response.status(200).json([list_of_comics])
+            })
           }
           
         }
@@ -1962,12 +1890,501 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   
   };
 
+
+
+
+
+
+
+
+
+
+
+
   
+  /***************************************** NEW RECOMMENDATIONS  ***********************************/
+  /***************************************** NEW RECOMMENDATIONS  ***********************************/
+  /***************************************** NEW RECOMMENDATIONS  ***********************************/
 
 
-  
 
 
+
+
+
+  /***************************************** COMICS RECOMMENDATIONS  ***********************************/
+  /***************************************** COMICS RECOMMENDATIONS  ***********************************/
+  /***************************************** COMICS RECOMMENDATIONS  ***********************************/
+
+
+
+  const get_recommendations_comics = (request, response) => {
+    var user=0;
+    jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+      user=decoded.id;
+    });
+    get_all_comics_recommendations(user,(list_of_comics)=>{
+      response.status(200).json([list_of_comics])
+    })
+  }
+
+  function get_all_comics_recommendations(user,callback){
+    let recommendations_done=[];
+    let recommendations=[];
+    let last_recommendations=[[],[],[],[]];
+
+    let styles=["Manga","BD","Comics","Webtoon"]
+    for( let i=0;i<styles.length;i++){
+      let views_found=false;
+      let styles_found=false;
+      let result_styles=[];
+      let result_views=[];
+      pool.query('SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND style=$3 GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC limit 50', ["Comic","clicked",styles[i]], (error, results) => {
+        styles_found=true;
+        
+        if (error) {
+          console.log({err:error})
+          result_styles = [];
+        }
+        else{
+          result_styles = JSON.parse(JSON.stringify(results.rows));
+        }
+
+       
+        if(views_found && styles_found){
+          after_first_check(i)
+        }
+        
+      })
+
+      if(user!=80){
+        pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1  AND publication_category=$2 and style=$3 limit 100', [user,"comic",styles[i]], (error, results) => {
+          views_found=true;
+         
+          if (error) {
+            result_views = [];
+          }
+          else{
+            views_found=true;
+            result_views = JSON.parse(JSON.stringify(results.rows));
+          }
+
+         
+          if(views_found && styles_found){
+            after_first_check(i)
+          }
+          
+        })
+      }
+      else{
+        views_found=true;
+        if(views_found && styles_found){
+          after_first_check(i)
+        }
+      }
+     
+     
+
+      function after_first_check(indice){
+        let not_seen=[];
+        let seen=[];
+        for (let i=0; i<result_styles.length;i++){
+          let index = result_views.findIndex(x =>  x.publication_category == result_styles[i].publication_category && x.format == result_styles[i].format && x.publication_id===result_styles[i].publication_id);
+
+          if(index>=0){
+            seen.push(result_styles[i])
+          }
+          else{
+            not_seen.push(result_styles[i])
+          }
+        }
+
+        recommendations[indice]=not_seen.concat(seen)
+      
+        let compteur_before_done=0;
+       
+        for( let j=0;j<recommendations[indice].length;j++){
+
+          if(recommendations[indice][j].format=="one-shot"){
+              pool.query('SELECT * FROM liste_bd_one_shot WHERE bd_id=$1 and status=$2', [recommendations[indice][j].target_id,"public"], (error, results2) => {
+                if (error ) {
+                  
+                  last_recommendations[indice][j]=null;
+                }
+                
+                else {
+                  result2 = JSON.parse(JSON.stringify(results2.rows));
+                  if(!result2[0]){
+                    last_recommendations[indice][j]=null;
+                  }
+                  else{
+                    last_recommendations[indice][j]=result2[0];
+                  }
+                 
+                  compteur_before_done++;
+                  if(compteur_before_done==recommendations[indice].length){
+                    remove_null_elements(last_recommendations[indice])
+                    recommendations_done[indice]=true;
+                    let compt=0;
+                    for(let j=0;j<4;j++){
+                      if(recommendations_done[j]){
+                        compt++
+                      }
+                    }
+                    if(compt==4){
+                      callback(last_recommendations)
+                    }
+                  }
+                }
+              })
+          }
+          else{
+            pool.query('SELECT * FROM liste_bd_serie WHERE bd_id=$1 and status=$2', [recommendations[indice][j].target_id,"public"], (error, results2) => {
+              if (error ) {
+                
+                last_recommendations[indice][j]=null;
+              }
+              else {
+                result2 = JSON.parse(JSON.stringify(results2.rows));
+                if(!result2[0]){
+                  last_recommendations[indice][j]=null;
+                }
+                else{
+                  last_recommendations[indice][j]=result2[0];
+                }
+             
+                compteur_before_done++;
+                if(compteur_before_done==recommendations[indice].length){
+                  remove_null_elements(last_recommendations[indice])
+                  recommendations_done[indice]=true;
+                  let compt=0;
+                  for(let j=0;j<4;j++){
+                    if(recommendations_done[j]){
+                      compt++
+                    }
+                  }
+                  if(compt==4){
+                    callback(last_recommendations)
+                  }
+                }
+              }
+            })
+          }
+        }
+      
+      }
+    }
+    
+  }
+
+
+  /***************************************** DRAWINGS RECOMMENDATIONS  ***********************************/
+  /***************************************** DRAWINGS RECOMMENDATIONS  ***********************************/
+  /***************************************** DRAWINGS RECOMMENDATIONS  ***********************************/
+
+
+  const get_recommendations_drawings = (request, response) => {
+    console.log("drawing_id")
+    var user=0;
+    jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+      user=decoded.id;
+    });
+    get_all_drawings_recommendations(user,(list_of_drawings)=>{
+      response.status(200).json([list_of_drawings])
+    })
+  }
+
+  function get_all_drawings_recommendations(user,callback){
+    console.log("get_all_drawings_recommendations")
+    let recommendations_done=[];
+    let recommendations=[];
+    let last_recommendations=[[],[]];
+
+    let styles=["Traditionnel","Digital"]
+    for( let i=0;i<styles.length;i++){
+      let views_found=false;
+      let styles_found=false;
+      let result_styles=[];
+      let result_views=[];
+      pool.query('SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND style=$3 GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC limit 50', ["Drawing","clicked",styles[i]], (error, results) => {
+        styles_found=true;
+        
+        if (error) {
+          console.log({err:error})
+          result_styles = [];
+        }
+        else{
+          result_styles = JSON.parse(JSON.stringify(results.rows));
+        }
+
+       
+        if(views_found && styles_found){
+          after_first_check(i)
+        }
+        
+      })
+
+      if(user!=80){
+        pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1  AND publication_category=$2 and style=$3 limit 200', [user,"drawing",styles[i]], (error, results) => {
+          views_found=true;
+         
+          if (error) {
+            result_views = [];
+          }
+          else{
+            views_found=true;
+            result_views = JSON.parse(JSON.stringify(results.rows));
+          }
+
+         
+          if(views_found && styles_found){
+            after_first_check(i)
+          }
+          
+        })
+      }
+      else{
+        views_found=true;
+        if(views_found && styles_found){
+          after_first_check(i)
+        }
+      }
+     
+     
+
+      function after_first_check(indice){
+        console.log("after_first_check")
+        let not_seen=[];
+        let seen=[];
+        for (let i=0; i<result_styles.length;i++){
+          let index = result_views.findIndex(x =>  x.publication_category == result_styles[i].publication_category &&  x.format == result_styles[i].format && x.publication_id===result_styles[i].publication_id);
+
+          if(index>=0){
+            seen.push(result_styles[i])
+          }
+          else{
+            not_seen.push(result_styles[i])
+          }
+        }
+
+        recommendations[indice]=not_seen.concat(seen)
+      
+        let compteur_before_done=0;
+       
+        for( let j=0;j<recommendations[indice].length;j++){
+
+          if(recommendations[indice][j].format=="one-shot"){
+              pool.query('SELECT * FROM liste_drawings_one_page WHERE drawing_id=$1 and status=$2', [recommendations[indice][j].target_id,"public"], (error, results2) => {
+                if (error ) {
+                  
+                  last_recommendations[indice][j]=null;
+                }
+                
+                else {
+                  result2 = JSON.parse(JSON.stringify(results2.rows));
+                  if(!result2[0]){
+                    last_recommendations[indice][j]=null;
+                  }
+                  else{
+                    last_recommendations[indice][j]=result2[0];
+                  }
+                 
+                  compteur_before_done++;
+                  if(compteur_before_done==recommendations[indice].length){
+                    remove_null_elements(last_recommendations[indice])
+                    recommendations_done[indice]=true;
+                    let compt=0;
+                    for(let j=0;j<2;j++){
+                      if(recommendations_done[j]){
+                        compt++
+                      }
+                    }
+                    if(compt==2){
+                      callback(last_recommendations)
+                    }
+                  }
+                }
+              })
+          }
+          else{
+            pool.query('SELECT * FROM liste_drawings_artbook WHERE drawing_id=$1 and status=$2', [recommendations[indice][j].target_id,"public"], (error, results2) => {
+              if (error ) {
+                
+                last_recommendations[indice][j]=null;
+              }
+              else {
+                result2 = JSON.parse(JSON.stringify(results2.rows));
+                if(!result2[0]){
+                  last_recommendations[indice][j]=null;
+                }
+                else{
+                  last_recommendations[indice][j]=result2[0];
+                }
+             
+                compteur_before_done++;
+                if(compteur_before_done==recommendations[indice].length){
+                  remove_null_elements(last_recommendations[indice])
+                  recommendations_done[indice]=true;
+                  let compt=0;
+                  for(let j=0;j<2;j++){
+                    if(recommendations_done[j]){
+                      compt++
+                    }
+                  }
+                  if(compt==2){
+                    callback(last_recommendations)
+                  }
+                }
+              }
+            })
+          }
+        }
+      
+      }
+    }
+    
+  }
+
+
+
+  /***************************************** WRITINGS RECOMMENDATIONS  ***********************************/
+  /***************************************** WRITINGS RECOMMENDATIONS  ***********************************/
+  /***************************************** WRITINGS RECOMMENDATIONS  ***********************************/
+
+
+
+  const get_recommendations_writings = (request, response) => {
+    var user=0;
+    jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+      user=decoded.id;
+    });
+    get_all_writings_recommendations(user,(list_of_writings)=>{
+      response.status(200).json([list_of_writings])
+    })
+  }
+
+  function get_all_writings_recommendations(user,callback){
+    let recommendations_done=[];
+    let recommendations=[];
+    let last_recommendations=[[],[],[],[]];
+
+    let styles=["Roman","Scenario","Article","Poetry"]
+    for( let i=0;i<styles.length;i++){
+      let views_found=false;
+      let styles_found=false;
+      let result_styles=[];
+      let result_views=[];
+      pool.query('SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND style=$3 GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC limit 50', ["Writing","clicked",styles[i]], (error, results) => {
+        styles_found=true;
+        
+        if (error) {
+          console.log({err:error})
+          result_styles = [];
+        }
+        else{
+          result_styles = JSON.parse(JSON.stringify(results.rows));
+        }
+
+       
+        if(views_found && styles_found){
+          after_first_check(i)
+        }
+        
+      })
+
+      if(user!=80){
+        pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1  AND publication_category=$2 and style=$3 limit 200', [user,"writing",styles[i]], (error, results) => {
+          views_found=true;
+         
+          if (error) {
+            result_views = [];
+          }
+          else{
+            views_found=true;
+            result_views = JSON.parse(JSON.stringify(results.rows));
+          }
+
+         
+          if(views_found && styles_found){
+            after_first_check(i)
+          }
+          
+        })
+      }
+      else{
+        views_found=true;
+        if(views_found && styles_found){
+          after_first_check(i)
+        }
+      }
+     
+     
+
+      function after_first_check(indice){
+        let not_seen=[];
+        let seen=[];
+        for (let i=0; i<result_styles.length;i++){
+          let index = result_views.findIndex(x => x.publication_category == result_styles[i].publication_category && x.publication_id===result_styles[i].publication_id);
+
+          if(index>=0){
+            seen.push(result_styles[i])
+          }
+          else{
+            not_seen.push(result_styles[i])
+          }
+        }
+
+        recommendations[indice]=not_seen.concat(seen)
+      
+        let compteur_before_done=0;
+       
+        for( let j=0;j<recommendations[indice].length;j++){
+
+            pool.query('SELECT * FROM liste_writings WHERE writing_id=$1 and status=$2', [recommendations[indice][j].target_id,"public"], (error, results2) => {
+              if (error ) {
+                
+                last_recommendations[indice][j]=null;
+              }
+              else {
+                result2 = JSON.parse(JSON.stringify(results2.rows));
+                if(!result2[0]){
+                  last_recommendations[indice][j]=null;
+                }
+                else{
+                  last_recommendations[indice][j]=result2[0];
+                }
+             
+                compteur_before_done++;
+                if(compteur_before_done==recommendations[indice].length){
+                  remove_null_elements(last_recommendations[indice])
+                  recommendations_done[indice]=true;
+                  let compt=0;
+                  for(let j=0;j<4;j++){
+                    if(recommendations_done[j]){
+                      compt++
+                    }
+                  }
+                  if(compt==4){
+                    callback(last_recommendations)
+                  }
+                }
+              }
+            })
+        }
+      
+      }
+    }
+    
+  }
+
+  function remove_null_elements(list){
+    let len=list.length;
+    for(let i=0;i<len;i++){
+      if(!list[len-i-1]){
+        list.splice(len-i-1,1);
+      }
+    }
+  }
 
 
 module.exports = {
@@ -1980,5 +2397,8 @@ module.exports = {
   see_more_recommendations_bd,
   see_more_recommendations_drawings,
   see_more_recommendations_writings,
+  get_recommendations_comics,
+  get_recommendations_writings,
+  get_recommendations_drawings,
 
 }
