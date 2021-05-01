@@ -344,9 +344,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
 
 
   load_comics_recommendations(){
-    console.log("load_comics_recommendations")
     this.Community_recommendation.get_recommendations_comics().subscribe(r=>{
-      console.log(r)
       this.manage_comics_recommendations(r[0])
     })
   }
