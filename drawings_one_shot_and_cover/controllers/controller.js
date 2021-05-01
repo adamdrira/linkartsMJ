@@ -385,7 +385,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               destination: './data_and_routes/covers_drawings',
               plugins: [
                 imageminPngquant({
-                  quality: [0.7, 0.8]
+                  quality: [0.75, 0.85]
               })
               ]
             });
