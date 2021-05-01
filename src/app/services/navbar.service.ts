@@ -140,6 +140,13 @@ export class NavbarService {
       }));
     }
 
+    get_top_artists(category){
+      return this.httpClient.get(`routes/get_top_artists/${category}`).pipe(map(information=>{
+        return information;
+      }));
+    }
+
+
     get_last_researched_navbar_for_recommendations(category,offset,limit){
       return this.httpClient.post(`routes/get_last_researched_navbar_for_recommendations/${category}/${offset}/${limit}`, {withCredentials:true}).pipe(map(information=>{
           return information;

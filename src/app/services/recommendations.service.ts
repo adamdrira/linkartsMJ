@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, tap, map, delay } from 'rxjs/operators';
+import {  map } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
-import { Observable } from 'rxjs';
-
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
 };
@@ -38,6 +36,26 @@ export class Community_recommendation {
   delete_recommendations_cookies(){
     this.CookieService.delete('recommendations','/');
   }
+
+
+  get_recommendations_comics(){
+    return this.httpClient.post('routes/get_recommendations_comics',{withCredentials:true}).pipe(map(information=>{  
+      return information;
+    }));
+  }
+
+  get_recommendations_writings(){
+    return this.httpClient.post('routes/get_recommendations_writings',{withCredentials:true}).pipe(map(information=>{  
+      return information;
+    }));
+  }
+
+  get_recommendations_drawings(){
+    return this.httpClient.post('routes/get_recommendations_drawings',{withCredentials:true}).pipe(map(information=>{  
+      return information;
+    }));
+  }
+
 
   see_more_recommendations_bd(style){
     return this.httpClient.post(`routes/see_more_recommendations_bd`, {style:style}, {withCredentials:true}).pipe(map(information=>{
