@@ -433,7 +433,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                 destination: './data_and_routes/pages_bd_oneshot',
                 plugins: [
                   imageminPngquant({
-                    quality: [0.7, 0.8]
+                    quality: [0.75, 0.85]
                 })
                 ]
               });
