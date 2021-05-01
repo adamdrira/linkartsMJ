@@ -452,7 +452,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
               destination: './data_and_routes/drawings_pages_artbook',
               plugins: [
                 imageminPngquant({
-                  quality: [0.7, 0.8]
+                  quality: [0.75, 0.85]
               })
               ]
             });
