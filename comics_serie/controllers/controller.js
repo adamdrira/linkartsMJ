@@ -555,7 +555,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 destination: './data_and_routes/pages_bd_serie',
                 plugins: [
                   imageminPngquant({
-                    quality: [0.7, 0.8]
+                    quality: [0.75, 0.85]
                 })
                 ]
               });
