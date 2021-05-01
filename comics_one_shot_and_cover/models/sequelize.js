@@ -2,14 +2,14 @@ const Sequelize = require('sequelize');
 const tables = require('./tables');
 
 
-/*const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
+const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
     host : 'localhost',
     dialect: 'postgres'
-});*/
-const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
+});
+/*const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
   host : 'localhost',
   dialect: 'postgres'
-});
+});*/
 
 const list_comics_one_shot = tables.comics_one_shot_table(sequelize, Sequelize).comics;
 const list_pages_comics_one_shot = tables.comics_one_shot_table(sequelize, Sequelize).pages;
