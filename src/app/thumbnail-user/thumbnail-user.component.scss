@@ -161,11 +161,13 @@
         .profile-text {
             margin-top:4px;
             text-align:center;
-            padding-left:15px;
-            padding-right:15px;
+            padding-left: 10px;
+            padding-right: 10px;
+            margin-left: 4px;
+            margin-right: 4px;
             cursor:pointer;
             display:flex;
-    
+            justify-content: center;
             mat-icon {
                 margin:auto 4px auto auto;
                 width:unset !important;
@@ -178,17 +180,50 @@
                 font-size: 12px;
                 line-height: 16px;
                 color: #ffffff;
+                white-space: nowrap;
+            }
+
+            .sub-category{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .icon-container {
+                    margin: auto 5px auto 5px;
+                    width: unset !important;
+                    font-size: 20px;
+                    height: 17px;
     
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: normal;
-                -webkit-line-clamp: 1;
-                word-break: break-word;
-                text-align: left;
+                    .icon {
+                        background: #4bc7ff;
+                        margin: auto auto;
+                        height: 16px;
+                        width: 16px;
+                    }
+            
+                    .icon-announcement {
+                        height: 14px;
+                        width: 18px;
+                        margin-top: 2px;
+                        background: rgb(75 199 255 / 75%);
+                        mask: url("../../assets/img/svg/announcement_black_24dp.svg") no-repeat 50% 50%;
+                    }
+                    .icon-comic {
+                        mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
+                    }
+                    .icon-drawing {
+                        mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
+                    }
+                    .icon-writing {
+                        margin-top: 1px;
+                        mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
+                    }
+                }
+            
+                  
             }
         }
+
+        
     }
     
     @media (max-width: 900px) {

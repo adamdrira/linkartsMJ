@@ -22,7 +22,7 @@
         </div>
 
         <div class="absolute-profile-data" >
-            <div class="profile-picture" [ngClass]="{'shiny':!pp_is_loaded || !display_thumbnail}">
+            <div class="profile-picture" [ngClass]="{'shiny':!pp_is_loaded}">
                 <img [lazyLoad]="profile_picture"  loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
             </div>
     
@@ -64,6 +64,32 @@
                 <mat-icon [ngClass]="{'invisible': !show_icon }">palette</mat-icon>
                 <span *ngIf="number_of_comics + number_of_drawings + number_of_writings + number_of_ads == 1">{{number_of_comics + number_of_drawings + number_of_writings + number_of_ads}} publication</span>
                 <span *ngIf="number_of_comics + number_of_drawings + number_of_writings + number_of_ads > 1">{{number_of_comics + number_of_drawings + number_of_writings + number_of_ads}} publications</span>
+            </div>
+            <div class="profile-text" *ngIf="display_thumbnail && (number_of_comics + number_of_drawings + number_of_writings + number_of_ads > 0)">
+                <div class="sub-category" *ngIf="number_of_comics>0">
+                    <div class="icon-container">
+                        <div class="icon icon-comic" ></div>
+                    </div>
+                    <span>{{number_of_comics}}<ng-container *ngIf="number_of_drawings>0 || number_of_writings>0 || number_of_ads>0"> &nbsp;•</ng-container></span>
+                </div>
+                <div class="sub-category" *ngIf="number_of_drawings>0">
+                    <div class="icon-container">
+                        <div class="icon icon-drawing" ></div>
+                    </div>
+                    <span>{{number_of_drawings}}<ng-container *ngIf="number_of_writings>0  || number_of_ads>0"> &nbsp;•</ng-container></span>
+                </div>
+                <div class="sub-category" *ngIf="number_of_writings>0">
+                    <div class="icon-container">
+                        <div class="icon icon-writing" ></div>
+                    </div>
+                    <span>{{number_of_writings}}<ng-container *ngIf="number_of_ads>0"> &nbsp;•</ng-container></span>
+                </div>
+                <div class="sub-category" *ngIf="number_of_ads>0">
+                    <div class="icon-container">
+                        <div class="icon icon-announcement" ></div>
+                    </div>
+                    <span>{{number_of_ads}}</span>
+                </div>
             </div>
         </div>
 

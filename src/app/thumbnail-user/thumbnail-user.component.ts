@@ -7,7 +7,6 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import {Subscribing_service} from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
-declare var $:any;
 
 @Component({
   selector: 'app-thumbnail-user',
@@ -36,9 +35,7 @@ export class ThumbnailUserComponent implements OnInit {
 
   constructor(
     private Profile_Edition_Service:Profile_Edition_Service,
-    private rd:Renderer2,
     private sanitizer:DomSanitizer,
-    private router:Router,
     public dialog:MatDialog,
     private navbar: NavbarService,
     private Subscribing_service:Subscribing_service,
@@ -93,13 +90,11 @@ export class ThumbnailUserComponent implements OnInit {
       
       this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = url;
       });
   
       this.Profile_Edition_Service.retrieve_cover_picture( this.user_id ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.cover_picture = url;
       });
   
@@ -114,7 +109,6 @@ export class ThumbnailUserComponent implements OnInit {
         this.type_of_account=r[0].type_of_account;
         this.primary_description=r[0].primary_description;
         this.extended_description=r[0].primary_description_extended;
-        //this.subscribers_number=r[0].subscribers_number;  // changer la fonction pour récupérer le bon nombre de subscribings
         this.date_retrieved=true;
         if(this.date_retrieved && this.number_of_contents_retrieved && this.subscribtion_retrieved){
           this.display_thumbnail = true;

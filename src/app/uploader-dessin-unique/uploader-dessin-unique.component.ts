@@ -11,7 +11,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { Subscribing_service } from '../services/subscribing.service';
 import { NavbarService } from '../services/navbar.service';
 
-const url = 'https://www.linkarts.fr/routes/upload_drawing_onepage';
+const url = 'http://localhost:4600/routes/upload_drawing_onepage';
 @Component({
   selector: 'app-uploader-dessin-unique',
   templateUrl: './uploader-dessin-unique.component.html',

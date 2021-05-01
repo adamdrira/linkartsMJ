@@ -236,6 +236,7 @@ export class ThumbnailDrawingComponent implements OnInit {
   show_picture=false;
   dosomething(){
     this.show_picture=true;
+    this.change_size_for_news();
     this.sendLoaded.emit(true);
   }
 

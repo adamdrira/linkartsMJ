@@ -5,6 +5,7 @@ import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { StripeService } from '../services/stripe.service';
 import { NavbarService } from '../services/navbar.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { DeviceDetectorService } from 'ngx-device-detector';
 declare var Stripe: any;
 
 @Component({
@@ -68,6 +69,7 @@ export class StripeComponent implements OnInit {
   constructor(
     public route: ActivatedRoute,
     private router: Router,
+    private deviceService: DeviceDetectorService,
     private navbar:NavbarService,
     private StripeService:StripeService,
     private FormBuilder:FormBuilder
@@ -75,7 +77,7 @@ export class StripeComponent implements OnInit {
       this.router.routeReuseStrategy.shouldReuseRoute = function() {
         return false;
       };
-
+      navbar.hide();
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
@@ -90,7 +92,10 @@ export class StripeComponent implements OnInit {
   fullName: FormControl;
   message: FormControl;
   ngOnInit(): void {
-
+   
+    window.scroll(0,0);
+    let device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    this.navbar.add_page_visited_to_history(`/donation`,device_info ).subscribe();
     this.category_index = this.route.snapshot.data['category'];
     this.StripeForm = this.FormBuilder.group({
       donation: [this.donation, 

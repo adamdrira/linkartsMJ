@@ -599,6 +599,11 @@
             min-height: 30px;
             padding: 10px 20px 0px 20px;
             display: flex !important;
+
+            @media (max-width: 400px) {
+                padding: 10px 20px 0px 10px !important;
+            }
+
         }
         .show-on-large-screen {
             display: none !important;

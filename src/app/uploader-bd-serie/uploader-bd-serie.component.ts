@@ -7,8 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NavbarService } from '../services/navbar.service';
 
-const url = 'https://www.linkarts.fr/routes/upload_page_bd_serie/';
-
+const url = 'http://localhost:4600/routes/upload_page_bd_serie/';
 @Component({
   selector: 'app-uploader-bd-serie',
   templateUrl: './uploader-bd-serie.component.html',
@@ -182,6 +181,7 @@ remove_beforeupload(item:FileItem){
 
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
 remove_afterupload(item){
+    console.log("remooooooooooooooooooooooving after uploaaaaaaad " + this.bd_id + ' ' + this.chapter)
     this.BdSerieService.remove_page_from_sql(this.bd_id,this.page, this.chapter).subscribe(information=>{
       const filename= information[0].file_name;
       this.BdSerieService.remove_page_from_folder(filename).subscribe(r=>{

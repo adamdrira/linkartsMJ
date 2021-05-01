@@ -13,7 +13,7 @@ import {NotificationsService}from '../services/notifications.service';
 import {ChatService} from '../services/chat.service';
 import { NavbarService } from '../services/navbar.service';
 
-const url = 'https://www.linkarts.fr/routes/upload_page_bd_oneshot/';
+const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
 
 @Component({
   selector: 'app-uploader_bd_oneshot',

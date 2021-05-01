@@ -6,7 +6,6 @@ import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service'
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Ads_service } from '../services/ads.service';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
@@ -35,7 +34,6 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
     private Ads_service:Ads_service,
     private BdOneShotService:BdOneShotService,
     private BdSerieService:BdSerieService,
-    private Profile_Edition_Service:Profile_Edition_Service,
     private Subscribing_service:Subscribing_service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
@@ -71,6 +69,8 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
 
   
   @Input() current_user:any;
+  @Input() allow_sub:any;
+  
   number_of_new_contents_to_show=10;
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
@@ -284,119 +284,118 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
 
   get_all_users_subscribed_to_before_today(){
     this.Subscribing_service.get_all_users_subscribed_to_before_today(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+      this.list_of_users.push(this.user_id);
       if(info[0].length>0){
         for (let i=0; i< info[0].length;i++){         
           this.list_of_users.push(info[0][i].id_user_subscribed_to);        
         } 
-        if(this.list_of_users.length>0){
-          this.Subscribing_service.get_all_subscribings_contents(this.list_of_users).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{  
-            let compt=0; 
-            if(r[0].length>0){
-              for (let j=0; j< r[0].length;j++){
-                if(r[0][j].publication_category=="comic"){
-                  if(r[0][j].format=="one-shot"){
-                    this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                      if(info[0].status="public"){
-                        this.list_of_contents.push(info[0]);
-                        compt++;
-                      }
-                      else{
-                        compt++
-                      }
-                      if(compt == r[0].length){
-                        this.sort_list_of_contents(this.list_of_contents,'old');
-                      }
-                    })
-                  }
-                  if(r[0][j].format=="serie"){
-                    this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                      if(info[0].status="public"){
-                        this.list_of_contents.push(info[0]);
-                        compt++;
-                      }
-                      else{
-                        compt++;
-                      }
-                      if(compt== r[0].length){
-                        this.sort_list_of_contents(this.list_of_contents,'old');
-                      }
-                    })
-                  }
-                }
-
-                if(r[0][j].publication_category=="drawing"){
-                  if(r[0][j].format=="one-shot"){
-                    this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                      if(info[0].status="public"){
-                        this.list_of_contents.push(info[0]);
-                        compt++;
-                      }
-                      else{
-                        compt++
-                      }
-                      if(compt== r[0].length){
-                        this.sort_list_of_contents(this.list_of_contents,'old');
-                      }
-                    })
-                  }
-                  if(r[0][j].format=="artbook"){
-                    this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                      if(info[0].status="public"){
-                        this.list_of_contents.push(info[0]);
-                        compt++
-                      }
-                      else{
-                        compt++
-                      }
-                      if(compt== r[0].length){
-                        this.sort_list_of_contents(this.list_of_contents,'old');
-                      }
-                    })
-                  }
-                }
-
-                if(r[0][j].publication_category=="writing"){
-                  this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+      }
+      if(this.list_of_users.length>0){
+        this.Subscribing_service.get_all_subscribings_contents(this.list_of_users).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{  
+          let compt=0; 
+          if(r[0].length>0){
+            for (let j=0; j< r[0].length;j++){
+              if(r[0][j].publication_category=="comic"){
+                if(r[0][j].format=="one-shot"){
+                  this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
                     if(info[0].status="public"){
                       this.list_of_contents.push(info[0]);
-                      compt++
+                      compt++;
                     }
                     else{
                       compt++
+                    }
+                    if(compt == r[0].length){
+                      this.sort_list_of_contents(this.list_of_contents,'old');
+                    }
+                  })
+                }
+                if(r[0][j].format=="serie"){
+                  this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+                    if(info[0].status="public"){
+                      this.list_of_contents.push(info[0]);
+                      compt++;
+                    }
+                    else{
+                      compt++;
                     }
                     if(compt== r[0].length){
                       this.sort_list_of_contents(this.list_of_contents,'old');
                     }
                   })
-                }    
-                
-                if(r[0][j].publication_category=="ad"){
-                  this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                    if(info[0].status="public"){
-                      this.list_of_contents.push(info[0]);
-                      compt++
-                    }
-                    else{
-                      compt++
-                    }
-                    if(compt== r[0].length){
-                      this.sort_list_of_contents(this.list_of_contents,'old');
-                    }
-                  })
-                }   
+                }
               }
-            }  
-            else{
-              this.sort_list_of_contents(this.list_of_contents,'old');
-            }   
-            
 
-          });
-        }
+              if(r[0][j].publication_category=="drawing"){
+                if(r[0][j].format=="one-shot"){
+                  this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+                    if(info[0].status="public"){
+                      this.list_of_contents.push(info[0]);
+                      compt++;
+                    }
+                    else{
+                      compt++
+                    }
+                    if(compt== r[0].length){
+                      this.sort_list_of_contents(this.list_of_contents,'old');
+                    }
+                  })
+                }
+                if(r[0][j].format=="artbook"){
+                  this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+                    if(info[0].status="public"){
+                      this.list_of_contents.push(info[0]);
+                      compt++
+                    }
+                    else{
+                      compt++
+                    }
+                    if(compt== r[0].length){
+                      this.sort_list_of_contents(this.list_of_contents,'old');
+                    }
+                  })
+                }
+              }
+
+              if(r[0][j].publication_category=="writing"){
+                this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+                  if(info[0].status="public"){
+                    this.list_of_contents.push(info[0]);
+                    compt++
+                  }
+                  else{
+                    compt++
+                  }
+                  if(compt== r[0].length){
+                    this.sort_list_of_contents(this.list_of_contents,'old');
+                  }
+                })
+              }    
+              
+              if(r[0][j].publication_category=="ad"){
+                this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+                  if(info[0].status="public"){
+                    this.list_of_contents.push(info[0]);
+                    compt++
+                  }
+                  else{
+                    compt++
+                  }
+                  if(compt== r[0].length){
+                    this.sort_list_of_contents(this.list_of_contents,'old');
+                  }
+                })
+              }   
+            }
+          }  
+          else{
+            this.sort_list_of_contents(this.list_of_contents,'old');
+          }   
+          
+
+        });
       }
-      else{
-        this.sort_list_of_contents(this.list_of_contents,'old');
-      }
+      
       
     })
   }

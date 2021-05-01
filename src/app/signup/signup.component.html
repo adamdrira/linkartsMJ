@@ -103,7 +103,7 @@
                             <mat-option [value]="obj">
                                 {{ obj }}
                             </mat-option>
-                            <span>{{listOfAccounts_group_description[i]}}</span>
+                            <span  [ngStyle]="{'margin-bottom':listOfAccounts_group_description[i].includes('produits et')? '18px' : 'unset' }" >{{listOfAccounts_group_description[i]}}</span>
                         </div>
                     </mat-select>
                     <mat-select *ngIf="registerForm1.value.gender=='Homme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
@@ -111,7 +111,7 @@
                             <mat-option  [value]="obj">
                                 {{ obj }}
                             </mat-option>
-                            <span>{{listOfAccounts_male_description[i]}}</span>
+                            <span  [ngStyle]="{'margin-bottom':(listOfAccounts_male_description[i].includes('produits et') || listOfAccounts_male_description[i].includes('Découvrez'))? '18px' : 'unset' }" >{{listOfAccounts_male_description[i]}}</span>
                         </div>
                     </mat-select>
                     <mat-select *ngIf="registerForm1.value.gender=='Femme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">

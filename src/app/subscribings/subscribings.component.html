@@ -2,7 +2,7 @@
 
 <div class="subscribings-global-container" >
 
-    <div class="storiesbar">
+    <div class="storiesbar" *ngIf="!allow_sub">
         <app-stories [current_user]=current_user ></app-stories>
     </div>
     
