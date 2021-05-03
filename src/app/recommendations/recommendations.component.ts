@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, HostListener, OnDestroy, Output, EventEmitter } from '@angular/core';
 import {ElementRef,  ViewChild} from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Community_recommendation } from '../services/recommendations.service';
@@ -93,6 +93,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   now_in_seconds:number;
   subcategory: number = 0;
   sorted_category_retrieved=false;
+  @Output() opened_category_artwork = new EventEmitter<number>();
   @Input('status') status: any;
   media_status=[];
 
@@ -118,8 +119,11 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   
  
   check_comics_history=false;
+  last_consulted_comics=[];
   check_writings_history=false;
+  last_consulted_writings=[];
   check_drawings_history=false;
+  last_consulted_drawings=[];
   device_info='';
   protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
@@ -139,6 +143,11 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
       if(r[0].list_of_drawings && r[0].list_of_drawings.length>0){
         this.check_drawings_history=true;
       }
+
+      if(this.check_drawings_history || this.check_writings_history || this.check_comics_history){
+        this.get_history_recommendation();
+      }
+    
     })
     
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
@@ -159,6 +168,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
             this.manage_styles_recommendation(info,information)
           }
           else{
+            this.opened_category_artwork.emit(this.subcategory)
             this.manage_comics_recommendations(r[0])
             this.sorted_category_retrieved=true;
           }
@@ -176,6 +186,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
           this.manage_styles_recommendation(info,information)
         }
         else{
+          this.opened_category_artwork.emit(this.subcategory)
           this.manage_comics_recommendations(r[0])
           this.sorted_category_retrieved=true;
         }
@@ -183,30 +194,15 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
       })
     }
     
-    this.navbar.get_top_artists("comic").subscribe(r=>{
-      this.top_artists_comic=r[0]
-    })
-    this.navbar.get_top_artists("drawing").subscribe(r=>{
-      this.top_artists_drawing=r[0]
-    })
-    this.navbar.get_top_artists("writing").subscribe(r=>{
-      this.top_artists_writing=r[0]
-    })
-   
-   
+  
 
   }
 
-  top_artists_comic=[];
-  top_artists_drawing=[];
-  top_artists_writing=[];
 
   ngAfterViewInit() {
     this.width=this.artwork_container.nativeElement.offsetWidth*0.9-20;
   }
 
-  
- 
   media_visibility=false;
   manage_styles_recommendation(info,information){
     if(info){
@@ -217,7 +213,6 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
         this.subcategory=0;
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges()
-        //this.load_bd_recommendations();
         this.load_comics_recommendations();
       } 
       if(this.index_drawing == 0){
@@ -232,10 +227,10 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
         this.type_of_skeleton="writing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges()
-        //this.load_writing_recommendations();
         this.load_writings_recommendations();
       }
       
+      this.opened_category_artwork.emit(this.subcategory)
       //sort styles
       var i = 0;
       var j=0;
@@ -294,6 +289,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
       return;
     }
     else if(this.sorted_category_retrieved){
+     
       if(i==0){
         this.navbar.add_page_visited_to_history(`/home/recommendations/comic`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.subcategory=i;
@@ -301,7 +297,6 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
         if(!this.bd_is_loaded && !this.comics_loading){
-            //this.load_bd_recommendations();
             this.load_comics_recommendations();
         }  
       }
@@ -323,13 +318,12 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
         if(!this.writing_is_loaded  && !this.writings_loading){
-            //this.load_writing_recommendations();
             this.load_writings_recommendations();
         }
        
       }
 
-     
+      this.opened_category_artwork.emit(this.subcategory)
 
     }
    
@@ -438,5 +432,16 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   }
 
   
- 
+ /**************************************** HISTORIQUE ***************************************/
+ /**************************************** HISTORIQUE ***************************************/
+ /**************************************** HISTORIQUE ***************************************/
+
+ get_history_recommendation(){
+  this.navbar.get_history_recommendations().subscribe(r=>{
+    this.last_consulted_comics=r[0];
+    this.last_consulted_drawings=r[1];
+    this.last_consulted_writings=r[2];
+  })
+
+}
 }

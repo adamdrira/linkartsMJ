@@ -140,19 +140,54 @@
 
 <div class="page" *ngIf="type_of_profile_retrieved">
 
-    <div *ngIf="categories_to_load[0]" class="component-container" [ngClass]="{'really-invisible':category_index!=0}">
+    <div *ngIf="categories_to_load[0]" class="component-container more-space" [ngClass]="{'really-invisible':category_index!=0}">
         <app-recommendations
+        (opened_category_artwork)="open_category_artwork( $event );"
         [status]="status[0]"></app-recommendations>
     </div>
-    <div *ngIf="type_of_profile=='account' && categories_to_load[2] && allow_sub" class="title-container"  >
-        <span>Fil d'actualité</span>
+
+    <div *ngIf="categories_to_load[0]" class="component-container" [ngClass]="{'really-invisible':category_index!=0,'more-space':allow_sub}" >
+        
+        <div class="top-artists-container" *ngIf="top_artists_retrieved" [@enterAnimation]>
+   
+            <div class="title-artists no-cursor">
+                <span>Artistes du moment</span>
+            </div>
+            <ng-container *ngFor="let item of top_artists; let i = index">
+                <div class="artist-container" >
+                    <app-thumbnail-user 
+                        [item]=item
+                    ></app-thumbnail-user> 
+                </div>
+            </ng-container>
+          
+        </div>
+        
+        
+        
+        <div class="top-artists-container"   *ngIf="!top_artists_retrieved" >
+            <div class="title-artists no-cursor" >
+                <div class="category-title shiny"></div>
+            </div>
+            <ng-container *ngFor="let item of skeleton_array; let i = index">
+                <div class="artist-container" >
+                    <app-thumbnail-user 
+                        [skeleton]="skeleton"
+                    ></app-thumbnail-user> 
+                </div>
+            </ng-container>
+        </div>
     </div>
+    
     <div *ngIf="categories_to_load[1]" class="component-container"  style="padding-top: unset;" [ngClass]="{'really-invisible':category_index!=1}" >
         <app-trendings
         [current_user]=current_user
         [status]="status[1]"></app-trendings>
     </div>
-    <div *ngIf="type_of_profile=='account' && categories_to_load[2]" class="component-container"  [ngClass]="{'really-invisible':category_index!=2 && !allow_sub}">
+    <div *ngIf="type_of_profile=='account' && categories_to_load[2]" class="component-container more-space"  [ngClass]="{'really-invisible':category_index!=2 && !allow_sub}">
+        <div *ngIf="allow_sub" class="title-container" (click)="open_category(2)" >
+            <span>Fil d'actualité</span>
+        </div>
         <app-subscribings
         [current_user]=current_user
         [allow_sub]=allow_sub

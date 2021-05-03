@@ -1,8 +1,6 @@
-import { Component, OnInit, Input, HostListener, ChangeDetectorRef, SimpleChanges, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-import {BdOneShotService} from '../services/comics_one_shot.service';
-import {BdSerieService} from '../services/comics_serie.service';
 
 declare var $:any;
 
@@ -27,8 +25,6 @@ export class MediaComicsComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private BdOneShotService:BdOneShotService,
-    private BdSerieService:BdSerieService,
     private navbar: NavbarService,) { 
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
@@ -55,9 +51,7 @@ export class MediaComicsComponent implements OnInit {
   @Input() width: number;
   @Input() check_comics_history: any;
   @Input() now_in_seconds: number;
-  @Input() top_artists_comic: any;
-  last_consulted_comics: any[]=[];
-  last_consulted_comics_retrieved: boolean;
+  @Input() last_consulted_comics: any[]=[];
   
   number_of_comics_to_show=0;
   show_more=[false,false,false,false];
@@ -65,14 +59,14 @@ export class MediaComicsComponent implements OnInit {
   number_of_thumbnails=0;
 
   show_icon=false;
-  number_of_comics_for_history=5;
+  
 
   ngOnChanges(changes: SimpleChanges) {
     if( changes.width) {
       if(this.width>0){
         var n = Math.floor(this.width/250);
         if(n>3){
-          this.number_of_comics_to_show=(n<6)?n:5;
+          this.number_of_comics_to_show=(n<6)?n:6;
         }
         else{
           this.number_of_comics_to_show=4;
@@ -80,26 +74,27 @@ export class MediaComicsComponent implements OnInit {
         for(let i=0;i<4;i++){
           this.number_of_comics_to_show_by_style[i]= this.number_of_comics_to_show;
         }
-        if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show && this.last_consulted_comics_retrieved){
-          this.get_history_recommendation();
+        if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show ){
+          this.reset_number_of_comics_for_history();
         }
         this.current_number_of_comics_to_show=this.number_of_comics_to_show;
         this.cd.detectChanges()
       }
     }
 
-    if(changes.top_artists_comic){
-      this.top_artists_retrieved=true;
+
+    if(changes.last_consulted_comics && this.width>0){
+      this.reset_number_of_comics_for_history()
     }
+    
 
   }
 
-  top_artists_retrieved=false;
   ngOnInit() {
     window.scroll(0,0);
     var n = Math.floor(this.width/250);
     if(n>3){
-      this.number_of_comics_to_show=(n<6)?n:5;
+      this.number_of_comics_to_show=(n<6)?n:6;
     }
     else{
       this.number_of_comics_to_show=4;
@@ -109,9 +104,6 @@ export class MediaComicsComponent implements OnInit {
       this.number_of_comics_to_show_by_style[i]= this.number_of_comics_to_show;
     }
     this.current_number_of_comics_to_show=this.number_of_comics_to_show;
-    this.get_history_recommendation();
-    this.get_artists()
-    
   }
 
   
@@ -151,53 +143,7 @@ export class MediaComicsComponent implements OnInit {
     }, 10 );
   }
 
-  get_history_recommendation(){
-    this.number_of_skeletons_per_line=this.number_of_comics_to_show;
-    this.can_show_more_history=true;
-    this.last_consulted_comics_retrieved=false;
-    this.cd.detectChanges();
-    this.last_consulted_comics=[];
-    this.number_of_comics_for_history= this.number_of_comics_to_show;
-    this.navbar.get_last_researched_navbar_for_recommendations("Comic",0,this.number_of_comics_for_history).subscribe(m=>{
-      if(m[0].length>0){
-        let list=m[0];
-        let compteur=0;
-        for(let i=0;i<m[0].length;i++){
-          if(list[i].format=="one-shot"){
-            this.BdOneShotService.retrieve_bd_by_id(list[i].target_id).subscribe(comic=>{
-                
-              if(comic[0] && comic[0].status=="public"){
-                this.last_consulted_comics[i]=comic[0]
-              }
-              compteur++
-              if(compteur==list.length){
-                this.delete_null_elements_of_list(this.last_consulted_comics)
-                if(list.length>0){
-                  this.last_consulted_comics_retrieved=true;
-                }
-              }
-            })
-          }
-          else{
-            this.BdSerieService.retrieve_bd_by_id(list[i].target_id).subscribe(comic=>{
-              if(comic[0] && comic[0].status=="public"){
-                this.last_consulted_comics[i]=comic[0]
-              }
-              compteur++
-              if(compteur==list.length){
-                this.delete_null_elements_of_list(this.last_consulted_comics)
-                if(list.length>0){
-                  this.last_consulted_comics_retrieved=true;
-                }
-                
-              }
-            })
-          }
-        }
-      }
-    })
-
-  }
+  
 
   
 
@@ -205,93 +151,34 @@ export class MediaComicsComponent implements OnInit {
     return "/main-research/styles/tags/1/Comic/"+item+"/all";
   }
 
-  offset=0;
-  show_more_loading=false;
   can_show_more_history=true;
-  new_last_consulted_comics=[];
-  show_more_history(e:any){
-    if(this.show_more_loading){
-      return
-    }
-    this.show_more_loading=true;
-    
-    
-    this.new_last_consulted_comics=[];
-    this.offset+=this.number_of_comics_for_history;
-    this.navbar.get_last_researched_navbar_for_recommendations("Comic",this.offset,this.number_of_comics_for_history).subscribe(m=>{
-      
-      if(m[0].length>0){
-        let list=m[0];
-        let compteur=0;
-        for(let i=0;i<m[0].length;i++){
-          if(list[i].format=="one-shot"){
-            this.BdOneShotService.retrieve_bd_by_id(list[i].target_id).subscribe(comic=>{
-                
-              if(comic[0] && comic[0].status=="public"){
-                this.new_last_consulted_comics[i]=comic[0]
-              }
-              compteur++
-              if(compteur==list.length){
-                this.delete_null_elements_of_list(this.new_last_consulted_comics)
-                if(list.length>0){
-                  this.last_consulted_comics=this.last_consulted_comics.concat(this.new_last_consulted_comics);
-                  this.show_more_loading=false;
-                  this.cd.detectChanges();
-
-                  setTimeout( () => { 
-                    this.click_absolute_arrow(e,true,'right'); }, 10 );
-                  
-                }
-                else{
-                  this.show_more_loading=false;
-                  this.can_show_more_history=false;
-                  this.cd.detectChanges();
-                  
-                  setTimeout( () => { 
-                    this.click_absolute_arrow(e,true,'right'); }, 10 );
-                }
-              }
-            })
-          }
-          else{
-            this.BdSerieService.retrieve_bd_by_id(list[i].target_id).subscribe(comic=>{
-              if(comic[0] && comic[0].status=="public"){
-                this.new_last_consulted_comics[i]=comic[0]
-              }
-              compteur++
-              if(compteur==list.length){
-                this.delete_null_elements_of_list(this.new_last_consulted_comics)
-                if(list.length>0){
-                  this.last_consulted_comics=this.last_consulted_comics.concat(this.new_last_consulted_comics);
-                  this.show_more_loading=false;
-                  this.cd.detectChanges();
-                  
-                  setTimeout( () => { 
-                    this.click_absolute_arrow(e,true,'right'); }, 10 );
-                }
-                else{
-                  this.show_more_loading=false;
-                  this.can_show_more_history=false;
-                  this.cd.detectChanges();
-                  
-                  setTimeout( () => { 
-                    this.click_absolute_arrow(e,true,'right'); }, 10 );
-                }
-                
-              }
-            })
-          }
-        }
+  number_of_comics_for_history=6;
+  reset_number_of_comics_for_history(){
+    if(this.last_consulted_comics.length>0){
+      let multiple= Math.floor(this.number_of_comics_for_history/this.number_of_comics_to_show)
+      this.number_of_comics_for_history=(multiple>0)?multiple*this.number_of_comics_to_show:this.number_of_comics_to_show;
+  
+      if(this.number_of_comics_for_history>=this.last_consulted_comics.length){
+        this.can_show_more_history=false;
       }
       else{
-        this.show_more_loading=false;
-        this.can_show_more_history=false;
-        this.cd.detectChanges();
-                  
-        setTimeout( () => { 
-          this.click_absolute_arrow(e,true,'right'); }, 10 );
+        this.can_show_more_history=true;
       }
-    })
+    }
+    
+  }
+
+  
+  show_more_history(e:any){
+    this.number_of_comics_for_history+=this.number_of_comics_to_show;
+    if(this.number_of_comics_for_history>=this.last_consulted_comics.length){
+      this.can_show_more_history=false;
+    }
+
+    setTimeout( () => { 
+      this.click_absolute_arrow(e,true,'right'); 
+    }, 10 );
+    
   }
 
 
@@ -301,12 +188,7 @@ export class MediaComicsComponent implements OnInit {
 
 
   show_artists=false;
-  get_artists(){
-    /*console.log("get artists")
-    this.navbar.get_top_artists("comic").subscribe(r=>{
-      console.log(r)
-    })*/
-  }
+ 
 
   delete_null_elements_of_list(list){
     let len=list.length;
@@ -318,7 +200,6 @@ export class MediaComicsComponent implements OnInit {
   }
 
   skeleton_array = Array(5);
-  skeleton:boolean=true;
   number_of_skeletons_per_line = 1;
   type_of_skeleton:string="comic";
   send_number_of_skeletons(object) {

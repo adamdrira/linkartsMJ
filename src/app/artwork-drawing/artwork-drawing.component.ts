@@ -11,7 +11,6 @@ import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service'
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { NotationService } from '../services/notation.service';
 import { Subscribing_service } from '../services/subscribing.service';
-import { Emphasize_service } from '../services/emphasize.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupFormDrawingComponent } from '../popup-form-drawing/popup-form-drawing.component';
@@ -98,7 +97,6 @@ export class ArtworkDrawingComponent implements OnInit {
     private Community_recommendation:Community_recommendation,
     public dialog: MatDialog,
     private NotationService:NotationService,
-    private Emphasize_service:Emphasize_service,
 
     ) { 
       navbar.visibility_observer_font.subscribe(font=>{
@@ -455,7 +453,7 @@ export class ArtworkDrawingComponent implements OnInit {
         this.profile_data_retrieved=true;
       });
 
-      this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
+      this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).subscribe(l=>{
         if (l[0]!=null && l[0]!=undefined){
           if (l[0].publication_id==this.drawing_id && l[0].publication_category=="drawing" && l[0].format==this.type){
             this.content_emphasized=true;
@@ -607,7 +605,7 @@ export class ArtworkDrawingComponent implements OnInit {
         this.subscribtion_retrieved=true;
       }); 
 
-      this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
+      this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).subscribe(l=>{
         if (l[0]!=null && l[0]!=undefined){
           if (l[0].publication_id==this.drawing_id && l[0].publication_category=="drawing" && l[0].format==this.type){
             this.content_emphasized=true;
@@ -1891,7 +1889,7 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Emphasize_service.emphasize_content("drawing",this.type,this.drawing_id).subscribe(r=>{
+    this.Profile_Edition_Service.emphasize_content("drawing",this.type,this.drawing_id).subscribe(r=>{
       this.content_emphasized=true;
       this.archive_loading=false;
     });
@@ -1902,7 +1900,7 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Emphasize_service.remove_emphasizing("drawing",this.type,this.drawing_id).subscribe(t=>{
+    this.Profile_Edition_Service.remove_emphasizing("drawing",this.type,this.drawing_id).subscribe(t=>{
       this.content_emphasized=false;
       this.archive_loading=false;
     });

@@ -1,17 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener, Input } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
-import { AuthenticationService } from '../services/authentication.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
-
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Subscribing_service } from '../services/subscribing.service';
-import { Albums_service } from '../services/albums.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
@@ -54,12 +50,9 @@ export class ArchivesComponent implements OnInit {
 
   constructor(
     private rd: Renderer2, 
-    private authenticationService: AuthenticationService,
     private router: Router,
     public route: ActivatedRoute, 
-    private activatedRoute: ActivatedRoute,
     private Story_service:Story_service,
-    private location: Location,
     private cd: ChangeDetectorRef,
     private Profile_Edition_Service: Profile_Edition_Service,
     private sanitizer:DomSanitizer,
@@ -69,7 +62,6 @@ export class ArchivesComponent implements OnInit {
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Subscribing_service:Subscribing_service,
-    private Albums_service:Albums_service,
     private Ads_service:Ads_service,
     public dialog: MatDialog,
     private navbar: NavbarService,
@@ -124,11 +116,13 @@ export class ArchivesComponent implements OnInit {
   list_of_stories_received=false;
   list_of_stories_data:any[]=[];
   list_of_stories_data_received=false;
-
-  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
+  @ViewChild("albums_select") albums_select;
 
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
+    if( this.albums_select ) {
+      this.albums_select.close();
+    }
     let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
     let max = document.documentElement.scrollHeight;
     let sup=max*0.1;
@@ -154,8 +148,8 @@ export class ArchivesComponent implements OnInit {
     }
   }
 
+
   ngOnInit(): void {
-    let THIS=this;
     // get other comics archived
     this.Subscribing_service.get_archives_comics().subscribe(l=>{
       let r=l[0];
@@ -171,6 +165,7 @@ export class ArchivesComponent implements OnInit {
               if(comics_compt == r.length){
                 this.delete_null_elements_of_a_list(this.list_of_comics)
                 this.list_of_comics_added=true;
+                this.initialize_categories(1)
               }
             })
           }
@@ -183,6 +178,7 @@ export class ArchivesComponent implements OnInit {
               if(comics_compt== r.length){
                 this.delete_null_elements_of_a_list(this.list_of_comics)
                 this.list_of_comics_added=true;
+                this.initialize_categories(1);
               }
             })
           }
@@ -190,6 +186,7 @@ export class ArchivesComponent implements OnInit {
       }
       else{
         this.list_of_comics_added=true;
+        this.initialize_categories(1);
       };
     });
     
@@ -209,7 +206,7 @@ export class ArchivesComponent implements OnInit {
               if(drawings_compt == l.length){
                 this.delete_null_elements_of_a_list(this.list_of_drawings)
                 this.list_of_drawings_added=true;
-               
+                this.initialize_categories(1)
               }
             })
           }
@@ -225,6 +222,7 @@ export class ArchivesComponent implements OnInit {
               if( drawings_compt== l.length){
                 this.delete_null_elements_of_a_list(this.list_of_drawings)
                 this.list_of_drawings_added=true;
+                this.initialize_categories(1)
               }
             })
           }
@@ -232,6 +230,7 @@ export class ArchivesComponent implements OnInit {
       }
       else{
         this.list_of_drawings_added=true;
+        this.initialize_categories(1)
       }
       
     })
@@ -250,13 +249,14 @@ export class ArchivesComponent implements OnInit {
               if( writings_compt== k.length){
                 this.delete_null_elements_of_a_list(this.list_of_writings)
                 this.list_of_writings_added=true;
-                
+                this.initialize_categories(1)
               }
             })
           }
         }
         else{
           this.list_of_writings_added=true;
+          this.initialize_categories(1);
         };
           
       })
@@ -268,33 +268,22 @@ export class ArchivesComponent implements OnInit {
       if(Object.keys(info[0]).length>0){
         for (let i=0;i<Object.keys(info[0]).length;i++){
           this.private_list_of_comics.push(info[0][i]);
-          if(i==Object.keys(info[0]).length-1){
-            this.private_comics_one_shot_retrieved=true;
-            this.manage_private_contents(0)
-          }
         }
       }
-      else{
-        this.private_comics_one_shot_retrieved=true;
-        this.manage_private_contents(0)
-      }
+      this.private_comics_one_shot_retrieved=true;
+      this.manage_private_contents(0)
+      
     })
 
     this.BdSerieService.retrieve_private_serie_bd().subscribe(inf=>{
       if(Object.keys(inf[0]).length>0){
         for (let j=0;j<Object.keys(inf[0]).length;j++){
           this.private_list_of_comics.push(inf[0][j]);
-          if(j==Object.keys(inf[0]).length-1){
-            this.private_comics_serie_retrieved=true;
-            this.manage_private_contents(0)
-          }
         }
       }
-      else{
-        this.private_comics_serie_retrieved=true;
-        this.manage_private_contents(0)
-       
-      }
+      this.private_comics_serie_retrieved=true;
+      this.manage_private_contents(0)
+      
     });
 
     this.Drawings_Onepage_Service.retrieve_private_oneshot_drawings().subscribe(info=>{
@@ -324,7 +313,6 @@ export class ArchivesComponent implements OnInit {
         }
       }
       else{
-        this.sort_list( this.private_list_of_drawings,1);
         this.private_drawings_artbook_retrieved=true;
         this.manage_private_contents(1)
       }
@@ -336,6 +324,7 @@ export class ArchivesComponent implements OnInit {
     this.Writing_Upload_Service.retrieve_private_writings().subscribe(info=>{
       this.private_list_of_writings=info[0];
       this.private_list_of_writings_sorted=true;
+      this.initialize_categories(0)
     });
 
     //stories
@@ -347,21 +336,51 @@ export class ArchivesComponent implements OnInit {
 
   }
 
+
+  private_not_found=false;
+  other_not_found=false;
+  initialize_categories(cat){
+    if(cat==0 && this.opened_category<0){
+      if(this.private_list_of_writings_sorted && this.private_list_of_drawings_sorted && this.private_list_of_comics_sorted && this.list_of_stories_received ){
+        if((this.private_list_of_writings.length>0) || (this.private_list_of_drawings.length>0) || ( this.private_list_of_comics.length>0) || (this.list_of_stories.length>0)){
+          this.open_category(0);
+        }
+        else{
+          this.private_not_found=true;
+        }
+      }
+    
+     
+    }
+    else if(cat==1 && this.opened_category<0){
+      if(this.list_of_writings_added && this.list_of_drawings_added && this.list_of_comics_added && this.list_of_ads_added ){
+        if(( this.list_of_writings.length>0) || (this.list_of_drawings.length>0) || ( this.list_of_comics.length>0) || (this.list_of_ads.length>0)){
+          this.open_category(1);
+        }
+        else{
+          this.other_not_found=true;
+        }
+      }
+   
+    }
+    
+  }
   private_comics_serie_retrieved=false;
   private_comics_one_shot_retrieved=false;
   private_drawings_artbook_retrieved=false;
   private_drawings_one_shot_retrieved=false;
   manage_private_contents(category){
+    
     if(category==0){
       if(this.private_comics_serie_retrieved && this.private_comics_one_shot_retrieved){
         this.sort_list( this.private_list_of_comics,0);
       }
+      
     }
     else{
       if(this.private_drawings_artbook_retrieved && this.private_drawings_one_shot_retrieved){
-        this.sort_list( this.private_list_of_drawings,0);
+        this.sort_list( this.private_list_of_drawings,1);
       }
-      
     }
   }
 
@@ -376,10 +395,12 @@ export class ArchivesComponent implements OnInit {
   }
 
   show_icon=false;
+  small_screen=false;
   ngAfterViewInit() {
-    
     this.width=this.main_container.nativeElement.offsetWidth*0.9;
-
+    if(window.innerWidth<=1000){
+      this.small_screen=true;
+    }
     this.get_number_of_comics_to_show();
     this.get_number_of_drawings_to_show();
     this.get_number_of_writings_to_show();
@@ -411,6 +432,7 @@ export class ArchivesComponent implements OnInit {
             else{
               this.private_list_of_drawings_sorted=true;
             }
+           
           }
         }
       }
@@ -422,9 +444,8 @@ export class ArchivesComponent implements OnInit {
       else{
         this.private_list_of_drawings_sorted=true;
       }
-
     }
-
+    this.initialize_categories(0)
   }
 
   
@@ -477,6 +498,10 @@ export class ArchivesComponent implements OnInit {
   }
 
 
+  albumChange(event){
+    this.open_album(event.value)
+  }
+  
   open_album(i : number) {
    
     if( this.opened_album == i ) {
@@ -517,7 +542,6 @@ export class ArchivesComponent implements OnInit {
       let THIS = this;
 
       if (r[0].length>0){
-        let compt=0
         for (let i=0;i<r[0].length;i++){
           this.Story_service.retrieve_story(r[0][i].file_name,window.innerWidth ).subscribe(info=>{
 
@@ -562,12 +586,13 @@ export class ArchivesComponent implements OnInit {
           
         }
         this.list_of_stories_received=true;
+        
       }
       else {
         this.list_of_stories_received=true;
         this.cd.detectChanges();
       }
-
+      this.initialize_categories(0)
       
     })
   }
@@ -651,7 +676,7 @@ export class ArchivesComponent implements OnInit {
   scroll(el: HTMLElement) {
 
     this.cd.detectChanges();
-    var topOfElement = el.offsetTop - 150;
+    var topOfElement = el.offsetTop + 600;
     window.scroll({top: topOfElement, behavior:"smooth"});
   }
 
@@ -703,8 +728,16 @@ export class ArchivesComponent implements OnInit {
 
   show_stories(indice){
     if(this.number_of_views_by_story){
+      let list_of_pics=[];
+      if(indice<=7){
+        list_of_pics=this.list_of_stories.slice(0,15)
+      }
+      else{
+        list_of_pics=this.list_of_stories.slice(indice-7,indice+7);
+        indice=7;
+      }
       const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
-        data: {list_of_pictures:this.list_of_stories,index_of_picture:indice},
+        data: {list_of_pictures:list_of_pics,index_of_picture:indice},
         panelClass: "popupDocumentClass",
       });
     }
@@ -737,12 +770,14 @@ export class ArchivesComponent implements OnInit {
             ad_compt+=1;
             if(ad_compt == m.length){
               this.list_of_ads_added=true;
+              this.initialize_categories(1)
             }
           })
         }
       }
       else{
         this.list_of_ads_added=true;
+        this.initialize_categories(1)
       };
       
     }) 
@@ -814,7 +849,12 @@ onResize(event) {
     this.update_story_width();
     this.cd.detectChanges();
   }
-  
+  if(window.innerWidth<=1000){
+    this.small_screen=true;
+  }
+  else{
+    this.small_screen=false;
+  }
 
 }
 

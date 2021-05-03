@@ -1,53 +1,5 @@
 
- 
-   .top-artists-container{
-    margin:auto;
-    padding-bottom: 10px;
-
-    .title-artists{
-      margin-top: 20px;
-      color: #203864;
-      font-weight: bold;
-      text-align: center;
-      height: 25px;
-      margin-bottom: 30px;
-      font-size: 20px;
-      @media (max-width: 500px) {
-        font-size: 18px;
-      }
-
-      .category-title {
-        width: 170px;
-        border-radius: 5px;
-        height: 25px;
-        margin: auto;
-      }
-    }
-  
-    .shiny {
-      background-color: rgb(220, 220, 220);
-      background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
-      background-size: 300% 100%;
-      animation: shine 2s infinite;
-    }
-  
-    @keyframes shine {
-      0% {
-        background-position: right;
-      }
-    }
-
-    .artist-container{
-      width:100%;
-      margin-left:auto;
-      margin-right:auto;
-      margin-bottom: 30px;
-    }
-    
-  }
-
-
-  .container-homepage {
+.container-homepage {
     padding:0px;
     flex-wrap: wrap ;
     display:flex;
@@ -70,7 +22,7 @@
       mat-icon {
         margin: unset;
         width: 36px;
-        height: 22px;
+        height: 36px;
         font-size: 36px;
         color: #b1b1b1;
         transform:rotate(270deg);
@@ -92,7 +44,7 @@
       mat-icon {
         margin: unset;
         width: 36px;
-        height: 22px;
+        height: 36px;
         font-size: 36px;
         color: #b1b1b1;
         transform:rotate(-270deg);
@@ -180,7 +132,7 @@
       mat-icon {
         margin: unset !important;
         width: 36px;
-        height: 16px;
+        height: 36px;
       }
 
       &.with-span {

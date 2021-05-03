@@ -91,39 +91,8 @@
 </div>
 
 
-<div class="top-artists-container" *ngIf="top_artists_writing && top_artists_writing.length>0 && top_artists_retrieved">
-   
-    <div class="title-artists no-cursor">
-        <span>Artistes du moment</span>
-    </div>
-    <ng-container *ngIf="top_artists_writing">
-        <ng-container *ngFor="let item of top_artists_writing; let i = index">
-            <div class="artist-container" [@enterAnimation]>
-                <app-thumbnail-user 
-                    [item]=item
-                ></app-thumbnail-user> 
-            </div>
-        </ng-container>
-    </ng-container>
-</div>
-
-
-
-<div class="top-artists-container" *ngIf="!top_artists_retrieved" >
-    <div class="title-artists no-cursor" [@enterAnimation]>
-        <div class="category-title shiny"></div>
-    </div>
-    <ng-container *ngFor="let item of skeleton_array; let i = index">
-        <div class="artist-container" [@enterAnimation]>
-            <app-thumbnail-user 
-                [skeleton]="skeleton"
-            ></app-thumbnail-user> 
-        </div>
-    </ng-container>
-</div>
-
 <ng-container *ngIf="check_writings_history">
-    <div *ngIf="!last_consulted_writings_retrieved" class="main-media-container" [@enterAnimation]>
+    <div *ngIf="!last_consulted_writings" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
                 <span>Historique</span>
         </div>
@@ -141,7 +110,7 @@
         </div>
     </div>
     
-    <div *ngIf="last_consulted_writings_retrieved" class="main-media-container" [@enterAnimation]>
+    <div *ngIf="last_consulted_writings && last_consulted_writings.length>0" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
                 <span>Récemment consultés</span>
         </div>
@@ -152,7 +121,7 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
                 </div>
             
-                <ng-container *ngFor="let item of last_consulted_writings; let i = index">
+                <ng-container *ngFor="let item of last_consulted_writings.slice(0,number_of_writings_for_history); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                     *ngIf="item"
                         [item]=item
@@ -163,8 +132,7 @@
                 </ng-container>
     
                 <div *ngIf="can_show_more_history && !(-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth)" class="see-more" (click)="show_more_history(myScrollContainer2)">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_more_loading" class="icon">expand_more</mat-icon>
-                    <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }"  class="icon">expand_more</mat-icon>
                 </div>
 
                 <div (click)="click_absolute_arrow(myScrollContainer2,false,'right');" *ngIf="-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth " class="right-absolute-arrow">

@@ -567,8 +567,11 @@ export class ChatRightContainerComponent implements OnInit {
       list_of_pics=this.list_of_pictures_names.slice(0,15)
     }
     else{
-      list_of_pics=this.list_of_pictures_names.slice(indice-7,indice+7)
+      list_of_pics=this.list_of_pictures_names.slice(indice-7,indice+7);
+      indice=7;
     }
+
+    
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {
         list_of_pictures:list_of_pics,

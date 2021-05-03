@@ -17,11 +17,10 @@ import { NavbarService } from '../services/navbar.service';
     ),
   ],
 })
-export class PageNotFoundComponent implements OnInit {
+export class PageNotFoundComponent {
 
   constructor(
     public navbar: NavbarService,
-    private cd:ChangeDetectorRef,
   ) { 
     navbar.visibility_observer_font.subscribe(font=>{
       if(font){
@@ -32,8 +31,4 @@ export class PageNotFoundComponent implements OnInit {
   }
 
   show_icon=false;
-  ngOnInit() {
-    let THIS=this;
-  }
-
 }

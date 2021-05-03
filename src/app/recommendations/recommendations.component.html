@@ -52,7 +52,7 @@
                 [sorted_artpieces_webtoon]=sorted_artpieces_webtoon
                 [now_in_seconds]=now_in_seconds
                 [check_comics_history]=check_comics_history
-                [top_artists_comic]=top_artists_comic
+                [last_consulted_comics]=last_consulted_comics
                 [width]=width></app-media-comics>
         </div>
         <div class="media-container" *ngIf="drawing_is_loaded && sorted_category_retrieved  && subcategory==1 " >
@@ -62,8 +62,8 @@
                 [sorted_artpieces_digital]=sorted_artpieces_digital
                 [now_in_seconds]=now_in_seconds
                 [check_drawings_history]=check_drawings_history
+                [last_consulted_drawings]=last_consulted_drawings
                 [width]=width
-                [top_artists_drawing]=top_artists_drawing
                 (list_of_drawings_retrieved_emitter)="list_of_drawings_retrieved_receiver($event)"></app-media-drawings>
         </div>
         <div class="media-container" *ngIf="writing_is_loaded && sorted_category_retrieved && subcategory==2" >
@@ -75,7 +75,7 @@
                 [sorted_artpieces_poetry]=sorted_artpieces_poetry
                 [now_in_seconds]=now_in_seconds
                 [check_writings_history]=check_writings_history
-                [top_artists_writing]=top_artists_writing
+                [last_consulted_writings]=last_consulted_writings
                 [width]=width></app-media-writings>
         </div>
     </div>

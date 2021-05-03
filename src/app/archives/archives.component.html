@@ -6,18 +6,45 @@
         <div class="logos-container"  #target [@enterFromTopAnimation]>
              <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
-                <span>Archives personnelles</span>
+                <span *ngIf="!small_screen">Archives personnelles</span>
+                <span *ngIf="small_screen">Archives perso.</span>
             </button>
             <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">supervisor_account</mat-icon>
-                <span>Autres utilisateurs</span>
+                <span *ngIf="!small_screen">Autres utilisateurs</span>
+                <span *ngIf="small_screen">Autres</span>
             </button>
         </div>
     </div>
     
+    <div class="albums-title-main" *ngIf="0>opened_category && !other_not_found && !private_not_found" [@enterAnimation]>
+        <div class="account-album-selector-archives">
+            <div class="category">
+                <div class="category-title shiny">
+                </div>
+            </div>
+        </div>
+
+        <div class="artworks-container">
+
+           <div *ngFor="let item of categories_array; index as i1">
+                <div class="container-skeletons d-flex flex-wrap skeleton"
+                    [@enterAnimation]>
+                    <ng-container *ngFor="let item of skeleton_array; let i = index">
+                        <app-thumbnail-skeleton class="thumbnail-component-container"
+                            *ngIf="number_of_skeletons_per_line>i"
+                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                            type_of_skeleton="drawing">
+                        </app-thumbnail-skeleton>
+                    </ng-container>
+                </div>
+
+            </div>
+        </div>
+    </div>
     
     <div class="albums-title-main" *ngIf="opened_category>=0" [@enterAnimation]>
-        <div class="albums-title-container">
+        <div class="albums-title-container" *ngIf="!small_screen">
             
             <div class="albums-title" *ngIf="(opened_category == 0 && private_list_of_comics.length>0) || (opened_category == 1 && list_of_comics.length>0)">
                 <button class="albums-title-button" (click)="open_album(0);scroll(target);" [ngClass]="{ 'opened' : opened_album == 0 }" [@enterAnimation]>
@@ -46,6 +73,57 @@
             </div>
 
         </div>
+
+       
+        <div class="account-album-selector-archives" *ngIf="small_screen">
+            <mat-form-field floatLabel='never'  [ngClass]="{'opened': albums_select && albums_select.panelOpen }">
+                
+                <div class="arrow-container" [ngClass]="{'opened': albums_select && albums_select.panelOpen }">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios_new</mat-icon>
+                </div>
+                
+                <mat-select #albums_select panelClass="albumSelectClassArchives" [(value)]="opened_album" disableOptionCentering (selectionChange)="albumChange($event)">
+                    
+                    <mat-select-trigger>
+                        <ng-container *ngIf="opened_album == 0">
+                            <span>Bandes dessinée</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_album == 1">
+                            <span>Dessins</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_album == 2">
+                            <span>Écrits</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_album == 3">
+                            <span>Stories</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_album == 4">
+                            <span>Annonces</span>
+                        </ng-container>
+
+                    </mat-select-trigger>
+                    
+
+                    <mat-option [value]="0" *ngIf="(opened_category == 0 && private_list_of_comics.length>0) || (opened_category == 1 && list_of_comics.length>0)">
+                        <span>Bandes dessinées</span>
+                    </mat-option>
+                    <mat-option [value]="1" *ngIf="(opened_category == 0 && private_list_of_drawings.length>0) || (opened_category == 1 && list_of_drawings.length>0)">
+                        <span>Dessins</span>
+                    </mat-option>
+                    <mat-option [value]="2" *ngIf="(opened_category == 0 && private_list_of_writings.length>0) || (opened_category == 1 && list_of_writings.length>0)">
+                        <span>Écrits</span>
+                    </mat-option>
+                    <mat-option [value]="3" *ngIf="opened_category == 0 && list_of_stories_data.length>0">
+                        <span>Stories</span>
+                    </mat-option>
+                    <mat-option [value]="4" *ngIf="opened_category == 1 && list_of_ads.length>0">
+                        <span>Annonces</span>
+                    </mat-option>
+
+                    
+                </mat-select>
+            </mat-form-field>
+        </div>
     </div>
 
 
@@ -68,9 +146,6 @@
 
     <div class="artworks-container" *ngIf="opened_album>=0">
 
-        <!--<div class="center-spinner" *ngIf="opened_album==1 && !list_visibility_albums_drawings && ( (opened_category==0 && private_list_of_drawings.length>0) || (opened_category==1 && list_of_drawings.length>0) )">
-            <mat-spinner diameter="30" ></mat-spinner>
-        </div>-->
 
         <ng-container *ngIf="opened_album==1 && !list_visibility_albums_drawings && ( (opened_category==0 && private_list_of_drawings.length>0) || (opened_category==1 && list_of_drawings.length>0) )">
             <div *ngFor="let item of categories_array; index as i1">
@@ -88,9 +163,6 @@
             </div>
         </ng-container>
 
-        <!--<div class="center-spinner" *ngIf="opened_album==0 &&  ((opened_category==0 && !private_list_of_comics_sorted) || (opened_category==1 && !list_of_comics_added) )">
-            <mat-spinner diameter="30" ></mat-spinner>
-        </div>-->
 
         <ng-container *ngIf="opened_album==0 &&  ((opened_category==0 && !private_list_of_comics_sorted) || (opened_category==1 && !list_of_comics_added) )">
             <div *ngFor="let item of categories_array; index as i1">
@@ -108,9 +180,6 @@
             </div>
         </ng-container>
 
-        <!--<div class="center-spinner" *ngIf="opened_album==2 &&  ((opened_category==0 && !private_list_of_writings_sorted) || (opened_category==1 && !list_of_writings_added) )">
-            <mat-spinner diameter="30" ></mat-spinner>
-        </div>-->
 
         <ng-container *ngIf="opened_album==2 &&  ((opened_category==0 && !private_list_of_writings_sorted) || (opened_category==1 && !list_of_writings_added) )">
             <div *ngFor="let item of categories_array; index as i1">

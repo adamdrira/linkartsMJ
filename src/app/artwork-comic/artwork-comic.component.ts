@@ -7,7 +7,6 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
-import { Emphasize_service } from '../services/emphasize.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Community_recommendation } from '../services/recommendations.service'
 import { NotationService } from '../services/notation.service';
@@ -98,7 +97,6 @@ export class ArtworkComicComponent implements OnInit {
     private deviceService: DeviceDetectorService,
     public dialog: MatDialog,
     private Community_recommendation:Community_recommendation,
-    private Emphasize_service:Emphasize_service,
     private NotificationsService:NotificationsService,
     private chatService:ChatService,
     
@@ -409,7 +407,7 @@ export class ArtworkComicComponent implements OnInit {
                 this.profile_data_retrieved=true;
               });
 
-              this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
+              this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).subscribe(l=>{
                 if (l[0]!=null && l[0]!=undefined){
                   if (l[0].publication_id==this.bd_id && l[0].publication_category== "comic" && l[0].format==this.type){
                     this.content_emphasized=true;
@@ -648,7 +646,7 @@ export class ArtworkComicComponent implements OnInit {
               this.profile_data_retrieved=true;
             });
   
-            this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
+            this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).subscribe(l=>{
               if (l[0]!=null && l[0]!=undefined){
                 if (l[0].publication_id==this.bd_id && l[0].publication_category== "comic" && l[0].format==this.type){
                   this.content_emphasized=true;
@@ -715,12 +713,10 @@ export class ArtworkComicComponent implements OnInit {
 
 
   get_comic_oneshot_pages(bd_id,total_pages) {
-    console.log("inner width")
-    console.log(window.innerWidth)
     for( var i=0; i< total_pages; i++ ) {
       this.BdOneShotService.retrieve_bd_page(bd_id,i,window.innerWidth).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
-        let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        
         if(this.style=="Manga"){
           this.list_bd_pages[total_pages-1-r[1]]=url;
         }
@@ -885,7 +881,7 @@ export class ArtworkComicComponent implements OnInit {
     for( let k=0; k< total_pages; k++ ) {
       this.BdSerieService.retrieve_bd_page(bd_id,chapter_number,k,window.innerWidth).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
-        let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        
         if(this.style=="Manga"){
           this.list_of_pages_by_chapter[chapter_number-1][total_pages-r[1]-1]=url;
         }
@@ -2304,13 +2300,13 @@ export class ArtworkComicComponent implements OnInit {
     }
     this.archive_loading=true;
     if(this.type=="serie"){
-      this.Emphasize_service.emphasize_content( "comic",this.type,this.bd_id).subscribe(t=>{
+      this.Profile_Edition_Service.emphasize_content( "comic",this.type,this.bd_id).subscribe(t=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
     }
     else{
-      this.Emphasize_service.emphasize_content( "comic",this.type,this.bd_id).subscribe(r=>{
+      this.Profile_Edition_Service.emphasize_content( "comic",this.type,this.bd_id).subscribe(r=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
@@ -2323,13 +2319,13 @@ export class ArtworkComicComponent implements OnInit {
     }
     this.archive_loading=true;
     if(this.type=="serie"){
-      this.Emphasize_service.remove_emphasizing( "comic",this.type,this.bd_id).subscribe(t=>{
+      this.Profile_Edition_Service.remove_emphasizing( "comic",this.type,this.bd_id).subscribe(t=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
     }
     else{
-      this.Emphasize_service.remove_emphasizing( "comic",this.type,this.bd_id).subscribe(t=>{
+      this.Profile_Edition_Service.remove_emphasizing( "comic",this.type,this.bd_id).subscribe(t=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });

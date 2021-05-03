@@ -187,6 +187,10 @@
           height: 100px;
           margin-left: 5px;
           margin-right: 5px;
+
+          mat-icon{
+            margin: auto auto 0px auto !important;
+          }
   
           .image1,.image2,.image3 {
             height: calc(100% - 45px);
@@ -321,10 +325,13 @@
   }
 
   .bd-container {
-    width:90%;
+    width: 95%;
     max-width: 1650px;
-    margin-left:auto;
-    margin-right:auto;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: auto;
     .name-container {
       font-weight: bold;
       margin:30px auto 0px 0px;
@@ -348,7 +355,7 @@
   }
   .container-comics {
     display:flex;
-    justify-content: left;
+    justify-content: center;
     flex-wrap:wrap;
   }
   .container-drawings {
@@ -357,22 +364,16 @@
     flex-wrap:wrap;
   }
   .container-writings {
-    justify-content: left;
+    justify-content: center;
     display:flex;
     flex-wrap:wrap;
   }
   .drawing-container {
     margin:30px auto 30px auto;
-    width:90%;
+    width:95%;
   }
   
   .ads-container {
-    /*margin-top:30px;
-    max-width: 900px;
-    margin-left:auto;
-    margin-right:auto;
-    padding-left: 10px;
-    padding-right: 10px;*/
     width:100%;
     .ad {
       margin-bottom:45px;
@@ -404,7 +405,7 @@
   .container-stories {
     display: flex;
     flex-wrap: wrap;
-    justify-content: left;
+    justify-content: center;
     .views-button {
       outline:none;
       position: absolute;
@@ -687,10 +688,209 @@
       }
     }
   }
+
+  .albumSelectClassArchives.mat-select-panel {
+    position: absolute;
+    user-select: none;
+    overflow: hidden;
+    width: 180px !important;
+    top: 29px;
+    left: -4px;
+    border-top: 1px solid rgb(218,218,218);
+    max-height: 270px;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    border-radius: 0px 0px 15px 15px;
+    max-height: 270px;
+
+    .mat-ripple * {
+        background-color: unset !important;
+    }
+
+    .mat-option.mat-active {
+      display: none;
+    }
+    .mat-option:hover:not(.mat-active) {
+        background: rgb(243, 243, 243) !important;
+    }
+    .mat-option:active:not(.mat-active) {
+        background: rgb(236, 236, 236) !important;
+    }
+
+    .mat-option {
+        color: rgb(32, 56, 100) !important;
+        background: #fafafc !important;
+        height: 36px;
+        font-size: 13px;
+        font-weight: 600;
+        padding-left: 20px;
+        
+        .mat-option-text {
+          display:flex;
+          .icon-home {
+            width:14px !important;
+            height:14px !important;
+            margin:auto 10px auto 0px;
+            background-color: #203864;
+            mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
+          }
+  
+          .icon-collaboration {
+            width:14px !important;
+            height:14px !important;
+            margin:auto 10px auto 0px;
+            background-color: #203864;
+            mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
+          }
+
+          span {
+            white-space: nowrap;
+            overflow: hidden !important;
+            text-overflow: ellipsis;
+          }
+        }
+    }
+  }
 }
 
 
 
+.account-album-selector-archives ::ng-deep {
+
+  position: relative;
+  height: 40px;
+  width: 180px;
+  margin: auto;
+  margin-bottom: 5px;
+  margin-top: 5px;
+
+  .category {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    .category-title {
+      width: 200px;
+      border-radius: 50px;
+      height: 44px;
+    }
+  }
+
+  button.optionsMenu {
+
+    display: flex;
+    position: absolute;
+    padding: 2px;
+    left: -27px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: unset;
+    transition: background-color 200ms, opacity 100ms;
+    border: unset;
+    color:#9a9a9a;
+    border-radius: 50px;
+    outline: none;
+
+    &.opened {
+      color:  rgb(32,56,100);
+    }
+    &:hover {
+      background: rgb(250 250 252);
+    }
+    &:active {
+      background: rgb(240 242 245);
+    }
+    mat-icon {
+      font-size: 20px;
+      max-width: 20px;
+      margin-top: 6px;
+      overflow: hidden;
+      margin: auto;
+      height: unset;
+      width: unset;
+    }
+  }
+  .mat-form-field {
+      width: 100%;
+      height: 100%;
+      
+      .arrow-container {
+        position: absolute;
+        right: -11px;
+        display: flex;
+        mat-icon {
+          margin: auto auto;
+          height: unset;
+          width: 17px;
+          max-width:17px;
+        overflow: hidden;
+          font-size: 17px;
+          transform: rotate(-90deg);
+          transition: transform 200ms;
+          color: #203864;
+        }
+        &.opened mat-icon {
+          transform: rotate(90deg) !important;
+        }
+      }
+
+      .mat-form-field-wrapper {
+        padding-bottom: unset !important;
+        height: 100%;
+      }
+      .mat-form-field-flex {
+        background: #fbfbfd !important;
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+
+        font-weight: 600;
+
+        height: 100%;
+        border-radius: 30px;
+        padding-right: 24px !important;
+        padding-left: 20px !important;
+        transition: box-shadow 200ms;
+      }
+
+      &.opened {
+        .mat-form-field-flex {
+          border-radius: 20px 20px 0px 0px;
+        }
+      }
+  }
+  .mat-form-field-underline {
+      display: none !important;
+  }
+  .mat-form-field-infix {
+    border: unset;
+    padding: unset;
+    height: 100%;
+    width:140px;
+    display:flex;
+    align-items: center;
+    mat-select {
+      margin-top: auto;
+      margin-bottom: auto;
+      .mat-select-value-text {
+        font-size: 14px;
+        line-height: 18px;
+        font-weight:600 !important;
+        color: rgb(32,56,100);
+      }
+      .mat-select-trigger {
+        width:100%;
+      }
+      .mat-select-arrow-wrapper {
+        display:none !important;
+      }
+    }
+  }
+  .mat-form-field-appearance-legacy .mat-form-field-subscript-wrapper {
+      margin-top: 0px;
+      padding-right: 20px !important;
+      padding-left: 20px !important;
+  }
+}
 
 
 

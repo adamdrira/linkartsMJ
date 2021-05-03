@@ -11,7 +11,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
-
+import { trigger, transition, style, animate } from '@angular/animations';
 
 import { Meta, Title } from '@angular/platform-browser';
 import { PopupContactComponent } from '../popup-contact/popup-contact.component';
@@ -23,7 +23,17 @@ declare var Swiper: any;
 @Component({
   selector: 'app-home',
   templateUrl: './home-linkarts.component.html',
-  styleUrls: ['./home-linkarts.component.scss']
+  styleUrls: ['./home-linkarts.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class HomeLinkartsComponent implements OnInit {
   
@@ -143,15 +153,69 @@ export class HomeLinkartsComponent implements OnInit {
       this.initialize_swiper();
     })
 
+
+    let compt=0;
+    this.navbar.get_top_artists("comic").subscribe(r=>{
+      this.top_artists_comic=r[0];
+      compt++;
+      if(compt==3){
+        this.manage_top_artists()
+      }
+    })
+    this.navbar.get_top_artists("drawing").subscribe(r=>{
+      this.top_artists_drawing=r[0];
+      compt++;
+      if(compt==3){
+        this.manage_top_artists()
+      }
+    })
+    this.navbar.get_top_artists("writing").subscribe(r=>{
+      this.top_artists_writing=r[0];
+      compt++;
+      if(compt==3){
+        this.manage_top_artists()
+      }
+    })
     
+
+  }
+
+  skeleton_array = Array(5);
+  skeleton:boolean=true;
+  opened_category_artwork=0;
+  open_category_artwork(number){
+    this.opened_category_artwork=number;
+    this.manage_top_artists();
+    
+  }
+
+  top_artists_retrieved=false;
+  manage_top_artists(){
+    if(this.opened_category_artwork==0){
+      this.top_artists=this.top_artists_comic;
+    }
+    else if(this.opened_category_artwork==1){
+      this.top_artists=this.top_artists_drawing;
+    }
+    else{
+      this.top_artists=this.top_artists_writing;
+    }
+    this.top_artists_retrieved=true;
+    this.cd.detectChanges()
   }
  
   show_icon=false;
-  
+  top_artists:any;
+  top_artists_comic=[];
+  top_artists_drawing=[];
+  top_artists_writing=[];
  
   open_category(i : number) {
     this.allow_sub=false;
     if( i==0 ) {
+      if(this.categories_to_load[2]){
+        this.allow_sub=true;
+      }
       this.category_index = 0;
       this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).subscribe();
       this.location.go('/home/recommendations');
@@ -181,7 +245,7 @@ export class HomeLinkartsComponent implements OnInit {
     }
     this.cd.detectChanges();
     window.dispatchEvent(new Event('resize'))
-    
+    window.scroll(0,0);
   }
 
  
@@ -338,11 +402,7 @@ export class HomeLinkartsComponent implements OnInit {
     let max = document.documentElement.scrollHeight;
     let compare=(max*0.8 - 400 >=0)?(max*0.8 - 400):(max*0.8);
     if(pos>= compare ){
-      console.log("in compage");
-      console.log(this.categories_to_load)
-      console.log(this.type_of_profile)
       if( this.categories_to_load[0] && !this.categories_to_load[2] && this.type_of_profile_retrieved && this.type_of_profile=='account')   {
-        console.log("load sub");
         this.categories_to_load[2]=true;
         this.allow_sub=true;
       }

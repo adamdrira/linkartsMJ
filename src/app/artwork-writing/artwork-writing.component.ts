@@ -9,7 +9,6 @@ import { Reports_service } from '../services/reports.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { NotationService } from '../services/notation.service';
-import { Emphasize_service } from '../services/emphasize.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormWritingComponent } from '../popup-form-writing/popup-form-writing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -93,7 +92,6 @@ export class ArtworkWritingComponent implements OnInit {
     private Community_recommendation:Community_recommendation,
     public dialog: MatDialog,
     private NotationService:NotationService,
-    private Emphasize_service:Emphasize_service,
     private rd:Renderer2,
     ) { 
       this.router.routeReuseStrategy.shouldReuseRoute = function() {
@@ -374,7 +372,7 @@ export class ArtworkWritingComponent implements OnInit {
               this.profile_data_retrieved=true;
             });
   
-            this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
+            this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).subscribe(l=>{
               if (l[0]!=null && l[0]!=undefined){
                 if (l[0].publication_id==this.writing_id && l[0].publication_category=="writing"){
                   this.content_emphasized=true;
@@ -1338,7 +1336,7 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Emphasize_service.emphasize_content("writing","unknown",this.writing_id).subscribe(r=>{
+    this.Profile_Edition_Service.emphasize_content("writing","unknown",this.writing_id).subscribe(r=>{
       this.content_emphasized=true;
       this.archive_loading=false;
     });
@@ -1349,7 +1347,7 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-      this.Emphasize_service.remove_emphasizing("writing","unknown",this.writing_id).subscribe(t=>{
+      this.Profile_Edition_Service.remove_emphasizing("writing","unknown",this.writing_id).subscribe(t=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });

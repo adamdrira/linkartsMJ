@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, ViewChild, ViewContainerRef, ChangeDetectorRef, ComponentFactoryResolver, Renderer2, ViewChildren, QueryList, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
 import { SafeUrl } from '@angular/platform-browser';
 import { ThumbnailAlbumWritingComponent } from '../thumbnail-album-writing/thumbnail-album-writing.component'
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -327,7 +326,7 @@ export class AddAlbumWritingComponent implements OnInit {
   scroll(el: HTMLElement) {
 
     this.cd.detectChanges();
-    var topOfElement = el.offsetTop - 150;
+    var topOfElement = el.offsetTop  + 600;
     window.scroll({top: topOfElement, behavior:"smooth"});
   }
 

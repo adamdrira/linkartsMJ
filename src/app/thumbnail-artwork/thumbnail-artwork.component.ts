@@ -8,7 +8,6 @@ import { Writing_Upload_Service } from '../services/writing.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Subscribing_service} from '../services/subscribing.service';
 import {ChatService} from '../services/chat.service';
-import {Emphasize_service} from '../services/emphasize.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import {get_date_to_show} from '../helpers/dates';
@@ -74,7 +73,6 @@ export class ThumbnailArtworkComponent implements OnInit {
     private router:Router,
     private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
-    private Emphasize_service:Emphasize_service,
     private navbar: NavbarService,
     private chatService:ChatService,
     ) { 
@@ -122,7 +120,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   }
 
   @Input() in_artwork: any;
-
+  @Input() for_user: any;
   @Input() item: any;
   @Input() skeleton: boolean;
   @Input() page: any;
@@ -246,7 +244,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.certified_account=r[0].certified_account;
         });
 
-        this.Emphasize_service.get_emphasized_content(this.item.id_user).subscribe(l=>{
+        this.Profile_Edition_Service.get_emphasized_content(this.item.id_user).subscribe(l=>{
           if (l[0]!=null && l[0]!=undefined){
             if(this.category=="comic"){
               if (l[0].publication_id==this.item.publication_id && l[0].publication_category== "comic" && l[0].format==this.format){
@@ -537,7 +535,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.profile_picture_safe=SafeURL;
         });
 
-        this.Emphasize_service.get_emphasized_content(this.item.authorid).subscribe(l=>{
+        this.Profile_Edition_Service.get_emphasized_content(this.item.authorid).subscribe(l=>{
           if (l[0]!=null && l[0]!=undefined){
             if(this.category=="comic"){
               if (l[0].publication_id==this.item.bd_id && l[0].publication_category== "comic" && l[0].format==this.format){
@@ -1120,21 +1118,21 @@ export class ThumbnailArtworkComponent implements OnInit {
     let id=0;
     if(this.category=="comic"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
-      this.Emphasize_service.emphasize_content( "comic",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.emphasize_content( "comic",this.format,id).subscribe(r=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
     }
     else if(this.category=="drawing"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
-      this.Emphasize_service.emphasize_content( "drawing",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.emphasize_content( "drawing",this.format,id).subscribe(r=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
     }
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
-      this.Emphasize_service.emphasize_content( "writing",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.emphasize_content( "writing",this.format,id).subscribe(r=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
@@ -1151,21 +1149,21 @@ export class ThumbnailArtworkComponent implements OnInit {
     let id=0;
     if(this.category=="comic"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
-      this.Emphasize_service.remove_emphasizing( "comic",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.remove_emphasizing( "comic",this.format,id).subscribe(r=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
     }
     else if(this.category=="drawing"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
-      this.Emphasize_service.remove_emphasizing( "drawing",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.remove_emphasizing( "drawing",this.format,id).subscribe(r=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
     }
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
-      this.Emphasize_service.remove_emphasizing( "writing",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.remove_emphasizing( "writing",this.format,id).subscribe(r=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });

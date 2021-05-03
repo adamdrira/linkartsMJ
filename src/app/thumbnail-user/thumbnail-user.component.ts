@@ -1,8 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, ChangeDetectorRef } from '@angular/core';
-
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
-import { Router  } from '@angular/router';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { animate, style, transition, trigger } from '@angular/animations';
 import {Subscribing_service} from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -28,14 +25,29 @@ import { NavbarService } from '../services/navbar.service';
           animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
         ])
       ]
-    )
+    ),
+    trigger(
+      'enterFromLeftAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('500ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('500ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
   ],
 })
 export class ThumbnailUserComponent implements OnInit {
 
   constructor(
     private Profile_Edition_Service:Profile_Edition_Service,
-    private sanitizer:DomSanitizer,
     public dialog:MatDialog,
     private navbar: NavbarService,
     private Subscribing_service:Subscribing_service,
@@ -52,8 +64,10 @@ export class ThumbnailUserComponent implements OnInit {
   @Input() item:any;
   @Input() rank:number;
   @Input() format: string;
-  @Input() now_in_seconds: number;
+  @Input() now_in_seconds: number=Math.trunc( new Date().getTime()/1000);
   @Input() skeleton: boolean;
+  emphasized=true;
+
   //author
   pseudo:string;
   author_name:string;
@@ -84,10 +98,19 @@ export class ThumbnailUserComponent implements OnInit {
   date_retrieved=false;
 
   show_icon=false;
+
+  
   ngOnInit() {
     if(this.item && this.item.id){
       this.user_id = this.item.id;
       
+      this.Profile_Edition_Service.get_emphasized_content(this.user_id).subscribe(r=>{
+        
+        if(r[0]){
+          this.emphasized_artwork=r[0];
+          this.show_arrow=true;
+        }
+      })
       this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         this.profile_picture = url;
@@ -97,10 +120,6 @@ export class ThumbnailUserComponent implements OnInit {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         this.cover_picture = url;
       });
-  
-      
-  
- 
   
       this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
         this.author_name = r[0].firstname + ' ' + r[0].lastname;
@@ -169,6 +188,27 @@ export class ThumbnailUserComponent implements OnInit {
   }
   open_announcements() {
     return "/account/"+this.pseudo+"/ads";
+  }
+
+
+
+  /*********************************** SHOW THUMBNAIL ARTWORK ***************************/
+  /*********************************** SHOW THUMBNAIL ARTWORK ***************************/
+
+  opened_category=0;
+  show_arrow=false;
+  emphasized_artwork:any;
+  show_left_arrow=false;
+  open_category(i){
+    this.opened_category=i;
+    if(i==0){
+      this.show_left_arrow=false;
+    }
+    else{
+      setTimeout( () => { 
+        this.show_left_arrow=true; 
+      }, 1000 );
+    }
   }
 
 }

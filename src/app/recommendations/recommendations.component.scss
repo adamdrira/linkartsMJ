@@ -1,5 +1,5 @@
 .recommendations {
-  min-height: 100vh;
+  //min-height: 100vh;
 
 
   .horizontal-bar {
@@ -9,6 +9,10 @@
     margin: 18px auto 36px auto;
   }
 
+  .artworks{
+    margin-bottom: -100px;
+  }
+  
   .panel-background {
     padding: 15px 10px;
     overflow: hidden;

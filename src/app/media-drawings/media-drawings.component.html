@@ -97,40 +97,8 @@
     </ng-container>
 </div>
 
-
-<div class="top-artists-container" *ngIf="top_artists_drawing && top_artists_drawing.length>0 && top_artists_retrieved">
-   
-    <div class="title-artists no-cursor">
-        <span>Artistes du moment</span>
-    </div>
-    <ng-container *ngIf="top_artists_drawing">
-        <ng-container *ngFor="let item of top_artists_drawing; let i = index">
-            <div class="artist-container" [@enterAnimation]>
-                <app-thumbnail-user 
-                    [item]=item
-                ></app-thumbnail-user> 
-            </div>
-        </ng-container>
-    </ng-container>
-</div>
-
-
-
-<div class="top-artists-container" *ngIf="!top_artists_retrieved" >
-    <div class="title-artists no-cursor" [@enterAnimation]>
-        <div class="category-title shiny"></div>
-    </div>
-    <ng-container *ngFor="let item of skeleton_array; let i = index">
-        <div class="artist-container" [@enterAnimation]>
-            <app-thumbnail-user 
-                [skeleton]="skeleton"
-            ></app-thumbnail-user> 
-        </div>
-    </ng-container>
-</div>
-
 <ng-container *ngIf="check_drawings_history">
-    <div *ngIf="!last_consulted_drawings_retrieved" class="main-media-container" [@enterAnimation]>
+    <div *ngIf="!last_consulted_drawings" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
                 <span>Historique</span>
         </div>
@@ -150,15 +118,19 @@
     </div>
     
     
-    <div *ngIf="last_consulted_drawings_retrieved" class="main-media-container" [@enterAnimation]>
+    <div *ngIf="last_consulted_drawings && last_consulted_drawings.length>0" class="main-media-container" [@enterAnimation]>
         <div class="category no-cursor">
                 <span>Récemment consultés</span>
         </div>
         
-        <div class="container-homepage2 newDrawings" style="transition:opacity 1s;" >
+        <div #myScrollContainer2 class="container-homepage2 newDrawings recent" style="transition:opacity 1s;" >
     
             
-                <div *ngFor="let item of last_consulted_drawings; let i = index" class="drawing-container">
+                <div (click)="click_absolute_arrow(myScrollContainer2,false,'left');" *ngIf="myScrollContainer2.scrollLeft > 100" class="left-absolute-arrow">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                </div>
+
+                <div *ngFor="let item of last_consulted_drawings.slice(0,number_of_drawings_for_history); let i = index" class="drawing-container">
                     <app-thumbnail-drawing class="thumbnail-component-container2" 
                         *ngIf="item.pagesnumber == null"
                         [item]=item
@@ -177,9 +149,14 @@
                     ></app-thumbnail-drawing>
                 </div>
     
-                <div *ngIf="can_show_more_history" class="see-more2" (click)="show_more_history()">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_more_loading" class="icon">expand_more</mat-icon>
-                    <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
+
+                <div *ngIf="can_show_more_history && !(-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth)" class="see-more2" (click)="show_more_history(myScrollContainer2);">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">expand_more</mat-icon>
+                </div>
+
+                
+                <div (click)="click_absolute_arrow(myScrollContainer2, false, 'right');" *ngIf="-100 > myScrollContainer2.scrollLeft + myScrollContainer2.offsetWidth - myScrollContainer2.scrollWidth " class="right-absolute-arrow">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
                 </div>
         </div>
     </div>

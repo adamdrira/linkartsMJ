@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, ViewChild, ViewContainerRef, ChangeDetectorRef, ComponentFactoryResolver, Renderer2, ViewChildren, QueryList, ElementRef, SimpleChange, SimpleChanges } from '@angular/core';
-import { Router } from '@angular/router';
 import { SafeUrl } from '@angular/platform-browser';
 import { ThumbnailAlbumDrawingComponent } from '../thumbnail-album-drawing/thumbnail-album-drawing.component'
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -402,7 +401,7 @@ export class AddAlbumDrawingComponent implements OnInit {
   scroll(el: HTMLElement) {
 
     this.cd.detectChanges();
-    var topOfElement = el.offsetTop - 150;
+    var topOfElement = el.offsetTop  + 600;
     window.scroll({top: topOfElement, behavior:"smooth"});
   }
 

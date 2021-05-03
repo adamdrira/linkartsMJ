@@ -6,7 +6,6 @@ import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Reports_service } from '../services/reports.service';
-import { Emphasize_service } from '../services/emphasize.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
@@ -83,7 +82,6 @@ export class AccountComponent implements OnInit {
     private Albums_service:Albums_service,
     public dialog: MatDialog,
     private Ads_service:Ads_service,
-    private Emphasize_service:Emphasize_service,
     ) {
 
     navbar.visibility_observer_font.subscribe(font=>{
@@ -99,8 +97,13 @@ export class AccountComponent implements OnInit {
     this.navbar.setActiveSection(-1);
     route.data.subscribe(resp => {
       let r=resp.user_data_by_pseudo;
+      if(!r[0]){
+        this.page_not_found=true;
+        return
+      }
       this.user_id =r[0].id;
       this.user_data=r[0];
+      
     })
     
     let section =  route.snapshot.data['section'];
@@ -109,7 +112,9 @@ export class AccountComponent implements OnInit {
     }
     else{
       this.navbar.show();
+      
     }
+    this.navbar.hide_help();
   }
 
   @HostListener('window:focus', ['$event'])
@@ -130,14 +135,15 @@ export class AccountComponent implements OnInit {
   show_selector_for_album=false;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    if(this.width!=this.main_container.nativeElement.offsetWidth*0.9){
-      if(this.main_container.nativeElement.offsetWidth<570){
+    let main_width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
+    if(this.width!=main_width){
+      if(main_width<570){
         this.show_selector_for_album=true;
       }
       else{
         this.show_selector_for_album=false;
       }
-      this.width=this.main_container.nativeElement.offsetWidth*0.9;
+      this.width=main_width;
       this.update_background_position(this.opened_section);
       this.update_number_of_comics_to_show();
       if(this.list_visibility_albums_drawings){
@@ -654,7 +660,7 @@ export class AccountComponent implements OnInit {
                   
         };
 
-        if(this.gender=="Groupe"){
+        if(this.gender=="Groupe" && this.type_of_account.includes("Artiste")){
           this.get_list_of_members_data();
         }
        
@@ -827,7 +833,7 @@ export class AccountComponent implements OnInit {
   display_new_drawing_contents=false;
   no_new_contents=false;
   get_contents_infos(){
-    this.Emphasize_service.get_emphasized_content(this.user_id).subscribe(r=>{
+    this.Profile_Edition_Service.get_emphasized_content(this.user_id).subscribe(r=>{
       if (r[0]!=null){
         this.emphasized_artwork=r[0];
         this.emphasized_artwork_added=true;
@@ -838,6 +844,10 @@ export class AccountComponent implements OnInit {
 
     this.route.data.subscribe(resp => {
       let r=resp.new_comics;
+      if(!r[0]){
+        this.page_not_found=true;
+        return
+      }
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -886,6 +896,10 @@ export class AccountComponent implements OnInit {
 
     this.route.data.subscribe(resp => {
       let r=resp.new_drawings;
+      if(!r[0]){
+        this.page_not_found=true;
+        return
+      }
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -933,6 +947,10 @@ export class AccountComponent implements OnInit {
 
     this.route.data.subscribe(resp => {
       let r=resp.new_writings;
+      if(!r[0]){
+        this.page_not_found=true;
+        return
+      }
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -1114,11 +1132,10 @@ export class AccountComponent implements OnInit {
   get_comics_albums(){
     if(this.list_bd_series_added && this.list_bd_oneshot_added){
       this.Albums_service.get_albums_comics(this.user_id).subscribe(info => {
-        this.list_bd_albums_status[0]=info[0].standard_albums[0].status;        
-        this.list_bd_albums_status[1]=info[0].standard_albums[1].status;
-
         let information=info[0].albums;
         if((information).length!=0){
+          this.list_bd_albums_status[0]=info[0].standard_albums[0].status;        
+          this.list_bd_albums_status[1]=info[0].standard_albums[1].status;
           for (let i=0; i <(information).length;i++){
             this.list_titles_albums_bd_added.push(information[i].album_name);
             this.list_titles_albums_bd.push(information[i].album_name);
@@ -1154,10 +1171,10 @@ export class AccountComponent implements OnInit {
 
     if(this.list_drawings_artbook_added && this.list_drawings_onepage_added){
       this.Albums_service.get_albums_drawings(this.user_id).subscribe(info => {
-        this.list_drawing_albums_status[0]=info[0].standard_albums[0].status;        
-        this.list_drawing_albums_status[1]=info[0].standard_albums[1].status;
         let information =info[0].albums;
         if(information.length!=0){   
+          this.list_drawing_albums_status[0]=info[0].standard_albums[0].status;        
+          this.list_drawing_albums_status[1]=info[0].standard_albums[1].status;
           for (let i=0; i <(information).length;i++){
               this.list_titles_albums_drawings_added.push(information[i].album_name);
               this.list_titles_albums_drawings.push(information[i].album_name);
@@ -1247,7 +1264,6 @@ export class AccountComponent implements OnInit {
 
   swiper:any;
   initialize_swiper() {
-    console.log("ini swiper")
     this.cd.detectChanges();
 
     this.swiper = new Swiper('.story-swiper-container', {
@@ -1336,7 +1352,7 @@ export class AccountComponent implements OnInit {
   }
 
   update_new_contents() {
-    let width = this.main_container.nativeElement.offsetWidth*0.9;
+    let width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
     if(width>0){
       let n=Math.floor(width/250);
       if(n>3){
@@ -1427,16 +1443,16 @@ export class AccountComponent implements OnInit {
   
   show_icon=false;
   ngAfterViewInit() {
-    
     if(!this.for_reset_password){
       this.update_background_position( this.opened_section );
-      if(this.main_container.nativeElement.offsetWidth<570){
+      let main_width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
+      if(main_width<570){
         this.show_selector_for_album=true;
       }
       else{
         this.show_selector_for_album=false;
       }
-      this.width=this.main_container.nativeElement.offsetWidth*0.9;
+      this.width=main_width;
       this.update_new_contents();
       this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
         this.showEditCoverPic = false;
@@ -1476,7 +1492,6 @@ export class AccountComponent implements OnInit {
     this.cd.detectChanges();
     this.update_background_position(i);
     if(this.opened_section==0 && this.list_of_members_data_retrieved){
-      console.log("in reset swiper")
       this.initialize_swiper()
     }
     if(not_first){
@@ -1512,7 +1527,7 @@ export class AccountComponent implements OnInit {
       else if( i == 5 ) { 
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/about`); 
-    }
+      }
       else if( i == 6 ) { 
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/archives`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/archives`); 
@@ -1530,7 +1545,7 @@ export class AccountComponent implements OnInit {
   scroll(el: HTMLElement) {
 
     this.cd.detectChanges();
-    var topOfElement = el.offsetTop - 150;
+    var topOfElement = el.offsetTop + 600;
     window.scroll({top: topOfElement, behavior:"smooth"});
   }
 
@@ -1931,7 +1946,7 @@ export class AccountComponent implements OnInit {
   got_number_of_comics_to_show=false;
   number_of_lines_comics:number;
   get_number_of_comics_to_show(){
-    let width=this.main_container.nativeElement.offsetWidth*0.9;
+    let width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
     if(this.list_albums_bd_added && !this.got_number_of_comics_to_show ){
       let n=Math.floor(width/250);
       if(n>3){
@@ -1963,7 +1978,7 @@ export class AccountComponent implements OnInit {
 
   update_number_of_comics_to_show(){
     if(this.got_number_of_comics_to_show){
-      let width=this.main_container.nativeElement.offsetWidth*0.9;
+      let width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
       let variable;
       let n=Math.floor(width/250);
       if(n>3){
@@ -2034,7 +2049,7 @@ export class AccountComponent implements OnInit {
   updating_drawings_for_zoom=false;
   prevent_see_more=false;
   get_number_of_drawings_to_show(){
-    let width=this.main_container.nativeElement.offsetWidth*0.9;
+    let width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
     if(this.list_albums_drawings_added && !this.got_number_of_drawings_to_show){
       let n=Math.floor(width/210);
       if(n>3){
@@ -2065,8 +2080,8 @@ export class AccountComponent implements OnInit {
   
   update_number_of_drawings_to_show(){
     if(this.got_number_of_drawings_to_show){
-        let width=this.main_container.nativeElement.offsetWidth*0.9;
-        let variable;
+      let width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
+      let variable;
         let n=Math.floor(width/210);
         if(n>3){
           variable = (n<6)?n:6;
@@ -2237,7 +2252,7 @@ export class AccountComponent implements OnInit {
   got_number_of_writings_to_show=false;
   number_of_lines_writings:number;
   get_number_of_writings_to_show(){
-    let width=this.main_container.nativeElement.offsetWidth*0.9;
+    let width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
     if(this.list_albums_writings_added && !this.got_number_of_writings_to_show){
       let n=Math.floor(width/250);
       if(n>3){
@@ -2268,7 +2283,7 @@ export class AccountComponent implements OnInit {
 
   update_number_of_writings_to_show(){
     if(this.got_number_of_writings_to_show){
-      let width=this.main_container.nativeElement.offsetWidth*0.9;
+      let width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
       let variable;
       let n=Math.floor(width/250);
       if(n>3){
@@ -2703,6 +2718,11 @@ report(){
         scrollLeft: (n-1) * this.width / Math.floor(this.width/250)
       }, 300, 'swing');
     }
+  }
+
+  open_from_news(i){
+    this.open_section(1,false);
+    this.open_category(i,false)
   }
 
 }

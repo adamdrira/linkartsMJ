@@ -1,7 +1,5 @@
-import { Component, OnInit,  HostListener,  Input, Output, EventEmitter, ChangeDetectorRef, SimpleChanges} from '@angular/core';
+import { Component, OnInit,  Input, Output, EventEmitter, ChangeDetectorRef, SimpleChanges} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
-import {Drawings_Artbook_Service} from '../services/drawings_artbook.service';
-import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import { animate, style, transition, trigger } from '@angular/animations';
 declare var $: any
 
@@ -29,8 +27,6 @@ export class MediaDrawingsComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private Drawings_Artbook_Service:Drawings_Artbook_Service,
-    private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private navbar: NavbarService,
     ) { 
       navbar.visibility_observer_font.subscribe(font=>{
@@ -49,19 +45,25 @@ export class MediaDrawingsComponent implements OnInit {
   @Input() width: number;
   @Input() check_drawings_history: any;
   width_to_send:number;
-  @Input() top_artists_drawing: any[];
   @Input() now_in_seconds: number;
   @Output() list_of_drawings_retrieved_emitter = new EventEmitter<object>();
   show_more=[false,false];
   
-  last_consulted_drawings: any[]=[];
-  last_consulted_drawings_retrieved: boolean;
+  @Input() last_consulted_drawings: any[]=[];
   ngOnChanges(changes: SimpleChanges) {
     if( changes.width) {
+      var n = Math.floor(this.width/250);
+      if(n>3){
+        this.number_of_drawings_to_show2=(n<6)?n:6;
+      }
+      else{
+        this.number_of_drawings_to_show2=4;
+      }
+
       if(this.width>0){
         this.width_to_send=this.width;
         if(this.current_number_of_drawings_to_show!= this.number_of_drawings_to_show){
-          this.get_history_recommendation();
+          this.reset_number_of_drawings_for_history()
         }
       }
       if(this.list_visibility_albums_drawings){
@@ -70,16 +72,22 @@ export class MediaDrawingsComponent implements OnInit {
       this.current_number_of_drawings_to_show= this.number_of_drawings_to_show;
     }
 
-    if(changes.top_artists_drawing){
-      this.top_artists_retrieved=true;
+    if(changes.last_consulted_drawings &&  this.width>0){
+      this.reset_number_of_drawings_for_history()
     }
+    
   }
   
-  skeleton=true;
-  top_artists_retrieved=false;
   show_icon=false;
-  number_of_drawings_to_show=5;
+  number_of_drawings_to_show=6;
   ngOnInit() {
+    var n = Math.floor(this.width/250);
+    if(n>3){
+      this.number_of_drawings_to_show2=(n<6)?n:6;
+    }
+    else{
+      this.number_of_drawings_to_show2=4;
+    }
     if(this.sorted_artpieces_digital.length==0 && this.sorted_artpieces_traditional.length==0){
       this.list_of_drawings_retrieved_emitter.emit({retrieved:true})
     }
@@ -90,67 +98,12 @@ export class MediaDrawingsComponent implements OnInit {
       this.width_to_send=this.width;
     }
     this.current_number_of_drawings_to_show= this.number_of_drawings_to_show;
-    this.get_history_recommendation();
     
   }
 
 
   current_number_of_drawings_to_show:number;
-  get_history_recommendation(){
-    if(this.width>0){
-      var n = Math.floor(this.width/250);
-      if(n>3){
-        this.number_of_drawings_to_show=(n<6)?n:5;
-      }
-      else{
-        this.number_of_drawings_to_show=4;
-      
-      }
-    }
-    this.number_of_skeletons_per_line=this.number_of_drawings_to_show;
-    this.can_show_more_history=true;
-    this.last_consulted_drawings_retrieved=false;
-    this.cd.detectChanges();
-    this.last_consulted_drawings=[];
-    this.navbar.get_last_researched_navbar_for_recommendations("Drawing",0, this.number_of_drawings_to_show).subscribe(m=>{
-      if(m[0].length>0){
-        let list=m[0];
-        let compteur=0;
-        for(let i=0;i<m[0].length;i++){
-          if(list[i].format=="one-shot"){
-            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(list[i].target_id).subscribe(drawing=>{
-                
-              if(drawing[0] && drawing[0].status=="public"){
-                this.last_consulted_drawings[i]=drawing[0]
-              }
-              compteur++
-              if(compteur==list.length){
-                this.delete_null_elements_of_list(this.last_consulted_drawings)
-                if(list.length>0){
-                  this.last_consulted_drawings_retrieved=true;
-                }
-              }
-            })
-          }
-          else{
-            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(list[i].target_id).subscribe(drawing=>{
-              if(drawing[0] && drawing[0].status=="public"){
-                this.last_consulted_drawings[i]=drawing[0]
-              }
-              compteur++
-              if(compteur==list.length){
-                this.delete_null_elements_of_list(this.last_consulted_drawings)
-                if(list.length>0){
-                  this.last_consulted_drawings_retrieved=true;
-                }
-                
-              }
-            })
-          }
-        }
-      }
-    })
-  }
+  
 
   show_other_one=true;
   skeleton_array = Array(5);
@@ -238,7 +191,7 @@ export class MediaDrawingsComponent implements OnInit {
     if(width>0 && !this.got_number_of_drawings_to_show){
       let n =Math.floor(width/210)
       if(n>3){
-        this.number_of_drawings_variable=(n<6)?n:5;
+        this.number_of_drawings_variable=(n<6)?n:6;
       }
       else{
         this.number_of_drawings_variable=4;
@@ -260,7 +213,7 @@ export class MediaDrawingsComponent implements OnInit {
       let n =Math.floor(width/210)
       let variable;
       if(n>3){
-        variable=(n<6)?n:5;
+        variable=(n<6)?n:6;
       }
       else{
         variable=4;
@@ -355,7 +308,6 @@ export class MediaDrawingsComponent implements OnInit {
             this.compteur_drawings_thumbnails=0;
             this.all_drawings_loaded=true;
             this.prevent_see_more=false;
-            //this.ini_masonry();
           }
         
       }
@@ -410,78 +362,60 @@ export class MediaDrawingsComponent implements OnInit {
 
 
 
-  offset=0;
-  show_more_loading=false;
   can_show_more_history=true;
-  new_last_consulted_drawings=[];
-  show_more_history(){
-    if(this.show_more_loading){
-      return
-    }
-    this.show_more_loading=true;
-    this.new_last_consulted_drawings=[];
-    this.offset+= this.number_of_drawings_to_show;
-    this.navbar.get_last_researched_navbar_for_recommendations("Drawing",this.offset, this.number_of_drawings_to_show).subscribe(m=>{
-      if(m[0].length>0){
-        let list=m[0];
-        let compteur=0;
-        for(let i=0;i<m[0].length;i++){
-          if(list[i].format=="one-shot"){
-            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(list[i].target_id).subscribe(drawing=>{
-                
-              if(drawing[0] && drawing[0].status=="public"){
-                this.new_last_consulted_drawings[i]=drawing[0]
-              }
-              compteur++
-              if(compteur==list.length){
-                this.delete_null_elements_of_list(this.new_last_consulted_drawings)
-                if(list.length>0){
-                  this.last_consulted_drawings=this.last_consulted_drawings.concat(this.new_last_consulted_drawings);
-                  this.show_more_loading=false;
-                }
-                else{
-                  this.show_more_loading=false;
-                  this.can_show_more_history=false;
-                }
-              }
-            })
-          }
-          else{
-            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(list[i].target_id).subscribe(drawing=>{
-              if(drawing[0] && drawing[0].status=="public"){
-                this.new_last_consulted_drawings[i]=drawing[0]
-              }
-              compteur++
-              if(compteur==list.length){
-                this.delete_null_elements_of_list(this.new_last_consulted_drawings)
-                if(list.length>0){
-                  this.last_consulted_drawings=this.last_consulted_drawings.concat(this.new_last_consulted_drawings);
-                  this.show_more_loading=false;
-                }
-                else{
-                  this.show_more_loading=false;
-                  this.can_show_more_history=false;
-                }
-                
-              }
-            })
-          }
-        }
-      }
-      else{
-        this.show_more_loading=false;
+  number_of_drawings_to_show2=6;
+  number_of_drawings_for_history=6;
+  reset_number_of_drawings_for_history(){
+    if(this.last_consulted_drawings.length>0){
+      let multiple= Math.floor(this.number_of_drawings_for_history/this.number_of_drawings_to_show2)
+      this.number_of_drawings_for_history=(multiple>0)?multiple*this.number_of_drawings_to_show2:this.number_of_drawings_to_show2;
+  
+      if(this.number_of_drawings_for_history>=this.last_consulted_drawings.length){
         this.can_show_more_history=false;
       }
-    })
+      else{
+        this.can_show_more_history=true;
+      }
+
+    }
+    
   }
 
+  
+  show_more_history(e:any){
+    this.number_of_drawings_for_history+=this.number_of_drawings_to_show2;
+    if(this.number_of_drawings_for_history>=this.last_consulted_drawings.length){
+      this.can_show_more_history=false;
+    }
 
-  delete_null_elements_of_list(list){
-    let len=list.length;
-    for(let i=0;i<len;i++){
-      if(!list[len-i-1]){
-        list.splice(len-i-1,1);
+    setTimeout( () => { 
+      this.click_absolute_arrow(e,true,'right'); 
+    }, 10 );
+    
+  }
+
+  click_absolute_arrow(e:any, b:boolean,s:string) {
+    var n = Math.floor( ($('.container-homepage2.newDrawings.recent').scrollLeft()+1) / (this.width / Math.floor(this.width/250))  );
+    
+    if( s=="right" ) {
+      if(!b) {
+        $('.container-homepage2.newDrawings.recent').animate({
+          scrollLeft: ((n+1) * this.width / Math.floor(this.width/250)) + 10
+        }, 300, 'swing');
+      }
+      else {
+        $('.container-homepage2.newDrawings.recent').animate({
+          scrollLeft: ((n+2) * this.width / Math.floor(this.width/250)) + 10
+        }, 300, 'swing');
       }
     }
+    else if( s=="left" ) {
+      $('.container-homepage2.newDrawings.recent').animate({
+        scrollLeft: (n-1) * this.width / Math.floor(this.width/250)
+      }, 300, 'swing');
+    }
   }
+
+
+  
 }

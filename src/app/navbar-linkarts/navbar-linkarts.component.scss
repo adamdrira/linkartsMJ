@@ -1137,8 +1137,8 @@
           0px 1px 5px 0px rgba(0, 0, 0, 0.12);
         color: #203864;
         background: white;
+        text-shadow: 0 0 #203864;
       }
-      
       &:active {
         transform:scale(0.96);
       }
@@ -1239,6 +1239,7 @@
   
   .navbar2 .category:hover {
     color: #203864;
+    text-shadow: 0 0 #203864;
   }
 
   .navbar2 .category:hover .icon-home {
