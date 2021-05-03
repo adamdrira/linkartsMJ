@@ -42,7 +42,6 @@ $default-color: #f9f9f9;
     .artwork-container {
         height: 100%;
         width: calc(100% - 400px);
-        /*background: #040c1b;*/
         background:#040b19;
 
         padding: 0px 0px;
@@ -62,14 +61,11 @@ $default-color: #f9f9f9;
             background-color: #081c40;
         }
         &::-webkit-scrollbar-thumb {
-            background: #152646;
+            background-color: #bfc8d5;
         }
 
         .top-container {
             width: 100%;
-
-            //height: 55px;
-            //margin-top: 20px;
             padding-top: 20px;
 
             position: relative;
@@ -396,7 +392,6 @@ $default-color: #f9f9f9;
                             width: 100%;
                             height: 100%;
                             display: flex;
-                            //Without zoom
                             overflow-y: unset;
                             .slide-container-img {
                                 margin: auto auto;
@@ -407,7 +402,6 @@ $default-color: #f9f9f9;
                                 max-height: 100% !important;
 
                                 &.slide-container-img-ZM {
-                                    //max-width:unset !important;
                                     max-height: unset !important;
                                     width: 100%;
                                 }
@@ -429,9 +423,6 @@ $default-color: #f9f9f9;
                     width: 60px;
                     height: 60px;
                     border-radius: 50px;
-                    //box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.5);
-                    //background-color: #122951;
-
                     transition: scale 100ms;
 
                     &:not(.swiper-button-disabled):active {
@@ -495,7 +486,6 @@ $default-color: #f9f9f9;
         height: 100%;
         padding: 0px 0px;
         color: $default-color;
-        /*background: #122951;*/
         background: rgb(8,20,43);
         z-index: 10;
         
@@ -544,9 +534,6 @@ $default-color: #f9f9f9;
         > div {
             padding: 18px 18px;
             border-bottom: 1px solid #0f1e3a;
-            //border-bottom: 2px solid #081c40;
-            /*border-bottom: 1px solid #163160;
-            box-shadow: 0px 7px 6px -5px #102346;*/
         }
         > div.recommendations-container {
             padding: 18px 18px;
@@ -568,12 +555,12 @@ $default-color: #f9f9f9;
             background-color:#0d1b36;
         }
         &::-webkit-scrollbar {
-            width: 5px;
+            width: 6px;
             height: 0px;
             background-color: #000000;
         }
         &::-webkit-scrollbar-thumb {
-            background-color: #1a305e;
+            background-color: #bfc8d5;
         }
 
         .options-buttons-artwork{
@@ -644,7 +631,7 @@ $default-color: #f9f9f9;
 
             .archive-loading{
                 position:absolute;
-                right:2px;
+                top: -5px;
             }
         }
 
@@ -745,6 +732,7 @@ $default-color: #f9f9f9;
               
                 .right-part{
                     margin: auto 0px auto 60px;
+                    position: relative;
                 }
             }
         }
@@ -1128,10 +1116,7 @@ $default-color: #f9f9f9;
                     }
 
                     &.opened {
-                        /*background: rgb(32, 56, 100);*/
-                        //background: #021133 !important;
                         background: #040b19!important;
-                        //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
                         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                         mat-icon {
                             opacity: 1;
@@ -1147,8 +1132,6 @@ $default-color: #f9f9f9;
                 }
 
                 .title{
-                    //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
-                    //box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                     outline: none;
                     border: none;
                     cursor: pointer;
@@ -1426,6 +1409,7 @@ $default-color: #f9f9f9;
          .view-and-date-numbers {
             font-size: 10px !important;
             .right-part{
+                position: relative;
                 margin: auto 0px auto auto !important;
             }
         }
