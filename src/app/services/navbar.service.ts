@@ -147,8 +147,10 @@ export class NavbarService {
     }
 
 
-    get_last_researched_navbar_for_recommendations(category,offset,limit){
-      return this.httpClient.post(`routes/get_last_researched_navbar_for_recommendations/${category}/${offset}/${limit}`, {withCredentials:true}).pipe(map(information=>{
+   
+
+    get_history_recommendations():Observable<any>{
+      return this.httpClient.post(`routes/get_history_recommendations`, {withCredentials:true}).pipe(map(information=>{
           return information;
         }));
     };
