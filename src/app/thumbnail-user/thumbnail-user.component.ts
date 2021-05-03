@@ -105,7 +105,8 @@ export class ThumbnailUserComponent implements OnInit {
       this.user_id = this.item.id;
       
       this.Profile_Edition_Service.get_emphasized_content(this.user_id).subscribe(r=>{
-        
+        console.log("emphasized")
+        console.log(r[0])
         if(r[0]){
           this.emphasized_artwork=r[0];
           this.show_arrow=true;

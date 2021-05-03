@@ -4,11 +4,11 @@
 </div>
 
 
-<div *ngIf="!skeleton" class="main-thumbnail-container">
+<div *ngIf="!skeleton" class="main-thumbnail-container" [ngClass]="{'bottom-for-rank':rank}" >
 
     
 
-    <a class="thumbnail-user" *ngIf="opened_category==0" [routerLink]=open_account() [@enterFromLeftAnimation]>
+    <div class="thumbnail-user" *ngIf="opened_category==0"  [@enterFromLeftAnimation]>
         
         
         <div class="rank-container" *ngIf="rank">
@@ -21,7 +21,7 @@
             <img *ngIf="display_thumbnail"  [lazyLoad]="cover_picture"  loading="lazy" (load)="load_cover()" [ngClass]="{'invisible':!cover_is_loaded}">
         </div>
 
-        <div class="absolute-profile-data" >
+        <a class="absolute-profile-data" [routerLink]=open_account()>
             <div class="profile-picture" [ngClass]="{'shiny':!pp_is_loaded}">
                 <img [lazyLoad]="profile_picture"  loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
             </div>
@@ -111,15 +111,26 @@
                     <span>{{number_of_ads}}</span>
                 </div>
             </div>
-        </div>
+        </a>
 
-        
-    </a>
+        <div (click)="open_category(1);" *ngIf="opened_category==0 && show_arrow" class="right-absolute-arrow">
+            <mat-icon [ngClass]="{'invisible': !show_icon }" matTooltip='Œuvre mise en avant' 
+            matTooltipClass='tooltip-thumbnail-user' 
+            [matTooltipPosition]="'left'"
+            [matTooltipShowDelay]="200">expand_more</mat-icon>
+        </div>
+    </div>
 
     <div  [@enterFromRightAnimation] *ngIf="opened_category==1">
-        <div  (click)="open_category(0);" *ngIf="opened_category==1" class="left-absolute-arrow" [ngClass]="{'invisible': !show_left_arrow }">
-            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+        <div class="absolute-left-container" [ngClass]="{'more-height-for-rank': rank }">
+            <div  (click)="open_category(0);" *ngIf="opened_category==1" class="left-absolute-arrow" [ngClass]="{'invisible': !show_left_arrow }">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+            </div>
+            <a class="left-absolute-click" [href]="open_account()">
+
+            </a>
         </div>
+        
         <app-thumbnail-artwork 
         [item]=emphasized_artwork
         [emphasized]=emphasized
@@ -130,11 +141,5 @@
     </div>
     
 
-    <div (click)="open_category(1);" *ngIf="opened_category==0 && show_arrow" class="right-absolute-arrow"
-    matTooltip='Œuvre mise en avant' 
-                matTooltipClass='tooltip-thumbnail-user' 
-                [matTooltipPosition]="'left'"
-                [matTooltipShowDelay]="200">
-        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
-    </div>
+    
 </div>
