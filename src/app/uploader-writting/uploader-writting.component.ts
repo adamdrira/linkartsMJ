@@ -9,7 +9,7 @@ import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { NavbarService } from '../services/navbar.service';
 
 
-const URL ='https://www.linkarts.fr/routes/upload_writing';
+const URL ='http://localhost:4600/routes/upload_writing';
 
 @Component({
   selector: 'app-uploader-writting',
