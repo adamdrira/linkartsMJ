@@ -3,22 +3,22 @@ const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 const { get_recommendations_comics, get_recommendations_drawings, get_recommendations_writings } = require('../../data_and_routes/routes/recommendations');
-/*const pool = new Pool({
+const pool = new Pool({
     port: 5432,
     database: 'linkarts',
     user: 'adamdrira',
     password: 'E273adamZ9Qvps',
     host: 'localhost',
-});*/
+});
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
   //dialect: 'postgres'
-});
+});*/
 
 pool.connect((err, client, release) => {
     if (err) {
