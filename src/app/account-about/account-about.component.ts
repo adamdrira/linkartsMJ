@@ -2869,7 +2869,7 @@ export class AccountAboutComponent implements OnInit {
   scroll(el: HTMLElement) {
 
     this.cd.detectChanges();
-    var topOfElement = el.offsetTop - 150;
+    var topOfElement = el.offsetTop + 600;
     window.scroll({top: topOfElement, behavior:"smooth"});
   }
 

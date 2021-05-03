@@ -861,7 +861,7 @@
   .bottom-page-top{
     position: absolute;
     width: 100%;
-    height: calc(103% + 80px);
+    height: calc(100% + 100px);
     margin-top: -50px;
     background: linear-gradient(0turn, rgba(2, 18, 54, 0.95),rgba(19, 51, 100, 0.9),rgba(19, 51, 100, 0.9), rgba(2, 18, 54, 0.95));
     @media (max-width: 600px) {
