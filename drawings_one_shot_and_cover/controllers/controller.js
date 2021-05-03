@@ -385,7 +385,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               destination: './data_and_routes/covers_drawings',
               plugins: [
                 imageminPngquant({
-                  quality: [0.75, 0.85]
+                  quality:  [0.85, 0.95]
               })
               ]
             });
@@ -793,6 +793,9 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
              res.status(200).send([drawings]);
            }); 
         }
+        else{
+          res.status(200).send([null]);
+        }
       })
    
 
@@ -1051,11 +1054,21 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
           if(err){
             filename = "./data_and_routes/not-found-image.jpg";
             var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            not_found.pipe(transform);
+            if(width<700){
+              not_found.pipe(transform);
+            }
+            else{
+              not_found.pipe(res);
+            }
           }  
           else{
             var pp = fs.createReadStream( path.join(process.cwd(),filename))
-            pp.pipe(transform);
+            if(width<700){
+              pp.pipe(transform);
+            }
+            else{
+              pp.pipe(res);
+            }
           }     
         })
 

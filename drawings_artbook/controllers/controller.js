@@ -452,7 +452,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
               destination: './data_and_routes/drawings_pages_artbook',
               plugins: [
                 imageminPngquant({
-                  quality: [0.75, 0.85]
+                  quality:  [0.85, 0.95]
               })
               ]
             });
@@ -702,6 +702,9 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
             
           }); 
         }
+        else{
+          res.status(200).send([null]);
+        }
       })
        
    
@@ -858,7 +861,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 			res.status(500).json({msg: "error", details: err});		
 		}).then(page =>  {
       let transform = sharp()
-        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        transform = transform.resize({fit:sharp.fit.inside,width:1000})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -870,11 +873,21 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
             if(err){
               filename = "./data_and_routes/not-found-image.jpg";
               var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-              not_found.pipe(transform);
+              if(width<700){
+                not_found.pipe(transform);
+              }
+              else{
+                not_found.pipe(res);
+              }
             }  
             else{
               var pp = fs.createReadStream( path.join(process.cwd(),filename))
-              pp.pipe(transform);
+              if(width<700){
+                pp.pipe(transform);
+              }
+              else{
+                pp.pipe(res);
+              }
             }     
           })
         }

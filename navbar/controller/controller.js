@@ -2,22 +2,23 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
-const pool = new Pool({
+const { get_recommendations_comics, get_recommendations_drawings, get_recommendations_writings } = require('../../data_and_routes/routes/recommendations');
+/*const pool = new Pool({
     port: 5432,
     database: 'linkarts',
     user: 'adamdrira',
     password: 'E273adamZ9Qvps',
     host: 'localhost',
-});
+});*/
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
   //dialect: 'postgres'
-});*/
+});
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -96,8 +97,8 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
      });
 
 
-     router.post('/get_last_researched_navbar_for_recommendations/:category/:offset/:limit', function (req, res) {
-        
+     router.post('/get_history_recommendations', function (req, res) {
+        console.log("get_history_recommendations")
         if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
         }
@@ -108,25 +109,205 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             return res.status(401).json({msg: "error"});
         }
         }
-        let category = req.params.category;
-        let offset = parseInt(req.params.offset)
-        let limit = parseInt(req.params.limit)
+        let categories=["Comic","Drawing","Writing"];
         let status="clicked_after_research"
         let status2="clicked"
         let id_user = get_current_user(req.cookies.currentUser);
+        let list_of_histories=[];
+        let list_of_comics=[];
+        let list_of_drawings=[];
+        let list_of_writings=[];
+        let compteur=0;
+        for(let i=0;i<categories.length;i++){
+            pool.query('SELECT  publication_category,format,target_id,max("createdAt")  FROM list_of_navbar_researches WHERE publication_category=$1 AND id_user=$3   AND ( status=$2 OR  status=$4) GROUP BY publication_category,format,target_id ORDER BY max("createdAt") DESC LIMIT 60', [categories[i],status,id_user,status2], (error, results) => {
+                if (error) {
+                    
+                    res.status(500).send([{error:error}]);
+                }
+                else{
+                    let result = JSON.parse(JSON.stringify(results.rows));
+
+                    if(result && result.length>0){
+                        if(i==0){
+                            get_comics(result)
+                        }
+                        else if(i==1){
+                            get_drawings(result)
+                        }
+                        else{
+                            get_writings(result)
+                        }
+                    }
+                    else{
+                        compteur++;
+                        if(compteur==3){
+                            res.status(200).send(list_of_histories);
+                        }
+                    }
+                   
+                    
+                }
+            })
+        }
         
-        pool.query('SELECT  publication_category,format,target_id,max("createdAt")  FROM list_of_navbar_researches WHERE publication_category=$1 AND id_user=$3   AND ( status=$2 OR  status=$4) GROUP BY publication_category,format,target_id ORDER BY max("createdAt") DESC LIMIT $6 OFFSET $5', [category,status,id_user,status2,offset,limit], (error, results) => {
-            if (error) {
-                
-                res.status(500).send([{error:error}]);
+
+        function remove_null_elements(list){
+            let len=list.length;
+            for(let i=0;i<len;i++){
+              if(!list[len-i-1]){
+                list.splice(len-i-1,1);
+              }
             }
-            else{
-                let result = JSON.parse(JSON.stringify(results.rows));
-                res.status(200).send([result]);
-            }
-        })
+        }
+
+        function get_comics(list_of_comics_found){
+            let compteur_before_done=0;
+            for( let j=0;j<list_of_comics_found.length;j++){
+
+                if(list_of_comics_found[j].format=="one-shot"){
+                    pool.query('SELECT * FROM liste_bd_one_shot WHERE bd_id=$1 and status=$2', [list_of_comics_found[j].target_id,"public"], (error, results2) => {
+                      if (error ) {
+                        list_of_comics[j]=null;
+                      }
+                      else {
+                        result2 = JSON.parse(JSON.stringify(results2.rows));
+                        if(!result2[0]){
+                            list_of_comics[j]=null;
+                        }
+                        else{
+                            list_of_comics[j]=result2[0];
+                        }
+                        compteur_before_done++;
+                        if(compteur_before_done==list_of_comics_found.length){
+                          remove_null_elements(list_of_comics)
+                          list_of_histories[0]=list_of_comics
+                          compteur++;
+                          if(compteur==3){
+                              res.status(200).send(list_of_histories);
+                          }
+                        }
+                      }
+                    })
+                }
+                else{
+                  pool.query('SELECT * FROM liste_bd_serie WHERE bd_id=$1 and status=$2', [list_of_comics_found[j].target_id,"public"], (error, results2) => {
+                    if (error ) {
+                        list_of_comics[j]=null;
+                    }
+                    else {
+                      result2 = JSON.parse(JSON.stringify(results2.rows));
+                      if(!result2[0]){
+                        list_of_comics[j]=null;
+                      }
+                      else{
+                        list_of_comics[j]=result2[0];
+                      }
+                   
+                      compteur_before_done++;
+                      if(compteur_before_done==list_of_comics_found.length){
+                        remove_null_elements(list_of_comics)
+                        list_of_histories[0]=list_of_comics
+                        compteur++;
+                        if(compteur==3){
+                            res.status(200).send(list_of_histories);
+                        }
+                      }
+                    }
+                  })
+                }
+              }
+        }
+        
+        function get_drawings(list_of_drawings_found){
+            let compteur_before_done=0;
+            for( let j=0;j<list_of_drawings_found.length;j++){
+
+                if(list_of_drawings_found[j].format=="one-shot"){
+                    pool.query('SELECT * FROM liste_drawings_one_page WHERE drawing_id=$1 and status=$2', [list_of_drawings_found[j].target_id,"public"], (error, results2) => {
+                      if (error ) {
+                        list_of_drawings[j]=null;
+                      }
+                      else {
+                        result2 = JSON.parse(JSON.stringify(results2.rows));
+                        if(!result2[0]){
+                            list_of_drawings[j]=null;
+                        }
+                        else{
+                            list_of_drawings[j]=result2[0];
+                        }
+                        compteur_before_done++;
+                        if(compteur_before_done==list_of_drawings_found.length){
+                          remove_null_elements(list_of_drawings)
+                          list_of_histories[1]=list_of_drawings
+                          compteur++;
+                          if(compteur==3){
+                              res.status(200).send(list_of_histories);
+                          }
+                        }
+                      }
+                    })
+                }
+                else{
+                  pool.query('SELECT * FROM liste_drawings_artbook WHERE drawing_id=$1 and status=$2', [list_of_drawings_found[j].target_id,"public"], (error, results2) => {
+                    if (error ) {
+                        list_of_drawings[j]=null;
+                    }
+                    else {
+                      result2 = JSON.parse(JSON.stringify(results2.rows));
+                      if(!result2[0]){
+                        list_of_drawings[j]=null;
+                      }
+                      else{
+                        list_of_drawings[j]=result2[0];
+                      }
+                   
+                      compteur_before_done++;
+                      if(compteur_before_done==list_of_drawings_found.length){
+                        remove_null_elements(list_of_drawings)
+                        list_of_histories[1]=list_of_drawings
+                        compteur++;
+                        if(compteur==3){
+                            res.status(200).send(list_of_histories);
+                        }
+                      }
+                    }
+                  })
+                }
+              }
+        }
+
+        function get_writings(list_of_writings_found){
+            let compteur_before_done=0;
+            for( let j=0;j<list_of_writings_found.length;j++){
+                  pool.query('SELECT * FROM liste_writings WHERE writing_id=$1 and status=$2', [list_of_writings_found[j].target_id,"public"], (error, results2) => {
+                    if (error ) {
+                        list_of_writings[j]=null;
+                    }
+                    else {
+                      result2 = JSON.parse(JSON.stringify(results2.rows));
+                      if(!result2[0]){
+                        list_of_writings[j]=null;
+                      }
+                      else{
+                        list_of_writings[j]=result2[0];
+                      }
+                   
+                      compteur_before_done++;
+                      if(compteur_before_done==list_of_writings_found.length){
+                        remove_null_elements(list_of_writings)
+                        list_of_histories[2]=list_of_writings
+                        compteur++;
+                        if(compteur==3){
+                            res.status(200).send(list_of_histories);
+                        }
+                      }
+                    }
+                  })
+              }
+        }
     });
 
+    
 
     router.post('/check_if_contents_clicked', function (req, res) {
         
@@ -2610,7 +2791,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                                     list_of_artists.push(user);
                                 }
                                 compt++;
-                                if(compt==5){
+                                if(compt==result.length){
                                     end_function();
                                 }
                                
@@ -2646,7 +2827,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                                     list_of_artists.push(user);
                                 }
                                 compt++;
-                                if(compt==5){
+                                if(compt==result.length){
                                     end_function();
                                 }
                             })
@@ -2680,7 +2861,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                                     list_of_artists.push(user);
                                 }
                                 compt++;
-                                if(compt==5){
+                                if(compt==result.length){
                                     end_function();
                                 }
                             })

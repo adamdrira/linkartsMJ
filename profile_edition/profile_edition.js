@@ -777,59 +777,59 @@ router.post('/retrieve_number_of_contents', function (req, res) {
           }
         }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd_serie=>{
-          number_of_comics+=bd_serie.length;
+          res.status(500).json({msg: "error", details: err});		
+        }).then(bd_serie=>{
+          number_of_comics+=bd_serie?bd_serie.length:0;
           List_comics_one_shot.findAll({
             where:{
               authorid:id,
               status:"public"
             }
           }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd_os=>{
-            number_of_comics+=bd_os.length;
+            console.log(err)
+            res.status(500).json({msg: "error", details: err});		
+          }).then(bd_os=>{
+            number_of_comics+=bd_os?bd_os.length:0;
             Drawings_one_page.findAll({
               where:{
                 authorid:id,
                 status:"public"
               }
             }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawings_os=>{
-              number_of_drawings+=drawings_os.length;
+              console.log(err)
+              res.status(500).json({msg: "error", details: err});		
+            }).then(drawings_os=>{
+              number_of_drawings+=drawings_os?drawings_os.length:0;
               Liste_Drawings_Artbook.findAll({
                 where:{
                   authorid:id,
                   status:"public"
                 }
               }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawings_at=>{
-                number_of_drawings+=drawings_at.length;
+                console.log(err)
+                res.status(500).json({msg: "error", details: err});		
+              }).then(drawings_at=>{
+                number_of_drawings+=drawings_at?drawings_at.length:0;
                 Liste_Writings.findAll({
                   where:{
                     authorid:id,
                     status:"public"
                   }
                 }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(writings=>{
-                  number_of_writings+=writings.length;
+                  console.log(err)
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(writings=>{
+                  number_of_writings+=writings?writings.length:0;
                   list_of_ads.findAll({
                     where:{
                       id_user:id,
                       status:"public"
                     }
                   }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(ads=>{
-                    number_of_ads+=ads.length;
+                    console.log(err)
+                    res.status(500).json({msg: "error", details: err});		
+                  }).then(ads=>{
+                    number_of_ads+=ads?ads.length:0;
                     res.status(200).send([{number_of_ads:number_of_ads,number_of_comics:number_of_comics,number_of_drawings:number_of_drawings,number_of_writings:number_of_writings}])
                   })
                 })

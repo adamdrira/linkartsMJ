@@ -690,6 +690,9 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
             res.status(200).send([writing]);
           }); 
         }
+        else{
+          res.status(200).send([null]);
+        }
       })
 
 

@@ -618,6 +618,9 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             res.status(200).send([ads]);
           }); 
         }
+        else{
+          res.status(200).send([{not_found:'not_found'}]);
+        }
       })
          
     });
@@ -720,10 +723,13 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
       })
       .catch(err => {
         
-      res.status(500).json({msg: "error", details: err});		
-    }).then(ads =>  {
-        res.status(200).send([ads]);
-      }); 
+        res.status(500).json({msg: "error", details: err});		
+      }).then(ads =>  {
+          res.status(200).send([ads]);
+        }); 
+    }
+    else{
+      res.status(200).send([{not_found:'not_found'}]);
     }
   })
     

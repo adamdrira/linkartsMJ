@@ -555,7 +555,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 destination: './data_and_routes/pages_bd_serie',
                 plugins: [
                   imageminPngquant({
-                    quality: [0.75, 0.85]
+                    quality:  [0.85, 0.95]
                 })
                 ]
               });
@@ -959,6 +959,9 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               res.status(200).send([bd]);
             }); 
         }
+        else{
+          res.status(200).send([null]);
+        }
       })
        
  
@@ -1216,7 +1219,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 		}).then(page =>  {
   
         let transform = sharp()
-        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        transform = transform.resize({fit:sharp.fit.inside,width:1000})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -1229,18 +1232,33 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             if(err){
               filename = "./data_and_routes/not-found-image.jpg";
               var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-              not_found.pipe(transform);
+              if(width<700){
+                not_found.pipe(transform);
+              }
+              else{
+                not_found.pipe(res);
+              }
             }  
             else{
               var pp = fs.createReadStream( path.join(process.cwd(),filename))
-              pp.pipe(transform);
+              if(width<700){
+                pp.pipe(transform);
+              }
+              else{
+                pp.pipe(res);
+              }
             }     
           })
         }
         else{
           filename = "./data_and_routes/not-found-image.jpg";
-              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-              not_found.pipe(transform);
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          if(width<700){
+            not_found.pipe(transform);
+          }
+          else{
+            not_found.pipe(res);
+          }
         }
         
       });

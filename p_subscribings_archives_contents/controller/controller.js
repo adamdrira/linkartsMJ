@@ -559,6 +559,9 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                     res.status(200).send([users])
                 });
             }
+            else{
+                res.status(200).send([null]);
+              }
         })
     })
 
@@ -705,6 +708,9 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                     res.status(200).send([users_subscribed_to])
                 }); 
             }
+            else{
+                res.status(200).send([null]);
+              }
         })
             
       });
@@ -1307,6 +1313,9 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 res.status(500).json({msg: "error", details: err});		
                 }).then(content => {res.status(200).send([content])})
             }
+            else{
+                res.status(200).send([null])
+              }
         })  
     });
 
@@ -1347,6 +1356,9 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                   
               res.status(500).json({msg: "error", details: err});		
               }).then(content => {res.status(200).send([content])})
+          }
+          else{
+            res.status(200).send([null])
           }
       })  
        
@@ -1389,6 +1401,9 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                   
               res.status(500).json({msg: "error", details: err});		
               }).then(content => {res.status(200).send([content])})
+          }
+          else{
+            res.status(200).send([null])
           }
       })  
   });
