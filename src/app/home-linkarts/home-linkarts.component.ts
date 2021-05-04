@@ -398,15 +398,18 @@ export class HomeLinkartsComponent implements OnInit {
       this.homeLinkartsSelect.close();
     }
 
-    let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
-    let max = document.documentElement.scrollHeight;
-    let compare=(max*0.8 - 400 >=0)?(max*0.8 - 400):(max*0.8);
-    if(pos>= compare ){
-      if( this.categories_to_load[0] && !this.categories_to_load[2] && this.type_of_profile_retrieved && this.type_of_profile=='account')   {
-        this.categories_to_load[2]=true;
-        this.allow_sub=true;
+    if( this.category_index==0 ){
+      let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
+      let max = document.documentElement.scrollHeight;
+      let compare=(max*0.8 - 400 >=0)?(max*0.8 - 400):(max*0.8);
+      if(pos>= compare ){
+        if(this.categories_to_load[0] && !this.categories_to_load[2] && this.type_of_profile_retrieved && this.type_of_profile=='account')   {
+          this.categories_to_load[2]=true;
+          this.allow_sub=true;
+        }
       }
     }
+    
   }
   ngOnDestroy() {
     this.navbar.show_help();
