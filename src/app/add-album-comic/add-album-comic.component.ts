@@ -109,6 +109,7 @@ export class AddAlbumComicComponent implements OnInit {
  
 
   ngOnInit(): void {
+    this.NavbarService.add_page_visited_to_history(`/add-album-comic`,'').subscribe();
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
   }
 
@@ -301,6 +302,7 @@ export class AddAlbumComicComponent implements OnInit {
                   data: {showChoice:false, text:'Ce titre est déjà utilisé.'},
                   panelClass: "popupConfirmationClass",
                 });
+                this.album_list_to_send=[];
                 this.loading=false;
               }
               else{

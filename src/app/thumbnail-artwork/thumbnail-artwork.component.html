@@ -228,7 +228,7 @@
                 <!--******************************************************-->
                 <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link()
                 matTooltip="Voir du contenu de cette catégorie"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
                     (click)="stop($event)"><span>Bande dessinée</span></a>
@@ -239,14 +239,14 @@
                 </div>
                 <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link()
                 matTooltip="Voir du contenu de ce style"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
                     (click)="stop($event)"><span>{{style}}</span>
                 </a>
                 <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'"
                 matTooltip="Nombre de pages"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
                     <span>{{pagesnumber}}</span>
@@ -256,13 +256,13 @@
                 >
                     <span>{{chaptersnumber}}</span>
                     <mat-icon [ngClass]="{'invisible': !show_icon }" matTooltip="Chapitres"
-                    matTooltipClass='tooltip-thumbnail-artwork' 
+                    matTooltipClass='linkarts-tooltip' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200">import_contacts</mat-icon>
                     <span>&nbsp; {{pagesnumber}}</span>
                     <mat-icon [ngClass]="{'invisible': !show_icon }"
                     matTooltip="Pages par chapitre"
-                    matTooltipClass='tooltip-thumbnail-artwork' 
+                    matTooltipClass='linkarts-tooltip' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200">insert_drive_file</mat-icon>
                 </div>
@@ -272,7 +272,7 @@
                 <!--******************************************************-->
                 <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link()
                 matTooltip="Voir du contenu de cette catégorie"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
                     (click)="stop($event)"><span>Dessin</span></a>
@@ -282,7 +282,7 @@
                     <span>Artbook</span></div>
                 <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link()
                 matTooltip="Voir du contenu de ce style"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
                     (click)="stop($event)"><span>{{style}}</span></a>
@@ -296,13 +296,13 @@
                 <!--******************************************************-->
                 <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link()
                 matTooltip="Voir du contenu de cette catégorie"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
                     (click)="stop($event)"><span>Écrit</span></a>
                 <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link()
                 matTooltip="Voir du contenu de ce style"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
                     (click)="stop($event)">
@@ -318,26 +318,26 @@
                 </div>
             </div>
 
-            <div class="verso-type" *ngIf="firsttag">
+            <div class="verso-type" *ngIf="firsttag" style="margin-top: 0px !important;">
 
                 <a class="tag-container" [routerLink]=get_link_tags(firsttag)
                 matTooltip="Voir du contenu de ce genre"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
                     (click)="stop($event)"><span>{{firsttag}}</span></a>
                 <a class="tag-container" *ngIf="secondtag!=null" [routerLink]=get_link_tags(secondtag)
                 matTooltip="Voir du contenu de ce genre"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
-                    (click)="stop($event)"><span>{{secondtag}}</span></a>
+                    (click)="stop($event)"><span> • {{secondtag}}</span></a>
                 <a class="tag-container" *ngIf="thirdtag!=null" [routerLink]=get_link_tags(thirdtag)
                 matTooltip="Voir du contenu de ce genre"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
-                    (click)="stop($event)"><span>{{thirdtag}}</span></a>
+                    (click)="stop($event)"><span> • {{thirdtag}}</span></a>
             </div>
 
             <!--********************-->
@@ -346,7 +346,7 @@
             <div class="author-container">
                 <a [routerLink]=open_account() (click)="stop($event)" class="left-container" style="border-radius: 50px;" [ngClass]="{'shiny':!pp_is_loaded}"
                 matTooltip="Voir le profil"
-                matTooltipClass='tooltip-thumbnail-artwork' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
                  
@@ -356,7 +356,7 @@
                     <span class="author-name" *ngIf="author_name!=''">
                         <a [routerLink]=open_account() (click)="stop($event)"
                         matTooltip="Voir le profil"
-                        matTooltipClass='tooltip-thumbnail-artwork' 
+                        matTooltipClass='linkarts-tooltip' 
                         [matTooltipPosition]="'below'"
                         [matTooltipShowDelay]="200">
                             {{author_name}}
@@ -390,7 +390,7 @@
                     <span>{{lovesnumber}}</span>
                     <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                 </div>
-                <span>{{date_upload_to_show}} <ng-container *ngIf="recent_chapter && !put_new"> • Nouveau chapitre !</ng-container><ng-container *ngIf="recent_chapter && put_new"> • Nouveau !</ng-container></span>
+                <span class="date">{{date_upload_to_show}} <ng-container *ngIf="recent_chapter && !put_new"> • Nouveau chapitre !</ng-container><ng-container *ngIf="recent_chapter && put_new"> • Nouveau !</ng-container></span>
             </div>
 
 

@@ -4,11 +4,11 @@
 </div>
 
 
-<div *ngIf="!skeleton" class="main-thumbnail-container" [ngClass]="{'bottom-for-rank':rank}" >
+<div *ngIf="!skeleton" class="main-thumbnail-container" [ngClass]="{'bottom-for-rank':rank,'more-top':opened_category==1}" >
 
     
 
-    <div class="thumbnail-user" *ngIf="opened_category==0"  [@enterFromLeftAnimation]>
+    <div class="thumbnail-user" *ngIf="opened_category==0"  [@enterFromBottomAnimation]>
         
         
         <div class="rank-container" *ngIf="rank">
@@ -37,7 +37,7 @@
             <div class="profile-text"  *ngIf="display_thumbnail ">
                 <mat-icon [ngClass]="{'invisible': !show_icon }"
                 matTooltip='Pseudonyme' 
-                matTooltipClass='tooltip-thumbnail-user' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">alternate_email</mat-icon>
                 <span>{{pseudo}}</span>
@@ -46,7 +46,7 @@
             <div class="profile-text" *ngIf="display_thumbnail " >
                 <mat-icon [ngClass]="{'invisible': !show_icon }"
                 matTooltip='Profil' 
-                matTooltipClass='tooltip-thumbnail-user' 
+                matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">account_circle</mat-icon>
                 <span>{{type_of_account}}</span>
@@ -62,7 +62,7 @@
             </div>
             <div class="profile-text" *ngIf="display_thumbnail && (number_of_comics + number_of_drawings + number_of_writings + number_of_ads > 0)"
             matTooltip="B.D. : {{number_of_comics}}&#13;Dessins : {{number_of_drawings}}&#13;Écrits : {{number_of_writings}}&#13;Annonces : {{number_of_ads}}" 
-            matTooltipClass='tooltip-thumbnail-user' 
+            matTooltipClass='linkarts-tooltip' 
             [matTooltipPosition]="'below'"
             [matTooltipShowDelay]="0">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">palette</mat-icon>
@@ -73,7 +73,7 @@
                 <div class="sub-category" *ngIf="number_of_comics>0">
                     <div class="icon-container" 
                     matTooltip="Bandes dessinées : {{number_of_comics}}" 
-                    matTooltipClass='tooltip-thumbnail-user' 
+                    matTooltipClass='linkarts-tooltip' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
                         <div class="icon icon-comic" ></div>
@@ -83,7 +83,7 @@
                 <div class="sub-category" *ngIf="number_of_drawings>0">
                     <div class="icon-container"
                     matTooltip="Dessins : {{number_of_drawings}}" 
-                    matTooltipClass='tooltip-thumbnail-user' 
+                    matTooltipClass='linkarts-tooltip' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
                         <div class="icon icon-drawing" ></div>
@@ -93,7 +93,7 @@
                 <div class="sub-category" *ngIf="number_of_writings>0">
                     <div class="icon-container"
                     matTooltip="Écrits : {{number_of_writings}}" 
-                    matTooltipClass='tooltip-thumbnail-user' 
+                    matTooltipClass='linkarts-tooltip' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
                         <div class="icon icon-writing" ></div>
@@ -103,7 +103,7 @@
                 <div class="sub-category" *ngIf="number_of_ads>0">
                     <div class="icon-container"
                     matTooltip="Annonces : {{number_of_ads}}" 
-                    matTooltipClass='tooltip-thumbnail-user' 
+                    matTooltipClass='linkarts-tooltip' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
                         <div class="icon icon-announcement" ></div>
@@ -113,22 +113,22 @@
             </div>
         </a>
 
-        <div (click)="open_category(1);" *ngIf="opened_category==0 && show_arrow" class="right-absolute-arrow">
-            <mat-icon [ngClass]="{'invisible': !show_icon }" matTooltip='Œuvre mise en avant' 
-            matTooltipClass='tooltip-thumbnail-user' 
+        <div (click)="open_category(1);" *ngIf="opened_category==0 && show_arrow" class="bottom-absolute-arrow">
+            <mat-icon [ngClass]="{'invisible': !show_icon }" 
+            matTooltip='Œuvre mise en avant' 
+            matTooltipClass='linkarts-tooltip' 
             [matTooltipPosition]="'left'"
             [matTooltipShowDelay]="200">expand_more</mat-icon>
         </div>
     </div>
 
-    <div  [@enterFromRightAnimation] *ngIf="opened_category==1">
-        <div class="absolute-left-container" [ngClass]="{'more-height-for-rank': rank }">
-            <div  (click)="open_category(0);" *ngIf="opened_category==1" class="left-absolute-arrow" [ngClass]="{'invisible': !show_left_arrow }">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
-            </div>
-            <a class="left-absolute-click" [href]="open_account()">
-
-            </a>
+    <div  [@enterFromTopAnimation] *ngIf="opened_category==1">
+        <div  (click)="open_category(0);" *ngIf="opened_category==1" class="top-absolute-arrow" [ngClass]="{'invisible': !show_left_arrow }">
+            <mat-icon [ngClass]="{'invisible': !show_icon }"
+            matTooltip="Description de l'utilisateur"
+            matTooltipClass='linkarts-tooltip' 
+            [matTooltipPosition]="'left'"
+            [matTooltipShowDelay]="200">expand_more</mat-icon>
         </div>
         
         <app-thumbnail-artwork 

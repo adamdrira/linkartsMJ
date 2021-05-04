@@ -105,7 +105,8 @@
     .global-container {
       flex-direction: column;
       padding: 0px !important;
-      background: rgb(251, 251, 251);
+      //background: rgb(251, 251, 251);
+      background-image: linear-gradient( 0turn, rgb(243 243 244), rgb(247 247 248), rgb(251 251 252));
       border: 1px solid #e0e0e0;
     }
     .global-container > .left-container img {

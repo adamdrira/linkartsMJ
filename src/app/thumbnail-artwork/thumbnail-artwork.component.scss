@@ -29,12 +29,12 @@
         display: flex;
         position: relative;
         width: 100%;
-        background: rgb(251, 251, 251);
+        //background: rgb(251, 251, 251);
+        background-image: linear-gradient( 0turn, rgb(243 243 244), rgb(247 247 248), rgb(251 251 252));
         > .left-container {
             height: 100%;
             width: 200px;
             width: fit-content;
-            //margin-left: auto;
             margin-right: auto;
             cursor: pointer;
             position: relative;
@@ -243,7 +243,7 @@
     .author-container {
         display: flex;
         width: 100%;
-        margin-top: 8px;
+        margin-top: 0px;
 
         .left-container {
             width: 33px;
@@ -324,7 +324,7 @@
             border-radius: 20px;
             padding: 5px 9px 5px 9px;
             display: flex;
-            background: #203864;
+            background-image: linear-gradient( 0.03turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9));
             margin: auto 4px 3px 0px;
             color: white;
             span {
@@ -336,24 +336,19 @@
             mat-icon {
                 font-size: 12px;
                 max-width:12px;
-            overflow: hidden;
+                overflow: hidden;
                 margin-left: 3px;
                 width: unset !important;
                 height: unset !important;
             }
         }
     }
-    .subscribings-page .verso-type {
-        //margin-top:10px;
-    }
-
     .tag-container {
-        border-bottom: solid 2px rgba(2, 18, 54, 0.9);
         border-radius: 20px;
-        padding: 3px 9px 5px 9px;
+        padding: 3px 0px 5px 4px;
         display: flex;
-        color: rgb(32, 56, 100);
-        margin: auto 4px 3px 0px;
+        color: #203864;
+        margin: auto 0px 3px 0px;
         span {
             font-size: 12px;
             line-height: 12px;
@@ -393,12 +388,17 @@
         text-overflow: ellipsis;
         display:flex;
 
+        .date{
+            margin-right: 10px;
+            @media (max-width: 600px) {
+                margin-right: 0px !important;
+            }
+        }
+
         .figure-container {
-            margin: auto 4px auto 6px;
+            margin: auto 4px auto 0px;
             display: flex;
             padding: 0px 6px;
-            border-bottom: solid 2px rgba(2, 18, 54, 0.9);
-            border-radius: 20px;
             span {
                 font-size:700;
             }
@@ -443,9 +443,6 @@
         width: 266px;
         min-width: 266px;
         box-shadow: 0 1px 6px 1px #ececec, 0px 2px 4px rgba(0, 0, 0, 0.2);
-        //overflow: hidden;
-        //border-radius: 0px 20px 20px 0px;
-        //background: rgb(32, 56, 100);
         background:#fbfbfb;
     }
     .hover-to-preview {
@@ -692,15 +689,9 @@
         .preview {
             display: none !important;
         }
-        .thumbnail-picture {
-            //display: none !important;
-        }
         .swiper-thumbnails {
             position: relative;
             opacity: 1;
-        }
-        .subscribings-page .absolute-selector {
-            //display: none !important;
         }
         .subscribings-page .absolute-small-screen-selector {
             display: block !important;
@@ -727,7 +718,6 @@
         z-index: 10;
     }
     .trendings-page .absolute-selector {
-        //display: none;
         position: absolute;
         top: 10px;
         right: 11px;
@@ -893,8 +883,6 @@
 
     
     @media (max-width: 900px) {
-        //width:80%;
-
         .subscribings-page .absolute-selector {
             top: 3px !important;
         }
@@ -916,7 +904,6 @@
         .verso-type {
             .type-container {
                 margin: auto 2px 3px 0px;
-                //padding: 3px 3px 4px 3px;
                 padding: 6px 8px 6px 8px;
             
                 span {
@@ -936,12 +923,11 @@
             }
         }
         .tag-container {
-            margin: auto 3px 3px 0px;
-            padding: 3px 4px 4px 4px;
-            border-bottom: solid 2px #203864;
+            margin: auto 0px 3px 0px;
+            padding: 3px 0px 4px 4px;
             span {
-                font-size: 10.5px;
-                line-height: 9px;
+                font-size: 12px;
+                line-height: 12px;
                 font-weight: 700 !important;
             }
         }

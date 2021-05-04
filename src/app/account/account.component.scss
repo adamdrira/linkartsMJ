@@ -1263,7 +1263,7 @@
     position:absolute;
     margin: 10px auto 30px auto;
     align-items:center;
-    right: -15px;
+    right: 0%;
     top: 40%;
     transform: translateY(-50%);
     width: 30px;
@@ -1288,7 +1288,7 @@
     position:absolute;
     margin: 10px auto 30px auto;
     align-items:center;
-    left: -15px;
+    left: -3%;
     top: 40%;
     transform: translateY(-50%);
     width: 30px;
@@ -1604,7 +1604,7 @@
 //Albums filter
 .albums-title-main {
   overflow-x: auto;
-
+  padding-top: 5px;
   .albums-title-container {
     height:42px;
     margin-bottom:15px;

@@ -106,10 +106,8 @@ export class AddAlbumDrawingComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let THIS=this;
+    this.navbar.add_page_visited_to_history(`/add-album-drawing`,'').subscribe();
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
-    
-    
 
   }
 
@@ -323,6 +321,7 @@ export class AddAlbumDrawingComponent implements OnInit {
                 data: {showChoice:false, text:'Ce titre est déjà utilisé.'},
                 panelClass: "popupConfirmationClass",
               });
+              this.album_list_to_send=[];
               this.loading=false;
             }
             else{
@@ -362,8 +361,6 @@ export class AddAlbumDrawingComponent implements OnInit {
     solution = Object.assign([], this.reverse_indexes( solution ));
 
     this.array_of_selected_safeurls = Object.assign([], []);
-
-    console.log(solution);
     for( let i = 0; i < solution.length; i++) {
       this.array_of_selected_safeurls.push( this.album_list[ solution[i] ].instance.thumbnail_picture );
     };

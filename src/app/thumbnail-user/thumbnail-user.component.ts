@@ -27,21 +27,22 @@ import { NavbarService } from '../services/navbar.service';
       ]
     ),
     trigger(
-      'enterFromLeftAnimation', [
+      'enterFromTopAnimation', [
         transition(':enter', [
-          style({transform: 'translateX(-100%)', opacity: 0}),
-          animate('500ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('500ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
         ])
-      ],
+      ]
     ),
     trigger(
-      'enterFromRightAnimation', [
+      'enterFromBottomAnimation', [
         transition(':enter', [
-          style({transform: 'translateX(100%)', opacity: 0}),
-          animate('500ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+          style({transform: 'translateY(100%)', opacity: 0}),
+          animate('500ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
         ])
-      ],
+      ]
     ),
+    
   ],
 })
 export class ThumbnailUserComponent implements OnInit {
@@ -105,8 +106,6 @@ export class ThumbnailUserComponent implements OnInit {
       this.user_id = this.item.id;
       
       this.Profile_Edition_Service.get_emphasized_content(this.user_id).subscribe(r=>{
-        console.log("emphasized")
-        console.log(r[0])
         if(r[0]){
           this.emphasized_artwork=r[0];
           this.show_arrow=true;

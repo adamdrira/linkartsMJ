@@ -108,8 +108,7 @@ export class AddAlbumWritingComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log("pseudo")
-    console.log(this.pseudo)
+    this.navbar.add_page_visited_to_history(`/add-album-writing`,'').subscribe();
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
   }
 
@@ -283,6 +282,7 @@ export class AddAlbumWritingComponent implements OnInit {
                   data: {showChoice:false, text:'Ce titre est déjà utilisé.'},
                   panelClass: "popupConfirmationClass",
                 });
+                this.album_list_to_send=[];
                 this.loading=false;
               }
               else{
