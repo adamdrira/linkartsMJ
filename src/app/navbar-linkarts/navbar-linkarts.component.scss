@@ -5,7 +5,8 @@
 }
 
 .cookies-container{
-  position: absolute;
+  position: fixed;
+  bottom:0px;
   width: 100%;
   padding: 10px 20px;
   background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9));
@@ -16,10 +17,7 @@
   display: flex;
   transition: all 200ms;
 
-  @media (max-width: 700px) {
-    padding-bottom: 90px !important;
-  }
-
+  
   .text-container{
     margin: auto auto auto 0px;
     display: flex;
