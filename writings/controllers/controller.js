@@ -283,7 +283,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
               {
                 where:{
                   publication_category:"Writing",
-                  publication_id:writing_id
+                  target_id:writing_id
                 }
               })
               Notations.List_of_likes.update({

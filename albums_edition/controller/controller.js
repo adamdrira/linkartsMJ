@@ -35,6 +35,7 @@ module.exports = (router, list_of_albums) => {
           where:{
             album_name:title,
             album_category:"comics",
+            id_user:current_user,
           }
         }).then(album_found=>{
           if(album_found){
