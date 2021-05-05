@@ -920,26 +920,26 @@
     
     &.options-with-description {
       > div {
-        position:relative;
-
-        &:hover {
-          background:#f6fafd !important;
-        }
+        position: relative;
+        padding-bottom: 5px;
         .mat-option {
-          height:5em;
-          padding-bottom: 35px;
+          height: 35px;
           z-index: 1000;
           background: unset !important;
+          &:hover {
+            background:#f6fafd !important;
+          }
         }
-        .mat-option:hover:not(.mat-option-disabled):not(.mat-active), .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
+        .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
           background:unset !important;
         }
         > span {
-          position: absolute;
-          bottom: 8px;
+          position: relative;
           font-size: 12px;
+          display: flex;
           left: 16px;
-          color: #687282 ;
+          max-width: 92%;
+          color: #687282;
           font-weight: 600;
         }
       }
@@ -974,7 +974,7 @@
     .mat-option.mat-active {
         background: rgb(240,244,254);
     }
-    .mat-option:hover:not(.mat-option-disabled):not(.mat-active), .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
+    .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
         background:#f6fafd !important;
     }
     

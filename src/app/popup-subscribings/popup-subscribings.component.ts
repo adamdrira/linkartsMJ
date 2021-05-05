@@ -77,7 +77,7 @@ export class PopupSubscribingsComponent implements OnInit {
           this.list_of_data_retrieved[i]=true;
           check_all(this,i);
         })
-        this.Subscribing_service.check_if_susbcribed_to_visitor(this.list_of_subscribings[i].id_user_subscribed_to).subscribe(information=>{
+        this.Subscribing_service.check_if_visitor_susbcribed(this.list_of_subscribings[i].id_user_subscribed_to).subscribe(information=>{
           if(information[0].value){
             this.list_of_check_subscribtion[i]=true;
           }
@@ -174,13 +174,16 @@ export class PopupSubscribingsComponent implements OnInit {
 
   loading_subscribtion=false;
   subscribtion(i){
+    console.log("subscribtion " + i)
     if(this.data.type_of_profile=='account'){
 
       if(!this.loading_subscribtion){
         this.loading_subscribtion=true;
+        console.log(this.list_of_check_subscribtion[i])
         if(!this.list_of_check_subscribtion[i]){
           this.list_of_check_subscribtion[i]=true;
           this.Subscribing_service.subscribe_to_a_user(this.list_of_subscribings_information[i].id).subscribe(information=>{
+            console.log(information[0])
             if(information[0].subscribtion){
               
               this.loading_subscribtion=false;
@@ -213,8 +216,11 @@ export class PopupSubscribingsComponent implements OnInit {
           });
         }
         else{
+          console.log("in else")
           this.list_of_check_subscribtion[i]=false;
           this.Subscribing_service.remove_subscribtion(this.list_of_subscribings_information[i].id).subscribe(information=>{
+            console.log("after remove")
+            console.log(information[0])
             this.NotificationsService.remove_notification('subscribtion',this.list_of_subscribings_information[i].id.toString(),'none',this.data.visitor_id,0,false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,

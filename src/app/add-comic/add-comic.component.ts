@@ -8,8 +8,6 @@ import { ConstantsService } from '../services/constants.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SafeUrl } from '@angular/platform-browser';
-
-
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
@@ -20,7 +18,6 @@ import { Writing_Upload_Service } from '../services/writing.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { NavbarService } from '../services/navbar.service';
 import { DOCUMENT } from '@angular/common';
-
 import { normalize_to_nfc } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -97,7 +94,12 @@ export class AddComicComponent implements OnInit {
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
-
+  listOfStyles_descriptions=[
+    "Vous êtes un amateur de BD de genres européennes ou de BD jeunesses, et vous désirez orienter votre potentielle carrière vers ce genre ? Alors cette catégorie est faites pour vous !",
+    "Vous êtes plutôt Comics et amateur de super héros de cet univers, et vous désirez orienter votre potentielle carrière vers ce genre ? Alors cette catégorie est faites pour vous !",
+    "Vous êtes passionné de Mangas et de la culture japonaise en général, et vous désirez orienter votre potentielle carrière vers ce genre ? Alors cette catégorie est faites pour vous !",
+    "Vous êtes passionné de bandes dessinées en tout genre mais vous ne souhaitez pas vous restreindre dans un genre en particulier ? Alors cette catégorie est faites pour vous !"
+  ]
   conditions:any;
   device_info='';
   ngOnInit() {

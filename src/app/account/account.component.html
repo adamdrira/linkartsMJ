@@ -478,7 +478,7 @@
                     && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !profile_not_found && !my_profile_is_suspended " >
                 
     
-                    <ng-container *ngIf="gender=='Groupe'">
+                    <ng-container *ngIf="gender=='Groupe' && type_of_account.includes('Artiste')">
                         <div class="account-title medium-icon" style="margin-bottom: 15px;">
                             <span>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }" >group</mat-icon>

@@ -333,7 +333,7 @@ export class AddWritingComponent implements OnInit {
 
   
   //AJOUTÉ
-  listOfCategories = ["Roman illustré","Roman","Scénario","Article","Poésie"];
+  listOfCategories = ["Roman illustré","Roman","Scénario & Pitch","Article","Poésie"];
   compareObjects(o1: any, o2: any): boolean {
     return o1 === o2;
   }

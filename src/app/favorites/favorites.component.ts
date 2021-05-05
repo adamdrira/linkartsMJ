@@ -50,6 +50,8 @@ export class FavoritesComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.Favorites_service.generate_or_get_favorites().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+      console.log("favorites")
+      console.log(info)
       if(info[0].favorites){
         for(let i=0;i<info[0].favorites.length;i++){
           this.list_of_users[i]=info[0].favorites[i]

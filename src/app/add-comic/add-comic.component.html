@@ -77,10 +77,14 @@
                     <div class="form-item">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Style</mat-label>
-                            <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="f00Category">
-                                <mat-option  *ngFor="let obj of listOfStyles" [value]="obj">
-                                    {{ obj }}
-                                </mat-option>
+                            <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass options_with_description" disableOptionCentering formControlName="f00Category">
+                                <div *ngFor="let obj of listOfStyles; let i = index">
+                                    <mat-option [value]="obj">
+                                        {{ obj }}
+                                    </mat-option>
+                                    <span *ngIf="3>i">{{listOfStyles_descriptions[i]}}</span>
+                                    <span *ngIf="i==3">{{listOfStyles_descriptions[i]}} &nbsp;</span>
+                                </div>
                             </mat-select>
                             <mat-error *ngIf="f00.controls['f00Category'].invalid">Veuillez sélectionner un style</mat-error>
                             <mat-hint *ngIf="f00Category.value == 'Manga'">La lecture se fera de droite à gauche</mat-hint>
