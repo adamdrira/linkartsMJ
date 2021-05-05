@@ -217,7 +217,8 @@ export class PopupFormWritingComponent implements OnInit {
     if ( this.fw.valid ) {
       let category=(this.fw.value.fwCategory === "Poésie") ? "Poetry": (this.fw.value.fwCategory === "Scénario") ? "Scenario" : (this.fw.value.fwCategory === "Roman illustré") ? "Illustrated novel" : this.fw.value.fwCategory;
       this.Writing_Upload_Service.Modify_writing(this.data.writing_id,this.fw.value.fwTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), category, this.fw.value.fwTags, this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).subscribe(r=>{
-        this.location.go(`/artwork-writing/${this.fw.value.fwTitle}/${this.data.writing_id}`);  
+        let title=this.fw.value.fwTitle.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
+        this.location.go(`/artwork-writing/${title}/${this.data.writing_id}`);  
         location.reload();
         });
     }

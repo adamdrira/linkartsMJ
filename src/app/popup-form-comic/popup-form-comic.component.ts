@@ -137,7 +137,8 @@ export class PopupFormComicComponent implements OnInit {
     if ( this.f00.valid && this.data.format == "one-shot" ) {
         this.BdOneShotService.ModifyBdOneShot2(this.data.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''))
         .subscribe(inf=>{
-          this.location.go(`/artwork-comic/one-shot/${this.f00.value.f00Title}/${this.data.bd_id}`);
+          let title=this.f00.value.f00Title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
+          this.location.go(`/artwork-comic/one-shot/${title}/${this.data.bd_id}`);
           location.reload();
         });
     }
@@ -149,7 +150,8 @@ export class PopupFormComicComponent implements OnInit {
           for( let i = 0 ; i < this.data.chapterList.length; i ++ ) {
             this.BdSerieService.modify_chapter_bd_serie2(this.data.bd_id,i+1,this.chapters.value[i]).subscribe(r=>{
               if(i==this.data.chapterList.length-1){
-                this.location.go(`/artwork-comic/serie/${this.f00.value.f00Title}/${this.data.bd_id}/${this.data.current_chapter}`);
+                let title=this.f00.value.f00Title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
+                this.location.go(`/artwork-comic/serie/${title}/${this.data.bd_id}/${this.data.current_chapter}`);
                 location.reload();
               }
             });

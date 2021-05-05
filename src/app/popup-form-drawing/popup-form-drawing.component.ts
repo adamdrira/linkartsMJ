@@ -126,7 +126,8 @@ export class PopupFormDrawingComponent implements OnInit {
     if ( this.fd.valid && this.data.format == "one-shot" ) {
         this.Drawings_Onepage_Service.ModifyDrawingOnePage2(this.data.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''))
         .subscribe(inf=>{
-          this.location.go(`/artwork-drawing/one-shot/${this.fd.value.fdTitle}/${this.data.drawing_id}`);
+          let title=this.fd.value.fdTitle.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
+          this.location.go(`/artwork-drawing/one-shot/${title}/${this.data.drawing_id}`);
               location.reload();
         });
     }
@@ -134,7 +135,8 @@ export class PopupFormDrawingComponent implements OnInit {
     else if ( this.fd.valid && this.data.format == "artbook" ) {
         this.Drawings_Artbook_Service.ModifyArtbook2(this.data.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''))
         .subscribe(inf=>{
-          this.location.go(`/artwork-drawing/artbook/${this.fd.value.fdTitle}/${this.data.drawing_id}`);
+          let title=this.fd.value.fdTitle.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
+          this.location.go(`/artwork-drawing/artbook/${title}/${this.data.drawing_id}`);
               location.reload();
         })
     }
