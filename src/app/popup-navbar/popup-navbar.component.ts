@@ -434,7 +434,8 @@ get_my_favorite() {
 get_account_for_notification(notif:any) {
   return "/account/" + notif.id_user_name ;
 }
-open_comic(notif:any) {
+open_comic(notif:any,event) {
+  event.preventDefault();
   this.router.navigate([this.get_comic(notif)]);
   this.not_using_chat();
   this.close_notifications();
@@ -445,7 +446,8 @@ get_comic(notif:any) {
     return "/artwork-comic/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
 }
 
-open_comic_chapter(notif:any) {
+open_comic_chapter(notif:any,event) {
+  event.preventDefault();
   this.router.navigate([this.get_comic_chapter(notif)]);
   this.not_using_chat();
   this.close_notifications();
@@ -455,8 +457,9 @@ get_comic_chapter(notif:any) {
   let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
   return "/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
 }
-open_drawing(notif:any) {
-  this.router.navigate([this.open_drawing(notif)]);
+open_drawing(notif:any,event) {
+  event.preventDefault();
+  this.router.navigate([this.get_drawing(notif)]);
   this.not_using_chat();
   this.close_notifications();
   this.close_dialog();
@@ -465,8 +468,9 @@ get_drawing(notif:any) {
   let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
   return "/artwork-drawing/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
 }
-open_writing(notif:any) {
-  this.router.navigate([this.open_writing(notif)]);
+open_writing(notif:any,event) {
+  event.preventDefault();
+  this.router.navigate([this.get_writing(notif)]);
   this.not_using_chat();
   this.close_notifications();
   this.close_dialog();
@@ -475,8 +479,9 @@ get_writing(notif:any) {
   let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
   return "/artwork-writing/" + title_url + "/" + notif.publication_id;
 }
-open_ad(notif:any) {
-  this.router.navigate([this.open_ad(notif)]);
+open_ad(notif:any,event) {
+  event.preventDefault();
+  this.router.navigate([this.get_ad(notif)]);
   this.not_using_chat();
   this.close_notifications();
   this.close_dialog();

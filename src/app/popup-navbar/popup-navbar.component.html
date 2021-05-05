@@ -354,7 +354,7 @@
                         <ng-container *ngIf="notif.type=='add_publication'">
   
                           <ng-container *ngIf="notif.publication_category=='comic'">
-                            <a (click)="open_comic(notif);" [href]="get_comic(notif)" target="_blank">
+                            <a (click)="open_comic(notif,$event);" [href]="get_comic(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -372,7 +372,7 @@
   
                           <ng-container *ngIf="notif.publication_category=='drawing'">
                             <ng-container *ngIf="notif.format=='one-shot'">
-                              <a (click)="open_drawing(notif);" [href]="get_drawing(notif)" target="_blank">
+                              <a (click)="open_drawing(notif,$event);" [href]="get_drawing(notif)" target="_blank">
                                 <div class="left-container">
                                   <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                     [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -388,7 +388,7 @@
                               </a>
                             </ng-container>
                             <ng-container *ngIf="notif.format!='one-shot'">
-                              <a (click)="open_drawing(notif);" [href]="get_drawing(notif)" target="_blank">
+                              <a (click)="open_drawing(notif,$event);" [href]="get_drawing(notif)" target="_blank">
                                 <div class="left-container">
                                   <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                     [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -406,7 +406,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='writing'">
-                            <a (click)="open_writing(notif);" [href]="get_writing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_writing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -423,7 +423,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='ad'">
-                            <a (click)="open_ad(notif);" [href]="get_ad(notif)" target="_blank">
+                            <a (click)="open_ad(notif,$event);" [href]="get_ad(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -445,7 +445,7 @@
   
                         <ng-container *ngIf="notif.type=='extend_publication'">
                           <ng-container *ngIf="notif.publication_category=='comic'">
-                            <a (click)="open_comic(notif);" [href]="get_comic(notif)" target="_blank">
+                            <a (click)="open_comic(notif,$event);" [href]="get_comic(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -469,7 +469,7 @@
                           <ng-container *ngIf="notif.publication_category=='comic'">
   
                             <ng-container *ngIf="notif.format=='serie'">
-                              <a (click)="open_comic_chapter(notif);" [href]="get_comic_chapter(notif)" target="_blank">
+                              <a (click)="open_comic_chapter(notif,$event);" [href]="get_comic_chapter(notif)" target="_blank">
                                 <div class="left-container">
                                   <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                     [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -521,7 +521,7 @@
                               </a>
                             </ng-container>
                             <ng-container *ngIf="notif.format!='serie'">
-                              <a (click)="open_comic(notif);" [href]="get_comic(notif)" target="_blank">
+                              <a (click)="open_comic(notif,$event);" [href]="get_comic(notif)" target="_blank">
                                 <div class="left-container">
                                   <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                     [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -575,7 +575,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='drawing'">
-                            <a (click)="open_drawing(notif);" [href]="get_drawing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_drawing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -625,7 +625,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='writing'">
-                            <a (click)="open_writing(notif);" [href]="get_writing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_writing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -681,7 +681,7 @@
                         <ng-container *ngIf="notif.type=='publication_love'">
                           <ng-container *ngIf="notif.publication_category=='comic'">
   
-                            <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif);" [href]="get_comic_chapter(notif)" target="_blank">
+                            <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif,$event);" [href]="get_comic_chapter(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -731,7 +731,7 @@
                                 <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
                               </div>
                             </a>
-                            <a *ngIf="notif.format!='serie'" (click)="open_comic(notif);" [href]="get_comic(notif)" target="_blank">
+                            <a *ngIf="notif.format!='serie'" (click)="open_comic(notif,$event);" [href]="get_comic(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -781,7 +781,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='drawing'">
-                            <a (click)="open_drawing(notif);" [href]="get_drawing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_drawing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -831,7 +831,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='writing'">
-                            <a (click)="open_writing(notif);" [href]="get_writing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_writing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -887,7 +887,7 @@
                         <ng-container *ngIf="notif.type=='comment'">
                           <ng-container *ngIf="notif.publication_category=='comic'">
   
-                            <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif);" [href]="get_comic_chapter(notif)" target="_blank">
+                            <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif,$event);" [href]="get_comic_chapter(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -938,7 +938,7 @@
                               </div>
                             </a>
   
-                            <a *ngIf="notif.format!='serie'" (click)="open_comic(notif);" [href]="get_comic(notif)" target="_blank">
+                            <a *ngIf="notif.format!='serie'" (click)="open_comic(notif,$event);" [href]="get_comic(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -988,7 +988,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='drawing'">
-                            <a (click)="open_drawing(notif);" [href]="get_drawing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_drawing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1038,7 +1038,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='writing'">
-                            <a (click)="open_writing(notif);" [href]="get_writing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_writing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1088,7 +1088,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='ad'">
-                            <a (click)="open_ad(notif);" [href]="get_ad(notif)" target="_blank">
+                            <a (click)="open_ad(notif,$event);" [href]="get_ad(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1143,7 +1143,7 @@
   
                         <ng-container *ngIf="notif.type=='comment_answer'">
                           <ng-container *ngIf="notif.publication_category=='comic'">
-                            <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif);" [href]="get_comic_chapter(notif)" target="_blank">
+                            <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif,$event);" [href]="get_comic_chapter(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1190,7 +1190,7 @@
                                 <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
                               </div>
                             </a>
-                            <a *ngIf="notif.format!='serie'" (click)="open_comic(notif);" [href]="get_comic(notif)" target="_blank">
+                            <a *ngIf="notif.format!='serie'" (click)="open_comic(notif,$event);" [href]="get_comic(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1240,7 +1240,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='drawing'">
-                            <a (click)="open_drawing(notif);" [href]="get_drawing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_drawing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1290,7 +1290,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='writing'">
-                            <a (click)="open_writing(notif);" [href]="get_writing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_writing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1340,7 +1340,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='ad'">
-                            <a (click)="open_ad(notif);" [href]="get_ad(notif)" target="_blank">
+                            <a (click)="open_ad(notif,$event);" [href]="get_ad(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1395,7 +1395,7 @@
   
                         <ng-container *ngIf="notif.type=='comment_like' || notif.type=='comment_answer_like'">
                           <ng-container *ngIf="notif.publication_category=='comic'">
-                            <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif);" [href]="get_comic_chapter(notif)" target="_blank">
+                            <a *ngIf="notif.format=='serie'" (click)="open_comic_chapter(notif,$event);" [href]="get_comic_chapter(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1442,7 +1442,7 @@
                                 <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
                               </div>
                             </a>
-                            <a *ngIf="notif.format!='serie'" (click)="open_comic(notif);" [href]="get_comic(notif)" target="_blank">
+                            <a *ngIf="notif.format!='serie'" (click)="open_comic(notif,$event);" [href]="get_comic(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1492,7 +1492,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='drawing'">
-                            <a (click)="open_drawing(notif);" [href]="get_drawing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_drawing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1542,7 +1542,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='writing'">
-                            <a (click)="open_writing(notif);" [href]="get_writing(notif)" target="_blank">
+                            <a (click)="open_drawing(notif,$event);" [href]="get_writing(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -1592,7 +1592,7 @@
                           </ng-container>
   
                           <ng-container *ngIf="notif.publication_category=='ad'">
-                            <a (click)="open_ad(notif);" [href]="get_ad(notif)" target="_blank">
+                            <a (click)="open_ad(notif,$event);" [href]="get_ad(notif)" target="_blank">
                               <div class="left-container">
                                 <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">

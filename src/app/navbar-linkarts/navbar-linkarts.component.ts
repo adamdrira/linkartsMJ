@@ -1465,7 +1465,8 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   //ANNONCES
-  open_ad_last_propositions(i: number) {
+  open_ad_last_propositions(i: number,event) {
+    event.preventDefault();
     this.router.navigate([this.get_ad_last_propositions(i)]);
     this.cancel_research()
     this.loading_research=true;
@@ -1482,7 +1483,8 @@ export class NavbarLinkartsComponent implements OnInit {
     return "/ad-page/"+title_url +"/"+ this.list_of_last_propositions[i].id;
   }
 
-  open_ad_last_propositions_history(i: number) {
+  open_ad_last_propositions_history(i: number,event) {
+    event.preventDefault();
     this.router.navigate([this.get_ad_last_propositions_history(i)]);
     this.cancel_research()
     this.loading_research=true;
@@ -1502,7 +1504,8 @@ export class NavbarLinkartsComponent implements OnInit {
 
 
   //ARTWORKS
-  open_artwork_last_proposition(s:any, i:number) {
+  open_artwork_last_proposition(s:any, i:number,event) {
+    event.preventDefault();
     this.router.navigate([this.get_artwork_last_proposition(s,i)]);
     this.cancel_research()
     this.loading_research=true;
@@ -1537,7 +1540,8 @@ export class NavbarLinkartsComponent implements OnInit {
 
   }
 
-  open_artwork_last_proposition_history(s:any, i:number) {
+  open_artwork_last_proposition_history(s:any, i:number,event) {
+    event.preventDefault();
     this.router.navigate([this.get_artwork_last_proposition_history(s,i)]);
     this.cancel_research()
     this.loading_research=true;
@@ -1649,7 +1653,9 @@ export class NavbarLinkartsComponent implements OnInit {
   get_account_for_notification(notif:any) {
     return "/account/" + notif.id_user_name ;
   }
-  open_comic(notif:any) {
+  open_comic(notif:any,event) {
+    console.log("open comic")
+    event.preventDefault();
     this.router.navigate([this.get_comic(notif)]);
     this.not_using_chat();
     this.close_notifications();
@@ -1659,7 +1665,8 @@ export class NavbarLinkartsComponent implements OnInit {
     return "/artwork-comic/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
   }
 
-  open_comic_chapter(notif:any) {
+  open_comic_chapter(notif:any,event) {
+    event.preventDefault();
     this.router.navigate([this.get_comic_chapter(notif)]);
     this.not_using_chat();
     this.close_notifications();
@@ -1668,7 +1675,8 @@ export class NavbarLinkartsComponent implements OnInit {
     let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     return "/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
   }
-  open_drawing(notif:any) {
+  open_drawing(notif:any,event) {
+    event.preventDefault();
     this.router.navigate([this.get_drawing(notif)]);
     this.not_using_chat();
     this.close_notifications();
@@ -1677,7 +1685,8 @@ export class NavbarLinkartsComponent implements OnInit {
     let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     return "/artwork-drawing/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
   }
-  open_writing(notif:any) {
+  open_writing(notif:any,event) {
+    event.preventDefault();
     this.router.navigate([this.get_writing(notif)]);
     this.not_using_chat();
     this.close_notifications();
@@ -1689,7 +1698,8 @@ export class NavbarLinkartsComponent implements OnInit {
     }
  
   }
-  open_ad(notif:any) {
+  open_ad(notif:any,event) {
+    event.preventDefault();
     this.router.navigate([this.get_ad(notif)]);
     this.not_using_chat();
     this.close_notifications();
