@@ -435,7 +435,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
-      let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+      let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
       this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
       this.location.go(`/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`);
       this.url=`https://www.linkarts.fr/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`;
@@ -581,7 +581,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
-      let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+      let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
       this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`,this.device_info).subscribe();
       this.location.go(`/artwork-drawing/artbook/${title_url}/${this.drawing_id}`);
       this.url=`https://www.linkarts.fr/artwork-drawing/artbook/${title_url}/${this.drawing_id}`;

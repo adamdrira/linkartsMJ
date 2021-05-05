@@ -2,9 +2,9 @@ import { FormControl, FormGroup } from "@angular/forms";
 
 
 let accents = "àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇÅåÆæœ";
-let special_characters = "\,\;\:\!\?\.\§\%\>\<\^\$\£\*\&\~\#\{\}\'\’\"\(\)\\[\\]\|\`\@\°\+\=_-";
+let special_characters = "\,\;\:\!\?\.\\\\§\%\>\<\^\$\€\£\*\&\~\#\{\}\'\’\"\(\)\\[\\]\|\`\@\°\+\=_-";
 let special_characters2 = "\.\&\_-";
-let special_characters3 = "\,\;\:\!\?\/\.\§\%\>\<\^\$\£\*\&\~\#\{\}\'\’\"\(\)\\[\\]\|\`\@\°\+\=_-";
+let special_characters3 = "\,\;\:\!\?\/\\\\.\%\>\<\^\*\&\#\{\}\'\’\"\(\)\\[\\]\|\@\+\=_-";
 export function pattern(type: string) {
     
     if( type == "mail" ) {

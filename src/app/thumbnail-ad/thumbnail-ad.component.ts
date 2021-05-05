@@ -558,7 +558,7 @@ export class ThumbnailAdComponent implements OnInit {
 
 
   get_artwork() {
-    return "/ad-page/" + this.item.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F') + "/" + this.item.id;
+    return "/ad-page/" + this.item.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A') + "/" + this.item.id;
   }
   open_account() {
     return "/account/"+this.pseudo;

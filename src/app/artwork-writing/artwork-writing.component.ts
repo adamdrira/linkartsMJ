@@ -353,7 +353,7 @@ export class ArtworkWritingComponent implements OnInit {
             this.lovesnumber =r[0].lovesnumber ;
             this.status=r[0].status;
             this.thumbnail_picture=r[0].name_coverpage ;
-            let title_url=this.title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+            let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
             this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`,this.device_info).subscribe();
             this.location.go(`/artwork-writing/${title_url}/${this.writing_id}`);
             this.url=`https://www.linkarts.fr/artwork-writing/${title_url}/${this.writing_id}`;

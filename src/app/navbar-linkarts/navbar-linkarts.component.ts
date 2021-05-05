@@ -1466,6 +1466,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   //ANNONCES
   open_ad_last_propositions(i: number) {
+    this.router.navigate([this.get_ad_last_propositions(i)]);
     this.cancel_research()
     this.loading_research=true;
     this.not_using_chat();
@@ -1477,35 +1478,37 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   get_ad_last_propositions(i:number) {
-    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=this.list_of_last_propositions[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     return "/ad-page/"+title_url +"/"+ this.list_of_last_propositions[i].id;
   }
 
   open_ad_last_propositions_history(i: number) {
+    this.router.navigate([this.get_ad_last_propositions_history(i)]);
     this.cancel_research()
     this.loading_research=true;
     this.not_using_chat();
     let ad =this.list_of_last_propositions_history[i];
     this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
-      let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+      let title_url=this.list_of_last_propositions_history[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
       this.router.navigate([`/ad-page/${title_url}/${this.list_of_last_propositions_history[i].id}`]);
       this.loading_research=false;
       return
     })
   }
   get_ad_last_propositions_history(i: number) {
-    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=this.list_of_last_propositions_history[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     return "/ad-page/" + title_url + "/" + this.list_of_last_propositions_history[i].id;
   }
 
 
   //ARTWORKS
   open_artwork_last_proposition(s:any, i:number) {
+    this.router.navigate([this.get_artwork_last_proposition(s,i)]);
     this.cancel_research()
     this.loading_research=true;
     let artwork=this.list_of_last_propositions[i];
     this.not_using_chat();
-    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=this.list_of_last_propositions[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
         this.router.navigate([`/artwork-writing/${title_url}/${s.target_id}`]);
@@ -1524,7 +1527,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
   get_artwork_last_proposition(s:any, i:number) {
-    let title_url=this.list_of_last_propositions[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=this.list_of_last_propositions[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     if(s.publication_category=="Writing") {
       return "/artwork-" + s.publication_category.toLowerCase() + "/" + title_url+ "/" + s.target_id;
     }
@@ -1535,11 +1538,12 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   open_artwork_last_proposition_history(s:any, i:number) {
+    this.router.navigate([this.get_artwork_last_proposition_history(s,i)]);
     this.cancel_research()
     this.loading_research=true;
     let artwork=this.list_of_last_propositions_history[i];
     this.not_using_chat();
-    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=this.list_of_last_propositions_history[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
         this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${title_url}/${s.target_id}`]);
@@ -1559,7 +1563,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   get_artwork_last_proposition_history(s:any, i:number) {
-    let title_url=this.list_of_last_propositions_history[i].title.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=this.list_of_last_propositions_history[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     if(s.publication_category=="Writing") {
       return "/artwork-" + s.publication_category.toLowerCase() + "/" + title_url + "/" + s.target_id;
     }
@@ -1646,47 +1650,52 @@ export class NavbarLinkartsComponent implements OnInit {
     return "/account/" + notif.id_user_name ;
   }
   open_comic(notif:any) {
+    this.router.navigate([this.get_comic(notif)]);
     this.not_using_chat();
     this.close_notifications();
   }
   get_comic(notif:any) {
-    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     return "/artwork-comic/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
   }
 
   open_comic_chapter(notif:any) {
+    this.router.navigate([this.get_comic_chapter(notif)]);
     this.not_using_chat();
     this.close_notifications();
   }
   get_comic_chapter(notif:any) {
-    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     return "/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
   }
   open_drawing(notif:any) {
+    this.router.navigate([this.get_drawing(notif)]);
     this.not_using_chat();
     this.close_notifications();
   }
   get_drawing(notif:any) {
-    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     return "/artwork-drawing/" + notif.format + "/" + title_url+ "/" + notif.publication_id;
   }
   open_writing(notif:any) {
+    this.router.navigate([this.get_writing(notif)]);
     this.not_using_chat();
     this.close_notifications();
   }
   get_writing(notif:any) {
     if(notif.publication_name){
-      let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+      let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
       return "/artwork-writing/" + title_url + "/" + notif.publication_id;
     }
  
   }
   open_ad(notif:any) {
+    this.router.navigate([this.get_ad(notif)]);
     this.not_using_chat();
     this.close_notifications();
   }
   get_ad(notif:any) {
-    let title_url=notif.publication_name.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let title_url=notif.publication_name.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     return "/ad-page/" + title_url + "/" + notif.publication_id;
   }
 
@@ -1729,7 +1738,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   get_trending_message(i) {
     let str=this.most_researched_propositions[i].research_string;
-    let value=str.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F');
+    let value=str.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     return "/main-research/1/" + value + "/All";
   }
 
