@@ -1036,7 +1036,7 @@
                       <!-- ---------------------------Ad response----------------------------------->
                       <!-- ---------------------------Ad response----------------------------------->
                       <ng-container *ngIf="notif.type=='ad_response'">
-                          <a (click)="open_ad(notif)" [href]="get_ad(notif)" target="_blank">
+                          <a (click)="open_ad(notif,$event)" [href]="get_ad(notif)" target="_blank">
                             <div class="left-container">
                               <img [lazyLoad]="list_of_notifications_profile_pictures[i]"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
