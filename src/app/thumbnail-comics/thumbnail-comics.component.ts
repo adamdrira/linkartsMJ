@@ -387,7 +387,7 @@ export class ThumbnailComicsComponent implements OnInit {
   open_popup(event){
     event.preventDefault(); 
     if (event.ctrlKey) {
-      return this.router.navigate(["/artwork-comic/"+this.format+"/"+ this.title_for_url+"/"+this.bd_id]);
+      return this.router.navigateByUrl("/artwork-comic/"+this.format+"/"+ this.title_for_url+"/"+this.bd_id);
     }
     this.dialog.open(PopupArtworkComponent, {
       data: {

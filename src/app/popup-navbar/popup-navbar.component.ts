@@ -436,7 +436,7 @@ get_account_for_notification(notif:any) {
 }
 open_comic(notif:any,event) {
   event.preventDefault();
-  this.router.navigate([this.get_comic(notif)]);
+  this.router.navigateByUrl(this.get_comic(notif));
   this.not_using_chat();
   this.close_notifications();
   this.close_dialog();
@@ -448,7 +448,7 @@ get_comic(notif:any) {
 
 open_comic_chapter(notif:any,event) {
   event.preventDefault();
-  this.router.navigate([this.get_comic_chapter(notif)]);
+  this.router.navigateByUrl(this.get_comic_chapter(notif));
   this.not_using_chat();
   this.close_notifications();
   this.close_dialog();
@@ -459,7 +459,7 @@ get_comic_chapter(notif:any) {
 }
 open_drawing(notif:any,event) {
   event.preventDefault();
-  this.router.navigate([this.get_drawing(notif)]);
+  this.router.navigateByUrl(this.get_drawing(notif));
   this.not_using_chat();
   this.close_notifications();
   this.close_dialog();
@@ -470,7 +470,7 @@ get_drawing(notif:any) {
 }
 open_writing(notif:any,event) {
   event.preventDefault();
-  this.router.navigate([this.get_writing(notif)]);
+  this.router.navigateByUrl(this.get_writing(notif));
   this.not_using_chat();
   this.close_notifications();
   this.close_dialog();
@@ -481,7 +481,7 @@ get_writing(notif:any) {
 }
 open_ad(notif:any,event) {
   event.preventDefault();
-  this.router.navigate([this.get_ad(notif)]);
+  this.router.navigateByUrl(this.get_ad(notif));
   this.not_using_chat();
   this.close_notifications();
   this.close_dialog();

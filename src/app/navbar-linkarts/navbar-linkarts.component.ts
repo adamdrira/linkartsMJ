@@ -1420,19 +1420,12 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
 
-  go_to_page(s:string) {
-    this.router.navigate([s]);
-  }
-
+ 
 
   //WORDS
   open_research_style_and_tags(i: number) {
     return "/main-research/styles/tags/1/" + this.list_of_real_categories[this.indice_title_selected] + "/" + this.first_filters[this.indice_title_selected][i] + "/all";
     
-    
-  }
-  open_main_research(s: string) {
-    this.router.navigate([`/main-research/1/${s}/All`]);
   }
 
   //ACCOUNTS
@@ -1467,7 +1460,7 @@ export class NavbarLinkartsComponent implements OnInit {
   //ANNONCES
   open_ad_last_propositions(i: number,event) {
     event.preventDefault();
-    this.router.navigate([this.get_ad_last_propositions(i)]);
+    this.router.navigateByUrl(this.get_ad_last_propositions(i));
     this.cancel_research()
     this.loading_research=true;
     this.not_using_chat();
@@ -1485,14 +1478,12 @@ export class NavbarLinkartsComponent implements OnInit {
 
   open_ad_last_propositions_history(i: number,event) {
     event.preventDefault();
-    this.router.navigate([this.get_ad_last_propositions_history(i)]);
+    this.router.navigateByUrl(this.get_ad_last_propositions_history(i));
     this.cancel_research()
     this.loading_research=true;
     this.not_using_chat();
     let ad =this.list_of_last_propositions_history[i];
     this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
-      let title_url=this.list_of_last_propositions_history[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-      this.router.navigate([`/ad-page/${title_url}/${this.list_of_last_propositions_history[i].id}`]);
       this.loading_research=false;
       return
     })
@@ -1506,7 +1497,7 @@ export class NavbarLinkartsComponent implements OnInit {
   //ARTWORKS
   open_artwork_last_proposition(s:any, i:number,event) {
     event.preventDefault();
-    this.router.navigate([this.get_artwork_last_proposition(s,i)]);
+    this.router.navigateByUrl(this.get_artwork_last_proposition(s,i));
     this.cancel_research()
     this.loading_research=true;
     let artwork=this.list_of_last_propositions[i];
@@ -1514,7 +1505,6 @@ export class NavbarLinkartsComponent implements OnInit {
     let title_url=this.list_of_last_propositions[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
-        this.router.navigate([`/artwork-writing/${title_url}/${s.target_id}`]);
         this.loading_research=false;
         return
       })
@@ -1522,7 +1512,6 @@ export class NavbarLinkartsComponent implements OnInit {
     }
     else {
       this.navbar.add_main_research_to_history(s.publication_category,s.format,s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
-        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${s.format}/${title_url}/${s.target_id}`]);
         this.loading_research=false;
         return
       })
@@ -1542,7 +1531,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   open_artwork_last_proposition_history(s:any, i:number,event) {
     event.preventDefault();
-    this.router.navigate([this.get_artwork_last_proposition_history(s,i)]);
+    this.router.navigateByUrl(this.get_artwork_last_proposition_history(s,i));
     this.cancel_research()
     this.loading_research=true;
     let artwork=this.list_of_last_propositions_history[i];
@@ -1550,7 +1539,6 @@ export class NavbarLinkartsComponent implements OnInit {
     let title_url=this.list_of_last_propositions_history[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
-        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${title_url}/${s.target_id}`]);
         this.loading_research=false;
         return
       })
@@ -1558,7 +1546,6 @@ export class NavbarLinkartsComponent implements OnInit {
     }
     else {
       this.navbar.add_main_research_to_history(s.publication_category,s.format,s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
-        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${s.format}/${title_url}/${s.target_id}`]);
         this.loading_research=false;
         return
       })
@@ -1654,9 +1641,8 @@ export class NavbarLinkartsComponent implements OnInit {
     return "/account/" + notif.id_user_name ;
   }
   open_comic(notif:any,event) {
-    console.log("open comic")
     event.preventDefault();
-    this.router.navigate([this.get_comic(notif)]);
+    this.router.navigateByUrl(this.get_comic(notif));
     this.not_using_chat();
     this.close_notifications();
   }
@@ -1667,7 +1653,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   open_comic_chapter(notif:any,event) {
     event.preventDefault();
-    this.router.navigate([this.get_comic_chapter(notif)]);
+    this.router.navigateByUrl(this.get_comic_chapter(notif));
     this.not_using_chat();
     this.close_notifications();
   }
@@ -1676,8 +1662,9 @@ export class NavbarLinkartsComponent implements OnInit {
     return "/artwork-comic/" + notif.format + "/" + title_url + "/" + notif.publication_id + "/" + notif.chapter_number;
   }
   open_drawing(notif:any,event) {
+    console.log("open drawing")
     event.preventDefault();
-    this.router.navigate([this.get_drawing(notif)]);
+    this.router.navigateByUrl(this.get_drawing(notif));
     this.not_using_chat();
     this.close_notifications();
   }
@@ -1687,7 +1674,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
   open_writing(notif:any,event) {
     event.preventDefault();
-    this.router.navigate([this.get_writing(notif)]);
+    this.router.navigateByUrl(this.get_writing(notif));
     this.not_using_chat();
     this.close_notifications();
   }
@@ -1700,7 +1687,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
   open_ad(notif:any,event) {
     event.preventDefault();
-    this.router.navigate([this.get_ad(notif)]);
+    this.router.navigateByUrl(this.get_ad(notif));
     this.not_using_chat();
     this.close_notifications();
   }

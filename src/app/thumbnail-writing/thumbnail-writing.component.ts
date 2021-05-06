@@ -334,7 +334,7 @@ export class ThumbnailWritingComponent implements OnInit {
   open_popup(event){
     event.preventDefault(); 
     if (event.ctrlKey) {
-      return this.router.navigate(["/artwork-writing/"+this.title_for_url+"/"+this.writing_id]);
+      return this.router.navigateByUrl("/artwork-writing/"+this.title_for_url+"/"+this.writing_id);
     }
     this.dialog.open(PopupArtworkComponent, {
       data: {

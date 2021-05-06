@@ -1573,12 +1573,12 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
 
     if(this.in_artwork){
-      this.router.navigate([this.get_artwork()]);
+      this.router.navigateByUrl(this.get_artwork());
     }
     else{
        
       if (event.ctrlKey) {
-        return this.router.navigate([this.get_artwork()]);
+        return this.router.navigateByUrl(this.get_artwork());
       }
       this.dialog.open(PopupArtworkComponent, {
         data: {
