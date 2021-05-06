@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
-const { get_recommendations_comics, get_recommendations_drawings, get_recommendations_writings } = require('../../data_and_routes/routes/recommendations');
 const pool = new Pool({
     port: 5432,
     database: 'linkarts',
@@ -98,7 +97,6 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
      router.post('/get_history_recommendations', function (req, res) {
-        console.log("get_history_recommendations")
         if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
         }
@@ -375,7 +373,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
     
 
-    router.post('/get_last_researched_navbar/:category', function (req, res) {
+    router.post('/get_last_researched_navbar', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -387,13 +385,12 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let category = req.params.category;
+        let category = req.body.category;
         let status="clicked_after_research"
         let id_user = get_current_user(req.cookies.currentUser);
         if(category=="All"){
             pool.query('SELECT  publication_category,format,target_id,max("createdAt")  FROM list_of_navbar_researches WHERE status=$1 AND id_user=$2 GROUP BY publication_category,format,target_id ORDER BY max("createdAt") DESC LIMIT 10', [status,id_user], (error, results) => {
                 if (error) {
-                  
                     res.status(500).send([{error:error}]);
                 }
                 else{
@@ -405,7 +402,6 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         else if(category=="Account" ||  category=="Ad" || category=="Comic" || category=="Drawing" || category=="Writing" ){
             pool.query('SELECT  publication_category,format,target_id,max("createdAt")  FROM list_of_navbar_researches WHERE publication_category=$1 AND status=$2 AND id_user=$3 GROUP BY publication_category,format,target_id ORDER BY max("createdAt") DESC LIMIT 10', [category,status,id_user], (error, results) => {
                 if (error) {
-                  
                     res.status(500).send([{error:error}]);
                 }
                 else{
@@ -421,7 +417,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
   
   
      
-    router.get('/get_specific_propositions_navbar/:category/:text', function (req, res) {
+    router.post('/get_specific_propositions_navbar', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -433,27 +429,24 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-       
         let id_user = get_current_user(req.cookies.currentUser);
-        let category = req.params.category;
-        let text = (req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
+        let category = req.body.category;
+        let text = (req.body.text).toLowerCase()
         let status="clicked";
         if(category=="All"){
-            pool.query(' (SELECT publication_category,format,target_id, COUNT(*) occurrences FROM list_of_navbar_researches WHERE  status=$1 AND id_user=$2 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +') GROUP BY publication_category,format,target_id ORDER BY count(*) DESC LIMIT 10)', [status,id_user], (error, results) => {
+            pool.query(" (SELECT publication_category,format,target_id, COUNT(*) occurrences FROM list_of_navbar_researches WHERE  status=$1 AND id_user=$2 AND (Lower(research_string) LIKE '%' || $3 || '%' OR Lower(research_string1) LIKE '%' || $3 || '%') GROUP BY publication_category,format,target_id ORDER BY count(*) DESC LIMIT 10)", [status,id_user,text], (error, results) => {
                 if (error) {
-                    
+                   
                     res.status(500).send([{error:error}]);
                 }
                 else{
-                    
                     let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
         }
         else if(category=="Account" ||  category=="Ad" || category=="Comic" || category=="Drawing" || category=="Writing" ){
-            pool.query(' (SELECT publication_category,format,target_id, COUNT(*) occurrences FROM list_of_navbar_researches WHERE   publication_category=$1 AND status=$2 AND id_user=$3 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +') GROUP BY publication_category,format,target_id ORDER BY count(*) DESC LIMIT 10)', [category,status,id_user], (error, results) => {
+            pool.query(" (SELECT publication_category,format,target_id, COUNT(*) occurrences FROM list_of_navbar_researches WHERE   publication_category=$1 AND status=$2 AND id_user=$3 AND (Lower(research_string) LIKE '%' || $4 || '%' OR Lower(research_string1) LIKE '%' || $4 || '%') GROUP BY publication_category,format,target_id ORDER BY count(*) DESC LIMIT 10)", [category,status,id_user,text], (error, results) => {
                 if (error) {
                     
                     res.status(500).send([{error:error}]);
@@ -471,7 +464,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
     
-    router.get('/get_global_propositions_navbar/:category/:text/:limit', function (req, res) {
+    router.post('/get_global_propositions_navbar', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -484,19 +477,14 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         }
       }
         let id_user = get_current_user(req.cookies.currentUser);
-        let category = req.params.category;
-        let limit = parseInt(req.params.limit);
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
+        let category = req.body.category;
+        let limit = parseInt(req.body.limit);
+        let text=(req.body.text).toLowerCase()
         let status="clicked";
 
-
-
-
         if(category=="All"){
-            pool.query(' SELECT table1.publication_category,table1.format,table1.target_id, COUNT(*) occurrences FROM list_of_navbar_researches as table1 LEFT OUTER JOIN (SELECT publication_category,format,target_id, COUNT(*) occurrences  FROM list_of_navbar_researches WHERE  status=$1 AND id_user=$2 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')   GROUP BY publication_category,format,target_id ) as table2 ON table1.format=table2.format  AND table1.target_id=table2.target_id  WHERE  table2.publication_category is null AND table1.status=$1  AND table1.id_user!=$2 AND (Lower(table1.research_string) LIKE '+ text_to_search+ ' OR Lower(table1.research_string1) LIKE '+ text_to_search+ ')  GROUP BY table1.publication_category,table1.format,table1.target_id ORDER BY count(*) DESC LIMIT $3', [status,id_user,limit], (error, results) => {
+            pool.query("SELECT table1.publication_category,table1.format,table1.target_id, COUNT(*) occurrences FROM list_of_navbar_researches as table1 LEFT OUTER JOIN (SELECT publication_category,format,target_id, COUNT(*) occurrences  FROM list_of_navbar_researches WHERE  status=$1 AND id_user=$2 AND (Lower(research_string) LIKE '%' || $4 || '%'OR Lower(research_string1) LIKE '%' || $4 || '%' )   GROUP BY publication_category,format,target_id ) as table2 ON table1.format=table2.format  AND table1.target_id=table2.target_id  WHERE  table2.publication_category is null AND table1.status=$1  AND table1.id_user!=$2 AND (Lower(table1.research_string) LIKE '%' || $4 || '%'  OR Lower(table1.research_string1) LIKE '%' || $4 || '%' )  GROUP BY table1.publication_category,table1.format,table1.target_id ORDER BY count(*) DESC LIMIT $3", [status,id_user,limit,text], (error, results) => {
                 if (error) {
-                    console.log(error)
                     res.status(500).send([{error:error}]);
                 }
                 else{
@@ -506,9 +494,8 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             })
         }
         else if(category=="Account" ||  category=="Ad" || category=="Comic" || category=="Drawing" || category=="Writing" ){
-            pool.query(' SELECT table1.publication_category,table1.format,table1.target_id, COUNT(*) occurrences FROM list_of_navbar_researches as table1 LEFT OUTER JOIN (SELECT publication_category,format,target_id, COUNT(*) occurrences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND id_user=$3 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')   GROUP BY publication_category,format,target_id ) as table2 ON table1.format=table2.format  AND table1.target_id=table2.target_id  WHERE  table2.publication_category is null AND table1.publication_category=$1 AND table1.status=$2  AND table1.id_user!=$3 AND  (Lower(table1.research_string) LIKE '+ text_to_search+ ' OR Lower(table1.research_string1) LIKE '+ text_to_search+ ') GROUP BY table1.publication_category,table1.format,table1.target_id ORDER BY count(*) DESC LIMIT $4', [category,status,id_user,limit], (error, results) => {
+            pool.query("SELECT table1.publication_category,table1.format,table1.target_id, COUNT(*) occurrences FROM list_of_navbar_researches as table1 LEFT OUTER JOIN (SELECT publication_category,format,target_id, COUNT(*) occurrences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND id_user=$3 AND (Lower(research_string) LIKE '%' || $5 || '%'  OR Lower(research_string1) LIKE '%' || $5 || '%' )   GROUP BY publication_category,format,target_id ) as table2 ON table1.format=table2.format  AND table1.target_id=table2.target_id  WHERE  table2.publication_category is null AND table1.publication_category=$1 AND table1.status=$2  AND table1.id_user!=$3 AND  (Lower(table1.research_string) LIKE '%' || $5 || '%' OR Lower(table1.research_string1) LIKE '%' || $5 || '%' ) GROUP BY table1.publication_category,table1.format,table1.target_id ORDER BY count(*) DESC LIMIT $4", [category,status,id_user,limit,text], (error, results) => {
                 if (error) {
-                    console.log(error)
                     res.status(500).send([{error:error}]);
                 }
                 else{
@@ -522,7 +509,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
 
-    router.get('/get_global_tags_propositions_navbar/:category/:text/:limit', function (req, res) {
+    router.post('/get_global_tags_propositions_navbar', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -534,21 +521,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
-        let category = req.params.category;
-        let limit = parseInt(req.params.limit);
-        let text=(req.params.text).toLowerCase()
-        let text_to_search= "'%"+ text + "%'";
+        let category = req.body.category;
+        let limit = parseInt(req.body.limit);
+        let text=(req.body.text).toLowerCase()
         let status="clicked";
 
 
         var last_month = new Date();
         last_month.setDate(last_month.getDate() -30);
-
         if(category=="All"){
-            pool.query('SELECT publication_category,format,target_id, COUNT(*) occurrences FROM list_of_navbar_researches WHERE  "createdAt" ::date >= $1 AND status=$2 AND publication_category!=$3 AND publication_category!=$4 AND (Lower(firsttag) LIKE ' + text_to_search +' OR Lower(secondtag) LIKE ' + text_to_search +' OR Lower(thirdtag) LIKE ' + text_to_search +') GROUP BY publication_category,format,target_id ORDER BY count(*) DESC LIMIT $5', [last_month,status,'Account','Ad',limit], (error, results) => {
+            pool.query("SELECT publication_category,format,target_id, COUNT(*) occurrences FROM list_of_navbar_researches WHERE"  + '"createdAt" ::date >= $1' + "AND status=$2 AND publication_category!=$3 AND publication_category!=$4 AND (Lower(firsttag) LIKE '%' || $6 || '%' OR Lower(secondtag) LIKE '%' || $6 || '%'  OR Lower(thirdtag) LIKE '%' || $6 || '%' ) GROUP BY publication_category,format,target_id ORDER BY count(*) DESC LIMIT $5", [last_month,status,'Account','Ad',limit,text], (error, results) => {
                 if (error) {
-                
                     res.status(500).send([{error:error}]);
                 }
                 else{
@@ -558,7 +541,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             })
         }
         else if(category=="Account" ||  category=="Ad" || category=="Comic" || category=="Drawing" || category=="Writing" ){
-            pool.query(' SELECT publication_category,format,target_id, COUNT(*) occurrences FROM list_of_navbar_researches WHERE  "createdAt" ::date >= $1 AND status=$2 AND publication_category=$3 AND (Lower(firsttag) LIKE ' + text_to_search +' OR Lower(secondtag) LIKE ' + text_to_search +' OR Lower(thirdtag) LIKE ' + text_to_search +') GROUP BY publication_category,format,target_id ORDER BY count(*) DESC LIMIT $4', [last_month,status,category,limit], (error, results) => {
+            pool.query("SELECT publication_category,format,target_id, COUNT(*) occurrences FROM list_of_navbar_researches WHERE"+  '"createdAt" ::date >= $1' + "AND status=$2 AND publication_category=$3 AND (Lower(firsttag) LIKE '%' || $5 || '%' OR Lower(secondtag) LIKE '%' || $5 || '%' OR Lower(thirdtag) LIKE '%' || $5 || '%') GROUP BY publication_category,format,target_id ORDER BY count(*) DESC LIMIT $4", [last_month,status,category,limit,text], (error, results) => {
                 if (error) {
                 
                     res.status(500).send([{error:error}]);
@@ -609,7 +592,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
     })
 
-    router.get('/get_number_of_results_for_categories/:text', function (req, res) {
+    router.post('/get_number_of_results_for_categories', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -621,11 +604,9 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
-        pool.query(' SELECT publication_category,max(occurences),count(*) number  from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  status=$1 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t2 GROUP BY publication_category ORDER BY count(*) DESC,max(occurences) DESC ', [status], (error, results) => {
+        let text=(req.body.text).toLowerCase();
+        pool.query("SELECT publication_category,max(occurences),count(*) number  from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  status=$1 AND (Lower(research_string) LIKE '%' || $2 || '%' OR Lower(research_string1) LIKE '%' || $2 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t2 GROUP BY publication_category ORDER BY count(*) DESC,max(occurences) DESC", [status,text], (error, results) => {
             if (error) {
                 
                     res.status(500).send([{error:error}]);
@@ -634,7 +615,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 
                 let result = JSON.parse(JSON.stringify(results.rows));
                 if(Object.keys(result).length>0){
-                    pool.query(' SELECT publication_category,style, firsttag, secondtag, thirdtag,max(occurences),count(*) number  from (SELECT  publication_category,format,target_id,style, firsttag, secondtag, thirdtag,count(*) occurences  FROM list_of_navbar_researches WHERE  status=$1 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,style, firsttag, secondtag, thirdtag,format,target_id  ORDER BY count(*) DESC) as t2 GROUP BY publication_category,style, firsttag, secondtag, thirdtag ORDER BY count(*) DESC,max(occurences) DESC ', [status], (error, results2) => {
+                    pool.query("SELECT publication_category,style, firsttag, secondtag, thirdtag,max(occurences),count(*) number  from (SELECT  publication_category,format,target_id,style, firsttag, secondtag, thirdtag,count(*) occurences  FROM list_of_navbar_researches WHERE  status=$1 AND (Lower(research_string) LIKE '%' || $2 || '%'  OR Lower(research_string1) LIKE '%' || $2 || '%' )  GROUP BY publication_category,style, firsttag, secondtag, thirdtag,format,target_id  ORDER BY count(*) DESC) as t2 GROUP BY publication_category,style, firsttag, secondtag, thirdtag ORDER BY count(*) DESC,max(occurences) DESC ", [status,text], (error, results2) => {
                         if (error) {
                             
                     res.status(500).send([{error:error}]);
@@ -655,7 +636,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       
     });
 
-    router.get('get_styles_and_tags/:text', function (req, res) {
+    router.post('get_styles_and_tags', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -667,11 +648,9 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
-        pool.query(' SELECT publication_category, style, firsttag, secondtag, thirdtag, max(occurences) ,count(*) number  from (SELECT  publication_category, format, target_id, style, firsttag, secondtag, thirdtag, research_string,count(*) occurences  FROM list_of_navbar_researches WHERE  status=$1 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id, style, firsttag, secondtag, thirdtag  ORDER BY count(*) DESC) as t2 GROUP BY publication_category, style, firsttag, secondtag, thirdtag ORDER BY count(*) DESC,max(occurences) DESC ', [status], (error, results) => {
+        let text=(req.body.text).toLowerCase();
+        pool.query("SELECT publication_category, style, firsttag, secondtag, thirdtag, max(occurences) ,count(*) number  from (SELECT  publication_category, format, target_id, style, firsttag, secondtag, thirdtag, research_string,count(*) occurences  FROM list_of_navbar_researches WHERE  status=$1 AND (Lower(research_string) LIKE '%' || $2 || '%'  OR Lower(research_string1) LIKE '%' || $2 || '%' )  GROUP BY publication_category,format,target_id, style, firsttag, secondtag, thirdtag  ORDER BY count(*) DESC) as t2 GROUP BY publication_category, style, firsttag, secondtag, thirdtag ORDER BY count(*) DESC,max(occurences) DESC ", [status,text], (error, results) => {
             if (error) {
                 
                     res.status(500).send([{error:error}]);
@@ -685,7 +664,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       
     });
 
-    router.get('/get_number_of_results_by_category/:category/:text', function (req, res) {
+    router.post('/get_number_of_results_by_category', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -697,14 +676,11 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
-        let category =req.params.category;
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
-
+        let category =req.body.category;
+        let text=(req.body.text).toLowerCase();
        
-            pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1', [category,status], (error, results) => {
+            pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (Lower(research_string) LIKE '%' || $3 || '%'  OR Lower(research_string1) LIKE '%' || $3 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1", [category,status,text], (error, results) => {
                 if (error) {
                     
                         res.status(500).send([{error:error}]);
@@ -720,7 +696,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       
     });
 
-    router.get('/get_number_of_results_by_category1/:category/:text/:first_filter', function (req, res) {
+    router.post('/get_number_of_results_by_category1', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -733,13 +709,11 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         }
       }
 
-        let id_user = get_current_user(req.cookies.currentUser);
-        let status="clicked";
-        let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
-        let category =req.params.category;
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
-        pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND style=$3 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1', [category,status,first_filter], (error, results) => {
+         let status="clicked";
+        let first_filter = (req.body.first_filter=== "Poésie") ? "Poetry": (req.body.first_filter === "Scénario") ? "Scenario" : (req.body.first_filter === "Roman illustré") ? "Illustrated novel" : req.body.first_filter;
+        let category =req.body.category;
+        let text=(req.body.text).toLowerCase();
+        pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND style=$3 AND (Lower(research_string) LIKE '%' || $4 || '%' OR Lower(research_string1) LIKE '%' || $4 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1", [category,status,first_filter,text], (error, results) => {
             if (error) {
                     res.status(500).send([{error:error}]);
             }
@@ -752,7 +726,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       
     });
 
-    router.get('/get_number_of_results_by_category2/:category/:text/:second_filter/:type_of_target', function (req, res) {
+    router.post('/get_number_of_results_by_category2', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -766,14 +740,13 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
-        let second_filter =req.params.second_filter;
-        let category =req.params.category;
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
-        let type_of_target=req.params.type_of_target;
+        let second_filter =req.body.second_filter;
+        let category =req.body.category;
+        let text=(req.body.text).toLowerCase();
+        let type_of_target=req.body.type_of_target;
         if(category=="Ad"){
             if(type_of_target=="Cible"){
-                pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (secondtag=$3 OR thirdtag=$3) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1', [category,status,second_filter], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (secondtag=$3 OR thirdtag=$3) AND (Lower(research_string) LIKE '%' || $4 || '%'  OR Lower(research_string1) LIKE '%' || $4 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1", [category,status,second_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -786,7 +759,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else{
-                pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$3) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1', [category,status,second_filter], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$3) AND (Lower(research_string) LIKE '%' || $4 || '%'  OR Lower(research_string1) LIKE ''%' || $4 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1", [category,status,second_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -802,7 +775,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         }
         else if(category=="Account"){
             if(second_filter=="Bandes dessinées"){
-                pool.query('SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_comics>=number_of_drawings AND number_of_comics>=number_of_writings AND number_of_comics>=number_of_ads) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id ) as t1 ', [category,status], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_comics>=number_of_drawings AND number_of_comics>=number_of_writings AND number_of_comics>=number_of_ads) AND (Lower(research_string) LIKE '%' || $3 || '%'  OR Lower(research_string1) LIKE '%' || $3 || '%' )  GROUP BY publication_category,format,target_id ) as t1", [category,status,text], (error, results) => {
                     if (error) {
                     res.status(500).send([{error:error}]);
                     }
@@ -814,7 +787,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else if(second_filter=="Dessins"){
-                pool.query(' SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_drawings>=number_of_comics AND number_of_drawings>=number_of_writings AND number_of_drawings>=number_of_ads) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id ) as t1', [category,status], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_drawings>=number_of_comics AND number_of_drawings>=number_of_writings AND number_of_drawings>=number_of_ads) AND (Lower(research_string) LIKE '%' || $3 || '%'  OR Lower(research_string1) LIKE '%' || $3 || '%' )  GROUP BY publication_category,format,target_id ) as t1", [category,status,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -827,7 +800,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else if(second_filter=="Ecrits"){
-                pool.query(' SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_writings>=number_of_comics AND number_of_writings>=number_of_drawings AND number_of_writings>=number_of_ads) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id) as t1', [category,status], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_writings>=number_of_comics AND number_of_writings>=number_of_drawings AND number_of_writings>=number_of_ads) AND (Lower(research_string) LIKE '%' || $3 || '%' ' OR Lower(research_string1) LIKE '%' || $3 || '%' )  GROUP BY publication_category,format,target_id) as t1", [category,status,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -840,7 +813,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else{
-                pool.query(' SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_ads>=number_of_comics AND number_of_ads>=number_of_drawings AND number_of_ads>=number_of_writings) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id) as t1', [category,status], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_ads>=number_of_comics AND number_of_ads>=number_of_drawings AND number_of_ads>=number_of_writings) AND (Lower(research_string) LIKE '%' || $3 || '%'  OR Lower(research_string1) LIKE '%' || $3 || '%' )  GROUP BY publication_category,format,target_id) as t1", [category,status,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -855,7 +828,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 
         }
         else{
-            pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1', [category,status,second_filter], (error, results) => {
+            pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) AND (Lower(research_string) LIKE '%' || $4 || '%'  OR Lower(research_string1) LIKE '%' || $4 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1", [category,status,second_filter,text], (error, results) => {
                 if (error) {
                     
                     res.status(500).send([{error:error}]);
@@ -872,7 +845,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       
     });
 
-    router.get('/get_number_of_results_by_category3/:category/:text/:first_filter/:second_filter/:type_of_target', function (req, res) {
+    router.post('/get_number_of_results_by_category3', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -886,15 +859,14 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
-        let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
-        let second_filter =req.params.second_filter;
-        let category =req.params.category;
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
-        let type_of_target=req.params.type_of_target;
+        let first_filter = (req.body.first_filter=== "Poésie") ? "Poetry": (req.body.first_filter === "Scénario") ? "Scenario" : (req.body.first_filter === "Roman illustré") ? "Illustrated novel" : req.body.first_filter;
+        let second_filter =req.body.second_filter;
+        let category =req.body.category;
+        let text=(req.body.text).toLowerCase();
+        let type_of_target=req.body.type_of_target;
         if(category=="Ad"){
             if(type_of_target=="Cible"){
-                pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (secondtag=$3 OR thirdtag=$3) AND style=$4 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1', [category,status,second_filter,first_filter], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (secondtag=$3 OR thirdtag=$3) AND style=$4 AND (Lower(research_string) LIKE '%' || $5 || '%'  OR Lower(research_string1) LIKE '%' || $5 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1", [category,status,second_filter,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -906,7 +878,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else{
-                pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firttag=$3 ) AND style=$4 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1', [category,status,second_filter,first_filter], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firttag=$3 ) AND style=$4 AND (Lower(research_string) LIKE '%' || $5 || '%'  OR Lower(research_string1) LIKE '%' || $5 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1", [category,status,second_filter,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -921,7 +893,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         }
         else if(category=="Account"){
             if(second_filter=="Bandes dessinées"){
-                pool.query('SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_comics>=number_of_drawings AND number_of_comics>=number_of_writings AND number_of_comics>=number_of_ads) AND style=$3 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id) as t1 ', [category,status,first_filter], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_comics>=number_of_drawings AND number_of_comics>=number_of_writings AND number_of_comics>=number_of_ads) AND style=$3 AND (Lower(research_string) LIKE '%' || $4 || '%'  OR Lower(research_string1) LIKE '%' || $4 || '%' )  GROUP BY publication_category,format,target_id) as t1 ", [category,status,first_filter,text], (error, results) => {
                     if (error) {
                     res.status(500).send([{error:error}]);
                     }
@@ -933,7 +905,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else if(second_filter=="Dessins"){
-                pool.query(' SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_drawings>=number_of_comics AND number_of_drawings>=number_of_writings AND number_of_drawings>=number_of_ads) AND style=$3  AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id ) as t1', [category,status,first_filter], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_drawings>=number_of_comics AND number_of_drawings>=number_of_writings AND number_of_drawings>=number_of_ads) AND style=$3  AND (Lower(research_string) LIKE '%' || $4 || '%'  OR Lower(research_string1) LIKE '%' || $4 || '%' )  GROUP BY publication_category,format,target_id ) as t1", [category,status,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -946,7 +918,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else if(second_filter=="Ecrits"){
-                pool.query(' SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_writings>=number_of_comics AND number_of_writings>=number_of_drawings AND number_of_writings>=number_of_ads) AND style=$3  AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id) as t1', [category,status,first_filter], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_writings>=number_of_comics AND number_of_writings>=number_of_drawings AND number_of_writings>=number_of_ads) AND style=$3  AND (Lower(research_string) LIKE '%' || $4 || '%'  OR Lower(research_string1) LIKE '%' || $4 || '%' )  GROUP BY publication_category,format,target_id) as t1", [category,status,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -959,7 +931,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else{
-                pool.query(' SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_ads>=number_of_comics AND number_of_ads>=number_of_drawings AND number_of_ads>=number_of_writings) AND style=$3  AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id) as t1', [category,status,first_filter], (error, results) => {
+                pool.query("SELECT count(*) number_of_results from ( SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_ads>=number_of_comics AND number_of_ads>=number_of_drawings AND number_of_ads>=number_of_writings) AND style=$3  AND (Lower(research_string) LIKE '%' || $4 || '%'  OR Lower(research_string1) LIKE '%' || $4 || '%' )  GROUP BY publication_category,format,target_id) as t1", [category,status,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -974,7 +946,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 
         }
         else{
-            pool.query(' SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) AND style=$4 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1', [category,status,second_filter,first_filter], (error, results) => {
+            pool.query("SELECT count(*) number_of_results from (SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) AND style=$4 AND (Lower(research_string) LIKE '%' || $5 || '%'  OR Lower(research_string1) LIKE '%' || $5 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC) as t1", [category,status,second_filter,first_filter,text], (error, results) => {
                 if (error) {
                     
                     res.status(500).send([{error:error}]);
@@ -992,7 +964,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
 
-    router.get('/get_propositions_after_research_navbar/:category/:text/:limit/:offset', function (req, res) {
+    router.post('/get_propositions_after_research_navbar/:category/:text/:limit/:offset', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1004,17 +976,13 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
-        let limit = parseInt(req.params.limit);
-        let offset = parseInt(req.params.offset);
-        let category = req.params.category;
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
+        let limit = parseInt(req.body.limit);
+        let offset = parseInt(req.body.offset);
+        let category = req.body.category;
+        let text=(req.body.text).toLowerCase();
 
-        
-
-        pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset], (error, results) => {
+        pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (Lower(research_string) LIKE '%' || $5 || '%'  OR Lower(research_string1) LIKE '%' || $5 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,text], (error, results) => {
             if (error) {
                 
                     res.status(500).send([{error:error}]);
@@ -1028,7 +996,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       
     });
 
-    router.get('/get_propositions_after_research_navbar1/:category/:text/:limit/:offset/:first_filter', function (req, res) {
+    router.post('/get_propositions_after_research_navbar1', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1040,15 +1008,13 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
-        let limit = parseInt(req.params.limit);
-        let offset = parseInt(req.params.offset);
-        let category = req.params.category;
-        let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
-        pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND style=$5 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,first_filter], (error, results) => {
+        let limit = parseInt(req.body.limit);
+        let offset = parseInt(req.body.offset);
+        let category = req.body.category;
+        let first_filter = (req.body.first_filter=== "Poésie") ? "Poetry": (req.body.first_filter === "Scénario") ? "Scenario" : (req.body.first_filter === "Roman illustré") ? "Illustrated novel" : req.body.first_filter;
+        let text=(req.body.text).toLowerCase();
+        pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND style=$5 AND (Lower(research_string) LIKE '%' || $6 || '%'  OR Lower(research_string1) LIKE '%' || $6 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,first_filter,text], (error, results) => {
             if (error) {
                 
                     res.status(500).send([{error:error}]);
@@ -1063,7 +1029,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
 
-    router.get('/get_propositions_after_research_navbar2/:category/:text/:limit/:offset/:second_filter/:type_of_target', function (req, res) {
+    router.post('/get_propositions_after_research_navbar2', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1075,19 +1041,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
-        let limit = parseInt(req.params.limit);
-        let offset = parseInt(req.params.offset);
-        let category = req.params.category;
-        let second_filter = req.params.second_filter;
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
-        let type_of_target=req.params.type_of_target;
+        let limit = parseInt(req.body.limit);
+        let offset = parseInt(req.body.offset);
+        let category = req.body.category;
+        let second_filter = req.body.second_filter;
+        let text=(req.body.text).toLowerCase();
+        let type_of_target=req.body.type_of_target;
 
         if(category=="Account"){
             if(second_filter=="Bandes dessinées"){
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_comics>=number_of_drawings AND number_of_comics>=number_of_writings AND number_of_comics>=number_of_ads) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_comics>=number_of_drawings AND number_of_comics>=number_of_writings AND number_of_comics>=number_of_ads) AND (Lower(research_string) LIKE '%' || $5 || '%'  OR Lower(research_string1) LIKE '%' || $5 || '%')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1100,7 +1064,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else if(second_filter=="Dessins"){
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_drawings>=number_of_comics AND number_of_drawings>=number_of_writings AND number_of_drawings>=number_of_ads) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_drawings>=number_of_comics AND number_of_drawings>=number_of_writings AND number_of_drawings>=number_of_ads) AND (Lower(research_string) LIKE '%' || $5 || '%' OR Lower(research_string1) LIKE ''%' || $5 || '%')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1113,7 +1077,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else if(second_filter=="Ecrits"){
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_writings>=number_of_comics AND number_of_writings>=number_of_drawings AND number_of_writings>=number_of_ads) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_writings>=number_of_comics AND number_of_writings>=number_of_drawings AND number_of_writings>=number_of_ads) AND (Lower(research_string) LIKE '%' || $5 || '%' OR Lower(research_string1) LIKE '%' || $5 || '%')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1126,7 +1090,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else{
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_ads>=number_of_comics AND number_of_ads>=number_of_drawings AND number_of_ads>=number_of_writings) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_ads>=number_of_comics AND number_of_ads>=number_of_drawings AND number_of_ads>=number_of_writings) AND (Lower(research_string) LIKE '%' || $5 || '%' OR Lower(research_string1) LIKE '%' || $5 || '%')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1142,7 +1106,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         }
         else if(category=="Ad"){
             if(type_of_target=="Cible"){
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (secondtag=$5 OR thirdtag=$5) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,second_filter], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (secondtag=$5 OR thirdtag=$5) AND (Lower(research_string) LIKE '%' || $6 || '%'  OR Lower(research_string1) LIKE '%' || $6 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,second_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1155,7 +1119,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else{
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,second_filter], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5) AND (Lower(research_string) LIKE '%' || $6 || '%'  OR Lower(research_string1) LIKE '%' || $6 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,second_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1170,7 +1134,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
            
         }
         else{
-            pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5 OR secondtag=$5 OR thirdtag=$5) AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,second_filter], (error, results) => {
+            pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5 OR secondtag=$5 OR thirdtag=$5) AND (Lower(research_string) LIKE '%' || $6 || '%'  OR Lower(research_string1) LIKE '%' || $6 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,second_filter,text], (error, results) => {
                 if (error) {
                     
                     res.status(500).send([{error:error}]);
@@ -1187,7 +1151,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       
     });
 
-    router.get('/get_propositions_after_research_navbar3/:category/:text/:limit/:offset/:first_filter/:second_filter/:type_of_target', function (req, res) {
+    router.post('/get_propositions_after_research_navbar3', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -1199,19 +1163,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
-        let limit = parseInt(req.params.limit);
-        let offset = parseInt(req.params.offset);
-        let category = req.params.category;
-        let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
-        let second_filter = req.params.second_filter;
-        let text=(req.params.text).toLowerCase();
-        let text_to_search= "'%"+ text + "%'";
-        let type_of_target=req.params.type_of_target;
+        let limit = parseInt(req.body.limit);
+        let offset = parseInt(req.body.offset);
+        let category = req.body.category;
+        let first_filter = (req.body.first_filter=== "Poésie") ? "Poetry": (req.body.first_filter === "Scénario") ? "Scenario" : (req.body.first_filter === "Roman illustré") ? "Illustrated novel" : req.body.first_filter;
+        let second_filter = req.body.second_filter;
+        let text=(req.body.text).toLowerCase();
+        let type_of_target=req.body.type_of_target;
         if(category=="Account"){
             if(second_filter=="Bandes dessinées"){
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_comics>=number_of_drawings AND number_of_comics>=number_of_writings AND number_of_comics>=number_of_ads) AND style=$5 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,first_filter], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_comics>=number_of_drawings AND number_of_comics>=number_of_writings AND number_of_comics>=number_of_ads) AND style=$5 AND (Lower(research_string) LIKE '%' || $6 || '%'  OR Lower(research_string1) LIKE '%' || $6 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1224,7 +1186,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else if(second_filter=="Dessins"){
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_drawings>=number_of_comics AND number_of_drawings>=number_of_writings AND number_of_drawings>=number_of_ads) AND style=$5 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,first_filter], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_drawings>=number_of_comics AND number_of_drawings>=number_of_writings AND number_of_drawings>=number_of_ads) AND style=$5 AND (Lower(research_string) LIKE '%' || $6 || '%'  OR Lower(research_string1) LIKE '%' || $6 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1237,7 +1199,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else if(second_filter=="Ecrits"){
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_writings>=number_of_comics AND number_of_writings>=number_of_drawings AND number_of_writings>=number_of_ads) AND style=$5 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,first_filter], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_writings>=number_of_comics AND number_of_writings>=number_of_drawings AND number_of_writings>=number_of_ads) AND style=$5 AND (Lower(research_string) LIKE '%' || $6 || '%'  OR Lower(research_string1) LIKE '%' || $6 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1250,7 +1212,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else{
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_ads>=number_of_comics AND number_of_ads>=number_of_drawings AND number_of_ads>=number_of_writings) AND style=$5 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,first_filter], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (number_of_ads>=number_of_comics AND number_of_ads>=number_of_drawings AND number_of_ads>=number_of_writings) AND style=$5 AND (Lower(research_string) LIKE '%' || $6 || '%'  OR Lower(research_string1) LIKE '%' || $6 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1266,7 +1228,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         }
         else if(category=="Ad"){
             if(type_of_target=="Cible"){
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (secondtag=$5 OR thirdtag=$5) AND style=$6 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,second_filter,first_filter], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (secondtag=$5 OR thirdtag=$5) AND style=$6 AND (Lower(research_string) LIKE '%' || $7 || '%'  OR Lower(research_string1) LIKE '%' || $7 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,second_filter,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1279,7 +1241,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 })
             }
             else{
-                pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firttag=$5) AND style=$6 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,second_filter,first_filter], (error, results) => {
+                pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firttag=$5) AND style=$6 AND (Lower(research_string) LIKE '%' || $7 || '%'  OR Lower(research_string1) LIKE '%' || $7 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,second_filter,first_filter,text], (error, results) => {
                     if (error) {
                         
                     res.status(500).send([{error:error}]);
@@ -1294,7 +1256,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             
         }
         else{
-            pool.query('  SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5 OR secondtag=$5 OR thirdtag=$5) AND style=$6 AND (Lower(research_string) LIKE ' + text_to_search +' OR Lower(research_string1) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4', [category,status,limit,offset,second_filter,first_filter], (error, results) => {
+            pool.query("SELECT  publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5 OR secondtag=$5 OR thirdtag=$5) AND style=$6 AND (Lower(research_string) LIKE '%' || $7 || '%'  OR Lower(research_string1) LIKE '%' || $7 || '%' )  GROUP BY publication_category,format,target_id  ORDER BY count(*) DESC LIMIT $3 OFFSET $4", [category,status,limit,offset,second_filter,first_filter,text], (error, results) => {
                 if (error) {
                     
                     res.status(500).send([{error:error}]);
@@ -1328,7 +1290,6 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
         let category =req.params.category;
@@ -1360,7 +1321,6 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
-        let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
         let second_filter =req.params.second_filter;
@@ -2083,7 +2043,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
     
 
-    router.delete('/delete_click_after_ressearch_from_history/:text', function (req, res) {
+    router.post('/delete_click_after_ressearch_from_history', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2096,7 +2056,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         }
       }
         let id_user = get_current_user(req.cookies.currentUser);
-        let text = (req.params.text).toLowerCase();
+        let text = (req.body.text).toLowerCase();
         list_of_navbar_researches.destroy({
             where:{
                 id_user:id_user,
