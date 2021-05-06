@@ -135,7 +135,7 @@ export class NavbarService {
       }
 
     get_last_researched_navbar(category,compteur){
-      return this.httpClient.post(`routes/get_last_researched_navbar/${category}`, {withCredentials:true}).pipe(map((information)=>{
+      return this.httpClient.post(`routes/get_last_researched_navbar`, {category:category}, {withCredentials:true}).pipe(map((information)=>{
         return [information,compteur];
       }));
     }
@@ -162,19 +162,19 @@ export class NavbarService {
     };
 
     get_specific_propositions_navbar(category,text,compteur){
-        return this.httpClient.get(`routes/get_specific_propositions_navbar/${category}/${text}`, {withCredentials:true}).pipe(map((information)=>{
+        return this.httpClient.post(`routes/get_specific_propositions_navbar`,{text:text,category:category}, {withCredentials:true}).pipe(map((information)=>{
           return [information,compteur];
         }));
     }
 
     get_global_propositions_navbar(category,text,limit,compteur){
-        return this.httpClient.get(`routes/get_global_propositions_navbar/${category}/${text}/${limit}`, {withCredentials:true}).pipe(map((information)=>{
+        return this.httpClient.post(`routes/get_global_propositions_navbar`,{text:text,category:category,limit:limit}, {withCredentials:true}).pipe(map((information)=>{
           return [information,compteur];
         }));
     }
 
     get_global_tags_propositions_navbar(category,text,limit,compteur){
-      return this.httpClient.get(`routes/get_global_tags_propositions_navbar/${category}/${text}/${limit}`, {withCredentials:true}).pipe(map((information)=>{
+      return this.httpClient.post(`routes/get_global_tags_propositions_navbar`,{text:text,category:category,limit:limit}, {withCredentials:true}).pipe(map((information)=>{
         return [information,compteur];
       }));
     }
@@ -199,7 +199,7 @@ export class NavbarService {
     }
 
     delete_click_after_ressearch_from_history(text){
-      return this.httpClient.delete(`routes/delete_click_after_ressearch_from_history/${text}`, {withCredentials:true}).pipe(map((information)=>{
+      return this.httpClient.post(`routes/delete_click_after_ressearch_from_history`, {text:text}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
@@ -213,13 +213,13 @@ export class NavbarService {
   //after research
   
   get_number_of_results_for_categories(text:string):Observable<any>{
-    return this.httpClient.get(`routes/get_number_of_results_for_categories/${text}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_number_of_results_for_categories`,{text:text}, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }
 
   get_styles_and_tags(text:string):Observable<any>{
-    return this.httpClient.get(`routes/get_styles_and_tags/${text}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_styles_and_tags`,{text:text}, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }
@@ -237,24 +237,24 @@ export class NavbarService {
   }
 
   get_number_of_results_by_category(category:string,text:string,compteur):Observable<any>{
-    return this.httpClient.get(`routes/get_number_of_results_by_category/${category}/${text}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_number_of_results_by_category`,{text:text,category:category}, {withCredentials:true}).pipe(map((information)=>{
       return [information,compteur];
     }));
   }
 
   get_number_of_results_by_category1(category:string,text:string,first_filter,compteur):Observable<any>{
-    return this.httpClient.get(`routes/get_number_of_results_by_category1/${category}/${text}/${first_filter}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_number_of_results_by_category1`,{text:text,category:category,first_filter:first_filter}, {withCredentials:true}).pipe(map((information)=>{
       return [information,compteur];
     }));
   }
 
   get_number_of_results_by_category2(category:string,text:string,second_filter,compteur,type_of_target):Observable<any>{
-    return this.httpClient.get(`routes/get_number_of_results_by_category2/${category}/${text}/${second_filter}/${type_of_target}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_number_of_results_by_category2`,{text:text,category:category,second_filter:second_filter,type_of_target:type_of_target}, {withCredentials:true}).pipe(map((information)=>{
       return [information,compteur];
     }));
   }
   get_number_of_results_by_category3(category:string,text:string,first_filter,second_filter,compteur,type_of_target):Observable<any>{
-    return this.httpClient.get(`routes/get_number_of_results_by_category3/${category}/${text}/${first_filter}/${second_filter}/${type_of_target}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_number_of_results_by_category3`,{text:text,category:category,first_filter:first_filter,second_filter:second_filter,type_of_target:type_of_target}, {withCredentials:true}).pipe(map((information)=>{
       return [information,compteur];
     }));
   }
@@ -272,23 +272,23 @@ export class NavbarService {
   }
 
   get_propositions_after_research_navbar(category:string,text:string,limit,offset,compteur:number):Observable<any>{
-    return this.httpClient.get(`routes/get_propositions_after_research_navbar/${category}/${text}/${limit}/${offset}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_propositions_after_research_navbar`, {text:text,category:category,limit:limit,offset:offset}, {withCredentials:true}).pipe(map((information)=>{
       return [information,compteur];
     }));
   }
 
   get_propositions_after_research_navbar1(category:string,first_filter,text:string,limit,offset,compteur:number):Observable<any>{
-    return this.httpClient.get(`routes/get_propositions_after_research_navbar1/${category}/${text}/${limit}/${offset}/${first_filter}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_propositions_after_research_navbar1`, {text:text,category:category,limit:limit,offset:offset,first_filter:first_filter}, {withCredentials:true}).pipe(map((information)=>{
       return [information,compteur];
     }));
   }
   get_propositions_after_research_navbar2(category:string,second_filter,text:string,limit,offset,compteur:number,type_of_target):Observable<any>{
-    return this.httpClient.get(`routes/get_propositions_after_research_navbar2/${category}/${text}/${limit}/${offset}/${second_filter}/${type_of_target}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_propositions_after_research_navbar2`, {text:text,category:category,limit:limit,offset:offset,second_filter:second_filter,type_of_target:type_of_target}, {withCredentials:true}).pipe(map((information)=>{
       return [information,compteur];
     }));
   }
   get_propositions_after_research_navbar3(category:string,first_filter,second_filter,text:string,limit,offset,compteur:number,type_of_target):Observable<any>{
-    return this.httpClient.get(`routes/get_propositions_after_research_navbar3/${category}/${text}/${limit}/${offset}/${first_filter}/${second_filter}/${type_of_target}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/get_propositions_after_research_navbar3`,{text:text,category:category,limit:limit,offset:offset,first_filter:first_filter,second_filter:second_filter,type_of_target:type_of_target}, {withCredentials:true}).pipe(map((information)=>{
       return [information,compteur];
     }));
   }
