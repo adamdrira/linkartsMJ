@@ -916,6 +916,19 @@
     .mat-option {
         color: rgb(32,56,100) !important;
         font-weight: 600;
+        > span {
+          display: flex;
+          padding-bottom: 7px;
+          flex-direction: column;
+
+          > span {
+            line-height: 22px;
+            color: #848484;
+            font-weight: 400;
+            white-space: pre-wrap;
+            margin-top: -8px;
+          }
+        }
     }
     
     &.options-with-description {
@@ -923,7 +936,7 @@
         position: relative;
         padding-bottom: 5px;
         .mat-option {
-          height: 35px;
+          height: unset;
           z-index: 1000;
           background: unset !important;
           &:hover {
