@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { NavbarService } from '../services/navbar.service';
 
 @Component({
   selector: 'app-favorites',
@@ -22,6 +23,18 @@ import { takeUntil } from 'rxjs/operators';
         ])
       ]
     ),
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-50%)', opacity: 0}),
+          animate('400ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ]),
+        transition(':leave', [
+          style({transform: 'translateY(0px)', opacity: 1, position: 'absolute'}),
+          animate('100ms ease-out', style({transform: 'translateY(0px)', opacity: 0}))
+        ])
+      ]
+    ),
   ],
 })
 export class FavoritesComponent implements OnInit, OnDestroy {
@@ -32,7 +45,16 @@ export class FavoritesComponent implements OnInit, OnDestroy {
     private NotificationsService:NotificationsService,
     private ChatService:ChatService,
     private Favorites_service:Favorites_service,
-    ) { }
+    private navbar:NavbarService,
+    ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
+    }
+
+  show_icon=false;
 
   subcategory: number = 0; 
   user_id:number=0;
@@ -142,4 +164,11 @@ export class FavoritesComponent implements OnInit, OnDestroy {
     
   }
   
+
+  see_more:boolean = false;
+  see_more_button() {
+    this.see_more = !this.see_more;
+  }
+
+
 }

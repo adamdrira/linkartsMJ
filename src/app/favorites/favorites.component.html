@@ -1,7 +1,7 @@
 <div class="trendings-global-container">
 
     
-    <div class="favorites-container"  [@enterAnimation]>
+    <div class="favorites-container large-screen"  [@enterAnimation]>
         <img class="background-image " src="https://www.linkarts.fr/assets/img/logo_long_1.png" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }" >
         <span>
             Bienvenue dans la section Coups de cœur !
@@ -13,6 +13,35 @@
             Si vous êtes un artiste et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faire partie de ce classement !
         </span>
     </div>
+
+    <div class="favorites-container small-screen">
+    
+        <div class="see-more-button" *ngIf="!see_more" [@enterFromTopAnimation]>
+            <span>En savoir plus</span>
+        </div>
+    
+        <div class="opened-text" *ngIf="see_more" [@enterFromTopAnimation]>
+            
+            <div class="header">
+                <div class="horizontal--bar left"></div>
+                <div class="favorites-logo"></div>
+                <div class="horizontal--bar right"></div>
+            </div>
+    
+            <span>Vous trouverez ici la liste des meilleurs nouveaux artistes du jour. Chaque lundi une rémunération est attribuée aux 15 premiers artistes de ce classement.</span>
+            <div class="horizontal--bar"></div>
+            <span>Si vous êtes un artiste et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faire partie de ce classement !</span>
+    
+            <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
+    
+        </div>
+    
+        <div class="see-less-button" (click)="see_more_button();">
+            <mat-icon [ngClass]="{'invisible': !show_icon,'rotate': !see_more }">keyboard_arrow_down</mat-icon>
+        </div>
+    </div>
+
+
 
     <ng-container *ngIf="!favorites_retrieved">
         <ng-container *ngFor="let item of skeleton_array; let i = index">

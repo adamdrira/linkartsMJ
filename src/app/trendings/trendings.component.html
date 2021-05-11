@@ -1,5 +1,5 @@
 
- <div class="trendings-container" [@enterAnimation]>
+ <div class="trendings-container large-screen" [@enterAnimation]>
     <img class="background-image " src="https://www.linkarts.fr/assets/img/logo_long_1.png" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }" >
     <span>
         Bienvenue dans la section Tendances !
@@ -11,6 +11,35 @@
         Une rémunération est attribuée à chaque artiste pour chacune de ses œuvres classées dans le top 15 des tendances, en fonction de son nombre d'abonnés.
     </span>
 </div>
+
+
+<div class="trendings-container small-screen">
+    
+    <div class="see-more-button" *ngIf="!see_more" [@enterFromTopAnimation]>
+        <span>En savoir plus</span>
+    </div>
+
+    <div class="opened-text" *ngIf="see_more" [@enterFromTopAnimation]>
+        
+        <div class="header">
+            <div class="horizontal--bar left"></div>
+            <div class="trendings-logo"></div>
+            <div class="horizontal--bar right"></div>
+        </div>
+
+        <span>Vous trouverez ici la liste des meilleures œuvres du jour pour chaque catégorie. Seules les œuvres monétisées sont affichées.</span>
+        <div class="horizontal--bar"></div>
+        <span>Une rémunération est attribuée à chaque artiste pour chacune de ses œuvres classées dans le top 15 des tendances, en fonction de son nombre d'abonnés.</span>
+
+        <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
+
+    </div>
+
+    <div class="see-less-button" (click)="see_more_button();">
+        <mat-icon [ngClass]="{'invisible': !show_icon,'rotate': !see_more }">keyboard_arrow_down</mat-icon>
+    </div>
+</div>
+
 
 
 <div class="panel-background">

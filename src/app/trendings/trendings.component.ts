@@ -34,8 +34,12 @@ import { takeUntil } from 'rxjs/operators';
     trigger(
       'enterFromTopAnimation', [
         transition(':enter', [
-          style({transform: 'translateY(-100%)', opacity: 0}),
+          style({transform: 'translateY(-50%)', opacity: 0}),
           animate('400ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ]),
+        transition(':leave', [
+          style({transform: 'translateY(0px)', opacity: 1, position: 'absolute'}),
+          animate('100ms ease-out', style({transform: 'translateY(0px)', opacity: 0}))
         ])
       ]
     ),
@@ -66,7 +70,15 @@ export class TrendingsComponent implements OnInit, OnDestroy {
     private deviceService: DeviceDetectorService,
     private Profile_Edition_Service:Profile_Edition_Service,
 
-    ) { }
+    ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
+    }
+
+  show_icon=false;
 
   subcategory: number = 0; 
   user_id:number=0;
@@ -433,6 +445,11 @@ export class TrendingsComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  see_more:boolean = false;
+  see_more_button() {
+    this.see_more = !this.see_more;
+  }
 
 }
 
