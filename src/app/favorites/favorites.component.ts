@@ -27,11 +27,7 @@ import { NavbarService } from '../services/navbar.service';
       'enterFromTopAnimation', [
         transition(':enter', [
           style({transform: 'translateY(-50%)', opacity: 0}),
-          animate('400ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
-        ]),
-        transition(':leave', [
-          style({transform: 'translateY(0px)', opacity: 1, position: 'absolute'}),
-          animate('100ms ease-out', style({transform: 'translateY(0px)', opacity: 0}))
+          animate('500ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
         ])
       ]
     ),
@@ -72,8 +68,7 @@ export class FavoritesComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.Favorites_service.generate_or_get_favorites().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-      console.log("favorites")
-      console.log(info)
+
       if(info[0].favorites){
         for(let i=0;i<info[0].favorites.length;i++){
           this.list_of_users[i]=info[0].favorites[i]

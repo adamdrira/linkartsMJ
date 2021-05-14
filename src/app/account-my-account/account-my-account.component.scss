@@ -289,7 +289,7 @@
 
         color: #898989;
         border: unset;
-        background: rgb(250, 250, 252);
+        background: transparent;
 
         mat-icon {
           font-size: 24px;
@@ -691,6 +691,7 @@
             min-width:30px;
             height:30px;
             min-height:30px;
+            border-radius: 50px;
             margin:auto 10px auto 0px;
             img {
               width:100%;

@@ -125,7 +125,9 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.navbar.show_help();
+    if(!this.bd_id_input){
+      this.navbar.show_help();
+    }
   }
   
   @ViewChild('artwork') artwork:ElementRef;
@@ -295,7 +297,6 @@ export class ArtworkComicComponent implements OnInit {
   /******************************************************* */
   device_info='';
   ngOnInit() {
-
     this.navbar.hide_help();
 
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
@@ -805,9 +806,9 @@ export class ArtworkComicComponent implements OnInit {
       else{
         this.chapter_filter_bottom_to_top=true;
       }
-      this.chapter_name_to_show=`Chapitre ${this.chapterList[this.current_chapter].chapter_number} : ${this.chapterList[this.current_chapter].title}`
-      $('.chapterSelector').attr("placeholder",this.chapter_name_to_show);
-      this.initialize_chapter_selector();
+      this.chapter_name_to_show=`Chap. ${this.chapterList[this.current_chapter].chapter_number} : ${this.chapterList[this.current_chapter].title}`
+      this.sumo_ready=true;
+      //this.initialize_chapter_selector();
 
       this.Profile_Edition_Service.retrieve_profile_picture( r[0][this.current_chapter].author_id).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -1337,6 +1338,86 @@ export class ArtworkComicComponent implements OnInit {
   /******************** OPTION CONTAINER SELECTOR PART ****************** */
   /******************************************************* */
 
+  select_change_chapter(event){
+    this.display_comics_pages=[];
+      this.display_pages=false;
+      this.thumbnails_loaded=[];
+      let chapter_number = event.value;
+      let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
+      this.current_chapter= parseInt(chapter_number);// le chapitre 1 vaut 0 
+      if((this.current_chapter+1)>this.chapterList.length/2){
+        this.chapter_filter_bottom_to_top=false;
+      }
+      else{
+        this.chapter_filter_bottom_to_top=true;
+      }
+      this.current_chapter_title=this.chapterList[chapter_number].title;
+      this.chapter_name_to_show=`Chap. ${this.chapterList[this.current_chapter].chapter_number} : ${ this.current_chapter_title}`;
+  
+      if (this.mode_visiteur){
+        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe();
+        this.NotationService.add_view("comic", 'serie',this.style, this.bd_id,(parseInt(chapter_number) + 1),this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+          this.id_view_created = r[0].id;
+          this.begining_time_of_view =  Math.trunc(new Date().getTime()/1000);
+        });
+      }
+
+      this.liked = false;
+      this.loved = false;
+      if( this.list_of_pages_by_chapter[parseInt(chapter_number)][0]==''){
+        this.list_of_pages_by_chapter[parseInt(chapter_number)].pop();
+        this.get_comic_serie_chapter_pages(this.bd_id,(parseInt(chapter_number) + 1),this.chapterList[parseInt(chapter_number)].pagesnumber);
+        this.cd.detectChanges();
+        this.initialize_swiper();
+      }
+      else{
+        if(!this.list_of_users_ids_likes_retrieved){
+          this.check_likes_after_current_serie()
+        }
+        else{
+          for (let i=0;i<this.list_of_users_ids_likes[this.current_chapter].length;i++){
+            if (this.list_of_users_ids_likes[this.current_chapter][i] == this.visitor_id){
+              this.liked = true;
+            }
+          }
+        }
+        if(!this.list_of_users_ids_loves_retrieved){
+          this.check_loves_after_current_serie()
+        }
+        else{
+          for (let i=0;i<this.list_of_users_ids_loves[this.current_chapter].length;i++){
+            if (this.list_of_users_ids_loves[this.current_chapter][i] == this.visitor_id){
+              this.loved = true;
+            }
+          }
+        }
+        
+        
+        this.viewsnumber=this.chapterList[chapter_number].viewnumber;
+        this.commentariesnumber = this.chapterList[chapter_number].commentarynumbers;
+        this.likesnumber =this.chapterList[chapter_number].likesnumber ;
+        this.lovesnumber =this.chapterList[chapter_number].lovesnumber ;
+        this.initialize_thumbnails();
+      }
+
+      this.pagesnumber=this.chapterList[chapter_number].pagesnumber;
+      this.cd.detectChanges;
+      this.initialize_swiper();
+      if(this.style=="Manga"){
+        this.swiper.slideTo(this.chapterList[chapter_number].pagesnumber,false,false);
+      }
+      else{
+        this.swiper.slideTo(0,false,false);
+      }
+      this.refresh_swiper_pagination();
+      this.display_pages=true;
+      let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
+      this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${this.title}/${this.bd_id}/${chapter_number + 1}`,this.device_info).subscribe();
+      this.location.go(`/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${parseInt(chapter_number) + 1}`);
+      this.url=`https://www.linkarts.fr/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${chapter_number + 1}`;
+    
+  }
+
   change_chapter_filter_bottom_to_top(direction){
     let THIS=this;
 
@@ -1359,22 +1440,11 @@ export class ArtworkComicComponent implements OnInit {
     
     THIS.thumbnails_loaded=[];
     let chapter_number =(THIS.chapter_filter_bottom_to_top)?0:THIS.chapterList.length-1;
-    let last_chapter = THIS.current_chapter;
     let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
-    
 
-    
     THIS.current_chapter= chapter_number;// le chapitre 1 vaut 0 
-    
     THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
-    THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
-    THIS.chapter_name_control.reset();
-    THIS.cd.detectChanges();
-    $('.chapterSelector').attr("placeholder",this.chapter_name_to_show);
-    $('.chapterSelector')[0].sumo.reload();
-    THIS.cd.detectChanges();
-    
-    
+    THIS.chapter_name_to_show=`Chap. ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
 
     if (THIS.mode_visiteur){
       THIS.NotationService.add_view_time(ending_time_of_view, THIS.id_view_created).subscribe();
@@ -1452,31 +1522,20 @@ export class ArtworkComicComponent implements OnInit {
     THIS.thumbnails_loaded=[];
 
     let chapter_number =(direction=='next')?(THIS.current_chapter+1):(THIS.current_chapter-1);
-    let last_chapter = THIS.current_chapter;
     let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
     
 
     
     THIS.current_chapter= chapter_number;// le chapitre 1 vaut 0 
     THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
-    THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
-    THIS.chapter_name_control.reset();
-    THIS.cd.detectChanges();
-    $('.chapterSelector').attr("placeholder",THIS.chapter_name_to_show);
+    THIS.chapter_name_to_show=`Chap. ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
+
     if((THIS.current_chapter+1)>THIS.chapterList.length/2){
       THIS.chapter_filter_bottom_to_top=false;
     }
     else{
       THIS.chapter_filter_bottom_to_top=true;
     }
-    //THIS.sumo_ready=false;
-    $('.chapterSelector')[0].sumo.unload();
-    this.cd.detectChanges()
-    $('.chapterSelector').SumoSelect({});
-    this.cd.detectChanges()
-    $('.chapterSelector')[0].sumo.reload();
-    this.cd.detectChanges();
-    
     
 
     if (THIS.mode_visiteur){
@@ -1541,106 +1600,6 @@ export class ArtworkComicComponent implements OnInit {
     THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`);
     THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
   
-  }
-
-
-  initialize_chapter_selector(){
-    let THIS = this;
-
-    $(document).ready(function () {
-      $('.chapterSelector').SumoSelect({});
-      THIS.sumo_ready=true;
-    });
-
-    $('.chapterSelector').change(function(){
-      if(parseInt($(".chapterSelector").val())==THIS.current_chapter){
-        return
-      }
-      THIS.display_comics_pages=[];
-      THIS.display_pages=false;
-      THIS.thumbnails_loaded=[];
-      let chapter_number = $(".chapterSelector").val();
-      let last_chapter = THIS.current_chapter;
-      let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
-      THIS.current_chapter= parseInt(chapter_number);// le chapitre 1 vaut 0 
-      if((THIS.current_chapter+1)>THIS.chapterList.length/2){
-        THIS.chapter_filter_bottom_to_top=false;
-      }
-      else{
-        THIS.chapter_filter_bottom_to_top=true;
-      }
-      THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
-      THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
-      THIS.chapter_name_control.reset();
-      THIS.cd.detectChanges();
-      $('.chapterSelector').attr("placeholder",THIS.chapter_name_to_show);
-      
-      $('.chapterSelector')[0].sumo.reload();
-      THIS.cd.detectChanges();
-      if (THIS.mode_visiteur){
-        THIS.NotationService.add_view_time(ending_time_of_view, THIS.id_view_created).subscribe();
-        THIS.NotationService.add_view("comic", 'serie',THIS.style, THIS.bd_id,(parseInt(chapter_number) + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).subscribe(r=>{
-          THIS.id_view_created = r[0].id;
-          THIS.begining_time_of_view =  Math.trunc(new Date().getTime()/1000);
-        });
-      }
-
-      THIS.liked = false;
-      THIS.loved = false;
-      if( THIS.list_of_pages_by_chapter[parseInt(chapter_number)][0]==''){
-        THIS.list_of_pages_by_chapter[parseInt(chapter_number)].pop();
-        THIS.get_comic_serie_chapter_pages(THIS.bd_id,(parseInt(chapter_number) + 1),THIS.chapterList[parseInt(chapter_number)].pagesnumber);
-        THIS.cd.detectChanges();
-        THIS.initialize_swiper();
-      }
-      else{
-        if(!THIS.list_of_users_ids_likes_retrieved){
-          THIS.check_likes_after_current_serie()
-        }
-        else{
-          for (let i=0;i<THIS.list_of_users_ids_likes[THIS.current_chapter].length;i++){
-            if (THIS.list_of_users_ids_likes[THIS.current_chapter][i] == THIS.visitor_id){
-              THIS.liked = true;
-            }
-          }
-        }
-        if(!THIS.list_of_users_ids_loves_retrieved){
-          THIS.check_loves_after_current_serie()
-        }
-        else{
-          for (let i=0;i<THIS.list_of_users_ids_loves[THIS.current_chapter].length;i++){
-            if (THIS.list_of_users_ids_loves[THIS.current_chapter][i] == THIS.visitor_id){
-              THIS.loved = true;
-            }
-          }
-        }
-        
-        
-        THIS.viewsnumber=THIS.chapterList[chapter_number].viewnumber;
-        THIS.commentariesnumber = THIS.chapterList[chapter_number].commentarynumbers;
-        THIS.likesnumber =THIS.chapterList[chapter_number].likesnumber ;
-        THIS.lovesnumber =THIS.chapterList[chapter_number].lovesnumber ;
-        THIS.initialize_thumbnails();
-      }
-
-      THIS.pagesnumber=THIS.chapterList[chapter_number].pagesnumber;
-      THIS.cd.detectChanges;
-      THIS.initialize_swiper();
-      if(THIS.style=="Manga"){
-        THIS.swiper.slideTo(THIS.chapterList[chapter_number].pagesnumber,false,false);
-      }
-      else{
-        THIS.swiper.slideTo(0,false,false);
-      }
-      THIS.refresh_swiper_pagination();
-      THIS.display_pages=true;
-      let title_url=THIS.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-      THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).subscribe();
-      THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${parseInt(chapter_number) + 1}`);
-      THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
-    
-    });
-
   }
 
   
@@ -2160,6 +2119,14 @@ export class ArtworkComicComponent implements OnInit {
             this.loading_subscribtion=false;
             this.cd.detectChanges();
           }
+          else if(information[0].blocked){
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Impossible de s'abonner à cet utilisateur."},
+              panelClass: "popupConfirmationClass",
+            });
+            this.already_subscribed=false;
+            this.loading_subscribtion=false;
+          }
           else{
             this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.authorid,this.authorid.toString(),'none','none',this.visitor_id,0,"add",false,0).subscribe(l=>{
               let message_to_send ={
@@ -2412,7 +2379,8 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   edit_chapters(){
-    this.router.navigateByUrl( `/add-artwork/handle-comics-chapter/${this.bd_id}`);
+    this.location.go(`/add-artwork/handle-comics-chapter/${this.bd_id}`);
+    location.reload()
     return;
   }
   
@@ -2527,7 +2495,8 @@ export class ArtworkComicComponent implements OnInit {
                 this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
                 this.close_popup();
-                this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+                this.location.go(`/account/${this.pseudo}`);
+                location.reload()
                 return;
               })
             
@@ -2557,7 +2526,8 @@ export class ArtworkComicComponent implements OnInit {
                 this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
                 this.close_popup();
-                this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+                this.location.go(`/account/${this.pseudo}`);
+                location.reload()
                 return;
               })
             });

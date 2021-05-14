@@ -123,7 +123,9 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.navbar.show_help();
+    if(!this.drawing_id_input){
+      this.navbar.show_help();
+    }
   }
   
   @HostListener('window:popstate', ['$event'])
@@ -656,10 +658,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
       this.get_drawing_artbook_pages(this.drawing_id,r[0].pagesnumber);
 
-     
-
-      this.item_retrieved=true;
-
   }
 
 
@@ -675,6 +673,8 @@ export class ArtworkDrawingComponent implements OnInit {
       });
     };
 
+    this.item_retrieved=true;
+    this.cd.detectChanges();
     this.initialize_swiper();
     this.display_pages=true;
 
@@ -1752,6 +1752,14 @@ export class ArtworkDrawingComponent implements OnInit {
             this.loading_subscribtion=false;
             this.cd.detectChanges();
           }
+          else if(information[0].blocked){
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Impossible de s'abonner à cet utilisateur."},
+              panelClass: "popupConfirmationClass",
+            });
+            this.already_subscribed=false;
+            this.loading_subscribtion=false;
+          }
           else{
             this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.authorid,this.authorid.toString(),'none','none',this.visitor_id,0,"add",false,0).subscribe(l=>{
               let message_to_send ={
@@ -2082,7 +2090,8 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
                 this.close_popup();
-                this.router.navigateByUrl( `/account/${this.pseudo}`);
+                this.location.go(`/account/${this.pseudo}`);
+                location.reload()
                 return;
               })
             });
@@ -2111,7 +2120,8 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
                 this.close_popup();
-                this.router.navigateByUrl( `/account/${this.pseudo}`);
+                this.location.go(`/account/${this.pseudo}`);
+                location.reload()
                 return;
               })
             });

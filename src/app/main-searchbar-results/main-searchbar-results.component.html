@@ -129,7 +129,7 @@
                                     <b>Type de compte :</b> {{first_filters[indice_title_selected][first_filter_selected]}}
                                 </span> 
                                 <span *ngIf="list_of_real_categories[indice_title_selected]=='Ad'">
-                                    <b>Objet de 'annonce' :</b> {{first_filters[indice_title_selected][first_filter_selected]}}
+                                    <b>Objet de l'annonce :</b> {{first_filters[indice_title_selected][first_filter_selected]}}
                                 </span> 
                                 <div class="close-container" *ngIf="display_title_style_and_tags" (click)="change_first_filter_selected_sg(first_filter_selected)">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>

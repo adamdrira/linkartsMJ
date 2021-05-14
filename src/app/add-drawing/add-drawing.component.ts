@@ -8,7 +8,6 @@ import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SafeUrl } from '@angular/platform-browser';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { pattern } from '../helpers/patterns';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
@@ -52,7 +51,6 @@ export class AddDrawingComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private constants: ConstantsService, 
     private cd: ChangeDetectorRef,
-    private Profile_Edition_Service:Profile_Edition_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private deviceService: DeviceDetectorService,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,

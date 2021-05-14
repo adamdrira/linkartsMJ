@@ -645,7 +645,7 @@
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200"
                     *ngIf="thirdtag"
-                    (click)="stop($event)"><span>{{thirdtag}}</span></a>
+                    (click)="stop($event);add_time_of_view();close_popup()"><span>{{thirdtag}}</span></a>
                 </div>
                 <div class="highlight">
                     <span>{{highlight}}</span>

@@ -45,7 +45,7 @@ export class AddArtworkComponent implements OnInit {
         }
       })
     this.navbar.hide();
-
+    navbar.hide_help();
     this.opened_category$ = this._upload.getCategoryObservable();
   }
 

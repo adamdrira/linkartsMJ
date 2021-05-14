@@ -531,7 +531,6 @@
         color: #203864;
         font-weight: 600;
         box-shadow: 0px 1px 8px 0px #001c50;
-        //border: 1px solid rgb(32, 56, 100);
 
         mat-icon {
           margin: auto 5px auto auto;
@@ -871,7 +870,7 @@
   }
 
   .bottom-page-middle{
-    background: white;
+    background-image: linear-gradient( 0.5turn, #ffffff, rgb(249 249 250), #fbfbfc);
     width: 95%;
     position: relative;
     max-width: 1700px;
@@ -907,16 +906,11 @@
 .account-form-container {
   max-width: 900px;
     width: 90%;
-    display: -webkit-box;
     position: relative;
     display: flex;
     font-size: 16px;
-    box-shadow: 0px 1px 5px 2px rgb(0 0 0 / 5%), 0px 0px 2px 1px rgb(0 0 0 / 5%);
-    background-image: linear-gradient( 0.5turn, rgb(224 224 224 / 70%), rgb(239 239 239 / 60%), rgb(245 245 245 / 50%));
-    -webkit-box-pack: center;
     justify-content: center;
-    margin: 30px auto 50px auto;
-    padding: 30px;
+    margin: 0px auto 50px auto;
     border-radius: 20px;
     font-weight: 500;
     color: white;
@@ -1007,32 +1001,16 @@
       line-height: 1.4;
 
       textarea {
-        max-height:180px;
         min-height:30px;
 
         &.readonly {
           font-size: 16px !important;
           color: rgb(32,56,100) !important;
-          overflow-x: hidden;
-          padding-right: 4px;
-          padding-left: 4px;
+          overflow: hidden;
+          text-align: left;
 
         }
 
-        scrollbar-width:thin;
-        scrollbar-color: #e4e4e4 white;
-        &::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        &::-webkit-scrollbar-track {
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        &::-webkit-scrollbar-thumb {
-            background: #e4e4e4;
-            border-radius: 20px;
-        }
       }
     }
 
@@ -1056,8 +1034,6 @@
       display: flex;
       justify-content: center;
       text-align: center;
-      padding-right: 10px !important;
-      padding-left: 20px !important;
       padding-bottom: 3px !important;
       transition: box-shadow 200ms;
     }
@@ -1117,10 +1093,7 @@
   position: relative;
   width: fit-content;
   padding: 10px 40px 10px 40px;
-  box-shadow: 0px 0px 1px 1px rgb(232,232,242), 0px 0px 2px 0px rgba(0, 0, 0, 0.04), 0px 0px 1px 0px rgba(0, 0, 0, 0.12);
   font-weight: 700;
-  //background: #f6f6f9;
-  background-image: linear-gradient( 0.5turn, rgba(224, 224, 224, 0.7), rgba(239, 239, 239, 0.6), rgba(245, 245, 245, 0.5));
   span {    
     color: #203864;
     cursor: default;
@@ -1153,7 +1126,6 @@
 
 .highlighted-artwork {
   text-align: center;
-  //width: fit-content;
   margin-left:auto;
   margin-right:auto;
   width: 100%;
@@ -1206,6 +1178,7 @@
 
 .add-artwork-button {
   display: flex;
+  color:#203864;
   > a {
     margin: 80px auto;
   }
@@ -1473,8 +1446,6 @@
         text-align: center;
         align-items: center;
         justify-content: center;
-
-        //transition: all 300ms;
         &.short-title {
           display:none;
         }
@@ -1526,27 +1497,21 @@
         height: calc(100% - 80px);
         width: 100%;
         margin: auto auto 5px auto;
-        //background: #7891ad;
-          background:#53627d;
-        //transition: all 300ms;
+        background:#53627d;
         mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
       }
       .image2 {
         height: calc(100% - 80px);
         width: 100%;
         margin: auto auto 5px auto;
-        //background: #7891ad;
           background:#53627d;
-        //transition: all 300ms;
         mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
       }
       .image3 {
         height: calc(100% - 80px);
         width: 100%;
         margin: auto auto 5px auto;
-       //background: #7891ad;
           background:#53627d;
-        //transition: all 300ms;
         mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
       }
 
@@ -1632,7 +1597,6 @@
 }
 
 
-//Albums filter
 .albums-title-main {
   overflow-x: auto;
   padding-top: 5px;
@@ -1932,6 +1896,8 @@
   }
 }
 
+
+
 /*Secured ng deeps*/
 ::ng-deep {
 
@@ -2143,7 +2109,6 @@
   }
   @media (max-width: 650px) {
     .popupViewUsersClass {
-      //width: 85% !important;
       width: 100% !important;
       height: 100% !important;
       border-radius: 0px !important;
@@ -2270,11 +2235,7 @@
 
 //**********************************************************************
 //**********************************************************************
-//**********************************************************************
-//**********************************************************************
 //fin du code propre
-//**********************************************************************
-//**********************************************************************
 //**********************************************************************
 //**********************************************************************
 
@@ -2292,7 +2253,6 @@ mat-spinner {
 
 ::ng-deep .grid {
   margin: 0 auto !important;
-  //width:100% !important;
 }
 
 .grid-item {

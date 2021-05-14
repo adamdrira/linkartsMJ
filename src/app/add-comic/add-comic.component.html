@@ -43,7 +43,7 @@
                         <mat-form-field floatLabel='never'>
                             <mat-label>Titre</mat-label>
                             <input matInput formControlName="f00Title" maxLength="40" autocomplete="off" (input)="normalize_input(f00, 'f00Title');">
-                            <mat-error *ngIf="f00.controls['f00Title'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
+                            <mat-error *ngIf="f00.controls['f00Title'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                             </mat-error>
                             <div class="length-indicator">{{f00.controls['f00Title'].value?.length || 0}}/40</div>
                         </mat-form-field>
@@ -67,7 +67,7 @@
                         <mat-form-field floatLabel='never'>
                             <mat-label>Titre du premier chapitre</mat-label>
                             <input matInput formControlName="f00SerieFirstChapter" maxLength="30" (keyup)="update_view();" autocomplete="off" (input)="normalize_input(f00, 'f00SerieFirstChapter');">
-                            <mat-error *ngIf="f00.controls['f00SerieFirstChapter'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
+                            <mat-error *ngIf="f00.controls['f00SerieFirstChapter'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                             </mat-error>
                             <div class="length-indicator">{{f00.controls['f00SerieFirstChapter'].value?.length || 0}}/30</div>
                         </mat-form-field>
@@ -78,12 +78,16 @@
                         <mat-form-field floatLabel='never'>
                             <mat-label>Style</mat-label>
                             <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass options_with_description" disableOptionCentering formControlName="f00Category">
+                                <mat-select-trigger>
+                                    {{f00.value?.f00Category}}
+                                </mat-select-trigger>
+
                                 <div *ngFor="let obj of listOfStyles; let i = index">
                                     <mat-option [value]="obj">
                                         {{ obj }}
+                                        <span>{{listOfStyles_descriptions[i]}}</span>
                                     </mat-option>
-                                    <span *ngIf="3>i">{{listOfStyles_descriptions[i]}}</span>
-                                    <span *ngIf="i==3">{{listOfStyles_descriptions[i]}} &nbsp;</span>
+                                    
                                 </div>
                             </mat-select>
                             <mat-error *ngIf="f00.controls['f00Category'].invalid">Veuillez sélectionner un style</mat-error>
@@ -136,7 +140,7 @@
                             <mat-label>Description</mat-label>
                         
                             <textarea matInput cdkTextareaAutosize formControlName="f00Description" maxLength="2000" autocomplete="off" (input)="normalize_input(f00, 'f00Description');"></textarea>
-                            <mat-error *ngIf="f00.controls['f00Description'].invalid">Veuillez faire une saisie valide
+                            <mat-error *ngIf="f00.controls['f00Description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                             </mat-error>
                             <div class="length-indicator">{{f00.controls['f00Description'].value?.length || 0}}/2000</div>
                             

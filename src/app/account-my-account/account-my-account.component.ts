@@ -590,8 +590,6 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
   manage_group(i){
-    
-    
     let id_group=  this.list_of_groups_ids[i];
     if(this.list_of_members_ids_by_group[id_group] && this.list_of_members_names_by_group[id_group] && this.list_of_members_ids_by_group[id_group].length== this.list_of_members_names_by_group[id_group].length){
       this.manage_group_loading[i]=false;
@@ -603,32 +601,32 @@ export class AccountMyAccountComponent implements OnInit {
       this.Profile_Edition_Service.get_group_information_by_id(id_group).subscribe(users=>{
         if(users[0].error){
           let compt=0;
+          this.list_of_members_pictures_by_group[id_group]=[];
+          this.list_of_members_pictures_by_group_loaded[id_group]=[];
+          this.list_of_members_names_by_group[id_group]=[];
+          this.list_of_members_pseudos_by_group[id_group]=[];
+          this.list_of_members_shares_by_group[id_group]=[];
+          this.list_of_members_status_by_group[id_group]=[];
+          this.share_in_edition[id_group]=[];
           for(let k=0;k<this.list_of_members_ids_by_group[id_group].length;k++){
-            this.list_of_members_pictures_by_group[id_group]=[];
-            this.list_of_members_names_by_group[id_group]=[];
-            this.list_of_members_pseudos_by_group[id_group]=[];
-            this.list_of_members_shares_by_group[id_group]=[];
-            this.list_of_members_status_by_group[id_group]=[];
-            this.share_in_edition[id_group]=[];
             this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_members_ids_by_group[id_group][k] ).subscribe(r=> {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_members_pictures_by_group[id_group][k] = SafeURL;
-              this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).subscribe( l => {  
-                this.list_of_members_names_by_group[id_group][k]  = l[0].firstname + ' ' + l[0].lastname;
-                this.list_of_members_pseudos_by_group[id_group][k] = l[0].nickname;
-                this.list_of_members_status_by_group[id_group][k] = "En attente";
-                this.list_of_members_shares_by_group[id_group][k]  = (100/this.list_of_members_ids_by_group[id_group].length).toFixed(2);
-                compt++;
-                if(compt==this.list_of_members_ids_by_group[id_group].length){
-                  this.manage_group_loading[i]=false;
-                  this.manage_group_activated[i]=true;
-                  this.cd.detectChanges();
-                }
-                
-              })
             });
-  
+            this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).subscribe( l => {  
+              this.list_of_members_names_by_group[id_group][k]  = l[0].firstname + ' ' + l[0].lastname;
+              this.list_of_members_pseudos_by_group[id_group][k] = l[0].nickname;
+              this.list_of_members_status_by_group[id_group][k] = "En attente";
+              this.list_of_members_shares_by_group[id_group][k]  = (100/this.list_of_members_ids_by_group[id_group].length).toFixed(2);
+              compt++;
+              if(compt==this.list_of_members_ids_by_group[id_group].length){
+                this.manage_group_loading[i]=false;
+                this.manage_group_activated[i]=true;
+                this.cd.detectChanges();
+              }
+              
+            })
           }
         
         }
@@ -636,40 +634,50 @@ export class AccountMyAccountComponent implements OnInit {
           let compt=0;
           this.list_of_members_status_by_group[id_group]=[];
           this.list_of_members_shares_by_group[id_group]=[];
+          this.list_of_members_pictures_by_group[id_group]=[];
+          this.list_of_members_pictures_by_group_loaded[id_group]=[];
+          this.list_of_members_names_by_group[id_group]=[];
+          this.list_of_members_pseudos_by_group[id_group]=[];
+          this.share_in_edition[id_group]=[];
           for(let j=0;j<users[0].length;j++){
             let index = this.list_of_members_ids_by_group[id_group].indexOf(users[0][j].id_user)
             this.list_of_members_status_by_group[id_group][index] = users[0][j].status;
             this.list_of_members_shares_by_group[id_group][index]  = users[0][j].share;
           }
           for(let k=0;k<this.list_of_members_ids_by_group[id_group].length;k++){
-            this.list_of_members_pictures_by_group[id_group]=[];
-            this.list_of_members_names_by_group[id_group]=[];
-            this.list_of_members_pseudos_by_group[id_group]=[];
-            this.share_in_edition[id_group]=[];
+            
+            
             this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_members_ids_by_group[id_group][k] ).subscribe(r=> {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_members_pictures_by_group[id_group][k] = SafeURL;
-              this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).subscribe( l => {
-                this.list_of_members_names_by_group[id_group][k]  = l[0].firstname + ' ' + l[0].lastname;
-                this.list_of_members_pseudos_by_group[id_group][k] = l[0].nickname;
-                compt++;
-                if(compt==this.list_of_members_ids_by_group[id_group].length){
-                  this.manage_group_loading[i]=false;
-                  this.manage_group_activated[i]=true;
-                  this.cd.detectChanges();
-                }
-                
-              })
             });
+            this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).subscribe( l => {
+              this.list_of_members_names_by_group[id_group][k]  = l[0].firstname + ' ' + l[0].lastname;
+              this.list_of_members_pseudos_by_group[id_group][k] = l[0].nickname;
+              compt++;
+              if(compt==this.list_of_members_ids_by_group[id_group].length){
+                this.manage_group_loading[i]=false;
+                this.manage_group_activated[i]=true;
+                this.cd.detectChanges();
+              }
+              
+            })
   
           }
         
         }
+        
       })
     }
    
     
+  }
+
+
+  list_of_members_pictures_by_group_loaded=[]
+  load_list_of_members_pictures_by_group(i,k){
+    this.list_of_members_pictures_by_group_loaded[this.list_of_groups_ids[i]][k]=true;
   }
 
   cancel_manage_group(i){

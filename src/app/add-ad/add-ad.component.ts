@@ -147,7 +147,7 @@ export class AddAdComponent implements OnInit {
   createFormControlsAds() {
     this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text_title") ) ]);
     this.fdMydescription = new FormControl('', Validators.required);
-    this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
+    this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
     this.fdPrice = new FormControl('', [Validators.minLength(1), Validators.maxLength(15), Validators.pattern( pattern("classic") ) ]);
     this.fdPrice_type = new FormControl('');
     this.fdPrice1 = new FormControl('', [Validators.minLength(1), Validators.maxLength(15), Validators.pattern( pattern("classic") ) ]);
@@ -205,6 +205,11 @@ export class AddAdComponent implements OnInit {
     if(e.checked){
       this.volunteer = true;
       this.remuneration = false;
+      this.for_service = false;
+    }
+    else{
+      this.volunteer = false;
+      this.remuneration = true;
       this.for_service = false;
     }
 

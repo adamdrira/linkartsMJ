@@ -102,20 +102,40 @@
                         [matTooltipShowDelay]="200">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_before</mat-icon>
                     </div>
-                    <div class="chapter-container" [formGroup]="chapter_name_group">
-                        <select formControlName="chapter_name_control" class="chapterSelector"
-                            [ngClass]="{'invisible':!sumo_ready}">
-                            <option value="{{current_chapter}}" selected disabled>{{chapter_name_to_show}}
-                            </option>
-                            <ng-container *ngIf="chapter_filter_bottom_to_top">
-                                <option *ngFor="let item of chapterList; let i = index " value="{{i}}">
-                                    Chapitre {{item.chapter_number}} : {{item.title}}</option>
-                            </ng-container>
-                            <ng-container *ngIf="!chapter_filter_bottom_to_top">
-                                <option *ngFor="let item of chapterList; let i = index "
-                                    value="{{chapterList.length-i-1}}">Chapitre {{chapterList[chapterList.length-i-1].chapter_number}} : {{chapterList[chapterList.length-i-1].title}}</option>
-                            </ng-container>
-                        </select>
+                    <div class="chapter-container"  [ngClass]="{'invisible':!sumo_ready}">
+                       
+                        <div class="sumo-container-chapters">
+                            <mat-form-field floatLabel='never'  [ngClass]="{'opened': chapterselect && chapterselect.panelOpen }">
+                                
+                                <div class="arrow-container" [ngClass]="{'opened': chapterselect && chapterselect.panelOpen }">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios_new</mat-icon>
+                                </div>
+
+                                <mat-select #chapterselect panelClass="ChaptersSelectClass" [(value)]="current_chapter" disableOptionCentering (selectionChange)="select_change_chapter($event)">
+                                    
+                                    <mat-select-trigger>
+                                            <span>{{chapter_name_to_show}}</span>
+                                    </mat-select-trigger>
+                                    
+                                    <ng-container *ngIf="chapter_filter_bottom_to_top">
+                                        <ng-container *ngFor="let item of chapterList; let i = index " >
+                                            <mat-option [value]="i">
+                                                <span>Chap. {{item.chapter_number}} : {{item.title}}</span>
+                                            </mat-option>
+                                        </ng-container>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="!chapter_filter_bottom_to_top">
+                                        <ng-container *ngFor="let item of chapterList; let i = index " >
+                                            <mat-option  [value]="chapterList.length-i-1">
+                                                <span>Chap. {{chapterList[chapterList.length-i-1].chapter_number}} : {{chapterList[chapterList.length-i-1].title}}</span>
+                                            </mat-option>
+                                        </ng-container>
+                                    </ng-container>
+                                    
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
                     </div>
                     <div class="button" *ngIf="chapterList.length>1" (click)="change_chapter('next')"
                         matTooltip="Chapitre suivant"

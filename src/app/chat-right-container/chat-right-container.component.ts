@@ -10,6 +10,7 @@ import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures
 import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { PopupFormComponent } from '../popup-form/popup-form.component';
 
 
 @Component({
@@ -117,11 +118,13 @@ export class ChatRightContainerComponent implements OnInit {
   //files
   list_of_files:any[]=[];
   list_of_files_src:any[]=[];
+  list_of_files_data:any[]=[];
   list_of_files_retrieved=false;
 
    //pictures
    list_of_pictures:any[]=[];
    list_of_pictures_src:any[]=[];
+   list_of_pictures_data:any[]=[];
    list_of_pictures_names=[];
    list_of_pictures_retrieved=false;
 
@@ -134,12 +137,15 @@ export class ChatRightContainerComponent implements OnInit {
   //total size of files
   total_size_of_files:any[]=[];
   total_size_of_pictures:any[]=[];
+
+  
   ngOnChanges(changes: SimpleChanges) {
     if(this.change_number>0){
       if(this.current_friend_id!=this.friend_id || this.friend_type!= this.current_friend_type){
         this.current_friend_type=this.friend_type;
         this.current_friend_id=this.friend_id;
         this.list_of_files_retrieved=false;
+        this.list_of_pictures_retrieved=false;
         this.total_size_of_files=[];
         this.total_size_of_pictures=[];
        
@@ -158,6 +164,8 @@ export class ChatRightContainerComponent implements OnInit {
       if(this.current_id_chat_section!=this.id_chat_section){
         this.total_size_of_files=[];
         this.total_size_of_pictures=[];
+        this.list_of_pictures_retrieved=false;
+        this.list_of_files_retrieved=false;
         this.current_id_chat_section=this.id_chat_section;
         this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
           this.total_size_of_files[0]=Number(l[0][0].total);
@@ -205,7 +213,9 @@ export class ChatRightContainerComponent implements OnInit {
         this.list_of_files_retrieved=false;
         this.list_of_pictures_retrieved=false;
         this.list_of_files_src=[];
+        this.list_of_files_data=[];
         this.list_of_pictures_src=[];
+        this.list_of_pictures_data=[];
         this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
           this.total_size_of_files[0]=Number(l[0][0].total);
           
@@ -234,9 +244,25 @@ export class ChatRightContainerComponent implements OnInit {
         this.show_files_of_folder=[];
         this.list_of_files_retrieved_by_folder=[];
         this.list_of_files_loading=[];
-
+        let index_pic = this.list_of_pictures_data.findIndex(x => x.attachment_name === event.message.attachment_name && x.attachment_type === event.message.attachment_type);
+        let index_file = this.list_of_files_data.findIndex(x => x.attachment_name === event.message.attachment_name && x.attachment_type === event.message.attachment_type);
         
-        
+        if(index_pic>=0){
+          if(event.remove){
+            this.list_of_pictures_data[index_pic].id_folder=0;
+          }
+          else{
+            this.list_of_pictures_data[index_pic].id_folder=event.message.id_folder;
+          }
+        }
+        if(index_file>=0){
+          if(event.remove){
+            this.list_of_files_data[index_file].id_folder=0;
+          }
+          else{
+            this.list_of_files_data[index_file].id_folder=event.message.id_folder;
+          }
+        }
       }
     })
 
@@ -260,6 +286,7 @@ export class ChatRightContainerComponent implements OnInit {
                     let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                     const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                     this.list_of_files_src[length+i]=SafeURL;
+                    this.list_of_files_data[length+i]=r[0][i];
                     compt++;
                     if(compt==r[0].length){
                       this.date_of_last_file=r[0][r[0].length-1].createdAt;
@@ -300,6 +327,7 @@ export class ChatRightContainerComponent implements OnInit {
                         let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                         let SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
                         THIS.list_of_pictures_src[length+i]=SafeURL;
+                        THIS.list_of_pictures_data[length+i]=r[0][i];
                         THIS.list_of_pictures_names[length+i]=r[0][i].attachment_name
                         compt++;
                         if(compt==r[0].length){
@@ -319,6 +347,7 @@ export class ChatRightContainerComponent implements OnInit {
                     let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                     const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                     this.list_of_pictures_src[length+i]=SafeURL;
+                    this.list_of_pictures_data[length+i]=r[0][i];
                     this.list_of_pictures_names[length+i]=r[0][i].attachment_name
                     compt++;
                     if(compt==r[0].length){
@@ -400,7 +429,7 @@ export class ChatRightContainerComponent implements OnInit {
                     })
                   }
                   else if(r[0][i].attachment_type=="picture_attachment" && re.exec(r[0][i].attachment_name)[1].toLowerCase()!="svg"){
-                    this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
+                    this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
                       let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                       this.list_of_files_by_folder[index][i+length]=SafeURL;
@@ -465,7 +494,7 @@ export class ChatRightContainerComponent implements OnInit {
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_files_src[i]=SafeURL;
-            
+            this.list_of_files_data[i]=l[0][i]
             compt++;
             if(compt==l[0].length){
               this.date_of_last_file=l[0][l[0].length-1].createdAt;
@@ -500,6 +529,7 @@ export class ChatRightContainerComponent implements OnInit {
                   let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                   let SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
                   THIS.list_of_pictures_src[i]=SafeURL;
+                  THIS.list_of_pictures_data[i]=l[0][i];
                   THIS.list_of_pictures_names[i]=l[0][i].attachment_name;
                   compt++;
                   if(compt==l[0].length){
@@ -514,11 +544,14 @@ export class ChatRightContainerComponent implements OnInit {
             })
           }
           else{
-            this.chatService.get_attachment_right(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).subscribe(r=>{
+            this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).subscribe(r=>{
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures_src[i]=SafeURL;
+              this.list_of_pictures_data[i]=l[0][i];
               this.list_of_pictures_names[i]=l[0][i].attachment_name;
+              
+             
               compt++;
               if(compt==l[0].length){
                 this.date_of_last_picture=l[0][l[0].length-1].createdAt;
@@ -562,15 +595,28 @@ export class ChatRightContainerComponent implements OnInit {
 
   show_images(indice){
     let list_of_pics=[];
+    let list_of_chat_friend_ids=[];
     let new_list_types=Array(15).fill("picture_attachment");
     if(indice<=7){
-      list_of_pics=this.list_of_pictures_names.slice(0,15)
+      for(let i =0;i<15;i++){
+        if(this.list_of_pictures_data[i]){
+          list_of_pics.push(this.list_of_pictures_names[i]);
+          list_of_chat_friend_ids.push((this.list_of_pictures_data[i].chat_friend_id)?this.list_of_pictures_data[i].chat_friend_id:this.chat_friend_id)
+        }
+      }
     }
     else{
-      list_of_pics=this.list_of_pictures_names.slice(indice-7,indice+7);
       indice=7;
+      for(let i =indice-7;i<indice+7;i++){
+        if(this.list_of_pictures_data[i]){
+          list_of_pics.push(this.list_of_pictures_names[i]);
+          list_of_chat_friend_ids.push((this.list_of_pictures_data[i].chat_friend_id)?this.list_of_pictures_data[i].chat_friend_id:this.chat_friend_id)
+        }
+      }
     }
 
+
+    
     
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {
@@ -579,7 +625,7 @@ export class ChatRightContainerComponent implements OnInit {
         index_of_picture:indice,
         for_chat:true,
         friend_type:(this.friend_type=='user')?'user':'group',
-        chat_friend_id:this.chat_friend_id
+        list_of_chat_friend_ids:list_of_chat_friend_ids,
       },      
       panelClass:"popupDocumentClass",
     });
@@ -603,7 +649,7 @@ export class ChatRightContainerComponent implements OnInit {
 
   @Output() arrowBack = new EventEmitter<any>();
   @Output() folders_emitter = new EventEmitter<any>();
-  
+  @Output() archive_from_right_emit = new EventEmitter<any>();
   
   chat_section_name_added: FormControl;
   chat_section_name_added_archives: FormControl;
@@ -798,7 +844,7 @@ export class ChatRightContainerComponent implements OnInit {
               })
             }
             else if(r[0][i].attachment_type=="picture_attachment" && re.exec(r[0][i].attachment_name)[1].toLowerCase()!="svg"){
-              this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
+              this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_files_by_folder[index][i]=SafeURL;
@@ -1014,7 +1060,7 @@ export class ChatRightContainerComponent implements OnInit {
         this.chatService.rename_chat_folder(this.list_of_folders[this.index_folder_to_rename].id,this.chat_section_group_archives.value.chat_section_name_added_archives.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),this.chat_friend_id).subscribe(r=>{
           if(r[0].error){
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-              data: {showChoice:false, text:"Ce titre est déjà utilisé ailleurs."},          
+              data: {showChoice:false, text:"Ce titre est existe déjà."},          
               panelClass: "popupConfirmationClass",
             });
           }
@@ -1093,4 +1139,71 @@ export class ChatRightContainerComponent implements OnInit {
 
 
 
+  manage_archive(index,archive,type){
+    if(type=="picture"){
+      if(archive){
+        const dialogRef = this.dialog.open(PopupFormComponent, {
+          data: {type:"for_archive",message:this.list_of_pictures_data[index],list_of_folders:this.list_of_folders},
+          panelClass: 'popupUploadPictureClass',
+        })
+        dialogRef.afterClosed().subscribe(result => {
+          if(result){
+            
+            this.reset_folders()
+            this.archive_from_right_emit.emit({id_message:this.list_of_pictures_data[index].id,id_folder:this.list_of_pictures_data[index].id_folder});
+          }
+        });
+      }
+      else{
+        this.chatService.unarchive_chat_message(this.list_of_pictures_data[index].id,this.list_of_pictures_data[index].id_folder).subscribe(r=>{
+          this.list_of_pictures_data[index].id_folder=0;
+          this.archive_from_right_emit.emit({id_message:this.list_of_pictures_data[index].id,id_folder:0});
+          this.reset_folders()
+        });
+      }
+    }
+    else{
+      if(archive){
+        const dialogRef = this.dialog.open(PopupFormComponent, {
+          data: {type:"for_archive",message:this.list_of_files_data[index],list_of_folders:this.list_of_folders},
+          panelClass: 'popupUploadPictureClass',
+        })
+        dialogRef.afterClosed().subscribe(result => {
+          if(result){
+            this.archive_from_right_emit.emit({id_message:this.list_of_files_data[index].id,id_folder:this.list_of_files_data[index].id_folder});
+            this.reset_folders()
+           
+          }
+        });
+      }
+      else{
+        this.chatService.unarchive_chat_message(this.list_of_files_data[index].id,this.list_of_files_data[index].id_folder).subscribe(r=>{
+          this.list_of_pictures_data[index].id_folder=0;
+          this.archive_from_right_emit.emit({id_message:this.list_of_files_data[index].id,id_folder:0});
+          this.reset_folders()
+        });
+      }
+    }
+
+    
+  }
+
+  reset_folders(){
+    
+    this.list_of_folders_retrieved=false;
+    this.chatService.get_chat_folders(this.chat_friend_id).subscribe(r=>{
+      if(r[0] && r[0].length>0){
+        this.list_of_folders=r[0];
+      }
+      this.folders_emitter.emit({folders:this.list_of_folders});
+      this.list_of_folders_retrieved=true;
+      this.cd.detectChanges()
+    })
+    this.list_of_folders_opened=[];
+    this.show_files_of_folder=[];
+    this.list_of_files_retrieved_by_folder=[];
+    this.list_of_files_loading=[];
+    this.get_archives_folders();
+  }
+  
 }

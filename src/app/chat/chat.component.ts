@@ -19,10 +19,9 @@ import { Router } from '@angular/router';
 import { ResizedEvent } from 'angular-resize-event';
 import { merge, fromEvent } from 'rxjs'
 import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
-import { Location } from '@angular/common';
 declare var $: any;
 
-var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
+var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
@@ -90,7 +89,6 @@ export class ChatComponent implements OnInit  {
     private cd: ChangeDetectorRef,
     public dialog: MatDialog,
     private renderer: Renderer2,
-    private location: Location,
     private navbar :NavbarService,
     private Profile_Edition_Service:Profile_Edition_Service
     ){
@@ -349,14 +347,17 @@ export class ChatComponent implements OnInit  {
   show_spinner=false;
   
   change_user(){
-    this.cancel_show_research_results();
+    this.search_popup_closed = true;
+    this.show_research_results=false;
+    this.searched_message = -1;
+
     this.response_exist_retrieved = false;
     this.block_chat = false;
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
     this.list_of_users_names_retrieved=false;
     this.today_triggered=false;
     this.display_writing=false;
-    this.function_done=false;
+    //this.function_done=false;
     this.trigger_no_more=false;
     this.can_get_other_messages=false;
     this.list_of_chat_sections_found=[];
@@ -387,7 +388,7 @@ export class ChatComponent implements OnInit  {
             attachment_name:"none",
             is_an_attachment:false,
             attachment_type:"none",
-            is_a_group_chat:false,
+            is_a_group_chat:(this.friend_type=='user')?false:true,
             is_a_response:false,
           }
           this.chatService.messages.next(message_to_send);
@@ -398,15 +399,26 @@ export class ChatComponent implements OnInit  {
 
         
     }
+
+    let scroll_observer = setInterval(() => {
+      if(this.myScrollContainer){
+        this.scroll = merge(
+          fromEvent(window, 'scroll'),
+          fromEvent(this.myScrollContainer.nativeElement, 'scroll')
+        );
+      }
+      clearInterval(scroll_observer)
+    }, 500);
   }
 
   change_group(){
+    this.search_popup_closed = true;
+    this.show_research_results=false;
+    this.searched_message = -1;
     this.response_exist_retrieved = false;
     this.block_chat = false;
-    this.cancel_show_research_results();
     this.list_of_messages=[];
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
-    this.function_done=false;
     this.trigger_no_more=false;
     this.list_of_users_names_retrieved=false;
     this.today_triggered=false;
@@ -422,8 +434,6 @@ export class ChatComponent implements OnInit  {
     this.compteur_chat_section=0;
     this.list_of_folders_retrieved=false;
     this.list_of_chat_sections=["Discussion principale"];
-    //this.top_pp_loaded=false;
-    
     this.cd.detectChanges();
     this.get_messages(this.id_chat_section,true);
     this.change_number=0;
@@ -463,7 +473,7 @@ export class ChatComponent implements OnInit  {
             attachment_name:"none",
             is_an_attachment:false,
             attachment_type:"none",
-            is_a_group_chat:true,
+            is_a_group_chat:(this.friend_type=='user')?false:true,
             is_a_response:false,
           }
           this.chatService.messages.next(message_to_send);
@@ -473,6 +483,15 @@ export class ChatComponent implements OnInit  {
           this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"seen",friend_id:this.friend_id,friend_type:'group',spam:false,real_friend_id:this.current_user_id});
 
     }
+    let scroll_observer = setInterval(() => {
+      if(this.myScrollContainer){
+        this.scroll = merge(
+          fromEvent(window, 'scroll'),
+          fromEvent(this.myScrollContainer.nativeElement, 'scroll')
+        );
+      }
+      clearInterval(scroll_observer)
+    }, 500);
   }
 
   /*******************************************ON INIT ************************** */
@@ -509,7 +528,9 @@ export class ChatComponent implements OnInit  {
               let height =this.message_children.toArray()[r[0][0].length].nativeElement.getBoundingClientRect().height;
               this.myScrollContainer.nativeElement.scrollTop=offset-height;
               this.can_get_other_messages=true;
-              
+              this.display_messages=true;
+              this.cd.detectChanges();
+              this.put_messages_visible=true;
             }
             else{
               this.show_spinner=false;
@@ -592,20 +613,6 @@ export class ChatComponent implements OnInit  {
     }, 500);
       
 
-    // retry managment
-    /*setInterval(() => {
-      if( this.friend_type=='user' && this.list_of_time.length>0){
-        for(let i=0;i<this.list_of_time.length;i++){
-          if(this.list_of_messages[i].status=='sent' && !this.display_retry[i]){
-            let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.list_of_time[i];
-            if(ending_time_of_view>25){
-              this.display_retry[i]=true;
-            }
-          }
-        }
-      }
-    }, 5000);*/
-    
     
     //uploader_managment
     this.uploader.onAfterAddingFile = async (file) => {
@@ -671,7 +678,7 @@ export class ChatComponent implements OnInit  {
       
       var type='';
       var re = /(?:\.([^.]+))?$/;
-      if( re.exec(file._file.name)[1]=="jpeg" || re.exec(file._file.name)[1].toLowerCase()=="png" || re.exec(file._file.name)[1]=="jpg"){
+      if( re.exec(file._file.name)[1].toLowerCase()=="jpeg" || re.exec(file._file.name)[1].toLowerCase()=="png" || re.exec(file._file.name)[1].toLowerCase()=="jpg" || re.exec(file._file.name)[1].toLowerCase()=="gif"){
         type='picture_attachment'
       }
       else{
@@ -782,7 +789,7 @@ export class ChatComponent implements OnInit  {
             attachment_name:"none",
             is_an_attachment:false,
             attachment_type:"none",
-            is_a_group_chat:false,
+            is_a_group_chat:(this.friend_type=='user')?false:true,
             is_a_response:false,
           }
           this.chatService.messages.next(message_to_send);
@@ -792,6 +799,7 @@ export class ChatComponent implements OnInit  {
     }
     this.get_chat_sections();
     this.chatService.get_first_messages(this.current_user_id,this.friend_id,id_chat_section,is_group,this.compteur_get_messages).subscribe(r=>{
+      
       if(is_group){
         this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
       }
@@ -829,7 +837,8 @@ export class ChatComponent implements OnInit  {
                   }
                   else{
                     this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
-                      let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                      let blob = new Blob([t], {type: 'image/png'});
+                      let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                       if(r[1]==this.compteur_get_messages){
                         this.list_of_messages_pictures[i]=url;
                       }
@@ -845,7 +854,6 @@ export class ChatComponent implements OnInit  {
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   if(r[1]==this.compteur_get_messages){
                     this.list_of_messages_files[i]=SafeURL;
-                     
                   }
                   
                 })
@@ -853,6 +861,7 @@ export class ChatComponent implements OnInit  {
             }
             
             if(!is_group && !r[0][0][i].is_from_server){
+             
               if(i==0 && r[0][0][i].id_user==this.friend_id && this.current_user_id!=this.friend_id){
                 this.list_of_show_pp_left[i]=true;
                 this.compteur_pp+=1;
@@ -915,7 +924,6 @@ export class ChatComponent implements OnInit  {
   /*************************************DISPLAY CHAT***********************************/
   /*************************************DISPLAY CHAT***********************************/
   compteur_loaded_research=0;
-  function_done=false;
  
   loaded_image(i){
     if(i>=0){
@@ -929,23 +937,6 @@ export class ChatComponent implements OnInit  {
     if(this.list_of_messages.length<=50){
       if(i>=0 && i<2){
         this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
-      }
-    }
-    if(this.show_research_results){
-      this.compteur_loaded_research+=1;
-      if(this.compteur_image_research!=0){
-        if (this.compteur_loaded_research==this.compteur_image_research + this.compteur_pp){
-          this.put_messages_visible=true;
-          this.can_get_other_messages=true;
-          this.function_done=true;
-        }
-      }
-      else{
-        if (this.compteur_loaded_research==this.compteur_pp){
-          this.put_messages_visible=true;
-          this.can_get_other_messages=true;
-          this.function_done=true;
-        }
       }
     }
     
@@ -1023,6 +1014,10 @@ export class ChatComponent implements OnInit  {
       this.show_send_icon=false;
     }
     else if(this.attachments.length>0 && this.put_messages_visible){
+      this.search_popup_closed = true;
+      this.show_research_results=false;
+      this.searched_message = -1;
+
       this.compt_at=0;
       for(let i=0;i<this.attachments.length;i++){
         this.compt_at+=1;
@@ -1171,7 +1166,9 @@ export class ChatComponent implements OnInit  {
   
   send_message(){
     
-
+    this.search_popup_closed = true;
+    this.show_research_results=false;
+    this.searched_message = -1;
     if( this.message_group.value.message.length > 1500 ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Ce message est trop long (> 1500 caractères).'},
@@ -1389,7 +1386,7 @@ export class ChatComponent implements OnInit  {
            };
            this.index_of_show_pp_right=this.index_of_show_pp_right+1;
            this.list_of_show_pp_left.splice(0,0,false);
-           this.list_of_messages_files.splice(0,0,this.attachments[i]);
+           this.list_of_messages_files.splice(0,0,this.attachments_safe[i]);
            this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
            this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
            this.list_of_messages.splice(0,0,(message));
@@ -1417,7 +1414,7 @@ export class ChatComponent implements OnInit  {
            };
            this.index_of_show_pp_right=this.index_of_show_pp_right+1;
            this.list_of_show_pp_left.splice(0,0,false);
-           this.list_of_messages_files.splice(0,0,this.attachments[i]);
+           this.list_of_messages_files.splice(0,0,this.attachments_safe[i]);
            this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
            this.list_of_messages.splice(0,0,(message));
          })
@@ -1554,7 +1551,8 @@ export class ChatComponent implements OnInit  {
           this.list_of_show_pp_left.splice(0,0,false);
           let THIS=this;
           let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-          THIS.list_of_messages_files.splice(0,0,url);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          THIS.list_of_messages_files.splice(0,0,false);
           THIS.list_of_messages_pictures.splice(0,0,url);
           THIS.list_of_messages.splice(0,0,message);
           THIS.list_of_messages_date.splice(0,0,THIS.date_of_message("time",1));
@@ -1579,6 +1577,7 @@ export class ChatComponent implements OnInit  {
   }
 
   delete_message(i){
+    let message_to_delete = this.list_of_messages[i];
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer le message ?'},
       panelClass: "popupConfirmationClass",
@@ -1586,26 +1585,14 @@ export class ChatComponent implements OnInit  {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        let ok_to_delete=true;
-        let index=-1;
-        
-        for(let j=0;j<4;j++){
-          if(this.list_of_messages[i+j] && this.list_of_messages[i+j].id_user==this.current_user_id && ok_to_delete){
-            index=i+j;
-            ok_to_delete=false;
-          }
-        }
-        let is_an_attachment=this.list_of_messages[index].is_an_attachment;
-        let attachment_type=this.list_of_messages[index].attachment_type;
-        this.list_of_messages[index].status="deleted";
-       
-        let message_to_delete=this.list_of_messages[index]
-        if(index==0){
-          this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"delete",friend_id:this.friend_id,friend_type:this.friend_type,spam:(this.spam=='false')?false:true,id_message:message_to_delete.id});
+        let is_an_attachment=message_to_delete.is_an_attachment;
+        let attachment_type=message_to_delete.attachment_type;
+        message_to_delete.status="deleted";
+        if(i==0){
+         
+          this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"delete",friend_id:this.friend_id,friend_type:this.friend_type,spam:(this.spam=='false')?false:true,id_message:message_to_delete.id,temporary_id:message_to_delete.temporary_id});
         }
         this.chatService.delete_message(message_to_delete.id).subscribe(r=>{
-          
-          
          if(is_an_attachment && (attachment_type=='picture_attachment' || attachment_type=='file_attachment')){
           this.reload_list_of_files_subject.next(true)
          }
@@ -2085,18 +2072,22 @@ today_triggered=false;
 
 
 changed_section(e:any) {
-  this.function_done=false;
+  this.search_popup_closed = true;
+  this.show_research_results=false;
+  this.searched_message = -1;
+
   this.nothing_selected=false;
   this.trigger_no_more=false;
   this.today_triggered=false;
   this.chat_section_to_open=e.value;
-
+  this.can_get_other_messages=false;
   if(e.value!=''){
     let index =this.list_of_chat_sections.indexOf(e.value)
     this.id_chat_section=this.list_of_chat_sections_id[index];
     this.change_section.emit({id_chat_section:this.id_chat_section});
     
     this.get_messages(this.id_chat_section,(this.friend_type=='user')?false:true);
+    
     this.list_of_chat_sections_notifications[index]=false;
     let compt=0;
     for(let i=0;i<this.list_of_chat_sections_notifications.length;i++){
@@ -2145,6 +2136,15 @@ changed_section(e:any) {
   this.cd.detectChanges();
 
   this.right_container_is_opened = false;
+  let scroll_observer = setInterval(() => {
+    if(this.myScrollContainer){
+      this.scroll = merge(
+        fromEvent(window, 'scroll'),
+        fromEvent(this.myScrollContainer.nativeElement, 'scroll')
+      );
+    }
+    clearInterval(scroll_observer)
+}, 500);
 
 }
 
@@ -2158,13 +2158,11 @@ add_chat_section(){
 
 
 add_chat_section_name(e: any){
-  
   if(this.adding_chat_section_name){
     return
   }
   this.adding_chat_section_name=true;
   let name= e;
-  
   this.chatService.add_chat_section(name,this.friend_id,(this.friend_type=='user')?false:true).subscribe(r=>{
     if(r[0].is_ok){
       let message_one ={
@@ -2183,7 +2181,7 @@ add_chat_section_name(e: any){
         attachment_type:"none",
         is_a_response:false,
         is_an_attachment:false,
-        is_a_group_chat:true,
+        is_a_group_chat:(this.friend_type=='user')?false:true,
         chat_friend_id:this.chat_friend_id,
       };
       this.chatService.messages.next(message_one);
@@ -2201,7 +2199,6 @@ add_chat_section_name(e: any){
       this.list_of_chat_sections_notifications.splice(indice,0,false);
       this.activate_add_chat_section=false;
       this.adding_chat_section_name=true;
-
       this.cd.detectChanges();
     }
     else{
@@ -2271,7 +2268,6 @@ delete_chat_section(){
 
 compteur_chat_section=0;
 get_chat_sections(){
-  
   this.chatService.get_chat_sections(this.friend_id,(this.friend_type=='user')?false:true,this.compteur_get_messages).subscribe(m=>{
     let l=m[0];
     if(this.compteur_get_messages==m[1]){
@@ -2421,8 +2417,9 @@ on_keydown_research(s){
   
   this.chatService.get_messages_from_research( s,this.id_chat_section,this.friend_id,this.friend_type).subscribe(l=>{
     this.list_of_messages_found_complete=l[0];
-    this.number_of_messages_found=l[0].length;
+   
     this.message_researched= s;
+    let index_to_delete=[]; 
     if(l[0].length>0){
       let second_compt=0;
       for(let i=0;i<l[0].length;i++){
@@ -2434,8 +2431,10 @@ on_keydown_research(s){
             match=true;
             second_compt+=1;
             if(second_compt==l[0].length){
+              this.delete_null_elements_of_a_list(this.list_of_messages_around,index_to_delete);
               this.show_research_results=true;
               if(this.list_of_messages_found[0]){
+                
                 this.first_message_is_loaded();
               }
               else{
@@ -2443,21 +2442,38 @@ on_keydown_research(s){
               }
             }
           }
-          else if(j==this.list_of_messages.length-1 && !match){
-              this.chatService.get_messages_around(l[0][i].id,this.id_chat_section,this.friend_id,this.friend_type).subscribe(r=>{
-                this.list_of_messages_around[i]=r[0].list_of_messages_to_send;
-                second_compt+=1;
-                if(second_compt==l[0].length){
-                  this.show_research_results=true;
-                  if(this.list_of_messages_found[0]){
-                    this.first_message_is_loaded();
-                  }
-                  else{
-                    this.first_message_isnt_loaded();
-                  }
-                }
-              })
+        }
+
+        if(!match && this.list_of_messages[this.list_of_messages.length -1].id && l[0][i].id>this.list_of_messages[this.list_of_messages.length -1].id){
+          
+          second_compt+=1;
+          index_to_delete.push(i);
+          if(second_compt==l[0].length){
+            this.show_research_results=true;
+            this.delete_null_elements_of_a_list(this.list_of_messages_around,index_to_delete);
+            if(this.list_of_messages_found[0]){
+              this.first_message_is_loaded();
+            }
+            else{
+              this.first_message_isnt_loaded();
+            }
           }
+        }
+        else if(!match){
+            this.chatService.get_messages_around(l[0][i].id,this.id_chat_section,this.friend_id,this.friend_type).subscribe(r=>{
+              this.list_of_messages_around[i]=r[0].list_of_messages_to_send;
+              second_compt+=1;
+              if(second_compt==l[0].length){
+                this.show_research_results=true;
+                this.delete_null_elements_of_a_list(this.list_of_messages_around,index_to_delete);
+                if(this.list_of_messages_found[0]){
+                  this.first_message_is_loaded();
+                }
+                else{
+                  this.first_message_isnt_loaded();
+                }
+              }
+            })
         }
       }
     }
@@ -2465,6 +2481,17 @@ on_keydown_research(s){
       this.show_research_results=true;
     }
   })
+}
+
+
+delete_null_elements_of_a_list(list,index_to_delete){
+  if(index_to_delete.length>0){
+    for (var i = index_to_delete.length -1; i >= 0; i--){
+      list.splice(index_to_delete[i],1);
+      this.list_of_messages_found_complete.splice(index_to_delete[i],1);
+    }
+  }
+  this.number_of_messages_found=list.length;
 }
 
 first_message_is_loaded(){
@@ -2477,7 +2504,6 @@ first_message_is_loaded(){
 first_message_isnt_loaded(){
   this.list_of_messages_pictures=[];
   this.list_of_messages_files=[];
-  this.compteur_image_research=0;
   this.compteur_loaded_research=0;
   this.list_of_show_pp_left=[];
   this.index_of_show_pp_right=-1;
@@ -2485,40 +2511,30 @@ first_message_isnt_loaded(){
   this.put_messages_visible=false;
   this.show_less_results=true;
   this.list_of_messages_date=[];
-  this.list_of_messages=this.list_of_messages_around[this.number_click_top-1];
+  this.list_of_messages=this.list_of_messages_around[0];
   for(let i=0;i<this.list_of_messages.length;i++){
     this.list_of_messages_date.push(this.date_of_message(this.list_of_messages[i].createdAt,0));
     if(this.list_of_messages[i].is_an_attachment){
-      this.compteur_image_research+=1;
       
       this.get_picture_for_message(i);
     }
     if(this.friend_type=='user'){
       this.sort_pp(i);
-      if(this.compteur_pp==0 && this.compteur_image_research==0){
-        this.put_messages_visible=true;
-      }
-    }
-    else{
-      if(this.compteur_image_research==0){
-        this.put_messages_visible=true;
-      }
     }
   }
   this.cd.detectChanges();
   for(let i=0;i<this.list_of_messages.length;i++){
-    if(this.list_of_messages[i].id==this.list_of_messages_found_complete[this.number_click_top-1].id){
+    if(this.list_of_messages[i].id==this.list_of_messages_found_complete[0].id){
       let ind= this.list_of_messages.length-1-i;
       this.searched_message = ind;
       let offset=this.message_children.toArray()[ind].nativeElement.offsetTop;
       this.myScrollContainer.nativeElement.scrollTop=offset-100 ;
     }
   }
+  this.put_messages_visible=true;
 }
 
 
-compteur_image_research=0;
-//show_more_or_less=false;
 show_less_results=false;
 show_next_message_researched(){
   if(this.number_click_top<this.number_of_messages_found){
@@ -2533,7 +2549,6 @@ show_next_message_researched(){
       this.show_less_results=true;
       this.list_of_messages_pictures=[];
       this.list_of_messages_files=[];
-      this.compteur_image_research=0;
       this.compteur_loaded_research=0;
       this.list_of_show_pp_left=[];
       this.index_of_show_pp_right=-1;
@@ -2544,19 +2559,10 @@ show_next_message_researched(){
       for(let i=0;i<this.list_of_messages.length;i++){
         this.list_of_messages_date.push(this.date_of_message(this.list_of_messages[i].createdAt,0));
         if(this.list_of_messages[i].is_an_attachment){
-          this.compteur_image_research+=1;
           this.get_picture_for_message(i);
         }
         if(this.friend_type=='user'){
           this.sort_pp(i);
-          if(this.compteur_pp==0 && this.compteur_image_research==0){
-            this.put_messages_visible=true;
-          }
-        }
-        else{
-          if(this.compteur_image_research==0){
-            this.put_messages_visible=true;
-          }
         }
       }
       this.cd.detectChanges();
@@ -2568,6 +2574,7 @@ show_next_message_researched(){
           this.myScrollContainer.nativeElement.scrollTop=offset-100;
         }
       }
+      this.put_messages_visible=true;
     }
   }
 }
@@ -2598,13 +2605,12 @@ show_precedent_message_researched(){
         let offset=this.message_children.toArray()[ind].nativeElement.offsetTop;
         this.myScrollContainer.nativeElement.scrollTop=offset-100 ;
       }
+      this.put_messages_visible=true;
       
     }
     else{
-      //this.show_more_or_less=true;
       this.list_of_messages_pictures=[];
       this.list_of_messages_files=[];
-      this.compteur_image_research=0;
       this.compteur_loaded_research=0;
       this.list_of_show_pp_left=[];
       this.index_of_show_pp_right=-1;
@@ -2615,19 +2621,10 @@ show_precedent_message_researched(){
       for(let i=0;i<this.list_of_messages.length;i++){
         this.list_of_messages_date.push(this.date_of_message(this.list_of_messages[i].createdAt,0));
         if(this.list_of_messages[i].is_an_attachment){
-          this.compteur_image_research+=1;
           this.get_picture_for_message(i);
         }
         if(this.friend_type=='user'){
           this.sort_pp(i);
-          if(this.compteur_pp==0 && this.compteur_image_research==0){
-            this.put_messages_visible=true;
-          }
-        }
-        else{
-          if(this.compteur_image_research==0){
-            this.put_messages_visible=true;
-          }
         }
         
       }
@@ -2640,6 +2637,7 @@ show_precedent_message_researched(){
           this.myScrollContainer.nativeElement.scrollTop=offset-100 ;
         }
       }
+      this.put_messages_visible=true;
     }
 
   }
@@ -2675,9 +2673,9 @@ get_picture_for_message(i){
     }
     else if(this.list_of_messages[i].attachment_type=='picture_attachment'){
       this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).subscribe(t=>{
-        let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.list_of_messages_pictures[i]=url;
+        let blob = new Blob([t], {type: 'image/png'});
+        let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+         this.list_of_messages_pictures[i]=url;
       })
     }
     else if(this.list_of_messages[i].attachment_type=='file_attachment'){
@@ -2702,7 +2700,6 @@ show_spinner_for_less=false;
 trigger_no_more=false;
 
 see_more_messages(){
-
     this.show_spinner_for_more=true;
     this.searched_message = -1;
 
@@ -2744,7 +2741,6 @@ see_more_messages(){
 }
 
 see_less_messages(){
-  
   this.show_spinner_for_less=true;
   this.searched_message = -1;
   
@@ -2756,7 +2752,6 @@ see_less_messages(){
       this.list_of_messages=[];
       this.list_of_messages_pictures=[];
       this.list_of_messages_files=[];
-      this.compteur_image_research=0;
       this.compteur_loaded_research=0;
       this.list_of_show_pp_left=[];
       this.index_of_show_pp_right=-1;
@@ -2766,36 +2761,24 @@ see_less_messages(){
         this.list_of_messages.push(r[0][i]);
         this.list_of_messages_date.push(this.date_of_message(r[0][i].createdAt,0));
         if(this.list_of_messages[i].is_an_attachment){
-          this.compteur_image_research+=1;
           this.get_picture_for_message(i);
         }
         if(this.friend_type=='user'){
           this.sort_pp(i);
-          if(this.compteur_pp==0 && this.compteur_image_research==0){
-            this.put_messages_visible=true;
-          }
         }
-        else{
-          if(this.compteur_image_research==0){
-            this.put_messages_visible=true;
-          }
+      }
+      this.cd.detectChanges();
+      let offset=this.message_children.toArray()[num].nativeElement.offsetTop;
+      let height =this.message_children.toArray()[num].nativeElement.getBoundingClientRect().height
+      this.myScrollContainer.nativeElement.scrollTop=offset-height-100;
+
+      for(let j=0;j<this.list_of_messages.length;j++){
+        if(this.list_of_messages[j].id==this.list_of_messages_found_complete[this.number_click_top-1].id){
+          let ind= this.list_of_messages.length-1-j;
+          this.searched_message = ind;
         }
-        if(i==r[0].length-1){
-          this.cd.detectChanges();
-          let offset=this.message_children.toArray()[num].nativeElement.offsetTop;
-          let height =this.message_children.toArray()[num].nativeElement.getBoundingClientRect().height
-          this.myScrollContainer.nativeElement.scrollTop=offset-height-100;
-
-          for(let j=0;j<this.list_of_messages.length;j++){
-            if(this.list_of_messages[j].id==this.list_of_messages_found_complete[this.number_click_top-1].id){
-              let ind= this.list_of_messages.length-1-j;
-              this.searched_message = ind;
-            }
-            if(j==this.list_of_messages.length-1){
-              this.show_spinner_for_less=false;
-            }
-          }
-
+        if(j==this.list_of_messages.length-1){
+          this.show_spinner_for_less=false;
         }
       }
     }
@@ -2806,11 +2789,6 @@ see_less_messages(){
   });
 }
 
-/**************************************** */
-/**************************************** */
-/**FONCTIONS MOKHTAR */
-/**************************************** */
-/**************************************** */
 
 
 show_icon=false;
@@ -2844,7 +2822,6 @@ add_a_friend() {
 
 
 exit_group(){
-
   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
     data: {showChoice:true, text:'Etes-vous sûr de vouloir quitter le groupe ?'},
     panelClass: "popupConfirmationClass",
@@ -2872,7 +2849,7 @@ exit_group(){
           chat_friend_id:this.chat_friend_id,
         };
         this.chatService.messages.next(message_one);
-        location.reload();
+        this.remove_friend_from_list.emit({friend_id:this.friend_id,friend_type:"group"});
       })
     }
   })
@@ -2992,6 +2969,39 @@ see_emoji_reaction_by_user(id_message){
 /*********************************************  GROUP MESSAGES MANAGMENT ******************************/
 /*********************************************  GROUP MESSAGES MANAGMENT  ******************************/
 
+list_of_names_deleted={}
+loading_deleted_member={};
+
+get_name_of_someone_who_exit_group(id,l,item){
+  if(this.list_of_names_deleted[id]){
+    if(l==1){
+      return this.list_of_names_deleted[id]
+    }
+    else{
+      return this.list_of_names_deleted[id] + ' a ajouté ' + item + ' au groupe'
+    }
+    
+  }
+  else if(this.list_of_users_names[id]){
+    if(l==1){
+      return this.list_of_names_deleted[id]
+    }
+    else{
+      return this.list_of_names_deleted[id] + ' a ajouté ' + item + ' au groupe'
+    }
+  }
+  else if(this.loading_deleted_member[id]){
+    return ''
+  }
+  else{
+    this.loading_deleted_member[id]=true;
+    this.Profile_Edition_Service.retrieve_profile_data(id).subscribe(r=>{
+      this.list_of_names_deleted[id]=r[0].firstname + ' ' + r[0].lastname;
+      this.cd.detectChanges()
+    })
+  }
+}
+
 
 has_user_saw_something_else_after(id,index){
   if(index>0){
@@ -3023,6 +3033,7 @@ chat_service_managment_function(msg){
   else{
     //a person sends a message
     if(msg[0].id_user!="server" && !msg[0].is_from_server){
+     
       if(msg[0].is_a_group_chat){
         //currently in the group talking to my friends
         if(msg[0].id_user==this.friend_id && msg[0].status!='seen' && this.friend_type=='group'){
@@ -3046,8 +3057,8 @@ chat_service_managment_function(msg){
             this.chatService.get_group_chat_as_friend(msg[0].id_user).subscribe(m=>{
               let chat_friend_id=m[0].id
               this.chatService.get_attachment(msg[0].attachment_name,'group',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).subscribe(r=>{
-                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                let blob = new Blob([r], {type: 'image/png'});
+                let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                 this.list_of_messages_pictures.splice(0,0,url)
                 
                 this.list_of_messages.splice(0,0,message);
@@ -3061,7 +3072,7 @@ chat_service_managment_function(msg){
           }
           else if(msg[0].attachment_type=="file_attachment" ){
             this.chatService.get_group_chat_as_friend(msg[0].id_user).subscribe(m=>{
-              let chat_friend_id=m[0].id
+              let chat_friend_id=m[0].id;
               this.chatService.get_attachment_popup(msg[0].attachment_name,'group',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -3109,7 +3120,6 @@ chat_service_managment_function(msg){
             
           }
           else if( msg[0].id_chat_section!=this.id_chat_section){
-          
             this.show_notification_message=true;
             this.number_of_sections_unseen+=1;
             let ind=this.list_of_chat_sections_id.indexOf(msg[0].id_chat_section);
@@ -3178,8 +3188,8 @@ chat_service_managment_function(msg){
               this.chatService.get_chat_friend(msg[0].id_user,false).subscribe(m=>{
                 let chat_friend_id=m[0].id
                 this.chatService.get_attachment(msg[0].attachment_name,'user',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).subscribe(r=>{
-                  let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                  let blob = new Blob([r], {type: 'image/png'});
+                  let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                   this.list_of_messages_pictures.splice(0,0,url)
                   this.list_of_messages.splice(0,0,message);
                   this.list_of_messages_files.splice(0,0,false)
@@ -3204,10 +3214,9 @@ chat_service_managment_function(msg){
               this.reload_list_of_files_subject.next(true)
             }
             else if(msg[0].attachment_type=="file_attachment" ){
-              
               this.chatService.get_chat_friend(msg[0].id_user,false).subscribe(m=>{
                 let chat_friend_id=m[0].id
-                this.chatService.get_attachment_popup(msg[0].attachment_name,'false',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).subscribe(r=>{
+                this.chatService.get_attachment_popup(msg[0].attachment_name,'user',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).subscribe(r=>{
                   let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.list_of_messages_files.splice(0,0,SafeURL)
@@ -3294,21 +3303,24 @@ chat_service_managment_function(msg){
         else if(msg[0].id_user==this.friend_id && msg[0].status=="seen"){
           let modif_done=false;
           let index=0;
-          for(let i=0;i<this.list_of_messages.length;i++){
-            if(this.list_of_messages[i].status=='received' && this.list_of_messages[i].id_user==this.current_user_id && this.list_of_messages[i].id){
-                this.list_of_messages[i].status='seen';
-                if(!modif_done){
-                  index=i;
-                  modif_done=true;
-                }
+          if(this.id_chat_section==msg[0].id_chat_section){
+            for(let i=0;i<this.list_of_messages.length;i++){
+              if(this.list_of_messages[i].status=='received'  && this.list_of_messages[i].id_user==this.current_user_id && this.list_of_messages[i].id){
+                  this.list_of_messages[i].status='seen';
+                  if(!modif_done){
+                    index=i;
+                    modif_done=true;
+                  }
+              }
+              if(i==this.list_of_messages.length-1){
+                this.index_of_show_pp_right=index;
+                
+              }
             }
-            if(i==this.list_of_messages.length-1){
-              this.index_of_show_pp_right=index;
-              
-            }
+            this.change_message_status.emit({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_user,friend_type:'user'});
+            this.cd.detectChanges();
           }
-          this.change_message_status.emit({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_user,friend_type:'user'});
-          this.cd.detectChanges();
+          
         }
         // not the friend I am talking to but seen
         else if(msg[0].id_user!=this.friend_id && msg[0].status=="seen"){
@@ -3444,10 +3456,11 @@ chat_service_managment_function(msg){
     }
     else if(msg[0].message=="New"){
       if(msg[0].is_a_group_chat ){
-        this.add_group_to_contacts.emit({friend_id:msg[0].id_receiver,message:msg[0]});
+        this.add_group_to_contacts.emit({friend_id:msg[0].id_user,message:msg[0]});
         this.cd.detectChanges;
       }
       else{
+        
         if(this.spam=='true'){
           this.add_spam_to_contacts.emit({spam_id:msg[0].id_user,message:msg[0]});
           this.cd.detectChanges;
@@ -3506,7 +3519,7 @@ chat_service_managment_function(msg){
         this.cd.detectChanges();
       }
       else if(msg[0].group_chat_id && this.friend_id==msg[0].group_chat_id && this.current_user_id!=msg[0].id_user_writing && this.friend_type=="group"){
-        this.display_writing=true;
+        this.display_writing=false;
         this.section_where_is_writing=msg[0].message;
         
         if(this.list_of_users_writing.indexOf(msg[0].id_user_writing)<0){
@@ -3533,20 +3546,16 @@ chat_service_managment_function(msg){
     else if(msg[0].server_message=="delete_message" ){
       let index_mesage=-1;
       if(!msg[0].group_chat_id && this.friend_id==msg[0].id_user_writing && this.id_chat_section==msg[0].message.id_chat_section && this.friend_type=="user"){
-        for(let i=0;i<((this.list_of_messages.length>=50)?50:this.list_of_messages.length);i++){
-          if(this.list_of_messages[i].id==msg[0].id_message){
-            index_mesage=i;
-            this.list_of_messages[i].status="deleted";
-          }
+        index_mesage= this.list_of_messages.findIndex(x => x.id === msg[0].id_message)
+        if(index_mesage>=0){
+          this.list_of_messages[index_mesage].status="deleted";
         }
        
       }
       else if(msg[0].group_chat_id && this.friend_id==msg[0].group_chat_id && this.current_user_id!=msg[0].id_user_writing && this.id_chat_section==msg[0].message.id_chat_section && this.friend_type=="group"){
-        for(let i=0;i<((this.list_of_messages.length>=50)?50:this.list_of_messages.length);i++){
-          if(this.list_of_messages[i].id==msg[0].id_message){
-            index_mesage=i;
-            this.list_of_messages[i].status="deleted";
-          }
+        index_mesage= this.list_of_messages.findIndex(x => x.id === msg[0].id_message)
+        if(index_mesage>=0){
+          this.list_of_messages[index_mesage].status="deleted";
         }
       }
       if(index_mesage==0){
@@ -3556,9 +3565,6 @@ chat_service_managment_function(msg){
       this.cd.detectChanges
     }
     else if(msg[0].server_message=="block" ){
-      if(this.friend_type=='user' && this.friend_id==msg[0].id_user_blocking){
-        //location.reload();
-      }
       this.blocking_managment.emit({friend_id:msg[0].id_user_blocking,who_is_blocked:"me"})
     }
     else if(msg[0].server_message=="emoji" ){
@@ -3752,6 +3758,7 @@ remove_contact(){
     let new_list_types=[];
     let new_indice;
     let len=list.length;
+    let list_of_chat_friend_ids=[];
     for(let i=0;i<len;i++){
       if(list[i] && (this.list_of_messages[i].attachment_type=='picture_attachment' || this.list_of_messages[i].attachment_type=='picture_message')){
         if(i==indice){
@@ -3759,6 +3766,7 @@ remove_contact(){
         }
         new_list.push(this.list_of_messages[i].attachment_name);
         new_list_types.push(this.list_of_messages[i].attachment_type);
+        list_of_chat_friend_ids.push((this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id)
       }
     }
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
@@ -3768,7 +3776,7 @@ remove_contact(){
         list_of_types:new_list_types,
         index_of_picture:new_indice,
         friend_type:(this.friend_type=='user')?'user':'group',
-        chat_friend_id:this.chat_friend_id
+        list_of_chat_friend_ids:list_of_chat_friend_ids,
       },      
       panelClass:"popupDocumentClass",
 
@@ -3787,7 +3795,6 @@ remove_contact(){
 
   search_popup_closed:boolean = true;
   search_in_conv() {
-
     if( !this.search_popup_closed ) {
       return;
     }
@@ -3935,6 +3942,12 @@ onResized(event: ResizedEvent) {
     this.list_of_folders=event.folders;
     this.list_of_folders_retrieved=true;
   }
+  archive_from_right(event){
+    let index_mesage= this.list_of_messages.findIndex(x => x.id === event.id_message);
+    if(index_mesage>=0){
+        this.list_of_messages[index_mesage].id_folder=event.id_folder;
+    }
+  }
   archive(index){
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"for_archive",message:this.list_of_messages[index],list_of_folders:this.list_of_folders},
@@ -3942,7 +3955,7 @@ onResized(event: ResizedEvent) {
     })
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        this.reload_list_of_archives_subject.next({reload:true,add:true,id_folder:this.list_of_messages[index].id_folder})
+        this.reload_list_of_archives_subject.next({reload:true,add:true,message:this.list_of_messages[index]})
       }
     });
   }
@@ -3950,8 +3963,12 @@ onResized(event: ResizedEvent) {
   unarchive(index){
     this.chatService.unarchive_chat_message(this.list_of_messages[index].id,this.list_of_messages[index].id_folder).subscribe(r=>{
       this.list_of_messages[index].id_folder=0;
-      this.reload_list_of_archives_subject.next({reload:true,remove:true,id_folder:this.list_of_messages[index].id_folder})
+      this.reload_list_of_archives_subject.next({reload:true,remove:true,message:this.list_of_messages[index]})
     });
   }
+
+
+
+
 }
 

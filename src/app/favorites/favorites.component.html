@@ -1,46 +1,49 @@
 <div class="trendings-global-container">
 
-    
-    <div class="favorites-container large-screen"  [@enterAnimation]>
-        <img class="background-image " src="https://www.linkarts.fr/assets/img/logo_long_1.png" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }" >
-        <span>
-            Bienvenue dans la section Coups de cœur !
-            <br>
-            <br>
-            Vous trouverez ici la liste des meilleurs nouveaux artistes du jour. Chaque lundi une rémunération est attribuée aux 15 premiers artistes de ce classement.
-            <br>
-            <br>
-            Si vous êtes un artiste et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faire partie de ce classement !
-        </span>
-    </div>
 
-    <div class="favorites-container small-screen">
+
+    <div class="favorites-container " >
     
-        <div class="see-more-button" *ngIf="!see_more" [@enterFromTopAnimation]>
-            <span>En savoir plus</span>
-        </div>
-    
-        <div class="opened-text" *ngIf="see_more" [@enterFromTopAnimation]>
-            
-            <div class="header">
-                <div class="horizontal--bar left"></div>
-                <div class="favorites-logo"></div>
-                <div class="horizontal--bar right"></div>
+        <div class="small-screen" [@enterFromTopAnimation] *ngIf="see_more">
+            <div class="opened-text"  >
+                <div class="header">
+                    <div class="horizontal--bar left"></div>
+                    <div class="favorites-logo"></div>
+                    <div class="horizontal--bar right"></div>
+                </div>
+        
+                <span>Bienvenue dans la section Coups de cœur !</span>
+                <div class="horizontal--bar"></div>
+                <span>Vous trouverez ci-dessous la liste des meilleurs nouveaux artistes du jour. Chaque lundi une rémunération sera attribuée aux 15 premiers artistes de ce classement selon leur position dans celui-ci.</span>
+                <div class="horizontal--bar"></div>
+                <span>Si vous êtes un artiste et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faire partie de ce classement !</span>
+        
+                <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
             </div>
+            
     
-            <span>Vous trouverez ici la liste des meilleurs nouveaux artistes du jour. Chaque lundi une rémunération est attribuée aux 15 premiers artistes de ce classement.</span>
-            <div class="horizontal--bar"></div>
-            <span>Si vous êtes un artiste et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faire partie de ce classement !</span>
-    
-            <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
-    
+            <div class="see-less-button" (click)="see_more_button();" 
+            matTooltip="En savoir plus sur les Coups de cœur"
+            matTooltipClass='linkarts-tooltip'
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="100">
+                <mat-icon [ngClass]="{'invisible': !show_icon,'rotate': !see_more }">close</mat-icon>
+            </div>
+
         </div>
     
-        <div class="see-less-button" (click)="see_more_button();">
-            <mat-icon [ngClass]="{'invisible': !show_icon,'rotate': !see_more }">keyboard_arrow_down</mat-icon>
-        </div>
+      
     </div>
 
+    <div *ngIf="!see_more" >
+        <div class="see-less-button less-top" (click)="see_more_button();" 
+        matTooltip="En savoir plus sur les Coups de cœur"
+        matTooltipClass='linkarts-tooltip'
+        [matTooltipPosition]="'below'"
+        [matTooltipShowDelay]="100">
+            <span>?</span>
+        </div>
+    </div>
 
 
     <ng-container *ngIf="!favorites_retrieved">

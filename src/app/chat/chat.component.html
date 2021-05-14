@@ -125,10 +125,10 @@
 
             <div *ngIf="show_research_results" class="top-container-search-results">
                 <ng-container *ngIf="number_of_messages_found>0">
-                    <button (click)="show_precedent_message_researched()" [@enterFromLeftAnimation]>
+                    <button (click)="show_next_message_researched()" [@enterFromLeftAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_up</mat-icon>
                     </button>
-                    <button (click)="show_next_message_researched()" [@enterFromLeftAnimation]>
+                    <button (click)="show_precedent_message_researched()" [@enterFromLeftAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_down</mat-icon>
                     </button>
                     <span [@enterFromLeftAnimation]>
@@ -422,9 +422,7 @@
                                         </div>
                                         <div
                                             *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
-                                            <a [href]="list_of_messages_files[list_of_messages.length -1 - i]"
-                                                [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length
-                                                -1 - i].attachment_name}}</a>
+                                            <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -584,8 +582,7 @@
                                         </div>
                                         <div
                                             *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
-                                            <a [href]="list_of_messages_files[list_of_messages.length -1 - i]">{{list_of_messages[list_of_messages.length
-                                                -1 - i].attachment_name}}</a>
+                                            <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -634,15 +631,14 @@
                         <!--  MESSAGES SERVER  -->
                         <!--  MESSAGES SERVER  -->
 
-                        <div class="new-contact-message-content"
-                        *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New' && list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                        <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New' && list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <span>
                                 <mat-icon>person_add</mat-icon>
                                 <b>{{friend_name}}</b> fait désormais parti de vos contacts
                             </span>
                         </div>
 
-                        <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='new_section'">
+                        <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='new_section' && list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <span>
                                 Bienvenue dans la section <b>{{chat_section_to_open}}</b>
                             </span>
@@ -963,8 +959,7 @@
                                         <div
                                             *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
                                             <a [href]="list_of_messages_files[list_of_messages.length -1 - i]"
-                                                [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length
-                                                -1 - i].attachment_name}}</a>
+                                                [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1147,8 +1142,7 @@
                                         </div>
                                         <div
                                             *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
-                                            <a [href]="list_of_messages_files[list_of_messages.length -1 - i]">{{list_of_messages[list_of_messages.length
-                                                -1 - i].attachment_name}}</a>
+                                            <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1237,23 +1231,23 @@
                                 *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='Exit'">
                                 <span *ngIf="list_of_messages[list_of_messages.length -1 - i].real_id_user">
                                     <mat-icon>person_off</mat-icon>
-                                    <b>{{list_of_messages[list_of_messages.length -1 - i].real_id_user}}</b> a quitté le groupe
+                                    <b>{{get_name_of_someone_who_exit_group(list_of_messages[list_of_messages.length -1 - i].real_id_user,1,0)}}</b> a quitté le groupe
                                 </span>
                                 <span *ngIf="!list_of_messages[list_of_messages.length -1 - i].real_id_user">
                                     <mat-icon>person_off</mat-icon>
-                                    <b>{{list_of_messages[list_of_messages.length -1 - i].id_user}}</b> a quitté le groupe
+                                    <b>{{get_name_of_someone_who_exit_group(list_of_messages[list_of_messages.length -1 - i].id_user,1,0)}}</b> a quitté le groupe
                                 </span>
                             </div>
 
                             <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New_friend_in_the_group'">
-                                <div class="new-contact-message-content" *ngFor="let item of list_of_messages[list_of_messages.length -1 - i].list_of_names_added; let j=index">
+                                <div  *ngFor="let item of list_of_messages[list_of_messages.length -1 - i].list_of_names_added; let j=index" class="new-contact-message-content">
                                     <span *ngIf="list_of_messages[list_of_messages.length -1 - i].real_id_user">
                                         <mat-icon>person_add</mat-icon>
-                                        <b>{{list_of_messages[list_of_messages.length -1 - i].real_id_user}}</b> a ajouté <b>{{item}}</b> au groupe
+                                        <b>{{get_name_of_someone_who_exit_group(list_of_messages[list_of_messages.length -1 - i].real_id_user,2,item)}}</b> 
                                     </span>
-                                    <span *ngIf="!list_of_messages[list_of_messages.length -1 - i].real_id_user">
+                                   <span *ngIf="!list_of_messages[list_of_messages.length -1 - i].real_id_user">
                                         <mat-icon>person_add</mat-icon>
-                                        <b>{{list_of_messages[list_of_messages.length -1 - i].id_user}}</b> a ajouté <b>{{item}}</b> au groupe
+                                        <b>{{get_name_of_someone_who_exit_group(list_of_messages[list_of_messages.length -1 - i].id_user,2,item)}}</b>
                                     </span>
                                 </div>
                             </ng-container>
@@ -1467,6 +1461,7 @@
             (changeSection)="changed_section($event)"
             (arrowBack)="change_right_container()"
             (folders_emitter)="get_folders_emitter($event)"
+            (archive_from_right_emit)="archive_from_right($event)"
             >
         </app-chat-right-container>
 

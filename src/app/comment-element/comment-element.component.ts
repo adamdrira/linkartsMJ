@@ -304,7 +304,7 @@ export class CommentElementComponent implements OnInit {
       return
     }
     this.loading_remove=true;
-    this.NotationService.remove_commentary_answer(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.responses_list[i].id).subscribe(l=>{
+    this.NotationService.remove_commentary_answer(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.responses_list[i].id,this.comment_information.id).subscribe(l=>{
       let index=-1;
       for (let i=0;i<this.responses_list.length;i++){
         if(this.responses_list[i].id==l[0].id){
@@ -335,7 +335,7 @@ export class CommentElementComponent implements OnInit {
           information:"remove",
           status:"unchecked",
           is_comment_answer:true,
-          comment_id:this.responses_list[i].id,
+          comment_id:l[0].id,
         }
         this.chatService.messages.next(message_to_send);
         this.cd.detectChanges();

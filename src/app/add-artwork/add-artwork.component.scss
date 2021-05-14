@@ -152,57 +152,57 @@
 
     .addArtworkSelectClass.mat-select-panel {
         position: absolute;
-        top: 37px;
+        top: 36px;
         left: -5px;
+    
         border-radius: 23px !important;
-        box-shadow: 0px 0px 0px 2px #cce9fb, 0px 0px 2px 4px #b3e0fb;
+    
+        box-shadow:0px 0px 0px 2px #cce9fb, 0px 0px 2px 4px #b3e0fb;
         .mat-ripple * {
-            background-color: unset !important;
+            background-color:unset !important;
         }
         .mat-option.mat-active {
-            background: rgb(240, 244, 254);
+            background: rgb(240,244,254);
+        }
+        .mat-option:hover:not(.mat-option-disabled):not(.mat-active), .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
+            background:#f6fafd !important;
         }
         
-        .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
-            background: #f6fafd !important;
-        }
-
-        scrollbar-color: #b7e1fb white;
-        &::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        &::-webkit-scrollbar-track {
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        &::-webkit-scrollbar-thumb {
-            background-image: linear-gradient(0deg, #ffffff00, #76ccff, #ffffff00);
-            border-radius: 20px;
-        }
-
         .mat-option {
-            color: rgb(32, 56, 100) !important;
+            color: rgb(32,56,100) !important;
             font-weight: 600;
+            > span {
+              display: flex;
+              padding-bottom: 7px;
+              flex-direction: column;
+    
+              > span {
+                line-height: 22px;
+                color: rgb(32 56 100 / 84%);
+                font-weight: 500;
+                white-space: pre-wrap;
+                margin-top: -8px;
+                font-size: 12px;
+              }
+            }
         }
 
         &.options_with_description {
             > div {
-                position: relative;
-                 padding-bottom: 5px;
-              
+              position: relative;
+              padding-bottom: 5px;
               .mat-option {
-                height: 35px;
+                height: unset;
                 z-index: 1000;
                 background: unset !important;
                 &:hover {
-                    background:#f6fafd !important;
-                  }
+                  background:#f6fafd !important;
+                }
               }
               .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
                 background:unset !important;
               }
-              >span{
+              > span {
                 position: relative;
                 font-size: 12px;
                 display: flex;
@@ -212,6 +212,20 @@
                 font-weight: 600;
               }
             }
+        }
+
+        scrollbar-color: #b7e1fb white;
+        &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        }
+        &::-webkit-scrollbar-track {
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        &::-webkit-scrollbar-thumb {
+            background-image: linear-gradient(0deg, #ffffff00, #76ccff,#ffffff00);
+            border-radius: 20px;
         }
     }
     .addArtworkMatautocompleteClass.mat-autocomplete-panel {

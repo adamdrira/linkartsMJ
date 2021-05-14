@@ -357,7 +357,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Adresse e-mail</mat-label>
                     <input matInput formControlName="email" maxLength="100" type="search" autocomplete="off">
-                    <mat-error *ngIf="registerForm.controls['email'].invalid">Veuillez faire une saisie valide
+                    <mat-error *ngIf="registerForm.controls['email'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                     </mat-error>
                     <div class="length-indicator">{{registerForm.controls['email'].value?.length || 0}}/100</div>
                 </mat-form-field>
@@ -484,8 +484,8 @@
                         <div class="members-container" *ngIf="manage_group_activated[i]" [@enterAnimation]>
                             <div class="member" *ngFor="let member of list_of_members_ids_by_group[list_of_groups_ids[i]];let k=index">
     
-                                <div class="image-container">
-                                    <img [src]="list_of_members_pictures_by_group[list_of_groups_ids[i]][k]" >
+                                <div class="image-container" [ngClass]="{'shiny': !list_of_members_pictures_by_group_loaded[list_of_groups_ids[i]][k]}" >
+                                    <img [src]="list_of_members_pictures_by_group[list_of_groups_ids[i]][k]" (load)="load_list_of_members_pictures_by_group(i,k)" [ngClass]="{'invisible': !list_of_members_pictures_by_group_loaded[list_of_groups_ids[i]][k] }" >
                                 </div>
                                 <span>{{list_of_members_names_by_group[list_of_groups_ids[i]][k]}}</span>
     

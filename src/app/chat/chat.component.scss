@@ -78,7 +78,7 @@
                     }
                     span {
                         font-size: 16px;
-                        line-height: 18px;
+                        line-height: 22px;
                         font-weight: bold;
                         display: flex;
                         white-space: nowrap;
@@ -950,8 +950,7 @@
             border-radius: 50px !important;
             border: none !important;
             box-shadow: none !important;
-
-            transition: background-color 200ms;
+            background: white;
 
             ngx-emoji {
                 width: 100%;
@@ -969,10 +968,10 @@
             }
 
             &:hover {
-                background: #c9d4e2;
+                background: #efefef;
             }
             &:active {
-                background: #aabed4;
+                background: #efefef;
             }
         }
     }
@@ -1096,6 +1095,7 @@ button.show-more {
             text-align: center;
             padding: 0px 50px;
             margin: 10px 0px;
+            margin-bottom: 20px;
             display: flex;
             cursor: default;
             span {
@@ -1507,7 +1507,8 @@ button.show-more {
     span {
         color: #203864;
         font-size: 12px;
-        padding: 2px 9px;
+        font-weight: 600;
+        padding: 2px 12px;
         border-radius: 50px;
     }
 }
@@ -1522,7 +1523,8 @@ button.show-more {
     span {
         color: #203864;
         font-size: 12px;
-        padding: 2px 9px;
+        font-weight: 600;
+        padding: 2px 12px;
         border-radius: 50px;
     }
 }

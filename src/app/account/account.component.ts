@@ -574,9 +574,6 @@ export class AccountComponent implements OnInit {
         // if author suspended and visitor, if account doesn't exist or deleted
         this.profile_not_found=true;
 
-        
-        //this.update_background_position( this.opened_section );;
-
         this.author_name = user.firstname + ' ' + user.lastname;
         this.cd.detectChanges();
         if(user.status=="suspended"){
@@ -702,7 +699,6 @@ export class AccountComponent implements OnInit {
             if(this.route.snapshot.data['section']==9){
               this.open_section( 0,true );
               this.cd.detectChanges();
-              this.update_background_position(this.opened_section);
               let id_friend = parseInt(this.route.snapshot.paramMap.get('id_friend'));
               let pseudo_friend = this.route.snapshot.paramMap.get('pseudo_friend');
               this.update_background_position(0)
@@ -853,7 +849,7 @@ export class AccountComponent implements OnInit {
         for (let i=0;i<r[0].length;i++){
           if(r[0][i].format=="one-shot"){
             this.BdOneShotService.retrieve_bd_by_id(r[0][i].publication_id).subscribe(s=>{
-              if(s[0].status=="public"){
+              if(s[0] && s[0].status=="public"){
                 this.new_comic_contents[i]=s[0];
               }
               compteur++;
@@ -870,7 +866,7 @@ export class AccountComponent implements OnInit {
           else{
             this.BdSerieService.retrieve_bd_by_id(r[0][i].publication_id).subscribe(s=>{
               
-              if(s[0].status=="public"){
+              if(s[0] && s[0].status=="public"){
                 this.new_comic_contents[i]=s[0];
               }
               compteur++;
@@ -905,7 +901,7 @@ export class AccountComponent implements OnInit {
         for (let i=0;i<r[0].length;i++){
           if(r[0][i].format=="one-shot"){
             this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][i].publication_id).subscribe(s=>{
-              if(s[0].status=="public"){
+              if(s[0] && s[0].status=="public"){
                 this.new_drawing_contents[i]=s[0];
               }
               compteur++;
@@ -921,7 +917,7 @@ export class AccountComponent implements OnInit {
           }
           else{
             this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][i].publication_id).subscribe(s=>{
-              if(s[0].status=="public"){
+              if(s[0] && s[0].status=="public"){
                 this.new_drawing_contents[i]=s[0];
               }
               compteur++;
@@ -955,7 +951,7 @@ export class AccountComponent implements OnInit {
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
           this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][i].publication_id).subscribe(s=>{
-            if(s[0].status=="public"){
+            if(s[0] && s[0].status=="public"){
               this.new_writing_contents[i]=s[0];
             }
             compteur++;

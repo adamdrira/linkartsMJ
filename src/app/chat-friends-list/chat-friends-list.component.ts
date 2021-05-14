@@ -540,6 +540,7 @@ export class ChatFriendsListComponent implements OnInit {
               let last_friends_retrieved=false;
               let real_friend_retrieved=false;
               this.chatService.get_last_friends_groups_message(list_of_ids).subscribe(u=>{
+
                 this.list_of_friends_last_message=this.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
                 last_friends_retrieved=true;
                 last_check(this)
@@ -855,7 +856,6 @@ export class ChatFriendsListComponent implements OnInit {
     let name;
     let profile_picture;
     if(index>=0){
-      
       name =  this.list_of_spams_names[index];
       profile_picture =this.list_of_spams_profile_pictures[index]
       pseudo = this.list_of_spams_pseudos[index];
@@ -950,6 +950,7 @@ export class ChatFriendsListComponent implements OnInit {
           THIS.list_of_friends_users_only.splice(0,0,event.spam_id);
       
           if(THIS.list_of_spams_ids.length>0){
+            
             THIS.spam_id=THIS.list_of_spams_ids[0];
             THIS.spam_pseudo=  THIS.list_of_spams_pseudos[0];
             THIS.spam_certification =THIS.list_of_spams_certifications[0];
@@ -1085,32 +1086,40 @@ display_exit(event){
       index=i;
     }
   }
-  this.list_of_friends_types.splice(0,0,this.list_of_friends_types.splice(index,1)[0]);
-  this.list_of_friends_ids.splice(0,0,this.list_of_friends_ids.splice(index,1)[0]);
-  this.list_of_friends_last_message[index]=event.message;
-  this.list_of_friends_last_message.splice(0,0,this.list_of_friends_last_message.splice(index,1)[0]);
-  this.list_of_friends_names.splice(0,0,this.list_of_friends_names.splice(index,1)[0]);
-  this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
-  this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
-  this.friend_pp_loaded.splice(0,0,this.friend_pp_loaded.splice(index,1)[0]);
-  this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
-  this.list_of_friends_certifications.splice(0,0,this.list_of_friends_certifications.splice(index,1)[0]);
-  this.cd.detectChanges()
+  if(index>=0){
+    this.list_of_friends_types.splice(0,0,this.list_of_friends_types.splice(index,1)[0]);
+    this.list_of_friends_ids.splice(0,0,this.list_of_friends_ids.splice(index,1)[0]);
+    this.list_of_friends_last_message[index]=event.message;
+    this.list_of_friends_last_message.splice(0,0,this.list_of_friends_last_message.splice(index,1)[0]);
+    this.list_of_friends_names.splice(0,0,this.list_of_friends_names.splice(index,1)[0]);
+    this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
+    this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
+    this.friend_pp_loaded.splice(0,0,this.friend_pp_loaded.splice(index,1)[0]);
+    this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
+    this.list_of_friends_certifications.splice(0,0,this.list_of_friends_certifications.splice(index,1)[0]);
+    this.cd.detectChanges()
+  }
+  
 }
 
 change_message_status(event){
   if(!event.spam){
-    
+  
     let index_friend=-1;
     for(let i=0;i<this.list_of_friends_ids.length;i++){
       if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]==event.friend_type){
         index_friend=i;
       }
     }
-    
     if(index_friend>=0){
-      if(event.status=="delete" && this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section && this.list_of_friends_last_message[index_friend].id==event.id_message){
-        this.list_of_friends_last_message[index_friend].status="deleted";
+      if(event.status=="delete" ){
+        
+        if(!this.list_of_friends_last_message[index_friend].id && this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section && this.list_of_friends_last_message[index_friend].temporary_id==event.temporary_id){
+            this.list_of_friends_last_message[index_friend].status="deleted";
+        }
+        else if(this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section && this.list_of_friends_last_message[index_friend].id==event.id_message){
+          this.list_of_friends_last_message[index_friend].status="deleted";
+        }
       } 
       if(event.status=="seen" &&  this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section){
         if(event.friend_type=='group'){
@@ -1251,7 +1260,7 @@ change_message_status(event){
             
             if(!r[0].value && index2>=0){
               if(this.get_friends){
-                this.sort_spams_list();
+                 this.sort_spams_list();
               }
               else if(this.list_of_spams_retrieved){
                 this.list_of_spams_last_message[index2]=event.message;
@@ -1325,6 +1334,7 @@ change_message_status(event){
 
   remove_friend_from_contact(event){
     let index=-1;
+    
     for(let i=0;i<this.list_of_friends_ids.length;i++){
       if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]==event.friend_type ){
         index=i;
@@ -1353,7 +1363,30 @@ change_message_status(event){
 /**************************************************ADD FRIEND TO GROUP ************************* */
   
 
+list_of_names_deleted={}
+loading_deleted_member={};
 
+get_name_of_someone_who_exit_group(id,l,item){
+  if(this.list_of_names_deleted[id]){
+    if(l==1){
+      return this.list_of_names_deleted[id]
+    }
+    else{
+      return this.list_of_names_deleted[id] + ' a ajouté ' + item + ' au groupe'
+    }
+    
+  }
+  else if(this.loading_deleted_member[id]){
+    return ''
+  }
+  else{
+    this.loading_deleted_member[id]=true;
+    this.Profile_Edition_Service.retrieve_profile_data(id).subscribe(r=>{
+      this.list_of_names_deleted[id]=r[0].firstname + ' ' + r[0].lastname;
+      this.cd.detectChanges()
+    })
+  }
+}
   
   add_a_friend_to_the_group(event){
     this.cancel_create_group_chat();
@@ -2377,13 +2410,17 @@ change_message_status(event){
             this.waiting_friend_certification=this.friend_certification;
             this.waiting_id_chat_section=this.id_chat_section;
             this.waiting_chat_friend_id=this.chat_friend_id;
-            if(this.friend_type=='group'){
-              this.location.go(`/chat/group/${this.friend_pseudo}/${this.friend_id}`);
-            }
-            else{
-              this.location.go(`/chat/${this.friend_pseudo}/${this.friend_id}`);
-            }
 
+          }
+          else if(!this.waiting_friend_picture){
+            this.id_chat_section =1;
+            this.friend_type=this.list_of_friends_types[0];
+            this.friend_id=this.list_of_friends_ids[0];
+            this.chat_friend_id=this.list_of_chat_friends_ids[0];
+            this.friend_name=this.list_of_friends_names[0];
+            this.friend_picture=this.list_of_friends_profile_pictures[0];
+            this.friend_pseudo=this.list_of_friends_pseudos[0];
+            this.friend_certification=this.list_of_friends_certifications[0];
           }
           else{
             this.id_chat_section =this.waiting_id_chat_section;
@@ -2394,9 +2431,16 @@ change_message_status(event){
             this.friend_picture=this.waiting_friend_picture;
             this.friend_pseudo=this.waiting_friend_pseudo;
             this.friend_certification=this.waiting_friend_certification;
+            
+
           }
 
-
+          if(this.friend_type=='group'){
+            this.location.go(`/chat/group/${this.friend_pseudo}/${this.friend_id}`);
+          }
+          else{
+            this.location.go(`/chat/${this.friend_pseudo}/${this.friend_id}`);
+          }
           
           this.get_friends=true;
           this.get_spams=false;
@@ -2617,7 +2661,7 @@ group_chat_creation_done(){
  }
  else{
   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-    data: {showChoice:false, text:"Veuillez inclure au moins un membre."},
+    data: {showChoice:false, text:"Veuillez inclure au moins un membre et ajouter un titre valide."},
     panelClass: "popupConfirmationClass",
   });
  }
@@ -2701,13 +2745,16 @@ get_connections_status(){
       }
       else{
         this.chatService.get_group_chat_information(this.list_of_friends_ids[i]).subscribe(l=>{
-          let list=l[0].list_of_receivers_ids;
           let value=false;
-          for(let j=0;j<list.length;j++){
-            if(list[j]!=this.current_user){
-              let index=this.list_of_friends_users_only.indexOf(list[j])
-              if(r[0].list_of_users_connected[index]){
-                value=true;
+          if(l[0]){
+            let list=l[0].list_of_receivers_ids;
+           
+            for(let j=0;j<list.length;j++){
+              if(list[j]!=this.current_user){
+                let index=this.list_of_friends_users_only.indexOf(list[j])
+                if(r[0].list_of_users_connected[index]){
+                  value=true;
+                }
               }
             }
           }

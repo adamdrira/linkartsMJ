@@ -265,7 +265,7 @@ export class LoginComponent implements OnInit {
     // check email_checked
     
     this.authenticationService.check_email_checked(this.f.username.value, this.f.password.value).subscribe( data => {
-        if(data.user  && data.user.email_checked ){
+        if(data.user  && (data.user.email_checked || data.pass )){
             this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
               if(data.token){
                 this.display_email_not_checked=false;

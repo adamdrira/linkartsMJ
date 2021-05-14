@@ -13,7 +13,6 @@
   box-shadow: 0px 0px 5px 3px #28436d4a;
   color: white;
   font-size: 11px;
-  bottom: calc(53px - 100vh);
   display: flex;
   transition: all 200ms;
 
@@ -45,7 +44,7 @@
       justify-content: center;
       align-items: center;
       border-radius: 30px;
-      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
       color: #203864;
       font-weight: 700;
       text-align: center;
@@ -302,7 +301,7 @@
     display: flex;
     margin: auto;
     box-shadow: 0px 2px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12),
-      0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      0px 1px 2px 0px rgba(0, 0, 0, 0.12);
     display: flex;
     height: 33px;
   }
@@ -332,7 +331,7 @@
     border-top: unset;
     max-height: 270px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-      0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      0px 1px 2px 0px rgba(0, 0, 0, 0.12);
     border-radius: 0px 5px 10px 10px;
     font-size: 14px;
 
@@ -372,7 +371,7 @@
               padding: 0px 10px 2px 10px;
               border-radius: 30px;
               background-color:  #203864;
-              box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+              box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
               > span {
                 color:white;
                 font-weight: 600;
@@ -495,6 +494,7 @@
     display: flex;
     width: 100%;
     cursor: pointer;
+    outline: none;
   }
   .author-container:hover {
     background: rgb(243, 243, 243);
@@ -549,7 +549,7 @@
     }
     .last-connection {
       position: absolute;
-      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
       background: #f9f9f9;
       padding: 2px 3px 4px 3px;
       line-height: 6px;
@@ -571,7 +571,7 @@
     height: 42px;
     border-radius: 50%;
     margin: 0px auto 0px 0px;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
   }
   .author-container .right-container {
     display: flex;
@@ -687,7 +687,7 @@
         height: 100%;
         object-fit: cover;
         border-radius: 50px;
-        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
       }
     }
     &:hover {
@@ -772,7 +772,7 @@
   }
 
   .navbar .navbar-l1-searchbar-container .left-container {
-    width: 140px;
+    width: 150px;
     display: flex;
     background: white;
     border-right: 1px solid #e7e7e7;
@@ -832,7 +832,7 @@
     display: flex;
     user-select: none;
     background-image: linear-gradient(0.125turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
     margin-left: 7px;
     margin-right: 10px;
     padding: 5px 6px;
@@ -856,29 +856,10 @@
       img {
         margin:auto auto;
         border-radius: 50px;
-        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
         width: 100%;
         height: 100%;
       }
-      /*.absolute-menu-logo {
-        position: absolute;
-        display:flex;
-        width: 16px;
-        height: 16px;
-        right: -1px;
-        bottom: -3px;
-        text-align: center;
-        background: white;
-        border-radius: 50px;
-        border: 1px solid rgb(32,56,100);
-        mat-icon {
-          font-size: 11px;
-          width: unset;
-          height: unset;
-          color: #203864;
-          margin: auto auto;
-        }
-      }*/
     }
     span {
       color: #e4eaf0;
@@ -1049,8 +1030,8 @@
     border-radius: 50%;
     position: relative;
     display: flex;
-    margin-left: 7px;
-    margin-right: 7px;
+    margin-left: 5px;
+    margin-right: 5px;
 
     &.add-artwork {
       padding: 8px;
@@ -1132,7 +1113,7 @@
       &.opened {
         border-radius: 30px;
         box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-          0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+          0px 1px 2px 0px rgba(0, 0, 0, 0.12);
         color: #203864;
         background: white;
         text-shadow: 0 0 #203864;
@@ -1163,7 +1144,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 30px;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 1px 2px 0px rgba(0, 0, 0, 0.12);
     color: #203864;
     background: white;
     transition: all 200ms;
@@ -1342,6 +1323,7 @@
           line-height: 18px;
           font-weight:400 !important;
           color: rgb(32,56,100);
+          text-shadow: 0 0 #203864;
         }
         .mat-select-trigger {
           width:100%;
@@ -1372,7 +1354,7 @@
         border-radius: 15px;
         transition:border-radius 100ms;
         overflow: hidden;
-        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
         
         &.opened {
           border-radius: 15px 15px 0px 0px;
@@ -1411,7 +1393,7 @@
             border-radius: 30px;
             padding-left: 11px !important;
             padding-right: 2px !important;
-            width: 140px !important;
+            width: 150px !important;
 
             transition: box-shadow 200ms;
         }
@@ -1441,7 +1423,7 @@
             font-size: 11px;
             line-height: 24px;
             color: rgb(32,56,100);
-            font-weight: 600;
+            font-weight: 700;
             mat-select-trigger {
               display: flex;
 
@@ -1538,7 +1520,7 @@
     border-top: 1px solid #cacaca;
     top: 43px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-      0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      0px 1px 2px 0px rgba(0, 0, 0, 0.12);
     border-radius: 0px 0px 10px 10px;
     font-size: 12px;
     
@@ -1566,7 +1548,7 @@
 
   .notifications-container {
     position: relative;
-    min-height: 110px;
+    min-height: 245px;
     max-height: 245px;
     height: 100%;
     background: #f9f9f9;
@@ -1578,7 +1560,7 @@
   .notifications-container.notifications-model {
     position: relative;
     z-index: 1;
-    min-height: 110px;
+    min-height: 265px;
     max-height: 265px;
     background: #f9f9f9;
     overflow-y: auto;
@@ -1656,6 +1638,7 @@
 
   .subscriber-card {
     display: flex;
+    outline: none;
     border-radius: 8px;
     overflow: hidden;
     margin: 7px 5px;
@@ -1744,9 +1727,6 @@
     font-weight: 600;
     font-size: 13px;
   }
-  .open-chat:hover {
-    text-shadow: -0.01ex 0 white, 0.01ex 0 white;
-  }
 
   .title-proposition span {
     font-size: 35px;
@@ -1834,7 +1814,7 @@
         width: calc(100% - 600px);
       }
       .navbar-l1-searchbar-container .left-container {
-        width: 140px !important;
+        width: 150px !important;
       }
       .profile-container {
         background-image: unset !important;
@@ -1862,7 +1842,7 @@
         display: none !important;
       }
       .navbar-l1-searchbar-container .left-container {
-        width: 140px !important;
+        width: 150px !important;
       }
       .navbar-l1-searchbar-container {
         display: none;
@@ -1877,7 +1857,7 @@
         display: none !important;
       }
       .navbar-l1-searchbar-container .left-container {
-        width: 140px !important;
+        width: 150px !important;
       }
       .navbar-l1-searchbar-container {
         display: none;
@@ -2152,13 +2132,22 @@
   }
 
 
+  .bottom-help{
+    bottom: 60px !important;
+    @media (max-width: 335px) {
+      bottom: 72px !important;
+    }
+  }
+
+  
+
   .help-container {
     position:fixed;
     z-index: 99;
     display:flex;
     bottom:30px;
     right:30px;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
     border-radius: 150px;
     height: 70px;
     width: 70px;
@@ -2187,13 +2176,23 @@
       }
     }
 
+    @media (max-width: 700px) {
+      right:17px;
+      height: 50px;
+      width: 50px;
+      span {
+        font-size: 25px;
+      }
+    }
+
 
     @media (max-width: 500px) {
-      height: 60px;
-      width: 60px;
-      bottom: 16px;
-      right: 16px;
-      display:none;
+      height: 40px;
+      width: 40px;
+      right:10px;
+      span {
+        font-size: 20px;
+      }
     }
   }
 
@@ -2214,7 +2213,7 @@
     border-right: 1px solid #bbbbbb;
     border-top: unset;
     max-height: 270px;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
     border-radius: 13px 5px 10px 13px;
     .mat-ripple * {
         background-color: unset !important;
@@ -2244,12 +2243,12 @@
     overflow: hidden;
     
 
-    width: 140px !important;
+    width: 150px !important;
     top: 25px;
     left: 5px;
     border-top: 1px solid rgb(218,218,218);
     max-height: 270px;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
     border-radius: 0px 0px 15px 15px;
     max-height: 270px;
 
@@ -2304,7 +2303,7 @@
     }
   }
 
-
+ 
   .navbar-mat-menu {
     margin-top: 12px !important;
     border-radius: 0px 0px 12px 12px !important;
@@ -2365,7 +2364,7 @@
         height: 24px;
         width: 24px;
         border-radius: 65px;
-        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
         object-fit: cover;
         margin: auto 8px auto -4px !important;
       }
@@ -2383,21 +2382,28 @@
       }
     }
 
-    &.help {
-      max-width:320px;
-      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-
+    &.menu-bottom-help {
+      bottom: 60px !important;
+     
+      @media (max-width: 500px) {
+        bottom: 58px !important;
+      }
+    }
+  
+    &.help-common {
+      max-width:270px;
+      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
       position: fixed !important;
-      bottom: 31px !important;
-      right: 110px !important;
-
       margin-top: 3px !important;
       border-radius: 12px 10px 12px 12px !important;
-      
-      @media (max-width: 420px) {
-        bottom: 17px !important;
+      right: 110px !important;
+      @media (max-width: 700px) {
         right: 83px !important;
       }
+      @media (max-width: 500px) {
+        right: 55px !important;
+      }
+
       .navbar-button-menu-item {
         font-size: 14px !important;
         color: rgb(32,56,100) !important;
@@ -2410,6 +2416,13 @@
         &:active {
           background:#efefef !important;
         }
+      }
+    }
+
+    &.help {
+      bottom: 31px !important;
+      @media (max-width: 500px) {
+        bottom: 28px !important;
       }
     }
     .flex-container {

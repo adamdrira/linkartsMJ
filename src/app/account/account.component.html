@@ -462,12 +462,12 @@
         <span *ngIf="!profile_suspended">Compte supprimé</span>
     </div>
 
-    <div class="bottom-page-container">
+    <div class="bottom-page-container" *ngIf="!user_blocked && user_blocked_retrieved" [ngClass]="{'really-invisible': !(list_writings_added && list_drawings_artbook_added
+    && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && user_blocked_retrieved)}">
         <div class="bottom-page-top">
         </div>
         <div class="bottom-page-middle">
-            <div *ngIf="!user_blocked && user_blocked_retrieved" [ngClass]="{'really-invisible': !(list_writings_added && list_drawings_artbook_added
-            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && user_blocked_retrieved)}">
+            <div >
                 
                 <!--------------------------------------------------------------------------------->
                 <!--------------------------------------------------------------------------------->
@@ -516,10 +516,10 @@
                                 
                             </div>
                             <!-- Add Arrows -->
-                            <div class="button-prev-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isBeginning }"></div>
-                            <div class="button-next-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isEnd }"></div>
-                            <div class="swiper-button-next stories-button" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
-                            <div class="swiper-button-prev stories-button" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+                            <div class="button-prev-shadow" style="background: transparent;" *ngIf="swiper" [ngClass]="{'invisible': swiper.isBeginning }"></div>
+                            <div class="button-next-shadow" style="background: transparent;" *ngIf="swiper" [ngClass]="{'invisible': swiper.isEnd }"></div>
+                            <div class="swiper-button-next stories-button" style="background: transparent;" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+                            <div class="swiper-button-prev stories-button" style="background: transparent;" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
                         </div>
                     
                     </ng-container>
@@ -534,7 +534,6 @@
                         </div>
                         
                         <div class="account-form-container">
-                            <img class="background-image " [src]="cover_picture" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }" >
                             <div class="form-item"  [@enterAnimation]>
                                 <mat-form-field floatLabel='never'>
                                     <mat-label>{{primary_description_extended}}</mat-label>

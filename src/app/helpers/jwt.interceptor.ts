@@ -32,17 +32,52 @@ export class JwtInterceptor implements HttpInterceptor {
         }
 
         
-        if ( request.method !== 'GET' ) {
+        if ( request.method !== 'GET' || request.urlWithParams.includes("by_pseudo")) {
+            if(request.urlWithParams.includes("change_content_status")){
+      
+                if(request.body.category.includes("omic")){
+                    if(request.body.format.toLowerCase()=="serie"){
+                        this.store[`routes/retrieve_private_serie_bd`]=null;
+                        this.store[`routes/retrieve_bd_serie_by_id/${request.body.publication_id}`]=null;
+                        this.store[`routes/retrieve_bd_serie_by_id2/${request.body.publication_id}`]=null;
+                       
+                    }
+                    else{
+                        this.store[`routes/retrieve_bd_by_id/${request.body.publication_id}`]=null;
+                        this.store[`routes/retrieve_bd_by_id2/${request.body.publication_id}`]=null;
+                        this.store[`routes/retrieve_private_oneshot_bd`]=null;
+                    }
+                }
+                else if(request.body.category.includes("rawing")){
+                    if(request.body.format.toLowerCase()=="artbook"){
+                        this.store[`routes/retrieve_drawing_artbook_by_id/${request.body.publication_id}`]=null;
+                        this.store[`routes/retrieve_drawing_artbook_by_id2/${request.body.publication_id}`]=null;
+                        this.store[`routes/retrieve_private_artbook_drawings`]=null;
+                        
+                    }
+                    else{
+                        this.store[`routes/retrieve_drawing_info_onepage_by_id/${request.body.publication_id}`]=null;
+                        this.store[`routes/retrieve_drawing_info_onepage_by_id2/${request.body.publication_id}`]=null;
+                        this.store[`routes/retrieve_private_oneshot_drawings`]=null;
+                    }
+
+                }
+                else{
+                    this.store[`routes/retrieve_writing_information_by_id/${request.body.publication_id}`]=null;
+                    this.store[`routes/retrieve_writing_information_by_id2/${request.body.publication_id}`]=null;
+                    this.store[`routes/retrieve_private_writings`]=null;
+                }
+            }
+            else if(request.urlWithParams.includes("delete_ad")){
+                this.store[`routes/get_ads_by_user_id/${request.body.id_user}`]=null;
+                this.store[`routes/retrieve_ad_by_id/${request.body.id}`]=null;
+            }
             return next.handle(request);
         }
 
-        /*if(this.store[request.urlWithParams]){
-            console.log("cache found for : " + request.url)
-            console.log( this.store[request.urlWithParams])
-        }
-        else{
-            console.log("no cache found for : " + request.url)
-        }*/
+        
+        
+        
         // Check if observable is in cache, otherwise call next.handle
         const cachedObservable = this.store[request.urlWithParams] ||
         ( this.store[request.urlWithParams] = next.handle(request).pipe(

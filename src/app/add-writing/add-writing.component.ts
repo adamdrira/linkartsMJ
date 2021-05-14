@@ -4,7 +4,6 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {Writing_Upload_Service} from  '../services/writing.service';
 import { Router } from '@angular/router';
 import { Subscribing_service } from '../services/subscribing.service';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Writing_CoverService } from '../services/writing_cover.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -62,13 +61,13 @@ export class AddWritingComponent implements OnInit {
     public dialog: MatDialog,
     private deviceService: DeviceDetectorService,
     private Writing_CoverService:Writing_CoverService,
-    private Profile_Edition_Service:Profile_Edition_Service,
     private navbar: NavbarService,
     @Inject(DOCUMENT) private document: Document,
   ) { 
 
     this.REAL_step = 0;
     this.CURRENT_step = 0;
+    navbar.hide_help();
     navbar.visibility_observer_font.subscribe(font=>{
       if(font){
         this.show_icon=true;

@@ -330,7 +330,7 @@
                                         <div *ngIf="list_of_friends_last_message[i].status=='deleted'">
                                             message supprimé
                                         </div>
-
+                                   
                                         <!--------------------------- FROM SERVER ----------------------------->
                                         <!--------------------------- FROM SERVER ----------------------------->
                                         <!--------------------------- FROM SERVER ----------------------------->
@@ -356,19 +356,19 @@
                                             <div class="new-contact-message-content" *ngIf="list_of_friends_last_message[i].message=='Exit'">
                                                 <span *ngIf="list_of_friends_last_message[i].real_id_user">
                                                     <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
-                                                        {{list_of_friends_last_message[i].real_id_user}} a quitté le groupe
+                                                        {{get_name_of_someone_who_exit_group(list_of_friends_last_message[i].real_id_user,1,0)}} a quitté le groupe
                                                     </div>
                                                     <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                        <b> {{list_of_friends_last_message[i].real_id_user}} a quitté le groupe</b>
+                                                        <b>{{get_name_of_someone_who_exit_group(list_of_friends_last_message[i].real_id_user,1,0)}} a quitté le groupe</b>
                                                     </div>
                                                     
                                                 </span>
                                                 <span *ngIf="!list_of_friends_last_message[i].real_id_user">
                                                     <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
-                                                        {{list_of_friends_last_message[i].id_user}} a quitté le groupe
+                                                        {{get_name_of_someone_who_exit_group(list_of_friends_last_message[i].id_user,1,0)}} a quitté le groupe
                                                     </div>
                                                     <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                        <b> {{list_of_friends_last_message[i].id_user}} a quitté le groupe</b>
+                                                        <b>{{get_name_of_someone_who_exit_group(list_of_friends_last_message[i].id_user,1,0)}} a quitté le groupe</b>
                                                     </div>
                                                     
                                                 </span>
@@ -381,24 +381,68 @@
                                                 <div *ngFor="let item of list_of_friends_last_message[i].list_of_names_added; let j=index">
                                                     <span *ngIf="list_of_friends_last_message[i].real_id_user">
                                                         <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
-                                                            {{list_of_friends_last_message[i].real_id_user}} a ajouté {{item}} au groupe.
+                                                            {{get_name_of_someone_who_exit_group(list_of_friends_last_message[i].real_id_user,2,item)}} 
                                                         </div>
                                                         <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                            <b> {{list_of_friends_last_message[i].real_id_user}} a ajouté {{item}} au groupe.</b>
+                                                            <b>{{get_name_of_someone_who_exit_group(list_of_friends_last_message[i].real_id_user,2,item)}}</b>
                                                         </div>
                                                         
                                                     </span>
                                                     <span *ngIf="!list_of_friends_last_message[i].real_id_user">
-                                                        <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>0">
-                                                            {{list_of_friends_last_message[i].id_user}} a ajouté {{item}} au groupe.
+                                                        <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
+                                                            {{get_name_of_someone_who_exit_group(list_of_friends_last_message[i].id_user,2,item)}}
                                                         </div>
                                                         <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                            <b> {{list_of_friends_last_message[i].id_user}} a ajouté {{item}} au groupe.</b>
+                                                            <b>{{get_name_of_someone_who_exit_group(list_of_friends_last_message[i].id_user,2,item)}}</b>
                                                         </div>
                                                         
                                                     </span>
                                                 </div>
                                                 
+                                            </div>
+
+                                            <!-- NEW SECTION-->
+
+                                            <div *ngIf="list_of_friends_last_message[i].message=='new_section' && !list_of_friends_last_message[i].is_a_group_chat" > 
+                                                <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                                    
+                                                    <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                                        Vous avec créé une nouvelle discussion.
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].status!='seen'">
+                                                        <b>Vous avec créé une nouvelle discussion.</b>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                                    
+                                                    <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                                        {{list_of_friends_last_message[i].id_user_name}} a créé une nouvelle discussion.
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].status!='seen'">
+                                                        <b>{{list_of_friends_last_message[i].id_user_name}} a créé une nouvelle discussion.</b>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div *ngIf="list_of_friends_last_message[i].message=='new_section' && list_of_friends_last_message[i].is_a_group_chat" > 
+                                                <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                                    
+                                                    <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length>1">
+                                                        Vous avec créé une nouvelle discussion.
+                                                    </div>
+                                                    <div *ngIf="2>list_of_friends_last_message[i].list_of_users_who_saw.length">
+                                                        <b>Vous avec créé une nouvelle discussion.</b>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                                    
+                                                    <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
+                                                        {{list_of_friends_last_message[i].id_user_name}} a créé une nouvelle discussion.
+                                                    </div>
+                                                    <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
+                                                        <b>{{list_of_friends_last_message[i].id_user_name}} a créé une nouvelle discussion.</b>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -448,16 +492,45 @@
                                 <div class="last-message-container" *ngIf="list_of_spams_last_message[i]">
                                     <div class="last-message" >
                                         <div  *ngIf="list_of_spams_last_message[i].is_an_attachment">
-                                            <div *ngIf="list_of_spams_last_message[i].status=='seen' || list_of_spams_last_message[i].id_user==current_user">
-                                                <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
-                                                    a envoyé une image
+                                            
+                                            <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
+                                                <div *ngIf="list_of_spams_last_message[i].id_user==current_user">
+                                                    <div *ngIf="list_of_spams_last_message[i].status=='seen'">
+                                                        vous avez envoyé une image
+                                                    </div>
+                                                    <div *ngIf="list_of_spams_last_message[i].status!='seen'">
+                                                        <b>vous avez envoyé une image</b>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="list_of_spams_last_message[i].id_user!=current_user">
+                                                    <div *ngIf="list_of_spams_last_message[i].status=='seen'">
+                                                        a avez envoyé une image
+                                                    </div>
+                                                    <div *ngIf="list_of_spams_last_message[i].status!='seen'">
+                                                        <b>a avez envoyé une image</b>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div *ngIf="list_of_spams_last_message[i].status=='received'">
-                                                <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
-                                                    <b>a envoyé une image</b>
+
+                                            <div  *ngIf="list_of_spams_last_message[i].attachment_type=='file_attachment'">
+                                                <div *ngIf="list_of_spams_last_message[i].id_user==current_user">
+                                                    <div *ngIf="list_of_spams_last_message[i].status=='seen'">
+                                                        vous avez envoyé une pièce jointe
+                                                    </div>
+                                                    <div *ngIf="list_of_spams_last_message[i].status!='seen'">
+                                                        <b>vous avez envoyé une pièce jointe</b>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="list_of_spams_last_message[i].id_user!=current_user">
+                                                    <div *ngIf="list_of_spams_last_message[i].status=='seen'">
+                                                        a avez envoyé une pièce jointe
+                                                    </div>
+                                                    <div *ngIf="list_of_spams_last_message[i].status!='seen'">
+                                                        <b>a avez envoyé une pièce jointe</b>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            
                                         </div>
                                         <div  *ngIf="!list_of_spams_last_message[i].is_an_attachment">
                                             <div *ngIf="list_of_spams_last_message[i].id_user!=current_user && list_of_spams_last_message[i].status!='deleted'">

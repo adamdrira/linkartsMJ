@@ -122,9 +122,9 @@ export class HomeLinkartsComponent implements OnInit {
         let id = parseInt(this.route.snapshot.paramMap.get('id'));
         let password = this.route.snapshot.paramMap.get('password');
         this.Profile_Edition_Service.check_password_for_registration(id,password).subscribe(r=>{
+          this.location.go('/home/recommendations')
           if(r[0].user_found){
             this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info ).subscribe();
-            this.location.go('/home/recommendations')
             const dialogRef = this.dialog.open(LoginComponent, {
               data: {usage:"registration",temp_pass:r[0].pass,email:r[0].user_found.email},
               panelClass: "loginComponentClass",
@@ -132,7 +132,6 @@ export class HomeLinkartsComponent implements OnInit {
           }
           else{
             this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).subscribe();
-            this.location.go('/home/recommendations')
           }
         })
       }

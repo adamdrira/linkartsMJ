@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, HostListener, Output, EventEmitter, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import {ElementRef, ViewChild} from '@angular/core';
 import { NotationService } from '../services/notation.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
@@ -71,7 +71,7 @@ export class CommentsComponent implements OnInit {
   profile_picture:SafeUrl;
   comments_list:any = [];
   display_comments=false;
-  now_in_seconds:number;
+  now_in_seconds= Math.trunc( new Date().getTime()/1000);
   
   my_comments_list:any[]=[];
   display_my_comments=false;
@@ -113,16 +113,22 @@ export class CommentsComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {
-    if(this.format=="serie"){
-      this.chapter_number+=1;
+  comments_done=false;;
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.chapter_number ){
+      if( this.comments_done){
+        this.comments_done=false;
+        this.get_commentaries();
+      }
     }
+  }
+
+  ngOnInit(): void {
+    
     this.comment = new FormControl('', [Validators.required, Validators.maxLength(1500) ]);
     this.comment_container = new FormGroup({
       comment: this.comment,
     });
-    this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
-
     this.Profile_Edition_Service.check_if_user_blocked(this.authorid).subscribe(r=>{
       if(r[0].nothing){
         this.user_blocked=false;
@@ -145,7 +151,18 @@ export class CommentsComponent implements OnInit {
       this.profile_picture = SafeURL;
     });
 
+    this.get_commentaries()
 
+  }
+
+  
+  get_commentaries(){
+    
+    if(this.format=="serie"){
+      this.chapter_number+=1;
+      
+    }
+    
     let my_comments_found=false;
     let other_comments_found=false;
     this.NotationService.get_my_commentaries(this.category,this.format,this.publication_id,this.chapter_number).subscribe(t=>{
@@ -175,13 +192,11 @@ export class CommentsComponent implements OnInit {
         else if(THIS.my_comments_list.length>0){
           THIS.first_comment.emit({comment:THIS.my_comments_list[0]})
         }
+        THIS.comments_done=true;
       }
       
     }
-
   }
-
-  
 
 
   sort_comments(list,target){

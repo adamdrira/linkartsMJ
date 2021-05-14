@@ -3,7 +3,6 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Bd_CoverService } from '../services/comics_cover.service';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { ConstantsService } from '../services/constants.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -51,7 +50,6 @@ export class AddComicComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private renderer: Renderer2,
     private Writing_Upload_Service:Writing_Upload_Service,
-    private Profile_Edition_Service:Profile_Edition_Service,
     private bdOneShotService: BdOneShotService,
     private bdSerieService: BdSerieService,
     private Bd_CoverService: Bd_CoverService,
@@ -70,6 +68,7 @@ export class AddComicComponent implements OnInit {
         this.show_icon=true;
       }
     })
+    navbar.hide_help();
     this.filteredGenres = this.genreCtrl.valueChanges.pipe(
       startWith(null),
       map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));

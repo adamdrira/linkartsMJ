@@ -143,7 +143,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Numéro SIREN</mat-label>
                         <input matInput formControlName="siret" maxLength="9" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'siret');">
-                        <mat-error *ngIf="registerForm1.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide
+                        <mat-error *ngIf="registerForm1.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide (9 chiffres)
                         </mat-error>
                         <div class="length-indicator">{{registerForm1.controls['siret'].value?.length || 0}}/9</div>
                     </mat-form-field>
@@ -158,7 +158,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Bio</mat-label>
                     <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description');"></textarea>
-                    <mat-error *ngIf="registerForm1.controls['primary_description'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
+                    <mat-error *ngIf="registerForm1.controls['primary_description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                     </mat-error>
                     <div class="length-indicator">{{registerForm1.controls['primary_description'].value?.length || 0}}/100</div>
                 </mat-form-field>
@@ -209,7 +209,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Description principale</mat-label>
                         <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
-                        <mat-error *ngIf="registerForm1.controls['primary_description_extended'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
+                        <mat-error *ngIf="registerForm1.controls['primary_description_extended'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{registerForm1.controls['primary_description_extended'].value?.length || 0}}/1000</div>
 
@@ -293,7 +293,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Profession</mat-label>
                         <input matInput formControlName="job" maxLength="100" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'job');">
-                        <mat-error *ngIf="registerForm1.controls['job'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
+                        <mat-error *ngIf="registerForm1.controls['job'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{registerForm1.controls['job'].value?.length || 0}}/100</div>
                     </mat-form-field>
@@ -352,7 +352,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Formation ou compétences</mat-label>
                         <textarea matInput cdkTextareaAutosize formControlName="training" maxLength="250" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
-                        <mat-error *ngIf="registerForm1.controls['training'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
+                        <mat-error *ngIf="registerForm1.controls['training'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{registerForm1.controls['training'].value?.length || 0}}/250</div>
                     </mat-form-field>
@@ -439,7 +439,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Ville</mat-label>
                         <input matInput formControlName="city" maxLength="30" autocomplete="off" (input)="normalize_input(registerForm2, 'city');adding_city();">
-                        <mat-error *ngIf="registerForm2.controls['city'].invalid ">Veuillez faire une saisie valide
+                        <mat-error *ngIf="registerForm2.controls['city'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{registerForm2.controls['city'].value?.length || 0}}/30</div>
                     </mat-form-field>
@@ -505,7 +505,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>E-mail de contact</mat-label>
                         <input matInput formControlName="email_about" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm2, 'email_about');">
-                        <mat-error *ngIf="registerForm2.controls['email_about'].invalid ">Veuillez faire une saisie valide
+                        <mat-error *ngIf="registerForm2.controls['email_about'].invalid ">Veuillez saisir un e-mail valide
                         </mat-error>
                         <div class="length-indicator">{{registerForm2.controls['email_about'].value?.length || 0}}/100</div>
                     </mat-form-field>
@@ -595,16 +595,16 @@
                             <mat-form-field floatLabel='never'>
                                 <mat-label>Titre du lien</mat-label>
                                 <input matInput formControlName="link_title" maxLength="15" autocomplete="off" (input)="normalize_input(registerForm2, 'link_title');">
-                                <mat-error *ngIf="registerForm2.controls['link_title'].invalid">Veuillez faire une saisie valide
+                                <mat-error *ngIf="registerForm2.controls['link_title'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                                 </mat-error>
                                 <div class="length-indicator">{{registerForm2.controls['link_title'].value?.length || 0}}/15</div>
                             </mat-form-field>
                         </div>
                         <div class="right-container">
                             <mat-form-field floatLabel='never'>
-                                <mat-label>Lien</mat-label>
+                                <mat-label>Lien URL</mat-label>
                                 <input matInput formControlName="link" maxLength="60" autocomplete="off" (input)="normalize_input(registerForm2, 'link');">
-                                <mat-error *ngIf="registerForm2.controls['link'].invalid">Saisie invalide. Votre lien doit commencer par 'http://'
+                                <mat-error *ngIf="registerForm2.controls['link'].invalid">Veuillez saisir un URL valide
                                 </mat-error>
                                 <div class="length-indicator">{{registerForm2.controls['link'].value?.length || 0}}/60</div>
                             </mat-form-field>
@@ -665,7 +665,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Prénom</mat-label>
                     <input matInput formControlName="firstName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'firstName');">
-                    <mat-error *ngIf="registerForm3.controls['firstName'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                    <mat-error *ngIf="registerForm3.controls['firstName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                     </mat-error>
                     <div class="length-indicator">{{registerForm3.controls['firstName'].value?.length || 0}}/20</div>
                 </mat-form-field>
@@ -688,7 +688,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Nom</mat-label>
                         <input matInput formControlName="lastName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'lastName');">
-                        <mat-error *ngIf="registerForm3.controls['lastName'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        <mat-error *ngIf="registerForm3.controls['lastName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{registerForm3.controls['lastName'].value?.length || 0}}/20</div>
                     </mat-form-field>
