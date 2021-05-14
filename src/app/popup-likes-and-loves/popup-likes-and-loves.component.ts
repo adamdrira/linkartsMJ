@@ -195,6 +195,14 @@ export class PopupLikesAndLovesComponent implements OnInit {
               this.loading_subscribtion=false;
               this.cd.detectChanges();
             }
+            else if(information[0].blocked){
+              const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                data: {showChoice:false, text:"Impossible de s'abonner à cet utilisateur."},
+                panelClass: "popupConfirmationClass",
+              });
+              this.list_of_check_subscribtion[i]=false;
+              this.loading_subscribtion=false;
+            }
             else{
               this.NotificationsService.add_notification('subscribtion',this.data.visitor_id,this.data.visitor_name,this.list_of_users_ids[i],this.list_of_users_ids[i].toString(),'none','none',this.data.visitor_id,0,"add",false,0).subscribe(l=>{
                 let message_to_send ={

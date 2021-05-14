@@ -374,7 +374,7 @@ export class ThumbnailAdComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        this.Ads_service.delete_ad(this.item.id).subscribe(l=>{
+        this.Ads_service.delete_ad(this.item.id,this.item.id_user).subscribe(l=>{
           this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
             this.loading_option=false;
             location.reload()
@@ -393,7 +393,8 @@ export class ThumbnailAdComponent implements OnInit {
         if(i==0){
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
               this.list_of_pictures_safe[l[1]] = SafeURL;
@@ -418,7 +419,8 @@ export class ThumbnailAdComponent implements OnInit {
         if(i==1){
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
               this.list_of_pictures_safe[l[1]] = SafeURL;
@@ -443,7 +445,8 @@ export class ThumbnailAdComponent implements OnInit {
         if(i==2){
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
             this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
               this.list_of_pictures_safe[l[1]] = SafeURL;
@@ -468,7 +471,8 @@ export class ThumbnailAdComponent implements OnInit {
         if(i==3){
           if(re.exec(item.attachment_name_four)[1]!="pdf"){
             this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
               this.list_of_pictures_safe[l[1]] = SafeURL;
@@ -493,7 +497,8 @@ export class ThumbnailAdComponent implements OnInit {
         if(i==4){
           if(re.exec(item.attachment_name_five)[1]!="pdf"){
             this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = url;
               this.list_of_pictures_safe[l[1]] = SafeURL;

@@ -81,9 +81,10 @@ $default-color: rgb(218,220,225);
                     display: flex;
                     outline: none;
                     width: 100%;
-                    border: 1px solid #1b3665;
+                    border: 1px solid #162644;
+                    background: #162644;
+                    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                     border-radius: 50px;
-                    background: #2a4575;
                     margin-top: 2px;
                     padding: 12px;
                     text-align: center;
@@ -195,8 +196,6 @@ $default-color: rgb(218,220,225);
                         .emojis-container {
                             background-color: white;
                             border-radius: 10px;
-                            //padding: 2px 2px 0px 2px;
-                            //width: 369px;
                             display: flex;
                             justify-content: center;
             
@@ -280,7 +279,7 @@ $default-color: rgb(218,220,225);
                     height: 80px;
                     .mat-form-field-flex {
                                             
-                        background: #203864;
+                        background: #162644;
                         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                         border-radius: 30px;
                         color:$default-color;
@@ -343,7 +342,6 @@ $default-color: rgb(218,220,225);
                 caret-color:$default-color !important;
             }
                 
-            //material : selects & tags
             .mat-select-value {
                 color: $default-color !important;
             }
@@ -475,7 +473,6 @@ $default-color: rgb(218,220,225);
 
     .popupFormWritingMatautocompleteClass.mat-autocomplete-panel {
         position: absolute;
-        //overflow: hidden;
         top: 4px;
         left: 0px;
         background: #203864;

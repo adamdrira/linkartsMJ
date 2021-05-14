@@ -186,7 +186,6 @@ export class ThumbnailWritingComponent implements OnInit {
  
 
     if( this.category == "Illustrated novel" ) {
-      //this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#ee5842,#ed973c)" );
       this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#ee5842,#ed973c)" );
       this.rd.setStyle( this.tags.nativeElement, "background", "#ee5842" );
       this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #ee5842" );

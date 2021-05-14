@@ -477,32 +477,6 @@ onScroll(i){
   }
 }
 
-loading_subscribtion=false;
-subscribtion(i){
-
-  
-  if(!this.loading_subscribtion) {
-    this.loading_subscribtion=true;
-    
-    if(!this.list_of_check_subscribtion[i]){
-      this.Subscribing_service.subscribe_to_a_user(this.list_of_viewers[i].id).subscribe(information=>{
-
-        this.list_of_check_subscribtion[i]=true;
-        this.loading_subscribtion=false;
-        this.cd.detectChanges();
-      });
-    }
-    else {
-      this.Subscribing_service.remove_subscribtion(this.list_of_viewers[i].id).subscribe(information=>{
-        
-        this.list_of_check_subscribtion[i]=false;
-        this.loading_subscribtion=false;
-        this.cd.detectChanges();
-      });
-    }
-  }
-}
-
 load_list_of_pp(k){
   this.list_of_pp_loaded[k]=true;
 }

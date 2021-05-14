@@ -99,45 +99,40 @@
                 <mat-form-field floatLabel='never' class="select-class">
                     <mat-label>Type de compte*</mat-label>
                     <mat-select *ngIf="registerForm1.value.gender=='Groupe'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
-                        
                         <mat-select-trigger>
                             {{registerForm2.value?.type_of_account}}
                         </mat-select-trigger>
-
+                        
                         <div *ngFor="let obj of listOfAccounts_group; let i = index">
                             <mat-option [value]="obj">
                                 {{ obj }}
-                                <span>{{listOfAccounts_group_description[i]}}</span>
+                                <span   >{{listOfAccounts_group_description[i]}}</span>
                             </mat-option>
+                          
                         </div>
                     </mat-select>
-
                     <mat-select *ngIf="registerForm1.value.gender=='Homme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
-                        
-                        
                         <mat-select-trigger>
                             {{registerForm2.value?.type_of_account}}
                         </mat-select-trigger>
-                        
                         <div *ngFor="let obj of listOfAccounts_male; let i = index">
                             <mat-option  [value]="obj">
                                 {{ obj }}
                                 <span>{{listOfAccounts_male_description[i]}}</span>
                             </mat-option>
+                            
                         </div>
                     </mat-select>
                     <mat-select *ngIf="registerForm1.value.gender=='Femme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
-                       
-                        
                         <mat-select-trigger>
                             {{registerForm2.value?.type_of_account}}
                         </mat-select-trigger>
-
                         <div *ngFor="let obj of listOfAccounts_female; let i = index" >
                             <mat-option [value]="obj">
                                 {{ obj }}
                                 <span >{{listOfAccounts_male_description[i]}}</span>
                             </mat-option>
+                            
                         </div>
                     </mat-select>
                     <mat-error *ngIf="registerForm2.controls['type_of_account'].invalid">Veuillez sélectionner un type de compte</mat-error>
@@ -149,7 +144,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Numéro SIREN*</mat-label>
                     <input matInput formControlName="siret" autocomplete="off" maxLength="9" type="search" (input)="normalize_input(registerForm2, 'siret');">
-                    <mat-error *ngIf="registerForm2.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide
+                    <mat-error *ngIf="registerForm2.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide (9 chiffres)
                     </mat-error>
                     <div class="length-indicator">{{registerForm2.controls['siret'].value?.length || 0}}/9</div>
                 </mat-form-field>
@@ -159,10 +154,10 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label *ngIf="registerForm1.value.gender!='Groupe'">Prénom*</mat-label>
                     <mat-label *ngIf="registerForm1.value.gender=='Groupe'">Nom du groupe*</mat-label>
-                    <input matInput formControlName="firstName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm2, 'firstName');">
-                    <mat-error *ngIf="registerForm2.controls['firstName'].invalid">Veuillez effectuer une saisie valide
+                    <input matInput formControlName="firstName" [maxLength]="max_length_firt_name" type="search" autocomplete="off" (input)="normalize_input(registerForm2, 'firstName');">
+                    <mat-error *ngIf="registerForm2.controls['firstName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                     </mat-error>
-                    <div class="length-indicator">{{registerForm2.controls['firstName'].value?.length || 0}}/20</div>
+                    <div class="length-indicator">{{registerForm2.controls['firstName'].value?.length || 0}}/{{max_length_firt_name}}</div>
                 </mat-form-field>
             </div>
 
@@ -170,7 +165,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Nom</mat-label>
                     <input matInput formControlName="lastName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm2, 'lastName');">
-                    <mat-error *ngIf="registerForm2.controls['lastName'].invalid">Veuillez saisir un nom valide ou laisser le champ vide
+                    <mat-error *ngIf="registerForm2.controls['lastName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                     </mat-error>
                     <div class="length-indicator">{{registerForm2.controls['lastName'].value?.length || 0}}/20</div>
                 </mat-form-field>
@@ -226,7 +221,7 @@
                     <mat-label>Bio</mat-label>
                     <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm3, 'primary_description');"></textarea>
                     
-                    <mat-error *ngIf="registerForm3.controls['primary_description'].invalid">Veuillez saisir une bio valide
+                    <mat-error *ngIf="registerForm3.controls['primary_description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                     </mat-error>
                     <div class="length-indicator">{{registerForm3.controls['primary_description'].value?.length || 0}}/100</div>
                 </mat-form-field>
@@ -460,7 +455,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Ville</mat-label>
                     <input matInput formControlName="city" (input)="normalize_input(registerForm6, 'city');adding_city();" autocomplete="off" maxLength="30" type="search">
-                    <mat-error *ngIf="registerForm6.controls['city'].invalid ">Veuillez faire une saisie valide
+                    <mat-error *ngIf="registerForm6.controls['city'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                     </mat-error>
                     <div class="length-indicator">{{registerForm6.controls['city'].value?.length || 0}}/30</div>
                 </mat-form-field>
@@ -476,16 +471,16 @@
                         <mat-form-field floatLabel='never'>
                             <mat-label>Titre du lien</mat-label>
                             <input matInput formControlName="link_title" maxLength="15" autocomplete="off" (input)="normalize_input(registerForm6, 'link_title');">
-                            <mat-error *ngIf="registerForm6.controls['link_title'].invalid">Veuillez faire une saisie valide
+                            <mat-error *ngIf="registerForm6.controls['link_title'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                             </mat-error>
                             <div class="length-indicator">{{registerForm6.controls['link_title'].value?.length || 0}}/15</div>
                         </mat-form-field>
                     </div>
                     <div class="right-container">
                         <mat-form-field floatLabel='never'>
-                            <mat-label>Lien</mat-label>
+                            <mat-label>Lien URL</mat-label>
                             <input matInput formControlName="link" maxLength="60" autocomplete="off" (input)="normalize_input(registerForm6, 'link');">
-                            <mat-error *ngIf="registerForm6.controls['link'].invalid">Saisie invalide. Votre lien doit commencer par 'http://'
+                            <mat-error *ngIf="registerForm6.controls['link'].invalid">Veuillez saisir un URL valide
                             </mat-error>
                             <div class="length-indicator">{{registerForm6.controls['link'].value?.length || 0}}/60</div>
                         </mat-form-field>
@@ -577,7 +572,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Profession</mat-label>
                     <input matInput formControlName="job" autocomplete="off" maxLength="100" type="search" (input)="normalize_input(registerForm4, 'job');">
-                    <mat-error *ngIf="registerForm4.controls['job'].invalid ">Veuillez faire une saisie valide
+                    <mat-error *ngIf="registerForm4.controls['job'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                     </mat-error>
                     <div class="length-indicator">{{registerForm4.controls['job'].value?.length || 0}}/100</div>
                 </mat-form-field>
@@ -588,7 +583,7 @@
                     <mat-label>Formation ou compétences</mat-label>
                     <textarea matInput cdkTextareaAutosize formControlName="training" maxLength="250" autocomplete="off" (input)="normalize_input(registerForm4, 'training');"></textarea>
                     
-                    <mat-error *ngIf="registerForm4.controls['training'].invalid">Veuillez saisir une description valide, ou laisser ce champ vide.
+                    <mat-error *ngIf="registerForm4.controls['training'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                     </mat-error>
                     <div class="length-indicator">{{registerForm4.controls['training'].value?.length || 0}}/250</div>
                 </mat-form-field>
@@ -610,7 +605,7 @@
                 <mat-form-field floatLabel='never'>
                     <mat-label>Ville</mat-label>
                     <input matInput formControlName="city" (input)="normalize_input(registerForm4, 'city');adding_city();" autocomplete="off" maxLength="30" type="search">
-                    <mat-error *ngIf="registerForm4.controls['city'].invalid ">Veuillez faire une saisie valide
+                    <mat-error *ngIf="registerForm4.controls['city'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                     </mat-error>
                     <div class="length-indicator">{{registerForm4.controls['city'].value?.length || 0}}/30</div>
                 </mat-form-field>
@@ -633,9 +628,9 @@
                     </div>
                     <div class="right-container">
                         <mat-form-field floatLabel='never'>
-                            <mat-label>Lien</mat-label>
+                            <mat-label>Lien URL</mat-label>
                             <input matInput formControlName="link" maxLength="60" autocomplete="off" (input)="normalize_input(registerForm4, 'link');">
-                            <mat-error *ngIf="registerForm4.controls['link'].invalid">Saisie invalide. Votre lien doit commencer par 'http://'
+                            <mat-error *ngIf="registerForm4.controls['link'].invalid">Veuillez saisir un URL valide
                             </mat-error>
                             <div class="length-indicator">{{registerForm4.controls['link'].value?.length || 0}}/60</div>
                         </mat-form-field>

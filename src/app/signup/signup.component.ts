@@ -21,6 +21,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-signup',
@@ -218,6 +219,7 @@ export class SignupComponent implements OnInit {
           Validators.maxLength(9),
         ]),
       ],
+      
       firstName: ['', 
         Validators.compose([
           Validators.required,
@@ -607,13 +609,33 @@ export class SignupComponent implements OnInit {
 
 
   current_profile='';
+  max_length_firt_name=20;
   change_profile(event){
-    
     if(event.value!=this.current_profile){
       this.registerForm2.reset();
       this.registerForm4.reset();
       this.registerForm5.reset();
       this.registerForm6.reset();
+    }
+    if(event.value=='Groupe'){
+      this.registerForm2.controls['firstName'].setValidators([
+        Validators.pattern(pattern("name")),
+        Validators.minLength(2),
+        Validators.required,
+        Validators.maxLength(40)
+      ]);
+      this.max_length_firt_name=40;
+      this.registerForm2.controls['firstName'].updateValueAndValidity();
+    }
+    else{
+      this.registerForm2.controls['firstName'].setValidators([
+        Validators.pattern(pattern("name")),
+        Validators.minLength(2),
+        Validators.required,
+        Validators.maxLength(20)
+      ]);
+      this.max_length_firt_name=20;
+      this.registerForm2.controls['firstName'].updateValueAndValidity();
     }
     this.current_profile=event.value;
   }
@@ -682,6 +704,7 @@ export class SignupComponent implements OnInit {
     || (this.step == 2 && this.registerForm3.valid && !this.display_pseudo_found_1 && ( (this.registerForm1.value.gender=='Groupe' && (this.registerForm2.value.type_of_account=='Artistes' || this.registerForm2.value.type_of_account=='Artistes professionels') ) || (this.registerForm1.value.gender!='Groupe') ))
     || (this.step==3 && this.registerForm1.value.gender=='Groupe' && this.list_of_pseudos.length>1 ) ) {
       if(this.step==3 && this.registerForm1.value.gender=="Groupe"){
+        
         if( this.registerForm2.value.type_of_account.includes('Artiste')){
         this.need_authentication=true;
         }
@@ -1357,7 +1380,12 @@ export class SignupComponent implements OnInit {
 
 
   finish() {
+    const dialogRef = this.dialog.open(LoginComponent, {
+      data: {usage:"login"},
+      panelClass: "loginComponentClass",
+    });
     this.dialogRef.close();
+   
   }
   normalize_input(fg: FormGroup, fc: string) {
     if(!fg || !fc) {

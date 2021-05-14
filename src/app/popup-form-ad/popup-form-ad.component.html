@@ -29,7 +29,7 @@
 
                 <div class="form-item" style="height:50px;" *ngIf="!for_service && !remuneration">
                     <div class="monetisation-container">
-                        <mat-slide-toggle [checked]="volunteer" [disabled]="true" (change)="setVolunteer( $event )" style="font-weight:bold;">
+                        <mat-slide-toggle [checked]="volunteer" disabled (change)="setVolunteer( $event )" style="font-weight:bold;">
                             Annonce de collaboration bénévole
                         </mat-slide-toggle>
                     </div>

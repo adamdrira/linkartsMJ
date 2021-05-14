@@ -113,7 +113,11 @@
                                 <div class="verso-type block">
                                     <div class="tag-container d-flex" style="width: fit-content;" #tags >
                                         <span>{{total_pages}}</span>
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }" 
+                                        matTooltip="Nombre de pages" 
+                                                    matTooltipClass='linkarts-tooltip'
+                                                    [matTooltipPosition]="'below'"
+                                                    [matTooltipShowDelay]="200">insert_drive_file</mat-icon>
                                     </div>
                                     <div class="d-flex" *ngIf="thirdtag==null">
                                         <div class="tag-container type"><span  class="categories" >{{firsttag}}</span></div>

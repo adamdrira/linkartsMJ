@@ -174,20 +174,24 @@ export class PopupSubscribingsComponent implements OnInit {
 
   loading_subscribtion=false;
   subscribtion(i){
-    console.log("subscribtion " + i)
     if(this.data.type_of_profile=='account'){
 
       if(!this.loading_subscribtion){
         this.loading_subscribtion=true;
-        console.log(this.list_of_check_subscribtion[i])
         if(!this.list_of_check_subscribtion[i]){
           this.list_of_check_subscribtion[i]=true;
           this.Subscribing_service.subscribe_to_a_user(this.list_of_subscribings_information[i].id).subscribe(information=>{
-            console.log(information[0])
             if(information[0].subscribtion){
-              
               this.loading_subscribtion=false;
               this.cd.detectChanges();
+            }
+            else if(information[0].blocked){
+              const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                data: {showChoice:false, text:"Impossible de s'abonner à cet utilisateur."},
+                panelClass: "popupConfirmationClass",
+              });
+              this.list_of_check_subscribtion[i]=false;
+              this.loading_subscribtion=false;
             }
             else{
               this.NotificationsService.add_notification('subscribtion',this.data.visitor_id,this.data.visitor_name,this.list_of_subscribings_information[i].id,this.list_of_subscribings_information[i].id.toString(),'none','none',this.data.visitor_id,0,"add",false,0).subscribe(l=>{
@@ -216,11 +220,8 @@ export class PopupSubscribingsComponent implements OnInit {
           });
         }
         else{
-          console.log("in else")
           this.list_of_check_subscribtion[i]=false;
           this.Subscribing_service.remove_subscribtion(this.list_of_subscribings_information[i].id).subscribe(information=>{
-            console.log("after remove")
-            console.log(information[0])
             this.NotificationsService.remove_notification('subscribtion',this.list_of_subscribings_information[i].id.toString(),'none',this.data.visitor_id,0,false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,

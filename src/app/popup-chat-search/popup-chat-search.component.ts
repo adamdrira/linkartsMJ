@@ -42,7 +42,7 @@ export class PopupChatSearchComponent implements OnInit {
       search: ['', 
         Validators.compose([
           Validators.required,
-          Validators.minLength(3),
+          Validators.minLength(2),
           Validators.maxLength(30),
           Validators.pattern(pattern("text")),
         ]),

@@ -6,16 +6,11 @@ import {get_date_to_show_chat} from '../helpers/dates';
 import {get_date_to_show_navbar} from '../helpers/dates';
 import {NotificationsService} from '../services/notifications.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
-import {BdOneShotService} from '../services/comics_one_shot.service';
-import {BdSerieService} from '../services/comics_serie.service';
-import {Drawings_Artbook_Service} from '../services/drawings_artbook.service';
-import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Community_recommendation} from '../services/recommendations.service';
-import {Writing_Upload_Service} from '../services/writing.service';
 import {AuthenticationService} from '../services/authentication.service';
 import {NavbarService} from '../services/navbar.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import {trigger, style, animate, transition} from '@angular/animations';
@@ -88,7 +83,6 @@ export class PopupNavbarComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
     private router:Router,
-    private route:ActivatedRoute,
     public dialog: MatDialog,
     private deviceService: DeviceDetectorService,
     private location: Location,
@@ -106,7 +100,6 @@ export class PopupNavbarComponent implements OnInit {
           this.show_icon=true;
         }
       })
-    dialogRef.disableClose = true;
   }
 
 
@@ -148,13 +141,13 @@ export class PopupNavbarComponent implements OnInit {
    @HostListener('document:click', ['$event'])
   clickout(event) {
     if(this.show_notifications){
-      if(this.notifications && !this.notifications.nativeElement.contains(event.target) ) {
+      if(this.notifications && !this.notifications.nativeElement.contains(event.target) && !this.only_for_notifs) {
         this.show_notifications=false;
         this.change_notifications_status_to_checked();
       } 
     }
     if(this.show_chat_messages){
-      if(this.chat &&!this.chat.nativeElement.contains(event.target) ) {
+      if(this.chat &&!this.chat.nativeElement.contains(event.target) && !this.only_for_notifs) {
         this.show_chat_messages=false;
         this.number_of_unseen_messages=0;
         this.cd.detectChanges();
@@ -166,79 +159,60 @@ export class PopupNavbarComponent implements OnInit {
   device_info='';
   current_user:any;
 
+  only_for_notifs=this.data.only_for_notifs;
+  for_notifs=this.data.for_notifs;
+  for_chat=this.data.for_chat;
+
   ngOnInit() {
 
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.current_user=r;
-    });
-    if(!this.list_of_friends_retrieved){
-      this.chatService.get_number_of_unseen_messages().subscribe(a=>{
-        if(a[0]){
-          this.number_of_unseen_messages=a[0].number_of_unseen_messages;
-        }
-        else{
-          this.number_of_unseen_messages=0
-        }
-        this.sort_friends_list();
-      })
-    }
-
-    if(!this.notifications_pictures_retrieved){
-      this.compteur_get_final_list++;
-      let compteur=this.compteur_get_final_list;
-      let compteur_pp=0;
-      for(let i=0;i<this.list_of_notifications.length;i++){
-       this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
-        if(status=="initialize"){
-          this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
-            if(this.compteur_get_final_list==t[1]){
-             let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_notifications_profile_pictures[i] = url;
-                compteur_pp++;
-                if(compteur_pp==this.list_of_notifications.length){
-                  this.index_of_notifications_to_show=15+this.number_of_empties;
-                  this.notifications_pictures_retrieved=true;
-                  this.display_number_of_unchecked_notifications();
-                }
-              
-            }
-           
-          })
-        }
-        if(status=="add" ){
-          if( this.list_of_notifications_profile_pictures[i]){
-            compteur_pp++;
-            if(compteur_pp==this.list_of_notifications.length){
-              this.index_of_notifications_to_show=15+this.number_of_empties;
-              this.notifications_pictures_retrieved=true;
-              this.display_number_of_unchecked_notifications();
-            }
-          }
-          else{
-            this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
-              if(this.compteur_get_final_list==t[1]){
-                let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
-                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  this.list_of_notifications_profile_pictures[i] = url;
-                  compteur_pp++;
-                  if(compteur_pp==this.list_of_notifications.length){
-                   this.index_of_notifications_to_show=15+this.number_of_empties;
-                    this.notifications_pictures_retrieved=true;
-                    this.display_number_of_unchecked_notifications();
-                  }
-                
-              }
-             
-            })
-          }
-  
-        }
-        
+   
+    if(this.only_for_notifs){
+      if(this.for_chat){
+        this.get_messages()
+      }
+      else{
+        this.get_notifications()
       }
     }
+    else{
+      this.get_messages();
+      this.get_notifications();
+    }
+  
    
+  }
+
+  get_messages(){
+    this.chatService.get_number_of_unseen_messages().subscribe(a=>{
+      if(a[0]){
+        this.number_of_unseen_messages=a[0].number_of_unseen_messages;
+      }
+      else{
+        this.number_of_unseen_messages=0
+      }
+      this.sort_friends_list();
+  
+      if(this.only_for_notifs && this.for_chat){
+        this.open_messages()
+      }
+    })
+  }
+
+  get_notifications(){
+    this.NotificationsService.get_list_of_notifications().subscribe(r=>{
+      if(r[0].length>0){
+        this.list_of_notifications=r[0]
+        this.get_final_list_of_notifications_to_show("initialize");
+      }
+      else{
+        this.number_of_unchecked_notifications=0;
+      }
+
+      if(this.only_for_notifs && this.for_notifs){
+        this.open_notifications()
+      }
+    });
   }
 
   chat_scroll(event){
@@ -333,21 +307,23 @@ export class PopupNavbarComponent implements OnInit {
 /*********************************************  NOTIFICATIONS ****************************/
 /*********************************************  NOTIFICATIONS ****************************/
 
-number_of_unchecked_notifications=this.data.number_of_unchecked_notifications;
-index_of_notifications_to_show=this.data.index_of_notifications_to_show;
-show_notifications=this.data.show_notifications;
-check_chat_service=this.data.check_chat_service;
-check_notifications_from_service=this.data.check_notifications_from_service;
-list_of_notifications_profile_pictures=this.data.list_of_notifications_profile_pictures;
-notifications_pictures_retrieved=this.data.notifications_pictures_retrieved;
-list_of_notifications=this.data.list_of_notifications;
-notification_loaded=this.data.notification_loaded;
 
 
-dictionnary_of_similar_notifications=this.data.dictionnary_of_similar_notifications;
-list_of_notifications_dates=this.data.list_of_notifications_dates;
-final_list_of_notifications_to_show=this.data.final_list_of_notifications_to_show;
-compteur_get_final_list=this.data.compteur_get_final_list;
+number_of_unchecked_notifications=0;
+index_of_notifications_to_show=15;
+show_notifications=false;
+check_notifications_from_service=false;
+list_of_notifications_profile_pictures=[];
+list_of_notifications_retrieved=false;
+notifications_pictures_retrieved=false;
+list_of_notifications=[];
+notification_loaded=[];
+
+
+dictionnary_of_similar_notifications={};
+list_of_notifications_dates=[];
+final_list_of_notifications_to_show=[];
+compteur_get_final_list=10;
 
 load_notification_pp(i){
   this.notification_loaded[i]=true;
@@ -491,6 +467,7 @@ get_ad(notif:any) {
     return "/ad-page/" + title_url + "/" + notif.publication_id;
 }
 
+
 sort_notifications(msg){
   if(msg[0].for_notifications){
     if(msg[0].information!='remove'){
@@ -603,17 +580,15 @@ get_final_list_of_notifications_to_show(status){
   }
   this.index_of_notifications_to_show=15+number_of_empties;
   this.data_retrieved=true;
-  this.display_number_of_unchecked_notifications();
   let compteur_pp=0;
   for(let i=0;i<this.list_of_notifications.length;i++){
-   this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
+   this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt);
 
     if(status=="initialize"){
       this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
         if(this.compteur_get_final_list==t[1]){
          let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
-          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_notifications_profile_pictures[i] = url;
+          this.list_of_notifications_profile_pictures[i] = url;
             compteur_pp++;
             if(compteur_pp==this.list_of_notifications.length){
               this.index_of_notifications_to_show=15+number_of_empties;
@@ -624,6 +599,7 @@ get_final_list_of_notifications_to_show(status){
         }
        
       })
+     
     }
     if(status=="add" ){
       if( this.list_of_notifications_profile_pictures[i]){
@@ -638,8 +614,7 @@ get_final_list_of_notifications_to_show(status){
         this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
           if(this.compteur_get_final_list==t[1]){
             let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_notifications_profile_pictures[i] = url;
+            this.list_of_notifications_profile_pictures[i] = url;
               compteur_pp++;
               if(compteur_pp==this.list_of_notifications.length){
                 this.index_of_notifications_to_show=15+number_of_empties;
@@ -653,10 +628,9 @@ get_final_list_of_notifications_to_show(status){
       }
 
     }
-    
   }
   
-  
+  this.list_of_notifications_retrieved=true;
   
 }
 
@@ -672,7 +646,7 @@ display_number_of_unchecked_notifications(){
 }
 
 indice=0
-get_date(created,i){
+get_date(created){
   if(created){
     let now=Math.trunc( new Date().getTime()/1000);
     let date=created;
@@ -700,7 +674,7 @@ get_date(created,i){
       return
     }
     for(let i=0;i<this.list_of_notifications.length;i++){
-      this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
+      this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt);
     }
     this.show_notifications=true;
     if(this.myScrollContainer){
@@ -720,37 +694,61 @@ get_date(created,i){
 /********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
 /********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
 
-//chat_friends and groups
-show_chat_messages=this.data.show_chat_messages;
-list_of_messages=this.data.list_of_messages;
-number_of_unseen_messages=this.data.number_of_unseen_messages;
+
+show_chat_messages=false;
+list_of_messages=[];
+number_of_unseen_messages=0;
 using_chat=this.data.using_chat;
-using_chat_retrieved=this.data.using_chat_retrieved;
 
 
-list_of_chat_friends_ids=this.data.list_of_chat_friends_ids; // id de la liste list_of_chat_friends
-number_of_friends_to_show=this.data.number_of_friends_to_show;
-list_of_friends_types=this.data.list_of_friends_types;
-list_of_friends_profile_pictures=this.data.list_of_friends_profile_pictures;
-list_of_friends_pseudos=this.data.list_of_friends_pseudos;
-list_of_friends_names=this.data.list_of_friends_names;
-list_of_friends_certifications=this.data.list_of_friends_certifications;
-list_of_friends_ids=this.data.list_of_friends_ids;
-list_of_friends_last_message=this.data.list_of_friends_last_message;
-list_of_friends_retrieved=this.data.list_of_friends_retrieved;
-list_of_friends_date=this.data.list_of_friends_date
-list_of_friends_users_only=this.data.list_of_friends_users_only;
+list_of_chat_friends_ids=[]; 
+number_of_friends_to_show=10;
+list_of_friends_types=[];
+list_of_friends_profile_pictures=[];
+list_of_friends_pseudos=[];
+list_of_friends_names=[];
+list_of_friends_certifications=[];
+list_of_friends_ids=[];
+list_of_friends_last_message=[];
+list_of_friends_retrieved=false;
+list_of_friends_date=[];
+list_of_friends_users_only=[];
 
-list_of_last_connection_dates=this.data.list_of_last_connection_dates;
-list_of_friends_connected=this.data.list_of_friends_connected;
-connections_status_retrieved=this.data.connections_status_retrieved;
-list_of_groups_retrieved=this.data.list_of_groups_retrieved;
-list_of_groups_ids=this.data.list_of_groups_ids;
+list_of_last_connection_dates=[];
+list_of_friends_connected=[];
+connections_status_retrieved=false;
+list_of_groups_retrieved=false;
+list_of_groups_ids=[];
 
-list_of_pp_sorted=this.data.list_of_pp_sorted;
-can_sort_list_of_profile_pictures=this.data.can_sort_list_of_profile_pictures;
-list_of_pictures_by_ids_users=this.data.list_of_pictures_by_ids_users;
-list_of_pictures_by_ids_groups=this.data.list_of_pictures_by_ids_groups;
+list_of_pp_sorted=false;
+can_sort_list_of_profile_pictures=false;
+list_of_pictures_by_ids_users=[];
+list_of_pictures_by_ids_groups=[];
+list_of_names_deleted={}
+loading_deleted_member={};
+get_name_of_someone_who_exit_group(id,l,item){
+  if(this.list_of_names_deleted[id]){
+    if(l==1){
+      return this.list_of_names_deleted[id]
+    }
+    else{
+      return this.list_of_names_deleted[id] + ' a ajouté ' + item + ' au groupe'
+    }
+    
+  }
+  else if(this.loading_deleted_member[id]){
+    return ''
+  }
+  else{
+    this.loading_deleted_member[id]=true;
+    this.Profile_Edition_Service.retrieve_profile_data(id).subscribe(r=>{
+      this.list_of_names_deleted[id]=r[0].firstname + ' ' + r[0].lastname;
+      this.cd.detectChanges()
+    })
+  }
+}
+
+
 
 
 open_chat_2() {
@@ -788,12 +786,11 @@ open_messages_notifs(event: any) {
 
 scroll_chat:any;
 open_messages(){
-  
   if(this.show_chat_messages){
     this.show_chat_messages=false;
     return;
   }
-  if(!this.using_chat && this.using_chat_retrieved){
+  if(!this.using_chat){
     this.show_chat_messages=true;
     this.cd.detectChanges();
     if(this.myScrollContainer_chat){
@@ -1005,6 +1002,7 @@ sort_list_of_groups_and_friends(){
 
 
 sort_list_of_profile_pictures(){
+  
   if(this.can_sort_list_of_profile_pictures){
     let length=this.list_of_friends_ids.length;
     for(let i=0;i<length;i++){
@@ -1030,6 +1028,9 @@ load_friends_pp(i){
 
 get_connections_status(){
   this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
+    if(this.user_id<4){
+      console.log(r[0])
+    }
     let compt=0
     for(let i=0;i<this.list_of_friends_types.length;i++){
       
@@ -1053,13 +1054,15 @@ get_connections_status(){
       }
       else{
         this.chatService.get_group_chat_information(this.list_of_friends_ids[i]).subscribe(l=>{
-          let list=l[0].list_of_receivers_ids;
           let value=false;
-          for(let j=0;j<list.length;j++){
-            if(list[j]!=this.user_id){
-              let index=this.list_of_friends_users_only.indexOf(list[j])
-              if(r[0].list_of_users_connected[index]){
-                value=true;
+          if(l[0]){
+            let list=l[0].list_of_receivers_ids;
+            for(let j=0;j<list.length;j++){
+              if(list[j]!=this.user_id){
+                let index=this.list_of_friends_users_only.indexOf(list[j])
+                if(r[0].list_of_users_connected[index]){
+                  value=true;
+                }
               }
             }
           }
@@ -1336,6 +1339,9 @@ change_message_status(event){
     }
   }
   
+  /***************************************** OPTIONS  ********************************/
+  /***************************************** OPTIONS  ********************************/
+  /***************************************** OPTIONS  ********************************/
   
   close_dialog(){
     this.show_chat_messages=false;
@@ -1359,6 +1365,12 @@ change_message_status(event){
     });
     this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).subscribe();
   }
+
+
+  /************************************* GROUPS MANAGMENT ********************************/
+  /************************************* GROUPS MANAGMENT ********************************/
+  /************************************* GROUPS MANAGMENT ********************************/
+  /************************************* GROUPS MANAGMENT ********************************/
 
   my_groups_opened:boolean = false;
   close_my_groups() {

@@ -81,9 +81,10 @@ $default-color: rgb(218,220,225);
                     display: flex;
                     outline: none;
                     width: 100%;
-                    border: 1px solid #1b3665;
+                    border: 1px solid #162644;
                     border-radius: 50px;
-                    background: #2a4575;
+                    background: #162644;
+                    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 36%);
                     margin-top: 2px;
                     padding: 12px;
                     text-align: center;
@@ -290,7 +291,8 @@ $default-color: rgb(218,220,225);
                 }
                 .mat-slide-toggle {
                     span {
-                        color:white;
+                        color:$default-color;
+                        font-size: 14px;
                     }
                 }
 
@@ -300,7 +302,7 @@ $default-color: rgb(218,220,225);
                     height: 80px;
                     .mat-form-field-flex {
                                             
-                        background: #203864;
+                        background: #162644;
                         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                         border-radius: 30px;
                         color:$default-color;
@@ -450,10 +452,11 @@ $default-color: rgb(218,220,225);
 
         transition: bottom 200ms !important;
 
-        background: #182338;
-        padding: 0px !important;
+        background: #162644;
         box-shadow: 0px 0px 10px 0px #131f36;
 
+        padding: 0px !important;
+        
         border-radius: 24px 24px 0px 0px !important;
         overflow: hidden;
 

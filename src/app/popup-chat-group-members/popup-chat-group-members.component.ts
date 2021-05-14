@@ -1,33 +1,28 @@
-import { Component, OnInit, Renderer2, ChangeDetectorRef, Inject } from '@angular/core';
-
-
-
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Component,Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
-import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
-
-declare var $: any;
-
 
 @Component({
   selector: 'app-popup-chat-group-members',
   templateUrl: './popup-chat-group-members.component.html',
-  styleUrls: ['./popup-chat-group-members.component.scss']
+  styleUrls: ['./popup-chat-group-members.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
-export class PopupChatGroupMembersComponent implements OnInit {
+export class PopupChatGroupMembersComponent {
 
   constructor(
     public dialogRef: MatDialogRef<PopupChatGroupMembersComponent>,
-    private cd:ChangeDetectorRef,
-    private rd:Renderer2,
-    private sanitizer:DomSanitizer,
-    private Subscribing_service:Subscribing_service,
     public dialog: MatDialog,
-    private Profile_Edition_Service:Profile_Edition_Service,
-
-
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
     
@@ -43,10 +38,7 @@ export class PopupChatGroupMembersComponent implements OnInit {
   pp_is_loaded=[];
 
 
-  ngOnInit(): void {
-    
-    console.log(this.list_of_pseudos)
-  }
+  
 
   load_pp(i){
    

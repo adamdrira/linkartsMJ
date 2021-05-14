@@ -64,7 +64,7 @@ export class PopupAdPicturesComponent implements OnInit {
       let compt=0;
       for(let i=0;i<this.data.list_of_pictures.length;i++){
         if(this.data.list_of_types[i]=="picture_attachment"){
-          this.ChatService.get_attachment_popup(this.data.list_of_pictures[i],this.data.friend_type,this.data.chat_friend_id).subscribe(r=>{
+          this.ChatService.get_attachment_popup(this.data.list_of_pictures[i],this.data.friend_type,this.data.list_of_chat_friend_ids[i]).subscribe(r=>{
             if(re.exec(this.data.list_of_pictures[i])[1].toLowerCase()=="svg"){
               let THIS=this;
               var reader = new FileReader()
@@ -84,7 +84,8 @@ export class PopupAdPicturesComponent implements OnInit {
               }
             }
             else{
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              let blob = new Blob([r], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[i]=SafeURL;
               compt++;
@@ -99,7 +100,8 @@ export class PopupAdPicturesComponent implements OnInit {
         }
         else{
           this.ChatService.get_picture_sent_by_msg(this.data.list_of_pictures[i]).subscribe(r=>{
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+            let blob = new Blob([r], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[i]=SafeURL;
               compt++;
@@ -159,7 +161,6 @@ export class PopupAdPicturesComponent implements OnInit {
   }
 
   initialize_swiper2() {
-
     if(!this.swiper2) {
       this.swiper2 = new Swiper(this.swiperContainer2.nativeElement, {
 
@@ -168,7 +169,7 @@ export class PopupAdPicturesComponent implements OnInit {
         slidesPerView: 1,
 
         breakpoints: {
-          0: {
+          260: {
             slidesPerView: 2,
             slidesPerGroup: 2,
             simulateTouch: false,
@@ -226,41 +227,6 @@ export class PopupAdPicturesComponent implements OnInit {
           },
           660: {
             slidesPerView: 10,
-            slidesPerGroup: 5,
-            simulateTouch: false,
-            allowTouchMove: false,
-            noSwiping: true,
-          },
-          710: {
-            slidesPerView: 11,
-            slidesPerGroup: 5,
-            simulateTouch: false,
-            allowTouchMove: false,
-            noSwiping: true,
-          },
-          760: {
-            slidesPerView: 12,
-            slidesPerGroup: 5,
-            simulateTouch: false,
-            allowTouchMove: false,
-            noSwiping: true,
-          },
-          810: {
-            slidesPerView: 13,
-            slidesPerGroup: 5,
-            simulateTouch: false,
-            allowTouchMove: false,
-            noSwiping: true,
-          },
-          860: {
-            slidesPerView: 14,
-            slidesPerGroup: 5,
-            simulateTouch: false,
-            allowTouchMove: false,
-            noSwiping: true,
-          },
-          910: {
-            slidesPerView: 15,
             slidesPerGroup: 5,
             simulateTouch: false,
             allowTouchMove: false,

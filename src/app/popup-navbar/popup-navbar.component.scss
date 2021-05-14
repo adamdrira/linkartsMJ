@@ -8,6 +8,36 @@ $default-color: rgb(218,220,225);
     width: unset !important;
 }
 
+
+
+.main-menu{
+    font-size: 16px !important;
+    color: $default-color;
+    font-weight: bold;
+}
+
+
+::ng-deep {
+    .loading-page-spinner {
+        mat-spinner {
+            circle {
+                stroke : $default-color !important;
+            }
+        }
+    }
+    .loading-page-spinner2 {
+        mat-spinner {
+            circle {
+                stroke: #162644 !important;
+            }
+        }
+    }
+
+        
+}
+
+
+
 .title-popup {
     width: 100%;
     border-bottom: 1px solid #13213d;
@@ -22,7 +52,7 @@ $default-color: rgb(218,220,225);
 
 
 
-    .close {
+    .close-button {
         display: flex;
         position: absolute;
         right: 15px;
@@ -31,15 +61,19 @@ $default-color: rgb(218,220,225);
         border: none;
         background: unset;
         padding: 5px;
+       
 
         mat-icon {
             height: unset;
             width: unset;
-            color: white;
+            color: $default-color;
             font-size: 24px;
             max-width:24px ;
           overflow: hidden;
         }
+        
+
+          
     }
 
 
@@ -174,9 +208,7 @@ $default-color: rgb(218,220,225);
     .popupMenuNavbar {
         width: 100% !important;
         max-width: unset !important;
-        //max-height: 90% !important;
         height:100vh;
-        //margin-top: 53px;
         bottom: 0px;
         border-radius: 0px !important;
         position: absolute !important;
@@ -201,6 +233,27 @@ $default-color: rgb(218,220,225);
             height: unset;
         }
     }
+
+    .popupMenuNavbarNotifs {
+        height: 329px;
+        width: 350px;
+        bottom: 0px;
+        position: relative;
+        background: white;
+        padding: 0px !important;
+        box-shadow: 0px 1px 7px 0px #495875;
+        border-radius: 24px;
+        overflow: hidden;
+
+        .mat-dialog-container {
+            padding: 0px;
+            overflow: hidden;
+            background: #182338;
+            box-shadow: unset;
+            height: unset;
+            border-radius: 24px;
+        }
+    }
 }
 
 @keyframes slideDown {
@@ -210,3 +263,16 @@ $default-color: rgb(218,220,225);
         transform: translateY(0%);
     }
 }
+
+.close-notifs{
+    top:5px !important;
+    right:5px !important;
+}
+
+.open-chat-notifs{
+    height: 40px !important;
+    font-size: 15px !important;
+    color: #dadce1 !important;
+    font-weight: bold !important;
+}
+

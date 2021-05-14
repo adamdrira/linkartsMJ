@@ -899,7 +899,7 @@
     position: absolute;
     top: 36px;
     left: -5px;
-
+    font-size: 15px;
     border-radius: 23px !important;
 
     box-shadow:0px 0px 0px 2px #cce9fb, 0px 0px 2px 4px #b3e0fb;
@@ -923,10 +923,11 @@
 
           > span {
             line-height: 22px;
-            color: #848484;
-            font-weight: 400;
+            color: rgb(32 56 100 / 84%);
+            font-weight: 500;
             white-space: pre-wrap;
             margin-top: -8px;
+            font-size: 12px;
           }
         }
     }

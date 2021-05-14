@@ -12,7 +12,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { FileItem, FileUploader } from 'ng2-file-upload';
 declare var Cropper;
 
-const url = 'https://linkarts.fr/routes/upload_story';
+const url = 'https://www.linkarts.fr/routes/upload_story';
 
 @Component({
   selector: 'app-popup-add-story',
@@ -92,7 +92,6 @@ export class PopupAddStoryComponent implements OnInit {
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: { showChoice: false, text: 'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif' },
@@ -586,9 +585,6 @@ export class PopupAddStoryComponent implements OnInit {
     for(let i=0;i<this.textareas.toArray().length;i++) {
       this.texts[i].textareaHeight = this.textareas.toArray()[i].nativeElement.offsetHeight;
       this.texts[i].textareaWidth = this.textareas.toArray()[i].nativeElement.offsetWidth;
-
-      console.log( this.texts[i].textareaHeight );
-      console.log( this.texts[i].textareaWidth );
     }
 
     this.loading=true;
@@ -607,7 +603,34 @@ export class PopupAddStoryComponent implements OnInit {
             canvas.toBlob(
               blob => {
                 THIS.set_no_activated_objects();
-                THIS.dialogRef.close(blob);
+                THIS.Story_service.upload_story( blob ).subscribe(res => {
+                  if(!res[0].num && !res[0].error && !res[0].msg){
+                    location.reload();
+                  }
+                  else if(res[0].num){
+                    const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+                      data: { showChoice: false, text: 'Vous ne pouvez pas ajouer plus de 15 stories par jour' },
+                      panelClass: "popupConfirmationClass",
+                    });
+                    THIS.loading=false;
+        
+                  }
+                  else{
+                    const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+                      data: { showChoice: false, text: 'Une erreur est survenue' },
+                      panelClass: "popupConfirmationClass",
+                    });
+                    THIS.loading=false;
+                  }
+                  
+                },
+                error => {
+                  THIS.loading = false;
+                    const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+                      data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+                      panelClass: "popupConfirmationClass",
+                    });
+                })
               },
               'image/png',
               1,

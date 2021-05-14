@@ -78,9 +78,6 @@
      
       .before-cible-container {
         width: 100%!important;
-        
-        //border-left: 249.5px solid #1c2d50 !important;
-        //border-right: 249.5px  solid #1b2a4b !important;
         border-top: 30px solid whitesmoke !important;
         border-bottom: 0px solid whitesmoke !important;
       }
@@ -105,8 +102,6 @@
     .global-container {
       flex-direction: column;
       padding: 0px !important;
-      //background: rgb(251, 251, 251);
-      background-image: linear-gradient( 0turn, rgb(243 243 244), rgb(247 247 248), rgb(251 251 252));
       border: 1px solid #e0e0e0;
     }
     .global-container > .left-container img {
@@ -135,9 +130,6 @@
       padding-right: 0px !important;
       .name {
         padding-left: 10px;
-      }
-      .top-container-2 {
-        //border-radius: 0px !important;
       }
       .section-container,
       .attachments-container {
@@ -276,9 +268,6 @@
      
       .before-cible-container {
         width: 100%!important;
-        
-        //border-left: 249.5px solid #1c2d50 !important;
-        //border-right: 249.5px  solid #1b2a4b !important;
         border-top: 30px solid whitesmoke !important;
         border-bottom: 0px solid whitesmoke !important;
       }
@@ -311,7 +300,6 @@
     .global-container {
       flex-direction: column;
       padding: 0px !important;
-      background: rgb(251, 251, 251);
       border: 1px solid #e0e0e0;
     }
     .global-container > .left-container img {
@@ -376,16 +364,11 @@
   
     
   @media (max-width: 900px) {
-    //width: 80% !important;
     .global-container > .left-container {
       display: none;
     }
   }
-  @media (min-width: 400px) and (max-width: 599px) {
-      //width:90%!important;
-  }
   @media (max-width: 400px) {
-      //width:100%;
       .global-container {
           border-radius:10px !important;
       }
@@ -418,7 +401,7 @@
     width: 30px;
     height: 30px;
     outline: none;
-    background: #fbfbfb;
+    background: transparent;
     border: none;
     display: flex;
     border-radius: 50px;
@@ -443,11 +426,11 @@
     display: flex;
     position: relative;
     width: 100%;
-    background: rgb(251, 251, 251);
-    border-radius: 20px;
+    background: white;
+    border-radius: 5px;
     overflow: hidden;
-    box-shadow: 0px 1px 5px 2px rgba(0, 0, 0, 0.05), 0px 0px 2px 1px rgba(0, 0, 0, 0.05);
-  }
+    box-shadow: 0px 2px 2px 0px rgb(0 0 0 / 20%), 0px 2px 10px 2px rgb(0 0 0 / 10%), 0px 2px 5px 0px rgb(0 0 0 / 12%);
+   }
 
   .global-container > .left-container {
     height: 100%;
@@ -536,7 +519,6 @@
     display: flex;
     margin-right: auto;
     width:calc(100% - 25px);
-    //background: whitesmoke;
     background-image: linear-gradient(0.2turn, #e0e0e0, #efefef, whitesmoke);
     padding: 6px 10px 6px 10px;
   }
@@ -647,8 +629,6 @@
     font-size: 14px;
     margin-left: auto;
     text-align: left;
-    //width: -webkit-fit-content;
-    //width: -moz-fit-content;
     width: calc(100% - 25px);
     color: white;
     padding: 6px 20px 6px 10px;
@@ -690,7 +670,6 @@
       width: 100%;
       display: flex;
       justify-content: space-around;
-      //background: #f0f0f0;
       border-radius: 10px 10px 0px 0px;
 
       .absolute-border-bottom {
@@ -980,9 +959,11 @@
 }
 
 .bottom-ad{
-  margin-top: 5px;
-    font-weight: bold;
-    font-size: 13px;
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  color:rgb(32, 56, 100);
+  padding:0px 4px;
 }
 ::ng-deep .tooltip-thumbnail-ad {
   background-color: rgba(255, 255, 255, 0.9) !important;

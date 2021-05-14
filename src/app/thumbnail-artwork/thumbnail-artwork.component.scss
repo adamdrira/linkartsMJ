@@ -8,10 +8,9 @@
     margin-left: auto;
     margin-right: auto;
   
-    border-radius: 20px;
+    border-radius: 5px;
     overflow: hidden;
-    box-shadow: 0px 1px 5px 2px rgba(0, 0, 0, 0.05), 0px 0px 2px 1px rgba(0, 0, 0, 0.05);
-
+    box-shadow: 0px 2px 2px 0px rgb(0 0 0 / 20%), 0px 2px 10px 2px rgb(0 0 0 / 10%), 0px 2px 5px 0px rgb(0 0 0 / 12%);
     &.trendings-width{
         max-width: 1150px !important;
     }
@@ -29,8 +28,7 @@
         display: flex;
         position: relative;
         width: 100%;
-        //background: rgb(251, 251, 251);
-        background-image: linear-gradient( 0turn, rgb(243 243 244), rgb(247 247 248), rgb(251 251 252));
+        background: white;
         > .left-container {
             height: 100%;
             width: 200px;
@@ -93,7 +91,7 @@
         justify-content: center;
         align-items: center;
         height: 100%;
-        border-radius: 20px;
+        border-radius: 5px;
         opacity: 0.98;
         background: linear-gradient(0.02turn, #f5f5f5fc, #eeeeee, #dcdcdc, #f9f9f9d4);
         mat-icon {
@@ -123,7 +121,6 @@
         width: 100%;
         height: 35px;
         color: #3b3b3b;
-        //background: rgb(32, 56, 100, 0.8);
         background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
         position: absolute;
         z-index: 1;
@@ -531,7 +528,6 @@
         overflow: hidden;
         position: absolute;
         opacity: 0;
-        //background: rgb(32, 56, 100);
         background:#fbfbfb;
         .swiper-slide:not(:first-child) img {
             height: 100%;
@@ -547,7 +543,6 @@
         .global-container {
             flex-direction: column;
             padding: 0px !important;
-            background: rgb(251, 251, 251);
             border: 1px solid #e0e0e0;
             > .left-container {
                 width: 100% !important;
@@ -758,7 +753,6 @@
         bottom: 40px;
         z-index: 1;
         left: 50%;
-        //background: rgb(32, 56, 100, 0.6);
         padding: 0px 2px;
         border-radius: 50px;
         transform: translateX(-50%);

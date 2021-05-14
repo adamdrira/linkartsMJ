@@ -50,8 +50,6 @@ export class PopupFormAdComponent implements OnInit {
   
   ngOnInit(): void {
 
-    console.log(this.data.item);
-    
     this.remuneration = this.data.item.remuneration;
     this.for_service = this.data.item.service;
     this.volunteer = !this.remuneration && !this.for_service;
@@ -123,7 +121,6 @@ export class PopupFormAdComponent implements OnInit {
       return
     }
 
-    console.log(this.fd)
     this.loading=true;
     
     if(this.remuneration && !this.fd.valid){

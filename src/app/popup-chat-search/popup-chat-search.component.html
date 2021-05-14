@@ -15,7 +15,7 @@
             <mat-form-field floatLabel='never'>
                 <mat-label>Message</mat-label>
                 <input matInput formControlName="search" autocomplete="off" type="search">
-                <mat-error *ngIf="searchForm.controls['search'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                <mat-error *ngIf="searchForm.controls['search'].invalid">Saisie invalide : votre recherche ne doit pas commencer par un espace et doit être constituée d'au moins 2 caractères.
                 </mat-error>
                 <div class="length-indicator">{{searchForm.controls['search'].value?.length || 0}}/30</div>
             </mat-form-field>

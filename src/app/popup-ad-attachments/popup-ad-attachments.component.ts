@@ -53,8 +53,6 @@ export class PopupAdAttachmentsComponent implements OnInit {
   /******************************************************* */
   show_icon=false;
   ngOnInit() {
-    let THIS=this;
-    console.log(this.data.file);
     let file = new Blob([this.data.file], {type: 'application/pdf'});
     this.pdfSrc = URL.createObjectURL(file);
   }
@@ -67,7 +65,6 @@ export class PopupAdAttachmentsComponent implements OnInit {
 
 
   afterLoadComplete(pdf: PDFDocumentProxy) {
-    console.log(pdf)
     this.total_pages = pdf.numPages;
     this.cd.detectChanges();
   }

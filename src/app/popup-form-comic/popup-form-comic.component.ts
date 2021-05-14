@@ -146,7 +146,6 @@ export class PopupFormComicComponent implements OnInit {
     else if ( this.f00.valid && this.data.format == "serie" ) {
         this.BdSerieService.ModifyBdSerie2(this.data.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''))
         .subscribe(inf=>{
-          console.log(inf)
           for( let i = 0 ; i < this.data.chapterList.length; i ++ ) {
             this.BdSerieService.modify_chapter_bd_serie2(this.data.bd_id,i+1,this.chapters.value[i]).subscribe(r=>{
               if(i==this.data.chapterList.length-1){

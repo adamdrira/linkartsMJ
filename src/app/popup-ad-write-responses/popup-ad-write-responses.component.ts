@@ -102,7 +102,6 @@ export class PopupAdWriteResponsesComponent implements OnInit {
     this.Ads_service.add_ad_response(this.data.item.id,this.response_group.value.response.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).subscribe(r=>{
       this.id_ad_response=r[0].id
       this.begin_download_attachments=true;
-      //this.display_loading=false;
     })
   }
 

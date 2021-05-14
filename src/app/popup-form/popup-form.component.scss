@@ -68,6 +68,8 @@
   }
   
   .step-form {
+    max-height: 600px;
+    overflow:auto;
     font-size: 14px;
     padding: 0px 10px;
     
