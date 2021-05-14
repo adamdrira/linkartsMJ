@@ -84,6 +84,12 @@ export class Profile_Edition_Service {
     }));
   }
 
+  retrieve_cover_picture_thumbnail(user_id: number){
+    return this.httpClient.get(`routes/retrieve_cover_picture_thumbnail/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
   retrieve_cover_picture_stories(user_id: number){
     return this.httpClient.get(`routes/retrieve_cover_picture_stories/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
       return information;
