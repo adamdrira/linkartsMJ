@@ -241,7 +241,9 @@ export class AdPageComponent implements OnInit {
 
   
   ngOnDestroy() {
-    this.navbar.show_help();
+    if(!this.ad_id_input){
+      this.navbar.show_help();
+    }
   }
 
   close_popup(){
@@ -612,10 +614,11 @@ export class AdPageComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        this.Ads_service.delete_ad(this.item.id).subscribe(l=>{
+        this.Ads_service.delete_ad(this.item.id,this.item.id_user).subscribe(l=>{
           this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
             this.close_popup();
-            this.router.navigateByUrl( `/account/${this.pseudo}`);
+            this.location.go(`/account/${this.pseudo}`);
+            location.reload()
             return;
           })
         })
@@ -670,7 +673,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_one;
             this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++
@@ -695,7 +699,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_two;
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++;
@@ -720,7 +725,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_three;
             this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++
@@ -745,7 +751,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_name_four)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_four;
             this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++
@@ -770,7 +777,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_name_five)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_five;
             this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++
@@ -850,6 +858,14 @@ export class AdPageComponent implements OnInit {
         
             this.loading_subscribtion=false;
             this.cd.detectChanges();
+          }
+          else if(information[0].blocked){
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Impossible de s'abonner à cet utilisateur."},
+              panelClass: "popupConfirmationClass",
+            });
+            this.already_subscribed=false;
+            this.loading_subscribtion=false;
           }
           else{
             this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.item.id_user,this.item.id_user.toString(),'none','none',this.visitor_id,0,"add",false,0).subscribe(l=>{
@@ -1170,7 +1186,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_one;
             this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.response_list_of_pictures[l[1]] = SafeURL;
               u++
@@ -1195,7 +1212,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_two;
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.response_list_of_pictures[l[1]] = SafeURL;
               u++
@@ -1220,7 +1238,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_three;
             this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.response_list_of_pictures[l[1]] = SafeURL;
               u++
@@ -1245,7 +1264,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_real_name_four)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_four;
             this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.response_list_of_pictures[l[1]] = SafeURL;
               u++
@@ -1270,7 +1290,8 @@ export class AdPageComponent implements OnInit {
           if(re.exec(item.attachment_real_name_five)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_five;
             this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
-              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              let blob = new Blob([l[0]], {type: 'image/png'});
+              let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.response_list_of_pictures[l[1]] = SafeURL;
               u++
