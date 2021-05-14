@@ -10,11 +10,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
 
-declare var $:any;
 declare var Swiper:any;
 
 
-const url = 'https://linkarts.fr/routes/upload_cover_writing';
+const url = 'https://www.linkarts.fr/routes/upload_cover_writing';
 
 @Component({
   selector: 'app-uploader-cover-writing',
@@ -63,7 +62,7 @@ export class UploaderCoverWritingComponent implements OnInit {
 
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
-
+  @ViewChild("tags") tags: ElementRef;
 
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
@@ -98,17 +97,27 @@ export class UploaderCoverWritingComponent implements OnInit {
 
       if( this.category == "Roman illustré" || this.category == "Illustrated novel" ) {
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#ee5842,#ed973c)" );
+        this.rd.setStyle( this.tags.nativeElement, "background", "#ee5842" );
+        this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #ee5842" );
       }
       else if( this.category == "Roman" ) {
+        this.rd.setStyle( this.tags.nativeElement, "background", "#1a844e" );
+        this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #1a844e" );
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#1a844e,#77d05a)" );
       }
       else if( this.category == "Scénario" || this.category == "Scenario" ) {
+        this.rd.setStyle( this.tags.nativeElement, "background", "#8051a7" );
+        this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #8051a7" );
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#8051a7,#d262a5)" );
       }
       else if( this.category == "Article" ) {
+        this.rd.setStyle( this.tags.nativeElement, "background", "#044fa9" );
+        this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #044fa9" );
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
       }
       else if( this.category == "Poetry" || this.category == "Poésie" ) {
+        this.rd.setStyle( this.tags.nativeElement, "background", "#fd3c59" );
+        this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #fd3c59" );
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg, #fd3c59, #e6a483)" );
       }
       

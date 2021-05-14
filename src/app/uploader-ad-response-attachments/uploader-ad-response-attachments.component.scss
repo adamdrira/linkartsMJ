@@ -32,7 +32,7 @@ $default-color: rgb(218,220,225);
     font-size: 16px;
     top: 50%;
     transform: translate(0, -50%);
-    color: #8392b5;
+    color: $default-color;
 }
 
 
@@ -43,7 +43,7 @@ $default-color: rgb(218,220,225);
     font-size: 18px;
     justify-content: center;
     align-items: center;
-    background: #203864;
+    background: #162644;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
     padding: 10px 50px 10px 50px;
     width: 100%;

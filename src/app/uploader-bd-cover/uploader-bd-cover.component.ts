@@ -8,11 +8,9 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
-
-declare var $:any;
 declare var Swiper:any;
 
-const url = 'https://linkarts.fr/routes/upload_cover_bd_oneshot';
+const url = 'https://www.linkarts.fr/routes/upload_cover_bd_oneshot';
 
 @Component({
   selector: 'app-uploader-bd-cover',
@@ -62,7 +60,7 @@ export class UploaderBdCoverComponent implements OnInit {
 
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
-
+  @ViewChildren("tags") tags: QueryList<ElementRef>;
 
   @Input('author_name') author_name:string;
   @Input('pseudo') pseudo:string;
@@ -89,22 +87,36 @@ export class UploaderBdCoverComponent implements OnInit {
       this.cd.detectChanges();
     }
     if( changes.category && this.category && !this.for_edition ) {
-
       this.cd.detectChanges();
-
       if( this.category == "BD" ) {
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
+        for(let i=0;i<this.tags.toArray().length;i++){
+          this.rd.setStyle( this.tags.toArray()[i].nativeElement, "background", "#044fa9" );
+          this.rd.setStyle( this.tags.toArray()[i].nativeElement, "border", " 1px solid #044fa9" );
+        }
+    
       }
       else if( this.category == "Comics" ) {
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#1a844e,#77d05a)" );
+        for(let i=0;i<this.tags.toArray().length;i++){
+          this.rd.setStyle( this.tags.toArray()[i].nativeElement, "background", "#1a844e" );
+          this.rd.setStyle( this.tags.toArray()[i].nativeElement, "border", " 1px solid #1a844e" );
+        }
       }
       else if( this.category == "Manga" ) {
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#ee5842,#ed973c)" );
+        for(let i=0;i<this.tags.toArray().length;i++){
+          this.rd.setStyle( this.tags.toArray()[i].nativeElement, "background", "#ee5842" );
+          this.rd.setStyle( this.tags.toArray()[i].nativeElement, "border", " 1px solid #ee5842" );
+        }
       }
       else if( this.category == "Webtoon" ) {
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#8051a7,#d262a5)" );
+        for(let i=0;i<this.tags.toArray().length;i++){
+          this.rd.setStyle( this.tags.toArray()[i].nativeElement, "background", "#8051a7" );
+          this.rd.setStyle( this.tags.toArray()[i].nativeElement, "border", " 1px solid #8051a7" );
+        }
       }
-
       
       this.cd.detectChanges();
 

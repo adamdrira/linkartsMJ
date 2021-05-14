@@ -8,7 +8,6 @@ import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service'
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { NotificationsService } from '../services/notifications.service';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Trending_service } from '../services/trending.service';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -35,12 +34,8 @@ import { takeUntil } from 'rxjs/operators';
       'enterFromTopAnimation', [
         transition(':enter', [
           style({transform: 'translateY(-50%)', opacity: 0}),
-          animate('400ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
+          animate('500ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
         ]),
-        transition(':leave', [
-          style({transform: 'translateY(0px)', opacity: 1, position: 'absolute'}),
-          animate('100ms ease-out', style({transform: 'translateY(0px)', opacity: 0}))
-        ])
       ]
     ),
     trigger(
@@ -68,7 +63,6 @@ export class TrendingsComponent implements OnInit, OnDestroy {
     private navbar:NavbarService,
     private cd:ChangeDetectorRef,
     private deviceService: DeviceDetectorService,
-    private Profile_Edition_Service:Profile_Edition_Service,
 
     ) { 
       navbar.visibility_observer_font.subscribe(font=>{

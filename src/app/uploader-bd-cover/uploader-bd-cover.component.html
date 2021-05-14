@@ -117,13 +117,31 @@
                 <!--Type container-->
                 <!--********************-->
                 <div class="verso-type">
-                    <!--&bull;-->
-                    <div *ngIf="format=='One-shot'" class="d-flex">
-                        <div class="tag-container"><span>One shot</span></div>
+                    <div class="d-flex" *ngIf="format=='One-shot'">
+                        <div class="tag-container" #tags><span>One shot</span></div>
+                        <div class="tag-container" #tags>
+                            <span>n°pages</span>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
+                        </div>
                     </div>
-                    <div *ngIf="format=='Série'" class="d-flex">
-                        <div class="tag-container"><span>Série</span></div>
-                    </div>
+                    <div class="d-flex" *ngIf="format=='Série'">
+                        <div class="tag-container" #tags><span>Série</span></div>
+                        <div class="tag-container" #tags>
+                            <span>n°</span>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }"
+                            matTooltip="Nombre de chapitres" 
+                                                    matTooltipClass='linkarts-tooltip'
+                                                    [matTooltipPosition]="'below'"
+                                                    [matTooltipShowDelay]="200">import_contacts</mat-icon>
+                            <span>&nbsp; n°</span>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }"
+                            matTooltip="Moyenne de pages par chapitre" 
+                            matTooltipClass='linkarts-tooltip'
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="200"
+                            >insert_drive_file</mat-icon>
+                        </div>
+                    </div >
 
 
                  
@@ -153,12 +171,7 @@
                     
                 </div>
               
-                <!--********************-->
-                <!--Date container-->
-                <!--********************-->
-                <div class="date-container">
-                    <span>Date de publication</span>
-                </div>
+               
 
             
             </div>

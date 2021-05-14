@@ -1,12 +1,10 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, ViewChild, Renderer2, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ElementRef, SimpleChanges, Input, ViewChild, Renderer2, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
+import {DomSanitizer} from '@angular/platform-browser';
 import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NavbarService } from '../services/navbar.service';
-
-declare var $:any;
 
 const url = 'https://www.linkarts.fr/routes/upload_attachments_ad/';
 
@@ -103,7 +101,6 @@ export class UploaderAttachmentsAdComponent implements OnInit {
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" &&  sufix!="pdf" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .pdf, .jpg, .jpeg, .png, .gif'},
@@ -128,13 +125,10 @@ export class UploaderAttachmentsAdComponent implements OnInit {
         else{
           if(re.exec(file._file.name)[1]=="pdf"){
             this.list_of_contents_type[index]=false;
-            console.log(this.list_of_contents_type);
           }
           else{
             this.list_of_contents_type[index]=true;
             this.displayContent(file,index);
-            console.log(this.list_of_contents_type);
-            console.log(this.list_of_pictures);
           }
           file.withCredentials = true; 
         }
@@ -144,8 +138,6 @@ export class UploaderAttachmentsAdComponent implements OnInit {
 
     this.uploader.onCompleteItem = (file) => {
       this.k++;
-      console.log(this.k);
-      console.log(this.uploader.queue.length)
       if(this.k==this.uploader.queue.length){
         this.uploaded1.emit( true );
       }
@@ -172,7 +164,6 @@ export class UploaderAttachmentsAdComponent implements OnInit {
 //lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder
 remove_beforeupload(item:FileItem,index){
   item.remove();
-  console.log(this.uploader.queue.length);
   this.list_of_contents_type.splice(index, 1);
   this.list_of_pictures.splice(index, 1);
  }
