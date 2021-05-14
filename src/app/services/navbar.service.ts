@@ -198,8 +198,8 @@ export class NavbarService {
       }));
     }
 
-    delete_click_after_ressearch_from_history(text){
-      return this.httpClient.post(`routes/delete_click_after_ressearch_from_history`, {text:text}, {withCredentials:true}).pipe(map((information)=>{
+    delete_click_after_ressearch_from_history(category,format,target_id){
+      return this.httpClient.post(`routes/delete_click_after_ressearch_from_history`, {category:category,format:format,target_id:target_id}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }

@@ -119,11 +119,6 @@ export class Ads_service {
     }
 
 
-    get_all_my_ads() {
-      return this.httpClient.get('routes/get_ads_by_user_id',{withCredentials:true}).pipe(map(information=>{
-        return information;   
-      }));
-    }
 
     get_sorted_ads(remuneration,type_of_project,author,target,sorting):Observable<Object> {
       return this.httpClient.get(`routes/get_sorted_ads/${remuneration}/${type_of_project}/${author}/${target}/${sorting}`,{withCredentials:true}).pipe(map(information=>{
@@ -163,8 +158,8 @@ export class Ads_service {
 
     // interactions avec les annonces
 
-    delete_ad(id) {
-      return this.httpClient.delete(`routes/delete_ad/${id}`, {withCredentials:true}).pipe(map(information=>{
+    delete_ad(id,id_user) {
+      return this.httpClient.post(`routes/delete_ad`,{id:id,id_user:id_user}, {withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
     }

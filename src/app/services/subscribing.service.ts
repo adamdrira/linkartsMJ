@@ -107,7 +107,7 @@ export class Subscribing_service {
   }
 
   remove_content(category, format, publication_id){
-    return this.httpClient.delete(`routes/remove_content/${category}/${format}/${publication_id}`, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post(`routes/remove_content`,{category:category,format:format,publication_id:publication_id}, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }

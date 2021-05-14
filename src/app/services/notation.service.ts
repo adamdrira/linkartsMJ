@@ -49,8 +49,8 @@ export class NotationService {
         return information;
       }));
     }
-    remove_commentary_answer(category, format, style, publication_id,chapter_number,comment_anwser_id){
-      return this.httpClient.delete(`routes/remove_commentary_answer/${category}/${format}/${style}/${publication_id}/${chapter_number}/${comment_anwser_id}`, {withCredentials:true}).pipe(map((information)=>{
+    remove_commentary_answer(category, format, style, publication_id,chapter_number,comment_anwser_id,comment_id){
+      return this.httpClient.delete(`routes/remove_commentary_answer/${category}/${format}/${style}/${publication_id}/${chapter_number}/${comment_anwser_id}/${comment_id}`, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
