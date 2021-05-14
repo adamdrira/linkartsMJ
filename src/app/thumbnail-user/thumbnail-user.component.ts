@@ -116,7 +116,7 @@ export class ThumbnailUserComponent implements OnInit {
         this.profile_picture = url;
       });
   
-      this.Profile_Edition_Service.retrieve_cover_picture( this.user_id ).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_cover_picture_thumbnail( this.user_id ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         this.cover_picture = url;
       });
