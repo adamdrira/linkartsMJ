@@ -71,6 +71,9 @@ router.get('/', (request, response) => {
 
 //fonctions pour les recommendations et les trendings
 router.post('/generate_recommendations',recommendations.generate_recommendations)
+router.post('/get_recommendations_comics',recommendations.get_recommendations_comics)
+router.post('/get_recommendations_writings',recommendations.get_recommendations_writings)
+router.post('/get_recommendations_drawings',recommendations.get_recommendations_drawings)
 router.post('/get_first_recommendation_bd_os_for_user',recommendations.get_first_recommendation_bd_os_for_user)
 router.post('/get_first_recommendation_bd_serie_for_user',recommendations.get_first_recommendation_bd_serie_for_user)
 router.post('/see_more_recommendations_bd',recommendations.see_more_recommendations_bd)
@@ -168,6 +171,7 @@ controller_subscribings(router,
    subscribings_seq.list_of_contents, 
    subscribings_seq.list_of_archives,
    authentification.users,
+   authentification.user_blocked,
    navbar_seq.list_of_navbar_researches
     );
 controller_albums(router, albums_seq.list_of_albums);
