@@ -189,7 +189,6 @@
     align-items: center;
     min-width: 52px;
     color:white;
-    //border-bottom:1px solid #4bc7ff;
   }
   
 
@@ -307,12 +306,12 @@
   margin: auto 4px 3px 0px;
   font-size:11px;
   line-height: 11px;
-  background:rgb(32,56,100);
-  border:1px solid rgb(32,56,100);
 }
 .verso-type .tag-container.type {
   background:unset !important;
-  border: solid 1px white;
+  border: solid 2px white;
+  padding: 4px;
+  border-radius: 30px;
 }
 .tag-container .mat-icon {
   font-size: 11px;
@@ -336,8 +335,6 @@
 
 .border-verso .verso-type {
   width: 100%;
-  /*display:flex;
-  flex-wrap: wrap;*/
   align-items:center;
   text-align: left;
   margin-top: auto;
@@ -353,6 +350,7 @@
 
 .border-verso .verso-type span {
   font-size: 10px;
+  font-weight: 600;
   line-height: 11px;
   margin: auto auto auto auto;
 }
@@ -379,7 +377,6 @@
   top: 40%;
   transform: translateY(-50%);
   color: #ffffff;
-  /*background: #203864;*/
   border-radius: 50px;
   height: 20px;
   width: 20px;

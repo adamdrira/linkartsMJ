@@ -176,7 +176,6 @@
     align-items: center;
     min-width: 52px;
     color:white;
-    //border-bottom:1px solid #4bc7ff;
   }
   
   
@@ -294,17 +293,17 @@
   margin: auto 4px 3px 0px;
   font-size:11px;
   line-height: 11px;
-  /*background:rgb(32,56,100);
-  border:1px solid rgb(32,56,100);*/
 }
 .verso-type .tag-container.type {
   background:unset !important;
-  border-bottom: solid 1px white;
+  border: solid 2px white;
+  padding: 4px;
+  border-radius: 30px;
 }
 .tag-container .mat-icon {
   font-size: 11px;
   max-width:11px;
-            overflow: hidden;
+  overflow: hidden;
   line-height: 11px;
   margin-top: 1px;
   margin-left: 3px;
@@ -325,8 +324,6 @@
 
 .border-verso .verso-type {
   width: 100%;
-  /*display:flex;
-  flex-wrap: wrap;*/
   margin-top: auto;
   align-items:center;
   text-align: left;
@@ -343,6 +340,7 @@
 .border-verso .verso-type span {
   font-size: 10px;
   line-height: 11px;
+  font-weight: 600;
   margin: auto auto auto auto;
 }
 

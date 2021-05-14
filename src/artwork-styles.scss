@@ -1,6 +1,193 @@
 $default-color: #f9f9f9;
 
 
+.sumo-container-chapters ::ng-deep {
+
+    position: relative;
+    height: 35px;
+  
+    button.optionsMenu {
+  
+      display: flex;
+      position: absolute;
+      padding: 2px;
+      left: -27px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: unset;
+      transition: background-color 200ms, opacity 100ms;
+      border: unset;
+      color:#9a9a9a;
+      border-radius: 50px;
+      outline: none;
+  
+      &.opened {
+        color:  rgb(32,56,100);
+      }
+      &:hover {
+        background: rgb(250 250 252);
+      }
+      &:active {
+        background: rgb(240 242 245);
+      }
+      mat-icon {
+        font-size: 20px;
+        max-width: 20px;
+        margin-top: 6px;
+        overflow: hidden;
+        margin: auto;
+        height: unset;
+        width: unset;
+      }
+    }
+    .mat-form-field {
+        width: 100%;
+        height: 100%;
+        
+        .arrow-container {
+          position: absolute;
+          right: -11px;
+          display: flex;
+          mat-icon {
+            margin: auto auto;
+            height: unset;
+            width: 17px;
+            max-width:17px;
+          overflow: hidden;
+            font-size: 17px;
+            transform: rotate(-90deg);
+            transition: transform 200ms;
+            color: #203864;
+          }
+          &.opened mat-icon {
+            transform: rotate(90deg) !important;
+          }
+        }
+  
+        .mat-form-field-wrapper {
+          padding-bottom: unset !important;
+          height: 100%;
+        }
+        .mat-form-field-flex {
+          background: #fbfbfd !important;
+          box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  
+          font-weight: 600;
+  
+          height: 100%;
+          border-radius: 30px;
+          padding-right: 24px !important;
+          padding-left: 20px !important;
+          transition: box-shadow 200ms;
+        }
+  
+        &.opened {
+          .mat-form-field-flex {
+            border-radius: 20px 20px 0px 0px;
+          }
+        }
+    }
+    .mat-form-field-underline {
+        display: none !important;
+    }
+    .mat-form-field-infix {
+      border: unset;
+      padding: unset;
+      height: 100%;
+      width:140px;
+      display:flex;
+      align-items: center;
+      mat-select {
+        margin-top: auto;
+        margin-bottom: auto;
+        .mat-select-value-text {
+          font-size: 14px;
+          line-height: 18px;
+          font-weight:600 !important;
+          color: rgb(32,56,100);
+        }
+        .mat-select-trigger {
+          width:100%;
+        }
+        .mat-select-arrow-wrapper {
+          display:none !important;
+        }
+      }
+    }
+    .mat-form-field-appearance-legacy .mat-form-field-subscript-wrapper {
+        margin-top: 0px;
+        padding-right: 20px !important;
+        padding-left: 20px !important;
+    }
+  }
+
+
+
+::ng-deep {
+
+  
+    .ChaptersSelectClass.mat-select-panel {
+      position: absolute;
+      user-select: none;
+      overflow: hidden;
+      width: 184px !important;
+      top: 29px;
+      left: -4px;
+      border-top: 1px solid rgb(218,218,218);
+      max-height: 270px;
+      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      border-radius: 0px 0px 15px 15px;
+      max-height: 270px;
+  
+      .mat-ripple * {
+          background-color: unset !important;
+      }
+  
+      .mat-option.mat-active {
+        display: none;
+      }
+      .mat-option:hover:not(.mat-active) {
+          background: rgb(243, 243, 243) !important;
+      }
+      .mat-option:active:not(.mat-active) {
+          background: rgb(236, 236, 236) !important;
+      }
+  
+      .mat-option {
+        background: #fafafc !important;
+        color: #203864 !important;
+        font-size: 12px;
+        line-height: 17px;
+        font-weight: 600 !important;
+        padding-left: 20px;
+          
+          .mat-option-text {
+            display:flex;
+            .icon-home {
+              width:14px !important;
+              height:14px !important;
+              margin:auto 10px auto 0px;
+              background-color: #203864;
+              mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
+            }
+    
+            .icon-collaboration {
+              width:14px !important;
+              height:14px !important;
+              margin:auto 10px auto 0px;
+              background-color: #203864;
+              mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
+            }
+  
+            span {
+              white-space: nowrap;
+              overflow: hidden !important;
+              text-overflow: ellipsis;
+            }
+          }
+      }
+    }
+}
 
 
 .close-popup {
@@ -21,7 +208,6 @@ $default-color: #f9f9f9;
 }
 
 .artwork {
-    //440px
     user-select: none;
     position: relative;
     height: calc(100vh - 53px);
@@ -76,7 +262,6 @@ $default-color: #f9f9f9;
                 display: flex;
                 justify-content: center;
                 box-shadow: 0px -1px 31px rgba(0, 0, 0, 0.5);
-                //background: #122951;
                 background: #021133;
                 padding: 5px 15px;
 
@@ -130,12 +315,13 @@ $default-color: #f9f9f9;
                         input {
                             width: 45px;
                             color: rgb(32, 56, 100);
-                            background: $default-color;
+                            background: #fbfbfd;
                             font-size: 12px;
                             text-align: center;
                             margin: 0px 8px;
-                            border: 1px solid grey;
-                            border-radius: 3px;
+                            border: unset;
+                            outline: none;
+                            border-radius: 15px;
                         }
                     }
                 }
@@ -143,12 +329,10 @@ $default-color: #f9f9f9;
                 .button {
                     cursor: pointer;
                     display: flex;
-                    //padding:15px;
                     mat-icon {
                         color: #f9f9f9;
                         width: unset;
                         height: unset;
-                        /* margin: 5px; */
                         font-size: 22px;
                         max-width: 22px;
                         overflow: hidden;
@@ -182,64 +366,8 @@ $default-color: #f9f9f9;
                     //SumoSelect
                     .chapter-container {
                         display: flex;
-                        ::ng-deep .SumoSelect {
-                            width: unset !important;
-                            font-size: 12px;
-                            margin: auto auto;
-                            &.open {
-                                background: rgb(32, 56, 100);
-                                border-radius: 5px 5px 0px 0px;
-                            }
-                            .optWrapper {
-                                left: unset;
-                                top: 32px !important;
-                                right: 0 !important;
-                                border-radius: 0px 0px 10px 10px;
-                                border: unset;
-                                background: unset;
-                            }
-                            > .optWrapper > .options li.opt {
-                                background-color: rgb(32, 56, 100);
-                                border-bottom: 1px solid rgb(46, 62, 93);
-                                color: $default-color;
-                                cursor: pointer;
-
-                                &:hover {
-                                    background-color: rgb(29, 53, 97);
-                                }
-                                &.disabled {
-                                    display: none;
-                                }
-                            }
-                            > .CaptionCont {
-                                cursor: pointer;
-                                max-width: 400px;
-
-                                @media (max-width: 1300px) {
-                                    max-width: 300px;
-                                }
-                                > span {
-                                    font-style: unset !important;
-                                    cursor: pointer;
-                                    color: #dadce1;
-                                    display: -webkit-box;
-                                    -webkit-box-orient: vertical;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                    white-space: normal;
-                                    word-break: break-all;
-                                    -webkit-line-clamp: 1;
-                                }
-                                > label {
-                                    cursor: pointer;
-                                    > i {
-                                        background-image: none !important;
-                                        background-color: rgb(218, 227, 243);
-                                        mask: url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
-                                    }
-                                }
-                            }
-                        }
+                        align-items: center;
+                      
                     }
                 }
 
@@ -372,7 +500,6 @@ $default-color: #f9f9f9;
                 }
 
                 width: 100%;
-                //transition:width 200ms;
                 height: 100%;
                 .loading-page {
                     position: absolute;
@@ -397,7 +524,6 @@ $default-color: #f9f9f9;
                                 margin: auto auto;
                                 object-fit: contain;
                                 pointer-events: none;
-                                //Without zoom
                                 max-width: 100%;
                                 max-height: 100% !important;
 
@@ -560,7 +686,7 @@ $default-color: #f9f9f9;
             background-color: #000000;
         }
         &::-webkit-scrollbar-thumb {
-            background-color: #bfc8d5;
+            background-color: #596579;
         }
 
         .options-buttons-artwork{
@@ -751,11 +877,13 @@ $default-color: #f9f9f9;
                 overflow: hidden;
                 .type-container {
                     border-radius: 50px;
-                    border: solid 2px $default-color;
                     padding: 5px 11px 6px 11px;
+                    
                     display: flex;
                     flex-wrap: wrap;
-                    background-color: $default-color;
+                    border: solid 2px white;
+                    padding: 5px 11px 6px 11px;
+                    background-color: #ffffff;
                     margin: auto 6px 3px 0px;
                     color: #203864;
                     span {
@@ -860,7 +988,6 @@ $default-color: #f9f9f9;
                 }
             }
             .subscribing-container-artwork{
-                //background-color: #040b19 !important;
                 button{
                     
                     background: #021133 !important;
@@ -1006,6 +1133,9 @@ $default-color: #f9f9f9;
         .adad-container {
             width: 100%;
             height: 321px;
+            display: block;
+            margin-top: 30px;
+            border-bottom: 1px solid #0f1e3a;
             .adad {
                 position: relative;
                 width: 100%;
@@ -1030,7 +1160,6 @@ $default-color: #f9f9f9;
                 color: $default-color;
                 border-radius: 10px 10px 0px 0px;
                 background: #040b19;
-                //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
                 box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                 span {
                     font-size: 13px;
@@ -1049,7 +1178,6 @@ $default-color: #f9f9f9;
                 color: $default-color;
                 border-radius: 0px 0px 10px 10px;
                 background: #040b19;
-                //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
                 box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                 span {
                     font-size: 13px;
@@ -1164,11 +1292,12 @@ $default-color: #f9f9f9;
                 overflow: hidden;
                 .type-container {
                     border-radius: 50px;
-                    border-bottom: solid 2px $default-color;
                     padding: 5px 11px 6px 11px;
                     display: flex;
                     flex-wrap: wrap;
-                    background-color: $default-color;
+                    border: solid 2px white;
+                    padding: 5px 11px 6px 11px;
+                    background-color: #ffffff;
                     margin: auto 6px 3px 0px;
                     color: #203864;
                     span {
@@ -1188,6 +1317,9 @@ $default-color: #f9f9f9;
 
                     &.style {
                         background: unset;
+                        border: solid 2px white;
+                        padding: 5px 11px 6px 11px;
+                        display: flex;
                         span {
                             color: $default-color;
                             word-break: break-word;
@@ -1256,9 +1388,7 @@ $default-color: #f9f9f9;
                 }
 
                 &.opened {
-                    /*background: rgb(32, 56, 100);*/
                     background: #040b19!important;
-                    //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
                     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                     mat-icon {
                         opacity: 1;
@@ -1487,9 +1617,7 @@ $default-color: #f9f9f9;
     margin-left: 10px;
 
     box-shadow: 0px -1px 10px #00000036;
-    /*background: #203864;*/
     background: rgba(2, 18, 54, 0.9);
-    //background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
     border-radius: 20px;
     padding: 0px 0px 0px 0px;
 
