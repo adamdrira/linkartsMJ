@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 
 
 
-module.exports = (router, list_of_subscribings, list_of_contents,list_of_archives, list_of_users, list_of_navbar) => {
+module.exports = (router, list_of_subscribings, list_of_contents,list_of_archives, list_of_users, users_blocked,list_of_navbar) => {
 
     function get_current_user(token){
         var user = 0
@@ -85,6 +85,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
     router.post('/check_if_publication_archived/:publication_category/:format/:publication_id', function (req, res) {
 
+        console.log("check_if_publication_archived")
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -264,6 +265,8 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
           return res.status(401).json({msg: "error"});
         }
       }
+      console.log("subscribe_to_a_user")
+      const Op = Sequelize.Op;
         let current_user = get_current_user(req.cookies.currentUser);
         const id_user_to_subscribe = req.body.id_user_to_subscribe;
         list_of_users.findOne({
@@ -292,7 +295,25 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                         res.status(200).send([{"subscribtion":"already sbscribed 0"}])  
                     }
                     else{
-                        create_sub()
+                        console.log("check blocked !")
+                        users_blocked.findOne({
+                            where:{
+                              [Op.or]:[{id_user: current_user,id_user_blocked:id_user_to_subscribe},{id_user_blocked:current_user,id_user:id_user_to_subscribe}],
+                            }
+                          }).catch(err => {
+                                  
+                                  res.status(500).json({msg: "error", details: err});		
+                              }).then(blocked=>{
+                            if(blocked){
+                                console.log("user blocked !")
+                                res.status(200).send([{blocked:"blocked"}])
+                            }
+                            else{
+                                create_sub()
+                            }
+                            
+                        })
+                        
                     }
                 })
 
@@ -914,6 +935,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
     router.post('/change_content_status', function (req, res) {
 
+        console.log("change_content_status")
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -943,7 +965,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 "status":status
             }).catch(err => {
 			res.status(500).json({msg: "error", details: err});		
-		}).then(content => {
+		    }).then(content => {
                 let cat=(category=="writing")?"Writing":(category=="drawing")?"Drawing":"Comic";
                 list_of_navbar.findAll({
                     where: {
@@ -993,7 +1015,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         })    
     });
 
-    router.delete('/remove_content/:category/:format/:publication_id', function (req, res) {
+    router.post('/remove_content', function (req, res) {
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1006,9 +1028,9 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
       }
         let current_user = get_current_user(req.cookies.currentUser);
        
-        const category = req.params.category;
-        const format = req.params.format;
-        const publication_id = parseInt(req.params.publication_id);
+        const category = req.body.category;
+        const format = req.body.format;
+        const publication_id = req.body.publication_id;
 
       list_of_contents.findOne({
             where: {
@@ -1258,8 +1280,9 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
           return res.status(401).json({msg: "error"});
         }
       }
-      
+        
         const id_user = parseInt(req.params.id_user);
+        console.log("get_emphasized_content " + id_user)
         list_of_contents.findOne({
             where: {
                 id_user:id_user,
@@ -1270,6 +1293,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(content => {
+            
             res.status(200).send([content])
         })
         

@@ -919,7 +919,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         })
     });
 
-    router.delete('/delete_ad/:id', function (req, res) {
+    router.post('/delete_ad', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -932,7 +932,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         }
       }
       let current_user = get_current_user(req.cookies.currentUser); 
-          const id = parseInt(req.params.id);
+          const id = req.body.id;
           list_of_ads.findOne({
               where: {
                   id:id,

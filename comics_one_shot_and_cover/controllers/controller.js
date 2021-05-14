@@ -907,6 +907,9 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               if(bd){
                 res.status(200).send([bd]);
               }
+              else{
+                res.status(200).send([{status:"deleted"}]);
+              }
             }); 
       });
       
@@ -937,6 +940,9 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
              if(bd){
               res.status(200).send([{current_user:current_user,data:[bd]}]);
              }
+             else{
+              res.status(200).send([{current_user:current_user,data:[{status:"deleted"}]}]);
+            }
            }); 
      });
     

@@ -786,7 +786,6 @@ router.post('/retrieve_number_of_contents', function (req, res) {
               status:"public"
             }
           }).catch(err => {
-            console.log(err)
             res.status(500).json({msg: "error", details: err});		
           }).then(bd_os=>{
             number_of_comics+=bd_os?bd_os.length:0;
@@ -2922,53 +2921,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       }
     })
 
-    /*users_mailing.findOne({
-      where: {
-        id_user: current_user,
-      }
-    })
-    .catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user =>  {
-      if(user){
-        user.update({
-          "agreement":value,
-        }).catch(err => {
-          
-          res.status(500).json({msg: "error", details: err});		
-        }).then(mailing=>{
-          res.status(200).send([mailing])
-        })
-      }
-      else{
-        users.findOne({
-          where:{
-            id:current_user
-          }
-        }).catch(err => {
-          
-          res.status(500).json({msg: "error", details: err});		
-        }).then(real_user=>{
-          if(real_user && real_user.status=='account'){
-            users_mailing.create({
-              "id_user":current_user,
-              "agreement":value,
-            }).catch(err => {
-              
-              res.status(500).json({msg: "error", details: err});		
-            }).then(mailing=>{
-              res.status(200).send([mailing])
-            })
-          }
-          else{
-            res.status(200).send([{error:"not_found"}]);
-          }
-        })
-        
-      }
-    }); */
-
    
   });
 
@@ -3050,7 +3002,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/check_password_for_registration', function (req, res) {
-
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3154,7 +3105,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/send_email_for_account_creation', function (req, res) {
-
     if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3166,7 +3116,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         }
       }
   let id = req.body.id;
-
     users.findOne({
       where:{
         id:id,
@@ -3221,12 +3170,13 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                           </a>
                       </div>`
 
+                      mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous aveez jusqu'à une semaine pour confirmer votre inscription. Une fois ce délais passé, votre compte ne sera plus accessible jusqu'à validation de votre inscription.</p>`
                       if(user.type_of_account.includes("Artiste")){
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">En tant qu'${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
                         <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Rémunération</b> : Vous pouvez générer des gains proportionnels à votre nombre d'abonnés grâce à vos apparitions en Tendances et Coups de cœur.</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : Si vous écrivez, que vous dessinez ou que vous faites les deux, LinkArts vous permet d'organiser et de mettre en avant les œuvres que vous publiez. LinkArts vous offre aussi une visibilité supplémentaire dans les coups de cœur si votre compte a moins de 6 mois d'existence et qu'il commence à gagner en popularité. Si de plus, vous faites partie du top 15 des coups de cœur le premier du mois, vous générez alors des gains bonus !</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y retrouver des annonces pour tous types de collaborations principalement en lien avec le monde de l'édition. LinkArts met aussi à votre disposition une messagerie vous permettant d'échanger avec de potentiels collaborateurs ou tout simplement avec vos contacts.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration. Vous pourrez y retrouver des annonces pour tous types de collaborations principalement en lien avec le monde de l'édition. LinkArts met aussi à votre disposition une messagerie vous permettant d'échanger avec de potentiels collaborateurs ou tout simplement avec vos contacts.</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Exploration </b>: Regorgeant d'artistes du monde de l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommandant des œuvres qui sont adaptées à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres afin d'enrichir votre créativité. </li>
                         </ol>`
@@ -3234,24 +3184,24 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       else if(user.type_of_account.includes("non art")){
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">En tant que ${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
                         <ol>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts propose actuellement aux professionnels la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux professionnels la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activitées. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts propose actuellement aux professionnels la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux professionnels la mise en avant de leur marque en en-tête de la section Collaboration. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activitées. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
                                 
                         </ol>`
                       }
                       else if(user.type_of_account.includes("Maison")){
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">En tant que ${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
                         <ol>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts propose actuellement aux maisons d'édition la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts propose actuellement aux maisons d'édition la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section Collaboration. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
                         </ol>`
                       }
                       else if(user.type_of_account.includes("Edit")){
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">En tant qu'${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
                         <ol>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts propose actuellement aux maisons d'édition et aux éditeurs la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts propose actuellement aux maisons d'édition et aux éditeurs la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section Collaboration. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
                         </ol>`
                       }
@@ -3552,7 +3502,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez confirmer ou rejeter votre adhésion au groupe en cliquant sur le bouton ci-dessous : </p>
   
                             <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                                <a href="https://linkarts.fr/account/${user_found.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                <a href="https://www.linkarts.fr/account/${user_found.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                                     Gérer mon adhésion
                                 </a>
                             </div>
@@ -3708,7 +3658,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez désormais éditer la répartition des gains et gérer la liste des membres du groupe en cliquant sur le bouton ci-dessous : </p>
 
                           <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                              <a href="https://linkarts.fr/account/${user_found.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                              <a href="https://www.linkarts.fr/account/${user_found.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                                   Gérer mon compte
                               </a>
                           </div>

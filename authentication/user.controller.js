@@ -1114,7 +1114,6 @@ exports.login = async (req, res) => {
 
 
 exports.login_group_as_member = async (req, res) => {
-	console.log("login_group_as_member")
 	if( ! req.headers['authorization'] ) {
 		return res.status(401).json({msg: "error"});
 	}
@@ -1133,7 +1132,6 @@ exports.login_group_as_member = async (req, res) => {
 		   id:req.body.id_group,
 		   } 
 	}).catch(err => {
-		console.log(err)	
 		res.status(500).json({msg: "error", details: err});		
 	}).then(group=>{
 		if(group){
@@ -1254,7 +1252,6 @@ exports.check_email_checked = async (req, res) => {
 					return res.status(401).json({msg: "error"});
 			}
 	}
-
 	const Op = Sequelize.Op;
 	const users = await User.findAll( {
 		where: { 
@@ -1280,10 +1277,20 @@ exports.check_email_checked = async (req, res) => {
 	}
 
 
+	let now_in_seconds = Math.trunc( new Date().getTime()/1000);
+	function get_date(now,uploaded_date){
+		let date = Math.trunc(new Date(uploaded_date + ' GMT').getTime()/1000);
+		let s= now - date
+		return (Math.trunc(s/604800))
+	}
+
+
+
 	if( indice_found<0) {
 		return res.status(200).json({msg: "error"});
 	}
 	else{
+		let s = get_date(now_in_seconds,user.createdAt);
 		if(user.email_checked){
 			return res.status(200).json({user: user});
 		}
@@ -1291,7 +1298,10 @@ exports.check_email_checked = async (req, res) => {
 			user.email_checked=true;
 			return res.status(200).json({user: user});
 		}
-		else{
+		else if(s<1){
+			return res.status(200).json({user: user,pass:true});
+		}
+		else {
 			return res.status(200).json({error: "error"});
 		}
 		

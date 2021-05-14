@@ -796,6 +796,9 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
               if(drawing){
                 res.status(200).send([drawing]);
               }
+              else{
+                res.status(200).send([{status:"deleted"}]);
+              }
             }); 
     
       });
@@ -827,6 +830,9 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
         }).then(drawing =>  {
             if(drawing){
               res.status(200).send([{current_user:current_user,data:[drawing]}]);
+            }
+            else{
+              res.status(200).send([{current_user:current_user,data:[{status:"deleted"}]}]);
             }
           }); 
   

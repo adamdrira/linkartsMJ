@@ -1,10 +1,10 @@
-const env = require('./env.js');
 
 // Connect to database
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
     host : 'localhost',
-    dialect: 'postgres'
+    dialect: 'postgres',
+    
 });
 /*const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
   host : 'localhost',

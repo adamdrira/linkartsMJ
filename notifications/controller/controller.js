@@ -63,7 +63,7 @@ module.exports = (router,
             order: [
                 ['createdAt', 'DESC']
               ],
-            limit:75,
+            limit:150,
             })
             .catch(err => {
 				

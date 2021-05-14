@@ -1084,6 +1084,9 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               if(bd){
                 res.status(200).send([bd]);
               }
+              else{
+                res.status(200).send([{status:"deleted"}]);
+              }
             }); 
       
       });
@@ -1115,6 +1118,9 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             }).then(bd =>  {
               if(bd){
                 res.status(200).send([{current_user:current_user,data:[bd]}]);
+              }
+              else{
+                res.status(200).send([{current_user:current_user,data:[{status:"deleted"}]}]);
               }
             }); 
       

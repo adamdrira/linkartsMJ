@@ -888,6 +888,9 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               if(drawing){
                 res.status(200).send([drawing]);
               }
+              else{
+                res.status(200).send([{status:"deleted"}]);
+              }
             }); 
       
     });
@@ -921,7 +924,9 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               if(drawing){
                 res.status(200).send([{current_user:current_user,data:[drawing]}]);
               }
-              
+              else{
+                res.status(200).send([{current_user:current_user,data:[{status:"deleted"}]}]);
+              }
             }); 
       
     });

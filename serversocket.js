@@ -26,7 +26,7 @@ wss.on('connection', (ws, req)=>{
   ws.on('pong', () => {
       ws.isAlive = true;
   });
-  if(req.headers.origin !='http://localhost:4200'){
+  if(req.headers.origin !='http://localhost:4000' && req.headers.origin !='http://localhost:4200'){
     return   ws.send(JSON.stringify([{not_allowed:"you are not allowed to connect here"}]));
   }
   var userID = parseInt(url.parse(req.url).query.substring(3));
@@ -221,19 +221,19 @@ wss.on('connection', (ws, req)=>{
                         where:{
                           id:id_friend,
                         }
-                        
                       }).then(user_found=>{
-                        let name = user_found.firstname + ' ' + user_found.lastname;
-                        let text='';
-                        if(user_found.gender=="Homme"){
-                          text=`Cher ${name},`
-                        }
-                        else if(user_found.gender=="Femme"){
-                          text=`Chère ${name},`
-                        }
-                        else if(user_found.gender=="Groupe"){
-                          text=`Chers membres du groupe ${name},`
-                        }
+                        if(user_found && user_found.email_authorization!="false"){
+                          let name = user_found.firstname + ' ' + user_found.lastname;
+                          let text='';
+                          if(user_found.gender=="Homme"){
+                            text=`Cher ${name},`
+                          }
+                          else if(user_found.gender=="Femme"){
+                            text=`Chère ${name},`
+                          }
+                          else if(user_found.gender=="Groupe"){
+                            text=`Chers membres du groupe ${name},`
+                          }
 
                           
   
@@ -273,8 +273,9 @@ wss.on('connection', (ws, req)=>{
                                           </a>
                                       </div>
                 
-                                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                                      <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                                      <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
                                   </td>
                 
                               </tr>
@@ -285,7 +286,8 @@ wss.on('connection', (ws, req)=>{
                                 <tr id="tr4">
                                     <td align="center">
                                         <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-                                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                                        <p style="margin: 10px auto 5px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                                        <a style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;" href="https://www.linkarts.fr/account/${user_found.nickname}/my_account/email/management">Gérer mes e-mails.</a>
                                     </td>
                 
                                 </tr>
@@ -318,6 +320,7 @@ wss.on('connection', (ws, req)=>{
                           transport.sendMail(mailOptions, (error, info) => {
                             
                           })
+                        }
                       })
                     }
                   })
@@ -366,6 +369,7 @@ wss.on('connection', (ws, req)=>{
             "is_an_attachment":messageArray.is_an_attachment,
             "attachment_type":messageArray.attachment_type,
             "is_a_group_chat":messageArray.is_a_group_chat,
+            "chat_friend_id":messageArray.chat_friend_id,
             "status":'received',
           })
           .then(r =>  {
@@ -385,6 +389,7 @@ wss.on('connection', (ws, req)=>{
                       for(let i=0;i<toUserWebSocket.length;i++){
                         toUserWebSocket[i].send(JSON.stringify([{
                           "id":r.id,
+                          "chat_id":messageArray.chat_id,
                           "id_receiver": messageArray.id_receiver,
                           "id_user":messageArray.id_user,
                           "message":messageArray.message,
@@ -531,6 +536,8 @@ wss.on('connection', (ws, req)=>{
                     for(let i=0;i<toUserWebSocket.length;i++){
                       toUserWebSocket[i].send(JSON.stringify([{
                         "id":r.id,
+                        "to_spam":true,
+                        "chat_id":messageArray.chat_id,
                         "id_receiver": messageArray.id_receiver,
                         "id_user":messageArray.id_user,
                         "message":messageArray.message,
@@ -640,13 +647,10 @@ wss.on('connection', (ws, req)=>{
         }
       }).then( group=>{
         if(!group){
-
           // ajouter en cas de discussion introuvable
          }
         else{
-        
         list_of_receivers=group.list_of_receivers_ids;
-            const Op = Sequelize.Op;
             const id_user=messageArray.id_user;
             const id_friend=(list_of_receivers[0]!=userID)?list_of_receivers[0]:list_of_receivers[1];
             if(messageArray.status=="writing" ){
@@ -703,8 +707,7 @@ wss.on('connection', (ws, req)=>{
               }
             }
             else if(messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji'){
-      
-             
+              console.log("not a writing or else message, create")
                 var toUserWebSocket = webSockets[id_friend];
                     chat_seq.list_of_messages.create({
                       "id_user_name":messageArray.id_user_name,
@@ -725,6 +728,7 @@ wss.on('connection', (ws, req)=>{
                       "status":'received',
                       "list_of_users_who_saw":[messageArray.id_user],
                       "list_of_users_in_the_group":list_of_receivers,
+                      "chat_friend_id":messageArray.chat_friend_id,
                     }).then(r =>  {
                       chat_seq.list_of_chat_friends.findOne({
                         where: {
@@ -837,6 +841,7 @@ wss.on('connection', (ws, req)=>{
                               for(let i=0;i<toUserWebSocket1.length;i++){
                                 toUserWebSocket1[i].send(JSON.stringify([{
                                   "id":message.id,
+                                  "chat_id":message.chat_id,
                                   "id_receiver":id_friend1,
                                   "user_name":(messageArray.user_name)?messageArray.user_name:null,
                                   "list_of_names_added":(messageArray.list_of_names_added)?messageArray.list_of_names_added:null,
