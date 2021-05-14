@@ -430,6 +430,59 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
 });
 
 
+router.get('/retrieve_cover_picture_thumbnail/:user_id', function (req, res) {
+
+  if( ! req.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
+
+  const user_id = parseInt(req.params.user_id);
+
+  users.findOne({
+    where: {
+      id: user_id,
+    }
+  })
+  .then(User =>  {
+    let transform = sharp()
+    transform = transform.resize({fit:sharp.fit.contain,width:900})
+    .toBuffer((err, buffer, info) => {
+        if (buffer) {
+            res.status(200).send(buffer);
+        }
+    });
+    if(User && User.cover_pic_file_name  ){
+      let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+      fs.access(filename, fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(transform);
+        }     
+      })
+    }
+    else{
+      filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+    }
+  
+  }); 
+
+
+});
+
 router.get('/retrieve_cover_picture_stories/:user_id', function (req, res) {
 
   if( ! req.headers['authorization'] ) {
@@ -443,42 +496,42 @@ router.get('/retrieve_cover_picture_stories/:user_id', function (req, res) {
     }
   }
 
-const user_id = parseInt(req.params.user_id);
+  const user_id = parseInt(req.params.user_id);
 
-users.findOne({
-  where: {
-    id: user_id,
-  }
-})
-.then(User =>  {
-  let transform = sharp()
-  transform = transform.resize(200,86)
-  .toBuffer((err, buffer, info) => {
-      if (buffer) {
-          res.status(200).send(buffer);
-      }
-  });
-  if(User && User.cover_pic_file_name  ){
-    let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
-    fs.access(filename, fs.F_OK, (err) => {
-      if(err){
-        filename = "./data_and_routes/cover_pics/default_cover_picture.png";
-        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-        not_found.pipe(transform);
-      }  
-      else{
-        var pp = fs.createReadStream( path.join(process.cwd(),filename))
-        pp.pipe(transform);
-      }     
-    })
-  }
-  else{
-    filename = "./data_and_routes/cover_pics/default_cover_picture.png";
-        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-        not_found.pipe(transform);
-  }
- 
-}); 
+  users.findOne({
+    where: {
+      id: user_id,
+    }
+  })
+  .then(User =>  {
+    let transform = sharp()
+    transform = transform.resize(200,86)
+    .toBuffer((err, buffer, info) => {
+        if (buffer) {
+            res.status(200).send(buffer);
+        }
+    });
+    if(User && User.cover_pic_file_name  ){
+      let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+      fs.access(filename, fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(transform);
+        }     
+      })
+    }
+    else{
+      filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+    }
+  
+  }); 
 
 
 });
