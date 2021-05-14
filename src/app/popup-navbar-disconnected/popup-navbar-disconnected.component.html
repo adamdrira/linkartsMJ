@@ -1,5 +1,5 @@
 <div class="title-popup">
-    <button (click)="close_dialog()" class="close" tabIndex="-1">
+    <button (click)="close_dialog()" class="close-button" tabIndex="-1">
         <mat-icon [ngClass]="{'invisible': !show_icon }"  >close</mat-icon>
     </button>
     
@@ -23,7 +23,7 @@
 
             <div class="option-element option-element2" (click)="go_to_home()">
                 <div class="icon-home"></div>
-                <span>Accueil</span>
+                <span>Galerie</span>
             </div>
             <div class="option-element option-element2" (click)="go_to_linkcollab()">
                 <div class="icon-collaboration " ></div>
