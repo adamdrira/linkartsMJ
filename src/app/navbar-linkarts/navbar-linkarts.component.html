@@ -667,8 +667,19 @@
     </div>
 
 
+    <div class="footer-phone " [ngClass]="{'more-bottom-footer':show_cookies}" [@enterFromBottomAnimation]>
+      <a class="category" [ngClass]="{'opened': navbar.active_section==0 }" (click)="not_using_chat()" routerLink="/">
+        <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
+        <span>Galerie</span>
+      </a>
+      <a class="category" [ngClass]="{'opened': navbar.active_section==1 }"  (click)="not_using_chat()" routerLink="/linkcollab">
+          <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
+          <span>Collaboration</span>
+      </a>
 
-    <div class="cookies-container" *ngIf="show_cookies" [@enterAnimation]>
+    </div>
+
+    <div class="cookies-container" *ngIf="show_cookies" [@enterFromBottomAnimation]>
       <div class="text-container large-screen">
         Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site. Si vous continuez à utiliser ce dernier, nous considérerons que vous acceptez l'utilisation des cookies.
       </div>

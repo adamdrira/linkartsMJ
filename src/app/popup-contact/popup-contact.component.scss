@@ -353,15 +353,12 @@ $default-color: #203864;
     }
     @media (max-width: 650px) {
         .popupContactComponentClass {
-            //width: 85% !important;
             width: 100% !important;
             height: 100% !important;
             border-radius: 0px !important;
             position: absolute !important;
 
             transition: bottom 200ms !important;
-
-            transform: translateY(100%);
             animation: slideDown 400ms forwards 0s ease-in-out;
 
             .mat-dialog-container {
