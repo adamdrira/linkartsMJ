@@ -56,9 +56,9 @@
         display: flex;
         height: 86px;
         width: 200px;
-        border-radius: 10px;
         background: linear-gradient( 0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.7), rgba(44, 114, 164, 0.2));
-        box-shadow: 0px 1px 5px 2px #00000021, 0px 1px 1px 1px #27426d59, 0px 2px 2px 0px #18305aa6;
+        border-radius: 10px;
+        box-shadow: 0px 2px 4px 0px #001c506b;
         overflow: hidden;
         position: relative;
     }
@@ -122,7 +122,6 @@
     }
     
     .new {
-        //background: linear-gradient(to right, #205486, #4bc7ff);
         box-shadow: 0px 0px 0px 2px #4bc7ff;
     }
     
