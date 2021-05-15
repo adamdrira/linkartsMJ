@@ -9,8 +9,27 @@
 }
 
 
+  
 .page {
   background: linear-gradient(0.5turn, rgba(255, 255, 255, 0.9), #e6ebf1);
+  .slogan{
+    transform: translateY(-110px);
+    color: white;
+    width: 90%;
+    font-size: 13px;
+    font-weight: 700;
+    margin: auto;
+    display: flex;
+
+    span{
+      margin:auto;
+    }
+
+    @media (max-width: 600px) {
+      font-size: 12px;
+    }
+  }
+  
   .component-container {
     width: 90%;
     margin: auto;
