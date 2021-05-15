@@ -1,4 +1,4 @@
-<div class="title-popup" [ngStyle]="{'padding-bottom': only_for_notifs ? '20px' : '8px' }" >
+<div class="title-popup" >
     <button (click)="close_dialog()" class="close-button" [ngClass]="{'close-notifs': only_for_notifs }"  tabIndex="-1"  *ngIf="!disconnecting">
         <mat-icon [ngClass]="{'invisible': !show_icon }"  >close</mat-icon>
     </button>
@@ -13,8 +13,8 @@
     <div class="navbar-component ">
         <div class="connected-user">
           <div class="navbar-l1-icons-container notifications-block" *ngIf="only_for_notifs">
-            <span class="main-menu" *ngIf="for_chat">Mes messages</span>
-            <span class="main-menu" *ngIf="for_notifs">Mes notifications</span>
+            <span class="main-menu2" *ngIf="for_chat">Mes messages</span>
+            <span class="main-menu2" *ngIf="for_notifs">Mes notifications</span>
           </div>
 
           <div class="navbar-l1-icons-container notifications-block"  *ngIf="!only_for_notifs">
@@ -1905,8 +1905,7 @@
                                 <div *ngIf="list_of_friends_last_message[i].is_from_server">
                                   <!------------------------------------------- NEW CONTACT OR NEW GROUP-------------------------------------->
             
-                                  <div
-                                    *ngIf="!list_of_friends_last_message[i].is_a_group_chat && list_of_friends_last_message[i].message=='New' ">
+                                  <div *ngIf="!list_of_friends_last_message[i].is_a_group_chat && list_of_friends_last_message[i].message=='New' ">
                                     {{list_of_friends_names[i]}} fait désormais parti de vos contacts. Vous pouvez donc
                                     échanger librement.
                                   </div>
@@ -1979,6 +1978,51 @@
                                       </span>
                                     </div>
                                   </div>
+
+                                   <!-- NEW SECTION-->
+
+                                   <div *ngIf="list_of_friends_last_message[i].message=='new_section' && !list_of_friends_last_message[i].is_a_group_chat" > 
+                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                        
+                                        <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                            Vous avec créé une nouvelle discussion.
+                                        </div>
+                                        <div *ngIf="list_of_friends_last_message[i].status!='seen'">
+                                            <b>Vous avec créé une nouvelle discussion.</b>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                        
+                                        <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                            {{list_of_friends_last_message[i].id_user_name}} a créé une nouvelle discussion.
+                                        </div>
+                                        <div *ngIf="list_of_friends_last_message[i].status!='seen'">
+                                            <b>{{list_of_friends_last_message[i].id_user_name}} a créé une nouvelle discussion.</b>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="list_of_friends_last_message[i].message=='new_section' && list_of_friends_last_message[i].is_a_group_chat" > 
+                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                        
+                                        <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length>1">
+                                            Vous avec créé une nouvelle discussion.
+                                        </div>
+                                        <div *ngIf="2>list_of_friends_last_message[i].list_of_users_who_saw.length">
+                                            <b>Vous avec créé une nouvelle discussion.</b>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                        
+                                        <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
+                                            {{list_of_friends_last_message[i].id_user_name}} a créé une nouvelle discussion.
+                                        </div>
+                                        <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
+                                            <b>{{list_of_friends_last_message[i].id_user_name}} a créé une nouvelle discussion.</b>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 </div>
             
             

@@ -1097,7 +1097,7 @@ export class ChatRightContainerComponent implements OnInit {
 
     if(this.list_of_folders.length>=50){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Vous ne pouvez pas crééer plus de 50 dossiers.'},
+          data: {showChoice:false, text:'Vous ne pouvez pas créer plus de 50 dossiers.'},
           panelClass: "popupConfirmationClass",
         });
     }

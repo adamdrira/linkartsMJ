@@ -2210,7 +2210,7 @@ add_chat_section_name(e: any){
       }
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Vous ne pouvez pas crééer plus de 15 discussions.'},
+          data: {showChoice:false, text:'Vous ne pouvez pas créer plus de 15 discussions.'},
           panelClass: "popupConfirmationClass",
         });
       }
