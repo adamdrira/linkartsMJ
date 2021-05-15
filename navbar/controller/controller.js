@@ -964,7 +964,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
 
-    router.post('/get_propositions_after_research_navbar/:category/:text/:limit/:offset', function (req, res) {
+    router.post('/get_propositions_after_research_navbar', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2056,15 +2056,18 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         }
       }
         let id_user = get_current_user(req.cookies.currentUser);
-        let text = (req.body.text).toLowerCase();
+        let category = req.body.category;
+        let format = req.body.format;
+        let target_id = req.body.target_id;
         list_of_navbar_researches.destroy({
             where:{
                 id_user:id_user,
-                research_string:text,
+                publication_category:category,
+                format:format,
+                target_id:target_id,
                 status:"clicked_after_research",
             }
         }).catch(err => {
-				
 			res.status(500).json({msg: "error", details: err});		
 		}).then(result=>{
             res.status(200).send([{"delete":"ok"}])
