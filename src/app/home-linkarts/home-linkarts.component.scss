@@ -18,6 +18,24 @@
 .page {
   background: linear-gradient(0.5turn, rgba(255, 255, 255, 0.9), #e6ebf1);
 
+  .slogan{
+    transform: translateY(-110px);
+    color: white;
+    width: 90%;
+    font-size: 13px;
+    font-weight: 700;
+    margin: auto;
+    display: flex;
+
+    span{
+      margin:auto;
+    }
+
+    @media (max-width: 600px) {
+      font-size: 12px;
+    }
+  }
+
   .title-container{
     position: relative;
     margin: 30px auto;
@@ -375,7 +393,7 @@
               font-size: 13px;
               line-height: 19px;
               color: rgb(255, 255, 255);
-              font-weight: 600;
+              font-weight: 700;
               mat-select-trigger {
                 display: flex;
                 .icon-container {

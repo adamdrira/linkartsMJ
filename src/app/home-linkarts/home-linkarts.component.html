@@ -140,6 +140,10 @@
 
 <div class="page" *ngIf="type_of_profile_retrieved">
 
+    <div class="slogan">
+        <span>La collaboration éditoriale par excellence</span>
+    </div>
+
     <div *ngIf="categories_to_load[0]" class="component-container more-space" [ngClass]="{'really-invisible':category_index!=0}">
         <app-recommendations
         (opened_category_artwork)="open_category_artwork( $event );"
