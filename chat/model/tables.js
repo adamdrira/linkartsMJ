@@ -30,6 +30,7 @@ exports.list_of_messages = (sequelize, DataTypes) => {
       emoji_reaction_receiver:DataTypes.STRING,
       list_of_names_added:DataTypes.ARRAY(DataTypes.STRING),
       id_folder:DataTypes.INTEGER,
+      chat_friend_id:DataTypes.INTEGER,
     },
     {
       freezeTableName: true // Model tableName will be the same as the model name
@@ -48,6 +49,7 @@ exports.list_of_messages = (sequelize, DataTypes) => {
     chat_profile_pic_name:DataTypes.STRING,
     profile_pic_origin:DataTypes.STRING,
     date:DataTypes.DATE,
+    status:DataTypes.STRING,
   },
   {
     freezeTableName: true // Model tableName will be the same as the model name

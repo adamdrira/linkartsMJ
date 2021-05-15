@@ -107,8 +107,8 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
              ],
          })
          .catch(err => {
-			res.status(500).json({msg: "error", details: err});		
-		}).then(friends =>  {
+          res.status(500).json({msg: "error", details: err});		
+        }).then(friends =>  {
               if(friends.length>0){
                 for(let j=0;j<friends.length;j++){
                   if(friends[j].id_user==current_user && friends[j].id_receiver!=current_user){
@@ -126,8 +126,8 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                       ['createdAt', 'DESC']
                     ],
                 }).catch(err => {
-			res.status(500).json({msg: "error", details: err});		
-		}).then(groups=>{
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(groups=>{
                   if(groups.length>0){
                     for(let j=0;j<groups.length;j++){
                       list_of_groups.push(groups[j].id)
@@ -145,8 +145,8 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                         }
                         
                       }).catch(err => {
-			res.status(500).json({msg: "error", details: err});		
-		}).then(r=>{
+                          res.status(500).json({msg: "error", details: err});		
+                        }).then(r=>{
                         if(r){
                           number_of_unseen_messages+=1;
                         }
@@ -427,7 +427,6 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                limit:1,
               })
               .catch(err => {
-                
                 res.status(500).json({msg: "error", details: err});		
               }).then(messages =>  {
                  list_of_friends_messages[i]=messages[0];
@@ -2863,10 +2862,9 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
           ['createdAt', 'ASC']
         ],
         limit:5,
-      }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(mess=>{
+        }).catch(err => {
+        res.status(500).json({msg: "error", details: err});		
+      }).then(mess=>{
          id_born_sup=mess[mess.length-1].id;
          list_of_messages.findAll({
           where:{
@@ -2880,9 +2878,8 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
           ],
           limit:5,
         }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages=>{
+          res.status(500).json({msg: "error", details: err});		
+        }).then(messages=>{
           list_of_messages_to_send=messages;
           list_of_messages.findAll({
             where:{
@@ -2896,9 +2893,8 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
             ],
             limit:6,
           }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(msg=>{
+            res.status(500).json({msg: "error", details: err});		
+          }).then(msg=>{
             list_of_messages_to_send=list_of_messages_to_send.concat(msg);
             res.status(200).json([{ "list_of_messages_to_send":list_of_messages_to_send}])
           })  
@@ -2917,10 +2913,9 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
           ['createdAt', 'ASC']
         ],
         limit:5,
-      }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(mess=>{
+          }).catch(err => {
+          res.status(500).json({msg: "error", details: err});		
+        }).then(mess=>{
          id_born_sup=mess[mess.length-1].id;
          list_of_messages.findAll({
           where:{
@@ -2934,9 +2929,8 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
           ],
           limit:5,
         }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages=>{
+          res.status(500).json({msg: "error", details: err});		
+        }).then(messages=>{
           list_of_messages_to_send=messages;
           list_of_messages.findAll({
             where:{
@@ -2950,9 +2944,8 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
             ],
             limit:6,
           }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(msg=>{
+              res.status(500).json({msg: "error", details: err});		
+            }).then(msg=>{
             list_of_messages_to_send=list_of_messages_to_send.concat(msg);
             res.status(200).json([{ "list_of_messages_to_send":list_of_messages_to_send}])
           })  
@@ -3475,7 +3468,6 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
       });
 
     router.post('/get_group_chat_as_friend', function (req, res) {
-
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3493,9 +3485,8 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
             is_a_group_chat:true,
           }
         }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(friend=>{
+          res.status(500).json({msg: "error", details: err});		
+        }).then(friend=>{
           res.status(200).send([friend]);
         })
       });
@@ -3528,7 +3519,6 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
      
       
     router.post('/exit_group_chat', function (req, res) {
-
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3541,7 +3531,6 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
       }
       let id_user = get_current_user(req.cookies.currentUser);
       let id_receiver= req.body.id_receiver;
-      const Op = Sequelize.Op;
       list_of_chat_groups.findOne({
         where:{
           id:id_receiver,
@@ -3550,8 +3539,9 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
 			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
+      if(group){
+        let list_of_receivers_ids=group.list_of_receivers_ids;
         if(group.id_user==id_user){
-          let list_of_receivers_ids=group.list_of_receivers_ids;
           if(list_of_receivers_ids.length==1){
             list_of_chat_groups.destroy({
               where:{
@@ -3560,8 +3550,8 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
             },
             {truncate: false}).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(()=>{
+              res.status(500).json({msg: "error", details: err});		
+            }).then(()=>{
               list_of_chat_friends.destroy({
                 where:{  
                   id_receiver:id_receiver,
@@ -3570,8 +3560,8 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
               },
               {truncate: false}).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(()=>{
+              res.status(500).json({msg: "error", details: err});		
+            }).then(()=>{
                 list_of_messages.destroy(
                   {where:{
                     id_receiver:id_receiver,
@@ -3581,22 +3571,22 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
                 )
               }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(()=>{
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(()=>{
                 res.status(200).send([{"supression":"done"}])
               })
             })
           }
           else{
             let index=list_of_receivers_ids.indexOf(id_user);
-            list_of_receivers_ids.splice(index);
+            list_of_receivers_ids.splice(index,1);
             group.update({
                 "id_user":list_of_receivers_ids[0],
                 "list_of_receivers_ids":list_of_receivers_ids,
             }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(grp=>{
+              res.status(500).json({msg: "error", details: err});		
+            }).then(grp=>{
               list_of_chat_friends.findOne({
                 where:{  
                   id_receiver:id_receiver,
@@ -3604,14 +3594,14 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
                 }
               }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(friends=>{
+                res.status(500).json({msg: "error", details: err});		
+              }).then(friends=>{
                 friends.update({
                   "id_user":list_of_receivers_ids[0]
                 }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(friend=>{
+                  
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(friend=>{
                   list_of_messages.update({
                     "list_of_users_in_the_group":list_of_receivers_ids},
                     {where:{
@@ -3620,8 +3610,8 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
                     }
                   }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages=>{
+                    res.status(500).json({msg: "error", details: err});		
+                  }).then(messages=>{
                     res.status(200).send([friend])
                   })
                   
@@ -3634,13 +3624,13 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
         }
         else{
           let index=list_of_receivers_ids.indexOf(id_user);
-            list_of_receivers_ids.splice(index);
+            list_of_receivers_ids.splice(index,1);
             group.update({
                 "list_of_receivers_ids":list_of_receivers_ids,
             }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(group=>{
+              res.status(500).json({msg: "error", details: err});		
+            }).then(group=>{
               list_of_messages.update({
                 "list_of_users_in_the_group":list_of_receivers_ids},
                 {where:{
@@ -3649,12 +3639,17 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
                 }
               }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages=>{
+                res.status(500).json({msg: "error", details: err});		
+              }).then(messages=>{
                 res.status(200).send([group])
               })
             })
-        }
+          }
+      }
+      else{
+        res.status(200).send([{"supression":"done"}])
+      }
+        
       })
     });
 
@@ -4711,6 +4706,7 @@ router.post('/get_chat_folders',function(req,res){
       return res.status(401).json({msg: "error"});
     }
   }
+ 
   let id_chat_friend = req.body.id_chat_friend;
   list_of_chat_folders.findAll({
     where:{
