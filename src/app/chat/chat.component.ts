@@ -2971,7 +2971,7 @@ see_emoji_reaction_by_user(id_message){
 
 list_of_names_deleted={}
 loading_deleted_member={};
-
+compt=0;
 get_name_of_someone_who_exit_group(id,l,item){
   if(this.list_of_names_deleted[id]){
     if(l==1){
@@ -2984,10 +2984,10 @@ get_name_of_someone_who_exit_group(id,l,item){
   }
   else if(this.list_of_users_names[id]){
     if(l==1){
-      return this.list_of_names_deleted[id]
+      return this.list_of_users_names[id]
     }
     else{
-      return this.list_of_names_deleted[id] + ' a ajouté ' + item + ' au groupe'
+      return this.list_of_users_names[id] + ' a ajouté ' + item + ' au groupe'
     }
   }
   else if(this.loading_deleted_member[id]){

@@ -299,20 +299,15 @@ export class PopupFormComponent implements OnInit {
   /*********************************************** ARCHIVES  ******************************************/
 
   archive(i){
+    if(this.loading){
+      return 
+    }
     this.loading=true;
     this.ChatService.archive_chat_message(this.message.id,this.list_of_folders[i].id).subscribe(r=>{
-      this.loading=false;
       this.message.id_folder=this.list_of_folders[i].id;
       this.dialogRef.close(true);
     })
   }
 
-  unarchive(i){
-    this.loading=true;
-    this.ChatService.unarchive_chat_message(this.message.id,this.list_of_folders[i].id).subscribe(r=>{
-      this.loading=false;
-      this.message.id_folder=0;
-      this.dialogRef.close(true);
-    })
-  }
+ 
 }

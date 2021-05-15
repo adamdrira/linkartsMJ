@@ -87,7 +87,7 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
-                    <button  class="comments-button-menu-item" tabIndex="-1" (click)="edit_comment(0)" mat-menu-item>
+                    <button *ngIf="visitor_id==comments_list[0].author_id_who_comments"  class="comments-button-menu-item" tabIndex="-1" (click)="edit_comment(0)" mat-menu-item>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                         <span>Éditer</span>
                     </button>

@@ -31,6 +31,7 @@ import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import {date_in_seconds, get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
+import { C } from '@angular/cdk/keycodes';
 declare var $: any;
 declare var Swiper:any;
 
@@ -594,7 +595,6 @@ export class AccountComponent implements OnInit {
         this.mode_visiteur_added = true;
         this.user_blocked=false;
         this.user_blocked_retrieved=true;
-
         this.list_writings_added=true; 
         this.list_drawings_artbook_added=true;
         this.list_drawings_onepage_added=true;
@@ -648,11 +648,9 @@ export class AccountComponent implements OnInit {
               this.user_blocked=true;
             }
             this.user_blocked_retrieved=true;
-                        
-            
             this.cd.detectChanges();
             this.update_background_position( this.opened_section );
-
+            this.initialize_swiper();
           })
                   
         };
@@ -1259,57 +1257,60 @@ export class AccountComponent implements OnInit {
   }
 
   swiper:any;
+  @ViewChild("swiperCategories") swiperCategories: ElementRef;
   initialize_swiper() {
     this.cd.detectChanges();
-
-    this.swiper = new Swiper('.story-swiper-container', {
-      speed: 500,
-      slidesPerView: 1,
-      preloadImages: false,
-      lazy: {
-        loadOnTransitionStart: true,
-        checkInView:true,
-      },
-      watchSlidesVisibility:true,
-      breakpoints: {
-        0: {
-          slidesPerView: 1,
-          slidesPerGroup: 1,
-          spaceBetween: 50,
-          simulateTouch: true,
-          allowTouchMove: true,
+    if (!this.swiper && this.swiperCategories && this.list_of_members_data_retrieved) {
+      this.swiper = new Swiper(this.swiperCategories.nativeElement, {
+        speed: 500,
+        slidesPerView: 1,
+        preloadImages: false,
+        lazy: {
+          loadOnTransitionStart: true,
+          checkInView:true,
         },
-        600: {
-          slidesPerView: 2,
-          slidesPerGroup: 2,
-          spaceBetween: 20,
-          simulateTouch: true,
-          allowTouchMove: true,
+        watchSlidesVisibility:true,
+        breakpoints: {
+          0: {
+            slidesPerView: 1,
+            slidesPerGroup: 1,
+            spaceBetween: 50,
+            simulateTouch: true,
+            allowTouchMove: true,
+          },
+          600: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+            spaceBetween: 20,
+            simulateTouch: true,
+            allowTouchMove: true,
+          },
+          800: {
+            slidesPerView: 3,
+            slidesPerGroup: 3,
+            spaceBetween: 20,
+            simulateTouch: false,
+            allowTouchMove: false,
+          },
         },
-        800: {
-          slidesPerView: 3,
-          slidesPerGroup: 3,
-          spaceBetween: 20,
-          simulateTouch: false,
-          allowTouchMove: false,
+        scrollbar: {
+          el: '.swiper-scrollbar',
+          hide: true,
         },
-      },
-      scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: true,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-      },
-      navigation: {
-        nextEl: '.swiper-button-next.stories-button',
-        prevEl: '.swiper-button-prev.stories-button',
-      },
-      keyboard: {
-        enabled: false,
-      },
-      observer: true,
-    });
+        pagination: {
+          el: '.swiper-pagination',
+        },
+        navigation: {
+          nextEl: '.swiper-button-next.stories-button',
+          prevEl: '.swiper-button-prev.stories-button',
+        },
+        keyboard: {
+          enabled: false,
+        },
+        observer: true,
+      });
+    }
+    
    
     this.cd.detectChanges();
   }
@@ -1439,6 +1440,7 @@ export class AccountComponent implements OnInit {
   
   show_icon=false;
   ngAfterViewInit() {
+    this.initialize_swiper();
     if(!this.for_reset_password){
       this.update_background_position( this.opened_section );
       let main_width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;

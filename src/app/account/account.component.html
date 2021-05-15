@@ -495,7 +495,7 @@
                         <div class="stories-container" *ngIf="list_of_members_data_retrieved" [@enterAnimation]>
     
                             <div class="stories-bar">
-                                <div class="story-swiper-container">
+                                <div  #swiperCategories  class="story-swiper-container">
                                     <div class="swiper-wrapper">
                             
                                         <div class="swiper-slide" *ngFor="let item of  list_of_members;let i=index">

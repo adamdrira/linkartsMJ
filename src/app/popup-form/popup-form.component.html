@@ -132,11 +132,10 @@
                 </div>
             </div>
 
-            <button class="unsubscribe-button" (click)="archive(i)" *ngIf="message.id_folder!=list_of_folders[i].id">
-                <span>Archiver</span>
-            </button>
-            <button class="unsubscribe-button" (click)="unarchive(i)"  *ngIf="message.id_folder==list_of_folders[i].id">
-                <span>Désarchiver</span>
+            <button class="unsubscribe-button" (click)="archive(i)" >
+                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading">bookmark</mat-icon>
+                <span *ngIf="!loading">Archiver</span>
+                <mat-spinner *ngIf="loading" diameter="20"  style="margin:auto;"></mat-spinner>
             </button>
         </div>
 
