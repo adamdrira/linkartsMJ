@@ -2656,6 +2656,8 @@ group_chat_creation_done(){
     this.chatService.messages.next(message_one);
     this.Groupchat.reset();
     this.get_group_chat_name(r[0].id,message_one,true);
+    this.cancel_create_group_chat();
+    
     this.cd.detectChanges();
   })
  }

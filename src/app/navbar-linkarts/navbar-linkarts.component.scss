@@ -7,6 +7,7 @@
 .footer-phone{
   position: fixed;
   bottom:0px;
+  z-index:99;
   width: 100%;
   padding: 10px 20px;
   background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9));
@@ -22,16 +23,11 @@
     justify-content: space-evenly;
   }
 
-  &.more-bottom-footer{
-    bottom:53px !important;
-    @media (max-width: 335px) {
-      bottom:68px !important;
-    }
-  }
 }
 .cookies-container{
   position: fixed;
   bottom:0px;
+  z-index:99;
   width: 100%;
   padding: 10px 20px;
   background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9));
@@ -41,6 +37,16 @@
   display: flex;
   transition: all 200ms;
 
+  
+
+  &.more-bottom-footer{
+    @media (max-width: 500px) {
+      bottom:53px !important;
+    }
+    @media (max-width: 335px) {
+      bottom:68px !important;
+    }
+  }
   
   .text-container{
     margin: auto auto auto 0px;
@@ -1739,7 +1745,6 @@
       bottom: 113px !important;
     }
     @media (max-width: 335px) {
-      //bottom: 72px !important;
       bottom: 125px !important;
     }
   }

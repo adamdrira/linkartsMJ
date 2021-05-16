@@ -759,12 +759,14 @@ export class ArtworkComicComponent implements OnInit {
     if(this.current_user_retrieved && this.ready_to_check_view){
       if (this.authorid == this.visitor_id){
         this.mode_visiteur = false;
-        
-        this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").subscribe(p=>{
-          if(!p[0].value){
-            this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).subscribe();
-          }
-        })
+        if(this.status=="public"){
+          this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").subscribe(p=>{
+            if(!p[0].value){
+              this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).subscribe();
+            }
+          })
+        }
+       
       }
       else{
         this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).subscribe();
@@ -931,12 +933,15 @@ export class ArtworkComicComponent implements OnInit {
     if(this.current_user_retrieved && this.ready_to_check_view){
       if (this.authorid == this.visitor_id){
         this.mode_visiteur = false;
-        this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").subscribe(p=>{
-          if(!p[0].value){
-            this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).subscribe(l=>{
-            });
-          }
-        })
+        if(this.status=="public"){
+          this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").subscribe(p=>{
+            if(!p[0].value){
+              this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).subscribe(l=>{
+              });
+            }
+          })
+        }
+        
         
       }
       else{

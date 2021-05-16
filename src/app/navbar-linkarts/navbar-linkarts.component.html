@@ -667,45 +667,48 @@
     </div>
 
 
-    <div class="footer-phone " [ngClass]="{'more-bottom-footer':show_cookies}" [@enterFromBottomAnimation]>
-      <a class="category" [ngClass]="{'opened': navbar.active_section==0 }" (click)="not_using_chat()" routerLink="/">
-        <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
-        <span>Galerie</span>
-      </a>
-      <a class="category" [ngClass]="{'opened': navbar.active_section==1 }"  (click)="not_using_chat()" routerLink="/linkcollab">
-          <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
-          <span>Collaboration</span>
-      </a>
+    
 
-    </div>
-
-    <div class="cookies-container" *ngIf="show_cookies" [@enterFromBottomAnimation]>
-      <div class="text-container large-screen">
-        Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site. Si vous continuez à utiliser ce dernier, nous considérerons que vous acceptez l'utilisation des cookies.
-      </div>
-
-      <div class="small-screen text-container ">
-        <span>Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site.  <a class="see-more" href="/services/3"> Voir plus</a></span>
-        
-       
-      </div>
-      <div class="buttons-container">
-        <div class="first-button" (click)="agree_on_cookies()">
-          Ok
-        </div>
-        <a class="first-button large-screen" href="/services/3"> 
-          Voir plus
-        </a>
-
-      </div>
-    </div>
-
-
+   
   </div>
 
   <div #navbarMargin class="navbar-margin"></div>
 
 
+  <div class="cookies-container more-bottom-footer" *ngIf="show_cookies" [@enterFromBottomAnimation]>
+    <div class="text-container large-screen">
+      Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site. Si vous continuez à utiliser ce dernier, nous considérerons que vous acceptez l'utilisation des cookies.
+    </div>
+
+    <div class="small-screen text-container ">
+      <span>Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site.  <a class="see-more" href="/services/3"> Voir plus</a></span>
+      
+     
+    </div>
+    <div class="buttons-container">
+      <div class="first-button" (click)="agree_on_cookies()">
+        Ok
+      </div>
+      <a class="first-button large-screen" href="/services/3"> 
+        Voir plus
+      </a>
+
+    </div>
+  </div>
+
+
+  <div class="footer-phone "  [@enterFromBottomAnimation]>
+    <a class="category" [ngClass]="{'opened': navbar.active_section==0 }" (click)="not_using_chat()" routerLink="/">
+      <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
+      <span>Galerie</span>
+    </a>
+    <a class="category" [ngClass]="{'opened': navbar.active_section==1 }"  (click)="not_using_chat()" routerLink="/linkcollab">
+        <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
+        <span>Collaboration</span>
+    </a>
+
+  </div>
+  
   <ng-container *ngIf="show_cookies">
     <div *ngIf="navbar.visible_help && type_of_profile_retrieved" class="help-container" tabIndex="-1" [matMenuTriggerFor]="helpOptions" [@enterAnimation] [ngClass]="{'bottom-help': show_cookies }">
       <span>?</span>

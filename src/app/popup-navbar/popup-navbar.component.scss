@@ -214,23 +214,23 @@ $default-color: rgb(218,220,225);
 
     .popupMenuNavbarNotifs {
       height: 342px;
-        width: 350px;
-        bottom: 0px;
-        position: relative;
-        background: white;
-        padding: 0px !important;
-        box-shadow: 0px 1px 7px 0px #495875;
-        border-radius: 24px;
-        overflow: hidden;
+      width: 350px;
+      bottom: 0px;
+      box-shadow: 0px 0px 7px -1px #171a38;
+      background: #182338;
+      position: relative;
+      padding: 0px !important;
+      border-radius: 24px;
+      overflow: hidden;
 
-        .mat-dialog-container {
-            padding: 0px;
-            overflow: hidden;
-            background: #182338;
-            box-shadow: unset;
-            height: unset;
-            border-radius: 24px;
-        }
+      .mat-dialog-container {
+          padding: 0px;
+          overflow: hidden;
+          background: #182338;
+          box-shadow: unset;
+          height: unset;
+          border-radius: 24px;
+      }
     }
 }
 

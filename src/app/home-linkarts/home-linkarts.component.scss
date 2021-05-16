@@ -93,26 +93,10 @@
           font-size: 18px;
         }
   
-        .category-title {
-          width: 170px;
-          border-radius: 5px;
-          height: 25px;
-          margin: auto;
-        }
+        
       }
     
-      .shiny {
-        background-color: rgb(220, 220, 220);
-        background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
-        background-size: 300% 100%;
-        animation: shine 2s infinite;
-      }
-    
-      @keyframes shine {
-        0% {
-          background-position: right;
-        }
-      }
+      
   
       .artist-container{
         width:100%;

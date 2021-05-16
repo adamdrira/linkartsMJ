@@ -153,6 +153,14 @@ export class HomeLinkartsComponent implements OnInit {
     })
 
 
+    
+    
+
+  }
+  loading_top_artist=false;
+
+  get_to_artists(){
+    this.loading_top_artist=true;
     let compt=0;
     this.navbar.get_top_artists("comic").subscribe(r=>{
       this.top_artists_comic=r[0];
@@ -175,8 +183,6 @@ export class HomeLinkartsComponent implements OnInit {
         this.manage_top_artists()
       }
     })
-    
-
   }
 
   skeleton_array = Array(5);
@@ -184,11 +190,15 @@ export class HomeLinkartsComponent implements OnInit {
   opened_category_artwork=0;
   open_category_artwork(number){
     this.opened_category_artwork=number;
-    this.manage_top_artists();
+    if(this.ready_to_load_top_artists){
+      this.manage_top_artists();
+    }
+   
     
   }
 
   top_artists_retrieved=false;
+  ready_to_load_top_artists=false;
   manage_top_artists(){
     if(this.opened_category_artwork==0){
       this.top_artists=this.top_artists_comic;
@@ -401,6 +411,10 @@ export class HomeLinkartsComponent implements OnInit {
       let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
       let max = document.documentElement.scrollHeight;
       let compare=(max*0.8 - 400 >=0)?(max*0.8 - 400):(max*0.8);
+      if(pos>=1500 && !this.loading_top_artist){
+        this.ready_to_load_top_artists=true;
+        this.get_to_artists();
+      }
       if(pos>= compare ){
         if(this.categories_to_load[0] && !this.categories_to_load[2] && this.type_of_profile_retrieved && this.type_of_profile=='account')   {
           this.categories_to_load[2]=true;
