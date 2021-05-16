@@ -3580,24 +3580,24 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
           else{
             let index=list_of_receivers_ids.indexOf(id_user);
             list_of_receivers_ids.splice(index,1);
-            group.update({
+            list_of_chat_groups.update({
                 "id_user":list_of_receivers_ids[0],
                 "list_of_receivers_ids":list_of_receivers_ids,
+            },{
+              where:{
+                id:id_receiver,
+              }
             }).catch(err => {
 			
               res.status(500).json({msg: "error", details: err});		
             }).then(grp=>{
-              list_of_chat_friends.findOne({
-                where:{  
-                  id_receiver:id_receiver,
-                  is_a_group_chat:true,
-                }
-              }).catch(err => {
-			
-                res.status(500).json({msg: "error", details: err});		
-              }).then(friends=>{
-                friends.update({
+                list_of_chat_friends.update({
                   "id_user":list_of_receivers_ids[0]
+                },{
+                  where:{  
+                    id_receiver:id_receiver,
+                    is_a_group_chat:true,
+                  }
                 }).catch(err => {
                   
                   res.status(500).json({msg: "error", details: err});		
@@ -3616,7 +3616,6 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
                   })
                   
                   })
-                })
                 
             })
 
