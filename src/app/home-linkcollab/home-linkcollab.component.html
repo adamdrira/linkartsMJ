@@ -12,9 +12,13 @@
                     <mat-select-trigger>
                         <ng-container *ngIf="category_index==0">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
-                            <span>Collaborations bénévoles</span>
+                            <span>Dépôts de projets</span>
                         </ng-container>
                         <ng-container *ngIf="category_index==1">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                            <span>Collaborations bénévoles</span>
+                        </ng-container>
+                        <ng-container *ngIf="category_index==2">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
                             <span>Collaborations rémunérées</span>
                         </ng-container>
@@ -29,9 +33,13 @@
 
                     <mat-option [value]="0">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
-                        <span>Collaborations bénévoles</span>
+                        <span>Dépôts de projets</span>
                     </mat-option>
                     <mat-option [value]="1">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                        <span>Collaborations bénévoles</span>
+                    </mat-option>
+                    <mat-option [value]="2">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
                         <span>Collaborations rémunérées</span>
                     </mat-option>
@@ -46,6 +54,16 @@
 
                     <div class="swiper-slide">
                         <div class="category" (click)="open_category(0, true);" [ngClass]="{'opened': category_index==0 }"
+                        matTooltip="Dépôt de dossiers destinées aux maisons d'édition"
+                        matTooltipClass='linkarts-tooltip'
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="100">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                            <span>Dépôts de projets</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="category" (click)="open_category(1, true);" [ngClass]="{'opened': category_index==1 }"
                         matTooltip="Collaborations libres de contrats, sans transactions"
                         matTooltipClass='linkarts-tooltip'
                         [matTooltipPosition]="'below'"
@@ -55,7 +73,7 @@
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <div class="category" (click)="open_category(1, true);" [ngClass]="{'opened': category_index==1 }"
+                        <div class="category" (click)="open_category(2, true);" [ngClass]="{'opened': category_index==2 }"
                         matTooltip="Collaborations/Partenariats avec transactions et contrats"
                         matTooltipClass='linkarts-tooltip'
                         [matTooltipPosition]="'below'"
@@ -84,208 +102,332 @@
     </div>
     
     <div class="component-container">
-        <div class="home-linkcollab-selects" [formGroup]="f1" *ngIf="f1">
 
-            <div class="swiper-container">
-                <div #swiperCategories2 class="swiper-item">
-                    <div class="swiper-wrapper">
-                                
+        <ng-container *ngIf="category_index==1 || category_index==2">
+            
+            <div class="home-linkcollab-selects" [formGroup]="f1" *ngIf="f1">
 
-                        <div class="form-item swiper-slide" [ngStyle]="{'width' : '175px'}" *ngIf="innerWidth>=400">
-                            <mat-form-field floatLabel='never' class="select-class">
-                                <mat-label>Objet de l'annonce</mat-label>
-                                <mat-select #matSelect1 (selectionChange)="change_select1($event)" formControlName="type_of_project" disableOptionCentering panelClass="homelinkcollabSelectClass">
-                                    <ng-container *ngFor="let obj of ads_types, let i = index">
-                                        <mat-option *ngIf="!( i==0 && type_of_project=='none' )" [value]="obj">
-                                            {{ obj }}
+                <div class="swiper-container">
+                    <div #swiperCategories2 class="swiper-item">
+                        <div class="swiper-wrapper">
+                                    
+
+                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '175px'}" *ngIf="innerWidth>=400">
+                                <mat-form-field floatLabel='never' class="select-class">
+                                    <mat-label>Objet de l'annonce</mat-label>
+                                    <mat-select #matSelect1 (selectionChange)="change_select1($event)" formControlName="type_of_project" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                                        <ng-container *ngFor="let obj of ads_types, let i = index">
+                                            <mat-option *ngIf="!( i==0 && type_of_project=='none' )" [value]="obj">
+                                                {{ obj }}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '230px'}" *ngIf="innerWidth>=450">
+                                <mat-form-field floatLabel='never' class="select-class">
+                                    <mat-label>Auteur</mat-label>
+                                    <mat-select #matSelect2 (selectionChange)="change_select2($event)" formControlName="author" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                                        <ng-container *ngFor="let obj of ads_descriptions, let i = index">
+                                            <mat-option *ngIf="!( i==0 && author=='none' )" [value]="obj">
+                                                {{ obj }}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            
+                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '230px'}" *ngIf="innerWidth>=500">
+                                <mat-form-field floatLabel='never' class="select-class">
+                                    <mat-label>Cible</mat-label>
+                                    <mat-select #matSelect3 (selectionChange)="change_select3($event)" formControlName="target" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                                        <ng-container *ngFor="let obj of ads_targets, let i = index">
+                                            <mat-option *ngIf="!( i==0 && target=='none' )" [value]="obj">
+                                                {{ obj }}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '200px'}" *ngIf="innerWidth>=700">
+                                <mat-form-field floatLabel='never' class="select-class">
+                                    <mat-label>Catégorie de l'annonce</mat-label>
+                                    <mat-select #matSelect4 (selectionChange)="change_select4($event)" formControlName="type_of_service" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                                        <ng-container *ngFor="let obj of ads_services_types, let i = index">
+                                            <mat-option *ngIf="!( i==0 && type_of_service=='none' )" [value]="obj">
+                                                {{ obj }}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '160px'}" [ngClass]="{'really-invisible':!service}" *ngIf="innerWidth>=1000">
+                                <mat-form-field floatLabel='never' class="select-class">
+                                    <mat-label>Type d'annonce</mat-label>
+                                    <mat-select #matSelect5 (selectionChange)="change_select5($event)" formControlName="offer_or_demand" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                                        <mat-option *ngIf="!( offer_or_demand=='none' )" value="Tout">
+                                            Tout
                                         </mat-option>
-                                    </ng-container>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-
-                        <div class="form-item swiper-slide" [ngStyle]="{'width' : '230px'}" *ngIf="innerWidth>=450">
-                            <mat-form-field floatLabel='never' class="select-class">
-                                <mat-label>Auteur</mat-label>
-                                <mat-select #matSelect2 (selectionChange)="change_select2($event)" formControlName="author" disableOptionCentering panelClass="homelinkcollabSelectClass">
-                                    <ng-container *ngFor="let obj of ads_descriptions, let i = index">
-                                        <mat-option *ngIf="!( i==0 && author=='none' )" [value]="obj">
-                                            {{ obj }}
+                                        <mat-option value="Offre">
+                                            Offre
                                         </mat-option>
-                                    </ng-container>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        
-                        <div class="form-item swiper-slide" [ngStyle]="{'width' : '230px'}" *ngIf="innerWidth>=500">
-                            <mat-form-field floatLabel='never' class="select-class">
-                                <mat-label>Cible</mat-label>
-                                <mat-select #matSelect3 (selectionChange)="change_select3($event)" formControlName="target" disableOptionCentering panelClass="homelinkcollabSelectClass">
-                                    <ng-container *ngFor="let obj of ads_targets, let i = index">
-                                        <mat-option *ngIf="!( i==0 && target=='none' )" [value]="obj">
-                                            {{ obj }}
+                                        <mat-option value="Demande">
+                                            Demande
                                         </mat-option>
-                                    </ng-container>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
 
-                        <div class="form-item swiper-slide" [ngStyle]="{'width' : '200px'}" *ngIf="innerWidth>=700">
-                            <mat-form-field floatLabel='never' class="select-class">
-                                <mat-label>Catégorie de l'annonce</mat-label>
-                                <mat-select #matSelect4 (selectionChange)="change_select4($event)" formControlName="type_of_service" disableOptionCentering panelClass="homelinkcollabSelectClass">
-                                    <ng-container *ngFor="let obj of ads_services_types, let i = index">
-                                        <mat-option *ngIf="!( i==0 && type_of_service=='none' )" [value]="obj">
-                                            {{ obj }}
+                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '190px'}" *ngIf="innerWidth>=1000" [ngClass]="{'really-invisible': !remuneration}">
+                                <mat-form-field floatLabel='never' class="select-class">
+                                    <mat-label>Type de rémunération</mat-label>
+                                    <mat-select #matSelect6 (selectionChange)="change_select6($event)" formControlName="type_of_remuneration" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                                        <ng-container *ngFor="let obj of ads_remuneration_types, let i = index">
+                                            <mat-option [value]="obj">
+                                                {{ obj }}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '220px'}" [ngClass]="{'really-invisible':!remuneration && !service}" *ngIf="innerWidth>=1000">
+                                <mat-form-field floatLabel='never' class="select-class">
+                                    <mat-label>Tri par pertinence</mat-label>
+                                    <mat-select #matSelect7 (selectionChange)="change_select7($event)" formControlName="sorting" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                                        <mat-option value="Tri par pertinence">
+                                            Tri par pertinence
                                         </mat-option>
-                                    </ng-container>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-
-                        <div class="form-item swiper-slide" [ngStyle]="{'width' : '160px'}" [ngClass]="{'really-invisible':!service}" *ngIf="innerWidth>=1000">
-                            <mat-form-field floatLabel='never' class="select-class">
-                                <mat-label>Type d'annonce</mat-label>
-                                <mat-select #matSelect5 (selectionChange)="change_select5($event)" formControlName="offer_or_demand" disableOptionCentering panelClass="homelinkcollabSelectClass">
-                                    <mat-option *ngIf="!( offer_or_demand=='none' )" value="Tout">
-                                        Tout
-                                    </mat-option>
-                                    <mat-option value="Offre">
-                                        Offre
-                                    </mat-option>
-                                    <mat-option value="Demande">
-                                        Demande
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-
-                        <div class="form-item swiper-slide" [ngStyle]="{'width' : '190px'}" *ngIf="innerWidth>=1000" [ngClass]="{'really-invisible': !remuneration}">
-                            <mat-form-field floatLabel='never' class="select-class">
-                                <mat-label>Type de rémunération</mat-label>
-                                <mat-select #matSelect6 (selectionChange)="change_select6($event)" formControlName="type_of_remuneration" disableOptionCentering panelClass="homelinkcollabSelectClass">
-                                    <ng-container *ngFor="let obj of ads_remuneration_types, let i = index">
-                                        <mat-option [value]="obj">
-                                            {{ obj }}
+                                        <mat-option value="Tri par le plus récent">
+                                            Tri par le plus récent
                                         </mat-option>
-                                    </ng-container>
-                                </mat-select>
-                            </mat-form-field>
+                                        <mat-option value="Tri par le plus ancien">
+                                            Tri par le plus ancien
+                                        </mat-option>
+                                        <mat-option value="Tri par montant croissant">
+                                            Tri par montant croissant
+                                        </mat-option>
+                                        <mat-option value="Tri par montant décroissant">
+                                            Tri par montant décroissant
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '165px'}" [ngClass]="{'really-invisible':remuneration || service}" *ngIf="innerWidth>=1000">
+                                <mat-form-field floatLabel='never' class="select-class">
+                                    <mat-label>Tri par pertinence</mat-label>
+                                    <mat-select #matSelect8 (selectionChange)="change_select8($event)" formControlName="sorting" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                                        <mat-option value="Tri par pertinence">
+                                            Tri par pertinence
+                                        </mat-option>
+                                        <mat-option value="Tri par le plus récent">
+                                            Tri par le plus récent
+                                        </mat-option>
+                                        <mat-option value="Tri par le plus ancien">
+                                            Tri par le plus ancien
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '165px'}" *ngIf="1000>innerWidth">
+                                <button (click)="open_more_filters()">
+                                    <mat-icon>filter_alt</mat-icon>
+                                    <span>Voir tous les filtres</span>
+                                </button>
+                            </div>
+
+
+
                         </div>
-
-                        <div class="form-item swiper-slide" [ngStyle]="{'width' : '220px'}" [ngClass]="{'really-invisible':!remuneration && !service}" *ngIf="innerWidth>=1000">
-                            <mat-form-field floatLabel='never' class="select-class">
-                                <mat-label>Tri par pertinence</mat-label>
-                                <mat-select #matSelect7 (selectionChange)="change_select7($event)" formControlName="sorting" disableOptionCentering panelClass="homelinkcollabSelectClass">
-                                    <mat-option value="Tri par pertinence">
-                                        Tri par pertinence
-                                    </mat-option>
-                                    <mat-option value="Tri par le plus récent">
-                                        Tri par le plus récent
-                                    </mat-option>
-                                    <mat-option value="Tri par le plus ancien">
-                                        Tri par le plus ancien
-                                    </mat-option>
-                                    <mat-option value="Tri par montant croissant">
-                                        Tri par montant croissant
-                                    </mat-option>
-                                    <mat-option value="Tri par montant décroissant">
-                                        Tri par montant décroissant
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-
-                        <div class="form-item swiper-slide" [ngStyle]="{'width' : '165px'}" [ngClass]="{'really-invisible':remuneration || service}" *ngIf="innerWidth>=1000">
-                            <mat-form-field floatLabel='never' class="select-class">
-                                <mat-label>Tri par pertinence</mat-label>
-                                <mat-select #matSelect8 (selectionChange)="change_select8($event)" formControlName="sorting" disableOptionCentering panelClass="homelinkcollabSelectClass">
-                                    <mat-option value="Tri par pertinence">
-                                        Tri par pertinence
-                                    </mat-option>
-                                    <mat-option value="Tri par le plus récent">
-                                        Tri par le plus récent
-                                    </mat-option>
-                                    <mat-option value="Tri par le plus ancien">
-                                        Tri par le plus ancien
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-
-                        <div class="form-item swiper-slide" [ngStyle]="{'width' : '165px'}" *ngIf="1000>innerWidth">
-                            <button (click)="open_more_filters()">
-                                <mat-icon>filter_alt</mat-icon>
-                                <span>Voir tous les filtres</span>
-                            </button>
-                        </div>
-
-
-
                     </div>
+                    <div class="button-prev-shadow" *ngIf="swiper2" [ngClass]="{'invisible': swiper2.isBeginning }"></div>
+                    <div class="button-next-shadow" *ngIf="swiper2" [ngClass]="{'invisible': swiper2.isEnd }"></div>
+                    <div class="swiper-button-prev second" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
+                    <div class="swiper-button-next second" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
                 </div>
-                <div class="button-prev-shadow" *ngIf="swiper2" [ngClass]="{'invisible': swiper2.isBeginning }"></div>
-                <div class="button-next-shadow" *ngIf="swiper2" [ngClass]="{'invisible': swiper2.isEnd }"></div>
-                <div class="swiper-button-prev second" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
-                <div class="swiper-button-next second" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
+
+
+
             </div>
 
 
 
-        </div>
-
-
-
-        <div *ngIf="loading_ads && !list_of_ads_received" class="thumbnails-container">
-            <div class="loading_height_5">
-                <div class="thumbnail" *ngFor="let item of skeleton_array; let i = index">
-                    <app-thumbnail-artwork 
-                    [skeleton]="skeleton"
-                    ></app-thumbnail-artwork>
+            <div *ngIf="loading_ads && !list_of_ads_received" class="thumbnails-container">
+                <div class="loading_height_5">
+                    <div class="thumbnail" *ngFor="let item of skeleton_array; let i = index">
+                        <app-thumbnail-artwork 
+                        [skeleton]="skeleton"
+                        ></app-thumbnail-artwork>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="no-proposition-container" *ngIf="!list_of_ads.length && list_of_ads_received && display_no_propositions">
-            <mat-icon [ngClass]="{'invisible': !show_icon }" [@enterFromTopAnimation]>find_in_page</mat-icon>
-            <span [@enterFromTopAnimation]>Aucun résultat pour la recherche demandée</span>
-        </div>
+            <div class="no-proposition-container" *ngIf="!list_of_ads.length && list_of_ads_received && display_no_propositions">
+                <mat-icon [ngClass]="{'invisible': !show_icon }" [@enterFromTopAnimation]>find_in_page</mat-icon>
+                <span [@enterFromTopAnimation]>Aucun résultat pour la recherche demandée</span>
+            </div>
 
-        <div *ngIf="list_of_ads_received" class="thumbnails-container ">
-            <ng-container *ngIf="show_propositions">
-                <div [ngClass]="{'loading_height_5':(number_of_pages>current_page || ( current_page==number_of_pages && number_of_results%5==0)),'loading_height_4':(current_page==number_of_pages && number_of_results%5==4),'loading_height_3':(current_page==number_of_pages && number_of_results%5==3),'loading_height_2':(current_page==number_of_pages && number_of_results%5==2),'loading_height_1':(current_page==number_of_pages && number_of_results%5==1)}">
-                    <ng-container *ngFor="let item of list_of_ads;let i=index">
-                        
-                        <div class="thumbnail " >
-                            <app-thumbnail-ad
-                            now_in_seconds={{now_in_seconds}}
-                            [item]=list_of_ads[i]>
-                            </app-thumbnail-ad>
-                        </div>
-                    </ng-container>
-                </div>
-                
-                <div class="paginator" *ngIf="!display_no_propositions && number_of_pages > 1">
-                    <div  class=" button-all button-first-page" (click)="first_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">first_page</mat-icon>
+            <div *ngIf="list_of_ads_received" class="thumbnails-container ">
+                <ng-container *ngIf="show_propositions">
+                    <div [ngClass]="{'loading_height_5':(number_of_pages>current_page || ( current_page==number_of_pages && number_of_results%5==0)),'loading_height_4':(current_page==number_of_pages && number_of_results%5==4),'loading_height_3':(current_page==number_of_pages && number_of_results%5==3),'loading_height_2':(current_page==number_of_pages && number_of_results%5==2),'loading_height_1':(current_page==number_of_pages && number_of_results%5==1)}">
+                        <ng-container *ngFor="let item of list_of_ads;let i=index">
+                            
+                            <div class="thumbnail " >
+                                <app-thumbnail-ad
+                                now_in_seconds={{now_in_seconds}}
+                                [item]=list_of_ads[i]>
+                                </app-thumbnail-ad>
+                            </div>
+                        </ng-container>
                     </div>
-                    <div class="button-all button-previous-page" (click)="previous_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_before</mat-icon>
-                    </div>
-
-                    <input type="text" class="input-page" aria-label="" role="navigation" size="5" (keydown.enter)="page_clicked($event)" [placeholder]=current_page #input>
-                    <span class="total-pages"> / {{number_of_pages}}</span>
                     
-                    <div class="button-all button-next-page" (click)="next_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_next</mat-icon>
+                    <div class="paginator" *ngIf="!display_no_propositions && number_of_pages > 1">
+                        <div  class=" button-all button-first-page" (click)="first_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">first_page</mat-icon>
+                        </div>
+                        <div class="button-all button-previous-page" (click)="previous_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_before</mat-icon>
+                        </div>
+
+                        <input type="text" class="input-page" aria-label="" role="navigation" size="5" (keydown.enter)="page_clicked($event)" [placeholder]=current_page #input>
+                        <span class="total-pages"> / {{number_of_pages}}</span>
+                        
+                        <div class="button-all button-next-page" (click)="next_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_next</mat-icon>
+                        </div>
+                        <div class="button-all button-last-page" (click)="last_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">last_page</mat-icon>
+                        </div>
                     </div>
-                    <div class="button-all button-last-page" (click)="last_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">last_page</mat-icon>
-                    </div>
+
+                </ng-container>
+            </div>
+
+        </ng-container>
+        
+
+
+
+        <div class="section-0" *ngIf="category_index==0">
+
+            <div class="large-text">
+                <span>Dépose un dossier auprès d’éditeurs</span>
+            </div>
+            <div class="small-text">
+                <span>Sur LinkArts, les maisons d’édition et professionnels examinent vraiment ton dossier, te font des retours de façon garantie et se mobilisent pour t’aider suivant tes objectifs !</span>
+            </div>
+
+
+            <div class="see-more-button">
+                <span>En savoir plus</span>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">more_horiz</mat-icon>
+            </div>
+
+            
+            <div class="horizontal-bar"></div>
+
+            
+            <div class="filters home-linkcollab-selects">
+                
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '230px', 'margin-left' : '4px'}">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Catégorie du projet</mat-label>
+                        <mat-select #matSelectSection0 (selectionChange)="change_select_section0($event)" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <ng-container *ngFor="let obj of section0_categories, let i = index">
+                                <mat-option *ngIf="!( i==0 && category=='none' )" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
 
-            </ng-container>
+
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '300px', 'margin-right' : '4px', 'margin-left':'auto'}">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Recherche par nom</mat-label>
+                        <input matInput maxLength="20" autocomplete="off" [(ngModel)]="searchText">
+
+                        <div class="length-indicator">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
+                        </div>
+                    </mat-form-field>
+                </div>
+
+                
+            </div>
+
+
+            <div class="thumbnails-editors-container">
+
+                <ng-container *ngFor="let item of list_of_editors | filterAlbum : searchText">
+                    <div class="thumbnail-container"  *ngIf="item.categories.includes(category) || category=='none'">
+
+                        <div class="thumbnail">
+
+                            <div class="img-container">
+                                <img [src]=item.pp>
+                            </div>
+                            <div class="name">
+                                <span>{{item.title}}</span>
+
+                            </div>
+
+                            <!--<div class="section">
+                                <div class="section-name">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
+                                    <span>Localisation</span>
+                                </div>
+                                <span class="section-value">{{item.location}}</span>
+                            </div>
+                            <div class="section">
+                                <div class="section-name">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
+                                    <span>Description</span>
+                                </div>
+                                <span class="section-value">{{item.description}}</span>
+                            </div>-->
+                            <div class="section" *ngIf="item.size">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                                <span class="section-value" *ngIf="item.size>0 && 11>item.size">1-10</span>
+                                <span class="section-value" *ngIf="item.size>10 && 51>item.size">11-50</span>
+                                <span class="section-value" *ngIf="item.size>50 && 101>item.size">51-100</span>
+                                <span class="section-value" *ngIf="item.size>100">>100</span>
+                            </div>
+                            <div class="section" *ngIf="item.location">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
+                                <span class="section-value">{{item.location}}</span>
+                            </div>
+                            <div class="section">
+                                <div class="section-category">
+                                    <span *ngFor="let category of item.categories">
+                                        {{category}}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="apply-button">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                <span>Soumettre mon projet</span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </ng-container>
+
+            </div>
+
+
+
         </div>
+
+
 
     </div>
 </div>

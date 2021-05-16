@@ -105,6 +105,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
   category_index:number = -1;
 
+  category:string="none";
   type_of_project:string="none";
   author:string="none";
   target:string="none";
@@ -119,6 +120,10 @@ export class HomeLinkcollabComponent implements OnInit {
   ads_remuneration_types =this.constants.price_types_remunerated;
   ads_services_types=  this.constants.price_types_services;
   ads_descriptions = this.constants.ads_descriptions;
+
+  section0_categories = ["Tout","BD","Mangas","Romans"];
+
+
   ads_targets=this.constants.ads_targets;
 
   type_of_service='none';
@@ -160,8 +165,6 @@ export class HomeLinkcollabComponent implements OnInit {
   ngAfterViewInit() {
 
     this.initialize_swiper();
-    
-    this.initialize_swiper2();
   }
 
   innerWidth: number;
@@ -220,12 +223,12 @@ export class HomeLinkcollabComponent implements OnInit {
     this.type_of_remuneration="none";
     this.sorting="pertinence";
 
-    if(i==0){
+    if(i==1){
       this.remuneration=false;
       this.service=false;
       this.get_sorted_ads();
     }
-    else if(i==1){
+    else if(i==2){
       this.remuneration=true;
       this.service=false;
       this.get_sorted_ads();
@@ -237,6 +240,9 @@ export class HomeLinkcollabComponent implements OnInit {
     }
     this.category_index=i;
     this.cd.detectChanges();
+    
+    this.initialize_swiper2();
+
     window.dispatchEvent(new Event('resize'));
     return;
   }
@@ -251,34 +257,33 @@ export class HomeLinkcollabComponent implements OnInit {
         speed: 300,
         initialSlide: 0,
 
-
         breakpoints: {
           300: {
             slidesPerView: 2,
             slidesPerGroup: 2,
-            spaceBetween: 10,
+            spaceBetween: 5,
             simulateTouch: true,
             allowTouchMove: true,
           },
           400: {
             slidesPerView: 2,
             slidesPerGroup: 2,
-            spaceBetween: 20,
+            spaceBetween: 5,
             simulateTouch: true,
             allowTouchMove: true,
           },
-          700: {
-            slidesPerView: 2,
-            slidesPerGroup: 2,
-            spaceBetween: 20,
+          500: {
+            slidesPerView: 3,
+            slidesPerGroup: 3,
+            spaceBetween: 5,
             simulateTouch: false,
             allowTouchMove: false,
           }
         },
 
         navigation: {
-          nextEl: '.swiper-button-next.first',
-          prevEl: '.swiper-button-prev.first',
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
         },
       })
     }
@@ -621,4 +626,64 @@ export class HomeLinkcollabComponent implements OnInit {
       });
   }
 
+
+
+  change_select_section0(e:any) {
+    if( e.value=="Tout" ){
+      if( this.category == "none" ) {
+        return;
+      }
+      this.category="none";
+    }
+    else{
+      if( this.category == e.value ) {
+        return;
+      }
+      this.category= e.value;
+    }
+  }
+
+  
+  public searchText:any;
+
+  list_of_editors = [
+
+    {
+      title:"Glénat",
+      categories:["BD","Comics"],
+      pp:"../../assets/img/logo.png",
+      location:"Paris, France",
+      size:11,
+    },
+    {
+      title:"Glénat",
+      categories:["BD","Comics","Mangas"],
+      pp:"../../assets/img/logo.png",
+      location:"Paris, France",
+      size:5,
+    },
+    {
+      title:"Glénat",
+      categories:["BD","Comics"],
+      pp:"../../assets/img/logo.png",
+      location:"Paris, France",
+      size:52,
+    },
+    {
+      title:"Glénat",
+      categories:["BD","Romans","Mangas"],
+      pp:"../../assets/img/logo.png",
+      location:"Paris, France",
+      size:120,
+    },
+    {
+      title:"Glénat",
+      categories:["BD","Comics","Mangas"],
+      pp:"../../assets/img/logo.png",
+      location:"Paris, France",
+      size:1,
+    },
+    
+
+  ]
 }
