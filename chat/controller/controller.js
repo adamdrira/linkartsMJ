@@ -3624,8 +3624,12 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
         else{
           let index=list_of_receivers_ids.indexOf(id_user);
             list_of_receivers_ids.splice(index,1);
-            group.update({
+            list_of_chat_groups.update({
                 "list_of_receivers_ids":list_of_receivers_ids,
+            },{
+              where:{
+                id:id_receiver,
+              }
             }).catch(err => {
 			
               res.status(500).json({msg: "error", details: err});		
