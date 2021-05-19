@@ -1,18 +1,27 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { normalize_to_nfc } from '../helpers/patterns';
+import { SignupComponent } from '../signup/signup.component';
 
 @Component({
   selector: 'app-popup-share',
   templateUrl: './popup-share.component.html',
   styleUrls: ['./popup-share.component.scss'],
   animations: [
+    trigger(
+      'animation', [
+        transition(':enter', [
+          style({transform: 'translateY(0%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
     trigger(
       'enterFromTopAnimation', [
         transition(':enter', [
@@ -69,6 +78,7 @@ export class PopupShareComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     public navbar: NavbarService,
+    public dialog: MatDialog,
     public dialogRef: MatDialogRef<PopupShareComponent,any>,
     private Profile_Edition_Service:Profile_Edition_Service,
     private formBuilder: FormBuilder,
@@ -85,12 +95,49 @@ export class PopupShareComponent implements OnInit {
   }
 
   type_of_profile=this.data.type_of_profile;
+  
+  tutorial = false;
+  page=0;
+  hovered=[false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+
+  hovered_div(i:number) {
+    if( window.innerWidth <= 650 ) {
+      return;
+    }
+    this.hovered[i] = true;
+  }
+  unhovered_div(i:number) {
+    if( window.innerWidth <= 650 ) {
+      return;
+    }
+    this.hovered[i] = false;
+  }
+  clicked_div(i:number) {
+    if( window.innerWidth > 650 ) {
+      return;
+    }
+    if( !this.hovered[i] ) {
+      this.hovered=[false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+      this.hovered[i] = !this.hovered[i];
+    }
+    else {
+      this.hovered=[false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+    }
+  }
+  set_page(i:number) {
+    this.hovered=[false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+    this.page=i;
+  }
+
   show_icon=false;
   registerForm1: FormGroup;
-  
+  registerForm2: FormGroup;
   current_user:any;
   ngOnInit(): void {
 
+    if( this.data.tutorial ) {
+      this.tutorial = true;
+    }
     
     this.registerForm1 = this.formBuilder.group({
       email: ['', 
@@ -108,13 +155,52 @@ export class PopupShareComponent implements OnInit {
     ]
     });
 
+    this.registerForm2 = this.formBuilder.group({
+      email: ['', 
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(pattern("mail")),
+          Validators.maxLength(100),
+        ]),
+      ]
+    });
 
+
+  }
+
+  invalid_email = false;
+  check_value() {
+    if(this.registerForm2.controls['email'].invalid) {
+    }
+    else {
+      this.invalid_email = false;
+    }
+  }
+
+
+  signup() {
+    this.dialogRef.close();
+    const dialogRef = this.dialog.open(SignupComponent, {
+      data:{for_group_creation:false},
+      panelClass:"signupComponentClass"
+    });
+  }
+
+  send_email() {
+    if(this.registerForm2.controls['email'].invalid) {
+      this.invalid_email = true;
+    }
+    else {
+      this.invalid_email = false;
+    }
   }
 
   close_dialog(){
     this.dialogRef.close();
   }
-  
+  end_tutorial() {
+    this.dialogRef.close();
+  }
 
   show_name_error=false;
   show_mail_error:boolean = false;

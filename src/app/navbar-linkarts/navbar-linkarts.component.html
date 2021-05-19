@@ -708,61 +708,35 @@
     </a>
 
   </div>
-  
-  <ng-container *ngIf="show_cookies">
-    <div *ngIf="navbar.visible_help && type_of_profile_retrieved" class="help-container" tabIndex="-1" [matMenuTriggerFor]="helpOptions" [@enterAnimation] [ngClass]="{'bottom-help': show_cookies }">
-      <span>?</span>
+
+  <div *ngIf="navbar.visible_help && type_of_profile_retrieved" class="help-container" tabIndex="-1" [matMenuTriggerFor]="helpOptions" [@enterAnimation] [ngClass]="{'bottom-help': show_cookies }">
+    <span>?</span>
+  </div>
+  <mat-menu yPosition="above" xPosition="before" #helpOptions="matMenu" [class]="show_cookies ? 'navbar-mat-menu help-common menu-bottom-help' : 'navbar-mat-menu help help-common'">
+    <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_tuto()">
+      <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">slideshow</mat-icon>
+      <span>Présentation de LinkArts</span>
+    </button>
+    <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_share()">
+      <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
+      <span>Partager le site</span>
+    </button>
+    <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_donation()">
+      <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">groups</mat-icon>
+      <span>Nous soutenir</span>
+    </button>
+    <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_contact()">
+      <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">email</mat-icon>
+      <span>Nous contacter</span>
+    </button>
+    <div class="flex-container">
+      <div *ngIf="(type_of_profile=='account' || type_of_profile=='suspended')" (click)="really_open_my_account()">Mon compte</div>
+      <a routerLink="/services/0">Qui sommes-nous</a>
+      <a routerLink="/services/1">Mentions légales</a>
+      <a routerLink="/services/2">Conditions d'utilisation</a>
+      <a routerLink="/services/4">Confidentialité et sécurité</a>
     </div>
-    <mat-menu yPosition="above" xPosition="before" #helpOptions="matMenu" class="navbar-mat-menu menu-bottom-help help-common" >
-      <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_share()">
-        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
-        <span>Partager le site</span>
-      </button>
-      <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_donation()">
-        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">groups</mat-icon>
-        <span>Nous soutenir</span>
-      </button>
-      <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_contact()">
-        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">email</mat-icon>
-        <span>Nous contacter</span>
-      </button>
-      <div class="flex-container">
-        <div *ngIf="(type_of_profile=='account' || type_of_profile=='suspended')" (click)="really_open_my_account()">Mon compte</div>
-        <a routerLink="/services/0">Qui sommes-nous</a>
-        <a routerLink="/services/1">Mentions légales</a>
-        <a routerLink="/services/2">Conditions d'utilisation</a>
-        <a routerLink="/services/4">Confidentialité et sécurité</a>
-      </div>
-    </mat-menu>
-  </ng-container>
-  
-  
-  <ng-container *ngIf="!show_cookies">
-    <div *ngIf="navbar.visible_help && type_of_profile_retrieved" class="help-container" tabIndex="-1" [matMenuTriggerFor]="helpOptions" [@enterAnimation] [ngClass]="{'bottom-help': show_cookies }">
-      <span>?</span>
-    </div>
-    <mat-menu yPosition="above" xPosition="before" #helpOptions="matMenu" class="navbar-mat-menu help help-common"  >
-      <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_share()">
-        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
-        <span>Partager le site</span>
-      </button>
-      <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_donation()">
-        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">groups</mat-icon>
-        <span>Nous soutenir</span>
-      </button>
-      <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_contact()">
-        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">email</mat-icon>
-        <span>Nous contacter</span>
-      </button>
-      <div class="flex-container">
-        <div *ngIf="(type_of_profile=='account' || type_of_profile=='suspended')" (click)="really_open_my_account()">Mon compte</div>
-        <a routerLink="/services/0">Qui sommes-nous</a>
-        <a routerLink="/services/1">Mentions légales</a>
-        <a routerLink="/services/2">Conditions d'utilisation</a>
-        <a routerLink="/services/4">Confidentialité et sécurité</a>
-      </div>
-    </mat-menu>
-  </ng-container>
+  </mat-menu>
 
  
 </div>

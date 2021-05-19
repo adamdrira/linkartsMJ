@@ -1695,6 +1695,20 @@ onResize(event) {
 
 }
 
+
+@HostListener('document:click', ['$event'])
+  clickout(event) {
+  
+    if(this.focus_activated && this.input.nativeElement &&  this.searchicon && this.propositions){
+      if(!this.input.nativeElement.contains(event.target) && !this.searchicon.nativeElement.contains(event.target) && !this.propositions.nativeElement.contains(event.target) ) {
+        
+        this.cancel_research();
+      } 
+    }
+    
+  }
+
+
 sectionChange(e:any) {
   this.input.nativeElement.value="";
   
@@ -2060,5 +2074,11 @@ open_notifications(){
   open_donation() {
     this.location.go("/donation/")
     location.reload();
+  }
+  open_tuto() {
+    const dialogRef = this.dialog.open(PopupShareComponent, {
+      data:{type_of_profile:this.type_of_profile, tutorial:true,},
+      panelClass:"popupTutoClass"
+    });
   }
 }
