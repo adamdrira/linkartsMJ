@@ -15,22 +15,22 @@ const Pool = require('pg').Pool;
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});*/
+});
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
-});
+});*/
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -284,8 +284,8 @@ pool.connect((err, client, release) => {
                               .on("finish", function() {
                                 
                                 //pour ubuntu
-                                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
-                                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
+                                //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
+                                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
                                 pythonProcess.stderr.pipe(process.stderr);
                                 pythonProcess.stdout.on('data', (data) => {
                                 });
@@ -352,7 +352,6 @@ pool.connect((err, client, release) => {
 
 
 const get_drawings_trendings = (request, response) => {
-  console.log("get_drawings_trendings")
 
   if(request.body.password!="Le-Site-De-Mokhtar-Le-Pdg-For-Trendings" ||  request.body.email!="legroupelinkarts@linkarts.fr"){
     if( ! request.headers['authorization'] ) {
@@ -387,7 +386,6 @@ const get_drawings_trendings = (request, response) => {
 					
 		}).then(result=>{
     if(result){
-      console.log("result")
       response.status(200).send([{"drawings_trendings":result.trendings}]);
     }
     else{
@@ -542,7 +540,7 @@ const get_writings_trendings = (request, response) => {
   function add_comics_trendings(json,date){
     var list_of_users_for_email=[];
     let list_of_comics=[];
-    let obj=Object.keys(json.format);
+    let obj=Object.keys(json.format).slice(0,40);
     let compt=0;
 
 
@@ -753,7 +751,7 @@ const get_writings_trendings = (request, response) => {
               id:list_of_users[i]
             }
           }).then(user=>{
-            if(user){
+            if(user && user.email_authorization!="false"){
               const Op = Sequelize.Op;
               var byesterday = new Date();
               byesterday.setDate(byesterday.getDate() - 2);
@@ -807,8 +805,9 @@ const get_writings_trendings = (request, response) => {
                                 </a>
                             </div>
       
-                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg"  height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
                         </td>
       
                     </tr>
@@ -819,7 +818,8 @@ const get_writings_trendings = (request, response) => {
                       <tr id="tr4">
                           <td align="center">
                               <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                              <p style="margin: 10px auto 5px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                              <a style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;" href="https://www.linkarts.fr/account/${user.nickname}/my_account/email/management">Gérer mes e-mails.</a>
                           </td>
       
                       </tr>
@@ -870,7 +870,7 @@ const get_writings_trendings = (request, response) => {
   function add_drawings_trendings(json,date,set_money){
     let list_of_users_for_email=[]
     let list_of_drawings=[];
-    let obj=Object.keys(json.format);
+    let obj=Object.keys(json.format).slice(0,40);
     let compt=0;
     for(let i=0;i<obj.length;i++){
       if(json.format[i]=='artbook'){
@@ -1076,7 +1076,7 @@ const get_writings_trendings = (request, response) => {
               id:list_of_users[i]
             }
           }).then(user=>{
-            if(user){
+            if(user && user.email_authorization!="false"){
               const Op = Sequelize.Op;
               var byesterday = new Date();
               byesterday.setDate(byesterday.getDate() - 2);
@@ -1129,8 +1129,9 @@ const get_writings_trendings = (request, response) => {
                                 </a>
                             </div>
       
-                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg"  height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
                         </td>
       
                     </tr>
@@ -1141,7 +1142,8 @@ const get_writings_trendings = (request, response) => {
                       <tr id="tr4">
                           <td align="center">
                               <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                              <p style="margin: 10px auto 5px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                              <a style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;" href="https://www.linkarts.fr/account/${user.nickname}/my_account/email/management">Gérer mes e-mails.</a>
                           </td>
       
                       </tr>
@@ -1193,7 +1195,7 @@ const get_writings_trendings = (request, response) => {
   function add_writings_trendings(json,date,set_money){
     let list_of_writings=[];
     let list_of_users_for_email=[]
-    let obj=Object.keys(json.format);
+    let obj=Object.keys(json.format).slice(0,40);
     let compt=0;
     for(let i=0;i<obj.length;i++){
       writings_seq.Liste_Writings.findOne({
@@ -1334,7 +1336,7 @@ const get_writings_trendings = (request, response) => {
               id:list_of_users[i]
             }
           }).then(user=>{
-            if(user){
+            if(user && user.email_authorization!="false"){
               const Op = Sequelize.Op;
               var byesterday = new Date();
               byesterday.setDate(byesterday.getDate() - 2);
@@ -1387,8 +1389,9 @@ const get_writings_trendings = (request, response) => {
                                 </a>
                             </div>
       
-                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                            <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg"   height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
                         </td>
       
                     </tr>
@@ -1399,7 +1402,8 @@ const get_writings_trendings = (request, response) => {
                       <tr id="tr4">
                           <td align="center">
                               <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                              <p style="margin: 10px auto 5px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                              <a style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;" href="https://www.linkarts.fr/account/${user.nickname}/my_account/email/management">Gérer mes e-mails.</a>
                           </td>
       
                       </tr>

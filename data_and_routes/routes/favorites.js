@@ -8,22 +8,22 @@ const authentification = require('../../authentication/db.config');
 const favorites_seq= require('../../favorites/model/sequelize');
 var nodemailer = require('nodemailer');
 const Pool = require('pg').Pool;
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
 });
-*/
-const pool = new Pool({
+
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
-});
+});*/
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -112,9 +112,9 @@ function get_current_user(token){
             
           })
         }
-        else{
+        
           generate_favorites();
-        }
+        
         
       }
     })
@@ -122,7 +122,7 @@ function get_current_user(token){
    
 
     function generate_favorites(){
-      pool.query(' SELECT * FROM users WHERE type_of_account=$1 OR type_of_account=$2 OR type_of_account=$3 OR type_of_account=$4 OR type_of_account=$5 AND "createdAt" ::date >= $6 ORDER BY subscribings_number DESC',["Artiste","Artistes","Artiste professionnel","Artiste professionnelle","Artistes professionnels",six_months], (error, results) => {
+      pool.query(' SELECT * FROM users WHERE type_of_account=$1 AND "updatedAt" ::date >= $2 ORDER BY subscribings_number DESC',["Artiste",six_months], (error, results) => {
         if (error) {
         }
         else{
@@ -137,8 +137,8 @@ function get_current_user(token){
             })
             .on("finish", function() {
                 //pour ubuntu  
-                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
-                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
+                 //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
+                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
                 pythonProcess.stderr.pipe(process.stderr);
                 pythonProcess.stdout.on('data', (data) => {
                   //console.log("python res")
@@ -176,26 +176,23 @@ function get_current_user(token){
       let compt=0;
       let list_of_users=[]
       let list_of_rankings=[];
-      for(let i=0;i<obj.length;i++){
+      for(let i=0;i<obj.slice(0,50).length;i++){
         authentification.users.findOne({
           where:{
             id:json.id[i],
             status:"account",
           }
-        }).catch(err => {
-          
-          response.status(500).json({msg: "error", details: err});		
         }).then(user=>{
           if(user){
             list_of_users[i]=user;
             compt++
-            if(compt==obj.length){
+            if(compt==obj.slice(0,50).length){
               add_to_date()
             }
           }
           else{
             compt++
-            if(compt==obj.length){
+            if(compt==obj.slice(0,50).length){
               add_to_date()
             }
           }
@@ -245,7 +242,7 @@ function get_current_user(token){
               compteur_done++;
               if(compteur_done==list_of_users.length){
                 
-                return response.status(200).json({msg: "done"});	
+                return response.status(200).json({msg: "done", favorites:favorites});
               }
             })
           }
@@ -253,7 +250,7 @@ function get_current_user(token){
             compteur_done++;
               if(compteur_done==list_of_users.length){
                 
-                return response.status(200).json({msg: "done"});	
+                return response.status(200).json({msg: "done", favorites:favorites});	
                   
               }
           }
@@ -332,7 +329,7 @@ function get_current_user(token){
               }).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
-                  return 
+                  return response.status(200).json({msg: "done", favorites:favorites});
                 }
               })
             }
@@ -346,7 +343,7 @@ function get_current_user(token){
               }).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
-                  return 
+                  return response.status(200).json({msg: "done", favorites:favorites});
                 }
               })
             }
@@ -357,13 +354,12 @@ function get_current_user(token){
   
         function send_email_to_users(list_of_users, list_of_rankings){
           for(let i=0;i<list_of_users.length;i++){
-            if(list_of_users[i]){
+            if(list_of_users[i] && list_of_users[i].email_authorization!="false"){
               
       
-              /*if(Number(mm)<4 ||parseInt(list_of_rankings[i])>30){
-                return
-              }*/
-                console.log("send_email " + list_of_users[i])
+                if(parseInt(list_of_rankings[i])>30){
+                  return
+                }
                 const Op = Sequelize.Op;
                 var byesterday = new Date();
                 byesterday.setDate(byesterday.getDate() - 2);
@@ -423,13 +419,14 @@ function get_current_user(token){
                               <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Cliquez sur le bouton ci-dessous pour accéder aux Coups de cœur et découvrir votre classement : </p>
         
                               <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                                  <a href="https://linkarts.fr/favorites" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                  <a href="https://linkarts.fr/home/favorites" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                                       Accéder aux Coups de cœur
                                   </a>
                               </div>
         
-                              <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 15px;">Très sincèrement,</br>L'équipe LinkArts</p>
-                              <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg" height="20" style="height:20px;max-height: 20px;float: left;" />
+                              <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                              <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                              <img src="https://www.linkarts.fr/assets/img/svg/Logo-LA3-18-01.svg"  height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
                           </td>
         
                       </tr>
@@ -440,7 +437,8 @@ function get_current_user(token){
                         <tr id="tr4">
                             <td align="center">
                                 <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-                                <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                                <p style="margin: 10px auto 5px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                              <a style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;" href="https://www.linkarts.fr/account/${list_of_users[i].nickname}/my_account/email/management">Gérer mes e-mails.</a>
                             </td>
         
                         </tr>
@@ -471,11 +469,11 @@ function get_current_user(token){
                     html: mail_to_send, // html body
                 };
           
-                transport.sendMail(mailOptions, (error, info) => {
-                    if (error) {
-                        console.log('Error while sending mail: ' + error);
-                    }
-                })
+                /*transport.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                      console.log('Error while sending mail: ' + error);
+                  }
+              })*/
   
                }
                 

@@ -10,21 +10,21 @@ var fastcsv = require("fast-csv");
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});*/
+});
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
-});
+});*/
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -81,8 +81,8 @@ const generate_recommendations = (request, response) => {
         if(jsonData.length>=1 && user!=80){
           
           //pour ubuntu
-          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
-          //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
+          //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
+          const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
           pythonProcess.stderr.pipe(process.stderr);
           pythonProcess.stdout.on('data', (data) => {
            // console.log("python res")
@@ -2084,7 +2084,6 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
 
 
   const get_recommendations_drawings = (request, response) => {
-    console.log("drawing_id")
     var user=0;
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
@@ -2095,7 +2094,6 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   }
 
   function get_all_drawings_recommendations(user,callback){
-    console.log("get_all_drawings_recommendations")
     let recommendations_done=[];
     let recommendations=[];
     let last_recommendations=[[],[]];
@@ -2153,7 +2151,6 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
      
 
       function after_first_check(indice){
-        console.log("after_first_check")
         let not_seen=[];
         let seen=[];
         for (let i=0; i<result_styles.length;i++){
@@ -2278,7 +2275,6 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
         styles_found=true;
         
         if (error) {
-          console.log({err:error})
           result_styles = [];
         }
         else{
