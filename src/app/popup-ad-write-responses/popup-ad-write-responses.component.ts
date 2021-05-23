@@ -62,7 +62,7 @@ export class PopupAdWriteResponsesComponent implements OnInit {
   all_attachments_uploaded( event: boolean) {
     this.attachments_uploaded = event;
     this.Profile_Edition_Service.get_current_user().subscribe(s=>{
-      let visitor_name=s[0].firstname + ' ' + s[0].lastname;
+      let visitor_name=s[0].firstname;
       this.NotificationsService.add_notification('ad_response',s[0].id,visitor_name,this.data.item.id_user,'ad',this.data.item.title,this.data.item.type_of_project,this.data.item.id,0,null,false,null).subscribe(l=>{
         let message_to_send ={
           for_notifications:true,

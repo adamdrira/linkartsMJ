@@ -274,7 +274,6 @@ export class AccountComponent implements OnInit {
   author:any;
   author_name:string;
   firstName:string;
-  lastName:string;
   primary_description: string;
   occupation: string;
   education: string;
@@ -453,7 +452,7 @@ export class AccountComponent implements OnInit {
         else if(user && user.status=="deleted"){
           
           this.profile_not_found=true;
-          this.author_name = user.firstname + ' ' + user.lastname;
+          this.author_name = user.firstname;
           this.navbar.delete_research_from_navbar("Account","unknown",this.user_id).subscribe(l=>{
           });
           
@@ -475,10 +474,9 @@ export class AccountComponent implements OnInit {
         }
         else{
           this.author=user;
-          this.author_name = user.firstname + ' ' + user.lastname;
+          this.author_name = user.firstname;
           this.gender=user.gender;
           this.firstName=user.firstname;
-          this.lastName=user.lastname;
           this.primary_description=user.primary_description;
           this.type_of_account=user.type_of_account;
           this.primary_description_extended=user.primary_description_extended;
@@ -575,12 +573,11 @@ export class AccountComponent implements OnInit {
         // if author suspended and visitor, if account doesn't exist or deleted
         this.profile_not_found=true;
 
-        this.author_name = user.firstname + ' ' + user.lastname;
+        this.author_name = user.firstname;
         this.cd.detectChanges();
         if(user.status=="suspended"){
           this.gender=user.gender;
           this.firstName=user.firstname;
-          this.lastName=user.lastname;
           this.primary_description=user.primary_description;
           this.type_of_account=user.type_of_account;
           this.certified_account=user.certified_account;
@@ -615,11 +612,10 @@ export class AccountComponent implements OnInit {
           
         }
         this.author=user;
-        this.author_name = user.firstname + ' ' + user.lastname;
+        this.author_name = user.firstname;
         this.gender=user.gender;
         this.list_of_members=user.list_of_members;
         this.firstName=user.firstname;
-        this.lastName=user.lastname;
         this.primary_description=user.primary_description;
         this.type_of_account=user.type_of_account;
         this.primary_description_extended=user.primary_description_extended;
@@ -1235,7 +1231,7 @@ export class AccountComponent implements OnInit {
     for(let i=0;i<this.list_of_members.length;i++){
 
       this.Profile_Edition_Service.retrieve_profile_data(this.list_of_members[i]).subscribe(r=> {
-        this.list_of_members_names[i] = r[0].firstname + ' ' + r[0].lastname;
+        this.list_of_members_names[i] = r[0].firstname;
         this.list_of_members_pseudos[i] = r[0].nickname;
         compt++;
         if(compt==this.list_of_members.length){

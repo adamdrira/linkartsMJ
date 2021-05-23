@@ -360,7 +360,7 @@ export class AdPageComponent implements OnInit {
         });
     
         this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
-          this.author_name = r[0].firstname + ' ' + r[0].lastname;
+          this.author_name = r[0].firstname;
           this.primary_description=r[0].primary_description;
           this.pseudo = r[0].nickname;
           
@@ -1056,7 +1056,7 @@ export class AdPageComponent implements OnInit {
             this.list_of_profile_pictures[i] = url;
           });
           this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(q=> {
-            this.list_of_authors_name[i] = q[0].firstname + ' ' + q[0].lastname;
+            this.list_of_authors_name[i] = q[0].firstname;
             this.list_of_certified_account[i] = q[0].certified_account;
             this.list_of_ids[i]=q[0].id; 
             this.list_of_pseudos[i]=q[0].nickname; 

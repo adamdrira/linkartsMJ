@@ -402,10 +402,7 @@
         </div>
 
         <div *ngIf="show_group_managment && gender!='Groupe'">
-
-            <!-- Description principale -->
             <div class="account-title-container">
-                <!--TITRE + BOUTON EDITER/CACHER-->
                 <div class="title">
                     <span>Gestion des groupes</span>
                 </div>
@@ -421,7 +418,7 @@
                    
                 </div>
     
-                <ng-container [@enterAnimation]>
+                <!--<ng-container [@enterAnimation]>
                     <button class="validate-form-button" 
                     (click)="create_a_group()"
                     [@enterAnimation]>
@@ -429,7 +426,7 @@
                         <span *ngIf="!user_is_in_a_group"  >Créer un groupe</span>
                         <span *ngIf="user_is_in_a_group"  >Créer un nouveau groupe</span>
                     </button>
-                </ng-container>
+                </ng-container>-->
                
                 <div [formGroup]="registerForm2" *ngIf="loading_add_artist" [@enterAnimation]> 
 

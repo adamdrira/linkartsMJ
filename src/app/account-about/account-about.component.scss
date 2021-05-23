@@ -561,8 +561,6 @@
           .emojis-container {
               background-color: white;
               border-radius: 10px;
-              //padding: 2px 2px 0px 2px;
-              //width: 369px;
               display: flex;
               justify-content: center;
 
@@ -610,7 +608,7 @@
         div.emojis-button {
             position: absolute;
             cursor:pointer;
-            bottom: 5px;
+            bottom: 2px;
             right: 5px;
             display: flex;
             outline: none;
@@ -954,9 +952,11 @@
   
   .accountAboutSelectClass.mat-select-panel {
     position: absolute;
-    top: 37px;
+    top: 36px;
     left: -5px;
+    font-size: 15px;
     border-radius: 23px !important;
+
     box-shadow:0px 0px 0px 2px #cce9fb, 0px 0px 2px 4px #b3e0fb;
     .mat-ripple * {
         background-color:unset !important;
@@ -971,8 +971,61 @@
     .mat-option {
         color: rgb(32,56,100) !important;
         font-weight: 600;
+        > span {
+          display: flex;
+          padding-bottom: 7px;
+          flex-direction: column;
+
+         
+          .text-container{
+            display: flex;
+
+            > img{
+              height: 38px;
+              margin-right: 8px;
+            }
+
+            > span {
+              line-height: 20px;
+              color: rgb(32 56 100 / 84%);
+              font-weight: 500;
+              white-space: pre-wrap;
+              font-size: 12px;
+            }
+          }
+
+          
+         
+        }
     }
     
+    &.options-with-description {
+      > div {
+        position: relative;
+        padding-bottom: 5px;
+        .mat-option {
+          height: unset;
+          z-index: 1000;
+          background: unset !important;
+          &:hover {
+            background:#f6fafd !important;
+          }
+        }
+        .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
+          background:unset !important;
+        }
+        > span {
+          position: relative;
+          font-size: 12px;
+          display: flex;
+          left: 16px;
+          max-width: 92%;
+          color: #687282;
+          font-weight: 600;
+        }
+      }
+    }
+
     scrollbar-color: #b7e1fb white;
     &::-webkit-scrollbar {
       width: 6px;
@@ -987,7 +1040,6 @@
         border-radius: 20px;
     }
   }
-
   .accountAboutSelectCountryClass.mat-select-panel {
     position: absolute;
     top: 37px;

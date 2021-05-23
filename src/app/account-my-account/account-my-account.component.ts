@@ -15,13 +15,13 @@ import { MustMatch } from '../helpers/must-match.validator';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { LoginComponent } from '../login/login.component';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { SignupComponent } from '../signup/signup.component';
 import { NavbarService } from '../services/navbar.service';
 import { Location } from '@angular/common';
 import { Community_recommendation } from '../services/recommendations.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 declare var $: any;
+
 @Component({
   selector: 'app-account-my-account',
   templateUrl: './account-my-account.component.html',
@@ -615,7 +615,7 @@ export class AccountMyAccountComponent implements OnInit {
               this.list_of_members_pictures_by_group[id_group][k] = SafeURL;
             });
             this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).subscribe( l => {  
-              this.list_of_members_names_by_group[id_group][k]  = l[0].firstname + ' ' + l[0].lastname;
+              this.list_of_members_names_by_group[id_group][k]  = l[0].firstname;
               this.list_of_members_pseudos_by_group[id_group][k] = l[0].nickname;
               this.list_of_members_status_by_group[id_group][k] = "En attente";
               this.list_of_members_shares_by_group[id_group][k]  = (100/this.list_of_members_ids_by_group[id_group].length).toFixed(2);
@@ -653,7 +653,7 @@ export class AccountMyAccountComponent implements OnInit {
               this.list_of_members_pictures_by_group[id_group][k] = SafeURL;
             });
             this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).subscribe( l => {
-              this.list_of_members_names_by_group[id_group][k]  = l[0].firstname + ' ' + l[0].lastname;
+              this.list_of_members_names_by_group[id_group][k]  = l[0].firstname ;
               this.list_of_members_pseudos_by_group[id_group][k] = l[0].nickname;
               compt++;
               if(compt==this.list_of_members_ids_by_group[id_group].length){
@@ -1053,12 +1053,12 @@ export class AccountMyAccountComponent implements OnInit {
       }
     })
   }
-  create_a_group(){
+  /*create_a_group(){
     const dialogRef = this.dialog.open(SignupComponent, {
       data: {for_group_creation:true},
       panelClass:"signupComponentClass"
     });
-  }
+  }*/
 
 
 

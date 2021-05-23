@@ -11,20 +11,20 @@
                     
                     <mat-select-trigger>
                         <ng-container *ngIf="category_index==0">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">mail</mat-icon>
                             <span>Dépôts de projets</span>
                         </ng-container>
                         <ng-container *ngIf="category_index==1">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">extension</mat-icon>
                             <span>Collaborations bénévoles</span>
                         </ng-container>
                         <ng-container *ngIf="category_index==2">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">work</mat-icon>
                             <span>Collaborations rémunérées</span>
                         </ng-container>
                         
                         <div class="arrow-container" [ngClass]="{'opened': homeLinkcollabSelect && homeLinkcollabSelect.panelOpen }">
-                            <mat-icon>arrow_back_ios_new</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios_new</mat-icon>
                         </div>
                     </mat-select-trigger>
 
@@ -32,15 +32,15 @@
 
 
                     <mat-option [value]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">mail</mat-icon>
                         <span>Dépôts de projets</span>
                     </mat-option>
                     <mat-option [value]="1">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">extension</mat-icon>
                         <span>Collaborations bénévoles</span>
                     </mat-option>
                     <mat-option [value]="2">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">work</mat-icon>
                         <span>Collaborations rémunérées</span>
                     </mat-option>
                 </mat-select>
@@ -54,31 +54,22 @@
 
                     <div class="swiper-slide">
                         <div class="category" (click)="open_category(0, true);" [ngClass]="{'opened': category_index==0 }"
-                        matTooltip="Dépôt de dossiers destinées aux maisons d'édition"
-                        matTooltipClass='linkarts-tooltip'
-                        [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="100">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                        >
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">mail</mat-icon>
                             <span>Dépôts de projets</span>
                         </div>
                     </div>
                     <div class="swiper-slide">
                         <div class="category" (click)="open_category(1, true);" [ngClass]="{'opened': category_index==1 }"
-                        matTooltip="Collaborations libres de contrats, sans transactions"
-                        matTooltipClass='linkarts-tooltip'
-                        [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="100">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                        >
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">extension</mat-icon>
                             <span>Collaborations bénévoles</span>
                         </div>
                     </div>
                     <div class="swiper-slide">
                         <div class="category" (click)="open_category(2, true);" [ngClass]="{'opened': category_index==2 }"
-                        matTooltip="Collaborations/Partenariats avec transactions et contrats"
-                        matTooltipClass='linkarts-tooltip'
-                        [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="100">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                        >
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">work</mat-icon>
                             <span>Collaborations rémunérées</span>
                         </div>
                     </div>
@@ -98,16 +89,84 @@
 <div class="page">
 
     <div class="slogan">
-        <span>La collaboration éditoriale par excellence</span>
+        <span>La collaboration éditoriale pour tous</span>
     </div>
     
     <div class="component-container">
 
-        <ng-container *ngIf="category_index==1 || category_index==2">
+        <div class="section-0" *ngIf="category_index==1 || category_index==2">
+
+            <div class="large-text" *ngIf="category_index==1">
+                <span >Dénichez le collaborateur idéal pour vos projets !</span>
+                
+                <div class="see-more-button">
+                    ?
+                    <div class="information" >
+                        <div class="first-text">
+                           <img style="    width: 35px; height: 35px; margin-right: 5px;" src='../../assets/img/tuto-logos/tuto-benevole.svg'>
+                            <span>Vous souhaitez réaliser un projet éditorial, mais il vous manque un collaborateur ? 
+                            </span>
+                        </div>
+                        <div class="first-text" style="margin-bottom: 15px;">
+                            <span style="text-align: justify;">  Alors c’est ici que vous trouverez le partenaire idéal pour vos projets ne nécessitant ni contrat ni rémunération ! 
+                            </span>
+                        </div>
+                        
+                        <div class="second-text">
+                            <span>Une messagerie, disposant de nombreux outils pratiques est mis à votre disposition afin de vous permettre de travailler avec  
+                            </span>
+                            <img src='../../assets/img/tuto-logos/light.svg'>
+                        </div>
+                        <div class="second-text">
+                            <span style="text-align: justify;">votre collaborateur. Sachez par ailleurs, que tout fichier échangé au sein de notre messagerie peut vous protéger contre le plagiat.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="large-text"  *ngIf="category_index==2">
+                <span>Dénichez le service qui vous conviens le mieux !</span>
+                <div class="see-more-button">
+                    ?
+                    <div class="information" >
+                        <div class="first-text">
+                            <img src='../../assets/img/tuto-logos/tuto-remunere.svg'>
+                            <span>Vous recherchez un artiste pour effectuer une tâche en particulier ?
+                            </span>
+                        </div>
+                        <div class="first-text" style="margin-bottom: 15px;">
+                            <span style="text-align: justify;">Alors c'est ici que vous trouverez les artistes cherchant à faire valoir leur savoir et leur savoir-faire, en échange d'une rémunération.
+                            </span>
+                        </div>
+                        
+                        <div class="second-text">
+                            <span> Une messagerie, disposant de nombreux outils pratiques est mis à votre disposition afin de faciliter les échanges avec votre 
+                            </span>
+                            <img src='../../assets/img/tuto-logos/light.svg'>
+                        </div>
+                        <div class="second-text">
+                            <span style="text-align: justify;">dinterlocuteur. Une plateforme de payement sera bientôt mis à votre disposition afin de vous faciliter et de vous sécuriser vos transactions. 
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="small-text">
+                <span *ngIf="category_index==1">Trouvez le partenaire qui vous conviens en répondant aux annonces ou en publiant les votres</span>
+                <span *ngIf="category_index==2">Trouvez le service qui vous conviens en répondant aux annonces ou en publiant les votres</span>
+           </div>
             
             <div class="home-linkcollab-selects" [formGroup]="f1" *ngIf="f1">
 
-                <div class="swiper-container">
+                <div class="filter-button small-screen-1" (click)="open_more_filters()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">sort</mat-icon>
+                    <span>Filtres</span>
+                </div>
+
+                <div class="swiper-container large-screen-1">
                     <div #swiperCategories2 class="swiper-item">
                         <div class="swiper-wrapper">
                                     
@@ -234,14 +293,6 @@
                                 </mat-form-field>
                             </div>
 
-                            <div class="form-item swiper-slide" [ngStyle]="{'width' : '165px'}" *ngIf="1000>innerWidth">
-                                <button (click)="open_more_filters()">
-                                    <mat-icon>filter_alt</mat-icon>
-                                    <span>Voir tous les filtres</span>
-                                </button>
-                            </div>
-
-
 
                         </div>
                     </div>
@@ -308,33 +359,55 @@
                 </ng-container>
             </div>
 
-        </ng-container>
+        </div>
         
 
 
 
-        <div class="section-0" *ngIf="category_index==0">
+        <div  class="section-0" *ngIf="category_index==0">
 
             <div class="large-text">
-                <span>Dépose un dossier auprès d’éditeurs</span>
+                <span>La maison d’édition de vos rêves se trouve ici !</span>
+                <div class="see-more-button">
+                    ?
+                    <div class="information" >
+                        <div class="first-text">
+                            <img src='../../assets/img/tuto-logos/tuto-projects.svg'>
+                            <span>Le prochain bestseller est entre vos mains ! N’attendez plus et soumettez votre projet !
+                            </span>
+                        </div>
+                        <div class="first-text" style="margin-bottom: 15px;">
+                            <span style="text-align: justify;">Les maisons d’édition se mobilisent pour vous faire des retours constructifs, en des temps impartis, même si votre projet n'est pas retenu. 
+                            </span>
+                        </div>
+                        
+                        <div class="second-text">
+                            <span>À des fins de recherche la part des artistes, le 'fair-use' est appliqué dans cette section.  
+                            </span>
+                            <img src='../../assets/img/tuto-logos/human-rights.svg'>
+                        </div>
+                        <div class="second-text">
+                            <span style="text-align: justify;">Nous mettons ainsi à votre disposition des informations concernant des maisons d'édition qui ne sont pas encore partenaires, dans un but non lucratif. 
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
-            <div class="small-text">
-                <span>Sur LinkArts, les maisons d’édition et professionnels examinent vraiment ton dossier, te font des retours de façon garantie et se mobilisent pour t’aider suivant tes objectifs !</span>
+            <div class="small-text" >
+                <span>Recherchez et sélectionnez les maisons d'édition qui vous conviennent et soumettez votre projet</span>
+                
             </div>
-
-
-            <div class="see-more-button">
-                <span>En savoir plus</span>
-                <mat-icon [ngClass]="{'invisible': !show_icon }">more_horiz</mat-icon>
-            </div>
-
             
-            <div class="horizontal-bar"></div>
-
             
             <div class="filters home-linkcollab-selects">
+
+                <div class="filter-button small-screen-1" (click)="open_filters_editor()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">sort</mat-icon>
+                    <span>Filtres</span>
+                </div>
                 
-                <div class="form-item swiper-slide" [ngStyle]="{'width' : '230px', 'margin-left' : '4px'}">
+                <div class="form-item swiper-slide large-screen-1" [ngStyle]="{'width' : '180px', 'margin-left' : '4px'}">
                     <mat-form-field floatLabel='never' class="select-class">
                         <mat-label>Catégorie du projet</mat-label>
                         <mat-select #matSelectSection0 (selectionChange)="change_select_section0($event)" disableOptionCentering panelClass="homelinkcollabSelectClass">
@@ -348,10 +421,10 @@
                 </div>
 
 
-                <div class="form-item swiper-slide" [ngStyle]="{'width' : '300px', 'margin-right' : '4px', 'margin-left':'auto'}">
+                <div class="form-item swiper-slide large-screen-1" [ngStyle]="{'width' : '180px', 'margin-right' : 'auto', 'margin-left':'10px'}">
                     <mat-form-field floatLabel='never' class="select-class">
-                        <mat-label>Recherche par nom</mat-label>
-                        <input matInput maxLength="20" autocomplete="off" [(ngModel)]="searchText">
+                        <mat-label>Rechercher</mat-label>
+                        <input matInput maxLength="100" autocomplete="off" [(ngModel)]="searchText">
 
                         <div class="length-indicator">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
@@ -359,61 +432,147 @@
                     </mat-form-field>
                 </div>
 
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '202px', 'margin-right' : '5px', 'margin-left':'auto'}">
+                    <div class="send-container" (click)="submite_project()">
+                        <span>Soumettre mon projet</span>
+                    </div>
+                </div>
+
                 
             </div>
 
+            <div class="filters home-linkcollab-selects" *ngIf="filters_opened"  [@enterFromTop3Animation]>
+                <div class="form-item swiper-slide " [ngStyle]="{'width' : '140px', 'margin-left' : '4px'}">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Catégorie</mat-label>
+                        <mat-select #matSelectSection0 (selectionChange)="change_select_section0($event)" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <ng-container *ngFor="let obj of section0_categories, let i = index">
+                                <mat-option *ngIf="!( i==0 && category=='none' )" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
 
-            <div class="thumbnails-editors-container">
 
-                <ng-container *ngFor="let item of list_of_editors | filterAlbum : searchText">
-                    <div class="thumbnail-container"  *ngIf="item.categories.includes(category) || category=='none'">
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '140px', 'margin-right' : 'auto', 'margin-left':'5px'}">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Rechercher</mat-label>
+                        <input matInput maxLength="100" autocomplete="off" [(ngModel)]="searchText">
 
+                        <div class="length-indicator">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
+                        </div>
+                    </mat-form-field>
+                </div>
+                
+            </div>
+
+            <div *ngIf="show_editors" class="filter">
+                <div class="filter-title">
+                    <span>Maisons d'édition sélectionnées : </span>
+                </div>
+                <div class="filter-item" *ngFor="let item of list_of_editors_selected;let i=index" >
+                    <span >
+                        <b>{{list_of_editors_selected[i].title}}</b>
+                    </span> 
+                    <div class="close-container" (click)="remove_editor(i)">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!show_editors" class="filter">
+                <div class="filter-title">
+                    <span>Votre sélection : </span>
+                </div>
+                <div class="filter-item" >
+                    <span >
+                        <b>Aucune sélection</b>
+                    </span> 
+                </div>
+            </div>
+            <div #EditorContainer class="thumbnails-editors-container">
+
+                <div class="no-proposition-container" *ngIf="(list_of_editors | filterAlbum : searchText).length==0" [@enterFromTopAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" [@enterFromTopAnimation]>find_in_page</mat-icon>
+                    <span [@enterFromTopAnimation]>Aucun résultat pour la recherche demandée</span>
+                </div>
+                <ng-container *ngFor="let item of list_of_editors | filterAlbum : searchText; let i = index">
+                    <div #thumbnails class="thumbnail-container"  *ngIf="item.categories.includes(category) || category=='none'">
+
+                        
                         <div class="thumbnail">
-
-                            <div class="img-container">
-                                <img [src]=item.pp>
+                            <div class="cover-picture"  [ngClass]="{'shiny':!pictures_loaded[item.cover]}" >
+                                <img class="background-image"  [lazyLoad]="item.cover"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.cover)" [ngClass]="{'invisible':!pictures_loaded[item.cover]}">
+                                <div class="first-message" *ngIf="indexes_selected[i]"  [@enterFromTop2Animation]>
+                                    <div class="alert-icon">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">sentiment_dissatisfied</mat-icon>
+                                    </div>
+                                    <span style="margin-bottom: auto;">Nous sommes dans le regret de vous informer que cette maison d'édition n'est pas encore partenaire.<br><br> Vous pouvez néanmoins les joindre personnellement grâce aux informations ci-dessous.</span>
+                               </div>
                             </div>
-                            <div class="name">
-                                <span>{{item.title}}</span>
-
-                            </div>
-
-                            <!--<div class="section">
-                                <div class="section-name">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
-                                    <span>Localisation</span>
+                            <div class="data-container"  >
+                                <div class="img-container"  [ngClass]="{'shiny':!pictures_loaded[item.pp]}">
+                                    <img  [lazyLoad]="item.pp"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.pp)" [ngClass]="{'invisible':!pictures_loaded[item.pp],'fit-pic':is_a_special_pp[item.title]}" >
                                 </div>
-                                <span class="section-value">{{item.location}}</span>
-                            </div>
-                            <div class="section">
-                                <div class="section-name">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
-                                    <span>Description</span>
+
+                                <div class="right-container">
+                                    <div class="name" [@enterFromLeftAnimation]>
+                                        <span>{{item.title}}</span>
+                                        
+                                    </div>
+        
+                                   
+                                    <div class="section" *ngIf="!indexes_selected[i]" [@enterFromLeftAnimation]>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
+                                        <span class="section-value">{{item.location}}</span>
+                                    </div>
+                                    <div class="section" *ngIf="!indexes_selected[i]" [@enterFromLeftAnimation] >
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">color_lens</mat-icon>
+                                        <span class="section-value">
+                                            <ng-container *ngFor="let cat of item.categories;let j=index">
+                                                <ng-container *ngIf="j==0">{{cat}}</ng-container>
+                                                <ng-container *ngIf="j>0">, {{cat}}</ng-container>
+                                            </ng-container>
+                                        </span>
+                                    </div>
+                                    <div class="section" *ngIf="!indexes_selected[i] && item.stars" [@enterFromLeftAnimation] >
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">star</mat-icon>
+                                        <span class="section-value">
+                                            <ng-container *ngFor="let cat of item.stars;let j=index">
+                                                <ng-container *ngIf="j==0">{{cat}}</ng-container>
+                                                <ng-container *ngIf="j>0">, {{cat}}</ng-container>
+                                            </ng-container>
+                                        </span>
+                                    </div>
+
+                                    <div class="section" *ngIf="indexes_selected[i]" [@enterFromRightAnimation] >
+                                        <span class="section-value"><b>site</b> : <a [href]="item.website">{{item.website}}</a></span>
+                                    </div>
+                                    <div class="section" *ngIf="indexes_selected[i] && item.email" [@enterFromRightAnimation] >
+                                        <span class="section-value"><b>e-mail</b> : <a href="mailto:{{item.email}}">{{item.email}}</a> </span>
+                                    </div>
+                                    <div class="section" *ngIf="indexes_selected[i] && item.phone" [@enterFromRightAnimation] >
+                                        <span class="section-value"><b>téléphone</b> : {{item.phone}}</span>
+                                    </div>
                                 </div>
-                                <span class="section-value">{{item.description}}</span>
-                            </div>-->
-                            <div class="section" *ngIf="item.size">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
-                                <span class="section-value" *ngIf="item.size>0 && 11>item.size">1-10</span>
-                                <span class="section-value" *ngIf="item.size>10 && 51>item.size">11-50</span>
-                                <span class="section-value" *ngIf="item.size>50 && 101>item.size">51-100</span>
-                                <span class="section-value" *ngIf="item.size>100">>100</span>
-                            </div>
-                            <div class="section" *ngIf="item.location">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
-                                <span class="section-value">{{item.location}}</span>
-                            </div>
-                            <div class="section">
-                                <div class="section-category">
-                                    <span *ngFor="let category of item.categories">
-                                        {{category}}
-                                    </span>
-                                </div>
+                                
                             </div>
                             
+                            
                             <div class="apply-button">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-                                <span>Soumettre mon projet</span>
+                                <!--<div class="left-side">
+                                    Gratuit
+                                </div>-->
+                                <div class="right-side" [@enterFromLeftAnimation] *ngIf="!box_checked[i]">
+                                    <span >Sélectionner</span>
+                                    <mat-checkbox class="check-box" [checked]="box_checked[i]" (change)="selectBox($event.checked,i)"></mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="apply-button-back" *ngIf="box_checked[i]" (click)="selectBox(false,i)" [@enterFromRightAnimation]>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+                                <span>Retour</span>
                             </div>
                         </div>
 

@@ -524,12 +524,26 @@
                     
                     </ng-container>
     
+                    <ng-container *ngIf="!primary_description_extended && !mode_visiteur">
+                        <div class="account-title medium-icon">
+                            <span>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" >account_circle</mat-icon>
+                                Qui je suis 
+                            </span>
+                        </div>
+                        
+                        <div class="text-lines">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                            <span>Aucune description ajoutée</span>
+                            <span>Vous pouvez ajouter une description principale depuis l'onglet "Mon profil"</span>
+                        </div>
+                    </ng-container>
     
                     <ng-container *ngIf="primary_description_extended && primary_description_extended_privacy=='public' && primary_description_extended.length>0">
                         <div class="account-title medium-icon">
                             <span>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }" >account_circle</mat-icon>
-                                Présentation
+                                Qui je suis
                             </span>
                         </div>
                         

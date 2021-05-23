@@ -95,8 +95,6 @@
         <ng-container *ngIf="type_of_profile_retrieved">
 
           <!--Barre de recherche-->
-          <!--Barre de recherche-->
-
 
           <div class="SMALL-SCREEN-SECTIONS VISIBLE-ON-MORE-SMALL-SCREEN-1" *ngIf="!activated_search" [ngClass]="{'invisible':  !logo_is_loaded}">
             
@@ -199,7 +197,6 @@
 
 
                 <!-- SHOW PROPOSITIONS AFTER RESEARCH-->
-                <!-- SHOW PROPOSITIONS AFTER RESEARCH-->
 
                 <div class="second-block">
 
@@ -227,7 +224,6 @@
                         (click)="add_clicked_after_research(i)">
 
                         <!--Account -->
-                        <!--Account -->
 
                         <a class="item-row" *ngIf="item.publication_category=='Account'" (click)="open_account(i)"
                           [routerLink]="get_account(i)">
@@ -237,7 +233,7 @@
                                 [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
                             </div>
                             <div class="name-container block">
-                              <div>{{list_of_last_propositions[i].firstname}} {{list_of_last_propositions[i].lastname}}
+                              <div>{{list_of_last_propositions[i].firstname}}
 
                                 <mat-icon *ngIf="list_of_last_propositions[i].certified_account" [ngClass]="{'invisible': !show_icon }"
                                 matTooltip="Compte certifié" 
@@ -302,8 +298,6 @@
                 </div>
 
                 <!-- SHOW FIRST PROPOSITIONS -->
-                <!-- SHOW FIRST PROPOSITIONS -->
-
                 <div class="second-block">
 
                   <ng-container *ngIf="!show_first_propositions && loading_recent && !show_other_propositions">
@@ -330,8 +324,6 @@
                       <div class="list-of-propositions" *ngFor="let item of list_of_first_propositions_history;let i=index">
 
                         <!-- ACCOUNT -->
-                        <!-- ACCOUNT -->
-
                         <div class="item-row" *ngIf="item.publication_category=='Account'">
 
                           <a class="result-container" (click)="open_history_account(i);" [routerLink]="get_history_account(i)">
@@ -341,7 +333,6 @@
                             </div>
                             <div class="name-container block">
                               <div>{{list_of_last_propositions_history[i].firstname}}
-                                {{list_of_last_propositions_history[i].lastname}} 
                               
                                 <mat-icon *ngIf="list_of_last_propositions_history[i].certified_account" [ngClass]="{'invisible': !show_icon }"
                                 matTooltip="Compte certifié" 
@@ -440,9 +431,6 @@
           </div>
 
           <!--Barre de recherche FIN -->
-          <!--Barre de recherche FIN -->
-
-
           <div class="icon-messenger-invisible">
           </div>
           <div class="icon-bell-invisible">
@@ -601,10 +589,10 @@
                   <span>Mes groupes</span>
                 </button>
 
-                <a href="/services/0" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_tuto()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-                  <span>Qui sommes-nous ?</span>
-                </a>
+                  <span>Qui sommes nous ?</span>
+                </button>
                 <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
                   <span>Mentions légales</span>
@@ -714,8 +702,8 @@
   </div>
   <mat-menu yPosition="above" xPosition="before" #helpOptions="matMenu" [class]="show_cookies ? 'navbar-mat-menu help-common menu-bottom-help' : 'navbar-mat-menu help help-common'">
     <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_tuto()">
-      <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">slideshow</mat-icon>
-      <span>Présentation de LinkArts</span>
+      <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
+      <span>Qui sommes nous ?</span>
     </button>
     <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_share()">
       <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
@@ -731,7 +719,6 @@
     </button>
     <div class="flex-container">
       <div *ngIf="(type_of_profile=='account' || type_of_profile=='suspended')" (click)="really_open_my_account()">Mon compte</div>
-      <a routerLink="/services/0">Qui sommes-nous</a>
       <a routerLink="/services/1">Mentions légales</a>
       <a routerLink="/services/2">Conditions d'utilisation</a>
       <a routerLink="/services/4">Confidentialité et sécurité</a>

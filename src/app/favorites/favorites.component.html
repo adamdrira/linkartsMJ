@@ -1,50 +1,32 @@
 <div class="trendings-global-container">
 
-
-
-    <div class="favorites-container " >
-    
-        <div class="small-screen" [@enterFromTopAnimation] *ngIf="see_more">
-            <div class="opened-text"  >
-                <div class="header">
-                    <div class="horizontal--bar left"></div>
-                    <div class="favorites-logo"></div>
-                    <div class="horizontal--bar right"></div>
+    <div class="main-title">
+        <span class="title">Artistes à ne pas manquer !</span>
+        <div class="see-more-button">
+            ?
+            <div class="information" >
+                <div class="first-text">
+                    <img style="    width: 35px; height: 35px; margin-right: 5px;" src='../../assets/img/tuto-logos/tuto-favorites.svg'>
+                    <span>C'est ici que se trouve la liste des meilleurs artistes ! Ce classement est réalisé 
+                    </span>
                 </div>
-        
-                <span>Bienvenue dans la section Coups de cœur !</span>
-                <div class="horizontal--bar"></div>
-                <span>Vous trouverez ci-dessous la liste des meilleurs nouveaux artistes du jour. Chaque lundi une rémunération sera attribuée aux 15 premiers artistes de ce classement selon leur position dans celui-ci.</span>
-                <div class="horizontal--bar"></div>
-                <span>Si vous êtes un artiste et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faire partie de ce classement !</span>
-        
-                <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
+                <div class="first-text" style="margin-bottom: 15px;">
+                    <span >en fonction de la popularité et de l'activité des artistes sur les 6 derniers mois. L'activité d'un artiste se fonde sur le nombre d'œuvres qu'il publie ainsi que sur le nombre de commentaires qu'il laisse auprès d'autres artistes.
+                    </span>
+                </div>
+                
+                <div class="second-text">
+                    <span>Le classement évolue chaque jour mais un jour compte plus que les autres, le lundi ! 
+                    </span>
+                    <img src='../../assets/img/tuto-logos/tuto-euro.svg'>
+                </div>
+                <div class="second-text">
+                    <span style="text-align: justify;">Chaque lundi, les artistes classées dans le top 15 des coups de coeur reçoivent une rémunération, en fonction de leur nombre d'abonnés et de leur position dans le classement.
+                    </span>
+                </div>
             </div>
-            
-    
-            <div class="see-less-button" (click)="see_more_button();" 
-            matTooltip="En savoir plus sur les Coups de cœur"
-            matTooltipClass='linkarts-tooltip'
-            [matTooltipPosition]="'below'"
-            [matTooltipShowDelay]="100">
-                <mat-icon [ngClass]="{'invisible': !show_icon,'rotate': !see_more }">close</mat-icon>
-            </div>
-
-        </div>
-    
-      
-    </div>
-
-    <div *ngIf="!see_more" >
-        <div class="see-less-button less-top" (click)="see_more_button();" 
-        matTooltip="En savoir plus sur les Coups de cœur"
-        matTooltipClass='linkarts-tooltip'
-        [matTooltipPosition]="'below'"
-        [matTooltipShowDelay]="100">
-            <span>?</span>
         </div>
     </div>
-
 
     <ng-container *ngIf="!favorites_retrieved">
         <ng-container *ngFor="let item of skeleton_array; let i = index">

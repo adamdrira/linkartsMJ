@@ -21,7 +21,7 @@ import { merge, fromEvent } from 'rxjs'
 import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
 declare var $: any;
 
-var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
+var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
@@ -448,7 +448,7 @@ export class ChatComponent implements OnInit  {
          
         })
         this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).subscribe(r=>{
-          this.list_of_users_names[r[0].id]=r[0].firstname + ' ' + r[0].lastname;
+          this.list_of_users_names[r[0].id]=r[0].firstname;
           compt_user++;
           if(compt_user==list_of_receivers_ids.length){
             this.list_of_users_names_retrieved=true;
@@ -558,7 +558,7 @@ export class ChatComponent implements OnInit  {
         for(let i=0;i<list_of_receivers_ids.length;i++){
           let data_retrieved=false;
           this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).subscribe(r=>{
-            this.list_of_users_names[r[0].id]=r[0].firstname + ' ' + r[0].lastname;
+            this.list_of_users_names[r[0].id]=r[0].firstname;
             data_retrieved=true;
             check_all(this)
             
@@ -2875,7 +2875,7 @@ display_members_of_the_group(){
       let data_retrieved=false;
       this.Profile_Edition_Service.retrieve_profile_data(list_of_ids[i]).subscribe(l=>{
         list_of_pseudos[i]=l[0].nickname;
-        list_of_names[i]=l[0].firstname + ' ' + l[0].lastname;
+        list_of_names[i]=l[0].firstname;
         data_retrieved=true;
         check_all(this)
       })
@@ -2928,7 +2928,7 @@ see_emoji_reaction_by_user(id_message){
         let pp_retrieved=false;
         this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(l=>{
           list_of_pseudos[i]=l[0].nickname;
-          list_of_names[i]=l[0].firstname + ' ' + l[0].lastname;
+          list_of_names[i]=l[0].firstname;
           data_retrieved=true;
           check_all(this)
         })
@@ -2996,7 +2996,7 @@ get_name_of_someone_who_exit_group(id,l,item){
   else{
     this.loading_deleted_member[id]=true;
     this.Profile_Edition_Service.retrieve_profile_data(id).subscribe(r=>{
-      this.list_of_names_deleted[id]=r[0].firstname + ' ' + r[0].lastname;
+      this.list_of_names_deleted[id]=r[0].firstname;
       this.cd.detectChanges()
     })
   }

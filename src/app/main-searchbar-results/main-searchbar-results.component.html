@@ -82,10 +82,7 @@
                             <ng-container *ngIf="!display_title_style_and_tags">
                                 <div class="swiper-slide" (click)="change_first_filter_selected(i)" *ngFor="let item of first_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': first_filter_selected==i }">
                                     <div class="element first-filter">
-                                        <span *ngIf="item!='Artistes' && item!='Professionnels non artistes' && item!='Artistes professionnels'">{{item}}</span>
-                                        <span *ngIf="item=='Artistes'">Groupe d'artistes</span>
-                                        <span *ngIf="item=='Professionnels non artistes'">Groupe de pros.</span>
-                                        <span *ngIf="item=='Artistes professionnels'">Groupe d'artistes pro.</span>
+                                        <span>{{item}}</span>
                                     </div>
                                 </div>
                                 <div class="swiper-slide" (click)="change_second_filter_selected(i)" *ngFor="let item of second_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': second_filter_selected==i }">

@@ -22,7 +22,6 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
 import { PopupNavbarDisconnectedComponent } from '../popup-navbar-disconnected/popup-navbar-disconnected.component';
 import { SignupComponent } from '../signup/signup.component';
-import {get_date_to_show_chat} from '../helpers/dates';
 import {get_date_to_show_navbar} from '../helpers/dates';
 import {Community_recommendation} from '../services/recommendations.service';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -179,6 +178,13 @@ export class NavbarLinkartsComponent implements OnInit {
     this.chatService.close();
   }
 
+  @HostListener('window:scroll', ['$event']) // for window scroll events
+  onScroll(event) {
+    if(  window.scrollY>=200 && this.current_user && !this.dont_open_tuto && !this.Profile_Edition_Service.get_tuto_cookies() && !this.tuto_opened){
+      this.open_tuto()
+    }
+   
+  }
   reload_page(){
     location.reload();
   }
@@ -280,9 +286,14 @@ export class NavbarLinkartsComponent implements OnInit {
   device_info='';
   current_user:any;
 
-
+  tuto_cookies:string;
+  dont_open_tuto=false;
   ngOnInit() {
     let cookies = this.Profile_Edition_Service.get_cookies();
+    this.tuto_cookies =this.Profile_Edition_Service.get_tuto_cookies();
+    if(this.tuto_cookies){
+      this.dont_open_tuto=true;
+    }
     if(!cookies){
       this.show_cookies=true;
     }
@@ -378,7 +389,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   retrieve_profile(r){
       this.user_id=r[0].id;
-      this.author_name = r[0].firstname + ' ' + r[0].lastname;
+      this.author_name = r[0].firstname;
       this.author_certification=r[0].certified_account;
       this.pseudo=r[0].nickname;
       this.gender=r[0].gender;
@@ -1242,7 +1253,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     this.loading_research=true;
     let user =this.list_of_last_propositions[i]
-    this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname + ' ' + user.lastname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
+    this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       this.loading_research=false;
       return
     })
@@ -1256,7 +1267,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     this.loading_research=true;
     let user =this.list_of_last_propositions_history[i];
-    this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname + ' ' + user.lastname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
+    this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       this.loading_research=false;
       return
     })
@@ -2075,9 +2086,12 @@ open_notifications(){
     this.location.go("/donation/")
     location.reload();
   }
+  tuto_opened=false;
   open_tuto() {
+    this.tuto_opened=true;
+    this.navbar.add_page_visited_to_history(`/open_tuto/${this.current_user.id}/`,'' ).subscribe();
     const dialogRef = this.dialog.open(PopupShareComponent, {
-      data:{type_of_profile:this.type_of_profile, tutorial:true,},
+      data:{type_of_profile:this.type_of_profile, tutorial:true,current_user:this.current_user},
       panelClass:"popupTutoClass"
     });
   }

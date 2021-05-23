@@ -213,19 +213,15 @@ export class MainSearchbarResultsComponent implements OnInit {
         slidesPerView: 'auto',
 
         breakpoints: {
-          // when window width is >= 320px
           320: {
             slidesPerGroup: 2,
           },
-          // when window width is >= 480px
           500: {
             slidesPerGroup: 3,
           },
-          // when window width is >= 640px
           700: {
             slidesPerGroup: 4,
           },
-          // when window width is >= 640px
           900: {
             slidesPerGroup: 5,
           }

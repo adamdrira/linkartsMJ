@@ -707,11 +707,11 @@
     
             <div class="comment-container" (click)="see_comments();">
                 <div class="number-of-comments" *ngIf="commentariesnumber>0">
-                    <span>Commentaires</span>
+                    <span>Avis</span>
                     <span class="second-span" >&nbsp; ({{commentariesnumber}})</span>
                 </div>
                 <div class="number-of-comments" *ngIf="!(commentariesnumber>0)">
-                    <span>Soyez le premier à ajouter un commentaire !</span>
+                    <span>Soyez le premier à ajouter un avis !</span>
                 </div>
                
                 
@@ -744,8 +744,8 @@
             <div class="description-and-comments">
                 <div class="categories">
                     <div class="title">
-                        <span *ngIf="commentariesnumber>0">Commentaires ({{commentariesnumber}})</span>
-                        <span *ngIf="!(commentariesnumber>0)">Commentaires</span>
+                        <span *ngIf="commentariesnumber>0">Avis ({{commentariesnumber}})</span>
+                        <span *ngIf="!(commentariesnumber>0)">Avis</span>
                     </div>
                 </div>
 

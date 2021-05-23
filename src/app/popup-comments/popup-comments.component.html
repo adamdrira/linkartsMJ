@@ -1,6 +1,7 @@
 
 <div class="title">
-    <span>Commentaires</span>
+    <span *ngIf="category!='ad'">Commentaires</span>
+    <span *ngIf="category=='ad'">Avis</span>
     <button [mat-dialog-close]="true">
         <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
     </button>

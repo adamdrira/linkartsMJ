@@ -308,14 +308,14 @@ export class HomeLinkartsComponent implements OnInit {
               simulateTouch: true,
               allowTouchMove: true,
             },
-            500: {
+            700: {
               slidesPerView: 3,
               slidesPerGroup: 3,
-              spaceBetween: 20,
-              simulateTouch: true,
-              allowTouchMove: true,
+              spaceBetween: 25,
+              simulateTouch: false,
+              allowTouchMove: false,
             },
-            600: {
+            800: {
               slidesPerView: 4,
               slidesPerGroup: 4,
               spaceBetween: 15,
@@ -428,5 +428,12 @@ export class HomeLinkartsComponent implements OnInit {
     this.navbar.show_help();
   }
 
+  open_tuto(){
+    this.navbar.add_page_visited_to_history(`/open_tuto/${this.current_user.id}/`,'' ).subscribe();
+    const dialogRef = this.dialog.open(PopupShareComponent, {
+      data:{type_of_profile:this.type_of_profile, tutorial:true,},
+      panelClass:"popupTutoClass"
+    });
+  }
 
 }

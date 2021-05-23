@@ -17,17 +17,9 @@
         
         <div class="form-item">
             <mat-form-field floatLabel='never'>
-                <mat-label>Prénom*</mat-label>
+                <mat-label>Nom complet*</mat-label>
                 <input matInput formControlName="firstName" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'firstName');">
                 <mat-error *ngIf="registerForm1.controls['firstName'].invalid">Veuillez saisir un prénom valide
-                </mat-error>
-            </mat-form-field>
-        </div>
-        <div class="form-item">
-            <mat-form-field floatLabel='never'>
-                <mat-label>Nom</mat-label>
-                <input matInput formControlName="lastName" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'lastName');">
-                <mat-error *ngIf="registerForm1.controls['lastName'].invalid">Veuillez saisir un nom valide
                 </mat-error>
             </mat-form-field>
         </div>

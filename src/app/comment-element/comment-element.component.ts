@@ -202,7 +202,7 @@ export class CommentElementComponent implements OnInit {
 
             this.Profile_Edition_Service.retrieve_profile_data(info[0][i].author_id_who_replies).subscribe(l=> {
               this.pseudo_list[i]=(l[0].nickname);
-              this.author_name_list[i]=(l[0].firstname + ' ' + l[0].lastname);
+              this.author_name_list[i]=(l[0].firstname);
               
               
             });
@@ -251,7 +251,7 @@ export class CommentElementComponent implements OnInit {
     });
 
     this.Profile_Edition_Service.retrieve_profile_data( this.comment_information.author_id_who_comments).subscribe(r=> {
-      this.user_name = r[0].firstname + ' ' + r[0].lastname;
+      this.user_name = r[0].firstname;
       this.pseudo = r[0].nickname;
       this.authorid=r[0].id;
       this.primary_description=r[0].primary_description;
@@ -697,7 +697,7 @@ export class CommentElementComponent implements OnInit {
               this.profile_picture_list.splice(0, 0, SafeURL);
               this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).subscribe(s => {
                 this.pseudo_list.splice(0, 0, s[0].nickname);
-                this.author_name_list.splice(0, 0, s[0].firstname + ' ' + s[0].lastname);
+                this.author_name_list.splice(0, 0, s[0].firstname );
                 this.visitor_mode_list.splice(0, 0, false)
                 this.liked_list.splice(0, 0, false);
                 this.responses_list.splice(0, 0,
@@ -739,7 +739,7 @@ export class CommentElementComponent implements OnInit {
             this.profile_picture_list.splice(0, 0, this.profile_picture);
             this.Profile_Edition_Service.retrieve_profile_data(this.authorid).subscribe(s => {
               this.pseudo_list.splice(0, 0, s[0].nickname);
-              this.author_name_list.splice(0, 0, s[0].firstname + ' ' + s[0].lastname);
+              this.author_name_list.splice(0, 0, s[0].firstname );
 
               this.liked_list.splice(0, 0, false);
 
@@ -785,7 +785,7 @@ export class CommentElementComponent implements OnInit {
                   this.profile_picture_list.splice(0, 0, SafeURL);
                   this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).subscribe(s => {
                     this.pseudo_list.splice(0, 0, s[0].nickname);
-                    this.author_name_list.splice(0, 0, s[0].firstname + ' ' + s[0].lastname);
+                    this.author_name_list.splice(0, 0, s[0].firstname );
                     this.visitor_mode_list.splice(0, 0, false)
                     this.liked_list.splice(0, 0, false);
                     this.responses_list.splice(0, 0,
@@ -827,7 +827,7 @@ export class CommentElementComponent implements OnInit {
                 this.profile_picture_list.splice(0, 0, this.profile_picture);
                 this.Profile_Edition_Service.retrieve_profile_data(this.authorid).subscribe(s => {
                   this.pseudo_list.splice(0, 0, s[0].nickname);
-                  this.author_name_list.splice(0, 0, s[0].firstname + ' ' + s[0].lastname);
+                  this.author_name_list.splice(0, 0, s[0].firstname );
   
                   this.liked_list.splice(0, 0, false);
   

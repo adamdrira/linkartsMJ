@@ -107,7 +107,7 @@ export class AddArtworkComponent implements OnInit {
     this.route.data.subscribe(resp => {
       let l=resp.user;
       this.user_id = l[0].id;
-      this.author_name = l[0].firstname + ' ' + l[0].lastname;
+      this.author_name = l[0].firstname;
       this.primary_description=l[0].primary_description;
       this.pseudo=l[0].nickname;
       this.type_of_account=l[0].type_of_account;
@@ -167,16 +167,13 @@ export class AddArtworkComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
-       console.log(event)
         if(event.bd_cover && event.bd_cover!=''){
             THIS.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
-              console.log(r)
             })
           
         }
         else if(event.drawing_cover && event.drawing_cover!='' ){
           THIS.Drawings_CoverService.remove_cover_from_folder().subscribe(r=>{
-              console.log(r)
             })
         }
         else if (event.writing_cover && event.writing_cover!=''){
@@ -206,8 +203,6 @@ export class AddArtworkComponent implements OnInit {
     let THIS = this;
 
     THIS._upload.step.subscribe( v => { 
-      
-      console.log(v)
       if( v == 0 ) {
         
         THIS.location.go("/add-artwork");

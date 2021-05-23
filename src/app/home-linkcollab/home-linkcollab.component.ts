@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, ViewChildren,ViewChild, QueryList } from '@angular/core';
 import {ElementRef, Renderer2} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import { Ads_service } from '../services/ads.service';
@@ -7,6 +7,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupLinkcollabFiltersComponent } from '../popup-linkcollab-filters/popup-linkcollab-filters.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ConstantsService } from '../services/constants.service';
+import { merge, fromEvent } from 'rxjs';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 declare var Swiper: any
 
@@ -20,6 +22,31 @@ declare var Swiper: any
         transition(':enter', [
           style({transform: 'translateY(-100%)', opacity: 0}),
           animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ]),
+      ],
+      
+    ),
+    trigger(
+      'enterFromTop2Animation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ]),
+        transition(':leave', [
+          style({transform: 'translateY(0px)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(-100%)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromTop3Animation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ]),
+        transition(':leave', [
+          style({transform: 'translateX(0px)', opacity: 0}),
+          animate('600ms ease-in-out', style({transform: 'translateX(-100%)', opacity: 1}))
         ])
       ],
     ),
@@ -36,7 +63,7 @@ declare var Swiper: any
         transition(':enter', [
           style({transform: 'translateX(100%)', opacity: 0}),
           animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
-        ])
+        ]),
       ],
     ),
     trigger(
@@ -100,7 +127,7 @@ export class HomeLinkcollabComponent implements OnInit {
   @ViewChild("matSelect7") matSelect7;
   @ViewChild("matSelect8") matSelect8;
 
-
+  @ViewChildren('thumbnails') thumbnails: QueryList<any>;
 
 
   category_index:number = -1;
@@ -121,7 +148,7 @@ export class HomeLinkcollabComponent implements OnInit {
   ads_services_types=  this.constants.price_types_services;
   ads_descriptions = this.constants.ads_descriptions;
 
-  section0_categories = ["Tout","BD","Mangas","Romans"];
+
 
 
   ads_targets=this.constants.ads_targets;
@@ -139,6 +166,7 @@ export class HomeLinkcollabComponent implements OnInit {
   /*On init */
   /*********************************************************************** */
   /*********************************************************************** */
+  
   ngOnInit() {
     
     window.scroll(0,0);
@@ -161,10 +189,15 @@ export class HomeLinkcollabComponent implements OnInit {
   /*********************************************************************** */
   /*********************************************************************** */
   show_icon=false;
-    
+  scrollobs:any;
   ngAfterViewInit() {
 
+    this.scrollobs = merge(
+      fromEvent(window, 'scroll'),
+    );
+
     this.initialize_swiper();
+    this.set_thumbnails_width();
   }
 
   innerWidth: number;
@@ -174,6 +207,7 @@ export class HomeLinkcollabComponent implements OnInit {
     if( this.homeLinkcollabSelect ) {
       this.homeLinkcollabSelect.close();
     }
+    this.set_thumbnails_width();
 
   };
   @HostListener('window:scroll', ['$event'])
@@ -547,6 +581,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
 
   @ViewChild('input') input:ElementRef;
+  @ViewChild('EditorContainer') EditorContainer:ElementRef;
 
   page_clicked(e:any) {
     if(e.keyCode === 13){
@@ -589,6 +624,11 @@ export class HomeLinkcollabComponent implements OnInit {
     window.scroll({top: topOfElement, behavior:"smooth"});
   }
 
+    
+  /*********************************** DEPOT DE PROJETS  ***********************************/
+  /*********************************** DEPOT DE PROJETS  ***********************************/
+
+  section0_categories = ["Tout","BD","Comics","Mangas","Livres","Livres jeunesse"];
 
   open_more_filters() {
     const dialogRef = this.dialog.open(PopupLinkcollabFiltersComponent, {
@@ -643,47 +683,431 @@ export class HomeLinkcollabComponent implements OnInit {
     }
   }
 
-  
-  public searchText:any;
 
+
+ 
+
+  public searchText:any;
+  is_a_special_pp={"Kana":true,"les Éditions 100 bulles":true,"Les Avrils":true,"Éditions Soleil":true,"Les Éditions La croisée":true,"Drakoo":true};
+  is_a_special_cover={"Kana":true,"les Éditions 100 bulles":true,"Les Avrils":true,"Éditions Soleil":true,"Les Éditions La croisée":true,"Drakoo":true}
   list_of_editors = [
 
     {
-      title:"Glénat",
-      categories:["BD","Comics"],
-      pp:"../../assets/img/logo.png",
-      location:"Paris, France",
-      size:11,
+      title:"Éditions Glénat",
+      categories:["BD","Comics","Mangas","Livres","Livres jeunesse"],
+      website:"https://www.glenat.com/",
+      email:"mcg@glenat.com",
+      pp:"../../assets/img/editors/pp-glenat.png",
+      cover:"../../assets/img/editors/cover-glenat.jpg",
+      location:"Grenoble, France",
+      phone:"04 76 88 75 75",
+      mother:"Éditions Glénat",
+      id:1,
     },
     {
-      title:"Glénat",
-      categories:["BD","Comics","Mangas"],
-      pp:"../../assets/img/logo.png",
-      location:"Paris, France",
-      size:5,
+      title:"Éditions Quatre Fleuves",
+      categories:["Livres jeunesse"],
+      website:"https://www.glenat.com/livres-jeunesse/collections/editions-quatre-fleuves",
+      pp:"../../assets/img/editors/pp-Editions_Quatre_Fleuves.jpg",
+      cover:"../../assets/img/editors/cover-quatre-fleuves.jpg",
+      location:"Grenoble, France",
+      mother:"Éditions Glénat",
+      id:2,
     },
     {
-      title:"Glénat",
-      categories:["BD","Comics"],
-      pp:"../../assets/img/logo.png",
+      title:"Kazé",
+      categories:["Mangas"],
+      website:"http://www.kazemanga.fr/",
+      email:"contact@vizeurope.com",
+      pp:"../../assets/img/editors/pp-kazé.png",
+      cover:"../../assets/img/editors/cover-kazé.jpg",
       location:"Paris, France",
-      size:52,
+      phone:"01 48 21 00 07",
+      id:3,
     },
     {
-      title:"Glénat",
-      categories:["BD","Romans","Mangas"],
-      pp:"../../assets/img/logo.png",
-      location:"Paris, France",
-      size:120,
+      title:"Pika Édition",
+      categories:["Mangas"],
+      website:"https://www.pika.fr/",
+      email:"mypika@pika.fr",
+      pp:"../../assets/img/editors/pp-pika.png",
+      cover:"../../assets/img/editors/cover-pika.jpg",
+      location:"Vanves, France",
+      phone:"01 41 10 23 90",
+      id:4,
     },
     {
-      title:"Glénat",
-      categories:["BD","Comics","Mangas"],
-      pp:"../../assets/img/logo.png",
+      title:"Éditions Delcourt",
+      categories:["BD","Comics","Mangas","Livres jeunesse"],
+      website:"https://www.editions-delcourt.fr/",
+      email:"projets@editions-delcourt.fr",
+      pp:"../../assets/img/editors/pp-delcourt.jpg",
+      cover:"../../assets/img/editors/cover-delcourt.jpg",
       location:"Paris, France",
-      size:1,
+      phone:"01 56 03 92 20",
+      mother:"Groupe Delcourt",
+      id:5,
     },
-    
 
-  ]
+    {
+      title:"Éditions Soleil",
+      categories:["BD","Comics","Mangas","Livres jeunesse"],
+      website:"https://www.editions-soleil.fr/",
+      email:"projets@editions-delcourt.fr",
+      pp:"../../assets/img/editors/pp-soleil.png",
+      cover:"../../assets/img/editors/cover-soleil.jpg",
+      location:"Paris, France",
+      phone:"01 56 03 92 20",
+      mother:"Groupe Delcourt",
+      id:6,
+    },
+    {
+      title:"Soleil Manga",
+      categories:["Mangas"],
+      website:"https://www.editions-soleil.fr/",
+      email:"accueil-paris@groupedelcourt.com",
+      pp:"../../assets/img/editors/pp-soleil-manga.jpg",
+      cover:"../../assets/img/editors/cover-soleil-manga.jpg",
+      location:"Wasquehal, France",
+      phone:"03 20 27 59 59",
+      mother:"Groupe Delcourt",
+      id:26,
+    },
+    {
+      title:"Les Éditions La croisée",
+      categories:["Livres"],
+      website:"https://www.editions-lacroisee.fr/",
+      email:"eheurtebize@editions-delcourt.fr",
+      pp:"../../assets/img/editors/pp-la-croisee.png",
+      cover:"../../assets/img/editors/cover-la-croisee.png",
+      location:"Paris, France",
+      phone:"01 43 38 83 81",
+      mother:"Groupe Delcourt",
+      id:7,
+    },
+    {
+      title:"Les Éditions Marchialy",
+      categories:["Livres"],
+      website:"https://editions-marchialy.fr/",
+      email:"contact@editions-marchialy.fr",
+      pp:"../../assets/img/editors/pp-marchialy.png",
+      cover:"../../assets/img/editors/cover-marchialy.jpg",
+      location:"Paris, France",
+      phone:"01 56 03 92 20",
+      mother:"Groupe Delcourt",
+      id:8,
+    },
+    {
+      title:"Les Avrils",
+      categories:["Livres"],
+      website:"https://www.lesavrils.fr/",
+      email:"projets@editions-delcourt.fr",
+      pp:"../../assets/img/editors/pp-les-avrils.png",
+      cover:"../../assets/img/editors/cover-les-avrils.jpg",
+      location:"Paris, France",
+      mother:"Groupe Delcourt",
+      phone:"01 56 03 92 20",
+      id:9,
+    },
+    {
+      title:"Éditions Dargaud",
+      categories:["BD"],
+      website:"https://www.dargaud.com/",
+      email:"contact@dargaud.fr",
+      pp:"../../assets/img/editors/pp-dargaud.png",
+      cover:"../../assets/img/editors/cover-dargaud.png",
+      location:"Paris, France",
+      phone:"01 53 26 32 32",
+      id:10,
+    },
+    {
+      title:"Casterman",
+      categories:["BD","Livres jeunesse","Mangas"],
+      website:"https://www.casterman.com/",
+      email:"manuscritsbd@casterman.com",
+      pp:"../../assets/img/editors/pp-casterman.jpg",
+      cover:"../../assets/img/editors/cover-casterman.png",
+      location:"Bruxelles, Belgique",
+      phone:"04 66 74 59 84",
+      id:11,
+    },
+    {
+      title:"Editions Daniel Maghen",
+      categories:["BD","Artbook","Livres jeunesse"],
+      website:"https://www.danielmaghen-editions.com/",
+      email:"vincentodin@gmail.com",
+      pp:"../../assets/img/editors/pp-daniel-maghen.jpg",
+      cover:"../../assets/img/editors/cover-daniel-maghen.png",
+      location:"Paris, France",
+      phone:"01 42 84 37 39",
+      id:12,
+    },
+    {
+      title:"Le Potager Moderne",
+      categories:["BD"],
+      website:"https://potagermoderne.fr/",
+      email:"projet@potagermoderne.fr",
+      pp:"../../assets/img/editors/pp-potager-moderne.png",
+      cover:"../../assets/img/editors/cover-potager-moderne.png",
+      location:"Maxéville, France",
+      id:13,
+    },
+    {
+      title:"Mama Éditions",
+      categories:["Livres"],
+      website:"https://www.mamaeditions.com/",
+      email:"manuscrits@mamaeditions.com",
+      pp:"../../assets/img/editors/pp-mama.jpg",
+      cover:"../../assets/img/editors/cover-mama-edition.png",
+      location:"Paris, France",
+      phone:"01 77 32 54 36",
+      id:14,
+    },
+    {
+      title:"Hachette Comics",
+      categories:["Comics"],
+      website:"https://www.hachette.fr/editeur/hachette-comics",
+      pp:"../../assets/img/editors/pp-hachette-comics.jpg",
+      cover:"../../assets/img/editors/cover-hachette-comics.png",
+      location:"Vanves, France",
+      mother:"Hachette",
+      phone:"01 60 39 65 14",
+      id:16,
+    },
+    {
+      title:"Akileos",
+      categories:["BD"],
+      website:"http://www.akileos.com/",
+      email:"info@akileos.com",
+      pp:"../../assets/img/editors/pp-akileos.png",
+      cover:"../../assets/img/editors/cover-akileos.jpg",
+      location:"Talence, France",
+      phone:"06 49 23 97 07",
+      id:17,
+    },
+    {
+      title:"Éditions Mosquito",
+      categories:["BD"],
+      website:"http://www.editionsmosquito.com/",
+      email:"mosquito.editions@wanadoo.fr",
+      pp:"../../assets/img/editors/pp-mosquito.jpeg",
+      cover:"../../assets/img/editors/cover-mosquito.png",
+      location:"Saint-Egrève, France",
+      phone:"06 49 23 97 07",
+      id:18,
+    },
+    {
+      title:"Delirium",
+      categories:["BD"],
+      website:"https://labeldelirium.com/contact/",
+      email:"laurent@labeldelirium.com",
+      pp:"../../assets/img/editors/pp-delirium.png",
+      cover:"../../assets/img/editors/cover-delirium.png",
+      location:"Nogent-sur-Marne, France",
+      phone:"07 61 35 66 65",
+      id:19,
+    },
+    {
+      title:"les Éditions 100 bulles",
+      categories:["BD","Artbook"],
+      website:"http://100bulles.blogspot.com/",
+      email:"100bulles@laposte.net",
+      pp:"../../assets/img/editors/pp-100-bulles.png",
+      cover:"../../assets/img/editors/cover-100-bulles.png",
+      location:"Arles, France",
+      id:20,
+    },
+    {
+      title:"Des ronds dans l'O",
+      categories:["BD","Livres jeuness","Artbook"],
+      website:"https://www.desrondsdanslo.com/",
+      email:"contact@desrondsdanslo.com",
+      pp:"../../assets/img/editors/pp-ronds-dans-lo.jpg",
+      cover:"../../assets/img/editors/cover-ronds-dans-lo.png",
+      location:"Vincennes, France",
+      phone:"01 48 76 10 27",
+      id:21,
+    },
+    {
+      title:"Éditions de la gouttière",
+      categories:["BD","Livres jeuness"],
+      website:"http://editionsdelagouttiere.com/",
+      email:"manuscrits@editionsdelagouttiere.com",
+      pp:"../../assets/img/editors/pp-la-gouttiere.png",
+      cover:"../../assets/img/editors/cover-la-gouttiere.png",
+      location:"Amiens, France",
+      phone:"03 22 72 36 11",
+      id:22,
+    },
+    {
+      title:"Pow Pow",
+      categories:["BD","Livres jeunesse"],
+      email:"info@editionspowpow.com",
+      website:"https://editionspowpow.com/",
+      pp:"../../assets/img/editors/pp-pow-pow.jpg",
+      cover:"../../assets/img/editors/cover-pow-pow.png",
+      location:"Saint-Laurent, Québec, Canada",
+      phone:"01 45 15 19 70",
+      id:23,
+    },
+    {
+      title:"Kana",
+      categories:["Mangas"],
+      website:"https://www.kana.fr/",
+      pp:"../../assets/img/editors/pp-kana.png",
+      cover:"../../assets/img/editors/cover-kana.jpg",
+      location:"Paris, France",
+      mother:"Dargaud",
+      phone:"01 46 82 73 16",
+      id:24,
+    },
+    {
+      title:"Kurokawa",
+      categories:["Mangas"],
+      website:"https://www.kurokawa.fr/",
+      pp:"../../assets/img/editors/pp-kurokawa.png",
+      cover:"../../assets/img/editors/cover-kurokawa.png",
+      location:"Paris, France",
+      phone:" 06 60 64 03 11",
+      id:25,
+    },
+    {
+      title:"Bamboo Édition",
+      categories:["BD"],
+      website:"https://www.bamboo.fr/",
+      email:"contact@bamboo.fr",
+      pp:"../../assets/img/editors/pp-bamboo.png",
+      cover:"../../assets/img/editors/cover-bamboo.jpg",
+      location:"Charnay les Mâcon, France",
+      phone:" 03 85 34 99 09",
+      id:27,
+    },
+    {
+      title:"Doki-Doki",
+      categories:["Mangas"],
+      website:"https://www.doki-doki.fr/",
+      email:"contact@bamboo.fr",
+      pp:"../../assets/img/editors/pp-doki-doki.jpg",
+      cover:"../../assets/img/editors/cover-doki-doki.jpg",
+      location:"Charnay les Mâcon, France",
+      phone:" 03 85 34 99 09",
+      id:28,
+    },
+    {
+      title:"Drakoo",
+      categories:["BD"],
+      website:"https://www.drakoo.fr/",
+      email:"contact@bamboo.fr",
+      pp:"../../assets/img/editors/pp-drakoo.png",
+      cover:"../../assets/img/editors/cover-drakoo.png",
+      location:"Charnay les Mâcon, France",
+      phone:" 03 85 34 99 09",
+      id:29,
+    },
+    {
+      title:"Grand Angle",
+      categories:["BD"],
+      website:"https://www.angle.fr/",
+      email:"contact@bamboo.fr",
+      pp:"../../assets/img/editors/pp-grand-angle.png",
+      cover:"../../assets/img/editors/cover-grand-angle.png",
+      location:"Charnay les Mâcon, France",
+      phone:" 03 85 34 99 09",
+      id:30,
+    },
+    {
+      title:"Dupuis",
+      categories:["BD"],
+      website:"https://www.dupuis.com/",
+      email:"infos.dupuis@gmail.com",
+      pp:"../../assets/img/editors/pp-dupuis.png",
+      cover:"../../assets/img/editors/cover-dupuis.jpg",
+      location:"Paris, France",
+      phone:"01 70 38 56 00",
+      id:31,
+    },
+    {
+      title:"Le Lombard",
+      categories:["BD"],
+      website:"https://www.lelombard.com/",
+      pp:"../../assets/img/editors/pp-le-lombard.jpg",
+      cover:"../../assets/img/editors/cover-lombard.jpg",
+      location:"Bruxelles, Belgique",
+      phone:"01 53 26 32 32",
+      id:31,
+    },
+   
+    
+  ];
+
+  list_of_editors_selected=[];
+  show_editors=false;
+  indexes_selected={};
+  box_checked={};
+  selectBox(checked,i){
+    if(checked){
+      this.indexes_selected[i]=true;
+      this.box_checked[i]=true;
+       //this.list_of_editors_selected.splice(0,0,this.list_of_editors[i]); quand on aura des collaborateurs
+      //this.show_editors=true;
+    }
+    else{
+      this.box_checked[i]=false;
+      this.remove_editor(i)
+    }
+    
+    this.cd.detectChanges();
+  }
+
+  remove_editor(i){
+    this.box_checked[i]=false;
+    this.indexes_selected[i]=false;
+    /*this.list_of_editors_selected.splice(i,1)  quand on aura des collaborateurs
+    if(this.list_of_editors_selected.length==0){
+      this.show_editors=false;
+    }*/
+    this.cd.detectChanges();
+  }
+
+  set_thumbnails_width(){
+   
+    if(this.EditorContainer && this.thumbnails){
+      let with_to_set=this.EditorContainer.nativeElement.offsetWidth/4;
+      
+      
+      if(this.EditorContainer.nativeElement.offsetWidth<650){
+        with_to_set=(this.EditorContainer.nativeElement.offsetWidth<450)?this.EditorContainer.nativeElement.offsetWidth:450;
+      }
+      else if(this.EditorContainer.nativeElement.offsetWidth<950){
+        with_to_set=this.EditorContainer.nativeElement.offsetWidth/2;
+      }
+      else if(this.EditorContainer.nativeElement.offsetWidth<1600){
+        with_to_set=this.EditorContainer.nativeElement.offsetWidth/3;
+      }
+      
+      for ( let i=0;i< this.thumbnails.toArray().length;i++ ) {
+        this.rd.setStyle( this.thumbnails.toArray()[i].nativeElement, "width", with_to_set-10 +"px" );
+        this.cd.detectChanges()
+      }
+    }
+  
+  }
+
+  pictures_loaded={}
+  load_pictures(name){
+    this.pictures_loaded[name]=true;
+  }
+
+  submite_project(){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:false, text:"Aucune maison d'édition n'a été sélectionnée."},
+      panelClass: "popupConfirmationClass",
+    });
+  }
+
+
+  filters_opened=false;
+  open_filters_editor(){
+    this.filters_opened=!this.filters_opened;
+  }
 }

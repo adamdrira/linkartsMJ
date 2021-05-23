@@ -104,9 +104,15 @@ export class AccountAboutComponent implements OnInit {
   @Input('visitor_mode') visitor_mode:boolean;
   @Input('author') author:any;
   
-  listOfAccounts_group_artists = ["Artistes","Artistes professionnels"];
-  listOfAccounts_male_artists = ["Artiste","Artiste professionnel"];
-  listOfAccounts_female_artists = ["Artiste","Artiste professionnelle"];
+  listOfAccounts=["Artiste","Fan"];
+  listOfAccountsDescriptions = [
+    "Vous souhaitez devenir un artiste du monde de la bande dessinée, de la littérature ou du dessin, et vous souhaitez collaborer avec des maisons d'édition ou d'autres artistes, mais aussi être rémunéré pour les œuvres que vous partagez dans votre quête de progression.",
+    "Vous souhaitez soutenir un ou plusieurs artistes de cœur à gagner en visibilité et en pertinence, afin qu'ils puissent dénicher la collaboration éditoriale qui changera leur vie."
+  ];
+  listOfAccountsImages=[
+    "../../assets/img/tuto-logos/tuto-palette.svg",
+    "../../assets/img/tuto-logos/win.svg",
+  ];
   opened_category=0;
 
   category_to_open='Dessins';
@@ -134,7 +140,6 @@ export class AccountAboutComponent implements OnInit {
   type_of_account:string;
   siret:number;
   firstName:string;
-  lastName:string;
   userLocation:string;
   primary_description:string;
   primary_description_extended:string;
@@ -185,7 +190,6 @@ export class AccountAboutComponent implements OnInit {
       this.maxDate = moment([currentYear - 7, 11, 31]);
       this.siret=this.author.siret;
       this.firstName = this.author.firstname;
-      this.lastName =this.author.lastname;
       this.primary_description =this.author.primary_description;
       this.primary_description_extended =this.author.primary_description_extended;
       this.userLocation =this.author.location;
@@ -1263,8 +1267,7 @@ export class AccountAboutComponent implements OnInit {
       
     
     
-    let category="comic"
-   
+    let category="comic";
     this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_comics,compteur).subscribe(r=>{
       let notations=r[0][0];
       if(r[1]==compteur){
@@ -2164,7 +2167,6 @@ export class AccountAboutComponent implements OnInit {
   // options
   single_viewers_profiles_stats=[];
   single_viewers_accounts_stats=[];
-  single_viewers_age_stats=[];
   single_viewers_locations_stats=[];
 
  
@@ -2369,18 +2371,7 @@ export class AccountAboutComponent implements OnInit {
     this.NavbarService.get_last_100_account_viewers(this.id_user).subscribe(r=>{
       if(Object.keys(r[0].list_of_viewers).length>0){
         for(let i=0;i<Object.keys(r[0].list_of_viewers).length;i++){
-          let age=this.find_age2(r[0].list_of_viewers[i].birthday);
-          let index_age = this.single_viewers_age_stats.findIndex(x => x.name === age);
-          if(index_age>=0){
-            this.single_viewers_age_stats[index_age].value++;
-          }
-          else{
-            this.single_viewers_age_stats.push({
-              "name": age,
-              "value": 1
-            })
-          }
-  
+          
           if(r[0].list_of_viewers[i].location){
             let location_list=r[0].list_of_viewers[i].location.split(', ');
             let loc=location_list[location_list.length-1]
@@ -2692,13 +2683,6 @@ export class AccountAboutComponent implements OnInit {
             Validators.maxLength(20),
           ]),
         ],
-        lastName: [this.lastName, 
-          Validators.compose([
-            Validators.pattern(pattern("name")),
-            Validators.minLength(2),
-            Validators.maxLength(20),
-          ]),
-        ],
         birthday: ['', 
           Validators.compose([
             Validators.required
@@ -2711,13 +2695,6 @@ export class AccountAboutComponent implements OnInit {
         firstName: [this.firstName,
           Validators.compose([
             Validators.required,
-            Validators.pattern(pattern("name")),
-            Validators.minLength(2),
-            Validators.maxLength(20),
-          ]),
-        ],
-        lastName: [this.lastName, 
-          Validators.compose([
             Validators.pattern(pattern("name")),
             Validators.minLength(2),
             Validators.maxLength(20),
@@ -2766,9 +2743,8 @@ export class AccountAboutComponent implements OnInit {
         birthday = this.registerForm3.value.birthday._i[2] + '-'+ this.registerForm3.value.birthday._i[1] +'-'+ this.registerForm3.value.birthday._i[0];
       }
     }
-    this.Profile_Edition_Service.edit_account_about_3(form.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),form.lastName.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),birthday).subscribe(l=>{
+    this.Profile_Edition_Service.edit_account_about_3(form.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),birthday).subscribe(l=>{
       this.firstName=form.firstName;
-      this.lastName=form.lastName;
       this.birthday=this.find_age(birthday)
       this.loading_validation_form_3=false;
       this.registerForm3_activated=false;
@@ -2801,48 +2777,6 @@ export class AccountAboutComponent implements OnInit {
     return birth.toString()
   }
 
-
-  find_age2(birthday){
-    var values=birthday.split('-');
-    let date = new Date();
-    var dd = date.getDate();
-    var mm = date.getMonth()+1; 
-    var yy = date.getFullYear();
-    
-    let birth=yy-parseInt(values[2]);
-    if((mm-parseInt(values[1]))<0 && birth>1){
-      birth--;
-    }
-    else if((mm-parseInt(values[1]))==0 && (dd-parseInt(values[0]))<0 && birth>1){
-      birth--;
-    }
-
-    if(birth<10){
-      return "moins de 10 ans"
-    }
-    else if(birth<14){
-      return "moins de 14 ans"
-    }
-    else if(birth<18){
-      return "14-18 ans"
-    }
-    else if(birth<25){
-      return "18-25 ans"
-    }
-    else if(birth<35){
-      return "25-35 ans"
-    }
-    else if(birth<45){
-      return "35-45 ans"
-    }
-    else if(birth<55){
-      return "45-55 ans"
-    }
-    else {
-      return "plus de 55 ans"
-    }
-
-  }
 
 
 
