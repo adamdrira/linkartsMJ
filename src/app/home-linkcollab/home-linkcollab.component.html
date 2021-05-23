@@ -548,10 +548,10 @@
                                     </div>
 
                                     <div class="section" *ngIf="indexes_selected[i]" [@enterFromRightAnimation] >
-                                        <span class="section-value"><b>site</b> : <a [href]="item.website">{{item.website}}</a></span>
+                                        <span class="section-value"><b>site</b> : <a [href]="item.website" target="_blank">{{item.website}}</a></span>
                                     </div>
                                     <div class="section" *ngIf="indexes_selected[i] && item.email" [@enterFromRightAnimation] >
-                                        <span class="section-value"><b>e-mail</b> : <a href="mailto:{{item.email}}">{{item.email}}</a> </span>
+                                        <span class="section-value"><b>e-mail</b> : <a href="mailto:{{item.email}}" >{{item.email}}</a> </span>
                                     </div>
                                     <div class="section" *ngIf="indexes_selected[i] && item.phone" [@enterFromRightAnimation] >
                                         <span class="section-value"><b>téléphone</b> : {{item.phone}}</span>
@@ -566,7 +566,7 @@
                                     Gratuit
                                 </div>-->
                                 <div class="right-side" [@enterFromLeftAnimation] *ngIf="!box_checked[i]">
-                                    <span >Sélectionner</span>
+                                    <span (click)="selectBox(true,i)">Sélectionner</span>
                                     <mat-checkbox class="check-box" [checked]="box_checked[i]" (change)="selectBox($event.checked,i)"></mat-checkbox>
                                 </div>
                             </div>

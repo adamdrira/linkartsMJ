@@ -91,7 +91,7 @@ export class HomeLinkartsComponent implements OnInit {
   ngOnInit() {
 
     
-    this.title.setTitle('LinkArts – BD, Dessins et Ecrits');
+    this.title.setTitle('LinkArts – Collaboration éditoriale');
     this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
 
 
@@ -389,6 +389,7 @@ export class HomeLinkartsComponent implements OnInit {
 
   open_share() {
     const dialogRef = this.dialog.open(PopupShareComponent, {
+      data:{type_of_profile:this.type_of_profile},
       panelClass:"popupShareClass"
     });
   }
@@ -431,9 +432,15 @@ export class HomeLinkartsComponent implements OnInit {
   open_tuto(){
     this.navbar.add_page_visited_to_history(`/open_tuto/${this.current_user.id}/`,'' ).subscribe();
     const dialogRef = this.dialog.open(PopupShareComponent, {
-      data:{type_of_profile:this.type_of_profile, tutorial:true,},
+      data:{type_of_profile:this.type_of_profile, tutorial:true,current_user:this.current_user},
       panelClass:"popupTutoClass"
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.open_share()
+      }
+    })
   }
 
 }

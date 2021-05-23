@@ -2069,6 +2069,7 @@ open_notifications(){
   
   
   open_share() {
+    
     const dialogRef = this.dialog.open(PopupShareComponent, {
       data:{type_of_profile:this.type_of_profile},
       panelClass:"popupShareClass"
@@ -2094,5 +2095,10 @@ open_notifications(){
       data:{type_of_profile:this.type_of_profile, tutorial:true,current_user:this.current_user},
       panelClass:"popupTutoClass"
     });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.open_share()
+      }
+    })
   }
 }

@@ -287,6 +287,7 @@ export class PopupShareComponent implements OnInit {
   }
 
   open_share(){
-    this.tutorial=false;
+    this.Profile_Edition_Service.agree_on_tuto();
+    this.dialogRef.close(true);
   }
 }
