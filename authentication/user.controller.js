@@ -454,20 +454,8 @@ exports.reset_password = (req, res) => {
 						</tr>
 					</table>`;
 
-					let name = user_found.firstname + ' ' + user_found.lastname;
-					if(!user_found.lastname || user_found.lastname==''){
-						name=user_found.firstname
-					  }
-					let start=''
-					if(user_found.gender=="Homme"){
-					start=`Cher ${name},`
-					}
-					else if(user_found.gender=="Femme"){
-					start=`Chère ${name},</p>`
-					}
-					else if(user_found.gender=="Groupe"){
-					start=`Chers membres du groupe ${name},`
-					}
+					let name = user_found.firstname ;
+					let start=`${name},`
 
 					mail_to_send+=`
 					<table style="width:100%;margin:25px auto;">
@@ -787,29 +775,6 @@ exports.check_email=(req,res)=>{
 			res.status(200).send([{msg: "found"}]);	
 		}
 	})
-
-	/*if(user.gender=='Groupe'){
-		User.findAll({
-			where:{
-				status:"account",
-				gender:'Groupe',
-				email:{[Op.iLike]: email},
-			}
-			}).catch(err => {
-					
-				res.status(500).json({msg: "error", details: err});		
-			}).then(user=>{
-				if(user.length==0){
-					res.status(200).send([{msg: "ok"}]);		
-				}
-				else{
-					res.status(200).send([{msg: "found", type:"groupe"}]);	
-				}
-			})
-	}
-	else{
-		
-	}*/
 	
 	
 }
@@ -964,20 +929,8 @@ exports.login = async (req, res) => {
 												</tr>
 											</table>`;
 
-											let name = user.firstname + ' ' + user.lastname;
-											if(!user.lastname || user.lastname==''){
-												name=user.firstname
-											  }
-											let start=''
-											if(user.gender=="Homme"){
-											start=`Cher ${name},`
-											}
-											else if(user.gender=="Femme"){
-											start=`Chère ${name},</p>`
-											}
-											else if(user.gender=="Groupe"){
-											start=`Chers membres du groupe ${name},`
-											}
+											let name = user.firstname;
+											let start=`${name},`
 
 											mail_to_send+=`
 											<table style="width:100%;margin:25px auto;">

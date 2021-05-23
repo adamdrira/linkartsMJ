@@ -223,18 +223,8 @@ wss.on('connection', (ws, req)=>{
                         }
                       }).then(user_found=>{
                         if(user_found && user_found.email_authorization!="false"){
-                          let name = user_found.firstname + ' ' + user_found.lastname;
-                          let text='';
-                          if(user_found.gender=="Homme"){
-                            text=`Cher ${name},`
-                          }
-                          else if(user_found.gender=="Femme"){
-                            text=`Chère ${name},`
-                          }
-                          else if(user_found.gender=="Groupe"){
-                            text=`Chers membres du groupe ${name},`
-                          }
-
+                          let name = user_found.firstname;
+                          let text=`${name},`
                           
   
                           let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
