@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 
 let accents = "àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇÅåÆæœ";
 let special_characters = "\,\;\:\!\?\.\\\\§\%\>\<\^\$\€\£\*\&\~\#\{\}\'\’\"\(\)\\[\\]\|\`\@\°\+\=_-";
-let special_characters2 = "\.\&\_-";
+let special_characters2 = "\.\'\’\&\_-";
 let special_characters3 = "\,\;\:\!\?\/\\\\.\%\>\<\^\*\&\#\{\}\'\’\"\(\)\\[\\]\|\@\+\=_-";
 export function pattern(type: string) {
     
@@ -18,6 +18,9 @@ export function pattern(type: string) {
     //Peut contenir au milieu un espace ou un tiret (max 1).
     if( type == "name" ) {
         return "[a-zA-Z"+accents+"]\{1,}[a-zA-Z"+accents+" '’-]\{0,}[a-zA-Z "+accents+"]\{1,}";
+    }
+    if( type == "society" ) {
+        return "[a-zA-Z0-9"+accents+"]\{1,}[a-zA-Z0-9"+accents+" '’-]\{0,}[a-zA-Z0-9 "+accents+"]\{1,}";
     }
     //alpha numérique + accents + pas plus de deux tirets ou underscore à la suite
     if( type == "nickname" ) {
