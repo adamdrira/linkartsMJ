@@ -51,7 +51,7 @@ exports.create = (req, res) => {
 			}
 		}).then(user=>{
 			if(user){
-				res.status(200).json([{error: "similar user found"}])
+				res.status(200).json([{error: "similar user found",user:user}])
 			}
 			else{
 				start_creation(1); //att
@@ -81,7 +81,6 @@ exports.create = (req, res) => {
 					"email": req.body.email,
 					"nickname": req.body.nickname,
 					"firstname": req.body.firstname, 
-					"lastname": req.body.lastname,
 					"gender": req.body.gender,
 					"location": req.body.location,
 					"password": passwordhash,
@@ -90,7 +89,7 @@ exports.create = (req, res) => {
 					"primary_description_extended":req.body.primary_description_extended,
 					"training":req.body.training,
 					"job":req.body.job,
-					"birthday":req.body.birthday,
+					"birthday":req.body.birthday?req.body.birthday:"Non renseigné",
 					"number_of_comics": 0,
 					"number_of_drawings": 0,
 					"number_of_writings": 0,
@@ -145,7 +144,6 @@ exports.create = (req, res) => {
 					"nickname": req.body.nickname,
 					"siret":req.body.siret,
 					"firstname": req.body.firstname, 
-					"lastname": req.body.lastname,
 					"gender": req.body.gender,
 					"location": req.body.location,
 					"password": passwordhash,
@@ -155,7 +153,7 @@ exports.create = (req, res) => {
 					"primary_description_extended":req.body.primary_description_extended,
 					"training":req.body.training,
 					"job":req.body.job,
-					"birthday":req.body.birthday,
+					"birthday":req.body.birthday?req.body.birthday:"Non renseigné",
 					"number_of_comics": 0,
 					"number_of_drawings": 0,
 					"number_of_writings": 0,
@@ -321,12 +319,12 @@ exports.create = (req, res) => {
 												
 											res.status(500).json({msg: "error", details: err});		
 										}).then(()=>{
-											res.status(200).json([{msg: "creation ok",id_user:r.id}])
+											res.status(200).json([{msg: "creation ok",id_user:r.id,user:r}])
 										})
 								})
 						   }
 						   else{
-							res.status(200).json([{msg: "creation ok",id_user:r.id}])
+							res.status(200).json([{msg: "creation ok",id_user:r.id,user:r}])
 						   }
 					   })
 					
@@ -771,12 +769,26 @@ exports.check_email=(req,res)=>{
 			return res.status(401).json({msg: "error"});
 		}
 		}
-	let user = req.body.user;
-	let email = (user.email).toLowerCase();
+	let email = req.body.email;
 	const Op = Sequelize.Op;
-	
+	User.findAll({
+		where:{
+			status:"account",
+			email:{[Op.iLike]: email},
+		}
+	}).catch(err => {
+				
+			res.status(500).json({msg: "error", details: err});		
+	}).then(user=>{
+		if(user.length==0){
+			res.status(200).send([{msg: "ok"}]);		
+		}
+		else{
+			res.status(200).send([{msg: "found"}]);	
+		}
+	})
 
-	if(user.gender=='Groupe'){
+	/*if(user.gender=='Groupe'){
 		User.findAll({
 			where:{
 				status:"account",
@@ -796,23 +808,8 @@ exports.check_email=(req,res)=>{
 			})
 	}
 	else{
-		User.findAll({
-			where:{
-				status:"account",
-				email:{[Op.iLike]: email},
-			}
-		}).catch(err => {
-					
-				res.status(500).json({msg: "error", details: err});		
-			}).then(user=>{
-			if(user.length==0){
-				res.status(200).send([{msg: "ok"}]);		
-			}
-			else{
-				res.status(200).send([{msg: "found", type:"user"}]);	
-			}
-		})
-	}
+		
+	}*/
 	
 	
 }

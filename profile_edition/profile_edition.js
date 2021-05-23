@@ -1096,9 +1096,51 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 });
 
 
+  
+
+  router.post('/edit_account_artist_signup', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+  const id_user=req.body.id_user;
+  const primary_description= req.body.primary_description;
+  const location= req.body.location;
+  const birthday = req.body.birthday;
+  const siret = req.body.siret;
+  const society = req.body.society;
+  
+  users.findOne({
+    where: {
+      id: id_user,
+    }
+  })
+  .catch(err => {
+    
+    res.status(500).json({msg: "error", details: err});		
+  }).then(User =>  {
+    User.update({
+      "birthday":birthday,
+      "siret":siret,
+      "society":society,
+      "location":location,
+      "primary_description":primary_description,
+    }).catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(res.status(200).send([User]))
+  }); 
 
 
-
+  });
 
   //
   router.post('/edit_account_about_1', function (req, res) {
@@ -1198,7 +1240,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
     
     const firstname=req.body.firstname;
-    const lastname= req.body.lastname;
     const birthday= req.body.birthday;
     users.findOne({
       where: {
@@ -1211,7 +1252,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 		}).then(User =>  {
       User.update({
         "firstname":firstname,
-        "lastname":lastname,
         "birthday":birthday,
       }).catch(err => {
         
@@ -2992,13 +3032,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     }
     let current_user = get_current_user(req.cookies.currentUser);
     let firstname=req.body.firstname;
-    let lastname=req.body.lastname;
     let email=req.body.email;
     let message=req.body.message;
     users_contact_us.create({
         "id_user": current_user,
         "firstname": firstname,
-        "lastname": lastname,
         "email": email,
         "message": message,
     })
@@ -3194,20 +3232,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             </table>`;
 
             
-            let name = user.firstname + " " + user.lastname;
-            if(!user.lastname || user.lastname==''){
-              name=user.firstname
-            }
-            let start=''
-            if(user.gender=="Homme"){
-              start=`Cher ${name},`
-            }
-            else if(user.gender=="Femme"){
-              start=`Chère ${name},</p>`
-            }
-            else if(user.gender=="Groupe"){
-              start=`Chers membres du groupe ${name},`
-            }
+            let name = user.firstname;
+            start=`${name},`
 
             mail_to_send+=`
             <table style="width:100%;margin:25px auto;">
@@ -3215,51 +3241,45 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
                   <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
-                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous souhaitons la bienvenue sur LinkArts. Veuillez cliquer sur le bouton ci-dessous pour confirmer votre inscription : </p>
-
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous souhaitons la bienvenue sur LinkArts !</p>
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez dès à présent cliquer sur le bouton ci-dessous pour confirmer votre inscription et compléter votre profil : </p>
                       <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                          <a href="https://www.linkarts.fr/home/registration/${user.id}/${password}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                          <a href="http://localhost:4200/home/registration/${user.id}/${password}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                               Confirmer mon inscription
                           </a>
                       </div>`
 
-                      mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous aveez jusqu'à une semaine pour confirmer votre inscription. Une fois ce délais passé, votre compte ne sera plus accessible jusqu'à validation de votre inscription.</p>`
-                      if(user.type_of_account.includes("Artiste")){
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">En tant qu'${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
+                      mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous avez jusqu'à une semaine pour confirmer votre inscription. Une fois ce délais passé, votre compte ne sera plus accessible tant que vous n'aurez pas confirmé votre inscription.</p>`
+                      if(user.type_of_account=="Artiste"){
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous en profitons aussi pour vous faire un rappel des avantages que LinkArts peut vous apporter en tant qu'artiste : </p>
                         <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Rémunération</b> : Vous pouvez générer des gains proportionnels à votre nombre d'abonnés grâce à vos apparitions en Tendances et Coups de cœur.</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : Si vous écrivez, que vous dessinez ou que vous faites les deux, LinkArts vous permet d'organiser et de mettre en avant les œuvres que vous publiez. LinkArts vous offre aussi une visibilité supplémentaire dans les coups de cœur si votre compte a moins de 6 mois d'existence et qu'il commence à gagner en popularité. Si de plus, vous faites partie du top 15 des coups de cœur le premier du mois, vous générez alors des gains bonus !</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration. Vous pourrez y retrouver des annonces pour tous types de collaborations principalement en lien avec le monde de l'édition. LinkArts met aussi à votre disposition une messagerie vous permettant d'échanger avec de potentiels collaborateurs ou tout simplement avec vos contacts.</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans la galerie. </li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Exploration </b>: Regorgeant d'artistes du monde de l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommandant des œuvres qui sont adaptées à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres afin d'enrichir votre créativité. </li>
+                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration éditoriale, en commençant par la recherche d'un partenaire de projet, jusqu'à la déposition de projet auprès d'une maison d'édition avec retour garantit, en passant par la prestation de services artistiques.</li>        
+                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts met aussi à votre disposition la section galerie. C'est ici que les éditeurs et les autres artistes pourront voir les œuvres que vous décidez de partager. C'est ici que vous pourrez faire valoir votre talent auprès des éditeurs et c'est aussi ici que vous pouvez découvrir d’autres artistes avec qui collaborer, échanger ou de qui vous inspirer.</li>
+                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Rémunération</b> : afin de vous aider et de vous motiver dans votre quête de collaboration éditoriale, nous vous attribuerons une rémunération proportionnelle à votre nombre d'abonnés, à chaque fois que vous atteindrez le top du classement des Tendances ou des Coups de cœur. Nous vous rappelons que le classement phare pour les éditeurs, le classement des Coups de cœur, est aussi proportionnel à votre activité au sein du site. Alors n'hésitez pas à publier régulièrement et à commenter les œuvres des autres artistes.</li>
+                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Plateforme de discussion collaborative</b> : LinkArts met aussi à votre disposition une plateforme de discussion adaptée aux échanges liés à la collaboration éditoriale. Vous pourrez notamment créer des sous-discussions avec vous collaborateur afin de vous focaliser sur différentes tâches de travails. Vous pourrez aussi éditer les images envoyées par vos collaborateurs afin de détailler vos demandes de corrections, et vous pourrez même créer des discussions de groupe pour travailler avec plusieurs collaborateurs sur le même projet.</li>
+                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Communauté</b> : votre nombre d'abonnés est essentiel pour vous faire valoir auprès des éditeurs et pour accroître votre rémunération. N'hésitez donc pas à inviter vos amis pour vous soutenir, en s'inscrivant en tant que Fan et en s'abonnant à votre compte.</li>
                         </ol>`
                       }
-                      else if(user.type_of_account.includes("non art")){
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">En tant que ${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
-                        <ol>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts propose actuellement aux professionnels la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux professionnels la mise en avant de leur marque en en-tête de la section Collaboration. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activitées. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
-                                
-                        </ol>`
-                      }
-                      else if(user.type_of_account.includes("Maison")){
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">En tant que ${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
-                        <ol>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts propose actuellement aux maisons d'édition la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section Collaboration. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans la galerie. </li>
-                        </ol>`
-                      }
-                      else if(user.type_of_account.includes("Edit")){
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">En tant qu'${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
-                        <ol>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts propose actuellement aux maisons d'édition et aux éditeurs la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section Collaboration. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans la galerie. </li>
-                        </ol>`
+                      else if(user.type_of_account=="Fan"){
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez désormais aller soutenir l'artiste que vous souhaitez. Donner de la visibilité à un artiste en s'abonnant à son compte, en commentant ou en aimant ses œuvres est, en effet, essentiel pour qu'il puisse être pertinent auprès des éditeurs. Votre soutien l'aidera fortement !</p> `
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">N'hésitez pas à revenir sur LinkArts si jamais vous souhaitez vous aussi vous lancer dans un projet de collaboration éditorial, ou que vous souhaitez profiter des critiques d'autres artistes pour progresser dans votre domaine, avant de vous lancer dans un tel projet. </p> `
                       }
                       else {
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Regorgeant d'artistes du monde de l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommandant des œuvres qui sont adaptées à vos préférences. Vous pouvez ainsi soutenir vos artistes favoris ou simplement profiter de la plateforme pour vous divertir et enrichir votre créativité.</p> `
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous invitons aussi à prouver votre relation avec la société que vous représentée, en nous fourinissant les justificatifs nécessaires, qui vous sont demandée dans l'onglet "mon compte" de vote profil.</p>
+                        <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                        <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                          <a href="http://localhost:4200/account/${user.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                              Accéder à mon compte
+                          </a>
+                      </div>
+                        </div>`
+                        
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous en profitons aussi pour vous faire un rappel des avantages que LinkArts peut vous apporter en tant qu'éditeur / éditrice : </p>
+                        <ol>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Dépôts de projets payants</b> : les artistes devront désormais payer pour déposer leur projet destiné à votre maison d'édition ! En échange, vous devrez leur fournir un feed-back dans un délai défini selon leurs tarifs et selon vos préférences.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Tri des candidatures optimisé </b> : afin de faciliter vos tris de candidatures, nous vous proposons de nombreuses statistiques gratuites. Vous pourrez ainsi hiérarchiser vos candidatures selon le nombre d'abonnés des artistes (chiffre représentatif de la communauté active de l'artiste issues de ses différents réseaux sociaux), ainsi que leur nombre d'apparitions dans le top Tendances et dans le top Coups de cœur.</li>
+                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Plateforme de discussion collaborative</b> : LinkArts met aussi à votre disposition une plateforme de discussion adaptée aux échanges éditoriaux. Vous pourrez notamment créer des sous-discussions avec vos collaborateurs afin de vous focaliser sur différentes tâches de travails. Vous pourrez aussi éditer les images envoyées par vos collaborateurs afin de demander des corrections, et même créer des discussions de groupe pour travailler avec de nombreux collaborateurs sur le même projet.</li>
+                        </ol>`
                       }
 
             mail_to_send+=`
@@ -3308,8 +3328,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            to: user.email, // my mail
-            //to:"appaloosa-adam@hotmail.fr",
+            //to: user.email, // my mail
+            to:"appaloosa-adam@hotmail.fr",
             subject: `Bienvenue sur LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3498,9 +3518,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           }).then(user_admin=>{
             if(user_admin){
               admin_name=user_admin.firstname;
-              if(user_admin.lastname){
-                admin_name=user_admin.firstname+ ' ' + user_admin.lastname;
-              }
               send_emails();
             }
           })
@@ -3530,20 +3547,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       </tr>
                   </table>`;
   
-                  let name = user_found.firstname + " " + user_found.lastname;
-                  if(!user_found.lastname || user_found.lastname==''){
-                    name=user_found.firstname
-                  }
-                  let start=''
-                  if(user_found.gender=="Homme"){
-                    start=`Cher ${name},`
-                  }
-                  else if(user_found.gender=="Femme"){
-                    start=`Chère ${name},</p>`
-                  }
-                  else if(user_found.gender=="Groupe"){
-                    start=`Chers membres du groupe ${name},`
-                  }
+                  
+                  let name = user_found.firstname;
+                   start=`Hey ${name},`
   
                   mail_to_send+=`
                   <table style="width:100%;margin:25px auto;">
@@ -3685,21 +3691,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                     </tr>
                 </table>`;
 
-                let name = user_found.firstname + " " + user_found.lastname;
-                if(!user_found.lastname || user_found.lastname==''){
-                  name=user_found.firstname
-                }
+               
                 admin_name=name;
-                let start=''
-                if(user_found.gender=="Homme"){
-                  start=`Cher ${name},`
-                }
-                else if(user_found.gender=="Femme"){
-                  start=`Chère ${name},</p>`
-                }
-                else if(user_found.gender=="Groupe"){
-                  start=`Chers membres du groupe ${name},`
-                }
+                let name = user_found.firstname;
+                start=`Hey ${name},`
 
                 mail_to_send+=`
                 <table style="width:100%;margin:25px auto;">
@@ -3792,20 +3787,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       </tr>
                   </table>`;
 
-                  let name = user_found.firstname + " " + user_found.lastname;
-                  if(!user_found.lastname || user_found.lastname==''){
-                    name=user_found.firstname
-                  }
-                  let start=''
-                  if(user_found.gender=="Homme"){
-                    start=`Cher ${name},`
-                  }
-                  else if(user_found.gender=="Femme"){
-                    start=`Chère ${name},</p>`
-                  }
-                  else if(user_found.gender=="Groupe"){
-                    start=`Chers membres du groupe ${name},`
-                  }
+                  let name = user_found.firstname;
+                  start=`Hey ${name},`
 
                   mail_to_send+=`
                   <table style="width:100%;margin:25px auto;">

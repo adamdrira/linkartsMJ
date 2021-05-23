@@ -1726,20 +1726,9 @@ router.post('/send_email_for_ad_answer', function (req, res) {
                 </tr>
             </table>`;
 
-            let name = user.firstname + ' ' + user.lastname;
-            if(!user.lastname || user.lastname==''){
-              name=user.firstname
-            }
-            let start=''
-            if(user.gender=="Homme"){
-              start=`Cher ${name},`
-            }
-            else if(user.gender=="Femme"){
-              start=`Chère ${name},</p>`
-            }
-            else if(user.gender=="Groupe"){
-              start=`Chers membres du groupe ${name},`
-            }
+            let name = user.firstname;
+            let start=`${name},`
+            
 
             mail_to_send+=`
             <table style="width:100%;margin:25px auto;">
