@@ -72,8 +72,6 @@ export class PopupReportComponent implements OnInit {
   
   show_icon=false;
   ngOnInit() {
-    let THIS=this;
-    console.log(this.data)
     this.step = 0;
     this.from_account=this.data.from_account;
 
@@ -139,7 +137,6 @@ export class PopupReportComponent implements OnInit {
     }
     
     this.Reports_service.add_primary_information_report(this.type_of_report,this.data.id_receiver,this.data.publication_category,this.data.publication_id,this.data.format,this.data.chapter_number,this.message).subscribe(r=>{
-      console.log(r[0])
       this.id_report=r[0].id
       if(this.open_plagiarism){
         this.begin_download_attachments=true;
@@ -153,7 +150,6 @@ export class PopupReportComponent implements OnInit {
   }
 
   all_attachments_uploaded( event: boolean) {
-    console.log("all_attachments_uploaded")
     this.display_loading=false;
     location.reload();
       

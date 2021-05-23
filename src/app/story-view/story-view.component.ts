@@ -185,7 +185,7 @@ ngOnInit() {
 
     this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
       this.pseudo = r[0].nickname;
-      this.author_name = r[0].firstname + ' ' + r[0].lastname;
+      this.author_name = r[0].firstname;
     });
 
   }

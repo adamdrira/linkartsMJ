@@ -1,39 +1,82 @@
 
 
-<button *ngIf="step>=0" class="close-button" (click)="close_dialog()">
+<div class="logo-container" *ngIf="!show_sent_mail">
+    <img src="../../assets/img/svg/Logo-LA3.svg">
+</div>
+
+<img  src="../../assets/img/tuto-logos/tuto-palette.svg"  class="invisible-height">
+<img  src="../../assets/img/tuto-logos/tuto-books.svg" class="invisible-height">
+<img  src="../../assets/img/tuto-logos/win.svg"  class="invisible-height">
+
+<button class="close-button" (click)="close_dialog()">
     <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
 </button>
 
-<button *ngIf="step>0" class="back-button" (click)="step_back();">
-    <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
-</button>
 
-<div class="popup-signup">
+
+<div class="popup-signup" *ngIf="!for_group_creation">
 
     
-    <ng-container *ngIf="step==0">
+    <ng-container *ngIf="step==0 && !show_sent_mail">
 
         <div class="step-name">
-            <span>Créer un compte</span>
+            <span>Bienvenue sur LinkArts ! </span>
         </div>
 
+        
+
         <div class="step-form" [formGroup]="registerForm1">
+
+
+
+
             <div class="form-item">
                 <mat-form-field floatLabel='never' class="select-class">
-                    <mat-label>Type de profil*</mat-label>
-                    <mat-select (selectionChange)="change_profile($event)" [compareWith]="compareObjects" disableOptionCentering formControlName="gender" panelClass="signupSelectClass">
-                        <mat-option  *ngFor="let obj of listOfGenders" [value]="obj">
-                            {{ obj }}
-                        </mat-option>
+                    <mat-label>Type de compte*</mat-label>
+                    <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
+                        <mat-select-trigger>
+                            {{registerForm1.value?.type_of_account}}
+                        </mat-select-trigger>
+                        
+                        <div *ngFor="let obj of listOfAccounts; let i = index">
+                            <mat-option [value]="obj">
+                                {{ obj }}
+                                <div class="text-container">
+                                    <img  [src]="listOfAccountsImages[i]" >
+                                    <span >{{listOfAccountsDescriptions[i]}}</span>
+                                </div>
+                                
+                            </mat-option>
+                        </div>
                     </mat-select>
-                    <mat-error *ngIf="registerForm1.controls['gender'].invalid">Veuillez sélectionner un type de profil</mat-error>
+                    <mat-error *ngIf="registerForm1.controls['type_of_account'].invalid">Veuillez sélectionner un type de compte</mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label >Nom complet*</mat-label>
+                    <input matInput formControlName="firstName" maxLength="40" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'firstName');">
+                    <mat-error *ngIf="registerForm1.controls['firstName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm1.controls['firstName'].value?.length || 0}}/40</div>
+                </mat-form-field>
+            </div>
+
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Pseudonyme*</mat-label>
+                    <input matInput formControlName="nickname" maxLength="30" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'nickname');check_pseudo()">
+                    <mat-error *ngIf="registerForm1.controls['nickname'].invalid">Saisie invalide. Caractères autorisés : chiffres, lettres, ".", "'", "’", "&", "_", "-" 
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm1.controls['nickname'].value?.length || 0}}/30</div>
                 </mat-form-field>
             </div>
             
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>E-mail*</mat-label>
-                    <input matInput formControlName="email" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'email');check_email_and_password();">
+                    <input matInput formControlName="email" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'email');check_email();">
                     <mat-error *ngIf="registerForm1.controls['email'].invalid">Veuillez saisir un e-mail valide
                     </mat-error>
                 </mat-form-field>
@@ -42,7 +85,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe*</mat-label>
-                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(registerForm1, 'password');check_email_and_password()">
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(registerForm1, 'password')">
                     <mat-error *ngIf="registerForm1.controls['password'].invalid">Minimum : 8 caractères, une minuscule, une majuscule et un chiffre
                     </mat-error>
 
@@ -56,93 +99,73 @@
                     </div>
                 </mat-form-field>
             </div>
-            
-            <div class="form-item">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Confirmation du mot de passe*</mat-label>
-                    <input matInput formControlName="confirmPassword" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(registerForm1, 'confirmPassword');check_email_and_password()">
+        </div>
 
-                    <div class="remove-red-eye" (click)="change_password_type()"
-                    [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"
-                    matTooltipClass='linkarts-tooltip'
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
-                    </div>
-                </mat-form-field>
+       
+        <div class="form-item height-unset">
+            <div class="cgu-container">
+                <mat-slide-toggle [checked]="cgu_accepted" (change)="setCgu( $event )" style="font-weight:bold;">
+                    J'accepte les conditions d'utilisation
+                </mat-slide-toggle>
+                <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
             </div>
         </div>
 
-        <button class="submit-button" (click)="validate_step();">
-            <span>Suivant</span>
+        <button class="submit-button"  (click)="validate_step(0);">
+            <span *ngIf="!loading_signup">M'inscrire</span>
+            <div class="loading-dots" *ngIf="loading_signup">
+                &nbsp; <span>.</span><span>.</span><span>.</span>
+            </div>
         </button>
+  
 
         <div class="error">
-            <span *ngIf="display_need_information" [@enterAnimation]>Veuillez remplir les champs obligatoires</span>
-            <span *ngIf="!display_need_information && display_email_and_password_found_1 && !display_email_found_1 " [@enterAnimation]>Attention, un compte avec les mêmes identifiants existe déjà</span>
-            <span *ngIf="!display_need_information && display_email_and_password_found_1 && display_email_found_1 " [@enterAnimation]>Attention, un compte avec la même adresse e-mail existe déjà</span>
+            <span *ngIf="display_need_information" [@enterAnimation]>Veuillez remplir les champs obligatoires.</span>
+            <span *ngIf="!display_need_information && !display_pseudo_found_1 && display_email_and_password_error && validate_clicked" [@enterAnimation]>Oups ! Un compte similaire existe déjà.</span>         
+            <span *ngIf="!display_need_information && !display_email_and_password_error && display_pseudo_found_1" [@enterAnimation]>Attention ce pseudonyme est déjà utilisé.</span>
+            <span *ngIf="!display_need_information && !display_email_and_password_error && !display_pseudo_found_1 && display_cgu_error && validate_clicked" [@enterAnimation]>Veuillez accepter les conditions d'utilisation</span>
         </div>
 
     </ng-container>
 
 
     
-    <ng-container *ngIf="step==1">
+    <ng-container *ngIf="step==1 && !show_sent_mail">
 
-        <div class="step-name">
-            <span>Mon identité</span>
+        <div class="message-container"  [@enterFromRightAnimation]>
+            <div class="left-container" [ngClass]="{'shiny': !pp_is_loaded}">
+                <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'invisible': !pp_is_loaded}">
+            </div>
+            <div class="right-container">
+                <div class="title">
+                    Adam de LinkArts
+                </div>
+                <div class="text">
+                    <span *ngIf="show_text && registerForm1.value.type_of_account=='Artiste'">C'est noté {{registerForm1.value.firstName}} ! pourriez-vous nous parler un peu plus de vous ?</span>
+                    <span *ngIf="show_text && registerForm1.value.type_of_account!='Artiste'">C'est noté {{registerForm1.value.firstName}} ! pourriez-vous nous parler un peu de votre société ?</span>
+                    <div class="loading-dots" *ngIf="!show_text">
+                        &nbsp; <span>.</span><span>.</span><span>.</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="step-form" [formGroup]="registerForm2">
-            <div class="form-item">
-                <mat-form-field floatLabel='never' class="select-class">
-                    <mat-label>Type de compte*</mat-label>
-                    <mat-select *ngIf="registerForm1.value.gender=='Groupe'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
-                        <mat-select-trigger>
-                            {{registerForm2.value?.type_of_account}}
-                        </mat-select-trigger>
-                        
-                        <div *ngFor="let obj of listOfAccounts_group; let i = index">
-                            <mat-option [value]="obj">
-                                {{ obj }}
-                                <span   >{{listOfAccounts_group_description[i]}}</span>
-                            </mat-option>
-                          
-                        </div>
-                    </mat-select>
-                    <mat-select *ngIf="registerForm1.value.gender=='Homme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
-                        <mat-select-trigger>
-                            {{registerForm2.value?.type_of_account}}
-                        </mat-select-trigger>
-                        <div *ngFor="let obj of listOfAccounts_male; let i = index">
-                            <mat-option  [value]="obj">
-                                {{ obj }}
-                                <span>{{listOfAccounts_male_description[i]}}</span>
-                            </mat-option>
-                            
-                        </div>
-                    </mat-select>
-                    <mat-select *ngIf="registerForm1.value.gender=='Femme'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass options-with-description">
-                        <mat-select-trigger>
-                            {{registerForm2.value?.type_of_account}}
-                        </mat-select-trigger>
-                        <div *ngFor="let obj of listOfAccounts_female; let i = index" >
-                            <mat-option [value]="obj">
-                                {{ obj }}
-                                <span >{{listOfAccounts_male_description[i]}}</span>
-                            </mat-option>
-                            
-                        </div>
-                    </mat-select>
-                    <mat-error *ngIf="registerForm2.controls['type_of_account'].invalid">Veuillez sélectionner un type de compte</mat-error>
+        <div class="step-form" [formGroup]="registerForm2"  [@enterFromRightAnimation]>
+
+
+            <div class="form-item" *ngIf="registerForm1.value.type_of_account!='Artiste'">
+                <mat-form-field floatLabel='never'>
+                    <mat-label >Nom de la société représentée*</mat-label>
+                    <input matInput formControlName="SocietyName" maxLength="40" type="search" autocomplete="off" (input)="normalize_input(registerForm2, 'SocietyName');">
+                    <mat-error *ngIf="registerForm2.controls['SocietyName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm2.controls['SocietyName'].value?.length || 0}}/40</div>
                 </mat-form-field>
             </div>
-            
 
-            <div class="form-item" *ngIf="registerForm2.value.type_of_account && (registerForm2.value.type_of_account.includes('Artiste professionnel') ||registerForm2.value.type_of_account.includes('Maison'))">
+            <div class="form-item" *ngIf="registerForm1.value.type_of_account!='Artiste'">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Numéro SIREN*</mat-label>
+                    <mat-label>Numéro SIREN de la société représentée</mat-label>
                     <input matInput formControlName="siret" autocomplete="off" maxLength="9" type="search" (input)="normalize_input(registerForm2, 'siret');">
                     <mat-error *ngIf="registerForm2.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide (9 chiffres)
                     </mat-error>
@@ -150,30 +173,43 @@
                 </mat-form-field>
             </div>
 
-            <div class="form-item">
+          
+           
+            <div class="form-item" style="height:unset !important; margin-bottom: 15px;"  *ngIf="registerForm1.value.type_of_account=='Artiste'">
                 <mat-form-field floatLabel='never'>
-                    <mat-label *ngIf="registerForm1.value.gender!='Groupe'">Prénom*</mat-label>
-                    <mat-label *ngIf="registerForm1.value.gender=='Groupe'">Nom du groupe*</mat-label>
-                    <input matInput formControlName="firstName" [maxLength]="max_length_firt_name" type="search" autocomplete="off" (input)="normalize_input(registerForm2, 'firstName');">
-                    <mat-error *ngIf="registerForm2.controls['firstName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
+                    <mat-label> Quel type d'artiste êtes-vous ? <br> E.g. Je suis un scénariste de bandes dessinées.</mat-label>
+                    <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm2, 'primary_description');"></textarea>
+                   <mat-error *ngIf="registerForm2.controls['primary_description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                     </mat-error>
-                    <div class="length-indicator">{{registerForm2.controls['firstName'].value?.length || 0}}/{{max_length_firt_name}}</div>
+                    <div class="length-indicator">{{registerForm2.controls['primary_description'].value?.length || 0}}/100</div>
                 </mat-form-field>
             </div>
 
-            <div class="form-item" *ngIf="registerForm1.value.gender!='Groupe'">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Nom</mat-label>
-                    <input matInput formControlName="lastName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm2, 'lastName');">
-                    <mat-error *ngIf="registerForm2.controls['lastName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm2.controls['lastName'].value?.length || 0}}/20</div>
+            <div class="form-item" style="margin-bottom: 15px;">
+                <mat-form-field floatLabel='never' class="select-class">
+                    <mat-label>Pays</mat-label>
+                    <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country" panelClass="signupSelectCountryClass">
+                        <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
+                            {{ obj }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="registerForm2.controls['country'].invalid ">Veuillez selectionner un pays</mat-error>
                 </mat-form-field>
             </div>
 
-            <div class="form-item" *ngIf="registerForm1.value.gender!='Groupe'">
+            <div class="form-item" style="margin-bottom: 15px;">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Date de naissance* (jj/mm/aaaa)</mat-label>
+                    <mat-label>Ville</mat-label>
+                    <input matInput formControlName="city" (input)="normalize_input(registerForm2, 'city');adding_city();" autocomplete="off" maxLength="30" type="search">
+                    <mat-error *ngIf="registerForm2.controls['city'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm2.controls['city'].value?.length || 0}}/30</div>
+                </mat-form-field>
+            </div>
+
+            <div class="form-item" *ngIf="registerForm1.value.type_of_account=='Artiste'">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Date de naissance (jj/mm/aaaa)</mat-label>
                     <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="birthday">
                     <mat-datepicker-toggle matSuffix [for]="picker">
                         <mat-icon [ngClass]="{'invisible': !show_icon }" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
@@ -185,558 +221,31 @@
         </div>
 
 
-        <button class="submit-button" (click)="validate_step();">
-            <span>Suivant</span>
-        </button>
-
-        <div class="error">
-            <span *ngIf="display_need_information" [@enterAnimation]>Veuillez remplir les champs obligatoires</span>
-        </div>
-
-    </ng-container>
-
-
-
-    <ng-container *ngIf="step==2">
-
-        
-        <div class="step-name">
-            <span>Mon profil</span>
-        </div>
-
-        <div class="step-form" [formGroup]="registerForm3">
-
-            <div class="form-item">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Pseudonyme*</mat-label>
-                    <input matInput formControlName="nickname" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'nickname');check_pseudo()">
-                    <mat-error *ngIf="registerForm3.controls['nickname'].invalid">Veuillez saisir un pseudonyme valide
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm3.controls['nickname'].value?.length || 0}}/20</div>
-                </mat-form-field>
-            </div>
-
-            <div class="form-item" style="height:unset !important;">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Bio</mat-label>
-                    <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm3, 'primary_description');"></textarea>
-                    
-                    <mat-error *ngIf="registerForm3.controls['primary_description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm3.controls['primary_description'].value?.length || 0}}/100</div>
-                </mat-form-field>
-            </div>
-
-            <div class="form-item" style="height:unset !important;">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Description principale</mat-label>
-                    <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm3, 'primary_description_extended');"></textarea>
-                    
-                    <mat-error *ngIf="registerForm3.controls['primary_description_extended'].invalid">Veuillez saisir une description valide, ou laisser ce champ vide
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm3.controls['primary_description_extended'].value?.length || 0}}/1000</div>
-                </mat-form-field>
-            </div>
-
-        </div>
-
-
-        <button class="submit-button" (click)="validate_step();">
-            <span>Suivant</span>
-        </button>
-
-        <div class="error">
-            <span *ngIf="display_need_information && !display_pseudo_found_1" [@enterAnimation]>Veuillez remplir les champs obligatoires</span>
-            <span *ngIf="display_pseudo_found_1" [@enterAnimation]>Attention ce pseudonyme est déjà utilisé</span>
-        </div>
-    </ng-container>
-
-
-    
-    <ng-container *ngIf="step==3 && registerForm1.value.gender=='Groupe' && (registerForm2.value.type_of_account=='Artistes' || registerForm2.value.type_of_account=='Artistes professionels')">
-
-
-        
-        <div class="step-name add-group-members">
-            <span>Liste des membres du groupe</span>
-        </div>
-
-        <div class="step-form" [formGroup]="registerForm5">
-            
-            
-            <ng-container *ngIf="registerForm2.value.type_of_account!='Maison d\'édition' ">
-
-                <ng-container *ngIf="list_of_pseudos.length>0">
-                    <div class="subscriber-card" *ngFor=" let item of list_of_pseudos;let i=index" [@enterAnimation]>
-                        <div class="subscriber">
-                            <div class="user-container">
-                                <div>
-                                    <div class="left-container"  [ngClass]="{'shiny':!list_of_pp_found[i]}">
-                                        <img [src]="list_of_profile_pictures[i]" (load)="list_of_pp_found_load(i)"  [ngClass]="{ 'invisible':!list_of_pp_found[i]}">
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="right-container">
-                                        <span class="author-name" *ngIf="i==0"> Admin : {{list_of_pseudos[i]}} </span>
-                                        <span class="author-name" *ngIf="i>0"> {{list_of_pseudos[i]}} </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="unsubscribe-button" (click)="remove_member(i)">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">remove</mat-icon>
-                            <span>Retirer</span>
-                        </button>
-                    </div>
-                </ng-container>
-
-                <div class="warning2">
-                    <span>-Ajoutez jusqu'à 10 membres à commencer par l'administrateur</span>
-                    <span>-Seuls les <b>artistes</b> sont autorisés</span>
-                    <span>-Le compte ne sera valide qu'après confirmation par tous les artistes du groupe</span>
-                    <span>-Les rémunérations sont réparties équitablement pour le moment puis modifiables ultérieurement par l'administrateur</span>
-                </div>
-
-                <div #research>
-                    <div class="form-item">
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>Rechercher par pseudonyme</mat-label>
-                            <input #input matInput formControlName="fdSearchbar" 
-                            type="text" 
-                            autocomplete="off" 
-                            (click)="activateFocus_add()" 
-                            onfocus="this.placeholder = ''" 
-                            (input)="research_member();"
-                            onblur="this.placeholder = 'Rechercher par pseudonyme'"
-                            [placeholder]="'Rechercher par pseudonyme'">
-                        </mat-form-field>
-                    </div>
-
-                    <ng-container *ngIf="research_member_loading">
-
-                        <div class="error add-group-members" *ngIf="display_no_pseudos_found">
-                            <span *ngIf="display_max_length_members" [@enterAnimation]>La limite de 10 artistes par groupe a été atteinte</span>
-                            <span *ngIf="!display_max_length_members" [@enterAnimation]>Aucun résultat</span>
-                        </div>
-
-                        <ng-container *ngIf="!display_no_pseudos_found">
-                            
-                            <div class="loading-dots2  for-search" *ngIf="!pseudo_found && registerForm5.value.fdSearchbar" [@enterAnimation]>
-                                &nbsp; <span>.</span><span>.</span><span>.</span>
-                            </div>
-                            <div class="subscriber-card" *ngIf="pseudo_found" [ngClass]="{'invisible':!pp_found_loaded}" [@enterFromTopAnimation]>
-                                <div class="subscriber">
-                                    <div class="user-container">
-                                        <div>
-                                            <div class="left-container"  [ngClass]="{'shiny':!pp_found_loaded}">
-                                                <img [src]="profile_picture_found" (load)="pp_found_load()"  [ngClass]="{ 'invisible':!pp_found_loaded}">
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="right-container">
-                                                <span class="author-name">{{pseudo_found}}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <ng-container *ngIf="check_if_pseudos_added()">
-                                    <button class="unsubscribe-button" (click)="add_member()">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                                        <span>Ajouter</span>
-                                    </button>
-                                </ng-container>
-                            </div>
-
-                        </ng-container>
-
-
-                    </ng-container>
-
-                </div>
-
-
-            </ng-container>
-
-        </div>
-        
-        <button class="submit-button" (click)="validate_step();">
-            <span>Suivant</span>
-        </button>
-
-        <div class="error">
-            <span *ngIf="display_need_members" [@enterAnimation]>Vous devez indiquer au moins 2 membres du groupe</span>
-        </div>
-    </ng-container>
-
-
-    
-    <ng-container *ngIf="step==4 && registerForm1.value.gender=='Groupe' && need_authentication">
-
-        <div class="step-name">
-            <span>Authentification de l'admin</span>
-        </div>
-
-            
-        <!-- A TERMINER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-        <div class="step-form" [formGroup]="registerForm7">
-            <div class="form-item">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>E-mail</mat-label>
-                    <input matInput formControlName="email" autocomplete="off" type="search" (input)="normalize_input(registerForm7, 'email');">
-                    <mat-error *ngIf="registerForm7.controls['email'].invalid">Veuillez saisir un e-mail valide
-                    </mat-error>
-                </mat-form-field>
-            </div>
-
-            <div class="form-item">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Mot de passe</mat-label>
-                    <input matInput formControlName="password" [type]="hide2 ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(registerForm7, 'password');">
-                    <mat-error *ngIf="registerForm7.controls['password'].invalid">Veuillez saisir un mot de passe valide</mat-error>
-
-                    <div class="remove-red-eye" (click)="change_password_type2()"
-                    [matTooltip]="hide2 ? 'Voir le mot de passe' : 'Cacher le mot de passe'"
-                    matTooltipClass='linkarts-tooltip'
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide2" [@enterAnimation]>visibility</mat-icon>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide2" [@enterAnimation]>visibility_off</mat-icon>
-                    </div>
-
-                </mat-form-field>
-            </div>
-        </div>
-
-
-        <button [disabled]="loading" class="submit-button" (click)="validate_authentication();">
-            <span *ngIf="!loading">S'authentifier</span>
-            <div class="loading-dots" *ngIf="loading">
-                &nbsp; <span>.</span><span>.</span><span>.</span>
-            </div>
-        </button>
-
-        <div class="loading-span" *ngIf="loading">
-            <span>Authentification en cours</span>
-        </div>
-
-        <div class="error">
-            <span *ngIf="error_authentication" [@enterAnimation]>Le mot de passe ou l'e-mail sont incorrects</span>
-            <span *ngIf="error_authentication_2" [@enterAnimation]>>Les informations entrées sont incorrectes</span>
-        </div>
-
-
-
-    </ng-container>
-    
-
-    <ng-container *ngIf="step==4 && registerForm1.value.gender=='Groupe' &&  !need_authentication">
-        
-        <div class="step-form" [formGroup]="registerForm6">
-        
-            <div class="step-name">
-                <span>Informations optionnelles</span>
-            </div>
-            
-            <div class="form-item">
-                <mat-form-field floatLabel='never' class="select-class">
-                    <mat-label>Pays</mat-label>
-                    <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country" panelClass="signupSelectCountryClass">
-                        <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
-                            {{ obj }}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="registerForm6.controls['country'].invalid ">Veuillez selectionner un pays</mat-error>
-                </mat-form-field>
-            </div>
-
-            <div class="form-item">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Ville</mat-label>
-                    <input matInput formControlName="city" (input)="normalize_input(registerForm6, 'city');adding_city();" autocomplete="off" maxLength="30" type="search">
-                    <mat-error *ngIf="registerForm6.controls['city'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm6.controls['city'].value?.length || 0}}/30</div>
-                </mat-form-field>
-            </div>
-
-            <div class="form-title" [@enterAnimation]>
-                <span *ngIf="3>links_titles.length">Ajouter un lien</span>
-                <span *ngIf="links_titles.length==3">Vous avez atteint la limite de 3 liens externes</span>
-            </div>
-            <div class="form-item links" *ngIf="3>links_titles.length" [@enterAnimation]>
-                <div class="form-item-flex">
-                    <div class="left-container">
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>Titre du lien</mat-label>
-                            <input matInput formControlName="link_title" maxLength="15" autocomplete="off" (input)="normalize_input(registerForm6, 'link_title');">
-                            <mat-error *ngIf="registerForm6.controls['link_title'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
-                            </mat-error>
-                            <div class="length-indicator">{{registerForm6.controls['link_title'].value?.length || 0}}/15</div>
-                        </mat-form-field>
-                    </div>
-                    <div class="right-container">
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>Lien URL</mat-label>
-                            <input matInput formControlName="link" maxLength="60" autocomplete="off" (input)="normalize_input(registerForm6, 'link');">
-                            <mat-error *ngIf="registerForm6.controls['link'].invalid">Veuillez saisir un URL valide
-                            </mat-error>
-                            <div class="length-indicator">{{registerForm6.controls['link'].value?.length || 0}}/60</div>
-                        </mat-form-field>
-                    </div>
-                    <button class="aboutLinkButton" (click)="add_link();">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="form-item links" *ngIf="links.length>0" [@enterAnimation]>
-                <ng-container *ngFor="let item of links_titles;let i=index">
-
-                    <div class="form-item-flex">
-                        <div class="left-container">
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>{{item}}</mat-label>
-                                <input matInput readonly>
-                            </mat-form-field>
-                        </div>
-                        <div class="right-container">
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>{{links[i]}}</mat-label>
-                                <input matInput readonly>
-                            </mat-form-field>
-                        </div>
-
-                        <button class="aboutLinkButton" [matMenuTriggerFor]="accountAboutOptions0">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
-                        </button>
-                        <mat-menu #accountAboutOptions0="matMenu" xPosition='before' class="signup-mat-menu">
-                            <button class="signup-menu-item" mat-menu-item (click)="remove_link(i)"> 	
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
-                                <span>Supprimer</span>
-                            </button>
-                        </mat-menu>
-                    </div>
-
-                </ng-container>
-            </div>
-
-        </div>
-        
-        
-        <div class="form-item height-unset">
-            <div class="cgu-container">
-                <mat-slide-toggle [checked]="cgu_accepted" (change)="setCgu( $event )" style="font-weight:bold;">
-                    J'accepte les conditions d'utilisation
-                </mat-slide-toggle>
-                <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
-            </div>
-        </div>
-
-        <button [disabled]="loading_signup" class="submit-button" (click)="register();">
-            <span *ngIf="!loading_signup && !registerForm2.value.type_of_account.includes('Artiste')">M'inscrire</span>
-            <span *ngIf="!loading_signup && registerForm2.value.type_of_account.includes('Artiste')">Créer</span>
+        <button class="submit-button" (click)="validate_step(1);">
+            <span *ngIf="!loading_signup">Terminer</span>
             <div class="loading-dots" *ngIf="loading_signup">
                 &nbsp; <span>.</span><span>.</span><span>.</span>
             </div>
         </button>
 
-        <div class="error">
-            <span *ngIf="display_cgu_error" [@enterAnimation]>Veuillez accepter les conditions d'utilisation</span>
-        </div>
-        
-        <div class="loading-span" *ngIf="loading_signup">
-            <span>Inscription en cours</span>
-        </div>
-
-        <div class="error">
-            <span *ngIf="display_pseudo_found_2" [@enterAnimation]>Une erreur s'est produite lors de l'inscription. Votre pseudonyme semble avoir été utilisé par un autre utilisateur</span>
-            <span *ngIf="display_email_found_2" [@enterAnimation]>Une erreur s'est produite lors de l'inscription. Votre e-mail semble avoir été utilisée par un autre utilisateur</span>
-            <span *ngIf="display_email_or_pseudo_found" [@enterAnimation]>Une erreur s'est produite lors de l'inscription. Votre e-mail ou votre pseudonyme semble avoir été utilisé par un autre utilisateur</span>
-        </div>
 
     </ng-container>
 
 
-    <ng-container *ngIf="step==3 && registerForm1.value.gender!='Groupe'">
 
-
-        <div class="step-name">
-            <span>Informations optionnelles</span>
-        </div>
-            
-        <div class="step-form" [formGroup]="registerForm4">
-
-            <div class="form-item">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Profession</mat-label>
-                    <input matInput formControlName="job" autocomplete="off" maxLength="100" type="search" (input)="normalize_input(registerForm4, 'job');">
-                    <mat-error *ngIf="registerForm4.controls['job'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm4.controls['job'].value?.length || 0}}/100</div>
-                </mat-form-field>
-            </div>
-
-            <div class="form-item" style="height:unset !important;">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Formation ou compétences</mat-label>
-                    <textarea matInput cdkTextareaAutosize formControlName="training" maxLength="250" autocomplete="off" (input)="normalize_input(registerForm4, 'training');"></textarea>
-                    
-                    <mat-error *ngIf="registerForm4.controls['training'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm4.controls['training'].value?.length || 0}}/250</div>
-                </mat-form-field>
-            </div>
-
-            <div class="form-item">
-                <mat-form-field floatLabel='never' class="select-class">
-                    <mat-label>Pays</mat-label>
-                    <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country" panelClass="signupSelectCountryClass">
-                        <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
-                            {{ obj }}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="registerForm4.controls['country'].invalid ">Veuillez selectionner un pays</mat-error>
-                </mat-form-field>
-            </div>
-
-            <div class="form-item">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Ville</mat-label>
-                    <input matInput formControlName="city" (input)="normalize_input(registerForm4, 'city');adding_city();" autocomplete="off" maxLength="30" type="search">
-                    <mat-error *ngIf="registerForm4.controls['city'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm4.controls['city'].value?.length || 0}}/30</div>
-                </mat-form-field>
-            </div>
-
-            <div class="form-title" [@enterAnimation]>
-                <span *ngIf="3>links_titles.length">Ajouter un lien</span>
-                <span *ngIf="links_titles.length==3">Vous avez atteint la limite de 3 liens externes</span>
-            </div>
-            <div class="form-item links" *ngIf="3>links_titles.length" [@enterAnimation]>
-                <div class="form-item-flex">
-                    <div class="left-container">
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>Titre du lien</mat-label>
-                            <input matInput formControlName="link_title" maxLength="15" autocomplete="off" (input)="normalize_input(registerForm4, 'link_title');">
-                            <mat-error *ngIf="registerForm4.controls['link_title'].invalid">Veuillez faire une saisie valide
-                            </mat-error>
-                            <div class="length-indicator">{{registerForm4.controls['link_title'].value?.length || 0}}/15</div>
-                        </mat-form-field>
-                    </div>
-                    <div class="right-container">
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>Lien URL</mat-label>
-                            <input matInput formControlName="link" maxLength="60" autocomplete="off" (input)="normalize_input(registerForm4, 'link');">
-                            <mat-error *ngIf="registerForm4.controls['link'].invalid">Veuillez saisir un URL valide
-                            </mat-error>
-                            <div class="length-indicator">{{registerForm4.controls['link'].value?.length || 0}}/60</div>
-                        </mat-form-field>
-                    </div>
-                    <button class="aboutLinkButton" (click)="add_link();">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="form-item links" *ngIf="links.length>0" [@enterAnimation]>
-                <ng-container *ngFor="let item of links_titles;let i=index">
-
-                    <div class="form-item-flex">
-                        <div class="left-container">
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>{{item}}</mat-label>
-                                <input matInput readonly>
-                            </mat-form-field>
-                        </div>
-                        <div class="right-container">
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>{{links[i]}}</mat-label>
-                                <input matInput readonly>
-                            </mat-form-field>
-                        </div>
-
-                        <button class="aboutLinkButton" [matMenuTriggerFor]="accountAboutOptions0">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
-                        </button>
-                        <mat-menu #accountAboutOptions0="matMenu" xPosition='before' class="signup-mat-menu">
-                            <button class="signup-menu-item" mat-menu-item (click)="remove_link(i)"> 	
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
-                                <span>Supprimer</span>
-                            </button>
-                        </mat-menu>
-                    </div>
-
-                </ng-container>
-            </div>
-
-        </div>
-
-        
-        <div class="form-item height-unset">
-            <div class="cgu-container">
-                <mat-slide-toggle [checked]="cgu_accepted" (change)="setCgu( $event )" style="font-weight:bold;">
-                    J'accepte les conditions d'utilisation
-                </mat-slide-toggle>
-                <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
-            </div>
-        </div>
-
-        <button [disabled]="loading_signup" class="submit-button" (click)="register();">
-            <span *ngIf="!loading_signup">M'inscrire</span>
-            <div class="loading-dots" *ngIf="loading_signup">
-                &nbsp; <span>.</span><span>.</span><span>.</span>
-            </div>
-        </button>
-
-        <div class="error">
-            <span *ngIf="display_cgu_error" [@enterAnimation]>Veuillez accepter les conditions d'utilisation</span>
-        </div>
-
-        <div class="loading-span" *ngIf="loading_signup">
-            <span>Inscription en cours</span>
-        </div>
-
-        <div class="error">
-            <span *ngIf="display_pseudo_found_2" [@enterAnimation]>Oups! Votre pseudonyme vient d'être validé par quelqu'un d'autre. Veuillez en choisir un nouveau</span>
-        </div>
-
-
-    </ng-container>
-        
-
-
-
-    <div *ngIf="show_sent_mail" [@enterAnimation]>
-        <div class="sent-mail-icon" *ngIf="!registerForm2.value.type_of_account.includes('Artistes')">
+    <div *ngIf="show_sent_mail" [@enterFromTopAnimation]>
+        <div class="sent-mail-icon" >
             <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
         </div>
-        <div class="sent-mail-icon" *ngIf="registerForm2.value.type_of_account.includes('Artistes')">
-            <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
-        </div>
-        <div class="sent-mail-text" *ngIf="!registerForm2.value.type_of_account.includes('Artistes')">
-            <span>Un lien permettant de vérifier votre adresse mail vous a été envoyé à l'adresse suivante :</span>
+        <div class="sent-mail-text" >
+            <span>Merci pour votre inscription ! <br> Un lien permettant de vérifier votre adresse e-mail a été envoyé à l'adresse suivante :</span>
             <span>{{registerForm1.value.email.toLowerCase()}}</span>
-        </div>
-        <div class="sent-mail-text" *ngIf="registerForm2.value.type_of_account.includes('Artistes')">
-            <span>La création du groupe a été réalisée avec succès !</span>
-             <span>Veillez désormais à ce que chacun des membres valide la création du groupe pour pouvoir l'utiliser librement.</span>
         </div>
 
         <button class="finish-button" (click)="finish();">
-            <span>Continuer</span>
+            <span>Se connecter</span>
         </button>
     </div>
 
 </div>
 
-<div class="status-container">
-    <div class="status step0" [ngStyle]="{'width': step>=0 ? '25%' : '0%' }"></div>
-    <div class="status step1" [ngStyle]="{'width': step>=1 ? '25%' : '0%' }"></div>
-    <div class="status step2" [ngStyle]="{'width': step>=2 ? '25%' : '0%' }"></div>
-    <div class="status step3" [ngStyle]="{'width': (step>=3 && registerForm1.value.gender && registerForm1.value.gender!='Groupe') ? '25%' : '0%' }"></div>
-    <div class="status step3" [ngStyle]="{'width': (step>=3 && registerForm1.value.gender && registerForm1.value.gender=='Groupe') ? '12.5%' : '0%' }"></div>
-    <div class="status step3" [ngStyle]="{'width': (step>=4 && registerForm1.value.gender && registerForm1.value.gender=='Groupe') ? '12.5%' : '0%' }"></div>    
-</div>

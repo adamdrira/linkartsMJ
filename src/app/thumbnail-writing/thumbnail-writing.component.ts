@@ -154,7 +154,7 @@ export class ThumbnailWritingComponent implements OnInit {
     
 
     this.Profile_Edition_Service.retrieve_profile_data(Number(this.user_id)).subscribe(r=> {
-      this.author_name = r[0].firstname + ' ' + r[0].lastname;
+      this.author_name = r[0].firstname;
       this.primary_description=r[0].primary_description;
       this.pseudo=r[0].nickname;
       this.certified_account=r[0].certified_account;
@@ -313,7 +313,6 @@ export class ThumbnailWritingComponent implements OnInit {
 
   imageloaded=false;
   loaded(){
-    //console.log("loaded writing")
     this.imageloaded=true;
     this.sendLoaded.emit(true);
   }

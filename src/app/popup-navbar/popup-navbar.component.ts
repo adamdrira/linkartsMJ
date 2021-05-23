@@ -742,7 +742,7 @@ get_name_of_someone_who_exit_group(id,l,item){
   else{
     this.loading_deleted_member[id]=true;
     this.Profile_Edition_Service.retrieve_profile_data(id).subscribe(r=>{
-      this.list_of_names_deleted[id]=r[0].firstname + ' ' + r[0].lastname;
+      this.list_of_names_deleted[id]=r[0].firstname;
       this.cd.detectChanges()
     })
   }
@@ -844,7 +844,7 @@ sort_friends_list() {
             this.list_of_friends_date[i]=new Date(friends[i].date).getTime()/1000;
             this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_receiver).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
-              this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
+              this.list_of_friends_names[i]=s[0].firstname;
               this.list_of_friends_certifications[i]=s[0].certified_account;
               data_retrieved=true;
               all_retrieved(this);
@@ -880,7 +880,7 @@ sort_friends_list() {
             this.list_of_friends_date[i]=new Date(friends[i].date).getTime()/1000;
             this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_user).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
-              this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
+              this.list_of_friends_names[i]=s[0].firstname;
               this.list_of_friends_certifications[i]=s[0].certified_account;
               data_retrieved=true;
               all_retrieved(this);
@@ -1189,7 +1189,7 @@ change_message_status(event){
                 this.Profile_Edition_Service.retrieve_profile_data(event.friend_id).subscribe(s=>{
                   pseudo = s[0].nickname;
                   certification = s[0].certified_account;
-                  name =s[0].firstname + ' ' + s[0].lastname;
+                  name =s[0].firstname;
                   data_retrieved=true;
                   check_all(this)
                 });

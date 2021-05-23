@@ -235,7 +235,7 @@ export class ThumbnailAdComponent implements OnInit {
     });
 
     this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
-      this.author_name = r[0].firstname + ' ' + r[0].lastname;
+      this.author_name = r[0].firstname;
       this.primary_description=r[0].primary_description;
       this.pseudo = r[0].nickname;
       

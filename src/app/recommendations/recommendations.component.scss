@@ -1,5 +1,21 @@
 .recommendations {
-  //min-height: 100vh;
+  
+
+  .main-title{
+    display: flex;
+    justify-content: center;
+    span{
+      font-size: 20px;
+      font-weight: 600;
+      color: #203864;
+      margin-top: 10px;
+      margin-bottom: 10px;
+
+      @media (max-width: 600px) {
+        font-size: 18px;
+      }
+    }
+  }
 
 
   .horizontal-bar {

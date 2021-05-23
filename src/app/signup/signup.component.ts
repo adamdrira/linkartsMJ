@@ -3,11 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavbarService } from '../services/navbar.service';
 import { User } from '../services/user';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import { pattern } from '../helpers/patterns';
-import { MustMatch } from '../helpers/must-match.validator';
-
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
@@ -53,6 +50,22 @@ import { LoginComponent } from '../login/login.component';
         ])
       ]
     ),
+    trigger(
+      'enterFromLeftAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ]),
+      ],
+    ),
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ]),
+      ],
+    ),
   ]
 })
 
@@ -63,7 +76,6 @@ export class SignupComponent implements OnInit {
 
   constructor(
       private ChatService:ChatService,
-      private NotificationsService:NotificationsService,
       private sanitizer:DomSanitizer,
       private deviceService: DeviceDetectorService,
       private Profile_Edition_Service:Profile_Edition_Service,
@@ -129,27 +141,18 @@ export class SignupComponent implements OnInit {
   cgu_accepted:boolean = false;
   display_cgu_error:boolean = false;
 
-  setCgu(e){
-    if(e.checked){
-      this.cgu_accepted = true;
-    }else{
-    this.cgu_accepted = false;
-    }
-  }
-  read_conditions() {
-    this.document.body.classList.add('popup-attachment-scroll');
-    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
-      data: {file:this.conditions},
-      panelClass: "popupDocumentClass",
-    }).afterClosed().subscribe(result => {
-      this.document.body.classList.remove('popup-attachment-scroll');
-    });
-  }
-
-  conditions:any;
+ 
   show_icon=false;
   device_info='';
+  show_text=false;
+  profile_picture:any;
   ngOnInit() {
+  
+    this.Profile_Edition_Service.retrieve_profile_picture(2).subscribe(r=> {
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.profile_picture = SafeURL;
+    });
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     this.navbar.add_page_visited_to_history(`/signup`,this.device_info).subscribe();
     this.Writing_Upload_Service.retrieve_writing_for_options(0).subscribe(r=>{
@@ -168,50 +171,36 @@ export class SignupComponent implements OnInit {
           Validators.maxLength(100),
         ]),
       ],
-      gender: [(this.for_group_creation)?"Groupe":"", 
+      nickname: ['', 
         Validators.compose([
           Validators.required,
+          Validators.pattern(pattern("nickname")),
+          Validators.minLength(3),
+          Validators.maxLength(30),
         ]),
       ],
-      password: ['',
-        Validators.compose([
-          Validators.required,
-          //Au moins 1 majuscule, 1 minuscule, 1 caractère spécial et un nombre.
-          Validators.pattern(pattern("password")),
-          Validators.maxLength(50),
-        ]),
-      ],
-      confirmPassword: ['', Validators.required],
-
-      }, {
-        validator: MustMatch('password', 'confirmPassword')
-    });
-
-    this.registerForm7=  this.formBuilder.group({
-      email: ['', 
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(pattern("mail")),
-          Validators.maxLength(100),
-        ]),
-      ],
-      password: ['',
-        Validators.compose([
-          Validators.required,
-          //Au moins 1 majuscule, 1 minuscule, 1 caractère spécial et un nombre.
-          Validators.pattern(pattern("password")),
-          Validators.maxLength(50),
-        ]),
-      ]
-      });
-    
-    this.registerForm2 = this.formBuilder.group({      
-      
       type_of_account: ['', 
         Validators.compose([
           Validators.required,
         ]),
       ],
+      firstName: ['', 
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(pattern("name")),
+          Validators.minLength(2),
+          Validators.maxLength(40),
+        ]),
+      ],
+      password: ['',
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(pattern("password")),
+          Validators.maxLength(50),
+        ]),
+      ]});
+    
+    this.registerForm2 = this.formBuilder.group({      
       siret: [null, 
         Validators.compose([
           Validators.pattern(pattern("siret")),
@@ -219,40 +208,22 @@ export class SignupComponent implements OnInit {
           Validators.maxLength(9),
         ]),
       ],
-      
-      firstName: ['', 
+      SocietyName: ['', 
         Validators.compose([
-          Validators.required,
-          Validators.pattern(pattern("name")),
+          Validators.pattern(pattern("society")),
           Validators.minLength(2),
-          Validators.maxLength(20),
+          Validators.maxLength(40),
         ]),
       ],
-      lastName: ['', 
+      city:['', 
         Validators.compose([
-          Validators.pattern(pattern("name")),
-          Validators.minLength(2),
-          Validators.maxLength(20),
-        ]),
-      ],
-      birthday: ['', 
-        Validators.compose([
-          
-          Validators.required
-        ]),
-      ],
-    });
-
-
-
-    
-    this.registerForm3 = this.formBuilder.group({
-      nickname: ['', 
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(pattern("nickname")),
           Validators.minLength(3),
-          Validators.maxLength(20),
+          Validators.maxLength(30),
+          Validators.pattern(pattern("name")),
+        ]),
+      ],
+      country:['', 
+        Validators.compose([
         ]),
       ],
       primary_description: ['', 
@@ -262,299 +233,83 @@ export class SignupComponent implements OnInit {
           Validators.pattern(pattern("text")),
         ]),
       ],
-      primary_description_extended:['', 
-        Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(1000),
-          Validators.pattern(pattern("text_with_linebreaks")),
-        ]),
-      ],
-    });
-
-
-    this.registerForm4 = this.formBuilder.group({
-      job:['', 
-        Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(100),
-          Validators.pattern(pattern("text")),
-        ]),
-      ],
-      training:['', 
-        Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(250),
-          Validators.pattern(pattern("text_with_linebreaks")),
-        ]),
-      ],
-
-      city:['', 
-        Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(30),
-          Validators.pattern(pattern("name")),
-        ]),
-      ],
-      country:['', 
-        Validators.compose([
-        ]),
-      ],
-
-      link_title:['', 
-        Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(30),
-          Validators.pattern(pattern("text")),
-        ]),
-      ],
-      link:['', 
-        Validators.compose([
-          Validators.minLength(5),
-          Validators.maxLength(60),
-          Validators.pattern(pattern("text_without_spaces")),
-        ]),
-      ],
-
-    });
-
-    this.registerForm5 = this.formBuilder.group({
-
       
-      fdSearchbar:['', 
-        Validators.compose([
-          Validators.maxLength(20),
-          Validators.pattern(pattern("name")),
-        ]),
-      ]
-
-    });
-
-    this.registerForm6 = this.formBuilder.group({
-      city:['', 
-        Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(30),
-          Validators.pattern(pattern("name")),
-        ]),
-      ],
-      country:['', 
+      birthday: ['', 
         Validators.compose([
         ]),
       ],
-
-      link_title:['', 
-        Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(15),
-          Validators.pattern(pattern("text")),
-        ]),
-      ],
-      link:['', 
-        Validators.compose([
-          Validators.minLength(5),
-          Validators.maxLength(60),
-          Validators.pattern(pattern("text_without_spaces")),
-        ]),
-      ],
-
     });
       
   }
 
- 
-
-  listOfGenders = ["Femme","Homme","Groupe"];
-  listOfAccounts_group = ["Artistes","Artistes professionnels","Maison d'édition","Professionnels non artistes"];
-  listOfAccounts_male = ["Artiste","Artiste professionnel","Editeur","Professionnel non artiste","Passionné"];
-  listOfAccounts_female = ["Artiste","Artiste professionnelle","Editrice","Professionnelle non artiste","Passionnée"];
-
-  listOfAccounts_group_description = [
-    "Partagez vos œuvres, gagnez en visibilité, profitez des rémunérations, et collaborez avec des maisons d'édition ou d'autres artistes.",
-    "Partagez vos œuvres, gagnez en visibilité, profitez des rémunérations, et collaborez avec des maisons d'édition ou d'autres artistes, tout en profitant du statut professionnel.",
-    "Gagnez en visibilité pour votre maison d'édition, faites la promotion de vos produits, et dénichez des artistes talentueux avec qui collaborer en toute simplicité.",
-    "Faites la promotion de vos produits et collaborez avec des artistes talentueux.",];
-  listOfAccounts_male_description = [
-    "Partagez vos œuvres, gagnez en visibilité, profitez des rémunérations, et collaborez avec des maisons d'édition ou d'autres artistes.",
-    "Partagez vos œuvres, gagnez en visibilité, profitez des rémunérations, et collaborez avec des maisons d'édition ou d'autres artistes, tout en profitant du statut professionnel.",
-    "Gagnez en visibilité pour votre maison d'édition, et dénichez des artistes talentueux avec qui collaborer en toute simplicité.",
-    "Faites la promotion de vos produits et collaborez avec des artistes talentueux.",
-    "Découvrez les œuvres d'artistes de talents et soutenez vos artistes préférés."];
-  
 
 
   compareObjects(o1: any, o2: any): boolean {
     return o1 === o2;
   }
 
-
-  adding_city(){
-    if( this.registerForm1.value.gender!='Groupe'){
-      if(this.registerForm4.value.city.length>0){
-        this.registerForm4.controls['country'].setValidators([
-          Validators.required,
-        ]);
-        this.registerForm4.controls['country'].markAsTouched();
-      }
-      else if(!this.registerForm4.value.country || this.registerForm4.value.country.length==0){
-          this.registerForm4.controls['country'].setValidators([
-          ]);
-          this.registerForm4.controls['city'].setValidators([
-            Validators.pattern(pattern("name")),
-            Validators.minLength(3),
-            Validators.maxLength(30)
-          ]);
-      }
-      this.registerForm4.controls['country'].updateValueAndValidity();
-      this.registerForm4.controls['city'].updateValueAndValidity();
-    }
-    else{
-      if(this.registerForm6.value.city && this.registerForm6.value.city.length>0){
-        this.registerForm6.controls['country'].setValidators([
-          Validators.required,
-        ]);
-        this.registerForm6.controls['country'].markAsTouched();
-      }
-      else if(!this.registerForm6.value.country || this.registerForm6.value.country.length==0){
-          this.registerForm6.controls['country'].setValidators([
-          ]);
-          this.registerForm6.controls['city'].setValidators([
-            Validators.pattern(pattern("name")),
-            Validators.minLength(3),
-            Validators.maxLength(30)
-          ]);
-      }
-      this.registerForm6.controls['country'].updateValueAndValidity();
-      this.registerForm6.controls['city'].updateValueAndValidity();
-    }
+ 
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  adding_country(){
-    
-    if( this.registerForm1.value.gender!='Groupe'){
-      
-        if( this.registerForm4.value.country && this.registerForm4.value.country.length>0){
-          if(this.registerForm4.value.country=="Aucun pays"){
-            this.registerForm4.controls['country'].setValue(null);
-            if(!this.registerForm4.value.city || this.registerForm4.value.city.length==0){
-              this.registerForm4.controls['country'].setValidators([
-              ]);
-              this.registerForm4.controls['city'].setValidators([
-                Validators.pattern(pattern("name")),
-                Validators.minLength(3),
-                Validators.maxLength(30)
-              ]);
-            }
-            this.registerForm4.controls['country'].updateValueAndValidity();
-            this.registerForm4.controls['city'].updateValueAndValidity();
-            return;
-          }
-          this.registerForm4.controls['city'].setValidators(
-            [ 
-              Validators.required,
-              Validators.pattern(pattern("name")),
-              Validators.minLength(3),Validators.maxLength(30)
-            ]);
-          this.registerForm4.controls['city'].markAsTouched();
-        }
-        else if(!this.registerForm4.value.city || this.registerForm4.value.city.length==0){
-            this.registerForm4.controls['country'].setValidators([
-            ]);
-            this.registerForm4.controls['city'].setValidators([
-              Validators.pattern(pattern("name")),
-              Validators.minLength(3),
-              Validators.maxLength(30)
-            ]);
-        }
-        this.registerForm4.controls['country'].updateValueAndValidity();
-        this.registerForm4.controls['city'].updateValueAndValidity();
+  /*************************************** FIRST and second  PAGE SIGNUP ****************************************/
+  /*************************************** FIRST and second PAGE SIGNUP ****************************************/
+
+  conditions:any;
+  pp_is_loaded=false;
+
+  load_pp(){
+    this.pp_is_loaded=true;
+  }
+
+  setCgu(e){
+    if(e.checked){
+      this.cgu_accepted = true;
+    }else{
+    this.cgu_accepted = false;
     }
-    else{
-      if(this.registerForm6.value.country && this.registerForm6.value.country.length>0){
-        if(this.registerForm6.value.country=="Aucun pays"){
-          this.registerForm6.controls['country'].setValue(null);
-          if(!this.registerForm6.value.city || this.registerForm6.value.city.length==0){
-            this.registerForm6.controls['country'].setValidators([
-            ]);
-            this.registerForm6.controls['city'].setValidators([
-              Validators.pattern(pattern("name")),
-              Validators.minLength(3),
-              Validators.maxLength(30)
-            ]);
-          }
-          this.registerForm6.controls['country'].updateValueAndValidity();
-          this.registerForm6.controls['city'].updateValueAndValidity();
-          return;
-        }
-        this.registerForm6.controls['city'].setValidators([
-          Validators.minLength(3),
-          Validators.maxLength(30),
-          Validators.required,
-          Validators.pattern(pattern("name")),
-        ]);
-        this.registerForm6.controls['city'].markAsTouched();
-      }
-      else if(!this.registerForm6.value.city || this.registerForm6.value.city.length==0){
-          this.registerForm6.controls['country'].setValidators([
-          ]);
-          this.registerForm6.controls['city'].setValidators([
-            Validators.pattern(pattern("name")),
-            Validators.minLength(3),
-            Validators.maxLength(30)
-          ]);
-      }
-      this.registerForm6.controls['country'].updateValueAndValidity();
-      this.registerForm6.controls['city'].updateValueAndValidity();
-    }
+  }
+  read_conditions() {
+    this.document.body.classList.add('popup-attachment-scroll');
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.conditions},
+      panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
+    });
+  }
+
   
-    
+
+  listOfAccounts=["Artiste","Éditeur / Éditrice","Fan"];
+  listOfAccountsDescriptions = [
+    "Vous êtes un artiste du monde de la bande dessinée, de la littérature ou du dessin, et vous souhaitez collaborer avec des maisons d'édition ou d'autres artistes, mais aussi être rémunéré pour les œuvres que vous partagez dans votre quête de progression.",
+    "Vous êtes un éditeur ou une éditrice, et vous souhaitez optimiser le tri de vos candidatures, et dénicher des artistes talentueux avec qui collaborer efficacement une fois que vous les avez trouvés.",
+    "Vous souhaitez soutenir un ou plusieurs artistes de cœur à gagner en visibilité et en pertinence, afin qu'ils puissent dénicher la collaboration éditoriale qui changera leur vie."
+  ];
+  listOfAccountsImages=[
+    "../../assets/img/tuto-logos/tuto-palette.svg",
+    "../../assets/img/tuto-logos/tuto-books.svg",
+    "../../assets/img/tuto-logos/win.svg",
+  ];
+
+  
+  change_password_type(){
+    this.hide=!this.hide;
   }
 
-  //links managment
-  add_link(){
-    if(this.links_titles.length>=3){
-      return
-    }
-    if(this.registerForm1.value.gender=='Groupe'){
-      if( this.registerForm6.controls['link_title'].invalid || this.registerForm6.controls['link'].invalid ) {
-        return;
-      }
-      if ( this.registerForm6.controls['link_title'].value == "" || this.registerForm6.controls['link'].value == "" ) {
-        return;
-      }
-      this.links_titles.push(this.registerForm6.value.link_title);
-      this.links.push(this.registerForm6.value.link);
-      this.registerForm6.controls['link'].setValue("");
-      this.registerForm6.controls['link_title'].setValue("");
-    }
-    else{
-
-      if( this.registerForm4.controls['link_title'].invalid || this.registerForm4.controls['link'].invalid ) {
-        return;
-      }
-      if ( !this.registerForm4.controls['link_title'].value  || !this.registerForm4.controls['link'].value ) {
-        return;
-      }
-      this.links_titles.push(this.registerForm4.value.link_title);
-      this.links.push(this.registerForm4.value.link);
-      this.registerForm4.controls['link'].setValue("");
-      this.registerForm4.controls['link_title'].setValue("");
-    }
-    this.links_submitted=true;
+  change_password_type2(){
+    this.hide2=!this.hide2;
   }
 
-  remove_link(i){
-    this.links.splice(i,1);
-    this.links_titles.splice(i,1);
-  }
-
-
-
+  
   display_pseudo_found_1=false;
   display_pseudo_found_2=false;
   index_check=0
   check_pseudo(){
     this.index_check++;
-    this.Profile_Edition_Service.check_pseudo(this.registerForm3.value.nickname, this.index_check).subscribe(r=>{
+    this.Profile_Edition_Service.check_pseudo(this.registerForm1.value.nickname, this.index_check).subscribe(r=>{
       if(r[0][0].msg=="found"){
         this.display_pseudo_found_1=true;
         this.cd.detectChanges()
@@ -568,231 +323,223 @@ export class SignupComponent implements OnInit {
   }
 
   display_email_or_pseudo_found=false;
-  display_email_and_password_found_1=false;
   display_email_found_2=false;
-  display_email_found_1=false;
   display_email_and_password_error=false;
-  index_check_email=0
-  check_email_and_password(){
+  index_check_email=0;
+
+  check_email(){
     this.index_check_email++;
-    if(this.registerForm1.value.email && this.registerForm1.value.password){
-      this.Profile_Edition_Service.check_email_and_password(this.registerForm1.value.email,this.registerForm1.value.password, this.index_check_email).subscribe(r=>{
-        if(r[1]== this.index_check_email){
-          if(r[0].found){
-            this.display_email_and_password_error=true;
-            if(r[0].email && this.registerForm1.value.gender && this.registerForm1.value.gender!='Groupe'){
-              this.display_email_found_1=true;
-            }
-            else{
-              this.display_email_found_1=false;
-            }
-            this.cd.detectChanges()
-          }
-          else{
-            if(r[0].email && this.registerForm1.value.gender && this.registerForm1.value.gender!='Groupe'){
-              this.display_email_found_1=true;
-              this.display_email_and_password_error=true;
-            }
-            else{
-              this.display_email_found_1=false;
-              this.display_email_and_password_error=false;
-            }
-            this.display_email_and_password_found_1=false;
-            this.cd.detectChanges()
-          }
-        }
-      
-      })
-    }
-    
-  }
-
-
-  current_profile='';
-  max_length_firt_name=20;
-  change_profile(event){
-    if(event.value!=this.current_profile){
-      this.registerForm2.reset();
-      this.registerForm4.reset();
-      this.registerForm5.reset();
-      this.registerForm6.reset();
-    }
-    if(event.value=='Groupe'){
-      this.registerForm2.controls['firstName'].setValidators([
-        Validators.pattern(pattern("name")),
-        Validators.minLength(2),
-        Validators.required,
-        Validators.maxLength(40)
-      ]);
-      this.max_length_firt_name=40;
-      this.registerForm2.controls['firstName'].updateValueAndValidity();
-    }
-    else{
-      this.registerForm2.controls['firstName'].setValidators([
-        Validators.pattern(pattern("name")),
-        Validators.minLength(2),
-        Validators.required,
-        Validators.maxLength(20)
-      ]);
-      this.max_length_firt_name=20;
-      this.registerForm2.controls['firstName'].updateValueAndValidity();
-    }
-    this.current_profile=event.value;
+    this.Profile_Edition_Service.check_email(this.registerForm1.value.email,this.index_check_email).subscribe(r=>{
+      if(r[0][0].msg=="found" && r[1]== this.index_check_email){
+        this.display_email_and_password_error=true;
+        this.cd.detectChanges()
+      }
+      else{
+        this.display_email_and_password_error=false;
+        this.cd.detectChanges()
+      }
+    })
   }
 
   
-  capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
 
-
-  error_authentication=false; 
-  error_authentication_2=false; // form invalid
-  need_authentication=false; // need authentication if a group is created by an admin
-  cancel_authentication(){ 
-    this.loading=false;
-    this.error_authentication=false;
-    this.need_authentication=false;
-    this.step=3;
-    this.cd.detectChanges();
-  }
-
-  loading=false;
-  validate_authentication(){
-    this.loading=true;
-    if(this.registerForm7.valid){
-      this.Profile_Edition_Service.check_email_and_password(this.registerForm7.value.email,this.registerForm7.value.password,0).subscribe(r=>{
-          if(r[0].found && r[0].user.id==this.list_of_ids[0]){
-            this.loading=false;
-            this.display_email_and_password_found_1=false;
-            this.error_authentication=false;
-            this.need_authentication=false;
-            this.error_authentication_2=false;
-          }
-          else{
-            this.loading=false;
-            this.error_authentication=true;
-            
-          }
-          this.cd.detectChanges()
-      });
+  adding_city(){
+    if( this.registerForm1.value.gender!='Groupe'){
+      if(this.registerForm2.value.city.length>0){
+        this.registerForm2.controls['country'].setValidators([
+          Validators.required,
+        ]);
+        this.registerForm2.controls['country'].markAsTouched();
+      }
+      else if(!this.registerForm2.value.country || this.registerForm2.value.country.length==0){
+          this.registerForm2.controls['country'].setValidators([
+          ]);
+          this.registerForm2.controls['city'].setValidators([
+            Validators.pattern(pattern("name")),
+            Validators.minLength(3),
+            Validators.maxLength(30)
+          ]);
+      }
+      this.registerForm2.controls['country'].updateValueAndValidity();
+      this.registerForm2.controls['city'].updateValueAndValidity();
     }
-    else{
-      this.loading=false;
-      this.error_authentication_2=true;
+  }
+
+  adding_country(){
+    
+    if( this.registerForm1.value.gender!='Groupe'){
+      
+        if( this.registerForm2.value.country && this.registerForm2.value.country.length>0){
+          if(this.registerForm2.value.country=="Aucun pays"){
+            this.registerForm2.controls['country'].setValue(null);
+            if(!this.registerForm2.value.city || this.registerForm2.value.city.length==0){
+              this.registerForm2.controls['country'].setValidators([
+              ]);
+              this.registerForm2.controls['city'].setValidators([
+                Validators.pattern(pattern("name")),
+                Validators.minLength(3),
+                Validators.maxLength(30)
+              ]);
+            }
+            this.registerForm2.controls['country'].updateValueAndValidity();
+            this.registerForm2.controls['city'].updateValueAndValidity();
+            return;
+          }
+          this.registerForm2.controls['city'].setValidators(
+            [ 
+              Validators.required,
+              Validators.pattern(pattern("name")),
+              Validators.minLength(3),Validators.maxLength(30)
+            ]);
+          this.registerForm2.controls['city'].markAsTouched();
+        }
+        else if(!this.registerForm2.value.city || this.registerForm2.value.city.length==0){
+            this.registerForm2.controls['country'].setValidators([
+            ]);
+            this.registerForm2.controls['city'].setValidators([
+              Validators.pattern(pattern("name")),
+              Validators.minLength(3),
+              Validators.maxLength(30)
+            ]);
+        }
+        this.registerForm2.controls['country'].updateValueAndValidity();
+        this.registerForm2.controls['city'].updateValueAndValidity();
     }
     
+  }
+
+
+ 
+
+
+
+
+  validate_clicked=false;
+  validate_step(i){
+    if(!this.for_group_creation){
+      this.validate_clicked=true;
+      if(i==0 && !this.display_email_and_password_error && !this.display_pseudo_found_1){
+        if(!this.registerForm1.valid){
+          this.display_need_information=true;
+          return
+        }
+        else {
+          this.display_need_information=false;
+          this.register()
+        }
+      }
+      else if(i==1){
+        if(!this.registerForm2.valid){
+          this.display_need_information=true;
+          return
+        }
+
+        if(this.loading_signup){
+          return
+        }
+        this.loading_signup=true;
+        let location=null;
+        let birthday=null;
+        let siret=null;
+        let society=null;
+
+        if(this.registerForm1.value.type_of_account!="Artiste"){
+          siret=this.registerForm2.value.siret;
+          society=this.registerForm2.value.society;
+        }
+
+        if( this.registerForm2.value.city && !this.registerForm2.value.country){
+          location =this.capitalizeFirstLetter( this.registerForm2.value.city.toLowerCase() )
+        }
+        else if(this.registerForm2.value.city && this.registerForm2.value.country){
+          location=this.capitalizeFirstLetter( this.registerForm2.value.city.toLowerCase() ) + ", " + this.capitalizeFirstLetter( this.registerForm2.value.country.toLowerCase() );
+        }
+        else if(!this.registerForm2.value.city && this.registerForm2.value.country){
+          location= this.capitalizeFirstLetter( this.registerForm2.value.country.toLowerCase() );
+        }
+        else if(!this.registerForm2.value.city && !this.registerForm2.value.country){
+          location=null;
+        }
+
+        if(this.registerForm1.value.type_of_account=="Artiste" && this.registerForm2.controls['birthday'] && this.registerForm2.controls['birthday'].valid){
+          if(this.registerForm2.value.birthday._i.date){
+            birthday = this.registerForm2.value.birthday._i.date  + '-' + this.registerForm2.value.birthday._i.month  + '-' + this.registerForm2.value.birthday._i.year ;
+          }
+          else if(typeof(this.registerForm2.value.birthday._i)=='string'){
+            birthday = this.registerForm2.value.birthday._i;
+            birthday = this.user.birthday.replace(/\//g, "-");
+          }
+          else{
+            birthday =  this.registerForm2.value.birthday._i[2] + '-'+ this.registerForm2.value.birthday._i[1] +'-'+ this.registerForm2.value.birthday._i[0];
+            
+          }
+          
+        }
+        else{
+            birthday="Non renseigné";
+        }
+
+        let primary_description = this.registerForm2.value.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
+        this.Profile_Edition_Service.edit_account_artist_signup(this.id_user,primary_description,location,birthday,siret,society).subscribe(r=>{
+          if(r[0]){
+            this.loading_signup=false;
+            this.show_sent_mail=true;
+          }
+        })
+      }
+    }
    
   }
 
-  validate_step() {
-    if(this.step==1 && this.registerForm2.value.type_of_account && ( this.registerForm2.value.type_of_account=="Artiste professionnel" ||  this.registerForm2.value.type_of_account=="Artiste professionnelle"  || this.registerForm2.value.type_of_account.includes('Maison'))){
-        if(!this.registerForm2.value.siret || (this.registerForm2.value.siret && this.registerForm2.value.siret.length<9)){
-          this.display_need_information=true;
-          this.display_email_and_password_found_1=false;
-          return;
-        }
-        else if((this.registerForm2.valid && this.registerForm1.value.gender!='Groupe') || (this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.birthday.status=='INVALID' && this.registerForm2.controls.firstName.status=='VALID')){
-          this.display_need_members=false;
-          this.display_need_information=false;
-          this.display_email_and_password_found_1=false;
-          this.step ++;
-          this.cd.detectChanges();
-        }
-    }
-    else if( (this.step == 0 && this.registerForm1.valid && !this.display_email_and_password_error) || (this.step == 1 && this.registerForm2.valid)
-    || (this.step == 2 && this.registerForm3.valid && !this.display_pseudo_found_1 && ( (this.registerForm1.value.gender=='Groupe' && (this.registerForm2.value.type_of_account=='Artistes' || this.registerForm2.value.type_of_account=='Artistes professionels') ) || (this.registerForm1.value.gender!='Groupe') ))
-    || (this.step==3 && this.registerForm1.value.gender=='Groupe' && this.list_of_pseudos.length>1 ) ) {
-      if(this.step==3 && this.registerForm1.value.gender=="Groupe"){
-        
-        if( this.registerForm2.value.type_of_account.includes('Artiste')){
-        this.need_authentication=true;
-        }
-        else{
-        this.input.nativeElement.value='';
-        this.registerForm5.value.fdSearchbar='';
-        this.display_email_and_password_found_1=false;
-        this.need_authentication=false;
-        }
-        
-      }
-      this.display_email_and_password_found_1=false;
-      this.display_need_members=false;
-      this.display_need_information=false;
-      this.step ++;
-      this.cd.detectChanges();
-    }
-    else if (this.step == 2 && this.registerForm3.valid && !this.display_pseudo_found_1 && this.registerForm1.value.gender=='Groupe' 
-    &&  (this.registerForm2.value.type_of_account!='Artistes' 
-    && this.registerForm2.value.type_of_account!='Artistes professionels')){
-      this.display_need_members=false;
-      this.display_need_information=false;
-      this.step+=2; 
-      this.display_email_and_password_found_1=false;
-      this.cd.detectChanges();
-    }
-    else if(this.step==3 && this.list_of_pseudos.length<2 ){
-      this.display_need_members=true;
-    }
-    else if(this.step==1 &&  this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.birthday.status=='INVALID' && this.registerForm2.controls.firstName.status=='VALID'){
-      this.display_need_members=false;
-      this.display_need_information=false;
-      this.display_email_and_password_found_1=false;
-      this.step ++;
-      this.cd.detectChanges();
-    }
-    else{
-      if(this.display_email_and_password_error){
-        this.display_email_and_password_found_1=true;
-        if(this.registerForm1.value.gender && this.registerForm1.value.gender!="Groupe"){
-          this.display_email_found_1=true;
-        }
-        else{
-          this.display_email_found_1=false;
-        }
-      }
-      else if(!this.display_pseudo_found_1){
-        this.display_email_and_password_found_1=false;
-        this.display_need_information=true;
-        this.display_email_found_1=false;
-      }
-     
-      this.cd.detectChanges()
-    }
-
-
-  }
-
-
-  step_back() {
-    if(this.step > 0) {
-      if(this.step==3 && this.registerForm1.value.gender=="Groupe"){
-        this.input.nativeElement.value='';
-         this.registerForm5.value.fdSearchbar='';
-         this.step--;
-      }
-      if (this.step == 4 && this.registerForm1.value.gender=='Groupe' 
-        &&  (this.registerForm2.value.type_of_account!='Artistes' 
-        && this.registerForm2.value.type_of_account!='Artistes professionels')){
-          this.step=2; 
-      }
-      else{
-        this.step--;
-      }
-      
-      this.cd.detectChanges();
-    }
-    else {
+  /*********************************************** REGISTER FUNCTION  *********************************/
+  /*********************************************** REGISTER FUNCTION  *********************************/
+  /*********************************************** REGISTER FUNCTION  *********************************/
+  loading_signup=false;
+  id_user:number;
+  register() {
+    if( !this.cgu_accepted ) {
+      this.display_cgu_error = true;
       return;
     }
-  }
+  
+    if(this.loading_signup){
+      return
+    }
+    this.loading_signup=true;
+    this.user.nickname = this.registerForm1.value.nickname;
+    this.user.email = this.registerForm1.value.email.toLowerCase();
+    this.user.password = this.registerForm1.value.password;
+    this.user.gender = "user";
+    this.user.type_of_account = this.registerForm1.value.type_of_account;
+    this.user.firstname = this.capitalizeFirstLetter( this.registerForm1.value.firstName.toLowerCase() ).replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
 
-  change_password_type(){
-    this.hide=!this.hide;
-  }
-
-  change_password_type2(){
-    this.hide2=!this.hide2;
+    this.Profile_Edition_Service.addUser( this.user ).subscribe(r=>{
+      if(!r[0].error){
+        this.display_email_and_password_error=false;
+        this.id_user=r[0].id_user;
+        this.Profile_Edition_Service.send_email_for_account_creation(this.id_user).subscribe(m=>{
+          this.loading_signup=false;
+          if(this.user.type_of_account=="Fan"){
+            this.step=-1;
+            this.show_sent_mail=true;
+          }
+          else{
+            this.step = 1;
+            let text_loading = setInterval(() => {
+              this.show_text=true;
+              clearInterval(text_loading)
+            }, 2000);
+            
+          }
+          this.cd.detectChanges();
+        })
+      }
+      else{
+        this.loading_signup=false;
+        this.display_email_and_password_error=true;
+      }
+    });
+    
   }
   
 
@@ -817,97 +564,8 @@ export class SignupComponent implements OnInit {
     }
   }
 
-  activateFocus_add(){
-    this.pseudo_found='';
-    this.profile_picture_found=null;
-    this.id_found=null;
-    this.research_member_loading=true;
-    this.pp_found_loaded=false;
-  }
-  
-  
-  research_member(){
-    
-    this.pp_found_loaded=false;
-    if(this.list_of_pseudos.length>=10){
-      this.display_no_pseudos_found=true;
-      this.pseudo_found='';
-      this.profile_picture_found=null;
-      this.display_max_length_members=true;
-      return
-    }
-    this.compteur_research++;
-    if(this.registerForm5.value.fdSearchbar && this.registerForm5.value.fdSearchbar.replace(/\s/g, '').length>0){
-      this.Profile_Edition_Service.get_pseudos_who_match_for_signup(this.registerForm5.value.fdSearchbar,this.compteur_research).subscribe(r=>{
-        let compt=r[1];
-        if(r[0][0].nothing){
-          if(r[1]==this.compteur_research){
-            this.display_no_pseudos_found=true;
-            this.pseudo_found='';
-            this.profile_picture_found=null;
-          }
-        }
-        else if(r[1]==this.compteur_research){
-          this.birthday_found=r[0][0].birthday
-          this.pseudo_found=r[0][0].nickname;
-          this.id_found=r[0][0].id;
-          this.Profile_Edition_Service.retrieve_profile_picture(r[0][0].id).subscribe(p=>{
-            if(compt==this.compteur_research){
-              let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
-              this.profile_picture_found= this.sanitizer.bypassSecurityTrustUrl(url);
-              this.display_no_pseudos_found=false;
-            }
-            
-          })
-        }
-      })
-    }
-    else{
-      this.pp_found_loaded=false;
-    }
-  }
 
 
-  add_member(){
-    this.list_of_birthdays.push(this.birthday_found)
-    this.research_member_loading=false;
-    this.list_of_ids.push(this.id_found)
-    this.list_of_pseudos.push(this.pseudo_found);
-    this.list_of_profile_pictures.push(this.profile_picture_found);
-    this.input.nativeElement.value='';
-    this.registerForm5.value.fdSearchbar='';
-  }
-
-  check_if_pseudos_added(){
-    if(this.pseudo_found!=''){
-      let value = true;
-      for(let i=0;i<this.list_of_pseudos.length;i++){
-        if(this.list_of_pseudos[i]==this.pseudo_found){
-          value=false;
-        }
-      }
-      return value;
-    }
-    else{
-      return false
-    }
-    
-  }
-
-  pp_found_load(){
-    this.pp_found_loaded=true;
-  }
-
-  list_of_pp_found_load(i){
-    this.list_of_pp_found[i]=true;
-  }
-
-  remove_member(i){
-    this.list_of_pseudos.splice(i,1);
-    this.list_of_ids.splice(i,1);
-    this.list_of_profile_pictures.splice(i,1);
-    this.list_of_pp_found.splice(i,1);
-  }
 
 
   selected_country='Aucun pays';
@@ -1152,231 +810,7 @@ export class SignupComponent implements OnInit {
 
 
 
-  /*********************************************** REGISTER FUNCTION  *********************************/
-  /*********************************************** REGISTER FUNCTION  *********************************/
-  /*********************************************** REGISTER FUNCTION  *********************************/
-  loading_signup=false;
-  register() {
-    if( !this.cgu_accepted ) {
-      this.display_cgu_error = true;
-      return;
-    }
   
-    if(this.loading_signup){
-      return
-    }
-    if ( this.registerForm1.invalid || this.registerForm3.invalid || (this.registerForm4.invalid && this.registerForm1.value.gender!='Groupe') ||  (this.registerForm1.value.gender=='Groupe' && this.registerForm6.invalid)  ) {
-        return;
-    }
-    if(this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.firstName.status=='INVALID'){
-        return;
-    }
-    if(this.registerForm1.value.gender!='Groupe' && this.registerForm2.invalid){
-      return;
-    }
-
-    //form1
-    this.user.email = this.registerForm1.value.email.toLowerCase();
-    this.user.password = this.registerForm1.value.password;
-    this.user.gender = this.registerForm1.value.gender;
-
-    //form2
-    this.user.type_of_account = this.registerForm2.value.type_of_account;
-    if(this.registerForm2.controls['siret'] && this.registerForm2.controls['siret'].valid){
-      this.user.siret= this.registerForm2.value.siret
-    }
-    else{
-      this.user.siret=null;
-    }
-    this.user.firstname = this.capitalizeFirstLetter( this.registerForm2.value.firstName.toLowerCase() ).replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
-    if(this.registerForm2.controls['lastName'] && this.registerForm2.value.lastName){
-      this.user.lastname = this.capitalizeFirstLetter( this.registerForm2.value.lastName.toLowerCase() ).replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
-    }
-    else{
-      this.user.lastname = '';
-    }
-    if(this.registerForm2.controls['birthday'] && this.registerForm2.controls['birthday'].valid){
-      if(this.registerForm2.value.birthday._i.date){
-        this.user.birthday = this.registerForm2.value.birthday._i.date  + '-' + this.registerForm2.value.birthday._i.month  + '-' + this.registerForm2.value.birthday._i.year ;
-      }
-      else if(typeof(this.registerForm2.value.birthday._i)=='string'){
-        this.user.birthday = this.registerForm2.value.birthday._i;
-        this.user.birthday = this.user.birthday.replace(/\//g, "-");
-      }
-      else{
-        this.user.birthday =  this.registerForm2.value.birthday._i[2] + '-'+ this.registerForm2.value.birthday._i[1] +'-'+ this.registerForm2.value.birthday._i[0];
-        
-      }
-     
-    }
-    else{
-      if( (this.registerForm2.value.type_of_account=='Artistes' 
-      || this.registerForm2.value.type_of_account=='Artistes professionels')){
-        this.user.birthday =this.list_of_birthdays[0]
-      }
-      else{
-        this.user.birthday ="Non renseigné"
-      }
-      
-    }
-    this.user.nickname = this.registerForm3.value.nickname;
-    this.user.primary_description = this.registerForm3.value.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
-    this.user.primary_description_extended = this.registerForm3.value.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
-    this.loading_signup=true;
-    if(this.registerForm1.value.gender=='Groupe'){
-      if( (this.registerForm2.value.type_of_account=='Artistes' 
-      || this.registerForm2.value.type_of_account=='Artistes professionels')){
-        this.user.list_of_members=this.list_of_ids;
-        this.user.id_admin=this.list_of_ids[0];
-      }
-      
-      if( this.registerForm6.value.city && !this.registerForm6.value.country){
-        this.user.location =this.capitalizeFirstLetter( this.registerForm6.value.city.toLowerCase() )
-      }
-      else if(this.registerForm6.value.city && this.registerForm6.value.country){
-        this.user.location=this.capitalizeFirstLetter( this.registerForm6.value.city.toLowerCase() ) + ", " + this.capitalizeFirstLetter( this.registerForm6.value.country.toLowerCase() );
-      }
-      else if(!this.registerForm6.value.city && this.registerForm6.value.country){
-        this.user.location= this.capitalizeFirstLetter( this.registerForm6.value.country.toLowerCase() );
-      }
-      else if(!this.registerForm6.value.city && !this.registerForm6.value.country){
-        this.user.location=null;
-      }
-    }
-    else{
-      this.user.job = this.registerForm4.value.job;
-      this.user.training = this.registerForm4.value.training;
-      if( this.registerForm4.value.city && !this.registerForm4.value.country){
-        this.user.location =this.capitalizeFirstLetter( this.registerForm4.value.city.toLowerCase() )
-      }
-      else if(this.registerForm4.value.city && this.registerForm4.value.country){
-        this.user.location=this.capitalizeFirstLetter( this.registerForm4.value.city.toLowerCase() ) + ", " + this.capitalizeFirstLetter( this.registerForm4.value.country.toLowerCase() );
-      }
-      else if(!this.registerForm4.value.city && this.registerForm4.value.country){
-        this.user.location= this.capitalizeFirstLetter( this.registerForm4.value.country.toLowerCase() );
-      }
-      else if(!this.registerForm4.value.city && !this.registerForm4.value.country){
-        this.user.location=null;
-      }
-    }
-
-   
-
-    this.Profile_Edition_Service.check_pseudo(this.user.nickname,0).subscribe(r=>{
-      if(r[0][0].msg=="found"){
-        this.display_pseudo_found_2=true;
-        this.loading_signup=false;
-        this.cd.detectChanges()
-      }
-      else{
-        this.Profile_Edition_Service.check_email(this.user,0).subscribe(r=>{
-          if(r[0][0].msg=="found" && r[0][0].type=="user"){
-            this.display_email_found_2=true;
-            this.loading_signup=false;
-            this.cd.detectChanges()
-          }
-          else{
-            this.Profile_Edition_Service.addUser( this.user ).subscribe(r=>{
-              if(!r[0].error){
-                this.display_email_or_pseudo_found=false;
-                let id=r[0].id_user;
-                if( this.links.length > 0 ) {
-                  let compt=0;
-                  for(let i=0;i<this.links.length;i++){
-                    this.Profile_Edition_Service.add_link(r[0].id_user,this.links_titles[i],this.links[i]).subscribe(l=>{
-                      compt+=1;
-                      if(this.links.length==compt){
-                        if(this.registerForm1.value.gender=="Groupe" && this.user.type_of_account.includes("Artiste")){
-                            this.NotificationsService.add_notification_for_group_creation('group_creation',this.list_of_ids[0],this.list_of_pseudos[0],this.list_of_ids,'group_creation',this.registerForm2.value.firstName,'unknown',id,0,"add",false,0).subscribe(l=>{
-                              let message_to_send ={
-                                for_notifications:true,
-                                type:"group_creation",
-                                id_user_name:this.list_of_pseudos[0],
-                                id_user:this.list_of_ids[0], 
-                                list_of_receivers:this.list_of_ids, 
-                                publication_category:'group_creation',
-                                publication_name:this.registerForm2.value.firstName,
-                                format:'unknown',
-                                publication_id:id,
-                                chapter_number:0,
-                                information:"add",
-                                status:"unchecked",
-                                is_comment_answer:false,
-                                comment_id:0,
-                              }
-                              this.ChatService.messages.next(message_to_send);
-                              
-                              this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
-                                this.step = -1;
-                                this.show_sent_mail = true;
-                                this.cd.detectChanges();
-                              })
-                            }) 
-                        }
-                        else{
-                          this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                            this.loading_signup=false;
-                            this.step = -1;
-                            this.show_sent_mail = true;
-                            this.cd.detectChanges();
-                          })
-                        } 
-                      }
-                    })
-                  }
-                }
-                else {
-                  if(this.registerForm1.value.gender=="Groupe" && this.user.type_of_account.includes("Artiste")){
-                    this.NotificationsService.add_notification_for_group_creation('group_creation',this.list_of_ids[0],this.list_of_pseudos[0],this.list_of_ids,'group_creation',this.registerForm2.value.firstName,'unknown',id,0,"add",false,0).subscribe(l=>{
-                      let message_to_send ={
-                        for_notifications:true,
-                        type:"group_creation",
-                        id_user_name:this.list_of_pseudos[0],
-                        id_user:this.list_of_ids[0], 
-                        list_of_receivers:this.list_of_ids, 
-                        publication_category:'group_creation',
-                        publication_name:this.registerForm2.value.firstName,
-                        format:'unknown',
-                        publication_id:id,
-                        chapter_number:0,
-                        information:"add",
-                        status:"unchecked",
-                        is_comment_answer:false,
-                        comment_id:0,
-                      }
-                      this.ChatService.messages.next(message_to_send);
-                        this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
-                          this.step = -1;
-                          this.show_sent_mail = true;
-                          this.cd.detectChanges();
-                        })
-                    }) 
-                  }
-                  else{
-                    this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                      this.step = -1;
-                      this.show_sent_mail = true;
-                      this.cd.detectChanges();
-                    })
-                  }
-                 
-                }
-              }
-              else{
-                this.loading_signup=false;
-                this.display_email_or_pseudo_found=true;
-              }
-             
-              
-            });
-          }
-        })
-
-
-        
-      }
-    })
-  }
 
 
   finish() {

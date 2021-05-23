@@ -212,7 +212,7 @@ export class ThumbnailArtworkComponent implements OnInit {
          
           let r= res.user
           this.user_id=r[0].id;
-          this.user_name=r[0].firstname + ' ' + r[0].lastname;
+          this.user_name=r[0].firstname;
           this.primary_description=r[0].primary_description;
           this.pseudo = r[0].nickname;
           this.type_of_profile=r[0].status;
@@ -235,7 +235,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         });
 
         this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
-          this.author_name = r[0].firstname + ' ' + r[0].lastname;
+          this.author_name = r[0].firstname;
           this.primary_description=r[0].primary_description;
           this.author_pseudo = r[0].nickname;
           this.author_id=r[0].id;
@@ -495,7 +495,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         if(this.in_artwork){
           this.Profile_Edition_Service.get_current_user().subscribe(r=>{
             this.user_id=r[0].id;
-            this.user_name=r[0].firstname + ' ' + r[0].lastname;
+            this.user_name=r[0].firstname;
             this.primary_description=r[0].primary_description;
             this.pseudo = r[0].nickname;
             this.type_of_profile=r[0].status;
@@ -513,7 +513,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.route.data.subscribe(resp => {
             let r= resp.user;
             this.user_id=r[0].id;
-            this.user_name=r[0].firstname + ' ' + r[0].lastname;
+            this.user_name=r[0].firstname;
             this.primary_description=r[0].primary_description;
             this.pseudo = r[0].nickname;
             this.type_of_profile=r[0].status;
@@ -557,7 +557,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         });
 
         this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).subscribe(r=> {
-          this.author_name = r[0].firstname + ' ' + r[0].lastname;
+          this.author_name = r[0].firstname;
           this.primary_description=r[0].primary_description;
           this.author_pseudo = r[0].nickname;
           this.author_id=r[0].id;

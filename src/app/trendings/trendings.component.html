@@ -1,59 +1,30 @@
 
- <!--<div class="trendings-container large-screen" [@enterAnimation]>
-    <img class="background-image " src="https://www.linkarts.fr/assets/img/logo_long_1.png" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }" >
-    <span>
-        Bienvenue dans la section Tendances !
-        <br>
-        <br>
-        Vous trouverez ici la liste des meilleures œuvres du jour pour chaque catégorie. Seules les œuvres monétisées sont affichées.
-        <br>
-        <br>
-        Une rémunération est attribuée à chaque artiste pour chacune de ses œuvres classées dans le top 15 des tendances, en fonction de son nombre d'abonnés.
-    </span>
-</div>-->
 
-
-<div class="trendings-container " >
-    
-    <div class="small-screen" [@enterFromTopAnimation] *ngIf="see_more">
-        <div class="opened-text"  >
-        
-            <div class="header">
-                <div class="horizontal--bar left"></div>
-                <div class="trendings-logo"></div>
-                <div class="horizontal--bar right"></div>
+<div class="main-title">
+    <span class="title">Le top du jour !</span>
+    <div class="see-more-button">
+        ?
+        <div class="information" >
+            <div class="first-text">
+                <img style="    width: 35px; height: 35px; margin-right: 5px;" src='../../assets/img/tuto-logos/tuto-trendings.svg'>
+                <span>C'est ici que se trouve la liste des meilleures œuvres du jour pour chaque catégorie !
+                </span>
             </div>
-    
-            <span>Bienvenue dans la section Tendances !</span>
-                <div class="horizontal--bar"></div>
-            <span>Vous trouverez ci-dessous la liste des meilleures œuvres du jour pour chaque catégorie. Seules les œuvres monétisées seront affichées.</span>
-            <div class="horizontal--bar"></div>
-            <span>Une rémunération sera attribuée à chaque artiste pour chacune de ses œuvres classées dans le top 15 des tendances, en fonction de son nombre d'abonnés et de sa position dans le classement.</span>
-    
-            <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
-    
+            <div class="first-text" style="margin-bottom: 15px;">
+                <span >Seules les oeuvres monétisées sont autorisées à apparaitre dans ce classement.
+                </span>
+            </div>
+            
+            <div class="second-text">
+                <span>Une rémunération est attribuée à chaque artiste, pour chacune de ses œuvres 
+                </span>
+                <img src='../../assets/img/tuto-logos/tuto-euro.svg'>
+            </div>
+            <div class="second-text">
+                <span style="text-align: justify;"> classées dans le top 15 des tendances, en fonction de son nombre d'abonnés et de sa position dans le classement. 
+                </span>
+            </div>
         </div>
-    
-        <div class="see-less-button" (click)="see_more_button();" 
-        matTooltip="Fermer"
-        matTooltipClass='linkarts-tooltip'
-        [matTooltipPosition]="'below'"
-        [matTooltipShowDelay]="100">
-            <mat-icon [ngClass]="{'invisible': !show_icon,'rotate': !see_more }">close</mat-icon>
-        </div>
-    </div>
-
-  
-    
-</div>
-
-<div *ngIf="!see_more" >
-    <div class="see-less-button less-top" (click)="see_more_button();" 
-    matTooltip="En savoir plus sur les Tendances"
-    matTooltipClass='linkarts-tooltip'
-    [matTooltipPosition]="'below'"
-    [matTooltipShowDelay]="100">
-    <span>?</span>
     </div>
 </div>
 

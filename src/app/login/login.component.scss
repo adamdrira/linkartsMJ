@@ -2,6 +2,23 @@
 @import "../../unsecured-ng-deeps.scss";
 
 
+.logo-container{
+  position: absolute;
+  width: 100%;
+  top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none !important;
+  border: unset;
+  border-radius: 50px;
+  height: 40px;
+  z-index: 10;
+  img{
+    height: 35px;
+  }
+}
+
 .close-button {
   position: absolute;
   right: 14px;
@@ -14,7 +31,7 @@
   border-radius: 50px;
   height: 40px;
   width: 40px;
-  background: white;
+  background: transparent;
   z-index: 10;
   cursor: pointer;
 

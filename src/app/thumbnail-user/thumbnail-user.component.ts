@@ -122,7 +122,7 @@ export class ThumbnailUserComponent implements OnInit {
       });
   
       this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
-        this.author_name = r[0].firstname + ' ' + r[0].lastname;
+        this.author_name = r[0].firstname;
         this.pseudo=r[0].nickname;
         this.occupation=r[0].job;
         this.type_of_account=r[0].type_of_account;

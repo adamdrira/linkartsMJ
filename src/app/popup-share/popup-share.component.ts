@@ -23,10 +23,10 @@ import { SignupComponent } from '../signup/signup.component';
       ],
     ),
     trigger(
-      'enterFromTopAnimation', [
+      'animationStar', [
         transition(':enter', [
-          style({transform: 'translateY(-100%)', opacity: 0}),
-          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+          style({transform: 'translateY(0%)', opacity: 0}),
+          animate('800ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
         ])
       ],
     ),
@@ -35,7 +35,7 @@ import { SignupComponent } from '../signup/signup.component';
         transition(':enter', [
           style({transform: 'translateX(-100%)', opacity: 0}),
           animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
-        ])
+        ]),
       ],
     ),
     trigger(
@@ -43,7 +43,7 @@ import { SignupComponent } from '../signup/signup.component';
         transition(':enter', [
           style({transform: 'translateX(100%)', opacity: 0}),
           animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
-        ])
+        ]),
       ],
     ),
     trigger(
@@ -117,15 +117,15 @@ export class PopupShareComponent implements OnInit {
       return;
     }
     if( !this.hovered[i] ) {
-      this.hovered=[false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+      this.hovered=[];
       this.hovered[i] = !this.hovered[i];
     }
     else {
-      this.hovered=[false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+      this.hovered=[];
     }
   }
   set_page(i:number) {
-    this.hovered=[false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+    this.hovered=[];
     this.page=i;
   }
 
@@ -134,7 +134,6 @@ export class PopupShareComponent implements OnInit {
   registerForm2: FormGroup;
   current_user:any;
   ngOnInit(): void {
-
     if( this.data.tutorial ) {
       this.tutorial = true;
     }
@@ -196,9 +195,12 @@ export class PopupShareComponent implements OnInit {
   }
 
   close_dialog(){
+    this.Profile_Edition_Service.agree_on_tuto();
     this.dialogRef.close();
   }
   end_tutorial() {
+    this.navbar.add_page_visited_to_history(`/end_tuto/${this.data.current_user.id}/`,'' ).subscribe();
+    this.Profile_Edition_Service.agree_on_tuto();
     this.dialogRef.close();
   }
 
@@ -235,12 +237,7 @@ export class PopupShareComponent implements OnInit {
       let name='';
       if(this.type_of_profile=="account"){
         this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-          if(r[0].lastname!=''){
-            name=r[0].firstname + ' ' + r[0].lastname;
-          }
-          else{
-            name=r[0].firstname;
-          }
+          name=r[0].firstname;
           this.send_mail(name)
         })
       }
@@ -258,7 +255,7 @@ export class PopupShareComponent implements OnInit {
   send_mail(name){
     
     name=this.capitalizeFirstLetter(name);
-    this.navbar.add_page_visited_to_history(`/share-maile/${this.type_of_profile}/${name}/${this.registerForm1.value.email}/`,'' ).subscribe();
+    this.navbar.add_page_visited_to_history(`/share-email/${this.type_of_profile}/${name}/${this.registerForm1.value.email}/`,'' ).subscribe();
     this.Profile_Edition_Service.send_share_email(this.registerForm1.value.email,name).subscribe(r=>{
       if(r[0].error){
         this.show_mail_error = false;
@@ -287,5 +284,9 @@ export class PopupShareComponent implements OnInit {
       return;
     }
     normalize_to_nfc(fg,fc);
+  }
+
+  open_share(){
+    this.tutorial=false;
   }
 }

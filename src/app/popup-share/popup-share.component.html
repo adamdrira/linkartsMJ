@@ -1,4 +1,6 @@
 
+
+
 <ng-container *ngIf="!tutorial">
 
     <div class="button-container-close">
@@ -30,7 +32,7 @@
             <div class="step-form" [formGroup]="registerForm1">
                 <div class="form-item" *ngIf="type_of_profile!='account'">
                     <mat-form-field floatLabel='never'>
-                        <mat-label>Votre nom complet</mat-label>
+                        <mat-label>Nom complet</mat-label>
                         <input matInput formControlName="name" maxLength="40" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'name');" tabindex="-1">
                     </mat-form-field>
                 </div>
@@ -129,9 +131,29 @@
 
 <div class="popup-tuto" *ngIf="tutorial">
 
+
+    <img src="../../assets/img/tuto-logos/tuto-projects.svg" class="invisible-height">
+    <img src="../../assets/img/tuto-logos/tuto-benevole.svg" class="invisible-height">
+    <img src="../../assets/img/tuto-logos/tuto-remunere.svg" class="invisible-height">
+    <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="invisible-height" >
+    <img src="../../assets/img/tuto-logos/tuto-trendings.svg" class="invisible-height">
+    <img src="../../assets/img/tuto-logos/tuto-favorites.svg" class="invisible-height">
+    <img src="../../assets/img/tuto-logos/tuto-subscribings.svg" class="invisible-height">
+    <img src="../../assets/img/tuto-logos/tuto-euro.svg" class="invisible-height">
+    <img src="../../assets/img/tuto-logos/tuto-favorites.svg" class="invisible-height">
+    
+   
+
     <div class="button-container-close">
         <button mat-button class="mat-icon-button close-button" (click)="close_dialog()" tabIndex="-1">
             <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" >close</mat-icon>
+        </button>
+    </div>
+
+    
+    <div class=" back" *ngIf="page>0">
+       <button mat-button class="mat-icon-button close-button" (click)="set_page((page > 6) ? (page - 2) : (3 > page || page ==4) ? (page-1) :(page - 3));" tabIndex="-1">
+            <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" >arrow_back_ios</mat-icon>
         </button>
     </div>
 
@@ -144,23 +166,20 @@
     <div class="popup-tuto-page" *ngIf="page==0">
 
         <div class="header">
-            <span class="section-title">Salut ! <br>Une petite présentation, ça vous tente ?</span>
-            <span class="section-description">LinkArts est un outil de collaboration et de promotion pour les acteurs du monde de l’édition. Découvrez la solution adaptée à votre profil. Que vous voyez artiste ou éditeur LinkArts a une solution pour vous !</span>
-        </div>
-
-        <div class="button-container back">
+            <span class="section-title">Hey ! <br>Ça vous dirait de savoir qui nous sommes ?</span>
+            <span class="section-description">LinkArts est un outil de collaboration et de promotion pour les acteurs du monde de l’édition. Que vous voyez artiste ou éditeur, LinkArts a les solutions pour vos besoins. Découvrez donc les solutions adaptées à votre profil !</span>
         </div>
 
         <div class="text-elements-container">
             <div class="text-element centered" [ngClass]="{'hovered': hovered[0] }" (mouseenter)="hovered_div(0)" (mouseleave)="unhovered_div(0)" (click)="set_page(1);">
-
+                
                 <div class="text-container centered">
-                    <img src="../../assets/img/svg/tuto-palette.svg">
+                    <img *ngIf="!hovered[0]" [@enterFromLeftAnimation] src="../../assets/img/tuto-logos/tuto-palette.svg">
                     <div *ngIf="!hovered[0]">
-                        <span  [@enterFromBottomAnimation] class="span-title">Je suis un artiste</span>
+                        <span  [@enterFromRightAnimation] class="span-title">Artiste</span>
                     </div>
                     <div *ngIf="hovered[0]">
-                        <span [@enterFromTopAnimation]>Vous êtes un artiste passionné de bandes dessinées ou de romans et vous désirez vous lancer dans la réalisation d’un projet ambitieux ? Cliquez-ici !</span>
+                        <span [@enterFromRightAnimation]>Vous êtes un ou une artiste passionné de bandes dessinées ou d'écrits, et vous désirez vous lancer dans la réalisation d’un projet éditorial ? Cliquez-ici !</span>
                     </div>
                 </div>
             </div>
@@ -168,28 +187,26 @@
             <div class="text-element centered" (mouseenter)="hovered_div(1)" (mouseleave)="unhovered_div(1)" (click)="set_page(3);">
 
                 <div class="text-container centered">
-                    <img src="../../assets/img/svg/tuto-books.svg">
+                    <img  [@enterFromLeftAnimation]  *ngIf="!hovered[1]" src="../../assets/img/tuto-logos/tuto-books.svg">
                     <div *ngIf="!hovered[1]">
-                        <span [@enterFromBottomAnimation] class="span-title">Je suis un éditeur</span>
+                        <span [@enterFromRightAnimation] class="span-title">Éditeur / Éditrice</span>
                     </div>
                     <div *ngIf="hovered[1]">
-                        <span [@enterFromTopAnimation]>Vous êtes un éditeur et vous souhaitez optimiser le tri de vos candidatures et dénicher des artistes talentueux avec qui collaborer efficacement ? Cliquez-ici !</span>
+                        <span [@enterFromRightAnimation]>Vous êtes un éditeur ou une éditrice et vous souhaitez optimiser le tri de vos candidatures et dénicher des artistes talentueux avec qui collaborer efficacement ? Cliquez-ici !</span>
                     </div>
                 </div>
             </div>
 
-            <div class="text-element centered" (click)="close_dialog();">
-                <div class="text-container centered other">
+            <div class="text-element exit" (click)="close_dialog();"  [@enterFromRightAnimation] >
+                <div class="text-container centered other little">
                     <div>
-                        <span [@enterFromRightAnimation] class="span-title">Ça ira, merci</span>
+                        <span [@enterFromRightAnimation] class="span-title">Ça ira, merci !</span>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <div class="button-container next">
-        </div>
 
     </div>
 
@@ -199,29 +216,22 @@
     <div class="popup-tuto-page" *ngIf="page==1">
 
         <div class="header" [@enterFromRightAnimation]>
-            <span class="section-title">La collaboration</span>
-            <span class="section-description">La section Collaboration est le cœur du site. Vous pourrez y retrouver 3 catégories adaptées à vos ambitions et à vos projets.</span>
+            <span class="section-title">La section collaboration</span>
+            <span class="section-description">La section collaboration est l'une des 2 sections principales du site. Cette section est entièrement dédiée à la collaboration éditoriale, en commençant par la recherche d'un partenaire de projet, jusqu'à la collaboration éditoriale avec une maison d'édition, en passant par la prestation de services artistiques.</span>
         </div>
 
-        <div class="button-container back">
-            <div (click)="set_page(0);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_left</mat-icon>
-            </div>
-        </div>
 
         <div class="text-elements-container">
-            <div class="text-element left" [ngClass]="{'hovered': hovered[2] }" (mouseenter)="hovered_div(2)" (mouseleave)="unhovered_div(2)" (click)="clicked_div(2);">
+           <div class="text-element left" [ngClass]="{'hovered': hovered[2] }" (mouseenter)="hovered_div(2)" (mouseleave)="unhovered_div(2)" (click)="clicked_div(2);">
                 <div class="text-container left">
-                    <img src="../../assets/img/svg/tuto-projects.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-projects.svg" [@enterFromLeftAnimation]>
 
                     <div *ngIf="!hovered[2]">
                         <span class="span-title" [@enterFromLeftAnimation]>Dépôt de projets</span>
                     </div>
                     <div  *ngIf="hovered[2]">
-                        <span [@enterFromRightAnimation]>Vous pourrez y déposer un dossier auprès d’une multitude d’éditeurs en un seul clic !</span>
-                        <br>
-                        <span [@enterFromRightAnimation]>Vous pourrez demander de la part des éditeurs un feedback détaillé ainsi qu’un délai de retour garanti sous 1 à 4 semaines.</span>
-                    </div>                
+                        <span [@enterFromRightAnimation]>Soumettez votre projet auprès d’une multitude d’éditeurs en un seul clic ! Les éditeurs se mobilisent pour vous faire des retours constructifs, en des temps impartis, même si votre projet n'est pas retenu. </span>
+                   </div>                
                 </div>
             </div>
 
@@ -232,32 +242,28 @@
                         <span [@enterFromRightAnimation] class="span-title">Collaborations bénévoles</span>
                     </div>
                     <div *ngIf="hovered[3]">
-                        <span [@enterFromLeftAnimation]>Vous êtes scénariste, écrivain ou dessinateur et il vous manque un artiste de talent pour réaliser votre projet ?</span>
-                        <br>
-                        <span [@enterFromLeftAnimation]>Alors vous pouvez déposer une annonce et dénicher le partenaire idéal avec qui travailler sur la messagerie qui vous est proposée !</span>
+                        <span [@enterFromLeftAnimation]>Vous êtes scénariste, écrivain ou dessinateur et il vous manque un artiste de talent pour réaliser votre projet ? Alors vous pouvez déposer une annonce et dénicher le partenaire idéal avec qui réaliser ce projet !</span>
                     </div>                    
-                    <img src="../../assets/img/svg/tuto-benevole.svg" [@enterFromRightAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-benevole.svg" [@enterFromRightAnimation]>
                 </div>
             </div>
 
             <div class="text-element left" (mouseenter)="hovered_div(4)" (mouseleave)="unhovered_div(4)" (click)="clicked_div(4);">
                 <div class="text-container left">
 
-                    <img src="../../assets/img/svg/tuto-remunere.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-remunere.svg" [@enterFromLeftAnimation]>
                     <div *ngIf="!hovered[4]">
                         <span [@enterFromLeftAnimation] class="span-title">Collaborations rémunérées</span>
                     </div>
                     <div *ngIf="hovered[4]">
-                        <span [@enterFromRightAnimation]>Si vous désirez partager votre savoir ou votre savoir-faire et être payé pour cela, ou que vous recherchez un service particulier, alors vous pouvez aussi déposer une annonce de collaboration rémunérée !</span>
-                        <br>
-                        <span [@enterFromRightAnimation]>Le site se charge de sécuriser les transactions !</span>
+                        <span [@enterFromRightAnimation]>Si vous cherchez à faire valoir votre savoir ou votre savoir-faire, en échange d'une rémunération, ou que vous recherchez un service particulier, alors vous pouvez aussi déposer une annonce de collaboration rémunérée dans cette section !</span>
                     </div>
                 </div>
             </div>
         </div>
 
 
-        <div class="button-container next">
+        <div class="button-container next" [@enterFromRightAnimation]>
             <div (click)="set_page(2);">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_right</mat-icon>
             </div>
@@ -270,16 +276,11 @@
 
         <div class="header" [@enterFromRightAnimation]>
             <span class="section-title">La galerie</span>
-            <span class="section-description">Rien de mieux qu’une galerie pour se promouvoir en tant qu’artiste et découvrir d’autres artistes avec qui collaborer ou de qui s’inspirer.</span>
+            <span class="section-description">Rien de mieux qu’une galerie pour se promouvoir en tant qu’artiste auprès des éditeurs, et découvrir d’autres artistes avec qui collaborer, ou de qui s’inspirer.</span>
         </div>
 
-        <div class="button-container back">
-            <div (click)="set_page(1);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_left</mat-icon>
-            </div>
-        </div>
 
-        <div class="text-elements-container">
+        <div class="text-elements-container" style="height:375px;">
             <div class="text-element right" [ngClass]="{'hovered': hovered[5] }" (mouseenter)="hovered_div(5)" (mouseleave)="unhovered_div(5)" (click)="clicked_div(5);">
                 <div class="text-container right">
 
@@ -287,9 +288,9 @@
                         <span class="span-title" [@enterFromLeftAnimation]>Recommandations</span>
                     </div>
                     <div *ngIf="hovered[5]">
-                        <span [@enterFromRightAnimation]>Vous trouverez dans la galerie une section recommandations où l’on vous propose les artistes et les œuvres qui vous correspondent le mieux en fonction de vos préférences.</span>
+                        <span [@enterFromRightAnimation]>Vous trouverez dans la galerie un onglet recommandations où l’on vous propose quotidiennement des artistes et des œuvres qui correspondent à vos préférences.</span>
                     </div>          
-                    <img src="../../assets/img/svg/tuto-recommendations.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" [@enterFromLeftAnimation]>
 
                 </div>
             </div>
@@ -297,12 +298,12 @@
             <div class="text-element left" (mouseenter)="hovered_div(6)" (mouseleave)="unhovered_div(6)" (click)="clicked_div(6);">
                 <div class="text-container left">
 
-                    <img src="../../assets/img/svg/tuto-subscribings.svg" [@enterFromRightAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-subscribings.svg" [@enterFromRightAnimation]>
                     <div *ngIf="!hovered[6]">
                         <span [@enterFromRightAnimation] class="span-title">Fil d'actualité</span>
                     </div>
                     <div *ngIf="hovered[6]">
-                        <span [@enterFromLeftAnimation]>Une fois que vous aurez publié quelques œuvres, d’autres artistes ou amateurs pourront vous suivre en s’abonnant à votre page pour découvrir vos projets, vous soutenir et suivre vos avancements dans leur fil d’actualité.</span>
+                        <span [@enterFromLeftAnimation]>Une fois que vous aurez créé un compte, d’autres artistes ou amateurs pourront vous suivre en s’abonnant à votre page pour découvrir vos projets, vous soutenir et suivre vos avancements dans leur fil d’actualité.</span>
                     </div>                    
                 </div>
             </div>
@@ -314,12 +315,12 @@
                         <span [@enterFromLeftAnimation] class="span-title">Tendances</span>
                     </div>
                     <div *ngIf="hovered[7]">
-                        <span [@enterFromRightAnimation]>Les œuvres les plus populaires du jour sont classées dans la section Tendances. A chaque fois qu’une de vos œuvres atteint le top 15 des Tendances selon votre catégorie, vous reçevez une rémunération proportionnelle à votre nombre d’abonnés !</span>
+                        <span [@enterFromRightAnimation]>Les œuvres les plus populaires du jour sont classées dans l'onglet Tendances. À chaque fois qu’une de vos œuvres atteint le top 15 des Tendances dans votre catégorie, vous recevrez une rémunération proportionnelle à votre nombre d’abonnés !</span>
                     </div>
-                    <img src="../../assets/img/svg/tuto-trendings.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-trendings.svg" [@enterFromLeftAnimation]>
 
-                    <div class="logo-euro">
-                        <img src="../../assets/img/svg/tuto-euro.svg">
+                    <div class="logo-euro"  *ngIf="!hovered[7]" [@animationStar]>
+                        <img src="../../assets/img/tuto-logos/tuto-euro.svg">
                     </div>
                 </div>
             </div>
@@ -327,23 +328,23 @@
             <div class="text-element left" (mouseenter)="hovered_div(8)" (mouseleave)="unhovered_div(8)" (click)="clicked_div(8);">
                 <div class="text-container left">
 
-                    <img src="../../assets/img/svg/tuto-favorites.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-favorites.svg" [@enterFromLeftAnimation]>
                     <div *ngIf="!hovered[8]">
                         <span [@enterFromLeftAnimation] class="span-title">Coups de cœur</span>
                     </div>
                     <div *ngIf="hovered[8]">
-                        <span [@enterFromRightAnimation]>Les artistes les plus actifs et les plus populaires sont classés dans la section Coups de cœur. Le classement évolue chaque jour mais un jour compte plus que les autres, le lundi ! Si vous atteignez le top 15 des Coups de cœur le lundi alors vous reçevez une rémunération proportionnelle à votre nombre d’abonnés.</span>
+                        <span [@enterFromRightAnimation]>Les artistes les plus actifs et populaires sont classés dans l'onglet Coup de cœur. À chaque fois que vous atteignez le top 15, dans une des catégories, vous recevrez une rémunération proportionnelle à votre nombre d’abonnés !</span>
                     </div>
 
-                    <div class="logo-euro">
-                        <img src="../../assets/img/svg/tuto-euro.svg">
+                    <div class="logo-euro" *ngIf="!hovered[8]" [@animationStar]>
+                        <img src="../../assets/img/tuto-logos/tuto-euro.svg">
                     </div>
                 </div>
             </div>
         </div>
 
-        <div *ngIf="hovered[5]" class="absolute-words" [@animation]>
-            <span class="p1 italic dark">Poésie</span>
+        <div *ngIf="hovered[5]" class="absolute-words" [@animationStar]>
+            <span class="p1 italic dark">Romans illustrés</span>
             <span class="p2 normal">Stories</span>
             <span class="p3 light">Mangas</span>
             <span class="p4 dark">BD</span>
@@ -354,23 +355,23 @@
             <span class="p9 italic dark">Scénario & Pitch</span>
             <span class="p10 normal">Romans</span>
             
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s1">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s2">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s3">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s4">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s5">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s6">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s7">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s8">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s9">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s10">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s11">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s12">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s13">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s1">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s2">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s3">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s4">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s5">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s6">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s7">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s8">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s9">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s10">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s11">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s12">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s13">
 
         </div>
 
-        <div class="button-container next">
+        <div class="button-container next" [@enterFromRightAnimation]>
             <div (click)="set_page(5);">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_right</mat-icon>
             </div>
@@ -383,34 +384,32 @@
     <div class="popup-tuto-page" *ngIf="page==3">
 
         <div class="header" [@enterFromRightAnimation]>
-            <span class="section-title">La collaboration</span>
-            <span class="section-description">La section Collaboration est le cœur du site. Vous pourrez y retrouver plusieurs catégories mais celle qui vous intéresse en tant qu’éditeur, c’est la catégorie Dépôt de projets !</span>
+            <span class="section-title">La section collaboration</span>
+            <span class="section-description">La section collaboration est l'une des 2 sections principales du site. Cette section est entièrement dédiée à la collaboration éditoriale. C'est ici que les artistes pourront vous soumettre leurs projets, collaborer entre et réaliser des prestations de services artistiques.</span>
         </div>
 
-        <div class="button-container back">
-            <div (click)="set_page(0);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_left</mat-icon>
-            </div>
-        </div>
 
         <div class="text-elements-container">
 
             <div class="text-element"></div>
+
             <div class="text-element left" [ngClass]="{'hovered': hovered[9] }" (mouseenter)="hovered_div(9)" (mouseleave)="unhovered_div(9)" (click)="clicked_div(9);">
                 <div class="text-container left">
-                    <img src="../../assets/img/svg/tuto-projects.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-projects.svg" [@enterFromLeftAnimation]>
 
                     <div *ngIf="!hovered[9]">
                         <span class="span-title" [@enterFromLeftAnimation]>Dépôt de projets</span>
                     </div>
                     <div  *ngIf="hovered[9]">
-                        <span [@enterFromRightAnimation]>Les artistes devront payer, selon le tarif que vous souhaitez, pour que leurs dossiers soient étudiés et qu’un feedback leur soit rendu !</span>
-                        <br>
-                        <span [@enterFromRightAnimation]>Vous pourrez trier les artistes selon leur popularité au sein du site et avoir facilement accès à leur compte LinkArts et ceux de leurs autres réseaux.</span>
-                    </div>                
+                        <span [@enterFromRightAnimation]>Déposer son projet auprès d'une maison d'édition devient désormais payant ! En échange, les artistes reçoivent des feed-backs constructifs en des temps impartis, selon vos tarifs. Par ailleurs, dans l'objectif de faciliter vos tris de candidatures, nous vous proposons de nombreuses statistiques gratuites vous permettant de hiérarchiser les artistes.</span>
+                   </div>    
+                    <div class="logo-euro" *ngIf="!hovered[9]" [@animationStar]>
+                        <img src="../../assets/img/tuto-logos/tuto-euro.svg">
+                    </div>            
                 </div>
             </div>
             <div class="text-element"></div>
+
             <div class="text-element right" (mouseenter)="hovered_div(13)" (mouseleave)="unhovered_div(13)" (click)="clicked_div(13);">
                 <div class="text-container right">
 
@@ -418,34 +417,21 @@
                         <span [@enterFromLeftAnimation] class="span-title">Collaborations rémunérées</span>
                     </div>
                     <div *ngIf="hovered[13]">
-                        <span [@enterFromRightAnimation]>Vous pouvez accéder ou proposer des offres de collaboration rémunérées pour trouver la bonne personne !</span>
-                        <br>
-                        <span [@enterFromRightAnimation]>Le site se charge de sécuriser les transactions !</span>
+                        <span [@enterFromRightAnimation]>Si vous désirez collaborer avec un artiste pour une mission précise, que vous recherchez un éditeur pour rejoindre votre équipe ou que désirez une prestation de service artistique, alors vous pouvez déposer une annonce de collaboration rémunérée.</span>
                     </div>
                     
-                    <img src="../../assets/img/svg/tuto-remunere.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-remunere.svg" [@enterFromLeftAnimation]>
                 </div>
             </div>
             <div class="text-element"></div>
             <div class="text-element"></div>
         </div>
 
-        <div *ngIf="hovered[9]" class="absolute-words" [@animation]>
-            <span class="p11 italic dark">Mangas</span>
-            <span class="p12 normal">Comics</span>
-            <span class="p13 light">BD Jeunesse</span>
-            <span class="p14 dark">BD de genre</span>
-            <span class="p15 light">Romans</span>
-            <span class="p16 light2">Romans illustrés</span>
-            <span class="p17 normal">Nouvelles</span>
-            <span class="p18 light2">Poésie</span>
-            <span class="p19 italic dark">Artbook</span>
-
-        </div>
+        
 
 
 
-        <div class="button-container next">
+        <div class="button-container next" [@enterFromRightAnimation]>
             <div (click)="set_page(4);">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_right</mat-icon>
             </div>
@@ -458,13 +444,7 @@
 
         <div class="header" [@enterFromRightAnimation]>
             <span class="section-title">La galerie</span>
-            <span class="section-description">Rien de mieux qu’une galerie pour dénicher des artistes de talent.</span>
-        </div>
-
-        <div class="button-container back">
-            <div (click)="set_page(3);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_left</mat-icon>
-            </div>
+            <span class="section-description">Rien de mieux qu’une galerie pour dénicher des artistes de talent et faire sa promotion.</span>
         </div>
 
         <div class="text-elements-container">
@@ -475,9 +455,9 @@
                         <span class="span-title" [@enterFromLeftAnimation]>Recommandations</span>
                     </div>
                     <div *ngIf="hovered[10]">
-                        <span [@enterFromRightAnimation]>Vous trouverez dans la galerie une section recommandation où l’on vous propose les artistes et les œuvres qui vous correspondent le mieux en fonction de vos préférences.</span>
+                        <span [@enterFromRightAnimation]>Vous retrouverez dans la galerie un onglet recommandation, où l’on vous propose quotidiennement des artistes et des œuvres qui correspondent à vos préférences.</span>
                     </div>          
-                    <img src="../../assets/img/svg/tuto-recommendations.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" [@enterFromLeftAnimation]>
 
                 </div>
             </div>
@@ -485,13 +465,13 @@
             <div class="text-element left" (mouseenter)="hovered_div(11)" (mouseleave)="unhovered_div(11)" (click)="clicked_div(11);">
                 <div class="text-container left">
 
-                    <img src="../../assets/img/svg/tuto-favorites.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-favorites.svg" [@enterFromLeftAnimation]>
 
                     <div *ngIf="!hovered[11]">
                         <span [@enterFromLeftAnimation] class="span-title">Coups de cœur</span>
                     </div>
                     <div *ngIf="hovered[11]">
-                        <span [@enterFromRightAnimation]>Vous trouverez aussi dans la galerie une section Coups de cœurs où sont classés les 30 artistes les plus actifs et les plus populaires du site.</span>
+                        <span [@enterFromRightAnimation]>Les 30 artistes les plus actifs et les plus populaires du site sont classés dans l'onglet Coup de cœur.</span>
                     </div>
                 </div>
             </div>
@@ -503,18 +483,18 @@
                         <span [@enterFromLeftAnimation] class="span-title">Tendances</span>
                     </div>
                     <div *ngIf="hovered[12]">
-                        <span [@enterFromRightAnimation]>Vous pourrez aussi trouver dans la galerie les œuvres les plus populaires du jour selon l’une de ces 3 catégories : bandes dessinées, dessins et écrit.</span>
+                        <span [@enterFromRightAnimation]>Vous retrouvez aussi dans cette section, un onglet Tendances, où sont classés les 15 œuvres les plus populaires du jour selon l’une de ces 3 catégories : bandes dessinées, dessins et écrits.</span>
                     </div>
 
-                    <img src="../../assets/img/svg/tuto-trendings.svg" [@enterFromLeftAnimation]>
+                    <img src="../../assets/img/tuto-logos/tuto-trendings.svg" [@enterFromLeftAnimation]>
                 </div>
             </div>
             
             <div class="text-element"></div>
         </div>
 
-        <div *ngIf="hovered[10]" class="absolute-words" [@animation]>
-            <span class="p1 italic dark">Poésie</span>
+        <div *ngIf="hovered[10]" class="absolute-words editors" [@animationStar]>
+            <span class="p1 italic dark">Romans illustrés</span>
             <span class="p2 normal">Stories</span>
             <span class="p3 light">Mangas</span>
             <span class="p4 dark">BD</span>
@@ -525,23 +505,23 @@
             <span class="p9 italic dark">Scénario & Pitch</span>
             <span class="p10 normal">Romans</span>
             
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s1">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s2">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s3">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s4">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s5">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s6">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s7">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s8">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s9">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s10">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s11">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s12">
-            <img src="../../assets/img/svg/tuto-recommendations.svg" class="s13">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s1">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s2">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s3">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s4">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s5">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s6">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s7">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s8">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s9">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s10">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s11">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s12">
+            <img src="../../assets/img/tuto-logos/tuto-recommendations.svg" class="s13">
 
         </div>
 
-        <div class="button-container next">
+        <div class="button-container next" [@enterFromRightAnimation]>
             <div (click)="set_page(6);">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_right</mat-icon>
             </div>
@@ -555,24 +535,12 @@
 
         <div class="header" [@enterFromRightAnimation]>
             <span class="section-title">La messagerie</span>
-            <span class="section-description">La messagerie est l’outil de travail indispensable en tant qu’artiste ou éditeur une fois que vous avez trouvé un collaborateur ! De nombreuses fonctionnalités innovantes et indispensables y sont disponibles.</span>
+            <span class="section-description">La messagerie est l’outil de travail indispensable en tant qu’artiste ou éditeur, une fois que vous aurez trouvé votre collaborateur ! De nombreuses fonctionnalités innovantes et indispensables pour vous aider à travailler y sont disponibles.</span>
         </div>
 
-        <div class="button-container back" *ngIf="page==5">
-            <div (click)="set_page(2);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_left</mat-icon>
-            </div>
-        </div>
-        <div class="button-container back" *ngIf="page==6">
-            <div (click)="set_page(4);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_left</mat-icon>
-            </div>
-        </div>
-
-        
         <div class="text-elements-container">
             <div class="text-element right">
-                <div class="text-container right">
+                <div class="text-container right " style="cursor: default;">
 
                     <div>
                         <span [@enterFromRightAnimation] class="span-title no-logo">Communication en temps réel avec un ou plusieurs collaborateurs</span>
@@ -581,7 +549,7 @@
                 </div>
             </div>
             <div class="text-element left">
-                <div class="text-container left">
+                <div class="text-container left" style="cursor: default;">
 
                     <div>
                         <span [@enterFromRightAnimation] class="span-title no-logo">Création de sous-discussions au sein d’une même discussion</span>
@@ -590,7 +558,7 @@
                 </div>
             </div>
             <div class="text-element right">
-                <div class="text-container right">
+                <div class="text-container right" style="cursor: default;">
 
                     <div>
                         <span [@enterFromRightAnimation] class="span-title no-logo">Création de dossiers pour archiver et trier ses fichiers partagés</span>
@@ -599,7 +567,7 @@
                 </div>
             </div>
             <div class="text-element left">
-                <div class="text-container left">
+                <div class="text-container left" style="cursor: default;">
 
                     <div>
                         <span [@enterFromRightAnimation] class="span-title no-logo">Édition d’images pour faciliter la communication entre collaborateurs</span>
@@ -612,12 +580,12 @@
         </div>
 
 
-        <div class="button-container next" *ngIf="page==5">
+        <div class="button-container next" *ngIf="page==5" [@enterFromRightAnimation]>
             <div (click)="set_page(7);">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_right</mat-icon>
             </div>
         </div>
-        <div class="button-container next" *ngIf="page==6">
+        <div class="button-container next" *ngIf="page==6" [@enterFromRightAnimation]>
             <div (click)="set_page(8);">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_right</mat-icon>
             </div>
@@ -628,47 +596,31 @@
 
 
     <!--page 7-->
-    <div class="popup-tuto-page" *ngIf="page==7 || page==8">
+    <div class="popup-tuto-page" *ngIf="page==7 || page==8" >
 
         <div class="header" [@enterFromRightAnimation]>
-            <span class="section-title">Un petit mot pour la fin ...</span>
-            <span class="section-description">Un grand merci à vous d’avoir pris le temps de découvrir notre projet. Nous espérons sincèrement que le site web pourra vous aider à réaliser les chefs d’œuvres de demain avec les collaborateurs de vos rêves !</span>
+            <span class="section-title">Merci à vous !</span>
+            <span class="section-description">Un grand merci à vous d’avoir pris le temps de découvrir notre projet ! Nous espérons sincèrement que le site web pourra vous aider à avancer dans vos projets éditoriaux, qu'ils soient ambitieux ou juste divertissants.</span>
         </div>
-
-        <div class="button-container back" *ngIf="page==7">
-            <div (click)="set_page(5);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_left</mat-icon>
-            </div>
-        </div>
-        <div class="button-container back" *ngIf="page==8">
-            <div (click)="set_page(6);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_left</mat-icon>
-            </div>
-        </div>
-
         
         <div class="text-elements-container">
-            <div class="text-element left"></div>
             <div class="text-element left">
                 <div class="text-container left">
-
-                    <div class="email-form" [formGroup]="registerForm2">
-                        <input type="text" formControlName="email" [ngClass]="{'invalid': invalid_email }" (input)="check_value();" [placeholder]="'Laisser mon adresse e-mail'">
-                        <div class="submit-mail" (click)="send_email();">Envoyer</div>
+                    <div  [@enterFromLeftAnimation] class="email-form" (click)="open_share();">
+                        <div class="submit-mail">Partager le site</div>
                     </div>
 
                 </div>
             </div>
-
+            
             <div class="text-element left">
                 <div class="text-container left">
-
-                    <div class="email-form" (click)="signup();">
+                    <div  [@enterFromLeftAnimation] class="email-form" (click)="close_dialog();signup();">
                         <div class="submit-mail">M'inscrire</div>
                     </div>
-
                 </div>
             </div>
+            <div class="text-element"></div>
             <div class="text-element left"></div>
             
 
@@ -676,7 +628,7 @@
         </div>
 
 
-        <div class="button-container next last">
+        <div class="button-container next last" [@enterFromRightAnimation]>
             <div (click)="end_tutorial();">
                 <span>J'ai compris, merci !</span>
             </div>
@@ -685,7 +637,13 @@
 
 
 
-
+    <div class="status-container">
+        <div class="status step0" [ngStyle]="{'width': page==1 || page==3 ? '25%' : '0%' }"></div>
+        <div class="status step1" [ngStyle]="{'width': page==2 || page==4 ? '50%' : '0%' }"></div>
+        <div class="status step2" [ngStyle]="{'width': page==5 || page==6 ? '75%' : '0%' }"></div>
+        <div class="status step3" [ngStyle]="{'width': page==7 || page==8 ? '100%' : '0%'}"></div>
+        
+    </div>
 
 
 </div>
