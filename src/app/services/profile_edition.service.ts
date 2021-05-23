@@ -155,8 +155,11 @@ export class Profile_Edition_Service {
   }
 
   get_cookies(){
-    
     return this.CookieService.get('a_cookies');
+  }
+
+  get_tuto_cookies(){
+    return this.CookieService.get('a_tuto');
   }
   
   agree_on_cookies(){
@@ -166,6 +169,9 @@ export class Profile_Edition_Service {
     }));
   }
   
+  agree_on_tuto(){
+    this.CookieService.set('a_tuto', JSON.stringify([{agreement:"ok"}]), 365*10, '/','localhost',undefined,'Lax');
+  }
 
   get_user_id_by_pseudo(pseudo){
     return this.httpClient.get(`routes/get_user_id_by_pseudo/${pseudo}`,{withCredentials:true} ).pipe(map((information)=>{
@@ -239,8 +245,8 @@ export class Profile_Edition_Service {
     }));
   }
 
-  check_email(user,index){
-    return this.httpClient.post<any>('api/users/check_email', { user: user}).pipe(map(res => {
+  check_email(email,index){
+    return this.httpClient.post<any>('api/users/check_email', { email: email}).pipe(map(res => {
         return [res,index];
     }));
   }
@@ -253,6 +259,12 @@ export class Profile_Edition_Service {
 
 
   //edit user information
+
+  edit_account_artist_signup(id_user,primary_description,location,birthday,siret,society){
+    return this.httpClient.post('routes/edit_account_artist_signup', {id_user:id_user,primary_description:primary_description, location:location,birthday:birthday,siret:siret,society:society},{withCredentials: true}  ).pipe(map((information)=>{
+      return information;
+    }));
+  }
 
 
   edit_account_about_1(type_of_account,siret,primary_description,primary_description_extended,job,training){
@@ -268,8 +280,8 @@ export class Profile_Edition_Service {
 
   }
 
-  edit_account_about_3(firstname,lastname,birthday) {
-    return this.httpClient.post('routes/edit_account_about_3',{firstname:firstname,lastname:lastname,birthday:birthday},{withCredentials:true} ).pipe(map((information)=>{
+  edit_account_about_3(firstname,birthday) {
+    return this.httpClient.post('routes/edit_account_about_3',{firstname:firstname,birthday:birthday},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }
@@ -430,8 +442,8 @@ export class Profile_Edition_Service {
     }));
   }
 
-  send_message_contact_us(firstname,lastname,email,message){
-    return this.httpClient.post('routes/send_message_contact_us',{firstname:firstname,lastname:lastname,email:email,message:message},{withCredentials:true} ).pipe(map((information)=>{
+  send_message_contact_us(firstname,email,message){
+    return this.httpClient.post('routes/send_message_contact_us',{firstname:firstname,email:email,message:message},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }

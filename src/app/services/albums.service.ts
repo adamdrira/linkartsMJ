@@ -73,7 +73,6 @@ change_drawing_album_status(album_name,current_status,new_status){
 }
 
 remove_drawing_album(album_name,current_status){
-  console.log(album_name);
   return this.httpClient.delete(`routes/remove_drawing_album/${album_name}/${current_status}`, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
@@ -93,8 +92,6 @@ change_comic_album_status(album_name,current_status,new_status){
 }
 
 remove_comic_album(album_name,current_status){
-  console.log(album_name);
-  console.log(current_status);
   return this.httpClient.delete(`routes/remove_comic_album/${album_name}/${current_status}`, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
@@ -108,8 +105,6 @@ change_writing_album_status(album_name,current_status,new_status){
 }
 
 remove_writing_album(album_name,current_status){
-  console.log(album_name);
-  console.log(current_status);
   return this.httpClient.delete(`routes/remove_writing_album/${album_name}/${current_status}`, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));

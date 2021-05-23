@@ -17,8 +17,7 @@ export class ConstantsService {
   "Policier","Réaliste","Réflexions","Religion","Romantique","Satirique","SF","Sociologie","Spatial","Spiritualité","Sport","Survie","Thriller","Voyage","Webtoon","Western"];
   comics_filters=["Action","Animaux","Art","Aventure","Biographie","Caricatural","Drame","Enigmatique","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kawaii","Kodomo","Nekketsu","Pantso shoto","Philosophie","Photographie","Polar","Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Spatial","Sport","Survie","Thriller","Voyage","Western","Yaoi","Yuri"];
   
-  type_of_accounts=["Artistes","Artistes professionnels", "Artiste", "Artiste professionnel","Artiste professionnelle", "Maison d'édition",
-  "Editeur","Editrice","Professionnels non artistes","Professionnel non artiste","Professionnelle non artiste","Passionné","Passionnée"];
+  type_of_accounts=["Artiste","Éditeur / Éditrice","Fan"];
   
   ads_types=["Tout","Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
   "Dessin traditionnel","Écrits","Article","Poésie","Roman","Roman illustré","Scénario"];
