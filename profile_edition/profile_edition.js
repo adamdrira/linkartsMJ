@@ -3244,7 +3244,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous souhaitons la bienvenue sur LinkArts !</p>
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez dès à présent cliquer sur le bouton ci-dessous pour confirmer votre inscription et compléter votre profil : </p>
                       <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                          <a href="http://localhost:4200/home/registration/${user.id}/${password}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                          <a href="https://www.linkarts.fr/home/registration/${user.id}/${password}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                               Confirmer mon inscription
                           </a>
                       </div>`
@@ -3268,7 +3268,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous invitons aussi à prouver votre relation avec la société que vous représentée, en nous fourinissant les justificatifs nécessaires, qui vous sont demandée dans l'onglet "mon compte" de vote profil.</p>
                         <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
                         <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                          <a href="http://localhost:4200/account/${user.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                          <a href="https://www.linkarts.fr/account/${user.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
                               Accéder à mon compte
                           </a>
                       </div>
@@ -3328,8 +3328,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            //to: user.email, // my mail
-            to:"appaloosa-adam@hotmail.fr",
+            to: user.email, // my mail
+            //to:"appaloosa-adam@hotmail.fr",
             subject: `Bienvenue sur LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3839,7 +3839,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
                   to: user_found.email, // my mail
-                  //to:"appaloosa-adam@hotmail.fr",
+                  //to:"sa-adam@hotmail.fr",
                   subject: `Création de groupe`, // Subject line
                   html:  mail_to_send, // html body
                 };
