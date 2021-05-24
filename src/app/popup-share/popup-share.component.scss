@@ -902,7 +902,7 @@
         .mat-dialog-container {
             padding: 0px;
             overflow-y: auto;
-            overflow-x: auto;
+            overflow-x: hidden;
         }
     }
     .popupTutoClass {
@@ -913,7 +913,7 @@
         .mat-dialog-container {
             padding: 0px;
             overflow-y: auto;
-            overflow-x: auto;
+            overflow-x: hidden;
             max-height: 95vh;
             @media (max-width: 650px) {
                 max-height: unset;
