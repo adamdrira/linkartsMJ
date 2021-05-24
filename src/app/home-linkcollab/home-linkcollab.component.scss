@@ -31,9 +31,7 @@
       }
     }
 
-    @media (max-width: 600px) {
-      display: none !important;
-    }
+    
   }
   
   .component-container {
@@ -93,10 +91,13 @@
         max-width: 900px;
         font-weight: 450;
         span {
-          font-size:16px;
+          font-size:14px;
         }
         @media  (max-width: 600px) {
-         display: none !important;
+          padding: 10px;
+          span {
+            font-size:13px;
+          }
         }
       }
 
@@ -1287,7 +1288,6 @@
     .mat-form-field .mat-form-field-flex {
         background: rgb(255 255 255) !important;
         font-weight: 600;
-        border: 2px solid #203864;
         box-shadow: 0px 0px 0px 2px #203864;
         border-radius: 30px;
         padding-right: 10px !important;
@@ -1298,7 +1298,6 @@
 
     .mat-form-field.mat-focused .mat-form-field-flex {
         box-shadow: 0px 0px 0px 4px #334a711c;
-        //border: 1px solid rgb(240, 240, 240);
     }
 
     .mat-form-field-appearance-legacy .mat-form-field-subscript-wrapper {

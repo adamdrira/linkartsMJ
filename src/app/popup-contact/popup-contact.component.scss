@@ -358,7 +358,8 @@ $default-color: #203864;
             border-radius: 0px !important;
             position: absolute !important;
 
-            transition: bottom 200ms !important;
+            transition: bottom 400ms !important;
+            transform: translateY(100%);
             animation: slideDown 400ms forwards 0s ease-in-out;
 
             .mat-dialog-container {
@@ -367,6 +368,15 @@ $default-color: #203864;
         }
     }
 }
+
+@keyframes slideDown {
+    0% {
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
 .sent-mail-icon {
     display:flex;
     cursor:default;

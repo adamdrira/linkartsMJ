@@ -35,7 +35,7 @@
         
             <div class="buttons-container">
 
-                <div class="left-options" [ngClass]="{'closed': optionOpened!=0}" (click)="openOption(0);">
+                <div class="left-options" [ngClass]="{'closed': optionOpened!=0,'really-invisible':serie_clicked}" (click)="openOption(0);"  [@enterFromLeftAnimation] >
 
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="smallScreen" *ngIf="optionOpened!=0">
                         video_settings
@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-                <div *ngIf="type=='serie'" class="serie-container" [ngClass]="{'closed': optionOpened!=1}" (click)="openOption(1);">
+                <div *ngIf="type=='serie' && !video_clicked" class="serie-container" [ngClass]="{'closed': optionOpened!=1}" (click)="openOption(1);"  [@enterFromLeftAnimation] >
                     
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="smallScreen" *ngIf="optionOpened!=1">
                         menu_book
@@ -120,7 +120,8 @@
                                     <ng-container *ngIf="chapter_filter_bottom_to_top">
                                         <ng-container *ngFor="let item of chapterList; let i = index " >
                                             <mat-option [value]="i">
-                                                <span>Chap. {{item.chapter_number}} : {{item.title}}</span>
+                                                <span *ngIf="show_all_chapter">Chap. {{item.chapter_number}} : {{item.title}}</span>
+                                                <span *ngIf="!show_all_chapter">Chapitre {{item.chapter_number}}</span>
                                             </mat-option>
                                         </ng-container>
                                     </ng-container>
@@ -128,7 +129,8 @@
                                     <ng-container *ngIf="!chapter_filter_bottom_to_top">
                                         <ng-container *ngFor="let item of chapterList; let i = index " >
                                             <mat-option  [value]="chapterList.length-i-1">
-                                                <span>Chap. {{chapterList[chapterList.length-i-1].chapter_number}} : {{chapterList[chapterList.length-i-1].title}}</span>
+                                                <span *ngIf="show_all_chapter">Chap. {{chapterList[chapterList.length-i-1].chapter_number}} : {{chapterList[chapterList.length-i-1].title}}</span>
+                                                <span *ngIf="!show_all_chapter">Chapitre {{chapterList[chapterList.length-i-1].chapter_number}}</span>
                                             </mat-option>
                                         </ng-container>
                                     </ng-container>

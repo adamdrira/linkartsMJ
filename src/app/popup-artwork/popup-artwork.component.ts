@@ -1,8 +1,9 @@
-import { Component,Inject, OnInit, ViewChild } from '@angular/core';
+import { Component,Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { NavbarService } from '../services/navbar.service';
 
 @Component({
   selector: 'app-popup-artwork',
@@ -23,6 +24,7 @@ export class PopupArtworkComponent implements OnInit {
 
   constructor(
     private router:Router,
+    public navbar: NavbarService,
     private location:Location,
     public dialogRef: MatDialogRef<PopupArtworkComponent>,
     public dialog: MatDialog,
@@ -43,10 +45,22 @@ export class PopupArtworkComponent implements OnInit {
   remove_popup_artwork(event) {
     this.dialogRef.close();
     this.location.go(this.current_url);
+    if(this.current_url.includes("home")){
+      this.navbar.setActiveSection(0);
+    }
+    else if(this.current_url.includes("linkcollab")){
+      this.navbar.setActiveSection(1);
+    }
   }
 
   remove_popup_artwork_click(event){
     this.dialogRef.close();
     this.location.go(this.current_url);
+    if(this.current_url.includes("home")){
+      this.navbar.setActiveSection(0);
+    }
+    else if(this.current_url.includes("linkcollab")){
+      this.navbar.setActiveSection(1);
+    }
   }
 }

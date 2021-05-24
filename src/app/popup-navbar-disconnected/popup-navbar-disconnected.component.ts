@@ -89,7 +89,6 @@ export class PopupNavbarDisconnectedComponent implements OnInit {
   }
 
   open_share() {
-    this.close_dialog();
     const dialogRef = this.dialog.open(PopupShareComponent, {
       data:{type_of_profile:"visitor"},
       panelClass:"popupShareClass"
@@ -99,8 +98,20 @@ export class PopupNavbarDisconnectedComponent implements OnInit {
     }
     
   }
+
+  open_tuto() {
+    this.navbar.add_page_visited_to_history(`/open_tuto/${this.current_user.id}/`,'' ).subscribe();
+    const dialogRef = this.dialog.open(PopupShareComponent, {
+      data:{type_of_profile:"visitor", tutorial:true,current_user:this.current_user},
+      panelClass:"popupTutoClass"
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.open_share()
+      }
+    })
+  }
   open_contact() {
-    this.close_dialog();
     const dialogRef = this.dialog.open(PopupContactComponent, {
       data:{current_user:this.current_user},
       panelClass:"popupContactComponentClass"

@@ -122,23 +122,10 @@
               <span>Mon compte</span>
             </div>
            
-            <a href="/services/0" class="option-element">
+            <button class="option-element"tabIndex="-1" mat-menu-item (click)="open_tuto()">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-              <span>Qui sommes-nous ?</span>
-            </a>
-            <a href="/services/1" class="option-element">
-              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-              <span>Mentions légales</span>
-            </a>
-            <a href="/services/2" class="option-element">
-              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
-              <span>Conditions d'utilisation</span>
-            </a>
-            <a href="/services/4" class="option-element">
-              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
-              <span>Confidentialité et sécurité</span>
-            </a>
-
+              <span>Qui sommes nous ?</span>
+            </button>
             <div class="option-element" (click)="open_share()">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
               <span>Partager le site</span>
@@ -153,6 +140,21 @@
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">groups</mat-icon>
               <span>Nous soutenir</span>
             </a>
+            
+            <a href="/services/1" class="option-element">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
+              <span>Mentions légales</span>
+            </a>
+            <a href="/services/2" class="option-element">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
+              <span>Conditions d'utilisation</span>
+            </a>
+            <a href="/services/4" class="option-element">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
+              <span>Confidentialité et sécurité</span>
+            </a>
+
+            
             
             <div class="option-element" (click)="logout()">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>

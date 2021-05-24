@@ -46,6 +46,7 @@ export class PopupCommentsComponent  {
   format=this.data.format;
   style=this.data.style;
   visitor_id=this.data.visitor_id;
+  visitor_mode=this.data.visitor_mode;
   visitor_name=this.data.visitor_name
   publication_id=this.data.publication_id;
   chapter_number=this.data.chapter_number;

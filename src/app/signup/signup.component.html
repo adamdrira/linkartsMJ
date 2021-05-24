@@ -23,7 +23,6 @@
             <span>Bienvenue sur LinkArts ! </span>
         </div>
 
-        
 
         <div class="step-form" [formGroup]="registerForm1">
 
@@ -105,9 +104,9 @@
         <div class="form-item height-unset">
             <div class="cgu-container">
                 <mat-slide-toggle [checked]="cgu_accepted" (change)="setCgu( $event )" style="font-weight:bold;">
-                    J'accepte les conditions d'utilisation
+                    J'accepte
                 </mat-slide-toggle>
-                <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
+                <span (click)="read_conditions();" class="read_conditions">les conditions d'utilisation</span>
             </div>
         </div>
 
@@ -177,7 +176,7 @@
            
             <div class="form-item" style="height:unset !important; margin-bottom: 15px;"  *ngIf="registerForm1.value.type_of_account=='Artiste'">
                 <mat-form-field floatLabel='never'>
-                    <mat-label> Quel type d'artiste êtes-vous ? <br> E.g. Je suis un scénariste de bandes dessinées.</mat-label>
+                    <mat-label> Quel type d'artiste êtes-vous ? <br> E.g. Je suis un scénariste de mangas.</mat-label>
                     <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm2, 'primary_description');"></textarea>
                    <mat-error *ngIf="registerForm2.controls['primary_description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                     </mat-error>

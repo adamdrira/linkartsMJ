@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ConstantsService } from '../services/constants.service';
 import { merge, fromEvent } from 'rxjs';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { Meta, Title } from '@angular/platform-browser';
 
 declare var Swiper: any
 
@@ -104,7 +105,8 @@ export class HomeLinkcollabComponent implements OnInit {
     public dialog: MatDialog,
     private constants:ConstantsService,
     private fb: FormBuilder,
-
+    private title: Title,
+    private meta: Meta,
     
     ) {
       navbar.visibility_observer_font.subscribe(font=>{
@@ -168,7 +170,9 @@ export class HomeLinkcollabComponent implements OnInit {
   /*********************************************************************** */
   
   ngOnInit() {
-    
+    this.title.setTitle('LinkArts – Collaboration éditoriale');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+
     window.scroll(0,0);
     this.open_category(0, true);
 

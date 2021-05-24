@@ -1350,7 +1350,6 @@ change_message_status(event){
   }
 
   open_share() {
-    this.close_dialog();
     const dialogRef = this.dialog.open(PopupShareComponent, {
       data:{type_of_profile:"account"},
       panelClass:"popupShareClass"
@@ -1358,14 +1357,25 @@ change_message_status(event){
     this.navbar.add_page_visited_to_history(`/open-share-maile/account/${this.user_id}/`,this.device_info ).subscribe();
   }
   open_contact() {
-    this.close_dialog();
     const dialogRef = this.dialog.open(PopupContactComponent, {
       data:{current_user:this.current_user},
       panelClass:"popupContactComponentClass"
     });
     this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).subscribe();
   }
-
+  open_tuto() {
+    
+    this.navbar.add_page_visited_to_history(`/open_tuto/${this.user_id}/`,'' ).subscribe();
+    const dialogRef = this.dialog.open(PopupShareComponent, {
+      data:{type_of_profile:"account", tutorial:true,current_user:this.current_user},
+      panelClass:"popupTutoClass"
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.open_share()
+      }
+    })
+  }
 
   /************************************* GROUPS MANAGMENT ********************************/
   /************************************* GROUPS MANAGMENT ********************************/

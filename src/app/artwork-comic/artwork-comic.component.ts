@@ -403,7 +403,7 @@ export class ArtworkComicComponent implements OnInit {
                 this.pseudo = r[0].nickname;
                 this.type_of_account_checked=r[0].type_of_account_checked;
                 this.certified_account=r[0].certified_account;
-                this.user_name = r[0].firstname + ' ' + r[0].lastname;
+                this.user_name = r[0].firstname;
                 this.primary_description=r[0].primary_description;
                 this.profile_data_retrieved=true;
               });
@@ -639,7 +639,7 @@ export class ArtworkComicComponent implements OnInit {
             
             this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
               this.pseudo = r[0].nickname;
-              this.user_name = r[0].firstname + ' ' + r[0].lastname;
+              this.user_name = r[0].firstname;
               this.primary_description=r[0].primary_description;
               
               this.type_of_account_checked=r[0].type_of_account_checked;
@@ -808,9 +808,14 @@ export class ArtworkComicComponent implements OnInit {
       else{
         this.chapter_filter_bottom_to_top=true;
       }
-      this.chapter_name_to_show=`Chap. ${this.chapterList[this.current_chapter].chapter_number} : ${this.chapterList[this.current_chapter].title}`
+      if(window.innerWidth>500){
+        this.chapter_name_to_show=`Chap. ${this.chapterList[this.current_chapter].chapter_number} : ${this.chapterList[this.current_chapter].title}`
+      }
+      else{
+        this.chapter_name_to_show=`Chapitre ${this.chapterList[this.current_chapter].chapter_number}`
+      }
+      
       this.sumo_ready=true;
-      //this.initialize_chapter_selector();
 
       this.Profile_Edition_Service.retrieve_profile_picture( r[0][this.current_chapter].author_id).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -967,8 +972,11 @@ export class ArtworkComicComponent implements OnInit {
 
   
   show_icon=false;
+  show_all_chapter=true;
   ngAfterViewInit(){
-    
+    if(window.innerWidth<=500){
+      this.show_all_chapter=false;
+    }
     this.open_category(0);
   }
 
@@ -989,7 +997,21 @@ export class ArtworkComicComponent implements OnInit {
   certified_account:boolean;  
 
   optionOpened:number = -1;
+  serie_clicked=false;
+  video_clicked=false;
   openOption(i: number) {
+    if(i==1){
+      this.serie_clicked=true;
+      this.video_clicked=false;
+    }
+    else if(i==0){
+      this.serie_clicked=false;
+      this.video_clicked=true;
+    }
+    else{
+      this.serie_clicked=false;
+      this.video_clicked=false;
+    }
     this.optionOpened = i;
   }
 
@@ -1025,6 +1047,9 @@ export class ArtworkComicComponent implements OnInit {
     this.actualHeight = event.target.innerHeight;
     this.actualWidth = event.target.innerWidth;
 
+    if(window.innerWidth<=500){
+      this.show_all_chapter=false;
+    }
     if(this.full_compt==1){
       this.full_compt=2;
     }
@@ -1169,7 +1194,6 @@ export class ArtworkComicComponent implements OnInit {
   refresh_swiper_pagination() {
     if( this.swiper ) {
       if( this.swiper.slides ) {
-        
         if(this.style=="Manga"){
           $(".top-container .pages-controller-container input").val( this.pagesnumber-this.swiper.activeIndex );
         }
@@ -1357,7 +1381,13 @@ export class ArtworkComicComponent implements OnInit {
         this.chapter_filter_bottom_to_top=true;
       }
       this.current_chapter_title=this.chapterList[chapter_number].title;
-      this.chapter_name_to_show=`Chap. ${this.chapterList[this.current_chapter].chapter_number} : ${ this.current_chapter_title}`;
+      if(window.innerWidth>500){
+        this.chapter_name_to_show=`Chap. ${this.chapterList[this.current_chapter].chapter_number} : ${ this.current_chapter_title}`;
+      }
+      else{
+        this.chapter_name_to_show=`Chapitre ${this.chapterList[this.current_chapter].chapter_number}`
+      }
+      
   
       if (this.mode_visiteur){
         this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe();
@@ -1449,7 +1479,13 @@ export class ArtworkComicComponent implements OnInit {
 
     THIS.current_chapter= chapter_number;// le chapitre 1 vaut 0 
     THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
-    THIS.chapter_name_to_show=`Chap. ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
+    if(window.innerWidth>500){
+      THIS.chapter_name_to_show=`Chap. ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
+    }
+    else{
+      this.chapter_name_to_show=`Chapire ${this.chapterList[this.current_chapter].chapter_number}`
+    }
+    
 
     if (THIS.mode_visiteur){
       THIS.NotationService.add_view_time(ending_time_of_view, THIS.id_view_created).subscribe();

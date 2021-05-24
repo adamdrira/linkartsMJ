@@ -288,15 +288,13 @@
   }
 
   .read_conditions {
+      display: flex;
       cursor: pointer;
-      color: grey;
-      margin-left: 10px;
+      color: rgb(30 31 31) !important;
+      text-decoration: underline;
+      margin-left: 5px;
       font-weight: 600;
       line-height: 24px;
-  }
-  .read_conditions:hover {
-      text-decoration: underline;
-      color: rgb(78, 78, 78);
   }
 
   .submit-button {

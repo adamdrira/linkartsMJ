@@ -583,28 +583,14 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
-                
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && check_group_done && user_is_in_a_group" [matMenuTriggerFor]="myGroups">
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">group</mat-icon>
-                  <span>Mes groupes</span>
-                </button>
-
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_tuto()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
                   <span>Qui sommes nous ?</span>
                 </button>
-                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Mentions légales</span>
-                </a>
-                <a href="/services/2" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
-                  <span>Conditions d'utilisation</span>
-                </a>
-                <a href="/services/4" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
-                  <span>Confidentialité et sécurité</span>
-                </a>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && check_group_done && user_is_in_a_group" [matMenuTriggerFor]="myGroups">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">group</mat-icon>
+                  <span>Mes groupes</span>
+                </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_share()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
                   <span>Partager le site</span>
@@ -617,6 +603,20 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">groups</mat-icon>
                   <span>Nous soutenir</span>
                 </a>
+                
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
+                  <span>Mentions légales</span>
+                </a>
+                <a href="/services/2" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
+                  <span>Conditions d'utilisation</span>
+                </a>
+                <a href="/services/4" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
+                  <span>Confidentialité et sécurité</span>
+                </a>
+                
               </mat-menu>
             </div>
 

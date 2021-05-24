@@ -10,7 +10,11 @@
 <div class="scrollable-container">
     <div class="component-container">
 
-        <app-comments [type_of_account]=type_of_account [visitor_id]=visitor_id [visitor_name]=visitor_name [title]="title" [category]=category [format]=format
+        <app-comments 
+        [type_of_account]=type_of_account 
+        [visitor_id]=visitor_id 
+        [visitor_mode]=visitor_mode
+        [visitor_name]=visitor_name [title]="title" [category]=category [format]=format
         [style]=style [publication_id]=publication_id [chapter_number]=chapter_number [authorid]=authorid
         [number_of_comments_to_show]=number_of_comments_to_show 
         (new_comment)="new_comment();"
