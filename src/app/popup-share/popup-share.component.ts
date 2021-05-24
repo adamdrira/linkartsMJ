@@ -122,7 +122,6 @@ export class PopupShareComponent implements OnInit {
     }
   }
   set_page(i:number) {
-    console.log(i)
     this.hovered=[];
     this.page=i;
   }
