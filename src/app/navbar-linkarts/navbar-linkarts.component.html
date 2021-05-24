@@ -585,7 +585,7 @@
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_tuto()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-                  <span>Qui sommes nous ?</span>
+                  <span>Qui sommes-nous ?</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && check_group_done && user_is_in_a_group" [matMenuTriggerFor]="myGroups">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">group</mat-icon>
@@ -703,7 +703,7 @@
   <mat-menu yPosition="above" xPosition="before" #helpOptions="matMenu" [class]="show_cookies ? 'navbar-mat-menu help-common menu-bottom-help' : 'navbar-mat-menu help help-common'">
     <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_tuto()">
       <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-      <span>Qui sommes nous ?</span>
+      <span>Qui sommes-nous ?</span>
     </button>
     <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_share()">
       <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>

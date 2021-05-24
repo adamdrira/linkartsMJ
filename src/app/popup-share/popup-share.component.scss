@@ -882,9 +882,6 @@
         box-shadow: 0px 0px 2px 2px rgb(32 56 100);
     }
 
-    @media (max-width: 650px) {
-        padding-bottom: 40px;
-    }
 }
 
 .invisible {
@@ -904,7 +901,8 @@
         max-width: unset !important;
         .mat-dialog-container {
             padding: 0px;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: auto;
         }
     }
     .popupTutoClass {
@@ -914,7 +912,8 @@
         animation: slideDown 400ms forwards 0s ease-in-out;
         .mat-dialog-container {
             padding: 0px;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: auto;
             max-height: 95vh;
             @media (max-width: 650px) {
                 max-height: unset;
