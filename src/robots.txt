@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://www.linkarts.fr/sitemap.xml
