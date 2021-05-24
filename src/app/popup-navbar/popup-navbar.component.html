@@ -124,7 +124,7 @@
            
             <button class="option-element"tabIndex="-1" mat-menu-item (click)="open_tuto()">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-              <span>Qui sommes nous ?</span>
+              <span>Qui sommes-nous ?</span>
             </button>
             <div class="option-element" (click)="open_share()">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
@@ -1908,7 +1908,7 @@
                                   <!------------------------------------------- NEW CONTACT OR NEW GROUP-------------------------------------->
             
                                   <div *ngIf="!list_of_friends_last_message[i].is_a_group_chat && list_of_friends_last_message[i].message=='New' ">
-                                    {{list_of_friends_names[i]}} fait désormais parti de vos contacts. Vous pouvez donc
+                                    {{list_of_friends_names[i]}} fait désormais partie de vos contacts. Vous pouvez donc
                                     échanger librement.
                                   </div>
                                   <div

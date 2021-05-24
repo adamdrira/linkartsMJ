@@ -447,7 +447,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
       this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
         this.pseudo = r[0].nickname;
-        this.user_name = r[0].firstname + ' ' + r[0].lastname;
+        this.user_name = r[0].firstname;
         this.primary_description=r[0].primary_description;
 
         this.type_of_account_checked=r[0].type_of_account_checked;
@@ -595,7 +595,7 @@ export class ArtworkDrawingComponent implements OnInit {
       
       this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
         this.pseudo = r[0].nickname;
-        this.user_name = r[0].firstname + ' ' + r[0].lastname;
+        this.user_name = r[0].firstname;
         this.primary_description=r[0].primary_description;
         
         this.type_of_account_checked=r[0].type_of_account_checked;
@@ -1730,11 +1730,11 @@ export class ArtworkDrawingComponent implements OnInit {
   add_time_of_view(){
     if(this.mode_visiteur){
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
-      if(this.type=='one-shot' && ending_time_of_view>3){
+      if(this.type=='one-shot' && this.id_view_created>0 && ending_time_of_view>5){
         this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
         });
       }
-      if(this.type=='artbook' && ending_time_of_view>3){
+      if(this.type=='artbook' && this.id_view_created>0  && ending_time_of_view>5){
         this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
         });
       }

@@ -340,7 +340,7 @@
                                             <!------------------------------------------- NEW CONTACT OR NEW GROUP-------------------------------------->
                                             
                                             <div *ngIf="!list_of_friends_last_message[i].is_a_group_chat && list_of_friends_last_message[i].message=='New' ">
-                                                {{list_of_friends_names[i]}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
+                                                {{list_of_friends_names[i]}} fait désormais partie de vos contacts. Vous pouvez donc échanger librement.
                                             </div>
                                             <div *ngIf="list_of_friends_last_message[i].is_a_group_chat  && list_of_friends_last_message[i].message=='New'">
                                                 <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">

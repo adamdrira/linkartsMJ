@@ -368,7 +368,7 @@ export class ArtworkWritingComponent implements OnInit {
   
             this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
               this.pseudo = r[0].nickname;
-              this.user_name = r[0].firstname + ' ' + r[0].lastname;
+              this.user_name = r[0].firstname;
               this.primary_description=r[0].primary_description;
               this.type_of_account_checked=r[0].type_of_account_checked;
               this.certified_account=r[0].certified_account;
@@ -1181,7 +1181,7 @@ export class ArtworkWritingComponent implements OnInit {
   add_time_of_view(){
     if(this.mode_visiteur){
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
-      if (ending_time_of_view>3){
+      if (this.id_view_created>0 && ending_time_of_view>5){
         this.NotationService.add_view_time(ending_time_of_view,this.id_view_created).subscribe();
         }
       }

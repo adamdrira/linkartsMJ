@@ -1000,18 +1000,22 @@ export class ArtworkComicComponent implements OnInit {
   serie_clicked=false;
   video_clicked=false;
   openOption(i: number) {
-    if(i==1){
-      this.serie_clicked=true;
-      this.video_clicked=false;
+    if(window.innerWidth<500){
+      console.log("inf 500")
+      if(i==1){
+        this.serie_clicked=true;
+        this.video_clicked=false;
+      }
+      else if(i==0){
+        this.serie_clicked=false;
+        this.video_clicked=true;
+      }
+      else{
+        this.serie_clicked=false;
+        this.video_clicked=false;
+      }
     }
-    else if(i==0){
-      this.serie_clicked=false;
-      this.video_clicked=true;
-    }
-    else{
-      this.serie_clicked=false;
-      this.video_clicked=false;
-    }
+    
     this.optionOpened = i;
   }
 
@@ -1050,6 +1054,12 @@ export class ArtworkComicComponent implements OnInit {
     if(window.innerWidth<=500){
       this.show_all_chapter=false;
     }
+    else{
+      this.show_all_chapter=true;
+      this.serie_clicked=false;
+      this.video_clicked=false;
+    }
+
     if(this.full_compt==1){
       this.full_compt=2;
     }
@@ -1372,7 +1382,6 @@ export class ArtworkComicComponent implements OnInit {
       this.display_pages=false;
       this.thumbnails_loaded=[];
       let chapter_number = event.value;
-      let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
       this.current_chapter= parseInt(chapter_number);// le chapitre 1 vaut 0 
       if((this.current_chapter+1)>this.chapterList.length/2){
         this.chapter_filter_bottom_to_top=false;
@@ -1390,7 +1399,7 @@ export class ArtworkComicComponent implements OnInit {
       
   
       if (this.mode_visiteur){
-        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe();
+        this.add_time_of_view();
         this.NotationService.add_view("comic", 'serie',this.style, this.bd_id,(parseInt(chapter_number) + 1),this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
           this.id_view_created = r[0].id;
           this.begining_time_of_view =  Math.trunc(new Date().getTime()/1000);
@@ -1475,8 +1484,6 @@ export class ArtworkComicComponent implements OnInit {
     
     THIS.thumbnails_loaded=[];
     let chapter_number =(THIS.chapter_filter_bottom_to_top)?0:THIS.chapterList.length-1;
-    let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
-
     THIS.current_chapter= chapter_number;// le chapitre 1 vaut 0 
     THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
     if(window.innerWidth>500){
@@ -1488,7 +1495,7 @@ export class ArtworkComicComponent implements OnInit {
     
 
     if (THIS.mode_visiteur){
-      THIS.NotationService.add_view_time(ending_time_of_view, THIS.id_view_created).subscribe();
+      this.add_time_of_view();
       THIS.NotationService.add_view("comic", 'serie',THIS.style, THIS.bd_id,(chapter_number + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).subscribe(r=>{
         THIS.id_view_created = r[0].id;
         if(r[0].id>0){
@@ -1563,10 +1570,6 @@ export class ArtworkComicComponent implements OnInit {
     THIS.thumbnails_loaded=[];
 
     let chapter_number =(direction=='next')?(THIS.current_chapter+1):(THIS.current_chapter-1);
-    let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
-    
-
-    
     THIS.current_chapter= chapter_number;// le chapitre 1 vaut 0 
     THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
     THIS.chapter_name_to_show=`Chap. ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
@@ -1580,7 +1583,7 @@ export class ArtworkComicComponent implements OnInit {
     
 
     if (THIS.mode_visiteur){
-      THIS.NotationService.add_view_time(ending_time_of_view, THIS.id_view_created).subscribe();
+      this.add_time_of_view();
       THIS.NotationService.add_view("comic", 'serie',THIS.style, THIS.bd_id,(chapter_number + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).subscribe(r=>{
         THIS.id_view_created = r[0].id;
         if(r[0].id>0){
@@ -2136,10 +2139,10 @@ export class ArtworkComicComponent implements OnInit {
   add_time_of_view(){
     if(this.mode_visiteur){
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
-      if(this.type=='one-shot' && ending_time_of_view>3){
+      if(this.type=='one-shot' && this.id_view_created>0 && ending_time_of_view>5){
         this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe();
       }
-      if(this.type=='serie' && ending_time_of_view>3){
+      if(this.type=='serie' && this.id_view_created>0 &&  ending_time_of_view>5){
         this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe();
       }
     }
