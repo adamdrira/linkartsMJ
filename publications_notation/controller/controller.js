@@ -1040,6 +1040,10 @@ module.exports = (router,
           return res.status(401).json({msg: "error"});
         }
       }
+
+      console.log("add_view_time")
+      console.log(req.body.id_view_created)
+      console.log(req.body.view_time)
         let current_user = get_current_user(req.cookies.currentUser);
         const id_view_created = req.body.id_view_created;
         const view_time = req.body.view_time;
@@ -1054,7 +1058,10 @@ module.exports = (router,
                 res.status(500).json({msg: "error", details: err});		
             }).then(view =>  {
                 if(view){
+                    console.log("view found")
+                    console.log(view.format)
                     if(view_time>5){
+                        console.log("view time >5")
                         if (view.publication_category=== "comic" ) {
                             if(view.format === "one-shot"){
                                 Liste_Bd_Oneshot.findOne({
@@ -1266,8 +1273,8 @@ module.exports = (router,
                                 })
                                 .catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawing =>  {
+                                    res.status(500).json({msg: "error", details: err});		
+                                }).then(drawing =>  {
                                     const views = drawing.viewnumber + 1;
                                     drawing.update({
                                         "viewnumber":views,
@@ -1321,8 +1328,8 @@ module.exports = (router,
                             })
                             .catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(writing =>  {
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(writing =>  {
                                 
                                 const views = writing.viewnumber + 1;
                                 writing.update({
@@ -1372,17 +1379,22 @@ module.exports = (router,
                         }
                     }
                     else{
+                        console.log("first else")
                         res.status(200).send([{error:"already_added_view_time"}])
                     }
                 }
                 else{
+                    console.log("second else")
                     res.status(200).send([{error:"already_added_view_time"}])
                 }
                     
                         
             });  
         }
-           
+        else{
+            console.log("second else")
+            res.status(200).send([{error:"already_added_view_time"}])
+        }
             
         
         });
@@ -2630,7 +2642,7 @@ module.exports = (router,
 
     
 
-    router.delete('/remove_commentary_answer/:category/:format/:style/:publication_id/:chapter_number/:comment_anwser_id', function (req, res) {
+    router.delete('/remove_commentary_answer/:category/:format/:style/:publication_id/:chapter_number/:comment_anwser_id/:comment_id', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -2645,74 +2657,81 @@ module.exports = (router,
         let current_user = get_current_user(req.cookies.currentUser);
         const category = req.params.category;
         const format = req.params.format;
-        const style = req.params.style;
+        const comment_id = parseInt(req.params.comment_id);
         const publication_id = parseInt(req.params.publication_id);
-        const chapter_number = parseInt(req.params.chapter_number);
         const comment_anwser_id =req.params.comment_anwser_id;
         List_of_comments.findOne({
             where: {
-                
-                publication_category: category,
-                format:format,
-                publication_id:publication_id,
-                chapter_number:chapter_number,
+                id:comment_id
             }
         }).catch(err => {
-				
+			console.log(err)
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comment=>{
             if(comment){
-                let number_of_answers=comment.number_of_answers-1;
-                comment.update({
-                    "number_of_answers":(number_of_answers>=0)?number_of_answers:0,
+                List_of_comments_answers.findOne({
+                    where: {
+                        id:comment_anwser_id,
+                        }
                 }).catch(err => {
-                    	
+                    console.log(err)
                     res.status(500).json({msg: "error", details: err});		
-                }).then(comments=>{
-                    List_of_comments_answers.findOne({
-                        where: {
-                            id:comment_anwser_id,
+                }).then(comment_answer=>{
+                    if(comment_answer){
+                        List_of_contents.findOne({
+                            where:{
+                                publication_category: category,
+                                format:format,
+                                publication_id:publication_id,
+                                status:"ok"
                             }
-                    }).catch(err => {
-                        	
-                        res.status(500).json({msg: "error", details: err});		
-                    }).then(comment_answer=>{
-                        if(comment_answer){
-                            List_of_contents.findOne({
-                                where:{
-                                    publication_category: category,
-                                    format:format,
-                                    publication_id:publication_id,
-                                    chapter_number:chapter_number,
-                                }
-                            }).catch(err => {
-                                	
-                                res.status(500).json({msg: "error", details: err});		
-                            }).then(content=>{
-                                if(content){
-                                    if(comment_answer.author_id_who_replies==current_user ){
-                                        List_of_comments_answers.destroy({
+                        }).catch(err => {
+                            console.log(err)
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(content=>{
+                            if(content){
+                                if(comment_answer.author_id_who_replies==current_user || content.id_user){
+                                    comment_answer.update({
+                                        status:"deleted"
+                                    }).then(an=>{
+                                        List_of_comments_answers.findAll({
                                             where: {
-                                                id:comment_anwser_id,
-                                                    },
-                                            truncate: false
-                                        });
-                                        res.status(200).send([comment_answer]);
-                                    }
-                                    else{
-                                        res.status(200).send([{error:"not_allowed"}]); 
-                                    }
+                                                comment_id:comment.id,
+                                                status:"public"
+                                                }
+                                        }).catch(err => {
+                                                
+                                            res.status(500).json({msg: "error", details: err});		
+                                        }).then(last_answers=>{
+                                            List_of_comments.update({
+                                                number_of_answers:last_answers.length,
+                                            },
+                                                {
+                                                where: {
+                                                   id:comment_id,
+                                                }
+                                            })
+                                            res.status(200).send([comment_answer]);
+                                            
+                                          
+                                        })
+
+                                       
+                                    })
+                                    
                                 }
                                 else{
-                                    res.status(200).send([{error:"content_not_found"}]);
+                                    res.status(200).send([{error:"not_allowed"}]); 
                                 }
-                            })
-                        }
-                        else{
-                            res.status(200).send([{error:"comment_answer_not_found"}]);
-                        }
-                        
-                    })
+                            }
+                            else{
+                                res.status(200).send([{error:"content_not_found"}]);
+                            }
+                        })
+                    }
+                    else{
+                        res.status(200).send([{error:"comment_answer_not_found"}]);
+                    }
                     
                 })
             }
@@ -2876,7 +2895,7 @@ module.exports = (router,
                 },
             })
             .catch(err => {
-				
+			console.log(err)
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views =>  {
                 number_of_views+=views.length

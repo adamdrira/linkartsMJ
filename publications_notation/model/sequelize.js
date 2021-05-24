@@ -2,14 +2,14 @@ const Sequelize = require('sequelize');
 const tables = require('./tables');
 
 
-/*const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
-    host : 'localhost',
-    dialect: 'postgres'
-});*/
-const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
+const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
   host : 'localhost',
   dialect: 'postgres'
 });
+/*const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
+host : 'localhost',
+dialect: 'postgres'
+});*/
 
 const List_of_likes = tables.table_profile_notation(sequelize, Sequelize).likes;
 const List_of_loves = tables.table_profile_notation(sequelize, Sequelize).loves;
