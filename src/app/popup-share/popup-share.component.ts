@@ -84,9 +84,6 @@ export class PopupShareComponent implements OnInit {
     private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    // redirect to home if already logged in
-      dialogRef.disableClose = true;
-    
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
@@ -125,6 +122,7 @@ export class PopupShareComponent implements OnInit {
     }
   }
   set_page(i:number) {
+    console.log(i)
     this.hovered=[];
     this.page=i;
   }

@@ -152,7 +152,7 @@
 
     
     <div class=" back" *ngIf="page>0">
-       <button mat-button class="mat-icon-button close-button" (click)="set_page((page > 6) ? (page - 2) : (3 > page || page ==4) ? (page-1) :(page - 3));" tabIndex="-1">
+       <button mat-button class="mat-icon-button close-button" (click)="set_page((page >= 6) ? (page - 2) : (3 > page || page ==4) ? (page-1) :(page - 3));" tabIndex="-1">
             <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" >arrow_back_ios</mat-icon>
         </button>
     </div>
@@ -171,6 +171,7 @@
         </div>
 
         <div class="text-elements-container">
+            <img class="background"  src="../../assets/img/tuto-logos/tuto-background-1.jpg">
             <div class="text-element centered" [ngClass]="{'hovered': hovered[0] }" (mouseenter)="hovered_div(0)" (mouseleave)="unhovered_div(0)" (click)="set_page(1);">
                 
                 <div class="text-container centered">
@@ -222,6 +223,7 @@
 
 
         <div class="text-elements-container">
+            <img class="background"  src="../../assets/img/tuto-logos/tuto-background-1.jpg">
            <div class="text-element left" [ngClass]="{'hovered': hovered[2] }" (mouseenter)="hovered_div(2)" (mouseleave)="unhovered_div(2)" (click)="clicked_div(2);">
                 <div class="text-container left">
                     <img src="../../assets/img/tuto-logos/tuto-projects.svg" [@enterFromLeftAnimation]>
@@ -281,6 +283,7 @@
 
 
         <div class="text-elements-container" style="height:375px;">
+            <img class="background"  src="../../assets/img/tuto-logos/tuto-background-1.jpg">
             <div class="text-element right" [ngClass]="{'hovered': hovered[5] }" (mouseenter)="hovered_div(5)" (mouseleave)="unhovered_div(5)" (click)="clicked_div(5);">
                 <div class="text-container right">
 
@@ -390,7 +393,7 @@
 
 
         <div class="text-elements-container">
-
+            <img class="background"  src="../../assets/img/tuto-logos/tuto-background-1.jpg">
             <div class="text-element"></div>
 
             <div class="text-element left" [ngClass]="{'hovered': hovered[9] }" (mouseenter)="hovered_div(9)" (mouseleave)="unhovered_div(9)" (click)="clicked_div(9);">
@@ -401,9 +404,8 @@
                         <span class="span-title" [@enterFromLeftAnimation]>Réception de projets</span>
                     </div>
                     <div  *ngIf="hovered[9]">
-                        <span>Vous en avez assez de recevoir des centaines de sollicitations non personnalisées ? Centralisez toutes vos demandes directement sur LinkArts, avec des <b>statistiques pertinentes à la clé</b>.
-                            Et parce que votre avis a de l’importance et votre temps est précieux, vous recevez <b>une rémunération pour chaque retour</b> que vous faites à un artiste. </span>
-                        <!--<span [@enterFromRightAnimation]>Déposer son projet auprès d'une maison d'édition devient désormais payant ! En échange, les artistes reçoivent des feed-backs constructifs en des temps impartis, selon vos tarifs. Par ailleurs, dans l'objectif de faciliter vos tris de candidatures, nous vous proposons de nombreuses statistiques gratuites vous permettant de hiérarchiser les artistes.</span>-->
+                        <span><b>Centralisez</b> toutes vos demandes directement sur LinkArts, avec des <b>statistiques</b> pertinentes à la clé.
+                            Et parce que votre avis a de l’importance et votre temps est précieux, vous recevrez une <b>rémunération</b>, pour chaque retour que vous faites à un artiste. </span>
                    </div>    
                     <div class="logo-euro" *ngIf="!hovered[9]" [@animationStar]>
                         <img src="../../assets/img/tuto-logos/tuto-euro.svg">
@@ -450,6 +452,7 @@
         </div>
 
         <div class="text-elements-container">
+            <img class="background"  src="../../assets/img/tuto-logos/tuto-background-1.jpg">
             <div class="text-element right" [ngClass]="{'hovered': hovered[10] }" (mouseenter)="hovered_div(10)" (mouseleave)="unhovered_div(10)" (click)="clicked_div(10);">
                 <div class="text-container right">
 
@@ -541,6 +544,7 @@
         </div>
 
         <div class="text-elements-container">
+            <img class="background"  src="../../assets/img/tuto-logos/tuto-background-1.jpg">
             <div class="text-element right">
                 <div class="text-container right " style="cursor: default;">
 
@@ -602,10 +606,11 @@
 
         <div class="header" [@enterFromRightAnimation]>
             <span class="section-title">Merci à vous !</span>
-            <span class="section-description">Un grand merci à vous d’avoir pris le temps de découvrir notre projet ! Nous espérons sincèrement que le site web pourra vous aider à avancer dans vos projets éditoriaux, qu'ils soient ambitieux ou juste divertissants.</span>
+            <span class="section-description">Un grand merci à vous d’avoir pris le temps de découvrir notre projet ! Nous espérons sincèrement que notre plateforme pourra vous aider à avancer dans vos projets éditoriaux, qu'ils soient ambitieux ou juste divertissants.</span>
         </div>
         
         <div class="text-elements-container">
+            <img class="background"  src="../../assets/img/tuto-logos/tuto-background-1.jpg">
             <div class="text-element left">
                 <div class="text-container left">
                     <div  [@enterFromLeftAnimation] class="email-form" (click)="open_share();">
