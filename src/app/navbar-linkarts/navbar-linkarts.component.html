@@ -685,7 +685,7 @@
   </div>
 
 
-  <div class="footer-phone "  [@enterFromBottomAnimation]>
+  <div *ngIf="show_menu_phone" class="footer-phone "  [@enterFromBottomAnimation]>
     <a class="category" [ngClass]="{'opened': navbar.active_section==0 }" (click)="not_using_chat()" routerLink="/">
       <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
       <span>Galerie</span>

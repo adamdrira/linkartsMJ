@@ -1041,9 +1041,9 @@ get_connections_status(){
         if(r[0].date_of_webSockets_last_connection[id]){
           let now=Math.trunc( new Date().getTime()/1000);
           let date=r[0].date_of_webSockets_last_connection[id];
-          date = date.replace("T",' ');
-          date = date.replace("-",'/').replace("-",'/');
-          let deco_date=Math.trunc( new Date(date + ' GMT').getTime()/1000)
+          date = date.replace("Z",'');
+          date=date.slice(0,19)
+          let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
           this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
         }
         compt++;

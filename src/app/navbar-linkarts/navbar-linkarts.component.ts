@@ -92,6 +92,12 @@ export class NavbarLinkartsComponent implements OnInit {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl.push(event.url);
+        if(event.url.includes("chat")){
+          this.show_menu_phone=false;
+        }
+        else{
+          this.show_menu_phone=true;
+        }
         this.show_profile_spinner=false;
         let device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
         this.navbar.add_page_visited_to_history(event.url,device_info).subscribe()
@@ -171,6 +177,7 @@ export class NavbarLinkartsComponent implements OnInit {
     
   }
 
+  show_menu_phone=true;
   previousUrl=[];
   navbar_visible=false;
   @HostListener('window:beforeunload', ['$event'])
