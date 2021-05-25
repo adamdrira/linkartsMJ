@@ -16,7 +16,6 @@ const pool = new Pool({
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-  //dialect: 'postgres'
 });*/
 
 pool.connect((err, client, release) => {
