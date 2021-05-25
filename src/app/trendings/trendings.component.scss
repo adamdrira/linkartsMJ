@@ -79,10 +79,7 @@
       box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
       z-index: 99;
       padding: 10px;
-      width: 300px;
-    @media (max-width: 500px) {
-      width: 318px !important;
-    }
+      width: 310px;
       top: 45px;
       border-radius: 10px;
       right: 0px;
@@ -93,6 +90,7 @@
         color: white !important;
         font-size: 12px !important;
         font-weight: 600 !important;
+        text-align: justify;
       }
 
       .first-text{
@@ -100,8 +98,8 @@
         justify-content: left;
 
         img{
-          width:40px;
-          height: 40px;
+          height: 34px;
+          float:left;
           margin-right: 5px;
         }
       }
@@ -109,9 +107,11 @@
       .second-text{
         display: flex;
         justify-content: left;
+        margin-top: 10px;
         img{
-          width: 36px;
-          height: 36px;
+          height: 34px;
+          float:right;
+          margin-left: 5px;
         }
       }
     }
@@ -138,10 +138,7 @@
   .see-more-button:hover .information{
    
     opacity: 1;
-    width: 300px;
-    @media (max-width: 500px) {
-      width: 318px !important;
-    }
+    width: 310px;
     visibility: visible;
   }
 }
