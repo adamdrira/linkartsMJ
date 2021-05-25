@@ -31,6 +31,7 @@ import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import {date_in_seconds, get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
+import { Meta, Title } from '@angular/platform-browser';
 import { C } from '@angular/cdk/keycodes';
 declare var $: any;
 declare var Swiper:any;
@@ -83,6 +84,8 @@ export class AccountComponent implements OnInit {
     private Albums_service:Albums_service,
     public dialog: MatDialog,
     private Ads_service:Ads_service,
+    private title: Title,
+    private meta: Meta
     ) {
 
     navbar.visibility_observer_font.subscribe(font=>{
@@ -100,11 +103,14 @@ export class AccountComponent implements OnInit {
       let r=resp.user_data_by_pseudo;
       if(!r[0]){
         this.page_not_found=true;
-        return
+        
+        return;
       }
       this.user_id =r[0].id;
       this.user_data=r[0];
       
+      this.title.setTitle('@'+r[0].nickname+' • LinkArts : BD, Dessins et Ecrits');
+      this.meta.updateTag({ name: 'description', content: "Découvrir le profil de "+r[0].firstname+", ses œuvres, annonces, et abonnements." });
     })
     
     let section =  route.snapshot.data['section'];
@@ -2719,6 +2725,10 @@ report(){
     this.open_category(i,false)
   }
 
+  ngOnDestroy() {
+    this.title.setTitle('LinkArts – Collaboration éditoriale');
+    this.meta.updateTag({ name: 'description', content: "Une galerie pour exposer vos œuvres et promouvoir votre talent." });
+  }
 }
 
 
