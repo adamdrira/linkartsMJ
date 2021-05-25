@@ -29,10 +29,9 @@ import { NotificationsService } from '../services/notifications.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import {date_in_seconds, get_date_to_show} from '../helpers/dates';
+import {date_in_seconds} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 import { Meta, Title } from '@angular/platform-browser';
-import { C } from '@angular/cdk/keycodes';
 declare var $: any;
 declare var Swiper:any;
 
