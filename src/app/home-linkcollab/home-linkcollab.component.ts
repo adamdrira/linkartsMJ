@@ -171,7 +171,7 @@ export class HomeLinkcollabComponent implements OnInit {
   
   ngOnInit() {
     this.title.setTitle('LinkArts – Collaboration éditoriale');
-    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+    this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour dénicher votre partenaire de projet et soumettre votre projet auprès des éditeurs" });
 
     window.scroll(0,0);
     this.open_category(0, true);
@@ -1114,4 +1114,12 @@ export class HomeLinkcollabComponent implements OnInit {
   open_filters_editor(){
     this.filters_opened=!this.filters_opened;
   }
+
+
+  ngOnDestroy() {
+    this.title.setTitle('LinkArts – Collaboration éditoriale');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+  }
+
+
 }

@@ -89,10 +89,9 @@ export class HomeLinkartsComponent implements OnInit {
   change_profile_number=0;
   device_info='';
   ngOnInit() {
-
     
     this.title.setTitle('LinkArts – Collaboration éditoriale');
-    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+    this.meta.updateTag({ name: 'description', content: "Une galerie pour exposer vos œuvres et promouvoir votre talent." });
 
 
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
@@ -157,6 +156,8 @@ export class HomeLinkartsComponent implements OnInit {
     
 
   }
+
+
   loading_top_artist=false;
 
   get_to_artists(){
@@ -427,6 +428,10 @@ export class HomeLinkartsComponent implements OnInit {
   }
   ngOnDestroy() {
     this.navbar.show_help();
+    
+    this.title.setTitle('LinkArts – Collaboration éditoriale');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+    
   }
 
   open_tuto(){
