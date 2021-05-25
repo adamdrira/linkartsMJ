@@ -108,7 +108,7 @@ export class AccountComponent implements OnInit {
       this.user_id =r[0].id;
       this.user_data=r[0];
       
-      this.title.setTitle('@'+r[0].nickname+' • LinkArts : BD, Dessins et Ecrits');
+      this.title.setTitle('@'+r[0].nickname+' • LinkArts – Collaboration éditoriale');
       this.meta.updateTag({ name: 'description', content: "Découvrir le profil de "+r[0].firstname+", ses œuvres, annonces, et abonnements." });
     })
     
