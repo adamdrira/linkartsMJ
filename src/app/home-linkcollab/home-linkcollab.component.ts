@@ -170,7 +170,7 @@ export class HomeLinkcollabComponent implements OnInit {
   /*********************************************************************** */
   
   ngOnInit() {
-    this.title.setTitle('LinkArts – Collaboration éditoriale');
+    this.title.setTitle('LinkCollab – annonces de collaboration et dépôts de projets pour artistes et éditeurs');
     this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour dénicher votre partenaire de projet et soumettre votre projet auprès des éditeurs" });
 
     window.scroll(0,0);

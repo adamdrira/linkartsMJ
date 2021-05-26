@@ -54,10 +54,19 @@
                 <div class="form-item">
                     <mat-form-field floatLabel='never'>
                         <mat-label>Catégorie</mat-label>
-                        <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fwCategory">
-                            <mat-option  *ngFor="let obj of listOfCategories" [value]="obj">
-                                {{ obj }}
-                            </mat-option>
+                        <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass options_with_description" disableOptionCentering formControlName="fwCategory">
+                          
+                            <mat-select-trigger>
+                                {{fw.value?.fwCategory}}
+                            </mat-select-trigger>
+
+                            <div *ngFor="let obj of listOfCategories; let i = index">
+                                <mat-option [value]="obj">
+                                    {{ obj }}
+                                    <span>{{listOfStyles_descriptions[i]}}</span>
+                                </mat-option>
+                                
+                            </div>
                         </mat-select>
                         <mat-error *ngIf="fw.controls['fwCategory'].invalid">Veuillez sélectionner une catégorie</mat-error>
                     </mat-form-field>

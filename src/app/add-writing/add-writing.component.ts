@@ -332,7 +332,14 @@ export class AddWritingComponent implements OnInit {
 
   
   //AJOUTÉ
-  listOfCategories = ["Roman illustré","Roman","Scénario & Pitch","Article","Poésie"];
+  listOfCategories = ["Roman illustré","Roman","Scénario","Article","Poésie"];
+  listOfStyles_descriptions =[
+    "Vous êtes auteur de romans illustrés ou de livres jeunesses, et vous souhaitez exposer votre talent, sans divulguer votre chef d'œuvre ? Alors sélectionnez cette catégorie !",
+    "Vous êtes auteur de nouvelles et de romans en tout genre, et vous souhaitez exposer votre talent, sans divulguer votre chef d'œuvre ? Alors cette catégorie est faite pour vous !",
+    "Vous êtes scénariste de bandes dessinées en tout genre et vous souhaitez exposer votre talent, sans divulguer le scénario de votre chef d'œuvre ? Alors sélectionner cette catégorie et déposer un pitch ou un scénario secondaire de bandes dessinées !",
+    "Vous souhaitez donner un avis critique sur le monde de l'édition, de la littérature, de la bande dessinée ou simplement exposer votre conception des choses en tant qu'auteur ? Alors sélectionnez  cette catégorie !",
+    "Vous souhaitez partager une poésie en tant que poète ou simplement en tant qu'auteur désirant partager son talent de poète pour se promouvoir ? Alors sélectionnez cette catégorie !"
+  ];
   compareObjects(o1: any, o2: any): boolean {
     return o1 === o2;
   }
