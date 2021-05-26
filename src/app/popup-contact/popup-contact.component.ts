@@ -4,11 +4,38 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dial
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-popup-contact',
   templateUrl: './popup-contact.component.html',
-  styleUrls: ['./popup-contact.component.scss']
+  styleUrls: ['./popup-contact.component.scss'],
+  animations: [
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('400ms', style({opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromBottomAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+]
 })
 export class PopupContactComponent implements OnInit {
 
@@ -16,7 +43,6 @@ export class PopupContactComponent implements OnInit {
     private formBuilder: FormBuilder,
     public navbar:NavbarService,
     public dialogRef: MatDialogRef<PopupContactComponent>,
-    private cd:ChangeDetectorRef,
     private Profile_Edition_Service:Profile_Edition_Service,
     public dialog: MatDialog,
 
@@ -89,16 +115,21 @@ export class PopupContactComponent implements OnInit {
   
   loading=false;
   show_done=false;
+  display_need_information=false;
   validate_step() {
     if(this.loading){
       return
     }
     if(this.registerForm1.valid){
       this.loading = true;
+      this.display_need_information=false;
       this.Profile_Edition_Service.send_message_contact_us(this.registerForm1.value.firstName,this.registerForm1.value.email,this.registerForm1.value.message.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
         this.loading=false;
         this.show_done=true;
       })
+    }
+    else{
+      this.display_need_information=true;
     }
     
   }

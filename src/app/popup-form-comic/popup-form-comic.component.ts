@@ -99,7 +99,7 @@ export class PopupFormComicComponent implements OnInit {
  
 
   createFormControls00() {
-    this.f00Title = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text") ) ]);
+    this.f00Title = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text_title") ) ]);
     this.f00Description = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.f00Category = new FormControl(this.data.style, Validators.required);
     this.f00Tags = new FormControl( this.genres, [Validators.required]);
@@ -117,7 +117,7 @@ export class PopupFormComicComponent implements OnInit {
   }
   
   get chapters(): FormArray { return this.f00.get('chapters') as FormArray; }
-  addChapter() { this.chapters.push(new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ])); }
+  addChapter() { this.chapters.push(new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text_title") ) ])); }
 
 
   loading=false;

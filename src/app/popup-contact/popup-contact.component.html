@@ -7,12 +7,12 @@
 <div class="popup-contact">
 
 
-    <div class="step-name">
+    <div *ngIf="!show_done" class="step-name">
         <span>Nous contacter</span>
     </div>
 
     
-    <div class="step-form" [formGroup]="registerForm1" *ngIf="!show_done">
+    <div class="step-form" [formGroup]="registerForm1" *ngIf="!show_done"  [@enterAnimation]>
         
         
         <div class="form-item">
@@ -48,7 +48,11 @@
     </div>
 
 
-    <button [disabled]="loading" class="submit-button" (click)="validate_step();" *ngIf="!show_done">
+    <div class="error" [@enterFromBottomAnimation]>
+        <span *ngIf="display_need_information" >Veuillez remplir les champs obligatoires.</span>
+    </div>
+
+    <button [disabled]="loading" [@enterAnimation] class="submit-button" (click)="validate_step();" *ngIf="!show_done">
         <span *ngIf="!loading">Envoyer</span>
         <div class="loading-dots" *ngIf="loading">
             &nbsp; <span>.</span><span>.</span><span>.</span>
@@ -56,14 +60,14 @@
     </button>
 
     
-    <div *ngIf="show_done">
-        <div class="sent-mail-icon" >
+    <div *ngIf="show_done" [@enterFromTopAnimation]>
+        <div class="sent-mail-icon" [@enterFromTopAnimation]>
             <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
         </div>
-        <div class="sent-mail-text" >
-            <span>Votre message a bien été envoyée !</span>
+        <div class="sent-mail-text" [@enterFromTopAnimation]>
+            <span>Votre message a bien été envoyé. Merci !</span>
         </div>
-        <button class="finish-button" [mat-dialog-close]="true">
+        <button class="finish-button" [mat-dialog-close]="true" [@enterFromTopAnimation]>
             <span>Continuer</span>
         </button>
     </div>

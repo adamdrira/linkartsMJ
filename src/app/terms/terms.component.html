@@ -5,7 +5,89 @@
 </div>
 
 
-<div class="terms-container">
+
+
+<div class="popup-contact" *ngIf="show_contact">
+
+
+    <div class="top-container" >
+        <div class="title">
+            Nous contacter
+        </div>
+        <div class="message">
+            Votre avis compte vraiment !
+        </div>
+    </div>
+
+    
+    
+    <div class="step-form" [formGroup]="registerForm1" *ngIf="!show_done" [@enterAnimation]>
+        
+        
+        <div class="form-item">
+            <mat-form-field floatLabel='never'>
+                <mat-label>Nom complet*</mat-label>
+                <input matInput formControlName="firstName" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'firstName');">
+                <mat-error *ngIf="registerForm1.controls['firstName'].invalid">Veuillez saisir un prénom valide
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="form-item">
+            <mat-form-field floatLabel='never'>
+                <mat-label>E-mail*</mat-label>
+                <input matInput formControlName="email" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'email');">
+                <mat-error *ngIf="registerForm1.controls['email'].invalid">Veuillez saisir un e-mail valide
+                </mat-error>
+            </mat-form-field>
+        </div>
+        
+        <div class="form-item" style="height:unset !important;">
+            <mat-form-field floatLabel='never'>
+                <mat-label>Message*</mat-label>
+                <textarea matInput cdkTextareaAutosize formControlName="message" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm1, 'message');"></textarea>
+                
+                <mat-error *ngIf="registerForm1.controls['message'].invalid">Veuillez saisir un message valide
+                </mat-error>
+                <div class="length-indicator">{{registerForm1.controls['message'].value?.length || 0}}/1000</div>
+            </mat-form-field>
+        </div>
+
+        
+        <div class="error">
+            <span *ngIf="display_need_information" [@enterFromBottomAnimation]>Veuillez remplir les champs obligatoires.</span>
+        </div>
+
+
+        <button [disabled]="loading" class="submit-button" (click)="validate_step();" *ngIf="!show_done">
+            <span *ngIf="!loading">Envoyer</span>
+            <div class="loading-dots" *ngIf="loading">
+                &nbsp; <span>.</span><span>.</span><span>.</span>
+            </div>
+        </button>
+    
+       
+
+    </div>
+
+
+    <div class="step-form" *ngIf="show_done" [@enterAnimation] >
+        <div class="sent-mail-icon"  [@enterFromTopAnimation]>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
+        </div>
+        <div class="sent-mail-text"  [@enterFromTopAnimation] >
+            <span>Votre message a bien été envoyé. Merci !</span>
+        </div>
+        <button class="finish-button"  [@enterFromTopAnimation] (click)="go_to_home()">
+            <span>Continuer</span>
+        </button>
+    </div>
+    
+    
+
+</div>
+
+
+<div class="terms-container" *ngIf="!show_contact">
 
     <div class="left-container">
         <span>Le guide LinkArts</span>

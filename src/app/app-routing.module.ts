@@ -17,7 +17,7 @@ const routes: Routes = [
   {path:'chat', loadChildren: () => import('./modules/chat-module.module').then(mod => mod.ChatModuleModule) ,  canActivate: [AuthGuard], data: {preload: true}},
   {path:'linkcollab', loadChildren: () => import('./modules/linkcollab-module.module').then(mod => mod.LinkcollabModuleModule), resolve: { user: UserResolverService }},
   {path:'main-research', loadChildren: () => import('./modules/main-search-module.module').then(mod => mod.MainSearchModuleModule), data: {section: 0}, resolve: { user: UserResolverService }},
-  {path:'services/:article_number', loadChildren: () => import('./modules/terms-module.module').then(mod => mod.TermsModuleModule)},
+  {path:'services/:article_number', loadChildren: () => import('./modules/terms-module.module').then(mod => mod.TermsModuleModule), resolve: { user: UserResolverService }},
   {path:'donation', loadChildren: () => import('./modules/donation-module.module').then(mod => mod.DonationModuleModule),  data: {category: 0}, },
   //Catégories Linkarts
 

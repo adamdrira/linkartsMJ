@@ -29,6 +29,27 @@ $default-color: #203864;
         padding: 24px 5px 24px 5px;
     }
 
+    .error{
+        width: calc(100% - 66px);
+        position: absolute;
+        text-align:center;
+        margin-top: 10px;
+        bottom: 75px;
+        line-height: 16px;
+    
+        @media (max-width: 400px) {
+          width: calc(100% - 20px);
+        }
+    
+        &.add-group-members {
+          margin-top: 24px;
+          margin-bottom: 52px;
+        }
+        span {
+          color: #f44336;
+          font-size: 12px;
+        }
+    }
     .step-name {
         display: flex;
         justify-content: center;
@@ -225,23 +246,6 @@ $default-color: #203864;
             color: rgb(32, 56, 100);
         }
     }
-
-    .error {
-        width: 100%;
-        text-align: center;
-        margin-top: 10px;
-        padding: 0px 10px;
-        line-height: 16px;
-        span {
-            color: #f44336;
-            font-size: 12px;
-
-            &.green {
-                color: rgb(0, 89, 0);
-            }
-        }
-    }
-
     //************************************************************
     //Secured ng-deep
     //************************************************************

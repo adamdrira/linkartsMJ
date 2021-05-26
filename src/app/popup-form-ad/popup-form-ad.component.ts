@@ -89,8 +89,8 @@ export class PopupFormAdComponent implements OnInit {
   listOfDescriptions = this.constants.ads_descriptions;
 
   createFormControlsAds() {
-    this.fdTitle = new FormControl(this.data.item.title, [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text") ) ]);
-    this.fdDescription = new FormControl(this.data.item.description, [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
+    this.fdTitle = new FormControl(this.data.item.title, [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text_title") ) ]);
+    this.fdDescription = new FormControl(this.data.item.description, [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
     this.fdPrice = new FormControl(this.data.item.price_value, [Validators.minLength(1), Validators.maxLength(15), Validators.pattern( pattern("classic") ) ]);
     this.fdPrice_type = new FormControl(this.data.item.price_type?this.data.item.price_type:'');
     this.fdPrice1 = new FormControl(this.data.item.price_value_service, [Validators.minLength(1), Validators.maxLength(15), Validators.pattern( pattern("classic") ) ]);
