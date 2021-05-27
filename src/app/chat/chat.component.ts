@@ -21,7 +21,7 @@ import { merge, fromEvent } from 'rxjs'
 import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
 declare var $: any;
 
-var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
+var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
@@ -1497,9 +1497,6 @@ export class ChatComponent implements OnInit  {
         panelClass: "popupEditPictureClass",
       }).afterClosed().subscribe(result => {
         if(result){
-          console.log("after result")
-          console.log(result)
-          console.log(result)
           this.send_image(result,attachment_name);
         }
        
@@ -1528,7 +1525,6 @@ export class ChatComponent implements OnInit  {
   send_image(blob: Blob,attachment_name) {
       var re = /(?:\.([^.]+))?$/;
       attachment_name=attachment_name.replace(re.exec(attachment_name)[1],"png");
-      console.log(attachment_name)
       this.chatService.check_if_file_exists_png((this.friend_type=='user')?'user':'group',this.chat_friend_id,attachment_name).subscribe(r=>{
         let name=r[0].value ;
         this.myScrollContainer.nativeElement.focus();
@@ -1550,12 +1546,7 @@ export class ChatComponent implements OnInit  {
           is_a_group_chat:(this.friend_type=='user')?false:true,
           chat_friend_id:this.chat_friend_id,
         };
-        console.log("name after check " + name)
-        console.log((this.friend_type=='user')?'user':'group')
-        console.log(this.chat_friend_id)
         this.chatService.chat_upload_png(blob,name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
-          console.log("after upload png")
-          console.log(t)
           this.index_of_show_pp_right=this.index_of_show_pp_right+1;
           this.list_of_show_pp_left.splice(0,0,false);
           let THIS=this;
