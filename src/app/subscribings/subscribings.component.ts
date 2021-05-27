@@ -137,7 +137,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
                         if(r[0][j].publication_category=="comic"){
                           if(r[0][j].format=="one-shot"){
                             this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                              if(info[0].status=="public"){
+                              if(info[0] && info[0].status=="public"){
                                 new_contents.push(info[0]);
                                 compt++;
                               }
@@ -158,7 +158,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
                           }
                           if(r[0][j].format=="serie"){
                             this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                              if(info[0].status=="public"){
+                              if(info[0] && info[0].status=="public"){
                                 new_contents.push(info[0]);
                                 compt++;
                               }
@@ -181,7 +181,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
                         if(r[0][j].publication_category=="drawing"){
                           if(r[0][j].format=="one-shot"){
                             this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                              if(info[0].status=="public"){
+                              if(info[0] && info[0].status=="public"){
                                 new_contents.push(info[0]);
                                 compt++;
                               }
@@ -201,7 +201,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
                           }
                           if(r[0][j].format=="artbook"){
                             this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                              if(info[0].status=="public"){
+                              if(info[0] && info[0].status=="public"){
                                 new_contents.push(info[0]);
                                 compt++;
                               }
@@ -223,7 +223,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
         
                         if(r[0][j].publication_category=="writing"){
                             this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                              if(info[0].status=="public"){
+                              if(info[0] && info[0].status=="public"){
                                 new_contents.push(info[0]);
                                 compt++;
                               }
@@ -244,7 +244,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
                         
                         if(r[0][j].publication_category=="ad"){
                           this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                            if(info[0].status=="public"){
+                            if(info[0] && info[0].status=="public"){
                               new_contents.push(info[0]);
                               compt++;
                             }
@@ -298,7 +298,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
               if(r[0][j].publication_category=="comic"){
                 if(r[0][j].format=="one-shot"){
                   this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                    if(info[0].status="public"){
+                    if(info[0] && info[0].status=="public"){
                       this.list_of_contents.push(info[0]);
                       compt++;
                     }
@@ -312,7 +312,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
                 }
                 if(r[0][j].format=="serie"){
                   this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                    if(info[0].status="public"){
+                    if(info[0] && info[0].status=="public"){
                       this.list_of_contents.push(info[0]);
                       compt++;
                     }
@@ -329,7 +329,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
               if(r[0][j].publication_category=="drawing"){
                 if(r[0][j].format=="one-shot"){
                   this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                    if(info[0].status="public"){
+                    if(info[0] && info[0].status=="public"){
                       this.list_of_contents.push(info[0]);
                       compt++;
                     }
@@ -343,7 +343,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
                 }
                 if(r[0][j].format=="artbook"){
                   this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                    if(info[0].status="public"){
+                    if(info[0] && info[0].status=="public"){
                       this.list_of_contents.push(info[0]);
                       compt++
                     }
@@ -359,7 +359,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
 
               if(r[0][j].publication_category=="writing"){
                 this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                  if(info[0].status="public"){
+                  if(info[0] && info[0].status=="public"){
                     this.list_of_contents.push(info[0]);
                     compt++
                   }
@@ -374,7 +374,7 @@ export class SubscribingsComponent implements OnInit, OnDestroy {
               
               if(r[0][j].publication_category=="ad"){
                 this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
-                  if(info[0].status="public"){
+                  if(info[0] && info[0].status=="public"){
                     this.list_of_contents.push(info[0]);
                     compt++
                   }
