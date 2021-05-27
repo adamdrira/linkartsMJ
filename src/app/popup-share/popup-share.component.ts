@@ -130,10 +130,16 @@ export class PopupShareComponent implements OnInit {
   registerForm1: FormGroup;
   registerForm2: FormGroup;
   current_user:any;
+  show_signup=true;
   ngOnInit(): void {
     if( this.data.tutorial ) {
       this.tutorial = true;
     }
+
+    if(this.data.current_user &&  this.data.current_user[0] && this.data.current_user[0].status=='account'){
+      this.show_signup=false;
+    }
+    
     
     this.registerForm1 = this.formBuilder.group({
       email: ['', 
@@ -196,7 +202,7 @@ export class PopupShareComponent implements OnInit {
     this.dialogRef.close();
   }
   end_tutorial() {
-    this.navbar.add_page_visited_to_history(`/end_tuto/${this.data.current_user.id}/`,'' ).subscribe();
+    this.navbar.add_page_visited_to_history(`/end_tuto/`,'' ).subscribe();
     this.Profile_Edition_Service.agree_on_tuto();
     this.dialogRef.close();
   }

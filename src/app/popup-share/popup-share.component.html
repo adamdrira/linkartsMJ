@@ -621,7 +621,7 @@
                 </div>
             </div>
             
-            <div class="text-element left">
+            <div class="text-element left" *ngIf="show_signup">
                 <div class="text-container left">
                     <div  [@enterFromLeftAnimation] class="email-form" (click)="close_dialog();signup();">
                         <div class="submit-mail">M'inscrire</div>
