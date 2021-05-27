@@ -211,6 +211,10 @@ export class HomeLinkcollabComponent implements OnInit {
     if( this.homeLinkcollabSelect ) {
       this.homeLinkcollabSelect.close();
     }
+
+    if(window.innerWidth>850){
+      this.filters_opened=false;
+    }
     this.set_thumbnails_width();
 
   };
@@ -685,6 +689,8 @@ export class HomeLinkcollabComponent implements OnInit {
       }
       this.category= e.value;
     }
+    this.cd.detectChanges();
+    this.set_thumbnails_width();
   }
 
 

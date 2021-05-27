@@ -437,7 +437,7 @@ export class SignupComponent implements OnInit {
         if(this.loading_signup){
           return
         }
-        this.loading_signup=true;
+        //this.loading_signup=true;
         let location=null;
         let birthday=null;
         let siret=null;
@@ -461,13 +461,13 @@ export class SignupComponent implements OnInit {
           location=null;
         }
 
-        if(this.registerForm1.value.type_of_account=="Artiste" && this.registerForm2.controls['birthday'] && this.registerForm2.controls['birthday'].valid){
-          if(this.registerForm2.value.birthday._i.date){
+        if(this.registerForm1.value.type_of_account=="Artiste" && this.registerForm2.controls['birthday'] && this.registerForm2.controls['birthday'].valid && this.registerForm2.value.birthday && this.registerForm2.value.birthday!=''){
+         if(this.registerForm2.value.birthday._i.date){
             birthday = this.registerForm2.value.birthday._i.date  + '-' + this.registerForm2.value.birthday._i.month  + '-' + this.registerForm2.value.birthday._i.year ;
           }
           else if(typeof(this.registerForm2.value.birthday._i)=='string'){
             birthday = this.registerForm2.value.birthday._i;
-            birthday = this.user.birthday.replace(/\//g, "-");
+            birthday = birthday.replace(/\//g, "-");
           }
           else{
             birthday =  this.registerForm2.value.birthday._i[2] + '-'+ this.registerForm2.value.birthday._i[1] +'-'+ this.registerForm2.value.birthday._i[0];
@@ -476,7 +476,7 @@ export class SignupComponent implements OnInit {
           
         }
         else{
-            birthday="Non renseigné";
+          birthday="Non renseigné";
         }
 
         let primary_description = this.registerForm2.value.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
