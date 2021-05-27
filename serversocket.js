@@ -697,8 +697,7 @@ wss.on('connection', (ws, req)=>{
               }
             }
             else if(messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji'){
-              console.log("not a writing or else message, create")
-                var toUserWebSocket = webSockets[id_friend];
+              var toUserWebSocket = webSockets[id_friend];
                     chat_seq.list_of_messages.create({
                       "id_user_name":messageArray.id_user_name,
                       "id_receiver": id_group,
@@ -988,7 +987,11 @@ app.post('/get_users_connected_in_the_chat', function(req, res) {
     }
   }).then(friends=>{
     if(send_web){
-      res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection,list:Object.keys(webSockets),deconnected_friends:friends}])
+      let number_of_80s=0;
+      if(webSockets[80]){
+        number_of_80s=webSockets[80].length;
+      }
+      res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection,list:Object.keys(webSockets),number_of_80s:number_of_80s,deconnected_friends:friends}])
     }
     else{
       res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection,deconnected_friends:friends}])
