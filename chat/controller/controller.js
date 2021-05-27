@@ -1896,6 +1896,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     });
 
     router.post('/chat_upload_png/:file_name/:friend_type/:friend_id', function (req, res) {
+    console.log("chat_upload_png")
       let current_user = get_current_user(req.cookies.currentUser);
       if(!current_user){
         return res.status(401).json({msg: "error"});
@@ -1903,8 +1904,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let file_name = req.params.file_name;
       let friend_type = req.params.friend_type
       let friend_id = parseInt(req.params.friend_id);
-
+     
       const PATH2= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
+      console.log(PATH2)
       let storage2 = multer.diskStorage({
         destination: (req, file, cb) => {
           cb(null, PATH2);
@@ -1931,14 +1933,19 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           })
           ]
           });
+          console.log("after upload")
+          console.log(files)
           let transform = sharp()
           transform = transform.resize({fit:sharp.fit.contain,height:300})
           .toBuffer((err, buffer, info) => {
+            console.log("in buffer")
+            console.log(info)
               if (buffer) {
                   res.status(200).send(buffer);
               }
           });
           let filename2 = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
+          console.log(filename2)
           var pp = fs.createReadStream( path.join(process.cwd(),filename2))
           pp.pipe(transform);
         })();
