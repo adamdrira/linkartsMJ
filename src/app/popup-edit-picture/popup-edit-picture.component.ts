@@ -4,9 +4,7 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dial
 import { NavbarService } from '../services/navbar.service';
 import { ChatService } from '../services/chat.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
-import domtoimage from 'dom-to-image';
 import html2canvas from 'html2canvas';
 
 declare var Cropper;
