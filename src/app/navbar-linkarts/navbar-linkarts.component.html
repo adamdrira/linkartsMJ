@@ -599,23 +599,23 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">email</mat-icon>
                   <span>Nous contacter</span>
                 </button>
-                <a routerLink="/donation" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                <div class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">groups</mat-icon>
-                  <span>Nous soutenir</span>
-                </a>
+                  <a routerLink="/donation" class="link-page">Nous soutenir</a>
+                </div>
                 
-                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                <div class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Mentions légales</span>
-                </a>
-                <a href="/services/2" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <a href="/services/1" class="link-page">Mentions légales</a>
+                </div>
+                <div class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
-                  <span>Conditions d'utilisation</span>
-                </a>
-                <a href="/services/4" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <a href="/services/2" class="link-page">Conditions d'utilisation</a>
+                </div>
+                <div class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
-                  <span>Confidentialité et sécurité</span>
-                </a>
+                  <a href="/services/4" class="link-page">Confidentialité et sécurité</a>
+                </div>
                 
               </mat-menu>
             </div>

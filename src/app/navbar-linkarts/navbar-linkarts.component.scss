@@ -321,9 +321,7 @@
   }
 
   //*************************************************************
-  //*************************************************************
   //Searchbar
-  //*************************************************************
   //*************************************************************
   .navbar .navbar-l1-searchbar-container {
     border-radius: 30px;
@@ -1064,7 +1062,10 @@
       position:absolute;
       right:12px;
     }
+
   }
+
+
 
   .optionsMenu {
     outline: none;
@@ -1935,6 +1936,14 @@
       transition: background-color 200ms;
 
 
+      .link-page{
+        font-size: 12px !important;
+        line-height: 38px !important;
+        height: 38px !important;
+        font-weight: bold !important;
+        color: #203864 !important;
+      }
+      
       .icon-home {
         width:14px !important;
         height:14px !important;

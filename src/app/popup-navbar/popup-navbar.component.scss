@@ -105,6 +105,19 @@ $default-color: rgb(218,220,225);
             color: $default-color;
             cursor:pointer;
 
+            .page{
+              text-decoration: none;
+              outline:none !important;
+              color: $default-color !important;
+
+              &:hover {
+                color: white !important;
+              }
+              &:active {
+                text-shadow: -0.04ex 0 white, 0.04ex 0 white;
+              }
+            }
+
             .icon-home {
                 width:14px !important;
                 height:14px !important;

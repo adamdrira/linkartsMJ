@@ -21,55 +21,55 @@
 
     <div class="scrollable-container-options">
 
-            <div class="option-element option-element2" (click)="go_to_home()">
+            <div class="option-element option-element2" >
                 <div class="icon-home"></div>
-                <span>Galerie</span>
+                <a class="page" routerLink="/" (click)="close_dialog()">Galerie</a>
             </div>
-            <div class="option-element option-element2" (click)="go_to_linkcollab()">
+            <div class="option-element option-element2" >
                 <div class="icon-collaboration " ></div>
-                <span>Collaboration</span>
+                <a class="page" routerLink="/linkcollab" (click)="close_dialog()">Collaboration</a>
             </div>
 
 
-            <div class="option-element" (click)="login();">
+            <div class="option-element" >
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">exit_to_app</mat-icon>
-              <span>Se connecter</span>
-            </div>
-            <div class="option-element" (click)="signup();">
+              <span (click)="login();">Se connecter</span>
+            </div >
+            <div class="option-element" >
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
-              <span>S'inscrire</span>
+              <span (click)="signup();">S'inscrire</span>
             </div>
            
-            <div class="option-element" (click)="open_tuto()">
+            <div class="option-element" >
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-              <span>Qui sommes-nous ?</span>
+              <span (click)="open_tuto()">Qui sommes-nous ?</span>
             </div>
-            <div class="option-element" (click)="open_share()">
+            <div class="option-element" >
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">share</mat-icon>
-              <span>Partager le site</span>
+              <span (click)="open_share()">Partager le site</span>
             </div>
             
-            <div class="option-element" (click)="open_contact()">
+            <div class="option-element">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">mail</mat-icon>
-              <span>Nous contacter</span>
+              <span  (click)="open_contact()">Nous contacter</span>
             </div>
 
-            <a href="/donation"  (click)="close_dialog();" class="option-element">
+            <div class="option-element">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">groups</mat-icon>
-              <span>Nous soutenir</span>
-            </a>
-            <a href="/services/1" class="option-element">
+              <a href="/donation" class="page" (click)="close_dialog();">Nous soutenir</a>
+            </div>
+            <div class="option-element">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-              <span>Mentions légales</span>
-            </a>
-            <a href="/services/2" class="option-element">
+              <a href="/services/1" class="page" (click)="close_dialog();">Mentions légales</a>
+              </div>
+            <div class="option-element">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
-              <span>Conditions d'utilisation</span>
-            </a>
-            <a href="/services/4" class="option-element">
+              <a href="/services/2" class="page" (click)="close_dialog();">Conditions d'utilisation</a>
+            </div>
+            <div class="option-element">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
-              <span>Confidentialité et sécurité</span>
-            </a>
+              <a href="/services/4" class="page" (click)="close_dialog();">Confidentialité et sécurité</a>
+            </div>
 
             
             

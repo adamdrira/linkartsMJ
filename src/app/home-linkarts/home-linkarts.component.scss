@@ -604,11 +604,26 @@
 
       .link {
         cursor:pointer;
-        margin-left: 11px;
-        margin-right: 11px;
+        margin-left: auto;
+        margin-right: auto;
         margin-top: 4px;
         margin-bottom: 4px;
         display: flex;
+
+        .link-page{
+          text-decoration: none;
+          outline:none !important;
+          color: #7d7d7d !important;
+          font-size:12px;
+          font-weight: 600;
+
+          &:hover {
+            color: rgb(32, 56, 100) !important;
+          }
+          &:active {
+            color: rgb(32, 56, 100) !important;
+          }
+        }
   
         mat-icon {
           margin: auto 6px auto 0px;

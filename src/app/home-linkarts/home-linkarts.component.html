@@ -221,34 +221,34 @@
     <div class="links-container">
 
         <div class="links">
-            <a class="link" href="/services/1">
+            <div class="link" >
                 <mat-icon [ngClass]="{'invisible': !show_icon }">lock</mat-icon>
-                <span>Mentions légales</span>
-            </a>
-            <a class="link" href="/services/4">
+                <a class="link-page" href="/services/1">Mentions légales</a>
+            </div>
+            <div class="link" >
                 <mat-icon [ngClass]="{'invisible': !show_icon }">security</mat-icon>
-                <span>Confidentialité et sécurité</span>
-            </a>
+                <a  class="link-page" href="/services/4">Confidentialité et sécurité</a>
+            </div>
         </div>
         <div class="links">
-            <a class="link" (click)="open_tuto()">
+            <div class="link" >
                 <mat-icon [ngClass]="{'invisible': !show_icon }">help</mat-icon>
-                <span>Qui sommes-nous ?</span>
-            </a>
-            <a class="link" href="/services/2">
+                <a class="link-page" (click)="open_tuto()">Qui sommes-nous ?</a>
+            </div>
+            <div class="link" >
                 <mat-icon [ngClass]="{'invisible': !show_icon }">menu_book</mat-icon>
-                <span>Conditions d'utilisation</span>
-            </a>
+                <a class="link-page" href="/services/2">Conditions d'utilisation</a>
+            </div>
         </div>
         <div class="links">
-            <a class="link" (click)="open_popup_contact();">
+            <div class="link" >
                 <mat-icon [ngClass]="{'invisible': !show_icon }">email</mat-icon>
-                <span>Nous contacter</span>
-            </a>
-            <a class="link" href="/donation"> 
+                <a class="link-page" (click)="open_popup_contact();">Nous contacter</a>
+            </div>
+            <div class="link" > 
                 <mat-icon [ngClass]="{'invisible': !show_icon }" >groups</mat-icon>
-                <span>Nous soutenir</span>
-            </a>
+                <a class="link-page" href="/donation">Nous soutenir</a>
+            </div>
         </div>
         
 
