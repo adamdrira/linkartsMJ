@@ -240,20 +240,20 @@ export class HomeLinkartsComponent implements OnInit {
     else if( i==1 ) {
       this.category_index = 1;
       this.navbar.add_page_visited_to_history(`/home/trendings`,this.device_info).subscribe();
-      this.title.setTitle('LinkCollab – Tendances');
+      this.title.setTitle('LinkArts – Tendances');
       this.meta.updateTag({ name: 'description', content: "La liste des meilleures œuvres du jour pour chaque catégorie !" })
       this.location.go('/home/trendings')
     }
     else if( i==2 ) {
       this.category_index = 2;
-      this.title.setTitle("LinkCollab – Fil d'actualité");
+      this.title.setTitle("LinkArts – Fil d'actualité");
       this.meta.updateTag({ name: 'description', content: "Découvrez votre fil d'actualité !" })
       this.navbar.add_page_visited_to_history(`/subscribings`,this.device_info).subscribe();
       this.location.go('/home/subscribings')
     }
     else if( i==3 ) {
       this.category_index = 3;
-      this.title.setTitle('LinkCollab – Coups de cœur');
+      this.title.setTitle('LinkArts – Coups de cœur');
       this.meta.updateTag({ name: 'description', content: "La liste des meilleures artistes du moment !" })
       this.navbar.add_page_visited_to_history(`/favorites`,this.device_info).subscribe();
       this.location.go('/home/favorites')
