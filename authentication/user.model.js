@@ -118,6 +118,11 @@ module.exports = (sequelize, Sequelize) => {
 		status:{type: Sequelize.STRING},
 		nickname:{type: Sequelize.STRING},
 		ip:{type: Sequelize.STRING},
+		latitude:{type: Sequelize.STRING},
+		longitude:{type: Sequelize.STRING},
+		area:{type: Sequelize.STRING},
+		country:{type: Sequelize.STRING},
+		region:{type: Sequelize.STRING},
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,

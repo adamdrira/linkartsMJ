@@ -7,6 +7,7 @@ const db = require('./authentication/db.config');
 const subscribings_seq= require('./p_subscribings_archives_contents/model/sequelize');
 const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
+var geoip = require('geoip-lite');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 var nodemailer = require('nodemailer');
 // Create web socket server on top of a regular http server
@@ -50,9 +51,36 @@ wss.on('connection', (ws, req)=>{
       id:userID
     }
   }).then(user=>{
+    let ip=null;
+    let lat =null;
+    let long=null;
+    let area=null;
+    let country=null;
+    let region=null;
+	  if( req.rawHeaders && req.rawHeaders[1]){
+			ip=req.rawHeaders[1]
+      var geo;
+			
+			if(ip && !ip.includes("linkarts")){
+					geo = geoip.lookup(ip);
+          if(geo){
+            lat=geo.ll[0].toString();
+            long=geo.ll[1].toString();
+            area=geo.area.toString();
+            country=geo.country;
+            region=geo.region;
+          }
+			}
+	  };
     db.users_connexions.create({
       "id_user":userID,
-      "nickname":user.nickname,
+      "ip":ip,
+      "latitude":lat,
+		  "longitude":long,
+      "area":area,
+      "country":country, 
+      "region":region, 
+      "nickname":user.nickname,   
       "connexion_time":connexion_time,
       "status":"websocket",
     })
