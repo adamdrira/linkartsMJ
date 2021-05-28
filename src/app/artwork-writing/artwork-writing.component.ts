@@ -26,6 +26,7 @@ import { PopupCommentsComponent } from '../popup-comments/popup-comments.compone
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { Meta, Title } from '@angular/platform-browser';
 
 declare var $: any;
 
@@ -93,6 +94,8 @@ export class ArtworkWritingComponent implements OnInit {
     public dialog: MatDialog,
     private NotationService:NotationService,
     private rd:Renderer2,
+    private meta_title: Title,
+    private meta: Meta
     ) { 
       this.router.routeReuseStrategy.shouldReuseRoute = function() {
         return false;
@@ -117,8 +120,11 @@ export class ArtworkWritingComponent implements OnInit {
     if(!this.writing_id_input){
       this.navbar.show_help();
     }
-   
+    this.meta_title.setTitle('LinkArts – Collaboration éditoriale');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
   }
+
+
 
   @HostListener('window:popstate', ['$event'])
   onPopState(event) {
@@ -356,6 +362,8 @@ export class ArtworkWritingComponent implements OnInit {
             this.lovesnumber =r[0].lovesnumber ;
             this.status=r[0].status;
             this.thumbnail_picture=r[0].name_coverpage ;
+
+            
             let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
             this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`,this.device_info).subscribe();
             this.location.go(`/artwork-writing/${title_url}/${this.writing_id}`);
@@ -373,6 +381,9 @@ export class ArtworkWritingComponent implements OnInit {
               this.type_of_account_checked=r[0].type_of_account_checked;
               this.certified_account=r[0].certified_account;
               this.profile_data_retrieved=true;
+              this.meta_title.setTitle(`Œuvre LinkArts – ${this.title}`);
+              this.meta.updateTag({ name: 'description', content: `Découvrer l'écrit de la catégorie ${this.style}, de @${this.user_name}.` });
+
             });
   
             this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).subscribe(l=>{

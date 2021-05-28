@@ -100,7 +100,7 @@ export class PopupNavbarDisconnectedComponent implements OnInit {
   }
 
   open_tuto() {
-    this.navbar.add_page_visited_to_history(`/open_tuto/${this.current_user.id}/`,'' ).subscribe();
+    this.navbar.add_page_visited_to_history(`/open_tuto`,'' ).subscribe();
     const dialogRef = this.dialog.open(PopupShareComponent, {
       data:{type_of_profile:"visitor", tutorial:true,current_user:this.current_user},
       panelClass:"popupTutoClass"

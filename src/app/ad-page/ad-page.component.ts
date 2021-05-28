@@ -28,6 +28,8 @@ import { DOCUMENT } from '@angular/common';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupFormAdComponent } from '../popup-form-ad/popup-form-ad.component';
 import { merge, fromEvent } from 'rxjs';
+import { Meta, Title } from '@angular/platform-browser';
+
 declare var $: any
 declare var Swiper: any
 
@@ -93,6 +95,8 @@ export class AdPageComponent implements OnInit {
     private Reports_service:Reports_service,
     private chatService:ChatService,
     private router:Router,
+    private meta_title: Title,
+    private meta: Meta,
     private location:Location,
     private NotificationsService:NotificationsService,
     public route: ActivatedRoute, 
@@ -244,6 +248,8 @@ export class AdPageComponent implements OnInit {
     if(!this.ad_id_input){
       this.navbar.show_help();
     }
+    this.meta_title.setTitle('LinkArts – Collaboration éditoriale');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
   }
 
   close_popup(){
@@ -366,6 +372,9 @@ export class AdPageComponent implements OnInit {
           
           this.certified_account=r[0].certified_account;
           this.profile_data_retrieved=true;
+
+          this.meta_title.setTitle(`Annonce LinkArts – ${this.item.title}`);
+          this.meta.updateTag({ name: 'description', content: `Découvrer l'annonce de @${this.author_name}.` });
         });
   
         this.Subscribing_service.check_if_visitor_susbcribed(this.item.id_user).subscribe(information=>{

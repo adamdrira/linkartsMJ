@@ -12,7 +12,7 @@ import { Location } from '@angular/common';
 import {get_date_to_show_chat} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { pattern } from '../helpers/patterns';
-
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-chat-friends-list',
@@ -82,6 +82,8 @@ export class ChatFriendsListComponent implements OnInit {
     private cd: ChangeDetectorRef,
     public route: ActivatedRoute, 
     private router: Router,
+    private title: Title,
+    private meta: Meta,
     private activatedRoute: ActivatedRoute,
     ){
 
@@ -255,6 +257,8 @@ export class ChatFriendsListComponent implements OnInit {
 
   ngOnInit() {
     
+    this.title.setTitle('LinkArts – Messagerie');
+    this.meta.updateTag({ name: 'description', content: "Une plateforme de discussion adaptée à vos besoins artistiques." });
     this.navbar.hide_help();
 
     let THIS=this;

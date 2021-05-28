@@ -91,7 +91,7 @@ export class HomeLinkartsComponent implements OnInit {
   ngOnInit() {
     
     this.title.setTitle('LinkArts – Collaboration éditoriale');
-    this.meta.updateTag({ name: 'description', content: "Une galerie pour exposer vos œuvres et promouvoir votre talent." });
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
 
 
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
@@ -221,27 +221,40 @@ export class HomeLinkartsComponent implements OnInit {
   top_artists_writing=[];
  
   open_category(i : number) {
+
+    if(this.category_index==i){
+      return
+    }
+
     this.allow_sub=false;
     if( i==0 ) {
       if(this.categories_to_load[2]){
         this.allow_sub=true;
       }
       this.category_index = 0;
+      this.title.setTitle('LinkArts – Collaboration éditoriale');
+      this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
       this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).subscribe();
       this.location.go('/home/recommendations');
     }
     else if( i==1 ) {
       this.category_index = 1;
       this.navbar.add_page_visited_to_history(`/home/trendings`,this.device_info).subscribe();
+      this.title.setTitle('LinkCollab – Tendances');
+      this.meta.updateTag({ name: 'description', content: "La liste des meilleures œuvres du jour pour chaque catégorie !" })
       this.location.go('/home/trendings')
     }
     else if( i==2 ) {
       this.category_index = 2;
+      this.title.setTitle("LinkCollab – Fil d'actualité");
+      this.meta.updateTag({ name: 'description', content: "Découvrez votre fil d'actualité !" })
       this.navbar.add_page_visited_to_history(`/subscribings`,this.device_info).subscribe();
       this.location.go('/home/subscribings')
     }
     else if( i==3 ) {
       this.category_index = 3;
+      this.title.setTitle('LinkCollab – Coups de cœur');
+      this.meta.updateTag({ name: 'description', content: "La liste des meilleures artistes du moment !" })
       this.navbar.add_page_visited_to_history(`/favorites`,this.device_info).subscribe();
       this.location.go('/home/favorites')
     }
@@ -430,12 +443,12 @@ export class HomeLinkartsComponent implements OnInit {
     this.navbar.show_help();
     
     this.title.setTitle('LinkArts – Collaboration éditoriale');
-    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
     
   }
 
   open_tuto(){
-    this.navbar.add_page_visited_to_history(`/open_tuto/${this.current_user.id}/`,'' ).subscribe();
+    this.navbar.add_page_visited_to_history(`/open_tuto`,'' ).subscribe();
     const dialogRef = this.dialog.open(PopupShareComponent, {
       data:{type_of_profile:this.type_of_profile, tutorial:true,current_user:this.current_user},
       panelClass:"popupTutoClass"

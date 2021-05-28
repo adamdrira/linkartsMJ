@@ -16,7 +16,7 @@ import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupFormDrawingComponent } from '../popup-form-drawing/popup-form-drawing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
-
+import { Meta, Title } from '@angular/platform-browser';
 import {NotificationsService} from '../services/notifications.service';
 import { ChatService} from '../services/chat.service';
 import {get_date_to_show} from '../helpers/dates';
@@ -80,6 +80,8 @@ export class ArtworkDrawingComponent implements OnInit {
   constructor(
     private Reports_service:Reports_service,
     private rd: Renderer2,
+    private meta_title: Title,
+    private meta: Meta,
     public navbar: NavbarService,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
@@ -126,6 +128,8 @@ export class ArtworkDrawingComponent implements OnInit {
     if(!this.drawing_id_input){
       this.navbar.show_help();
     }
+    this.meta_title.setTitle('LinkArts – Collaboration éditoriale');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
   }
   
   @HostListener('window:popstate', ['$event'])
@@ -449,7 +453,8 @@ export class ArtworkDrawingComponent implements OnInit {
         this.pseudo = r[0].nickname;
         this.user_name = r[0].firstname;
         this.primary_description=r[0].primary_description;
-
+        this.meta_title.setTitle(`Œuvre LinkArts – ${this.title}`);
+        this.meta.updateTag({ name: 'description', content: `Découvrer le dessins de @${this.user_name}.` });
         this.type_of_account_checked=r[0].type_of_account_checked;
         this.certified_account=r[0].certified_account;
         this.profile_data_retrieved=true;
@@ -600,6 +605,8 @@ export class ArtworkDrawingComponent implements OnInit {
         
         this.type_of_account_checked=r[0].type_of_account_checked;
         this.certified_account=r[0].certified_account;
+        this.meta_title.setTitle(`Œuvre LinkArts – ${this.title}`);
+        this.meta.updateTag({ name: 'description', content: `Découvrer l'artbook de @${this.user_name}.` });
       });
 
       this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{

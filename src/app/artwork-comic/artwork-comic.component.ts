@@ -29,6 +29,7 @@ import { PopupCommentsComponent } from '../popup-comments/popup-comments.compone
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { LoginComponent } from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { Meta, Title } from '@angular/platform-browser';
 
 declare var Swiper: any;
 declare var $: any;
@@ -82,6 +83,8 @@ export class ArtworkComicComponent implements OnInit {
   constructor(
     private Reports_service:Reports_service,
     private rd: Renderer2,
+    private meta_title: Title,
+    private meta: Meta,
     public navbar: NavbarService,
     public route :ActivatedRoute,
     private location:Location,
@@ -128,6 +131,8 @@ export class ArtworkComicComponent implements OnInit {
     if(!this.bd_id_input){
       this.navbar.show_help();
     }
+    this.meta_title.setTitle('LinkArts – Collaboration éditoriale');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
   }
   
   @ViewChild('artwork') artwork:ElementRef;
@@ -399,6 +404,7 @@ export class ArtworkComicComponent implements OnInit {
               this.location.go(`/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`);
               this.url=`https://www.linkarts.fr/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`;
               this.location_done=true;
+
               this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
                 this.pseudo = r[0].nickname;
                 this.type_of_account_checked=r[0].type_of_account_checked;
@@ -406,6 +412,9 @@ export class ArtworkComicComponent implements OnInit {
                 this.user_name = r[0].firstname;
                 this.primary_description=r[0].primary_description;
                 this.profile_data_retrieved=true;
+
+                this.meta_title.setTitle(`Œuvre LinkArts – ${this.title}`);
+                this.meta.updateTag({ name: 'description', content: `Découvrer la bande dessinée, de la catégorie ${this.style}, de @${this.user_name}.` });
               });
 
               this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).subscribe(l=>{
@@ -645,6 +654,9 @@ export class ArtworkComicComponent implements OnInit {
               this.type_of_account_checked=r[0].type_of_account_checked;
               this.certified_account=r[0].certified_account;
               this.profile_data_retrieved=true;
+
+              this.meta_title.setTitle(`Œuvre LinkArts – ${this.title}`);
+              this.meta.updateTag({ name: 'description', content: `Découvrer la bande dessinée, de la catégorie ${this.style}, de @${this.user_name}.` });
             });
   
             this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).subscribe(l=>{

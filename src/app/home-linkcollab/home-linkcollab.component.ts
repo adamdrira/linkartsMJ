@@ -10,6 +10,7 @@ import { ConstantsService } from '../services/constants.service';
 import { merge, fromEvent } from 'rxjs';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Meta, Title } from '@angular/platform-browser';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 declare var Swiper: any
 
@@ -100,6 +101,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
   constructor(private rd: Renderer2, 
     public navbar: NavbarService,
+    private deviceService: DeviceDetectorService,
     private cd: ChangeDetectorRef,
     private Ads_service:Ads_service,
     public dialog: MatDialog,
@@ -168,10 +170,15 @@ export class HomeLinkcollabComponent implements OnInit {
   /*On init */
   /*********************************************************************** */
   /*********************************************************************** */
-  
+  device_info='';
   ngOnInit() {
-    this.title.setTitle('LinkCollab – annonces de collaboration et dépôts de projets pour artistes et éditeurs');
-    this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour dénicher votre partenaire de projet et soumettre votre projet auprès des éditeurs" });
+    this.navbar.add_page_visited_to_history(`/linkcollab/home_depot`,this.device_info ).subscribe();
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    window.scroll(0,0);
+    this.title.setTitle('LinkCollab – Espace collaboration');
+    this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour soumettre votre projet auprès des éditeurs et dénicher le partenaire idéal." });
+
+    
 
     window.scroll(0,0);
     this.open_category(0, true);
@@ -266,18 +273,27 @@ export class HomeLinkcollabComponent implements OnInit {
     this.sorting="pertinence";
 
     if(i==1){
+      this.title.setTitle('LinkCollab – annonces de collaborations bénévoles');
+      this.meta.updateTag({ name: 'description', content: "Dénichez le collaborateur idéal pour vos projets éditoriaux !" });
+      this.navbar.add_page_visited_to_history(`/home/benev`,this.device_info ).subscribe();
       this.remuneration=false;
       this.service=false;
       this.get_sorted_ads();
     }
     else if(i==2){
+      this.title.setTitle('LinkCollab – annonces de collaborations rémunérées');
+      this.meta.updateTag({ name: 'description', content: "Dénichez le service artistique ou éditorial qui vous conviens le mieux !" });
+      this.navbar.add_page_visited_to_history(`/home/remuneration`,this.device_info ).subscribe();
       this.remuneration=true;
       this.service=false;
       this.get_sorted_ads();
     }
     else{
+      this.title.setTitle('LinkCollab – Espace collaboration');
+      this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour soumettre votre projet auprès des éditeurs et dénicher le partenaire idéal." });
+      this.navbar.add_page_visited_to_history(`/linkcollab/depot`,this.device_info ).subscribe();
       this.remuneration=false;
-      this.service=true;
+      this.service=false;
       this.get_sorted_ads();
     }
     this.category_index=i;
@@ -377,6 +393,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
 
   change_select1(e:any) {
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select1/${e.value}`,this.device_info ).subscribe();
     if( e.value=="Tout" ){
       if( this.type_of_project == "none" ) {
         return;
@@ -384,7 +401,7 @@ export class HomeLinkcollabComponent implements OnInit {
       this.type_of_project="none";
     }
     else{
-      if( this.type_of_project == e.value ) {
+     if( this.type_of_project == e.value ) {
         return;
       }
       this.type_of_project= e.value;
@@ -393,6 +410,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select2(e:any) {
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select2/${e.value}`,this.device_info ).subscribe();
     if( e.value=="Tout" ){
       if( this.author == "none" ) {
         return;
@@ -409,6 +427,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select3(e:any) {
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select3/${e.value}`,this.device_info ).subscribe();
     if( e.value=="Tout" ){
       if( this.target == "none" ) {
         return;
@@ -425,6 +444,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select4(e:any) {
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select4/${e.value}`,this.device_info ).subscribe();
     if( e.value=="Tout" ){
       if( this.type_of_service == "none" ) {
         return;
@@ -441,6 +461,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select5(e:any) {
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select5/${e.value}`,this.device_info ).subscribe();
     if( e.value=="Tout" ){
       if( this.offer_or_demand == "none" ) {
         return;
@@ -457,6 +478,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select6(e:any) {
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select6/${e.value}`,this.device_info ).subscribe();
     if( e.value=="Tout" ){
       if( this.type_of_remuneration == "none" ) {
         return;
@@ -473,6 +495,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select7(e:any) {
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select7/${e.value}`,this.device_info ).subscribe();
     if( e.value=="Tri par pertinence" ){
       if( this.sorting == "pertinence" ) {
         return;
@@ -513,6 +536,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select8(e:any) {
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select8/${e.value}`,this.device_info ).subscribe();
     if( e.value=="Tri par pertinence" ){
       if( this.sorting == "pertinence" ) {
         return;
@@ -678,12 +702,14 @@ export class HomeLinkcollabComponent implements OnInit {
 
   change_select_section0(e:any) {
     if( e.value=="Tout" ){
+      this.navbar.add_page_visited_to_history(`/linkcollab/change_select_section0/tout`,this.device_info ).subscribe();
       if( this.category == "none" ) {
         return;
       }
       this.category="none";
     }
     else{
+      this.navbar.add_page_visited_to_history(`/linkcollab/change_select_section0/${e.value}`,this.device_info ).subscribe();
       if( this.category == e.value ) {
         return;
       }
@@ -1056,12 +1082,14 @@ export class HomeLinkcollabComponent implements OnInit {
   box_checked={};
   selectBox(checked,i){
     if(checked){
+      this.navbar.add_page_visited_to_history(`/linkcollab/select_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).subscribe();
       this.indexes_selected[i]=true;
       this.box_checked[i]=true;
        //this.list_of_editors_selected.splice(0,0,this.list_of_editors[i]); quand on aura des collaborateurs
       //this.show_editors=true;
     }
     else{
+      this.navbar.add_page_visited_to_history(`/linkcollab/unselect_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).subscribe();
       this.box_checked[i]=false;
       this.remove_editor(i)
     }
@@ -1124,7 +1152,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
   ngOnDestroy() {
     this.title.setTitle('LinkArts – Collaboration éditoriale');
-    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié aux artistes et professionnels du monde de l'édition.  Le site répond avant tout au besoin de collaboration de promotion et de rémunération des artistes et professionnels de l'édition." });
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
   }
 
 

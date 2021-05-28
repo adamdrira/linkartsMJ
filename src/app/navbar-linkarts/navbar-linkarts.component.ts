@@ -2097,7 +2097,7 @@ open_notifications(){
   tuto_opened=false;
   open_tuto() {
     this.tuto_opened=true;
-    this.navbar.add_page_visited_to_history(`/open_tuto/${this.current_user.id}/`,'' ).subscribe();
+    this.navbar.add_page_visited_to_history(`/open_tuto`,'' ).subscribe();
     const dialogRef = this.dialog.open(PopupShareComponent, {
       data:{type_of_profile:this.type_of_profile, tutorial:true,current_user:this.current_user},
       panelClass:"popupTutoClass"
