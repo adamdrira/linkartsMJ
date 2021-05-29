@@ -222,6 +222,9 @@ export class HomeLinkartsComponent implements OnInit {
  
   open_category(i : number) {
 
+    console.log("open category")
+    console.log(this.category_index)
+    console.log(i)
     if(this.category_index==i){
       return
     }
