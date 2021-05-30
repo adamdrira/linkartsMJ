@@ -338,4 +338,10 @@ export class NavbarService {
       return information;
     }));
   }
+
+  update_type_of_account(type_of_account):Observable<any>{
+    return this.httpClient.post('routes/update_type_of_account',{type_of_account:type_of_account}, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
+  }
 }
