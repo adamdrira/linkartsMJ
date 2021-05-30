@@ -399,7 +399,7 @@
                 <div class="form-item swiper-slide large-screen-1" [ngStyle]="{'width' : '180px', 'margin-right' : 'auto', 'margin-left':'10px'}">
                     <mat-form-field floatLabel='never' class="select-class">
                         <mat-label>Rechercher</mat-label>
-                        <input matInput maxLength="100" autocomplete="off" [(ngModel)]="searchText">
+                        <input matInput maxLength="100" autocomplete="off" [(ngModel)]="searchText" (input)="set_thumbnails_width()">
 
                         <div class="length-indicator">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
@@ -479,7 +479,7 @@
                         
                         <div class="thumbnail">
                             <div class="cover-picture"  [ngClass]="{'shiny':!pictures_loaded[item.cover]}" >
-                                <img class="background-image"  [lazyLoad]="item.cover"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.cover)" [ngClass]="{'invisible':!pictures_loaded[item.cover]}">
+                                <img class="background-image" alt="list_of_editors[i].title" [lazyLoad]="item.cover"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.cover)" [ngClass]="{'invisible':!pictures_loaded[item.cover]}">
                                 <div class="first-message" *ngIf="indexes_selected[i]"  [@enterFromTop2Animation]>
                                     <div class="alert-icon">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">sentiment_dissatisfied</mat-icon>
@@ -489,7 +489,7 @@
                             </div>
                             <div class="data-container"  >
                                 <div class="img-container"  [ngClass]="{'shiny':!pictures_loaded[item.pp]}">
-                                    <img  [lazyLoad]="item.pp"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.pp)" [ngClass]="{'invisible':!pictures_loaded[item.pp],'fit-pic':is_a_special_pp[item.title]}" >
+                                    <img  [lazyLoad]="item.pp" alt="list_of_editors[i].title"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.pp)" [ngClass]="{'invisible':!pictures_loaded[item.pp],'fit-pic':is_a_special_pp[item.title]}" >
                                 </div>
 
                                 <div class="right-container">

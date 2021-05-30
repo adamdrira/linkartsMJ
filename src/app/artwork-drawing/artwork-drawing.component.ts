@@ -761,6 +761,9 @@ export class ArtworkDrawingComponent implements OnInit {
         }
         
       }
+      else{
+        this.left_container_category_index=1;
+      }
       this.list_of_author_recommendations_drawings_retrieved=true;
 
       this.list_of_author_recommendations_retrieved=true;

@@ -1108,8 +1108,13 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   set_thumbnails_width(){
-   
+    console.log("ok")
     if(this.EditorContainer && this.thumbnails){
+      console.log("ok1")
+      this.scrollobs = merge(
+        fromEvent(window, 'scroll'),
+      );
+      this.cd.detectChanges()
       let with_to_set=this.EditorContainer.nativeElement.offsetWidth/4;
       
       

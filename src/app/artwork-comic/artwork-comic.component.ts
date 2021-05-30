@@ -179,9 +179,7 @@ export class ArtworkComicComponent implements OnInit {
   display_right_container=false;
   pp_loaded=false;
   display_pages=false;
-  display_writings_recommendations=false;
   display_comics_recommendations=false;
-  display_drawings_recommendations=false;
   display_comics_pages:any[]=[];
   display_comics_recommendations_others=false;
   type_of_account:string;
@@ -461,9 +459,13 @@ export class ArtworkComicComponent implements OnInit {
           }
         } 
       }
+      else{
+        this.left_container_category_index=1;
+      }
       
       this.list_of_author_recommendations_comics_retrieved=true;
       this.list_of_author_recommendations_retrieved=true;
+      
     })
   }
 
@@ -1013,7 +1015,6 @@ export class ArtworkComicComponent implements OnInit {
   video_clicked=false;
   openOption(i: number) {
     if(window.innerWidth<500){
-      console.log("inf 500")
       if(i==1){
         this.serie_clicked=true;
         this.video_clicked=false;
@@ -1254,14 +1255,6 @@ export class ArtworkComicComponent implements OnInit {
 
   left_container_category_index: number = 0;
   open_left_container_category(i : number) {
-    if(i==1){
-      this.display_drawings_recommendations=false;
-      this.display_comics_recommendations=false;
-      this.display_writings_recommendations=false;
-    }
-    else{
-      this.display_comics_recommendations_others=false;
-    }
     this.left_container_category_index=i;
   }
 
@@ -2362,15 +2355,6 @@ export class ArtworkComicComponent implements OnInit {
   }
 
 
-
-  compteur_recom_others_comics=0
-  sendLoadedComicsOthers(event){
-    this.compteur_recom_others_comics+=1;
-    if( this.compteur_recom_others_comics==this.list_of_recommendations_by_tag.length){
-      this.display_comics_recommendations_others=true;
-      this.compteur_recom_others_comics=0;
-    }
-  }
 
 
   a_drawing_is_loaded(i){

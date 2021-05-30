@@ -173,9 +173,7 @@ export class ArtworkWritingComponent implements OnInit {
   //display component
   pp_loaded=false;
   display_pages=false;
-  display_writings_recommendations=false;
   display_writing=false;
-  display_writings_recommendations_others=false;
   //if user doesn't have an account
   type_of_account:string;
   type_of_account_retrieved=false;
@@ -547,6 +545,9 @@ export class ArtworkWritingComponent implements OnInit {
         }
       
       }
+      else{
+        this.left_container_category_index=1;
+      }
       this.list_of_author_recommendations_writings_retrieved=true;
       this.list_of_author_recommendations_retrieved=true;
     })
@@ -851,12 +852,6 @@ export class ArtworkWritingComponent implements OnInit {
 
   left_container_category_index: number = 0;
   open_left_container_category(i : number) {
-    if(i==1){
-      this.display_writings_recommendations=false;
-    }
-    else{
-      this.display_writings_recommendations_others=false;
-    }
     this.left_container_category_index=i;
   }
 
