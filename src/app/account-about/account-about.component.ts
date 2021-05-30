@@ -104,13 +104,15 @@ export class AccountAboutComponent implements OnInit {
   @Input('visitor_mode') visitor_mode:boolean;
   @Input('author') author:any;
   
-  listOfAccounts=["Artiste","Fan"];
+  listOfAccounts=["Artiste","Éditeur / Éditrice","Fan"];
   listOfAccountsDescriptions = [
     "Vous souhaitez devenir un artiste du monde de la bande dessinée, de la littérature ou du dessin, et vous souhaitez collaborer avec des maisons d'édition ou d'autres artistes, mais aussi être rémunéré pour les œuvres que vous partagez dans votre quête de progression.",
+    "Vous êtes un éditeur ou une éditrice, et vous souhaitez optimiser le tri de vos candidatures, et dénicher des artistes talentueux avec qui collaborer efficacement une fois que vous les avez trouvés.",
     "Vous souhaitez soutenir un ou plusieurs artistes de cœur à gagner en visibilité et en pertinence, afin qu'ils puissent dénicher la collaboration éditoriale qui changera leur vie."
   ];
   listOfAccountsImages=[
     "../../assets/img/tuto-logos/tuto-palette.svg",
+    "../../assets/img/tuto-logos/tuto-books.svg",
     "../../assets/img/tuto-logos/win.svg",
   ];
   opened_category=0;
@@ -2480,7 +2482,11 @@ export class AccountAboutComponent implements OnInit {
     this.loading_validation_form_1=true;
     this.display_error_validator_1=false;
     let form =this.registerForm1.value;
-    if (this.registerForm1.value.type_of_account.includes('professionnel')){
+    let change_type_of_account=false;
+    if(this.type_of_account!=form.type_of_account){
+      change_type_of_account=true;
+    }
+    if (this.registerForm1.value.type_of_account.includes('edit')){
       if(!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<9)){
 
         this.display_error_validator_1=true;
@@ -2503,8 +2509,14 @@ export class AccountAboutComponent implements OnInit {
           this.training=form.training;
           this.loading_validation_form_1=false;
           this.registerForm1_activated=false;
+          if(change_type_of_account){
+              this.NavbarService.update_type_of_account(this.type_of_account).subscribe(r=>{
+              })
+          }
           this.cd.detectChanges();
         });
+
+        
       }
   
     }
@@ -2520,6 +2532,10 @@ export class AccountAboutComponent implements OnInit {
         this.training=form.training;
         this.loading_validation_form_1=false;
         this.registerForm1_activated=false;
+        if(change_type_of_account){
+          this.NavbarService.update_type_of_account(this.type_of_account).subscribe(r=>{
+          })
+        }
         this.cd.detectChanges();
       })
       

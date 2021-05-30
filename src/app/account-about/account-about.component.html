@@ -106,7 +106,7 @@
                     <input matInput readonly>
                 </mat-form-field>
             </div>
-            <div class="form-item" *ngIf="registerForm1_activated && type_of_account.includes('Fan')" [@enterAnimation]>
+            <div class="form-item" *ngIf="registerForm1_activated && (type_of_account=='Fan' || type_of_account=='Éditeur / Éditrice')" [@enterAnimation]>
                 <mat-form-field floatLabel='never'>
                     <mat-select  disableOptionCentering formControlName="type_of_account" panelClass="accountAboutSelectClass options-with-description">
                         <mat-select-trigger>
@@ -114,7 +114,7 @@
                         </mat-select-trigger>
                         
                         <div *ngFor="let obj of listOfAccounts; let i = index">
-                            <mat-option [value]="obj">
+                            <mat-option [value]="obj" *ngIf="listOfAccounts[i]==type_of_account || listOfAccounts[i]=='Artiste'">
                                 {{ obj }}
                                 <div class="text-container">
                                     <img  [src]="listOfAccountsImages[i]" >
