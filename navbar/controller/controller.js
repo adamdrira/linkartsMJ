@@ -2844,6 +2844,38 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
 
+    router.post('/update_type_of_account', function (req, res) {
+
+        if( ! req.headers['authorization'] ) {
+          return res.status(401).json({msg: "error"});
+        }
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
+        }
+          let id_user = get_current_user(req.cookies.currentUser);
+          let type_of_account=req.body.type_of_account;
+          list_of_navbar_researches.update({
+              "style":type_of_account,
+          },
+            {
+              where:{
+                  publication_category:'Account',
+                  target_id:id_user,
+              }
+          }).catch(err => {
+                  
+              res.status(500).json({msg: "error", details: err});		
+          }).then(result=>{
+              if(result){
+                res.status(200).send([{"update":"ok"}])
+              }
+                 
+          } )
+      })
 
     
 }
