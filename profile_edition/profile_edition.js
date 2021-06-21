@@ -138,6 +138,75 @@ router.post('/add_profile_pic', function (req, res) {
     });
 });
 
+
+
+
+router.post('/send_profile_pic_to_data_signup/:id_user', function (req, res) {
+  let current_user = get_current_user(req.cookies.currentUser);
+  if(!current_user){
+    return res.status(401).json({msg: "error"});
+  }
+  current_user=parseInt(req.params.id_user)
+  var filename = ''
+  let PATH = './data_and_routes/profile_pics/';
+
+  var storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+          cb(null, PATH);
+        },
+      filename: (req, file, cb) => {
+          var today = new Date();
+          var ss = String(today.getSeconds()).padStart(2, '0');
+          var mi = String(today.getMinutes()).padStart(2, '0');
+          var hh = String(today.getHours()).padStart(2, '0');
+          var dd = String(today.getDate()).padStart(2, '0');
+          var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+          var yyyy = today.getFullYear();
+          let Today = yyyy + mm + dd + hh+ mi + ss;
+          filename = current_user + '-' + Today + '.png'
+          cb(null,current_user + '-' + Today + '.png');
+        }
+  });
+  
+  var upload = multer({
+      storage: storage
+  }).any();
+
+  upload(req, res, function(err) {
+      (async () => {
+      if (err) {
+          return res.end('Error');
+      } else {
+          let file_name = "./data_and_routes/profile_pics/" + filename ;
+          const files = await imagemin([file_name], {
+            destination: './data_and_routes/profile_pics',
+            plugins: [
+              imageminPngquant({
+                quality: [0.8, 0.9]
+            })
+            ]
+          });
+          User = await users.findOne({
+              where: {
+                id: current_user,
+              }
+            })
+            .catch(err => {
+              
+              res.status(500).json({msg: "error", details: err});		
+            }).then(User =>  {
+              User.update({
+                "profile_pic_file_name":filename,
+              }).catch(err => {
+                
+                res.status(500).json({msg: "error", details: err});		
+              }).then(res.status(200).send(([{ "profile_pic_name": filename}])))
+            }); 
+      }
+      })();
+  });
+});
+
 router.post('/add_cover_pic', function (req, res) {
 
   let current_user = get_current_user(req.cookies.currentUser);
@@ -209,6 +278,76 @@ router.post('/add_cover_pic', function (req, res) {
 });
 
 
+
+router.post('/send_cover_pic_to_data_signup/:id_user', function (req, res) {
+
+  let current_user = get_current_user(req.cookies.currentUser);
+  if(!current_user){
+    return res.status(401).json({msg: "error"});
+  }
+  current_user=parseInt(req.params.id_user);
+    var filename = ''
+    let PATH = './data_and_routes/cover_pics/';
+
+    var storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, PATH);
+          },
+        filename: (req, file, cb) => {
+            var today = new Date();
+            var ss = String(today.getSeconds()).padStart(2, '0');
+            var mi = String(today.getMinutes()).padStart(2, '0');
+            var hh = String(today.getHours()).padStart(2, '0');
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+            var yyyy = today.getFullYear();
+            let Today = yyyy + mm + dd + hh+ mi + ss;
+            filename = current_user + '-' + Today + '.png'
+            cb(null, current_user + '-' + Today + '.png');
+          }
+    });
+    
+    var upload = multer({
+        storage: storage
+    }).any();
+
+    upload(req, res, function(err) {
+        (async () => {
+            if (err) {
+                return res.end('Error');
+            } 
+            else {
+
+            let file_name = "./data_and_routes/cover_pics/" + filename ;
+            const files = await imagemin([file_name], {
+              destination: './data_and_routes/cover_pics',
+              plugins: [
+                imageminPngquant({
+                  quality: [0.8, 0.9]
+              })
+              ]
+            });
+            User = await users.findOne({
+                where: {
+                  id: current_user,
+                }
+              })
+              .catch(err => {
+                
+                res.status(500).json({msg: "error", details: err});		
+              }).then(User =>  {
+                  User.update({
+                    "cover_pic_file_name":filename,
+                  }).catch(err => {
+                    
+                       res.status(500).json({msg: "error", details: err});		
+                    })
+                    .then(res.status(200).send(([{ "cover_pic_file_name": filename}])))
+                }); 
+        }
+        })();
+    });
+});
 
 router.get('/retrieve_profile_picture/:user_id', function (req, res) {
       if( ! req.headers['authorization'] ) {
@@ -1098,7 +1237,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
 
-  router.post('/edit_account_artist_signup', function (req, res) {
+  router.post('/edit_account_signup_page1', function (req, res) {
 
     if( ! req.headers['authorization'] ) {
       return res.status(401).json({msg: "error"});
@@ -1111,33 +1250,153 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       }
     }
 
-  const id_user=req.body.id_user;
-  const primary_description= req.body.primary_description;
-  const location= req.body.location;
-  const birthday = req.body.birthday;
-  const siret = req.body.siret;
-  const society = req.body.society;
-  
-  users.findOne({
-    where: {
-      id: id_user,
-    }
-  })
-  .catch(err => {
+    const id_user=req.body.id_user;
+    const primary_description= req.body.primary_description;
+    const location= req.body.location;
+    const birthday = req.body.birthday;
+    const siret = req.body.siret;
+    const society = req.body.society;
     
-    res.status(500).json({msg: "error", details: err});		
-  }).then(User =>  {
-    User.update({
-      "birthday":birthday,
-      "siret":siret,
-      "society":society,
-      "location":location,
-      "primary_description":primary_description,
-    }).catch(err => {
+    users.findOne({
+      where: {
+        id: id_user,
+      }
+    })
+    .catch(err => {
       
       res.status(500).json({msg: "error", details: err});		
-    }).then(res.status(200).send([User]))
-  }); 
+    }).then(User =>  {
+      User.update({
+        "birthday":birthday,
+        "siret":siret,
+        "society":society,
+        "location":location,
+        "primary_description":primary_description,
+      }).catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(res.status(200).send([User]))
+    }); 
+
+
+  });
+
+  router.post('/edit_account_signup_page2', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    const categories=req.body.categories;
+    const genres= req.body.genres;
+    const standard_price= req.body.standard_price;
+    const standard_delay = req.body.standard_delay;
+    const express_price = req.body.express_price;
+    const express_delay = req.body.express_delay;
+    const id_user=req.body.id_user;
+    
+    users.findOne({
+      where: {
+        id: id_user,
+      }
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(User =>  {
+      User.update({
+        "editor_categories":categories,
+        "editor_genres":genres,
+        "standard_price":standard_price,
+        "standard_delay":standard_delay,
+        "express_price":express_price,
+        "express_delay":express_delay,
+      }).catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(res.status(200).send([User]))
+    }); 
+
+
+  });
+
+  router.post('/edit_account_signup_page4', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    const categories=req.body.categories;
+    const skills= req.body.genres;
+    const id_user=req.body.id_user;
+    
+    users.findOne({
+      where: {
+        id: id_user,
+      }
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(User =>  {
+      User.update({
+        "artist_categories":categories,
+        "skills":skills,
+      }).catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(res.status(200).send([User]))
+    }); 
+
+
+  });
+
+  router.post('/edit_account_signup_page5', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    const links=req.body.links;
+    const id_user=req.body.id_user;
+    
+    users.findOne({
+      where: {
+        id: id_user,
+      }
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(User =>  {
+      User.update({
+        "links":links,
+      }).catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(res.status(200).send([User]))
+    }); 
 
 
   });
@@ -1437,7 +1696,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         "device_info":device_info,
          "url_page":page,
       }).catch(err => {
-    
+        console.log(err)
         res.status(500).json({msg: "error", details: err});		
       }).then(created=>{
         res.status(200).send([created]);
@@ -3328,8 +3587,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            to: user.email, // my mail
-            //to:"appaloosa-adam@hotmail.fr",
+            //to: user.email, // my mail
+            to:"appaloosa-adam@hotmail.fr",
             subject: `Bienvenue sur LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3456,8 +3715,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            to: email, // my mail
-            //to:"appaloosa-adam@hotmail.fr",
+            //to: email, // my mail
+            to:"appaloosa-adam@hotmail.fr",
             subject: `Invitation LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3597,8 +3856,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
                 var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
-                  to: user_found.email, // my mail
-                  //to:"appaloosa-adam@hotmail.fr",
+                  //to: user_found.email, // my mail
+                  to:"appaloosa-adam@hotmail.fr",
                   subject: `Adhésion à un groupe`, // Subject line
                   html: mail_to_send , // html body
                 };
@@ -3742,8 +4001,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
             var mailOptions = {
               from: 'Linkarts <services@linkarts.fr>', // sender address
-              to: user_found.email, // my mail
-              //to:"appaloosa-adam@hotmail.fr",
+              //to: user_found.email, // my mail
+              to:"appaloosa-adam@hotmail.fr",
               subject: `Création de groupe`, 
               html:  mail_to_send, 
             };

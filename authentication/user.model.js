@@ -44,6 +44,18 @@ module.exports = (sequelize, Sequelize) => {
 		password_registration:{type: Sequelize.STRING},
 		temp_pass:{type: Sequelize.STRING},
 		reason:{type: Sequelize.STRING},
+
+		editor_categories:Sequelize.ARRAY(Sequelize.STRING),
+		editor_genres:Sequelize.ARRAY(Sequelize.STRING),
+		express_delay:{type: Sequelize.STRING},
+		express_price:{type: Sequelize.INTEGER},
+		standard_delay:{type: Sequelize.STRING},
+		standard_price:{type: Sequelize.INTEGER},
+		
+		artist_categories:Sequelize.ARRAY(Sequelize.STRING),
+		skills:Sequelize.ARRAY(Sequelize.STRING),
+		links:{type:Sequelize.JSON},
+		
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,
