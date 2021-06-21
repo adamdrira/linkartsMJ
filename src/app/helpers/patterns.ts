@@ -43,6 +43,10 @@ export function pattern(type: string) {
         return "[h][t][t][p]+([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9"+accents+special_characters+"]+$";
     }
 
+    if( type == "link" ) {
+        return "^([h][t][t][p])+([a-zA-Z0-9"+accents+special_characters3+"])[a-zA-Z0-9"+accents+special_characters3+"]+$";
+    }
+
     if( type == "siret" ) {
         return "^[0-9]{9}$";
     }
