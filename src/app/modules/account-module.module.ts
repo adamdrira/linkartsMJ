@@ -20,7 +20,6 @@ import { ThumbnailAlbumWritingComponent } from '../thumbnail-album-writing/thumb
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -94,7 +93,6 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     MatRadioModule,
     MatExpansionModule,
     MatListModule,
-    MatBadgeModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatDatepickerModule,

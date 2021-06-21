@@ -7,7 +7,7 @@ import { NavbarLinkartsComponent } from '../navbar-linkarts/navbar-linkarts.comp
 import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
 import { PopupNavbarDisconnectedComponent } from '../popup-navbar-disconnected/popup-navbar-disconnected.component';
 import { LoginComponent } from '../login/login.component';
-import { SignupComponent } from '../signup/signup.component';
+
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 import { PageNotFoundComponent } from '../page-not-found/page-not-found.component';
@@ -38,12 +38,10 @@ import { StoryViewComponent } from '../story-view/story-view.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -67,7 +65,7 @@ import { EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 import { KeysPipe } from '../helpers/pipemodule';
 import { FilterAlbumPipe } from '../helpers/pipemodule';
-
+import { TooltipListPipe} from '../helpers/pipemodule';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
@@ -97,8 +95,8 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     PageNotFoundComponent,
     KeysPipe,
     FilterAlbumPipe,
+    TooltipListPipe,
     LoginComponent,
-    SignupComponent,
     PopupConfirmationComponent,
     PopupFormComicComponent,
     PopupFormDrawingComponent,
@@ -122,31 +120,26 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     FormsModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
-    MatBadgeModule,
     MatCardModule,
     MatChipsModule,
     MatInputModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
     MatListModule,
     MatMenuModule,
     MatRadioModule,
     MatSelectModule,
-    MatSlideToggleModule,
     DragDropModule,
     MatSliderModule,
+    MatSlideToggleModule,
     MatToolbarModule,
     MatExpansionModule,
     MatInputModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
     MatListModule,
     MatMenuModule,
     MatRadioModule,
     MatSelectModule,
-    MatSlideToggleModule,
     DragDropModule,
     MatSliderModule,
+    MatSlideToggleModule,
     NgxChartsModule,
     ToastrModule,
     PdfViewerModule,
@@ -174,8 +167,8 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     PageNotFoundComponent,
     KeysPipe,
     FilterAlbumPipe,
+    TooltipListPipe,
     LoginComponent,
-    SignupComponent,
     PopupConfirmationComponent,
     PopupFormComicComponent,
     PopupFormDrawingComponent,
@@ -193,7 +186,6 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
       provide: MatDialogRef,
       useValue: {}
     },
-    MatDatepickerModule,
     { provide: LAZYLOAD_IMAGE_HOOKS, useClass: ScrollHooks },
   ]
 

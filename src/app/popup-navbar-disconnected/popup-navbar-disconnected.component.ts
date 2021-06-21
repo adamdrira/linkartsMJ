@@ -1,11 +1,10 @@
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import {  Router } from '@angular/router';
 import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
 import { NavbarService } from '../services/navbar.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {LoginComponent} from '../login/login.component';
-import { SignupComponent } from '../signup/signup.component';
 import { PopupContactComponent } from '../popup-contact/popup-contact.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupShareComponent } from '../popup-share/popup-share.component';
@@ -77,11 +76,8 @@ export class PopupNavbarDisconnectedComponent implements OnInit {
   }
 
   signup(){
+    this.router.navigate(['/signup']);
     this.dialogRef.close();
-    const dialogRef = this.dialog.open(SignupComponent, {
-      data:{for_group_creation:false},
-      panelClass:"signupComponentClass"
-    });
   }
 
   close_dialog(){

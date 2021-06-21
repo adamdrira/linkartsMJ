@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
-import { SignupComponent } from '../signup/signup.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
@@ -140,12 +139,12 @@ export class HomeLinkartsComponent implements OnInit {
            panelClass:"loginComponentClass"
         });
       }
-      else if (this.category_index==6){
+      /*else if (this.category_index==6){
         const dialogRef = this.dialog.open(SignupComponent, {
           data:{for_group_creation:false},
           panelClass:"signupComponentClass"
         });
-      }
+      }*/
       this.type_of_profile_retrieved=true;
       this.cd.detectChanges();
       this.initialize_swiper();

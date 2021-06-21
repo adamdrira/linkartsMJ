@@ -22,6 +22,7 @@
             display:flex;
             height:100%;
             width:100%;
+            
             .dropzone {
                 display: flex;
                 border: dashed 8px #d4dbe4;
@@ -232,10 +233,20 @@
         cursor:crosshair;
     }
 
-    .cropper-crop-box,.cropper-view-box {
-        border-radius:50% !important;
-        outline:none !important;
+    .circle{
+        .cropper-crop-box,.cropper-view-box {
+            border-radius:50% !important;
+            outline:none !important;
+        }
     }
+
+    .square{
+        .cropper-crop-box,.cropper-view-box {
+            border-radius:5px !important;
+            outline:none !important;
+        }
+    }
+    
     .cropper-face {
         background-color:unset !important;
     }

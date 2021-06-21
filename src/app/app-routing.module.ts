@@ -19,6 +19,7 @@ const routes: Routes = [
   {path:'main-research', loadChildren: () => import('./modules/main-search-module.module').then(mod => mod.MainSearchModuleModule), data: {section: 0}, resolve: { user: UserResolverService }},
   {path:'services/:article_number', loadChildren: () => import('./modules/terms-module.module').then(mod => mod.TermsModuleModule), resolve: { user: UserResolverService }},
   {path:'donation', loadChildren: () => import('./modules/donation-module.module').then(mod => mod.DonationModuleModule),  data: {category: 0}, },
+  {path:'signup', loadChildren: () => import('./modules/signup-module.module').then(mod => mod.SignupModuleModule)},
   //Catégories Linkarts
 
   //artwork
@@ -28,12 +29,7 @@ const routes: Routes = [
   {path:'artwork-drawing/:format/:title/:drawing_id', component:ArtworkDrawingComponent, resolve: { user: UserResolverService }},
   {path:'ad-page/:title/:id', component:AdPageComponent, resolve: { user: UserResolverService }},
   
-  //Authentification
- 
 
-  //Origines
- 
-  //Stripe
 
 
   //Autres

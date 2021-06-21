@@ -4,7 +4,6 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { SignupComponent } from '../signup/signup.component';
 import { Location } from '@angular/common';
 import { pattern } from '../helpers/patterns';
 import { Community_recommendation } from '../services/recommendations.service';
@@ -203,10 +202,6 @@ export class LoginComponent implements OnInit {
 
   signup() {
     this.dialog.closeAll();
-    const dialogRef = this.dialog.open(SignupComponent, {
-      data:{for_group_creation:false},
-      panelClass:"signupComponentClass"
-    });
   }
 
   

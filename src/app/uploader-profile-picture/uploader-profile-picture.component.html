@@ -5,7 +5,7 @@
             
             
             <div class="dropzone-container">
-                <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone">
+                <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone" >
                     <div class="icon-container">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                         <span><b>Sélectionnez un fichier</b> ou glissez-le ici</span>
@@ -27,7 +27,7 @@
         </div>
 
 
-        <div *ngIf="image_uploaded" class="crop-container" [@enterAnimation]>
+        <div *ngIf="image_uploaded" class="crop-container" [@enterAnimation] [ngClass]="{'circle': !type_of_account.includes('dit'),'square':type_of_account.includes('dit')}">
 
             <div class="img-container">
                 <div class="full-crop">

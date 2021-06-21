@@ -6,7 +6,7 @@
 </div>
 
 
-<div class="popup-add-group-member" *ngIf="data.type=='add_artist'">
+<!--<div class="popup-add-group-member" *ngIf="data.type=='add_artist'">
 
     <div class="step-name">
         <span>Ajouter un membre</span>
@@ -110,7 +110,7 @@
     <div class="error">
         <span *ngIf="display_need_members" [@enterAnimation]>Vous devez choisir au moins 1 nouveau membre</span>
     </div>
-</div>
+</div>-->
 
 <div class="popup-add-group-member" *ngIf="data.type=='for_archive'">
 
@@ -147,8 +147,19 @@
     <app-uploader-cover-picture></app-uploader-cover-picture>
 </ng-container>
 
+<ng-container *ngIf="data.type=='edit_cover_picture_signup'">
+    <app-uploader-cover-picture
+    [id_user]="data.id_user"
+    (send_picture)="receive_picture_for_signup($event);"></app-uploader-cover-picture>
+</ng-container>
+
 <ng-container *ngIf="data.type=='edit_profile_picture'">
     <app-uploader-profile-picture></app-uploader-profile-picture>
+</ng-container>
+<ng-container *ngIf="data.type=='edit_profile_picture_signup'">
+    <app-uploader-profile-picture
+    [id_user]="data.id_user"
+    (send_picture)="receive_picture_for_signup($event);"></app-uploader-profile-picture>
 </ng-container>
 
 <ng-container *ngIf="data.type=='edit_chat_profile_picture' && id_retrieved">

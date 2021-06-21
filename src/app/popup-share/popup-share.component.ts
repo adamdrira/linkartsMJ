@@ -7,7 +7,7 @@ import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { normalize_to_nfc } from '../helpers/patterns';
-import { SignupComponent } from '../signup/signup.component';
+import {  Router } from '@angular/router';
 
 @Component({
   selector: 'app-popup-share',
@@ -79,6 +79,7 @@ export class PopupShareComponent implements OnInit {
     private cd: ChangeDetectorRef,
     public navbar: NavbarService,
     public dialog: MatDialog,
+    private router:Router,
     public dialogRef: MatDialogRef<PopupShareComponent,any>,
     private Profile_Edition_Service:Profile_Edition_Service,
     private formBuilder: FormBuilder,
@@ -181,11 +182,8 @@ export class PopupShareComponent implements OnInit {
 
 
   signup() {
+    this.router.navigate(['/signup']);
     this.dialogRef.close();
-    const dialogRef = this.dialog.open(SignupComponent, {
-      data:{for_group_creation:false},
-      panelClass:"signupComponentClass"
-    });
   }
 
   send_email() {

@@ -30,8 +30,8 @@
 
 <div class="comments-container" *ngIf="user_blocked_retrieved && !user_blocked">
 
-    <div class="create-account" (click)="signup();" *ngIf="type_of_account=='visitor'">
-        <span>Créer un compte pour pouvoir commenter</span>
+    <div class="create-account" (click)="login();" *ngIf="type_of_account=='visitor'">
+        <span>Connectez-vous pour pouvoir commenter</span>
     </div>
 
     <div class="add-comment" *ngIf="type_of_account=='account'">

@@ -41,7 +41,6 @@ export class PopupFormComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     public dialogRef: MatDialogRef<PopupFormComponent>,
     private ChatService:ChatService,
-    private cd:ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private NotificationsService:NotificationsService,
     private sanitizer:DomSanitizer,
@@ -309,5 +308,8 @@ export class PopupFormComponent implements OnInit {
     })
   }
 
+  receive_picture_for_signup(event){
+    this.dialogRef.close(event.image_to_show);
+  }
  
 }

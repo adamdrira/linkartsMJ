@@ -20,7 +20,6 @@ const routes: Routes = [
     {path:'subscribings', component:HomeLinkartsComponent,canActivate: [AuthGuard],  data: {category: 2}, resolve: { user: UserResolverService }},
     {path:'favorites', component:HomeLinkartsComponent,  data: {category: 3}, resolve: { user: UserResolverService }},
     {path:'login', component:HomeLinkartsComponent,  data: {category: 5}, resolve: { user: UserResolverService }},
-    {path:'signup', component:HomeLinkartsComponent,  data: {category: 6}, resolve: { user: UserResolverService }},
     {path:'fb', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { origin: OriginFbResolverService,user: UserResolverService }},
     {path:'lk', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { origin: OriginLkResolverService,user: UserResolverService }},
     {path:'in', component:HomeLinkartsComponent,  data: {category: 0}, resolve: { origin: OriginInResolverService,user: UserResolverService }},

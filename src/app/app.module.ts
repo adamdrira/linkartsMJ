@@ -7,6 +7,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { AngularResizedEventModule } from 'angular-resize-event';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatInputModule} from '@angular/material/input';
+import { MatSliderModule } from '@angular/material/slider';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -144,6 +145,7 @@ const shareProp = {
     MatInputModule,
     PdfViewerModule,
     DragDropModule,
+    MatSliderModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatDatepickerModule,

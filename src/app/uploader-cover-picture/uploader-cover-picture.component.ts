@@ -1,8 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-
-import { Router } from '@angular/router';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 
 
@@ -12,7 +10,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
 declare var Cropper:any;
-declare var $:any;
 
 
 @Component({
@@ -35,7 +32,6 @@ export class UploaderCoverPictureComponent implements OnInit {
   constructor(
     private sanitizer:DomSanitizer, 
     private Profile_Edition_Service:Profile_Edition_Service,
-    private router: Router,
     public dialog: MatDialog,
     private navbar: NavbarService,
     ) { 
@@ -67,7 +63,6 @@ export class UploaderCoverPictureComponent implements OnInit {
   slideValGlobal: number = 0.5;
   image_uploaded: boolean = false;
   user_id:number;
-  pseudo:string;
 
   
   hasBaseDropZoneOver:boolean;
@@ -81,12 +76,19 @@ export class UploaderCoverPictureComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
 
+  @Input() id_user: number;
   show_icon=false;
   ngOnInit() {
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.user_id = r[0].id;
-      this.pseudo = r[0].nickname;
-    })
+
+    if(this.id_user){
+      this.user_id = this.id_user;
+    }
+    else{
+      this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+        this.user_id = r[0].id;
+      })
+    }
+    
 
     this.uploader.onAfterAddingFile = async (file) => {
 
@@ -97,7 +99,6 @@ export class UploaderCoverPictureComponent implements OnInit {
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
@@ -161,6 +162,7 @@ export class UploaderCoverPictureComponent implements OnInit {
   }
 
   loading=false;
+  @Output() send_picture = new EventEmitter<object>();
   set_crop() {
     
     if(this.loading){
@@ -171,16 +173,31 @@ export class UploaderCoverPictureComponent implements OnInit {
     const canvas = this.cropper.getCroppedCanvas();
     //this.imageDestination = canvas.toDataURL("image/png");
     canvas.toBlob(blob => {
-      this.Profile_Edition_Service.send_cover_pic_todata(blob).subscribe(res=>{
-        location.reload();
-      },
-      error => {
-          this.loading = false;
-          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
-            panelClass: "popupConfirmationClass",
-          });
-      })
+      if(this.id_user){
+        this.Profile_Edition_Service.send_cover_pic_to_data_signup(blob,this.id_user).subscribe(res=>{
+         this.send_picture.emit({image_to_show:this.image_to_show});
+        },
+        error => {
+            this.loading = false;
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+              panelClass: "popupConfirmationClass",
+            });
+        })
+      }
+      else{
+        this.Profile_Edition_Service.send_cover_pic_todata(blob).subscribe(res=>{
+          location.reload();
+        },
+        error => {
+            this.loading = false;
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+              panelClass: "popupConfirmationClass",
+            });
+        })
+      }
+     
   }, "image/png");
   }
 

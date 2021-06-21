@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSliderChange } from '@angular/material/slider';
@@ -12,8 +12,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
 declare var Cropper:any;
-declare var $:any;
-
 
 @Component({
   selector: 'app-uploader-profile-picture',
@@ -84,7 +82,21 @@ export class UploaderProfilePictureComponent implements OnInit {
   }
   
   show_icon=false;
+  @Input() id_user: number;
+  type_of_account:string;
   ngOnInit() {
+
+    if(this.id_user){
+      this.type_of_account="editor"
+    }
+    else{
+      this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+        this.type_of_account = r[0].type_of_account;
+      })
+    }
+    
+
+
     this.uploader.onAfterAddingFile = async (file) => {
       
       var re = /(?:\.([^.]+))?$/;
@@ -94,7 +106,6 @@ export class UploaderProfilePictureComponent implements OnInit {
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
@@ -159,6 +170,7 @@ export class UploaderProfilePictureComponent implements OnInit {
   }
 
   loading=false;
+  @Output() send_picture = new EventEmitter<object>();
   set_crop() {
     if(this.loading){
       return
@@ -168,16 +180,31 @@ export class UploaderProfilePictureComponent implements OnInit {
     const canvas = this.cropper.getCroppedCanvas();
     //this.imageDestination = canvas.toDataURL("image/png");
     canvas.toBlob(blob => {
-      this.Profile_Edition_Service.send_profile_pic_todata(blob).subscribe(res=>{
-        location.reload();
-      },
-      error => {
-          this.loading = false;
-          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
-            panelClass: "popupConfirmationClass",
-          });
-      })
+      if(this.id_user){
+        this.Profile_Edition_Service.send_profile_pic_to_data_signup(blob,this.id_user).subscribe(res=>{
+          this.send_picture.emit({image_to_show:this.image_to_show});
+        },
+        error => {
+            this.loading = false;
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+              panelClass: "popupConfirmationClass",
+            });
+        })
+      }
+      else{
+        this.Profile_Edition_Service.send_profile_pic_todata(blob).subscribe(res=>{
+          location.reload();
+        },
+        error => {
+            this.loading = false;
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+              panelClass: "popupConfirmationClass",
+            });
+        })
+      }
+    
     }, "image/png");
     
   }

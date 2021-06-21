@@ -21,7 +21,6 @@ import { Ads_service } from '../services/ads.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
 import { PopupNavbarDisconnectedComponent } from '../popup-navbar-disconnected/popup-navbar-disconnected.component';
-import { SignupComponent } from '../signup/signup.component';
 import {get_date_to_show_navbar} from '../helpers/dates';
 import {Community_recommendation} from '../services/recommendations.service';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -1611,12 +1610,7 @@ export class NavbarLinkartsComponent implements OnInit {
     });
   }
 
-  signup(){
-    const dialogRef = this.dialog.open(SignupComponent, {
-      data:{for_group_creation:false},
-      panelClass:"signupComponentClass"
-    });
-  }
+ 
 
   /***************************************Style navbar **********************************/
 /***************************************Style  **********************************/

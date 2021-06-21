@@ -512,14 +512,22 @@
                                             </ng-container>
                                         </span>
                                     </div>
-                                    <div class="section" *ngIf="!indexes_selected[i] && item.stars" [@enterFromLeftAnimation] >
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">star</mat-icon>
+                                    <div class="section" *ngIf="!indexes_selected[i] &&  item.genres" [@enterFromLeftAnimation] >
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">receipt_long</mat-icon>
                                         <span class="section-value">
-                                            <ng-container *ngFor="let cat of item.stars;let j=index">
-                                                <ng-container *ngIf="j==0">{{cat}}</ng-container>
-                                                <ng-container *ngIf="j>0">, {{cat}}</ng-container>
+                                            <ng-container *ngFor="let gen of item.genres.slice(0,6);let j=index">
+                                                <ng-container *ngIf="j==0">{{gen}}</ng-container>
+                                                <ng-container *ngIf="j>0">, {{gen}}</ng-container>
                                             </ng-container>
+                                            <span style="opacity: 0.75; cursor: pointer;" *ngIf="item.genres.length>6"
+                                                [matTooltip]="item.genres.slice(6,item.genres.length) | tooltipList"  
+                                                matTooltipClass='linkarts-tooltip tooltip-list' 
+                                                [matTooltipPosition]="'below'"
+                                                [matTooltipShowDelay]="0">
+                                                (+{{item.genres.length - 6}} {{item.genres.length === 7 ? 'autre' : 'autres'}})
+                                            </span>
                                         </span>
+                                        
                                     </div>
 
                                     <div class="section" *ngIf="indexes_selected[i]" [@enterFromRightAnimation] >
@@ -537,9 +545,10 @@
                             
                             
                             <div class="apply-button">
-                                <!--<div class="left-side">
-                                    Gratuit
-                                </div>-->
+                                <div class="left-side" *ngIf="!box_checked[i]">
+                                    <ng-container *ngIf="item.standard_price && item.standard_price==0">Gratuit</ng-container>
+                                    <ng-container *ngIf="item.standard_price && item.standard_price>0">Dès {{item.standard_price}}€</ng-container>
+                                </div>
                                 <div class="right-side" [@enterFromLeftAnimation] *ngIf="!box_checked[i]">
                                     <span (click)="selectBox(true,i)">Sélectionner</span>
                                     <mat-checkbox class="check-box" [checked]="box_checked[i]" (change)="selectBox($event.checked,i)"></mat-checkbox>

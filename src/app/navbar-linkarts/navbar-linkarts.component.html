@@ -546,13 +546,16 @@
           <div class="navbar-l1-icons-container">
 
 
-            <button class="signup" *ngIf="type_of_profile=='visitor' && !activated_search" (click)="signup()">
-              <div class="icon-container2">
-                <div class="icon2 icon-edit">
+            <a href="/signup" >
+              <button class="signup" *ngIf="type_of_profile=='visitor' && !activated_search" >
+                <div class="icon-container2">
+                  <div class="icon2 icon-edit">
+                  </div>
                 </div>
-              </div>
-              <span>S'inscrire</span>
-            </button>
+                <span>S'inscrire</span>
+              </button>
+            </a>
+            
 
 
 

@@ -7,7 +7,7 @@ import { NotificationsService } from '../services/notifications.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { convert_timestamp_to_number } from '../helpers/dates';
-import { SignupComponent } from '../signup/signup.component';
+import { LoginComponent } from '../login/login.component';
 import { MatDialog } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
 
@@ -469,10 +469,10 @@ export class CommentsComponent implements OnInit {
 
 
   
-  signup(){
-    const dialogRef = this.dialog.open(SignupComponent, {
+  login(){
+    const dialogRef = this.dialog.open(LoginComponent, {
       data:{for_group_creation:false},
-      panelClass:"signupComponentClass"
+      panelClass:"loginComponentClass"
     });
   }
 

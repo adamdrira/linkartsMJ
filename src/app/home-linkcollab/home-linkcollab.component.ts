@@ -731,7 +731,9 @@ export class HomeLinkcollabComponent implements OnInit {
     {
       title:"Éditions Glénat",
       categories:["BD","Comics","Mangas","Livres","Livres jeunesse"],
+      genres:["Ados","Aventure","Fantaisie","Héroïque","Humoristique","Polar","Romantique","S-F","Seinen","Shônen","Western"],
       website:"https://www.glenat.com/",
+      standard_price:4,
       email:"mcg@glenat.com",
       pp:"../../assets/img/editors/pp-glenat.png",
       cover:"../../assets/img/editors/cover-glenat.jpg",
@@ -742,7 +744,9 @@ export class HomeLinkcollabComponent implements OnInit {
     },
     {
       title:"Éditions Quatre Fleuves",
+      standard_price:0,
       categories:["Livres jeunesse"],
+      genres:["Action","Ados","Adultes","Animaux","Animés","Art","Aventure"],
       website:"https://www.glenat.com/livres-jeunesse/collections/editions-quatre-fleuves",
       pp:"../../assets/img/editors/pp-Editions_Quatre_Fleuves.jpg",
       cover:"../../assets/img/editors/cover-quatre-fleuves.jpg",
@@ -753,6 +757,7 @@ export class HomeLinkcollabComponent implements OnInit {
     {
       title:"Kazé",
       categories:["Mangas"],
+      genres:["Action","Ados","Adultes","Animaux","Animés","Art"],
       website:"http://www.kazemanga.fr/",
       email:"contact@vizeurope.com",
       pp:"../../assets/img/editors/pp-kaze.png",
@@ -1108,9 +1113,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   set_thumbnails_width(){
-    console.log("ok")
     if(this.EditorContainer && this.thumbnails){
-      console.log("ok1")
       this.scrollobs = merge(
         fromEvent(window, 'scroll'),
       );
