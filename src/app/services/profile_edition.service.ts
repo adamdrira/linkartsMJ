@@ -22,7 +22,6 @@ export class Profile_Edition_Service {
     httpClient.options
   }
   
-  cache={};
 
   send_profile_pic_todata(profile_pic:Blob){
     const formData = new FormData();
@@ -34,7 +33,16 @@ export class Profile_Edition_Service {
   }
 
   
+  
 
+  send_profile_pic_to_data_signup(profile_pic:Blob,id_user){
+    const formData = new FormData();
+    formData.append('profile_pic', profile_pic, "profile_pic");
+    return this.httpClient.post(`routes/send_profile_pic_to_data_signup/${id_user}`, formData, {withCredentials: true} ).pipe(map((information)=>{
+      return information;
+    }));
+
+  }
   
 
   send_cover_pic_todata(cover_pic:Blob){
@@ -46,6 +54,15 @@ export class Profile_Edition_Service {
 
   }
 
+
+  send_cover_pic_to_data_signup(cover_pic:Blob,id_user){
+    const formData = new FormData();
+    formData.append('cover_pic', cover_pic, "cover_pic");
+    return this.httpClient.post(`routes/send_cover_pic_to_data_signup/${id_user}`, formData, {withCredentials: true} ).pipe(map((information)=>{
+      return information;
+    }));
+
+  }
 
 
   retrieve_profile_picture(user_id: number){
@@ -260,12 +277,29 @@ export class Profile_Edition_Service {
 
   //edit user information
 
-  edit_account_artist_signup(id_user,primary_description,location,birthday,siret,society){
-    return this.httpClient.post('routes/edit_account_artist_signup', {id_user:id_user,primary_description:primary_description, location:location,birthday:birthday,siret:siret,society:society},{withCredentials: true}  ).pipe(map((information)=>{
+  edit_account_signup_page1(id_user,primary_description,location,birthday,siret,society){
+    return this.httpClient.post('routes/edit_account_signup_page1', {id_user:id_user,primary_description:primary_description, location:location,birthday:birthday,siret:siret,society:society},{withCredentials: true}  ).pipe(map((information)=>{
       return information;
     }));
   }
 
+  edit_account_signup_page2(id_user,categories,genres,standard_price,standard_delay,express_price,express_delay){
+    return this.httpClient.post('routes/edit_account_signup_page2', {id_user:id_user,categories:categories, genres:genres,standard_price:standard_price,standard_delay:standard_delay,express_price:express_price,express_delay:express_delay},{withCredentials: true}  ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  edit_account_signup_page4(id_user,categories,skills){
+    return this.httpClient.post('routes/edit_account_signup_page4', {id_user:id_user,categories:categories, skills:skills},{withCredentials: true}  ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  edit_account_signup_page5(id_user,links){
+    return this.httpClient.post('routes/edit_account_signup_page5', {id_user:id_user,links:links},{withCredentials: true}  ).pipe(map((information)=>{
+      return information;
+    }));
+  }
 
   edit_account_about_1(type_of_account,siret,primary_description,primary_description_extended,job,training){
     return this.httpClient.post('routes/edit_account_about_1', {type_of_account:type_of_account, siret:siret,primary_description:primary_description,primary_description_extended:primary_description_extended,training:training, job:job},{withCredentials: true}  ).pipe(map((information)=>{
