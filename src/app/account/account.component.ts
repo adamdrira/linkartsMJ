@@ -32,6 +32,17 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import {date_in_seconds} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 import { Meta, Title } from '@angular/platform-browser';
+import {number_in_k_or_m} from '../helpers/fonctions_calculs';
+import { pattern } from '../helpers/patterns';
+
+import { normalize_to_nfc } from '../helpers/patterns';
+
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
+import { faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { faPinterest } from '@fortawesome/free-brands-svg-icons';
+
 declare var $: any;
 declare var Swiper:any;
 
@@ -83,6 +94,7 @@ export class AccountComponent implements OnInit {
     private Albums_service:Albums_service,
     public dialog: MatDialog,
     private Ads_service:Ads_service,
+    private formBuilder: FormBuilder,
     private title: Title,
     private meta: Meta
     ) {
@@ -389,7 +401,6 @@ export class AccountComponent implements OnInit {
   listOfCategories = ["Accueil","Œuvres ("+this.number_of_artpieces+")","Annonces ("+this.list_of_ads.length+")","Abonnés ("+this.subscribed_users_list.length+")",
   "Abonnements ("+this.users_subscribed_to_list.length+")","Qui suis-je","Archives","Mon compte","Publier"];
  
-  primary_description_extended_privacy:string='';
   primary_description_extended:string='';
   profile_not_found=false;
   profile_suspended=false;
@@ -517,29 +528,10 @@ export class AccountComponent implements OnInit {
   }
 
 
-  
- 
 
 
   initialize_page_for_visitor(){
 
-    
-
-    this.Profile_Edition_Service.retrieve_profile_data_links(this.user_id).subscribe(l=>{
-      if(l[0].length>0){
-        for(let i=0;i<l[0].length;i++){
-          this.links_titles[i]=l[0][i].link_title;
-          this.links[i]=l[0][i].link;
-        }
-      }
-      this.links_retrieved=true;
-      this.cd.detectChanges();
-    })
-
-    
-    this.Profile_Edition_Service.get_information_privacy(this.user_id).subscribe(l=>{
-      this.primary_description_extended_privacy=l[0].primary_description_extended;
-    })
 
     this.Story_service.check_stories_for_account(this.user_id).subscribe(r => {
       if(r[0] && r[0].story_found){
@@ -2728,6 +2720,190 @@ report(){
     this.title.setTitle('LinkArts – Collaboration éditoriale');
     this.meta.updateTag({ name: 'description', content: "Une galerie pour exposer vos œuvres et promouvoir votre talent." });
   }
+
+
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
+  }
+
+
+  
+
+
+  /* VARIABLES ARTISTES ET EDITEURS*/
+  editor = true;
+
+  list_of_news=[
+    {
+      date:"Il y a 2 semaines",
+      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
+    },
+    {
+      date:"Il y a 2 jours",
+      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
+    },
+    {
+      date:"Il y a 2 semaines",
+      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
+    },
+    {
+      date:"Il y a 2 semaines",
+      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
+    },
+    {
+      date:"Il y a 2 semaines",
+      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
+    },
+    {
+      date:"Il y a 2 semaines",
+      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
+    }
+  ]
+  add_news_input=false;
+  add_news() {
+    this.add_news_input = true;
+  }
+  cancel_add_news() {
+    this.add_news_input = false;
+    this.newsForm.reset();
+  }
+  newsForm: FormGroup = this.formBuilder.group({
+    news: ['', 
+      Validators.compose([
+        Validators.required,
+        Validators.pattern(pattern("text")),
+        Validators.maxLength(200),
+      ]),
+    ],
+  });
+
+  send_news() {
+    if( this.newsForm.valid ) {
+      //sauvegarder actualité
+
+
+
+      this.add_news_input=false;
+      this.newsForm.reset();
+    }
+  }
+
+
+  number_of_news_limit=4;
+  show_more_news() {
+    this.number_of_news_limit+=4;
+  }
+  number_of_visits=number_in_k_or_m(0);
+  
+  faPinterest = faPinterest;
+  faFacebookSquare = faFacebookSquare;
+  faInstagram = faInstagram;
+
+  instagram='http://www.google.fr';
+  facebook='http://www.google.fr';
+  pinterest='http://www.google.fr';
+  deviantart='http://www.deviantart.com';
+  artstation='http://www.artstation.com';
+  site_perso='http://www.siteperso.com';
+  autre_site='http://www.othersite.com';
+
+  email_about:String='test@gmail.com';
+  phone:String='+33781702530';
+
+
+  /* VARIABLES ARTISTES */
+  //chiffres clés pour un artiste
+  number_of_views=number_in_k_or_m(0);
+  number_of_likes=number_in_k_or_m(0);
+  number_of_loves=number_in_k_or_m(0);
+  number_of_comments=number_in_k_or_m(0);
+  //compétences pour un artiste
+  list_of_skills=[
+    {
+      category:"Outils",
+      skills:["Photoshop","Primavera"]
+    },
+    {
+      category:"Développement",
+      skills:["JAVA","C++","Python"]
+    }
+  ];
+  //profession pour un artiste
+  job:String='Profession';
+  //cv pour un artiste
+  cv:String='cv';
+
+
+  /* VARIABLES EDITEURS */
+  //chiffres clés pour un éditeur
+  number_of_forms=number_in_k_or_m(0);
+  //catégories pour un éditeur
+  list_of_genres=[
+    {
+      category:"Catégories",
+      skills:["BD","Comics"]
+    },
+    {
+      category:"Genres",
+      skills:["Humour","Action"]
+    }
+  ];
+  //oeuvres phares pour un éditeur
+  list_of_artworks=[
+    {
+      picture:"",
+      title:"Naryguto : le dernier survivant",
+      authors:"Paul Henry, Marc Eric, Pierre Samuel",
+      description:"Ceci estgy un test.",
+      link:"http://www.google.fr"
+    },
+    {
+      picture:"",
+      title:"Saga one-piece",
+      authors:"Paul Henry, Marc Eric, Pierre Samuel",
+      description:"Ceci est unyg test de ygdescription. Ceci est un test de degyscription. Ceci est un test de description.",
+      link:"http://www.google.fr"
+    },
+    {
+      picture:"",
+      title:"Titre 3",
+      authors:"Paul Henry, Marc Eric, Pierre Samuel",
+      description:"Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. ",
+      link:"http://www.google.fr"
+    },
+  ];
+  //liste des membres pour un éditeur
+  list_of_editors=[
+    {
+      admin:true,
+      picture:"",
+      name:"Mokhtar Meghaichi",
+      description:"Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. ",
+      cv:"mon cv"
+    },
+    {
+      admin:false,
+      picture:"",
+      name:"Mokhtar Meghaichi Mokhtar Meghaichi Mokhtar Meghaichi Mokhtar Meghaichi",
+      description:"Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. ",
+      cv:""
+    },
+  ];
+
+  list_of_real_delays={"1s":"1 semaine","2s":"2 semaines","3s":"3 semaines",
+  "1m":"1 mois","6s":"6 semaines","7s":"7 semaines","2m":"2 mois",
+  "3m":"3 mois","4m":"4 mois","5m":"5 mois","6m":"6 mois"};
+  standard_price=0;
+  standard_delay="4m";
+  express_price=6;
+  express_delay="1m";
+
+
+
+
 }
 
 

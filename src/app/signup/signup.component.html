@@ -339,9 +339,11 @@
                 </div>
 
                 <img class="invisible-height"  src='../../assets/img/tuto-logos/light.svg'>
-                <div class="form-title">
-                    <span>Quels tarifs voulez-vous définir</span>
-                    <div class="see-more-button">
+
+
+                <div class="form-title with-see-more">
+                    <span>Quels tarifs voulez-vous définir ?</span>
+                    <div class="see-more-button align-right">
                         ?
                         <div class="information" >
                             <div class="first-text">
@@ -351,115 +353,177 @@
                         </div>
                     </div>
                 </div>
-                <div class="formules" style="display: flex;" *ngIf="!formula_in_edition">
-                    <div class="standard-block" style="margin : auto 10px auto auto" >
-                            <div class="title">
-                                Formule Standard
-                                <div class="see-more-button">
-                                    ?
-                                    <div class="information" >
-                                        <div class="first-text">
-                                            <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Standard est votre formule par défaut. Sélectionnez le temps de réponse maximal que vous pouvez garantir ainsi que le tarif que vous voulez imposer (il peut être gratuit). Une fois le délais passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="price">
-                                <span>Tarif : 
-                                    <ng-container *ngIf="standard_price==0">Gratuit</ng-container>
-                                    <ng-container *ngIf="standard_price==1">{{standard_price}} euro</ng-container>
-                                    <ng-container *ngIf="standard_price>1">{{standard_price}} euros</ng-container>
-                                </span>
-                            </div>
-                            <div class="delay">
-                                <span>Temps d'attente : {{list_of_real_delays[standard_delay]}}</span>
-                            </div>
-                            <button (click)="edit_formulas(0)">modifier</button>
-                        
-                    </div>
-                    <div class="express-block" style="margin : auto auto auto 10px" >
-                        <div class="title">
-                            Formule Express
-                            <div class="see-more-button">
+
+
+                <div class="formulas">
+
+                    
+                    <div class="formula">
+                        <div class="formula-title">
+                            <span>Standard</span>
+                            <div class="see-more-button left">
                                 ?
                                 <div class="information" >
                                     <div class="first-text">
-                                        <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Express est votre formule premium. Sélectionnez le temps de réponse maximal que vous pouvez garantir en un minimum de temps (par exemple : 3 semaines), ainsi que le tarif que vous voulez imposer. Une fois ce délais passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
+                                        <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Standard est votre formule par défaut. Sélectionnez le temps de réponse maximal que vous pouvez garantir ainsi que le tarif que vous voulez imposer (il peut être gratuit). Une fois le délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="price">
-                            <span>Tarif : {{express_price}} euros</span>
-                        </div>
-                        <div class="delay">
-                            <span>Temps d'attente : {{list_of_real_delays[express_delay]}}</span>
-                        </div>
-                        <button (click)="edit_formulas(1)">modifier</button>
-                    </div>
-                </div>
-                <div class="formules" style="display: flex;" *ngIf="formula_in_edition">
-                    <div class="standard-block" style="margin : auto 10px auto auto" >
-                            <div class="title">
-                                <ng-container *ngIf="indice_edited==0">Standard</ng-container>
-                                <ng-container *ngIf="indice_edited==1">Express</ng-container>
+
+
+
+                        <div class="formula-info">
+                            <div class="type">
+                                <span>Tarif</span>
                             </div>
-                            <div class="price">
-                                <span>Tarif : <mat-slider *ngIf="indice_edited==0"
-                                    thumbLabel
-                                    formControlName="standard_price"
-                                    (change)="update_price($event)" 
-                                    [displayWith]="value_to_display"
-                                    step="1" min="0" max="5" aria-label="units"></mat-slider>
-                                    <mat-slider *ngIf="indice_edited==1"
-                                    thumbLabel
-                                    formControlName="express_price"
-                                    (change)="update_price($event)" 
-                                    [displayWith]="value_to_display"
-                                    
-                                    step="2" min="6" max="20" aria-label="units"></mat-slider>
-                                </span>
+                            <div class="value" *ngIf="indice_edited!=0">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                                <span *ngIf="standard_price==0">Gratuit</span>
+                                <span *ngIf="standard_price==1">{{standard_price}} euro</span>
+                                <span *ngIf="standard_price>1">{{standard_price}} euros</span>
                             </div>
-                            <div class="price-extension">
-                                <ng-container *ngIf="indice_edited==0">
+
+                            <div class="value" *ngIf="indice_edited==0">
+
                                     <span *ngIf="standard_price==0">Gratuit</span>
-                                    <span *ngIf="standard_price!=0">{{standard_price}} euros</span>
-                                </ng-container>
-                                <ng-container *ngIf="indice_edited==1">
-                                    <span>{{express_price}} euros</span>
-                                </ng-container>
+                                    <span *ngIf="standard_price==1">{{standard_price}} euro</span>
+                                    <span *ngIf="standard_price>1">{{standard_price}} euros</span>
+                                <mat-slider
+                                thumbLabel
+                                formControlName="standard_price"
+                                (change)="update_price($event)" 
+                                [displayWith]="value_to_display"
+                                step="1" min="0" max="5" aria-label="units"></mat-slider>
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="formula-info">
                             
+                            <div class="type">
+                                <span>Temps d'attente</span>
                             </div>
-                            <div class="delay">
-                                <span>Temps d'attente :
-                                    <mat-slider *ngIf="indice_edited==0"
-                                    thumbLabel
-                                    formControlName="standard_delay"
-                                    (change)="update_delay($event)"  [displayWith]="value_to_display_delay"
-                                    step="1" min="0" max="10" aria-label="units"></mat-slider>
-                                    <mat-slider *ngIf="indice_edited==1"
-                                    thumbLabel
-                                    formControlName="express_delay"
-                                    (change)="update_delay($event)"  [displayWith]="value_to_display_delay"
-                                    step="1" min="0" max="10" aria-label="units"></mat-slider>
-                                </span>
+                            <div class="value" *ngIf="indice_edited!=0">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
+                                <span>{{list_of_real_delays[standard_delay]}}</span>
                             </div>
-                            <div class="price-extension">
-                                <ng-container *ngIf="indice_edited==0">
-                                    <span>{{list_of_real_delays[standard_delay]}}</span>
-                                </ng-container>
-                                <ng-container *ngIf="indice_edited==1">
-                                    <span>{{list_of_real_delays[express_delay]}}</span>
-                                </ng-container>
-                            
+
+                            <div class="value" *ngIf="indice_edited==0">
+
+                                <span>{{list_of_real_delays[standard_delay]}}</span>
+                                <mat-slider
+                                thumbLabel
+                                formControlName="standard_delay"
+                                (change)="update_delay($event)"  [displayWith]="value_to_display_delay"
+                                step="1" min="0" max="10" aria-label="units"></mat-slider>
+
                             </div>
-                            <button (click)="cancel_edition()">annuler</button>
-                            <button (click)="validate_price()">valider</button>
+
+                        </div>
                         
+                        <ng-container *ngIf="!visitor_mode">
+                            <div class="edit-formula" (click)="edit_formulas(0)" *ngIf="indice_edited==-1">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                <span>Modifier</span>
+                            </div>
+                            <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==0">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+                                <span>Annuler</span>
+                            </div>
+                            <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==0">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+                                <span>Valider</span>
+                            </div>
+                        </ng-container>
                     </div>
+
+                    
+                    <div class="formula">
+                        <div class="formula-title">
+                            <span>Express</span>
+                            <div class="see-more-button">
+                                ?
+                                <div class="information" >
+                                    <div class="first-text">
+                                        <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Express est votre formule premium. Sélectionnez le temps de réponse maximal que vous pouvez garantir en un minimum de temps (par exemple : 3 semaines), ainsi que le tarif que vous voulez imposer. Une fois ce délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="formula-info">
+                            <div class="type">
+                                <span>Tarif</span>
+                            </div>
+
+                            <div class="value" *ngIf="indice_edited!=1">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                                <span>{{express_price}} euros</span>
+                            </div>
+
+                            <div class="value" *ngIf="indice_edited==1">
+
+                                <span>{{express_price}} euros</span>
+                                <mat-slider
+                                thumbLabel
+                                formControlName="express_price"
+                                (change)="update_price($event)" 
+                                [displayWith]="value_to_display"
+                                
+                                step="2" min="6" max="20" aria-label="units"></mat-slider>
+                            </div>
+                        </div>
+
+
+
+                        <div class="formula-info">
+                            <div class="type">
+                                <span>Temps d'attente</span>
+                            </div>
+
+                            <div class="value" *ngIf="indice_edited!=1">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
+                                <span>{{list_of_real_delays[express_delay]}}</span>
+                            </div>
+                            <div class="value" *ngIf="indice_edited==1">
+
+                                <span>{{list_of_real_delays[express_delay]}}</span>
+                                <mat-slider *ngIf="indice_edited==1"
+                                thumbLabel
+                                formControlName="express_delay"
+                                (change)="update_delay($event)"  [displayWith]="value_to_display_delay"
+                                step="1" min="0" max="10" aria-label="units"></mat-slider>
+                            </div>
+                        </div>
+
+
+                        <ng-container *ngIf="!visitor_mode">
+                            <div class="edit-formula" (click)="edit_formulas(1)" *ngIf="indice_edited==-1">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                <span>Modifier</span>
+                            </div>
+                            <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==1">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+                                <span>Annuler</span>
+                            </div>
+                            <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==1">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+                                <span>Valider</span>
+                            </div>
+                        </ng-container>
+
+                    </div>
+
+
                 </div>
+
+
+                
             </div>
 
 
@@ -499,19 +563,32 @@
             <div class="thumbnail-container">
                 <div class="thumbnail">
                     <div class="cover-picture" >
-                        <button  class="big-button-cover" *ngIf="!can_show_cover_editor" (click)="change_cover_picture()">Ajouter une photo de couverture</button>
-                        <button  class="small-button-cover" *ngIf="can_show_cover_editor" (click)="change_cover_picture()">Modifier</button>
+                        <div class="button-cover big" *ngIf="!can_show_cover_editor" (click)="change_cover_picture()">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                            <span>Ajouter une photo de couverture</span>
+                        </div>
+                        <div class="button-cover small" *ngIf="can_show_cover_editor" (click)="change_cover_picture()">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                            <span>Modifier</span>
+                        </div>
                         <img [src]="cover_picture_editor" class="background-image" *ngIf="can_show_cover_editor" >
-                        
+
                     </div>
                     <div class="data-container"  >
                         <div class="img-container" >
-                            <button  class="big-button-pp" *ngIf="!can_show_pp_editor" (click)="change_profile_picture()">Ajouter une photo de profile</button>
-                            
-                            <img [src]="profile_picture_editor" class="background-image" *ngIf="can_show_pp_editor" >
-                        </div>
-                        <button  class="small-button-pp" *ngIf="can_show_pp_editor" (click)="change_profile_picture()"> Modifier</button>
 
+                            <div class="big-button-pp" *ngIf="!can_show_pp_editor" (click)="change_profile_picture()">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                                <span>Ajouter une photo de profil</span>
+                            </div>
+
+                            <img [src]="profile_picture_editor" class="background-image" *ngIf="can_show_pp_editor" >
+
+                            <div  class="button-cover pp" *ngIf="can_show_pp_editor" (click)="change_profile_picture()">
+                                <span>Modifier</span>
+                            </div>
+                        </div>
+                            
         
                         <div class="right-container">
                             <div class="name" [@enterFromLeftAnimation]>
@@ -520,11 +597,11 @@
                             </div>
         
                         
-                            <div class="section" [@enterFromLeftAnimation]>
+                            <div class="section" *ngIf="location" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
                                 <span class="section-value">{{location}}</span>
                             </div>
-                            <div class="section" [@enterFromLeftAnimation] >
+                            <div class="section" *ngIf="registerForm3.value.categories && registerForm3.value.categories.length>0" [@enterFromLeftAnimation] >
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">color_lens</mat-icon>
                                 <span class="section-value">
                                     <ng-container *ngFor="let cat of registerForm3.value.categories;let j=index">
@@ -533,7 +610,7 @@
                                     </ng-container>
                                 </span>
                             </div>
-                            <div class="section" [@enterFromLeftAnimation] >
+                            <div class="section" *ngIf="registerForm3.value.genres && registerForm3.value.genres.length>0" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">receipt_long</mat-icon>
                                 <span class="section-value">
                                     <ng-container *ngFor="let gen of registerForm3.value.genres.slice(0,6);let j=index">
@@ -603,7 +680,7 @@
 
 
                 <div class="form-title">
-                    <span>Quelles catégories ciblées-vous ?</span>
+                    <span>Quelles catégories ciblez-vous ?</span>
                 </div>
                 <div class="form-item" >
                     <mat-form-field floatLabel='never' >
@@ -619,7 +696,7 @@
                 </div>
             
                 <div class="form-title">
-                    <span>Quels sont vos compétences ?</span>
+                    <span>Quelles sont vos compétences ?</span>
                 </div>
                 <div class="form-item" style="height:unset">
                     <mat-form-field floatLabel='never'>
@@ -687,7 +764,7 @@
                 </div>
                 <div class="links-container ">
                     <div class="link-title">
-                        <span>Site perso.</span>
+                        <span>Site perso</span>
                     </div>
                     <div class="form-item" style="margin-bottom: 5px;">
                         <mat-form-field floatLabel='never'>
@@ -797,9 +874,9 @@
 
     </div>
 
-    <div class="bottom-container">
+</div>
+<div class="bottom-container">
 
-    </div>
 </div>
 
 

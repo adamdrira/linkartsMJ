@@ -12,7 +12,7 @@ import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service'
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { pattern } from '../helpers/patterns';
 import * as moment from 'moment'; 
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
@@ -22,9 +22,20 @@ import { convert_timestamp_to_number, date_in_seconds, get_date_to_show } from '
 import { trigger, transition, style, animate } from '@angular/animations';
 import { normalize_to_nfc } from '../helpers/patterns';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { FileUploader, FileItem } from 'ng2-file-upload';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Observable } from 'rxjs';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { ConstantsService } from '../services/constants.service';
+import { map, startWith } from 'rxjs/operators';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { PopupFormComponent } from '../popup-form/popup-form.component';
 
 
 declare var $: any;
+
+//ajouter une url pour upload de cv
+const url = '';
 
 @Component({
   selector: 'app-account-about',
@@ -41,20 +52,37 @@ declare var $: any;
   ],
   animations: [
     trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('150ms', style({opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
       'enterFromTopAnimation', [
         transition(':enter', [
           style({transform: 'translateY(-100%)', opacity: 0}),
-          animate('400ms', style({transform: 'translateY(0px)', opacity: 1}))
-        ])
-      ],
-      
+          animate('400ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ]),
+        
+      ]
     ),
     trigger(
-      'enterAnimation', [
+      'enterFromLeftAnimation', [
         transition(':enter', [
-          style({transform: 'translateY(0%)', opacity: 0}),
-          animate('400ms', style({transform: 'translateY(0px)', opacity: 1}))
-        ])
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ]),
+      ],
+    ),
+    
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ]),
       ],
     ),
   ],
@@ -79,12 +107,25 @@ export class AccountAboutComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Ads_service:Ads_service,
     public dialog: MatDialog,
+    private ConstantsService:ConstantsService,
   ) { 
     NavbarService.visibility_observer_font.subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
     })
+
+    this.uploader = new FileUploader({
+      itemAlias: 'cover', 
+      url:url,
+
+    });
+    this.filteredSkills = this.skillsCtrl.valueChanges.pipe(
+      startWith(null),
+      map((genre: string | null) => genre ? this._filter(genre) : this.list_of_skills.slice()));
+    this.filteredGenres = this.genresCtrl.valueChanges.pipe(
+      startWith(null),
+      map((genre: string | null) => genre ? this._filter(genre) : this.list_of_genres.slice()));
   }
 
 
@@ -115,10 +156,10 @@ export class AccountAboutComponent implements OnInit {
     "../../assets/img/tuto-logos/tuto-books.svg",
     "../../assets/img/tuto-logos/win.svg",
   ];
-  opened_category=0;
+  opened_category:number=0;
 
   category_to_open='Dessins';
-  list_of_categories=['Bandes dessinées','Dessins','Ecrits']
+  list_of_categories=this.ConstantsService.list_of_categories;
   categories_sorted=false;
   
 
@@ -146,18 +187,25 @@ export class AccountAboutComponent implements OnInit {
   primary_description:string;
   primary_description_extended:string;
   profile_data_retrieved=false;
+  
 
-  list_of_privacy=[];
-  list_of_privacy_retrieved=false;
-  links_titles:any[]=[];
-  links:any[]=[];
-  links_retrieved=false;
+  phone_about: String;
+  facebook: String;
+  instagram: String;
+  pinterest: String;
+  twitter: String;
+  deviantart: String;
+  artstation: String;
+  website: String;
+  other_website: String;
+  
   
   type_of_profile:string;
   birthday:string;
   job:string='';
   training:string='';
   email_about:string='';
+
 
   registerForm1: FormGroup;
   registerForm1_activated=false;
@@ -171,9 +219,19 @@ export class AccountAboutComponent implements OnInit {
   registerForm3_activated=false;
   display_error_validator_3=false;
 
+  registerForm4: FormGroup;
+  registerForm4_activated=false;
+  display_error_validator_4=false;
+
+  registerForm5: FormGroup;
+  registerForm5_activated=false;
+  display_error_validator_5=false;
+
+  registerForm6: FormGroup;
+  registerForm6_activated=false;
+  display_error_validator_6=false;
+
   maxDate: moment.Moment;
-  all_stats_private=false;
-  trendings_private=false;
 
   @ViewChild("chartContainer") chartContainer:ElementRef;
 
@@ -205,65 +263,20 @@ export class AccountAboutComponent implements OnInit {
       this.build_form_1();
       this.build_form_2();
       this.build_form_3();
+      this.build_form_4();
+      this.build_form_5();
+      this.build_form_6();
 
       if( this.type_of_profile != "Groupe" ) {
         let values=this.author.birthday.split('-');
         let yy =parseInt(values[2]);
         let mm =parseInt(values[1])-1
         let dd =parseInt(values[0])
-        this.registerForm3.controls['birthday'].setValue(moment([yy, mm, dd]));
+        //this.registerForm3.controls['birthday'].setValue(moment([yy, mm, dd]));
       }
 
       
       this.profile_data_retrieved=true;
-
-      
-      //open_category=0
-      this.Profile_Edition_Service.retrieve_profile_data_links(this.id_user).subscribe(l=>{
-        if(l[0].length>0){
-          for(let i=0;i<l[0].length;i++){
-            this.links_titles[i]=l[0][i].link_title;
-            this.links[i]=l[0][i].link;
-          }
-        }
-        this.links_retrieved=true;
-        this.cd.detectChanges();
-      })
-
-      this.Profile_Edition_Service.get_information_privacy(this.id_user).subscribe(l=>{
-        
-        this.list_of_privacy[0]=l[0].primary_description_extended;
-        this.list_of_privacy[1]=l[0].type_of_profile;
-        this.list_of_privacy[2]=l[0].email_about;
-        this.list_of_privacy[3]=l[0].birthday;
-        this.list_of_privacy[4]=l[0].job;
-        this.list_of_privacy[5]=l[0].training;
-
-        
-
-   
-        this.list_of_privacy[6]=(l[0].trendings_stats)?l[0].trendings_stats:"private";
-        this.list_of_privacy[7]=(l[0].ads_stats)?l[0].ads_stats:"private";
-        this.list_of_privacy[8]=(l[0].comics_stats)?l[0].comics_stats:"private";
-        this.list_of_privacy[9]=(l[0].drawings_stats)?l[0].drawings_stats:"private";
-        this.list_of_privacy[10]=(l[0].writings_stats)?l[0].writings_stats:"private";
-        this.list_of_privacy[11]=(l[0].profile_stats)?l[0].profile_stats:"private";
-        
-        this.list_of_privacy_retrieved=true;
-        let compt=0
-        for(let i=7;i<12;i++){
-          if(this.list_of_privacy[i]=='private'){
-            compt++
-          }
-        }
-        if(compt==5){
-          this.all_stats_private=true;
-        }
-        if(this.list_of_privacy[6]=='private'){
-          this.trendings_private=true;
-        }
-        this.cd.detectChanges();
-      })
 
       this.Trending_service.check_if_user_has_trendings(this.id_user).subscribe(r=>{
         if(r[0].found){
@@ -286,6 +299,43 @@ export class AccountAboutComponent implements OnInit {
       this.get_writings_stats()
       this.get_profile_stats()
       
+      
+        
+      this.uploader.onAfterAddingFile = async (file) => {
+
+        
+        var re = /(?:\.([^.]+))?$/;
+        let index = this.uploader.queue.indexOf(file);
+        let size = file._file.size/1024/1024;
+        let sufix =re.exec(file._file.name)[1].toLowerCase()
+
+        if(sufix!="pdf"){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Veuillez sélectionner un fichier .pdf'},
+            panelClass: "popupConfirmationClass",
+          });
+        }
+        else{
+          if(Math.trunc(size)>=10){
+            this.uploader.queue.pop();
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+              panelClass: "popupConfirmationClass",
+            });
+          }
+          else{
+            
+            this.uploaded_cv=this.uploader.queue[0]._file.name;
+            file.withCredentials = true;
+
+            
+          }
+          
+        }
+      };
+
+
   }
 
   load_emoji=false;
@@ -2411,6 +2461,20 @@ export class AccountAboutComponent implements OnInit {
   }
 
 
+
+
+
+
+
+  opened_subcategory=0;
+  open_subcategory(i:number) {
+    this.opened_subcategory = i;
+  }
+  editor=true;
+
+
+
+
   /********************************************************************************************** */
   /*******************************************FORM 1********************************************* */
   /********************************************************************************************** */
@@ -2574,20 +2638,56 @@ export class AccountAboutComponent implements OnInit {
           Validators.maxLength(100),
         ]),
       ],
-      link_title:['', 
+      phone_about: [this.phone_about, 
         Validators.compose([
-          Validators.minLength(3),
-          Validators.maxLength(15),
-          Validators.pattern(pattern("text")),
+          Validators.pattern(pattern("integer")),
+          Validators.maxLength(10),
         ]),
       ],
-      link:['', 
+      facebook: [this.facebook, 
         Validators.compose([
-          Validators.minLength(5),
-          Validators.maxLength(60),
-          Validators.pattern(pattern("text_without_spaces")),
+          Validators.pattern(pattern("link")),
         ]),
       ],
+      instagram: [this.instagram, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
+      pinterest: [this.pinterest, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
+      twitter: [this.twitter, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
+      deviantart: [this.deviantart, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
+      artstation: [this.artstation, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
+      website: [this.website, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
+      other_website: [this.other_website, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
+      
+
+
+
     });
   }
   loading_validation_form_2=false;
@@ -2640,45 +2740,7 @@ export class AccountAboutComponent implements OnInit {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  //links
-  add_link_to_the_list(){
-    if(this.links_titles.length>=3){
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 3 liens externes'},
-        panelClass: "popupConfirmationClass",
-      });
-      return;
-    }
-    this.registerForm2_activated=true;
-  }
 
-  add_link(){
-    if(this.links_titles.length>=3){
-      return;
-    }
-    if( this.registerForm2.controls['link_title'].invalid || this.registerForm2.controls['link'].invalid ) {
-      return;
-    }
-    if ( this.registerForm2.controls['link_title'].value == "" || this.registerForm2.controls['link'].value == "" ) {
-      return;
-    }
-    this.links_titles.push(this.registerForm2.value.link_title);
-    this.links.push(this.registerForm2.value.link);
-    this.Profile_Edition_Service.add_link(this.id_user,this.registerForm2.value.link_title,this.registerForm2.value.link).subscribe(l=>{
-      this.registerForm2.controls['link'].setValue("");
-      this.registerForm2.controls['link_title'].setValue("");
-      this.cd.detectChanges();
-    })
-  }
-
-  remove_link(i){
-   
-    this.Profile_Edition_Service.remove_link(this.id_user, this.links_titles[i] , this.links[i] ).subscribe(l=>{
-      this.links.splice(i,1);
-      this.links_titles.splice(i,1);
-      this.cd.detectChanges();
-    })
-  }
 
 
 /********************************************************************************************** */
@@ -2720,6 +2782,24 @@ export class AccountAboutComponent implements OnInit {
     }
 
   }
+
+
+  //cv actuel
+  cv:String;
+
+  //cv uploadé
+  uploaded_cv:String;
+  uploader:FileUploader;
+  onFileClick(event) {
+    event.target.value = '';
+  }
+  delete_cv() {
+    this.uploaded_cv=undefined;
+    if( this.uploader.queue[0] ) {
+      this.uploader.queue[0].remove();
+    }
+  }
+
 
   //primary description 
   edit_form_3(){
@@ -2770,10 +2850,442 @@ export class AccountAboutComponent implements OnInit {
     
   }
   cancel_form_3(){
+    this.uploaded_cv=undefined;
+    if(this.uploader.queue[0]) {
+      this.uploader.queue[0].remove();
+    }
+
     this.registerForm3_activated=false;
     this.loading_validation_form_3=false;
     this.display_error_validator_3=false;
   }
+
+
+
+  /* FORM 4 */
+  categories_retrieved=["Mangas","Livres","Livres jeunesses"];
+  build_form_4() {
+    
+    this.registerForm4 = this.formBuilder.group({      
+      categories: new FormControl( this.categories_retrieved, [Validators.required]),
+      skills: new FormControl( this.skills, [Validators.required]),
+    });
+
+  }
+
+  //primary description 
+  edit_form_4(){
+    this.registerForm4_activated=true;
+    this.loading_validation_form_4=false;
+    this.display_error_validator_4=false;
+  }
+
+  loading_validation_form_4=false;
+  validate_form_4(){
+    //fonction backend
+    
+    if(this.loading_validation_form_4){
+      return
+    }
+    if(this.registerForm4.invalid ){
+      this.display_error_validator_4=true;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
+        panelClass: "popupConfirmationClass",
+      });
+      return 
+    }
+    this.loading_validation_form_4=true;
+    this.display_error_validator_4=false;
+      
+  
+    
+  }
+  cancel_form_4(){
+    this.registerForm4_activated=false;
+    this.loading_validation_form_4=false;
+    this.display_error_validator_4=false;
+
+    this.registerForm4.controls['categories'].setValue( this.categories_retrieved );
+    this.skills = Object.assign([], this.retrieved_skills);
+  }
+
+
+
+  /* FORM 4 */
+  published_categories_retrieved=["Mangas","Livres","Livres jeunesses","Comics"];
+  build_form_5() {
+    
+    this.registerForm5 = this.formBuilder.group({      
+      categories: new FormControl( this.published_categories_retrieved, [Validators.required]),
+      genres: new FormControl( this.genres, [Validators.required]),
+    });
+
+  }
+
+  //primary description 
+  edit_form_5(){
+    this.registerForm5_activated=true;
+    this.loading_validation_form_5=false;
+    this.display_error_validator_5=false;
+  }
+
+  loading_validation_form_5=false;
+  validate_form_5(){
+    //fonction backend
+    
+    if(this.loading_validation_form_5){
+      return
+    }
+    if(this.registerForm5.invalid ){
+      this.display_error_validator_5=true;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
+        panelClass: "popupConfirmationClass",
+      });
+      return 
+    }
+    this.loading_validation_form_5=true;
+    this.display_error_validator_5=false;
+      
+  
+    
+  }
+  cancel_form_5(){
+    this.registerForm5_activated=false;
+    this.loading_validation_form_5=false;
+    this.display_error_validator_5=false;
+
+    this.registerForm5.controls['categories'].setValue( this.published_categories_retrieved );
+    this.genres = Object.assign([], this.retrieved_genres);
+  }
+
+
+
+  /* FORM 4 */
+  standard_price=0;
+  standard_delay="4m";
+  express_price=6;
+  express_delay="1m";
+
+  indice_edited=-1;
+  formula_in_edition=false;
+
+  current_standard_price:any;
+  current_standard_delay:any;
+  current_express_price:any;
+  current_express_delay:any;
+
+  current_standard_price_slider:any;
+  current_standard_delay_slider:any;
+  current_express_price_slider:any;
+  current_express_delay_slider:any;
+
+  list_of_real_delays={"1s":"1 semaine","2s":"2 semaines","3s":"3 semaines",
+  "1m":"1 mois","6s":"6 semaines","7s":"7 semaines","2m":"2 mois",
+  "3m":"3 mois","4m":"4 mois","5m":"5 mois","6m":"6 mois"}
+
+  build_form_6() {
+    
+    this.registerForm6 = this.formBuilder.group({
+      standard_price: [this.standard_price
+      ],
+      express_price: [this.express_price
+      ],
+      standard_delay: [this.standard_delay
+      ],
+      express_delay: [this.express_delay
+      ],
+    });
+
+  }
+
+
+  //Slider managment
+  value_to_display(value: number) {
+    return value;
+  }
+  value_to_display_delay(value: number) {
+    let list_of_delays=["1s","2s","3s","1m","6s","7s","2m","3m","4m","5m","6m"]
+    return list_of_delays[value];
+  }
+  update_price(event){
+    if(this.indice_edited==0){
+      this.standard_price=event.value;
+    }
+    else{
+      this.express_price=event.value;
+    }
+  }
+  update_delay(event){
+    let list_of_delays=["1s","2s","3s","1m","6s","7s","2m","3m","4m","5m","6m"]
+    if(this.indice_edited==0){
+      this.standard_delay=list_of_delays[event.value];
+    }
+    else{
+      this.express_delay=list_of_delays[event.value];
+    }
+  }
+
+  
+  edit_formulas(i){
+    this.current_standard_price=this.standard_price;
+    this.current_standard_delay=this.standard_delay;
+    this.current_express_price=this.express_price;
+    this.current_express_delay=this.express_delay;
+
+    this.current_standard_price_slider=this.registerForm3.value.standard_price
+    this.current_standard_delay_slider=this.registerForm3.value.standard_delay;
+    this.current_express_price_slider=this.registerForm3.value.express_price;
+    this.current_express_delay_slider=this.registerForm3.value.express_delay;
+    this.formula_in_edition=true;
+    this.indice_edited=i;
+  }
+  
+  cancel_edition(){
+    this.standard_price=this.current_standard_price;
+    this.standard_delay=this.current_standard_delay;
+    this.express_price=this.current_express_price;
+    this.express_delay=this.current_express_delay;
+
+
+    this.registerForm6.controls['standard_price'].setValue(this.current_standard_price_slider);
+    this.registerForm6.controls['standard_delay'].setValue(this.current_standard_delay_slider);
+    this.registerForm6.controls['express_price'].setValue(this.current_express_price_slider);
+    this.registerForm6.controls['express_delay'].setValue(this.current_express_delay_slider);
+    
+    this.registerForm6.controls['standard_price'].updateValueAndValidity();
+    this.registerForm6.controls['standard_delay'].updateValueAndValidity();
+    this.registerForm6.controls['express_price'].updateValueAndValidity();
+    this.registerForm6.controls['express_delay'].updateValueAndValidity();
+
+    this.formula_in_edition=false;
+    this.indice_edited=-1;
+  }
+  
+  validate_price(){
+    this.formula_in_edition=false;
+    this.indice_edited=-1;
+  }
+
+
+  
+  /********************************* FORTH PAGE / EDITORS ONLY *********************************/
+  /********************************* FORTH PAGE / EDITORS ONLY *********************************/
+
+  /*society="society";
+
+  can_show_cover_editor=false;
+  can_show_pp_editor=false;
+
+
+  cover_picture_editor:any;
+  change_cover_picture() {
+    this.NavbarService.add_page_visited_to_history(`/PopupFormComponent/edit_cover_picture/signup`,this.device_info).subscribe();
+    const dialogRef = this.dialog.open(PopupFormComponent, {
+      data: {type:"edit_cover_picture_signup",id_user:this.id_user},
+      panelClass: 'popupUploadPictureClass',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.cover_picture_editor=result;
+        this.can_show_cover_editor=true;
+      }
+    })
+  }
+
+  profile_picture_editor:any;
+  change_profile_picture() {
+    this.NavbarService.add_page_visited_to_history(`/PopupFormComponent/edit_profile_picture/signup`,this.device_info).subscribe();
+    const dialogRef = this.dialog.open(PopupFormComponent, {
+      data: {type:"edit_profile_picture_signup",id_user:this.id_user},
+      panelClass: 'popupUploadPictureClass',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.profile_picture_editor=result;
+        this.can_show_pp_editor=true;
+      }
+    })
+  }*/
+
+
+
+  visible = true;
+  selectable = true;
+  removable = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  
+
+  
+  @ViewChild('genresInput') genresInput: ElementRef<HTMLInputElement>;
+  genresCtrl = new FormControl();
+  retrieved_genres: string[] = ['Sport','Voyage'];
+  genres: string[] = Object.assign([], this.retrieved_genres);
+  filteredGenres: Observable<string[]>;
+  list_of_genres=this.ConstantsService.list_of_genres;
+
+  genre_clicked(){
+    this.genresInput.nativeElement.blur()
+  }
+  add_genre(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if( this.genres.length >= 15 ) {
+      return;
+    }
+
+    let do_not_add:boolean = true;
+    let index:number;
+
+    // Add our genre
+    if ((value || '').trim()) {
+
+      for( let i=0; i<this.list_of_genres.length; i++ ) {
+        if( this.list_of_genres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=false;
+          index = i;
+        }
+      }
+      for( let i=0; i<this.genres.length; i++ ) {
+        if( this.genres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=true;
+        }
+      }
+
+      if( !do_not_add ) {
+        this.genres.push(this.list_of_genres[index].trim());
+      }
+    }
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+    this.genresCtrl.setValue(null);
+    this.registerForm5.controls['genres'].updateValueAndValidity();
+  }
+  remove_genre(genre: string): void {
+    const index = this.genres.indexOf(genre);
+    if (index >= 0) {
+      this.genres.splice(index, 1);
+    }
+    this.registerForm5.controls['genres'].updateValueAndValidity();
+  }
+  selected_genre(event: MatAutocompleteSelectedEvent): void {
+    
+    
+
+    if( this.genres.length >= 15 ) {
+      this.genresInput.nativeElement.value = '';
+      this.genresCtrl.setValue(null);  
+      return;
+    }      
+    for( let i=0; i<this.genres.length; i++ ) {
+      if( this.genres[i].toLowerCase() == event.option.viewValue.toLowerCase() ) {
+        this.genresInput.nativeElement.value = '';
+        this.genresCtrl.setValue(null);    
+        return;
+      }
+    }
+    this.genres.push(event.option.viewValue);
+    this.genresInput.nativeElement.value = '';
+    this.genresCtrl.setValue(null);
+    this.registerForm5.controls['genres'].updateValueAndValidity();
+
+    
+  }
+  _filter_genre(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.list_of_genres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+
+  @ViewChild('skillsInput') skillsInput: ElementRef<HTMLInputElement>;
+  skillsCtrl = new FormControl();
+  retrieved_skills: string[] = ['Articles historiques','Articles scientifiques'];
+  skills: string[] = Object.assign([], this.retrieved_skills);
+  filteredSkills: Observable<string[]>;
+  list_of_skills=this.ConstantsService.list_of_skills;
+
+  skill_clicked(){
+    this.skillsInput.nativeElement.blur();
+  }
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if( this.skills.length >= 15 ) {
+      return;
+    }
+
+    let do_not_add:boolean = true;
+    let index:number;
+
+    // Add our genre
+    if ((value || '').trim()) {
+
+      for( let i=0; i<this.list_of_skills.length; i++ ) {
+        if( this.list_of_skills[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=false;
+          index = i;
+        }
+      }
+      for( let i=0; i<this.skills.length; i++ ) {
+        if( this.skills[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=true;
+        }
+      }
+
+      if( !do_not_add ) {
+        this.skills.push(this.list_of_skills[index].trim());
+      }
+    }
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+    this.skillsCtrl.setValue(null);
+    this.registerForm4.controls['skills'].updateValueAndValidity();
+  }
+  remove(genre: string): void {
+    const index = this.skills.indexOf(genre);
+    if (index >= 0) {
+      this.skills.splice(index, 1);
+    }
+    this.registerForm4.controls['skills'].updateValueAndValidity();
+  }
+  selected(event: MatAutocompleteSelectedEvent): void {
+    
+    
+
+    if( this.skills.length >= 15 ) {
+      this.skillsInput.nativeElement.value = '';
+      this.skillsCtrl.setValue(null);  
+      return;
+    }      
+    for( let i=0; i<this.skills.length; i++ ) {
+      if( this.skills[i].toLowerCase() == event.option.viewValue.toLowerCase() ) {
+        this.skillsInput.nativeElement.value = '';
+        this.skillsCtrl.setValue(null);    
+        return;
+      }
+    }
+    this.skills.push(event.option.viewValue);
+    this.skillsInput.nativeElement.value = '';
+    this.skillsCtrl.setValue(null);
+    this.registerForm4.controls['skills'].updateValueAndValidity();
+
+    
+  }
+  _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.list_of_skills.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+
+
+
 
   find_age(birthday){
     var values=birthday.split('-');
@@ -2792,25 +3304,6 @@ export class AccountAboutComponent implements OnInit {
 
     return birth.toString()
   }
-
-
-
-
-  
-  //information privacy
-  change_information_privacy_public(i){
-    this.Profile_Edition_Service.change_information_privacy_public(this.id_user,i).subscribe(r=>{
-      this.list_of_privacy[i]="public"
-    })
-  }
-
-  change_information_privacy_private(i){
-    this.Profile_Edition_Service.change_information_privacy_private(this.id_user,i).subscribe(r=>{
-      this.list_of_privacy[i]="private"
-    })
-  }
-
-
 
 
 
@@ -3089,9 +3582,9 @@ export class AccountAboutComponent implements OnInit {
     }
     this.registerForm2.controls['country'].updateValueAndValidity();
     this.registerForm2.controls['city'].updateValueAndValidity();
-}
+  }
 
-adding_country(){
+  adding_country(){
     if(this.registerForm2.value.country && this.registerForm2.value.country.length>0){
       if(this.registerForm2.value.country=="Aucun pays"){
         this.registerForm2.controls['country'].setValue(null);
@@ -3126,8 +3619,6 @@ adding_country(){
    }
    this.registerForm2.controls['country'].updateValueAndValidity();
    this.registerForm2.controls['city'].updateValueAndValidity();
-
-  
   }
 
 

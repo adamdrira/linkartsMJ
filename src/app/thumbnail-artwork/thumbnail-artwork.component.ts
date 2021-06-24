@@ -127,6 +127,8 @@ export class ThumbnailArtworkComponent implements OnInit {
   @Input() rank: any;
   @Input() now_in_seconds: number;
 
+  @Input() account_home:boolean;
+
   @Input() subscribing_category: any;
   @Input() subscribing_format: any;
   @Input() emphasized: boolean;

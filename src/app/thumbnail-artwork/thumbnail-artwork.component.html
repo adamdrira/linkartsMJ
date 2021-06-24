@@ -4,7 +4,7 @@
     </a>
 </div>
 
-<div class="thumbnail-artwork" [ngClass]="{'trendings-width':page=='trendings'}" *ngIf="!skeleton" [@enterAnimation]>
+<div class="thumbnail-artwork" [ngClass]="{'trendings-width':page=='trendings', 'account-home':account_home}" *ngIf="!skeleton" [@enterAnimation]>
 
 
     <div class="hide-because-reported"
@@ -396,7 +396,7 @@
 
         </div>
 
-        <div class="preview" *ngIf="subscribing_category!='writing' " (mouseenter)="launch_swiper();" (mouseleave)="stop_swiper();">
+        <div class="preview" *ngIf="subscribing_category!='writing' && !account_home" (mouseenter)="launch_swiper();" (mouseleave)="stop_swiper();">
             <div class="hover-to-preview fade-on-hover">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                 <span>Voir les premières pages</span>
@@ -416,7 +416,7 @@
                 </div>
             </div>
         </div>
-        <div class="preview pdf-document-container" *ngIf="subscribing_category=='writing' " (mouseenter)="load_pdf();" (mouseleave)="close_pdf();">
+        <div class="preview pdf-document-container" *ngIf="subscribing_category=='writing' && !account_home" (mouseenter)="load_pdf();" (mouseleave)="close_pdf();">
             <div class="hover-to-preview" *ngIf="show_absolute_cover" [@leaveAnimation] >
                 <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                 <span>Aperçu de la première page</span>

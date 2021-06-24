@@ -645,14 +645,14 @@ export class SignupComponent implements OnInit {
   }
   
 
-  indice_edited=-1;
-  formula_in_edition=false;
-
-
+  /* FORM 4 */
   standard_price=0;
   standard_delay="4m";
   express_price=6;
   express_delay="1m";
+
+  indice_edited=-1;
+  formula_in_edition=false;
 
   current_standard_price:any;
   current_standard_delay:any;
@@ -667,6 +667,7 @@ export class SignupComponent implements OnInit {
   list_of_real_delays={"1s":"1 semaine","2s":"2 semaines","3s":"3 semaines",
   "1m":"1 mois","6s":"6 semaines","7s":"7 semaines","2m":"2 mois",
   "3m":"3 mois","4m":"4 mois","5m":"5 mois","6m":"6 mois"}
+
 
   //Slider managment
   

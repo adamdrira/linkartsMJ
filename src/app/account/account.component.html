@@ -225,25 +225,6 @@
 
                     </span>
                 </div>
-
-                <div class="profile-text profile-links" *ngIf="links.length>0 && !user_blocked && !profile_not_found && user_blocked_retrieved" >
-                    <mat-icon [ngClass]="{'invisible': !show_icon }"
-                    matTooltip='Liens externes' 
-                    matTooltipClass='tooltip-account-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="200">launch</mat-icon>
-
-                    <div>
-                        <ng-container *ngFor="let item of links_titles;let i=index">
-                            <span>
-                                <ng-container *ngIf="i>0">,&nbsp;</ng-container>
-                                <a [href]="links[i]">
-                                    {{item}}
-                                </a>
-                            </span>
-                        </ng-container>
-                    </div>
-                </div>
                 
 
             </div>
@@ -302,7 +283,7 @@
                 </button>
             </div>
             <div #buttonSection>
-                <button [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5,true);">
+                <button *ngIf="!mode_visiteur" [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5,true);">
                    
                     <div class="profile-picture">
                         <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
@@ -398,7 +379,7 @@
                         <mat-icon [ngClass]="{'invisible': !show_icon }">subscriptions</mat-icon>
                         <span>Abonnements ({{users_subscribed_to_list.length}})</span>
                     </mat-option>
-                    <mat-option [value]="5">
+                    <mat-option [value]="5" *ngIf="!mode_visiteur">
                         <div class="profile-picture">
                             <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
                         </div>
@@ -524,260 +505,829 @@
                     
                     </ng-container>
     
-                    <ng-container *ngIf="!primary_description_extended && !mode_visiteur">
-                        <div class="account-title medium-icon">
-                            <span>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" >account_circle</mat-icon>
-                                Qui je suis 
-                            </span>
-                        </div>
-                        
-                        <div class="text-lines">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
-                            <span>Aucune description ajoutée</span>
-                            <span>Vous pouvez ajouter une description principale depuis l'onglet "Mon profil"</span>
-                        </div>
-                    </ng-container>
-    
-                    <ng-container *ngIf="primary_description_extended && primary_description_extended_privacy=='public' && primary_description_extended.length>0">
-                        <div class="account-title medium-icon">
-                            <span>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" >account_circle</mat-icon>
-                                Qui je suis
-                            </span>
-                        </div>
-                        
-                        <div class="account-form-container">
-                            <div class="form-item"  [@enterAnimation]>
-                                <mat-form-field floatLabel='never'>
-                                    <mat-label>{{primary_description_extended}}</mat-label>
-                                    <textarea matInput cdkTextareaAutosize readonly class="readonly">{{primary_description_extended}}</textarea>
-                                </mat-form-field>
-                            </div>
+
+                    <div class="account-display-flex">
+                        <div class="account-display-flex-left">
                             
-                        </div>
-                    </ng-container>
-    
-    
-                    <ng-container *ngIf="emphasized_artwork_added">
-                        <div class="account-title medium-icon">
-                            <span>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">stars</mat-icon>
-                                Œuvre mise en avant
-                            </span>
-                        </div>
-                        <div class="highlighted-artwork">
-                            <app-thumbnail-artwork 
-                            [item]=emphasized_artwork
-                            [emphasized]=emphasized
-                            page="subscribings"
-                            now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-artwork>
-                        </div>
-                    </ng-container>
-    
-                    <ng-container *ngIf="!emphasized_artwork_added && !mode_visiteur && !(!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added)" >
-                        <div class="account-title medium-icon">
-                            <span>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">stars</mat-icon>
-                                Œuvre mise en avant
-                            </span>
-                        </div>
-                        <div class="text-lines">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
-                            <span>Aucune œuvre mise en avant</span>
-                            <span>Vous pouvez mettre une œuvre en avant depuis le mode lecture d'une œuvre</span>
-                        </div>
-                    </ng-container>
-    
-                    <ng-container *ngIf="list_of_ads.length>0 && list_of_ads_added">
-                        <div class="account-title medium-icon">
-                            <span>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
-                                Annonce récente
-                            </span>
-                        </div>
-                        <div class="highlighted-artwork">
-                            <app-thumbnail-ad
-                            [item]=list_of_ads[0]
-                            [now_in_seconds]=now_in_seconds
-                            ></app-thumbnail-ad>
-                        </div>
-                    </ng-container>
-    
-                
-    
-                    <ng-container *ngIf="!new_contents_added">
-    
-                        <div class="account-title medium-icon">
-                            <span>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
-                                Nouveautés
-                            </span>
-                        </div>
-    
-                        <div *ngFor="let item of categories_array; let j=index">
-                            <div class="category">
-                                <div class="category-title shiny"></div>
+                            <div class="block">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">list</mat-icon>
+                                    <span *ngIf="!editor">Qui suis-je ?</span>
+                                    <span *ngIf="editor">Qui sommes-nous ?</span>
+
+                                    <div class="right-button" *ngIf="!mode_visiteur" (click)="open_section(5,true);">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                        <span>Modifier</span>
+                                    </div>
+                                </div>
+                                <div class="bottom">
+                                    <div class="block-info">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                        matTooltip='Profil' 
+                                        matTooltipClass='tooltip-account-profile' 
+                                        [matTooltipPosition]="'below'"
+                                        [matTooltipShowDelay]="200">account_circle</mat-icon>
+                                        <span>{{type_of_account}}</span>
+                                    </div>
+                                    
+                                    <ng-container *ngIf="!editor">
+                                        <div class="block-info" *ngIf="(mode_visiteur &&  !(job==undefined || job=='') ) || ( !mode_visiteur &&  !(job==undefined || job=='') )">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                            matTooltip='Profession' 
+                                            matTooltipClass='tooltip-account-profile' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">work</mat-icon>
+                                            <span>{{job}}</span>
+                                        </div>
+                                        <div class="block-info" *ngIf="(job==undefined || job=='') && !mode_visiteur">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                            matTooltip='Profession' 
+                                            matTooltipClass='tooltip-account-profile' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">work</mat-icon>
+                                            <span (click)="open_section(5,true);" class="span-button">Ajouter une profession</span>
+                                        </div>
+                                    </ng-container>
+
+
+                                    <div class="block-info" *ngIf="(mode_visiteur &&  primary_description_extended.length>0 ) || ( !mode_visiteur &&  primary_description_extended.length>0 )">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                        matTooltip='Description' 
+                                        matTooltipClass='tooltip-account-profile' 
+                                        [matTooltipPosition]="'below'"
+                                        [matTooltipShowDelay]="200">description</mat-icon>
+                                        <span>{{primary_description_extended}}</span>
+                                    </div>
+                                    <div class="block-info" *ngIf="!primary_description_extended && !mode_visiteur">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                        matTooltip='Description' 
+                                        matTooltipClass='tooltip-account-profile' 
+                                        [matTooltipPosition]="'below'"
+                                        [matTooltipShowDelay]="200">description</mat-icon>
+                                        <span (click)="open_section(5,true);" class="span-button">Ajouter une description</span>
+                                    </div>
+
+                                    <!--<div class="bottom-info">
+                                        <div class="links" *ngIf="links.length>0">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">link</mat-icon>
+                                            <ng-container *ngFor="let item of links; let i=index">
+                                                <a href=item>{{links_titles[i]}}</a>
+                                            </ng-container>
+                                        </div>
+                                        <div class="links" *ngIf="links.length==0 && !mode_visiteur">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">link</mat-icon>
+                                            <a (click)="open_section(5,true);" class="a-button">Ajouter des liens</a>
+                                        </div>
+
+                                        <div class="mail" *ngIf="(mode_visiteur &&  email_about ) || ( !mode_visiteur &&  email_about )">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
+                                            <span>{{email_about}}</span>
+                                        </div>
+                                        <div class="links" *ngIf="!email_about && !mode_visiteur">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
+                                            <a (click)="open_section(5,true);" class="a-button">Ajouter un e-mail de contact</a>
+                                        </div>
+                                    </div>-->
+                                </div>
                             </div>
-                            <div  *ngIf="j==0" class="container-skeletons d-flex flex-wrap skeleton" [@enterAnimation]>
-                                <ng-container *ngFor="let item of skeleton_array; let i = index">
-                                    <app-thumbnail-skeleton class="thumbnail-component-container"
-                                        *ngIf="number_of_new_contents_to_show>i"
-                                        (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                                        type_of_skeleton="comic"></app-thumbnail-skeleton>
-                                </ng-container>
+
+
+                            <div class="block" *ngIf="editor && list_of_artworks.length > 0">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">palette</mat-icon>
+                                    <span>Nos œuvres phares</span>
+
+                                    <div class="right-button" *ngIf="!mode_visiteur">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                                        <span>Ajouter</span>
+                                    </div>
+                                </div>
+                                <div class="bottom d-flex flex-wrap">
+                                    <div class="artwork-highlighted-thumbnail" *ngFor="let item of list_of_artworks ; let i = index">
+                                        
+                                        <div>
+
+                                            <button class="optionsMenu" [matMenuTriggerFor]="albumOptions1" *ngIf="!mode_visiteur">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu class="account-mat-menu" xPosition='before' #albumOptions1="matMenu">
+                                                <button class="account-mat-menu-item" mat-menu-item> 	
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">close</mat-icon>
+                                                    <span>Supprimer</span>
+                                                </button>
+                                            </mat-menu>
+
+                                            <div class="img">
+
+                                                <div class="absolute-hover-data d-flex flex-column">
+                                                    <span class="description">{{item.description}}</span>
+                                                    <a [href]="item.link" target="_blank" class="link">Découvrir</a>
+                                                </div>
+                                                <img src="https://i.pinimg.com/236x/68/3c/16/683c169619ea737d88a47ff324231ed1--one-piece-tome-one-piece-manga.jpg">
+                                            </div>
+
+                                            <div class="title-and-author">
+                                                <div class="d-flex flex-column">
+                                                    <span class="title">{{item.title}}</span>
+                                                    <span class="authors">{{item.authors.toUpperCase()}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                </div>
                             </div>
-    
-                            <div  *ngIf="j==1"  class="container-skeletons d-flex flex-wrap skeleton"
-                                [@enterAnimation]>
-                                <ng-container *ngFor="let item of skeleton_array; let i = index">
-                                    <app-thumbnail-skeleton class="thumbnail-component-container"
-                                        *ngIf="number_of_new_contents_to_show>i"
-                                        (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                                        type_of_skeleton="new-drawing"></app-thumbnail-skeleton>
-                                </ng-container>
-                            </div>
-    
-                            <div *ngIf="j==2" class="container-skeletons d-flex flex-wrap skeleton"
-                                [@enterAnimation]>
-                                <ng-container *ngFor="let item of skeleton_array; let i = index">
-                                    <app-thumbnail-skeleton class="thumbnail-component-container"
-                                        *ngIf="number_of_new_contents_to_show>i"
-                                        (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                                        type_of_skeleton="writing"></app-thumbnail-skeleton>
-                                </ng-container>
-                            </div>
-                        
-                        
-                        </div>
-    
-                    </ng-container >
-    
-                
-                    
-    
-                    <ng-container *ngIf="new_contents_added">
-    
-                        <div class="account-title medium-icon">
-                            <span>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
-                                Nouveautés
-                            </span>
-                        </div>
-    
-                        <div class="add-artwork-button" *ngIf="no_new_contents && !mode_visiteur">
-                            <a [routerLink]=get_add_artwork_link()>
-                                <button>
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                                    <span>Publier votre première œuvre</span>
-                                </button>
-                            </a>
-                        </div>
-    
-                        <div class="add-artwork-button" *ngIf="no_new_contents && mode_visiteur">
-                            <span class="visitor">Aucune œuvre disponible</span>
-                        </div>
-    
-                        <div *ngIf="display_new_comic_contents" class="bd-container no-max-width" >
-                            <div class="artwork-type-title" (click)="open_from_news(0);scroll(target)" #target>
-                                <span>Bandes dessinées</span>
-                            </div>
+
+
                             
-                            <div #myScrollContainer class="container-account container-comics container-small-screen new-comics">
-    
-                                <div (click)="click_absolute_arrow1(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow" style="top: 49% !important;">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                            <div class="block" *ngIf="editor && list_of_editors.length > 0">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
+                                    <span>Liste des membres</span>
                                 </div>
-    
-                                <div *ngFor="let item of new_comic_contents.slice(0,number_of_new_contents_to_show),let i=index" >
-                                    <app-thumbnail-comics 
-                                    *ngIf="item.chaptersnumber == null" 
-                                    [item]=item 
-                                    [width]=width
-                                    [myScrollContainer]=myScrollContainer
-                                    format='one-shot' 
-                                    now_in_seconds={{now_in_seconds}}
-                                    ></app-thumbnail-comics> 
-                                    <app-thumbnail-comics 
-                                    *ngIf="item.chaptersnumber>=0"
-                                    [item]=item 
-                                    [myScrollContainer]=myScrollContainer
-                                    [width]=width
-                                    format='serie' 
-                                    now_in_seconds={{now_in_seconds}}
-                                    ></app-thumbnail-comics>
-                                </div>
-    
-                                <div (click)="click_absolute_arrow1(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow" style="top: 49% !important;">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                <div class="bottom d-flex flex-wrap">
+
+                                    <div *ngFor="let item of list_of_editors ; let i = index" class="member-container d-flex">
+                                        <div class="image-container">
+                                            <img src="https://i.pinimg.com/236x/68/3c/16/683c169619ea737d88a47ff324231ed1--one-piece-tome-one-piece-manga.jpg">
+                                        </div>
+                                        <div class="name-and-description d-flex flex-column">
+                                            <span class="name">{{item.name}} <span *ngIf="item.admin" class="admin">ADMIN</span> </span>
+                                            <span class="description">{{item.description}}</span>
+                                        </div>
+
+                                        <div class="cv-buttons d-flex flex-column">
+                                            <div class="cv" *ngIf="item.cv">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">school</mat-icon>
+                                                <span>Voir mon CV</span>
+                                            </div>
+                                            <div class="cv" *ngIf="item.cv && !mode_visiteur">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                                <span>Modifier mon CV</span>
+                                            </div>
+                                            <div class="cv" *ngIf="!item.cv && !mode_visiteur">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                                                <span>Ajouter un CV</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
                                 </div>
                             </div>
-                        </div>
-    
-                        <div *ngIf="display_new_drawing_contents" class="bd-container no-max-width" >
-                            <div class="artwork-type-title"  (click)="open_from_news(1);scroll(target)" #target>
-                                <span>Dessins</span>
-                            </div>
-    
-                            <div #myScrollContainer class="container-account container-drawings newDrawings container-small-screen ">
-    
-                                <div (click)="click_absolute_arrow2(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+
+
+
+                            <div class="block" *ngIf="list_of_news || (!list_of_news && !mode_visiteur)">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">timeline</mat-icon>
+                                    <span *ngIf="!editor">Mon actualité</span>
+                                    <span *ngIf="editor">Nos actualités</span>
+
+
+                                    <div class="right-button" *ngIf="!mode_visiteur && !add_news_input" (click)="add_news();">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                                        <span>Ajouter une actualité</span>
+                                    </div>
                                 </div>
-    
-                                <div *ngFor="let item of new_drawing_contents.slice(0,number_of_new_contents_to_show)" class="drawing-container" >
-                                    <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
-                                        [item]=item
-                                        for_news="yes"
-                                        format='one-shot'
-                                        [width]=width
+                                <div class="bottom" [formGroup]="newsForm">
+
+                                    <div class="form-item-add-news" style="height:unset !important;" *ngIf="add_news_input">
+                                        <mat-form-field floatLabel='never'>
+                                            <mat-label >Ajouter une actualité ...</mat-label>
+                                            <textarea matInput cdkTextareaAutosize formControlName="news" maxLength="200" autocomplete="off" (input)="normalize_input(newsForm, 'news');"></textarea>
+                                            <mat-error *ngIf="newsForm.controls['news'].invalid">Saisie invalide : les espaces en début de saisie ne sont pas autorisés</mat-error>
+                                            <div class="length-indicator">{{newsForm.controls['news'].value?.length || 0}}/200</div>
+
+                                            <div class="send-news" *ngIf="newsForm.controls['news'].valid" (click)="send_news()">
+                                                <span>Publier</span>
+                                            </div>
+                                            <div class="cancel-send-news" (click)="cancel_add_news()">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">close</mat-icon>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <ng-container *ngFor="let item of list_of_news ; let i = index">
+                                        <div class="news" *ngIf="number_of_news_limit>i">
+                                            <div class="news-text">
+                                                <span>{{item.text}}</span>
+
+                                                <button class="optionsMenu opened" [matMenuTriggerFor]="albumOptions1" *ngIf="!mode_visiteur">
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_horiz</mat-icon>
+                                                </button>
+                                                <mat-menu class="account-mat-menu" xPosition='before' #albumOptions1="matMenu">
+                                                    <button class="account-mat-menu-item" mat-menu-item> 	
+                                                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">close</mat-icon>
+                                                        <span>Supprimer</span>
+                                                    </button>
+                                                </mat-menu>
+
+                                            </div>
+                                            <div class="news-date">
+                                                <span>{{item.date}}</span>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+
+                                    <div class="add-news" *ngIf="list_of_news.length > number_of_news_limit" (click)="show_more_news();">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_down</mat-icon>
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+
+                            <!--<div class="block" *ngIf="list_of_experiences || (!list_of_experiences && !mode_visiteur)">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">school</mat-icon>
+                                    <span>Diplômes et formations</span>
+                                </div>
+                                <div class="bottom">
+                                    
+                                    <div class="experience" *ngFor="let item of list_of_experiences">
+                                        <div class="left-container" *ngIf="item.start_month && item.start_year">
+                                            <span>{{item.start_month}} {{item.start_year}}</span>
+                                            <div class="timeline" *ngIf="!item.current_experience">
+                                                <div class="sphere"></div>
+                                                <div class="bar"></div>
+                                                <div class="sphere"></div>
+                                            </div>
+                                            <span *ngIf="!item.current_experience">{{item.end_month}} {{item.end_year}}</span>
+                                        </div>
+                                        <div class="right-container">
+                                            <div class="title">
+                                                <span>{{item.title}}</span>
+                                            </div>
+                                            <div class="company">
+                                                <span>{{item.company}}</span>
+                                                <span> • </span>
+                                                <span>{{item.location}}</span>
+                                            </div>
+                                            <div class="description">
+                                                <span>{{item.description}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="experience" *ngIf="!mode_visiteur">
+                                        <div class="add-experience">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">playlist_add</mat-icon>
+                                            <span>Ajouter une expérience</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+
+
+                            <div class="block" *ngIf="editor">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">timeline</mat-icon>
+                                    <span>Nos formules</span>
+
+                                    <div class="right-button" *ngIf="!mode_visiteur" (click)="open_section(5,true);">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                        <span>Modifier</span>
+                                    </div>
+                                </div>
+
+
+                                <div class="bottom">
+
+                                    <div class="formulas">
+
+                                        <div class="formula">
+                                            <div class="formula-title">
+                                                <span>Standard</span>
+                                                <div class="see-more-button left">
+                                                    ?
+                                                    <div class="information" >
+                                                        <div class="first-text">
+                                                            <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Standard est votre formule par défaut. Sélectionnez le temps de réponse maximal que vous pouvez garantir ainsi que le tarif que vous voulez imposer (il peut être gratuit). Une fois le délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="formula-info">
+                                                <div class="type">
+                                                    <span>Tarif</span>
+                                                </div>
+                                                <div class="value">
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                                                    <span *ngIf="standard_price==0">Gratuit</span>
+                                                    <span *ngIf="standard_price==1">{{standard_price}} euro</span>
+                                                    <span *ngIf="standard_price>1">{{standard_price}} euros</span>
+                                                </div>
+                                            </div>
+                
+                                            <div class="formula-info">
+                                                
+                                                <div class="type">
+                                                    <span>Temps d'attente</span>
+                                                </div>
+                                                <div class="value">
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
+                                                    <span>{{list_of_real_delays[standard_delay]}}</span>
+                                                </div>
+                                            </div>
+
+                                            <ng-container *ngIf="visitor_mode">
+                                                <div class="edit-formula">
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
+                                                    <span>Souscrire</span>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                
+                                        <div class="formula">
+                                            <div class="formula-title">
+                                                <span>Express</span>
+                                                <div class="see-more-button">
+                                                    ?
+                                                    <div class="information" >
+                                                        <div class="first-text">
+                                                            <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Express est votre formule premium. Sélectionnez le temps de réponse maximal que vous pouvez garantir en un minimum de temps (par exemple : 3 semaines), ainsi que le tarif que vous voulez imposer. Une fois ce délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                
+                                            <div class="formula-info">
+                                                <div class="type">
+                                                    <span>Tarif</span>
+                                                </div>
+                
+                                                <div class="value">
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                                                    <span>{{express_price}} euros</span>
+                                                </div>
+                                            </div>
+                
+                                            <div class="formula-info">
+                                                <div class="type">
+                                                    <span>Temps d'attente</span>
+                                                </div>
+                
+                                                <div class="value">
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
+                                                    <span>{{list_of_real_delays[express_delay]}}</span>
+                                                </div>
+                                            </div>
+                
+                
+                                            <ng-container *ngIf="visitor_mode">
+                                                <div class="edit-formula">
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
+                                                    <span>Souscrire</span>
+                                                </div>
+                                            </ng-container>
+                
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+                            <ng-container *ngIf="!editor">
+                                <div class="block" *ngIf="emphasized_artwork_added">
+                                    <div class="top">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">stars</mat-icon>
+                                        <span>Œuvre mise en avant</span>
+                                    </div>
+                                    <div class="bottom contains-artwork fit-size">
+                                        <app-thumbnail-artwork 
+                                        [item]=emphasized_artwork
+                                        [emphasized]=emphasized
+                                        page="subscribings"
+                                        account_home=true
                                         now_in_seconds={{now_in_seconds}}
-                                    ></app-thumbnail-drawing>
-                                    <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
-                                        [item]=item 
-                                        [width]=width
-                                        for_news="yes"
-                                        format='artbook'
-                                        now_in_seconds={{now_in_seconds}}
-                                    ></app-thumbnail-drawing>
+                                        ></app-thumbnail-artwork>
+                                    </div>
                                 </div>
-    
-                                <div (click)="click_absolute_arrow2(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                <div class="block" *ngIf="!emphasized_artwork_added && !mode_visiteur && !(!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added)" >
+                                    <div class="top">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">stars</mat-icon>
+                                        <span>Œuvre mise en avant</span>
+                                    </div>
+                                    <div class="bottom min-height">
+                                        <div class="text-lines">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                                            <span>Aucune œuvre mise en avant</span>
+                                            <span>Vous pouvez mettre une œuvre en avant depuis le mode lecture d'une œuvre</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+
+
+                                <div class="block" *ngIf="list_of_ads.length>0 && list_of_ads_added">
+                                    <div class="top">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
+                                        <span>Annonce récente</span>
+                                    </div>
+                                    <div class="bottom contains-artwork fit-size">
+                                        <app-thumbnail-ad
+                                        [item]=list_of_ads[0]
+                                        [now_in_seconds]=now_in_seconds
+                                        ></app-thumbnail-ad>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            
+
                         </div>
-    
-                        <div *ngIf="display_new_writing_contents" class="bd-container no-max-width">
-                            <div class="artwork-type-title"  (click)="open_from_news(2);scroll(target)" #target>
-                                <span>Écrits</span>
-                            </div>
-    
-                            <div #myScrollContainer class="container-account container-writings newWritings container-small-screen ">
-    
-                                <div (click)="click_absolute_arrow3(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow" style="top: 49% !important;">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+
+                        <div class="account-display-flex-right">
+                            
+
+                            <div class="block-right">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">insert_chart</mat-icon>
+                                    <span>Quelques chiffres</span>
                                 </div>
-                                <div *ngFor="let item of new_writing_contents.slice(0,number_of_new_contents_to_show)" >
-                                    <app-thumbnail-writing
-                                    [item]=item
-                                    [myScrollContainer]=myScrollContainer
-                                    [width]=width
-                                    now_in_seconds={{now_in_seconds}}
-                                    ></app-thumbnail-writing>
+                                <div class="bottom">
+                                    <div class="block-info" *ngIf="number_of_visits">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
+                                        <span><span class="emphasize">{{number_of_visits}}</span>  visites de profil</span>
+                                    </div>
+                                    <div class="block-info" *ngIf="number_of_views && !editor">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">palette</mat-icon>
+                                        <span><span class="emphasize">{{number_of_views}}</span>  lectures d'œuvres</span>
+                                    </div>
+                                    <div class="block-info" *ngIf="number_of_likes && !editor">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
+                                        <span><span class="emphasize">{{number_of_likes}}</span>  mentions j'aime</span>
+                                    </div>
+                                    <div class="block-info" *ngIf="number_of_loves && !editor">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
+                                        <span><span class="emphasize">{{number_of_loves}}</span>  mentions j'adore</span>
+                                    </div>
+                                    <div class="block-info" *ngIf="number_of_comments && !editor">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">comment</mat-icon>
+                                        <span><span class="emphasize">{{number_of_comments}}</span>  commentaires</span>
+                                    </div>
+                                    <div class="block-info" *ngIf="number_of_forms && editor">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
+                                        <span><span class="emphasize">{{number_of_forms}}</span>  candidatures au total</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="block-right" *ngIf="( (list_of_skills.length || cv) || !mode_visiteur ) && !editor">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
+                                    <span>Mes compétences</span>
+                                </div>
+                                <div class="bottom">
+                                    <ng-container *ngFor="let item of list_of_skills">
+                                        <div class="title">
+                                            <span>{{item.category}}</span>
+                                        </div>
+                                        <div class="list-of-skills">
+                                            <span *ngFor="let item2 of item.skills">{{item2}}</span>
+                                        </div>
+                                    </ng-container>
+
+
+                                    <div class="add-skills" *ngIf="!list_of_skills.length && !mode_visiteur">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                                        <span>Ajouter des compétences</span>
+                                    </div>
+                                    <div class="add-skills" *ngIf="list_of_skills.length && !mode_visiteur">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                        <span>Éditer mes compétences</span>
+                                    </div>
+
+                                    <div class="see-cv" *ngIf="cv">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">school</mat-icon>
+                                        <span>Voir mon CV</span>
+                                    </div>
+                                    <div class="add-skills" *ngIf="!cv && !mode_visiteur">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">school</mat-icon>
+                                        <span>Ajouter un CV</span>
+                                    </div>
+                                    <div class="add-skills" *ngIf="cv && !mode_visiteur">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">school</mat-icon>
+                                        <span>Modifier mon CV</span>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="block-right" *ngIf="( (list_of_genres.length) || !mode_visiteur ) && editor">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
+                                    <span>Nous éditons</span>
+                                </div>
+                                <div class="bottom">
+                                    <ng-container *ngFor="let item of list_of_genres">
+                                        <div class="title">
+                                            <span>{{item.category}}</span>
+                                        </div>
+                                        <div class="list-of-skills">
+                                            <span *ngFor="let item2 of item.skills">{{item2}}</span>
+                                        </div>
+                                    </ng-container>
+
+                                    <div class="add-skills" *ngIf="list_of_genres.length && !mode_visiteur">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                        <span>Éditer nos genres</span>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="block-right" *ngIf="!( mode_visiteur && !instagram && !facebook && !pinterest && !deviantart && !artstation && !site_perso && !autre_site )">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">share</mat-icon>
+                                    <span *ngIf="!editor">Mes réseaux</span>
+                                    <span *ngIf="editor">Nos réseaux</span>
+                                </div>
+                                <div class="bottom">
+                                        
+                                        <a [href]="instagram" target="_blank" class="network instagram" *ngIf="instagram">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Instagram</span>
+                                        </a>
+                                        <a [href]="facebook" target="_blank" class="network facebook" *ngIf="facebook">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Facebook</span>
+                                        </a>
+                                        <a [href]="pinterest" target="_blank" class="network pinterest" *ngIf="pinterest">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Pinterest</span>
+                                        </a>
+                                        <a [href]="deviantart" target="_blank" class="network other" *ngIf="deviantart">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Deviantart</span>
+                                        </a>
+                                        <a [href]="artstation" target="_blank" class="network other" *ngIf="artstation">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Artstation</span>
+                                        </a>
+                                        <a [href]="site_perso" target="_blank" class="network other" *ngIf="site_perso">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Site perso</span>
+                                        </a>
+                                        <a [href]="autre_site" target="_blank" class="network other" *ngIf="autre_site">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Autre site</span>
+                                        </a>
+
+                                        <div class="add-skills" *ngIf="(instagram || facebook || pinterest || deviantart || artstation || site_perso || autre_site) && !mode_visiteur">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                            <span *ngIf="!editor">Éditer mes réseaux</span>
+                                            <span *ngIf="editor">Éditer nos réseaux</span>
+                                        </div>
+                                        <div class="add-skills" *ngIf="!(instagram || facebook || pinterest || deviantart || artstation || site_perso || autre_site) && !mode_visiteur">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                                            <span *ngIf="!editor">Ajouter mes réseaux</span>
+                                            <span *ngIf="editor">Ajouter nos réseaux</span>
+                                        </div>
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="block-right" *ngIf="!( mode_visiteur && !email_about && !phone )">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">call</mat-icon>
+                                    <span *ngIf="!editor">Mes coordonnées</span>
+                                    <span *ngIf="editor">Nos coordonnées</span>
+                                </div>
+                                <div class="bottom">
+
+                                    <ng-container *ngIf="!( mode_visiteur && !email_about && !phone )">
+
+                                        <div class="block-info-contact" *ngIf="email_about">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
+                                            <span>{{email_about}}</span>
+                                        </div>
+                                        <div class="add-skills" *ngIf="!email_about && !mode_visiteur">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
+                                            <a (click)="open_section(5,true);" class="a-button">Ajouter un mail de contact</a>
+                                        </div>
+
+                                        <div class="block-info-contact" *ngIf="phone">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">local_phone</mat-icon>
+                                            <span>{{phone}}</span>
+                                        </div>
+                                        <div class="add-skills" *ngIf="!phone && !mode_visiteur">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">local_phone</mat-icon>
+                                            <a (click)="open_section(5,true);" class="a-button">Ajouter un numéro de contact</a>
+                                        </div>
+
+                                        <div class="add-skills" *ngIf="email_about && phone && !mode_visiteur">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                                            <a (click)="open_section(5,true);" class="a-button" *ngIf="!editor">Modifier mes coordonnées</a>
+                                            <a (click)="open_section(5,true);" class="a-button" *ngIf="editor">Modifier nos coordonnées</a>
+                                        </div>
+                                        
+
+                                    </ng-container>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <ng-container *ngIf="!editor">
+                        <!--NOUVELLES OEUVRES-->
+                        <ng-container *ngIf="!new_contents_added">
+        
+                            <div class="account-title medium-icon">
+                                <span>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
+                                    Nouveautés
+                                </span>
+                            </div>
+        
+                            <div *ngFor="let item of categories_array; let j=index">
+                                <div class="category">
+                                    <div class="category-title shiny"></div>
+                                </div>
+                                <div  *ngIf="j==0" class="container-skeletons d-flex flex-wrap skeleton" [@enterAnimation]>
+                                    <ng-container *ngFor="let item of skeleton_array; let i = index">
+                                        <app-thumbnail-skeleton class="thumbnail-component-container"
+                                            *ngIf="number_of_new_contents_to_show>i"
+                                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                                            type_of_skeleton="comic"></app-thumbnail-skeleton>
+                                    </ng-container>
+                                </div>
+        
+                                <div  *ngIf="j==1"  class="container-skeletons d-flex flex-wrap skeleton"
+                                    [@enterAnimation]>
+                                    <ng-container *ngFor="let item of skeleton_array; let i = index">
+                                        <app-thumbnail-skeleton class="thumbnail-component-container"
+                                            *ngIf="number_of_new_contents_to_show>i"
+                                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                                            type_of_skeleton="new-drawing"></app-thumbnail-skeleton>
+                                    </ng-container>
+                                </div>
+        
+                                <div *ngIf="j==2" class="container-skeletons d-flex flex-wrap skeleton"
+                                    [@enterAnimation]>
+                                    <ng-container *ngFor="let item of skeleton_array; let i = index">
+                                        <app-thumbnail-skeleton class="thumbnail-component-container"
+                                            *ngIf="number_of_new_contents_to_show>i"
+                                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                                            type_of_skeleton="writing"></app-thumbnail-skeleton>
+                                    </ng-container>
+                                </div>
+                            
+                            
+                            </div>
+        
+                        </ng-container >
+                        <ng-container *ngIf="new_contents_added">
+        
+                            <div class="account-title medium-icon">
+                                <span>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
+                                    Nouveautés
+                                </span>
+                            </div>
+        
+                            <div class="add-artwork-button" *ngIf="no_new_contents && !mode_visiteur">
+                                <a [routerLink]=get_add_artwork_link()>
+                                    <button>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                                        <span>Publier votre première œuvre</span>
+                                    </button>
+                                </a>
+                            </div>
+        
+                            <div class="add-artwork-button" *ngIf="no_new_contents && mode_visiteur">
+                                <span class="visitor">Aucune œuvre disponible</span>
+                            </div>
+        
+                            <div *ngIf="display_new_comic_contents" class="bd-container no-max-width" >
+                                <div class="artwork-type-title" (click)="open_from_news(0);scroll(target)" #target>
+                                    <span>Bandes dessinées</span>
                                 </div>
                                 
-                                <div (click)="click_absolute_arrow3(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow" style="top: 49% !important;">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                <div #myScrollContainer class="container-account container-comics container-small-screen new-comics">
+        
+                                    <div (click)="click_absolute_arrow1(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow" style="top: 49% !important;">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                    </div>
+        
+                                    <div *ngFor="let item of new_comic_contents.slice(0,number_of_new_contents_to_show),let i=index" >
+                                        <app-thumbnail-comics 
+                                        *ngIf="item.chaptersnumber == null" 
+                                        [item]=item 
+                                        [width]=width
+                                        [myScrollContainer]=myScrollContainer
+                                        format='one-shot' 
+                                        now_in_seconds={{now_in_seconds}}
+                                        ></app-thumbnail-comics> 
+                                        <app-thumbnail-comics 
+                                        *ngIf="item.chaptersnumber>=0"
+                                        [item]=item 
+                                        [myScrollContainer]=myScrollContainer
+                                        [width]=width
+                                        format='serie' 
+                                        now_in_seconds={{now_in_seconds}}
+                                        ></app-thumbnail-comics>
+                                    </div>
+        
+                                    <div (click)="click_absolute_arrow1(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow" style="top: 49% !important;">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </ng-container >
+        
+                            <div *ngIf="display_new_drawing_contents" class="bd-container no-max-width" >
+                                <div class="artwork-type-title"  (click)="open_from_news(1);scroll(target)" #target>
+                                    <span>Dessins</span>
+                                </div>
+        
+                                <div #myScrollContainer class="container-account container-drawings newDrawings container-small-screen ">
+        
+                                    <div (click)="click_absolute_arrow2(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                    </div>
+        
+                                    <div *ngFor="let item of new_drawing_contents.slice(0,number_of_new_contents_to_show)" class="drawing-container" >
+                                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                                            [item]=item
+                                            for_news="yes"
+                                            format='one-shot'
+                                            [width]=width
+                                            now_in_seconds={{now_in_seconds}}
+                                        ></app-thumbnail-drawing>
+                                        <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                                            [item]=item 
+                                            [width]=width
+                                            for_news="yes"
+                                            format='artbook'
+                                            now_in_seconds={{now_in_seconds}}
+                                        ></app-thumbnail-drawing>
+                                    </div>
+        
+                                    <div (click)="click_absolute_arrow2(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div *ngIf="display_new_writing_contents" class="bd-container no-max-width">
+                                <div class="artwork-type-title"  (click)="open_from_news(2);scroll(target)" #target>
+                                    <span>Écrits</span>
+                                </div>
+        
+                                <div #myScrollContainer class="container-account container-writings newWritings container-small-screen ">
+        
+                                    <div (click)="click_absolute_arrow3(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow" style="top: 49% !important;">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                    </div>
+                                    <div *ngFor="let item of new_writing_contents.slice(0,number_of_new_contents_to_show)" >
+                                        <app-thumbnail-writing
+                                        [item]=item
+                                        [myScrollContainer]=myScrollContainer
+                                        [width]=width
+                                        now_in_seconds={{now_in_seconds}}
+                                        ></app-thumbnail-writing>
+                                    </div>
+                                    
+                                    <div (click)="click_absolute_arrow3(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow" style="top: 49% !important;">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+
                     
     
                 
                 </div>
+                <!--********************************************FIN PAGE ACCUEIL********************************************-->
     
     
                     
