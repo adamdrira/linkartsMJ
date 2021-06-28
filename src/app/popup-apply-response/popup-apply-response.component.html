@@ -1,0 +1,81 @@
+
+
+<button class="close-button" (click)="close_dialog()">
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+</button>
+
+<div class="logo-container" >
+    <img src="../../assets/img/svg/Logo-LA3.svg">
+</div>
+
+<div class="popup-apply-response">
+
+    
+
+    <div class="step-form" [formGroup]="registerForm">
+
+        <div class="step-name">
+            <!--DATA : Mettre nom en entrée-->
+            <span>Réponse à {{data.name}}</span>
+        </div>
+        
+        <div class="form-title">
+            <span>Avis final</span>
+        </div>
+        <div class="form-item">
+            <mat-form-field floatLabel='never' >
+                <mat-label>Avis</mat-label>
+                <mat-select disableOptionCentering formControlName="feedback" panelClass="popupApplyResponseSelectClass">
+                    <mat-option  *ngFor="let obj of list_of_categories" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="registerForm.controls['feedback'].invalid ">Veuillez sélectionner un avis</mat-error>
+            
+            </mat-form-field>
+        </div>
+
+        <div class="form-title flex">
+            <span>Note sur la qualité du dossier</span>
+            <span class="note">{{registerForm.controls['note'].value}} / 20</span>
+        </div>
+        <div class="form-item">
+            <mat-slider
+            class="popupApplyResponseSlider"
+            max="20"
+            min="0"
+            step="1"
+            thumbLabel=true
+            formControlName="note"></mat-slider>
+        </div>
+
+        
+        <div class="form-title">
+            <span>Votre retour</span>
+
+            <div class="see-more-button">
+                ?
+                <div class="information" >
+                    <div class="first-text">
+                        <span> <img  src='../../assets/img/tuto-logos/light.svg'>Les artistes attendent votre retour avec impatience. Nous vous prions donc de leur fournir un retour aussi constructif que possible si ce dernier est négatif.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-item" style="height:unset !important; margin-bottom: 15px;">
+            <mat-form-field floatLabel='never'>
+                <mat-label>Veuillez saisir votre retour</mat-label>
+                <textarea matInput cdkTextareaAutosize formControlName="comment" maxLength="1500" autocomplete="off" (input)="normalize_input(registerForm, 'comment');"></textarea>
+                <mat-error *ngIf="registerForm.controls['comment'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
+                </mat-error>
+                <div class="length-indicator">{{registerForm.controls['comment'].value?.length || 0}}/1500</div>
+            </mat-form-field>
+        </div>
+
+
+        <button class="submit-button" type="submit" (click)="onSubmit();">
+            <span>Envoyer</span>
+        </button>
+    </div>
+</div>

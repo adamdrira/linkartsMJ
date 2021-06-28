@@ -1,0 +1,325 @@
+<div class="applications">
+
+    <ng-container *ngIf="editor">
+        <div class="panel-background">
+            <div class="logos-container" #target [@enterFromTopAnimation]>
+                <button class="logo" [ngClass]="{'opened': opened_category == 0 }"
+                    (click)="open_category(0);scroll(target);" #target>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
+                    <span *ngIf="!small_screen">Candidatures reçues</span>
+                    <span *ngIf="small_screen">Reçues</span>
+                </button>
+                <button class="logo" [ngClass]="{'opened': opened_category == 1 }"
+                    (click)="open_category(1);scroll(target);" #target>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">border_color</mat-icon>
+                    <span *ngIf="!small_screen">Réponses envoyées</span>
+                    <span *ngIf="small_screen">Mes réponses</span>
+                </button>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!editor">
+        <div class="panel-background">
+            <div class="logos-container" #target [@enterFromTopAnimation]>
+                <button class="logo" [ngClass]="{'opened': opened_category == 0 }"
+                    (click)="open_category(0);scroll(target);" #target>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
+                    <span *ngIf="!small_screen">Candidatures envoyées</span>
+                    <span *ngIf="small_screen">Reçues</span>
+                </button>
+                <button class="logo" [ngClass]="{'opened': opened_category == 1 }"
+                    (click)="open_category(1);scroll(target);" #target>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">border_color</mat-icon>
+                    <span *ngIf="!small_screen">Réponses reçues</span>
+                    <span *ngIf="small_screen">Mes réponses</span>
+                </button>
+            </div>
+        </div>
+    </ng-container>
+
+
+    <div class="filters-container">
+        <div class="filter-button" (click)="open_filters_editor()">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">sort</mat-icon>
+            <span>Filtres</span>
+        </div>
+        <div class="applications-filters" [formGroup]="f1" *ngIf="f1">
+
+            <div class="form-item filter">
+                <mat-form-field floatLabel='never' class="select-class">
+                    <mat-label>Catégorie du projet</mat-label>
+                    <mat-select #matSelectSection0 (selectionChange)="change_select_section0($event)" formControlName="category" disableOptionCentering panelClass="applicationsSelectClass">
+                        <ng-container *ngFor="let obj of section0_categories, let i = index">
+                            <mat-option *ngIf="!( i==0 && category=='none' )" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="form-item filter">
+                <mat-form-field floatLabel='never' class="select-class">
+                    <mat-label>Trier par</mat-label>
+                    <mat-select #matSelectSection0 (selectionChange)="change_select_section1($event)" formControlName="sort" disableOptionCentering panelClass="applicationsSelectClass">
+                        <ng-container *ngFor="let obj of section1_categories, let i = index">
+                            <mat-option *ngIf="!( i==0 && sort=='none' )" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="form-item filter">
+                <mat-form-field floatLabel='never' class="select-class">
+                    <mat-label>Formule choisie</mat-label>
+                    <mat-select #matSelectSection0 (selectionChange)="change_select_section2($event)" formControlName="formula" disableOptionCentering panelClass="applicationsSelectClass">
+                        <ng-container *ngFor="let obj of section2_categories, let i = index">
+                            <mat-option *ngIf="!( i==0 && formula=='none' )" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="form-item filter">
+            <mat-form-field floatLabel='never' class="select-class">
+                <mat-label>Rechercher par nom</mat-label>
+                <input matInput maxLength="100" autocomplete="off" [(ngModel)]="searchText">
+
+                <div class="length-indicator">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
+                </div>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <ng-container *ngIf="opened_category==0">
+
+        <div class="thumbnails" *ngIf="show_skeletons">
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+        </div>
+        <div class="thumbnails" *ngIf="!show_skeletons">
+
+            <div class="no-proposition-container" *ngIf="(list_of_applications | filterAlbum : searchText).length==0" [@enterFromTopAnimation]>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" [@enterFromTopAnimation]>find_in_page</mat-icon>
+                <span [@enterFromTopAnimation]>Aucun résultat pour la recherche demandée</span>
+            </div>
+
+            <ng-container *ngFor="let item of list_of_applications | filterAlbum : searchText; let i = index">
+                <div class="thumbnail-container" *ngIf="(item.category.includes(category) || category=='none') && (item.selected_option.includes(formula.toLowerCase()) || formula=='none')">
+                    <div class="thumbnail">
+                        <!--pp // nom // titre // catégorie // genres-->
+                        <div class="data-container">
+                            <div class="img-container">
+                                <img src="https://www.sne.fr/app/uploads/2017/12/GLENAT_logoNoir.jpg">
+                            </div>
+                            <div class="right-container">
+                                <div class="name">
+                                    <span>{{item.name}}</span>
+                                </div>
+                                <div class="section">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
+                                    <span class="section-value">{{item.title}}</span>
+                                </div>
+                                <div class="section">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">color_lens</mat-icon>
+                                    <span class="section-value">{{item.category}}</span>
+                                </div>
+                                <div class="section">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">receipt_long</mat-icon>
+                                    <span class="section-value">
+                                        <ng-container *ngFor="let gen of item.genres.slice(0,6);let j=index">
+                                            <ng-container *ngIf="j==0">{{gen}}</ng-container>
+                                            <ng-container *ngIf="j>0">, {{gen}}</ng-container>
+                                        </ng-container>
+                                        <span style="opacity: 0.75; cursor: pointer;" *ngIf="item.genres.length>6"
+                                            [matTooltip]="item.genres.slice(6,item.genres.length) | tooltipList"
+                                            matTooltipClass='linkarts-tooltip tooltip-list' [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="0">
+                                            (+{{item.genres.length - 6}} {{item.genres.length === 7 ? 'autre' : 'autres'}})
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--date // prix // temps restant + voir dossier + répondre-->
+                        <div class="formula">
+                            <div class="left-container">
+                                <div class="formula-info">
+                                    <div class="type">
+                                        <span>Date d'envoi</span>
+                                    </div>
+                                    <div class="value">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">date_range</mat-icon>
+                                        <span>{{item.application_date}}</span>
+                                    </div>
+                                </div>
+                                <div class="formula-info">
+                                    <div class="type">
+                                        <span *ngIf="item.selected_option=='standard'">Formule standard</span>
+                                        <span *ngIf="item.selected_option=='express'">Formule express</span>
+                                    </div>
+                                    <div class="value">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                                        <span *ngIf="item.price==0">Gratuit</span>
+                                        <span *ngIf="item.price==1">{{item.price}} euro</span>
+                                        <span *ngIf="item.price>1">{{item.price}} euros</span>
+                                    </div>
+                                    <div class="value">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
+                                        <span>{{item.time_left}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right-container">
+                                <div class="edit-formula">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
+                                    <span>Voir le dossier</span>
+                                </div>
+                                <div class="edit-formula" *ngIf="editor">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">border_color</mat-icon>
+                                    <span>Répondre</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </ng-container>
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+        </div>
+
+    </ng-container>
+
+
+
+    <ng-container *ngIf="opened_category==1">
+
+
+        <div class="thumbnails" *ngIf="show_skeletons">
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+            <div class="thumbnail-skeleton shiny"></div>
+        </div>
+
+        <div class="thumbnails" *ngIf="!show_skeletons">
+
+            <div class="no-proposition-container" *ngIf="(list_of_answers | filterAlbum : searchText).length==0" [@enterFromTopAnimation]>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" [@enterFromTopAnimation]>find_in_page</mat-icon>
+                <span [@enterFromTopAnimation]>Aucun résultat pour la recherche demandée</span>
+            </div>
+
+            <ng-container *ngFor="let item of list_of_answers | filterAlbum : searchText; let i = index">
+                <div class="thumbnail-container" *ngIf="(item.category.includes(category) || category=='none') && (item.selected_option.includes(formula.toLowerCase()) || formula=='none')">
+                    <div class="thumbnail">
+                        <!--pp // nom // titre // catégorie // genres-->
+                        <div class="data-container">
+                            <div class="img-container">
+                                <img src="https://www.sne.fr/app/uploads/2017/12/GLENAT_logoNoir.jpg">
+                            </div>
+                            <div class="right-container">
+                                <div class="name">
+                                    <span>{{item.name}}</span>
+                                </div>
+                                <div class="section">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
+                                    <span class="section-value">{{item.title}}</span>
+                                </div>
+                                <div class="section">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">color_lens</mat-icon>
+                                    <span class="section-value">{{item.category}}</span>
+                                </div>
+                                <div class="section">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">receipt_long</mat-icon>
+                                    <span class="section-value">
+                                        <ng-container *ngFor="let gen of item.genres.slice(0,6);let j=index">
+                                            <ng-container *ngIf="j==0">{{gen}}</ng-container>
+                                            <ng-container *ngIf="j>0">, {{gen}}</ng-container>
+                                        </ng-container>
+                                        <span style="opacity: 0.75; cursor: pointer;" *ngIf="item.genres.length>6"
+                                            [matTooltip]="item.genres.slice(6,item.genres.length) | tooltipList"
+                                            matTooltipClass='linkarts-tooltip tooltip-list' [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="0">
+                                            (+{{item.genres.length - 6}} {{item.genres.length === 7 ? 'autre' : 'autres'}})
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--date // prix // temps restant + voir dossier + répondre-->
+                        <div class="formula">
+                            <div class="left-container">
+                                <div class="formula-info">
+                                    <div class="type">
+                                        <span>Date de la réponse</span>
+                                    </div>
+                                    <div class="value">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">date_range</mat-icon>
+                                        <span>{{item.answer_date}}</span>
+                                    </div>
+                                </div>
+                                <div class="formula-info">
+                                    <div class="type">
+                                        <span *ngIf="item.selected_option=='standard'">Formule standard</span>
+                                        <span *ngIf="item.selected_option=='express'">Formule express</span>
+                                    </div>
+                                    <div class="value">
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                                        <span *ngIf="item.price==0">Gratuit</span>
+                                        <span *ngIf="item.price==1">{{item.price}} euro</span>
+                                        <span *ngIf="item.price>1">{{item.price}} euros</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right-container">
+                                <div class="edit-formula">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
+                                    <span>Voir le dossier</span>
+                                </div>
+                                <div class="edit-formula">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
+                                    <span>Voir la réponse</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </ng-container>
+
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+            <div class="fake-thumbnail"></div>
+        </div>
+
+
+    </ng-container>
+
+</div>
+
+

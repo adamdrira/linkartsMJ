@@ -1,0 +1,238 @@
+
+
+<button *ngIf="step>=0" class="close-button" (click)="close_dialog()">
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+</button>
+
+<div class="logo-container" >
+    <img src="../../assets/img/svg/Logo-LA3.svg">
+</div>
+
+<button *ngIf="step>0" class="back-button" (click)="step_back();">
+    <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+</button>
+
+<div class="popup-apply">
+
+
+    <div class="step-form" [formGroup]="registerForm" *ngIf="step==0">
+
+        <div class="step-name">
+            <span>Soumettez votre projet</span>
+        </div>
+
+        
+        <div class="form-title">
+            <span>Quel est son titre ?</span>
+        </div>
+        <div class="form-item">
+            <mat-form-field floatLabel='never'>
+                <mat-label >Titre</mat-label>
+                <input matInput formControlName="title" maxLength="100" type="search" autocomplete="off" (input)="normalize_input(registerForm, 'title');">
+                <mat-error *ngIf="registerForm.controls['title'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
+                </mat-error>
+                <div class="length-indicator">{{registerForm.controls['title'].value?.length || 0}}/100</div>
+            </mat-form-field>
+        </div>
+        
+
+        <div class="form-title">
+            <span>Quelle catégorie lui correspond le mieux ?</span>
+        </div>
+        <div class="form-item">
+            <mat-form-field floatLabel='never' >
+                <mat-label>Catégories</mat-label>
+                <mat-select disableOptionCentering formControlName="category" panelClass="popupApplySelectClass">
+                    <mat-option  *ngFor="let obj of list_of_categories" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="registerForm.controls['category'].invalid ">Veuillez sélectionner une catégorie</mat-error>
+            
+            </mat-form-field>
+        </div>
+
+        
+        <div class="form-title">
+            <span>Quels genres lui correspondent le mieux ?</span>
+        </div>
+        <div class="form-item" style="height:unset">
+            <mat-form-field floatLabel='never'>
+                <mat-chip-list #chipList formControlName="genres" aria-label="Genres">
+                <mat-chip
+                    *ngFor="let genre of genres"
+                    [selectable]="selectable"
+                    [removable]="true"
+                    (removed)="remove_genre(genre)">
+                    {{genre}}
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+                <input
+                    placeholder="Genres (maximum : 15)"
+                    #genresInput
+                    [formControl]="genresCtrl"
+                    [matAutocomplete]="auto"
+                    matAutocompletePosition="below"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="add_genre($event)">
+                </mat-chip-list>
+                <mat-autocomplete #auto="matAutocomplete" class="custom-scroll popupApplyMatautocompleteClass" (optionSelected)="selected_genre($event)">
+                <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre" (click)="genre_clicked()">
+                    {{genre}}
+                </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </div>
+
+
+        <div class="form-title">
+            <span>Uploadez votre projet</span>
+        </div>
+
+
+        <div class="upload-pdf" *ngIf="!uploaded_file" [@enterAnimation]>
+            <label>
+                <div class="validate-upload-button">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }"  class="rotate-icon">attachment</mat-icon>
+                    <span>Sélectionner mon PDF</span>
+        
+                    <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                </div>
+            </label>
+        </div>
+        <div class="upload-pdf" *ngIf="uploaded_file" [@enterAnimation]>
+            <span class="uploader-absolute-number" (click)="delete_file();">Annuler</span>
+            <div class="validate-upload-button no-effects">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
+                <span>{{uploaded_file}}</span>
+            </div>
+        </div>
+
+
+        <button class="submit-button" (click)="validate_step(0);">
+            <span>Suivant</span>
+        </button>
+
+    </div>
+
+
+    <div class="step-form" [formGroup]="registerForm" *ngIf="step==1">
+
+        <div class="step-name">
+            <span>Choisissez vos formules</span>
+        </div>
+
+
+        <div class="editor" *ngFor="let item of list_of_editors; let i = index">
+            <div class="image-container">
+                <img src="https://www.sne.fr/app/uploads/2017/12/GLENAT_logoNoir.jpg">
+            </div>
+            <div class="right-container">
+                <div class="name">
+                    <span>{{item.name}}</span>
+                </div>
+                <div class="formula-info" [ngClass]="{'opened': item.selected_option=='standard' }" (click)="set_formula(i,'standard')">
+                    <div class="title">OFFRE STANDARD</div>
+                    <div class="formula-info-flex">
+                        <div>
+                            <div class="type">
+                                <span>Tarif</span>
+                            </div>
+                            <div class="value">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                                <span *ngIf="item.standard_price==0">Gratuit</span>
+                                <span *ngIf="item.standard_price==1">{{item.standard_price}} euro</span>
+                                <span *ngIf="item.standard_price>1">{{item.standard_price}} euros</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="type">
+                                <span>Temps d'attente</span>
+                            </div>
+                            <div class="value">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
+                                <span>{{list_of_real_delays[item.standard_delay]}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="see-more-button">
+                        ?
+                        <div class="information" >
+                            <div class="first-text">
+                                <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Standard est votre formule par défaut. Sélectionnez le temps de réponse maximal que vous pouvez garantir ainsi que le tarif que vous voulez imposer (il peut être gratuit). Une fois le délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="formula-info" [ngClass]="{'opened': item.selected_option=='express' }" (click)="set_formula(i,'express')">
+                    <div class="title">OFFRE EXPRESS</div>
+                    <div class="formula-info-flex">
+                        <div>
+                            <div class="type">
+                                <span>Tarif</span>
+                            </div>
+                            <div class="value">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                                <span *ngIf="item.express_price==0">Gratuit</span>
+                                <span *ngIf="item.express_price==1">{{item.express_price}} euro</span>
+                                <span *ngIf="item.express_price>1">{{item.express_price}} euros</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="type">
+                                <span>Temps d'attente</span>
+                            </div>
+                            <div class="value">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
+                                <span>{{list_of_real_delays[item.express_delay]}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="see-more-button">
+                        ?
+                        <div class="information" >
+                            <div class="first-text">
+                                <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Express est votre formule premium. Sélectionnez le temps de réponse maximal que vous pouvez garantir en un minimum de temps (par exemple : 3 semaines), ainsi que le tarif que vous voulez imposer. Une fois ce délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subtotal">
+                    <span *ngIf="item.selected_option=='standard' && item.standard_price==0">Sous-total : <b>Gratuit</b></span>
+                    <span *ngIf="item.selected_option=='standard' && item.standard_price==1">Sous-total : <b>{{item.standard_price}} euro</b></span>
+                    <span *ngIf="item.selected_option=='standard' && item.standard_price>1">Sous-total : <b>{{item.standard_price}} euros</b></span>
+
+                    <span *ngIf="item.selected_option=='express' && item.express_price==0">Sous-total : <b>Gratuit</b></span>
+                    <span *ngIf="item.selected_option=='express' && item.express_price==1">Sous-total : <b>{{item.express_price}} euro</b></span>
+                    <span *ngIf="item.selected_option=='express' && item.express_price>1">Sous-total : <b>{{item.express_price}} euros</b></span>
+
+                    <div class="delete" (click)="delete(i);">
+                        <span>Supprimer</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="total-price">
+            <span>Total à payer : {{total_price}}€</span>
+        </div>
+
+
+
+        <button class="submit-button" (click)="validate_step(1);">
+            <span>Finaliser</span>
+        </button>
+
+    </div>
+
+
+
+
+
+
+</div>

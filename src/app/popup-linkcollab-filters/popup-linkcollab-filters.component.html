@@ -1,5 +1,5 @@
 
-<div class="component-container popupLinkcollabFilters">
+<div class="component-container popupLinkcollabFilters" *ngIf="data.linkcollab_page">
 
 
     
@@ -136,9 +136,66 @@
         </mat-form-field>
     </div>
 
-    <button class="validate" (click)="validate()">
+    <div class="validate" (click)="validate()">
         <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
         <span>Valider</span>
-    </button>
+    </div>
 
+</div>
+
+
+<div class="component-container popupLinkcollabFilters" *ngIf="data.account_page">
+
+
+    
+    <div class="title">
+        <span>Filtrer</span>
+
+        <button class="close-button" (click)="validate_account();">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+        </button>
+    </div>
+    
+    <div class="form-item swiper-slide">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Catégorie du projet</mat-label>
+            <mat-select #matSelectSection0 (selectionChange)="change_select_section0($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass">
+                <ng-container *ngFor="let obj of section0_categories, let i = index">
+                    <mat-option *ngIf="!( i==0 && category=='none' )" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="form-item swiper-slide">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Trier par</mat-label>
+            <mat-select #matSelectSection0 (selectionChange)="change_select_section1($event)" disableOptionCentering panelClass="applicationsSelectClass">
+                <ng-container *ngFor="let obj of section1_categories, let i = index">
+                    <mat-option *ngIf="!( i==0 && sort=='none' )" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    
+    <div class="form-item swiper-slide">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Formule choisie</mat-label>
+            <mat-select #matSelectSection0 (selectionChange)="change_select_section2($event)" disableOptionCentering panelClass="applicationsSelectClass">
+                <ng-container *ngFor="let obj of section2_categories, let i = index">
+                    <mat-option *ngIf="!( i==0 && formula=='none' )" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="validate" (click)="validate_account()">
+        <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+        <span>Valider</span>
+    </div>
 </div>

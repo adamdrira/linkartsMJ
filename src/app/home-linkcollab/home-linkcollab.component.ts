@@ -11,6 +11,7 @@ import { merge, fromEvent } from 'rxjs';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Meta, Title } from '@angular/platform-browser';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { PopupApplyComponent } from '../popup-apply/popup-apply.component';
 
 declare var Swiper: any
 
@@ -665,6 +666,7 @@ export class HomeLinkcollabComponent implements OnInit {
   open_more_filters() {
     const dialogRef = this.dialog.open(PopupLinkcollabFiltersComponent, {
       data: { 
+        linkcollab_page:true,
         category_index:this.category_index,
         type_of_project:this.type_of_project,
         author:this.author,
@@ -1145,10 +1147,16 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   submite_project(){
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+    /*const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:"Aucune maison d'édition n'a été sélectionnée."},
       panelClass: "popupConfirmationClass",
+    });*/
+    
+    const dialogRef = this.dialog.open(PopupApplyComponent, {
+      data: {},
+      panelClass: "popupLinkcollabApplyClass",
     });
+
   }
 
 

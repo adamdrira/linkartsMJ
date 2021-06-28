@@ -167,7 +167,8 @@
         }
     }
 
-    button.validate {
+    div.validate {
+        cursor:pointer;
         display: flex;
         margin: 45px auto 20px auto;
         height:50px;
@@ -176,7 +177,7 @@
         font-size: 16px;
         padding: 0px 6px;
         border-radius: 40px;
-        border: 1px solid #203864;
+        border: 2px solid #203864;
         background-color: white;
         outline: none;
     

@@ -2,6 +2,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { ChangeDetectorRef, Component, Inject, OnInit, Renderer2 } from '@angular/core';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
+import { data } from 'jquery';
 import { NavbarService } from '../services/navbar.service';
 
 @Component({
@@ -58,7 +59,6 @@ export class PopupLinkcollabFiltersComponent implements OnInit {
   show_icon=false;
   ngOnInit() {
     let THIS=this;
-
   }
 
   change_select1(e:any) {
@@ -98,6 +98,36 @@ export class PopupLinkcollabFiltersComponent implements OnInit {
       sorting:this.sorting,
       service:this.service,
       remuneration:this.remuneration,
+    });
+  }
+
+
+
+
+  
+  section0_categories = this.data.filter0;
+  section1_categories = this.data.filter1;
+  section2_categories = this.data.filter2;
+  category:string="none";
+  formula:string="none";
+  sort:string="none";
+  
+  change_select_section0(e:any) {
+    this.category= e.value;
+  }
+  change_select_section1(e:any) {
+    this.sort= e.value;
+  }
+  change_select_section2(e:any) {
+    this.formula= e.value;
+  }
+
+  
+  validate_account() {
+    this.dialogRef.close({
+      category:this.category,
+      sort:this.sort,
+      formula:this.formula,
     });
   }
 }
