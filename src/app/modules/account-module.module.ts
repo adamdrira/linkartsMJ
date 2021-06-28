@@ -55,6 +55,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
 import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
+import { PopupApplyResponseComponent } from '../popup-apply-response/popup-apply-response.component';
+import { ApplicationsComponent } from '../applications/applications.component';
 
 
 @NgModule({
@@ -71,6 +73,8 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     ThumbnailAlbumWritingComponent,
     PopupSubscribingsComponent,
     PopupSubscribersComponent,
+    PopupApplyResponseComponent,
+    ApplicationsComponent,
   ],
   imports: [
     CommonModule,

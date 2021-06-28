@@ -18,19 +18,25 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
 import { CommonComponentsModule } from './common-components.module';
 import { AngularResizedEventModule } from 'angular-resize-event';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
 import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
+import { PopupApplyComponent } from '../popup-apply/popup-apply.component';
 
 
+import { FileUploadModule } from 'ng2-file-upload';
 
 @NgModule({
   declarations: [
     HomeLinkcollabComponent,
     PopupLinkcollabFiltersComponent,
+    PopupApplyComponent,
   ],
   imports: [
     CommonModule,
@@ -45,11 +51,14 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     MatSelectModule,
     MatDialogModule,
     MatInputModule,
+    MatChipsModule,
+    MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatNativeDateModule,
     MatTooltipModule,
     LazyLoadImageModule,
+    FileUploadModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
