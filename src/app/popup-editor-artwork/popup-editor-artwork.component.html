@@ -1,0 +1,143 @@
+
+
+<button class="close-button" (click)="close_dialog()">
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+</button>
+
+<div class="logo-container" >
+    <img src="../../assets/img/svg/Logo-LA3.svg">
+</div>
+
+<div class="popup-editor-artwork">
+
+
+    <div class="step-back"  *ngIf="step==1" (click)="step_back();">
+        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+    </div>
+
+    <div class="step-form" [formGroup]="registerForm" *ngIf="step==0">
+
+        <div class="step-name">
+            <!--DATA : Mettre nom en entrée-->
+            <span>Ajouter une œuvre phare</span>
+        </div>
+        
+        <div class="form-title">
+            <span>Titre</span>
+        </div>
+        <div class="form-item" [@enterAnimation]>
+            <mat-form-field floatLabel='never'>
+                <mat-label>Titre</mat-label>
+                <input matInput formControlName="title" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm, 'title');">
+                <mat-error *ngIf="registerForm.controls['title'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
+                </mat-error>
+                <div class="length-indicator">{{registerForm.controls['title'].value?.length || 0}}/100</div>
+            </mat-form-field>
+        </div>
+        
+        
+        <div class="form-title">
+            <span>Description</span>
+        </div>
+        <div class="form-item textarea" [@enterAnimation]>
+            <mat-form-field floatLabel='never'>
+                <mat-label>Description</mat-label>
+                <textarea matInput cdkTextareaAutosize formControlName="description" maxLength="200" autocomplete="off" (input)="normalize_input(registerForm, 'description');"></textarea>
+                <mat-error *ngIf="registerForm.controls['description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
+                </mat-error>
+                <div class="length-indicator">{{registerForm.controls['description'].value?.length || 0}}/100</div>
+            </mat-form-field>
+        </div>
+
+
+        <div class="form-title">
+            <span>Auteurs</span>
+        </div>
+        <div class="form-item" [@enterAnimation]>
+            <mat-form-field floatLabel='never'>
+                <mat-label>Auteurs (format : auteur 1, auteur 2, ...)</mat-label>
+                <input matInput formControlName="authors" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm, 'authors');">
+                <mat-error *ngIf="registerForm.controls['authors'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
+                </mat-error>
+                <div class="length-indicator">{{registerForm.controls['authors'].value?.length || 0}}/100</div>
+            </mat-form-field>
+        </div>
+
+
+
+        <div class="form-title">
+            <span>Lien d'achat</span>
+        </div>
+        <div class="form-item" [@enterAnimation]>
+            <mat-form-field floatLabel='never'>
+                <mat-label>Lien (format : http://www...)</mat-label>
+                <input matInput formControlName="link" maxLength="300" autocomplete="off" (input)="normalize_input(registerForm, 'link');">
+                <mat-error *ngIf="registerForm.controls['link'].invalid ">Veuillez saisir un lien valide
+                </mat-error>
+                <div class="length-indicator">{{registerForm.controls['link'].value?.length || 0}}/500</div>
+            </mat-form-field>
+        </div>
+
+
+
+
+        <button class="submit-button" type="submit" (click)="validate_step(0);">
+            <span>Suivant</span>
+        </button>
+    </div>
+
+
+    
+    <div class="step-form" [formGroup]="registerForm" *ngIf="step==1">
+
+
+        <div class="step-name">
+            <!--DATA : Mettre nom en entrée-->
+            <span>Ajouter une miniature</span>
+        </div>
+
+
+            
+        <div id="uploader-profile-picture" class="thumbnail-container">
+
+            <div *ngIf="!image_uploaded" class="image-container">
+                <div class="dropzone-container">
+                    <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone" >
+                        <div class="icon-container">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
+                            <span><b>Sélectionnez un fichier</b> ou glissez-le ici</span>
+
+                            
+                            <label>
+                                <div class="upload-picture">
+                                    <div class="add-logo"></div>
+                                    <span>Télécharger une photo</span>
+                                    <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                                </div>
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-container *ngIf="image_uploaded">
+
+                <div class="image1">
+                    <img [src]="image_to_show" [@enterAnimation]>
+                </div>
+
+                <div class="restart-button" (click)="cancel_picture();">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">refresh</mat-icon>
+                    <span>Recommencer</span>
+                </div>
+
+            </ng-container>
+        </div>
+
+
+        <button class="submit-button" type="submit" (click)="validate_step(1);">
+            <span>Finaliser</span>
+        </button>
+    </div>
+</div>
