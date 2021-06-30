@@ -352,6 +352,10 @@ export class HomeLinkcollabComponent implements OnInit {
   @ViewChild("swiperCategories2") swiperCategories2:ElementRef;
   initialize_swiper2() {
 
+    if( this.swiper2 ) {
+      this.swiper2.destroy();
+      this.swiper2=void 0;
+    }
     if( !this.swiper2 && this.swiperCategories2 ) {
       this.swiper2 = new Swiper( this.swiperCategories2.nativeElement, {
         speed: 300,

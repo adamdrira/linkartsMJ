@@ -4,9 +4,9 @@
 
     
     <div class="title">
-        <span>Filtrer les annonces : <ng-container *ngIf="category_index==0">Collaborations bénévoles</ng-container>
-            <ng-container *ngIf="category_index==1">Collaborations rémunérées</ng-container>
-            <ng-container *ngIf="category_index==2">Produits et services</ng-container></span>
+        <span>Filtrer les annonces : <ng-container *ngIf="category_index==0">Collaborations rémunérées</ng-container>
+            <ng-container *ngIf="category_index==1">Collaborations bénévoles</ng-container>
+            <ng-container *ngIf="category_index==2">Collaborations rémunérées</ng-container></span>
 
         <button class="close-button" (click)="validate();">
             <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
