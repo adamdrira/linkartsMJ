@@ -313,7 +313,7 @@
           transition:border-color 200ms,background-color 200ms;
           border: 2px solid rgb(239 242 247);
           border-radius: 11px;
-          padding: 4px 18px;
+          padding: 4px 8px;
           display: flex;
           cursor: pointer;
           
@@ -1205,6 +1205,10 @@
             font-size: 14px;
             line-height: 22px !important;
             padding-right: 70px !important;
+          }
+
+          .label-to-set{
+            opacity:0.8 !important;
           }
 
           mat-form-field .mat-form-field-wrapper{

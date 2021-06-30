@@ -220,7 +220,7 @@ export class AddDrawingComponent implements OnInit {
     if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
       if( this.CURRENT_step < (this.REAL_step) ) {
-        this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), false)
+        this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), false)
         .subscribe(inf=>{
           this.stepChanged.emit(1);
           this.CURRENT_step++;
@@ -232,7 +232,7 @@ export class AddDrawingComponent implements OnInit {
         });
       }
       else {
-        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), false).subscribe(val=> {
+        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), false).subscribe(val=> {
           this.Subscribing_service.add_content('drawing', 'one-shot', val[0].drawing_id,0).subscribe(r=>{
             this.drawing_id=val[0].drawing_id;
             this.stepChanged.emit(1);
@@ -252,7 +252,7 @@ export class AddDrawingComponent implements OnInit {
     else if ( this.fd.valid  && (this.fd.value.fdFormat == "Artbook") ) {
 
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.Drawings_Artbook_Service.ModifyArtbook(this.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.monetised)
+          this.Drawings_Artbook_Service.ModifyArtbook(this.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised)
           .subscribe(inf=>{
             this.stepChanged.emit(1);
             this.CURRENT_step++;
@@ -264,7 +264,7 @@ export class AddDrawingComponent implements OnInit {
           });
         }
         else {
-          this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.fd.value.fdCategory, this.fd.value.fdTags,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.monetised)
+          this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdCategory, this.fd.value.fdTags,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised)
           .subscribe((val)=> {
             this.Subscribing_service.add_content('drawing', 'artbook', val[0].drawing_id,0).subscribe(r=>{
               this.stepChanged.emit(1);

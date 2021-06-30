@@ -21,7 +21,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Titre</mat-label>
                         <input matInput formControlName="f00Title" maxLength="40" autocomplete="off" (input)="normalize_input(f00, 'f00Title');">
-                        <mat-error *ngIf="f00.controls['f00Title'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
+                        <mat-error *ngIf="f00.controls['f00Title'].invalid">Saisie invalide : certains caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{f00.controls['f00Title'].value?.length || 0}}/40</div>
                     </mat-form-field>
@@ -37,7 +37,7 @@
                             <mat-form-field floatLabel='never'>
                                 <mat-label>Nom du chapitre {{i+1}}</mat-label>
                                 <input matInput [formControlName]="i" maxLength="30" autocomplete="off">
-                                <mat-error *ngIf="chapters.controls[i].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer par un espace)
+                                <mat-error *ngIf="chapters.controls[i].invalid">Saisie invalide : certains caractères spéciaux ne sont pas autorisés
                                 </mat-error>
                                 <div class="length-indicator">{{chapters.controls[i].value?.length || 0}}/30</div>
                             </mat-form-field>
@@ -104,7 +104,7 @@
                         <mat-label>Description</mat-label>
                     
                         <textarea matInput cdkTextareaAutosize formControlName="f00Description" maxLength="2000" autocomplete="off" (input)="normalize_input(f00, 'f00Description');"></textarea>
-                        <mat-error *ngIf="f00.controls['f00Description'].invalid">Veuillez faire une saisie valide
+                        <mat-error *ngIf="f00.controls['f00Description'].invalid">Saisie invalide : certains caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{f00.controls['f00Description'].value?.length || 0}}/2000</div>
                         

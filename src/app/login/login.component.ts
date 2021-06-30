@@ -100,6 +100,7 @@ export class LoginComponent implements OnInit {
         if(data.token){
           this.Community_recommendation.delete_recommendations_cookies();
           this.Community_recommendation.generate_recommendations().subscribe(r=>{
+            
               location.reload();
           })
         }
@@ -267,6 +268,9 @@ export class LoginComponent implements OnInit {
                 this.Community_recommendation.delete_recommendations_cookies();
                 this.Community_recommendation.generate_recommendations().subscribe(r=>{
                     this.recommendation_done=true;
+                    if(this.data.signup){
+                      this.location.go('/account/' + data.user.nickname)
+                    }
                     location.reload();
                 })
                 

@@ -150,7 +150,7 @@ export class PopupFormAdComponent implements OnInit {
 
    
     if ( this.fd.valid && !(this.remuneration && this.for_service)) {
-      this.Ads_service.edit_primary_information_ad(this.data.item.id,this.fd.value.fdTitle,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'),this.fd.value.fdPreferential_location,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1,this.offer_or_demand).subscribe(r=> {
+      this.Ads_service.edit_primary_information_ad(this.data.item.id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.fd.value.fdPreferential_location,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1,this.offer_or_demand).subscribe(r=> {
         let title=this.fd.value.fdTitle.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
         this.location.go(`/ad-page/${title}/${this.data.item.id}`);
         location.reload();         

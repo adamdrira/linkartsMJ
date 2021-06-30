@@ -21,7 +21,6 @@ import { Ads_service } from '../services/ads.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
 import { PopupNavbarDisconnectedComponent } from '../popup-navbar-disconnected/popup-navbar-disconnected.component';
-import {get_date_to_show_navbar} from '../helpers/dates';
 import {Community_recommendation} from '../services/recommendations.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import * as WebFont from 'webfontloader';
@@ -91,7 +90,7 @@ export class NavbarLinkartsComponent implements OnInit {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl.push(event.url);
-        if(event.url.includes("chat")){
+        if(event.url.includes("chat") || event.url.includes("signup")){
           this.show_menu_phone=false;
         }
         else{
@@ -279,12 +278,9 @@ export class NavbarLinkartsComponent implements OnInit {
   
   get_connection_interval:any;
   margin_is_not_set:boolean = true;
-  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
-  @ViewChild('myScrollContainer_chat') private myScrollContainer_chat: ElementRef;
-  scroll_chat:any;
   @ViewChild('navbarMargin', { read: ElementRef }) navbarMargin:ElementRef;
     
-  list_of_conditions=[];
+
   conditions_retrieved=false;
   current_user_type='';
   change_number=0;
@@ -320,18 +316,7 @@ export class NavbarLinkartsComponent implements OnInit {
     
     window.addEventListener('scroll', this.scroll, true);
     
-    let compteur_conditions=0;
-    for(let i=0;i<5;i++){
-      this.Writing_Upload_Service.retrieve_writing_for_options(i).subscribe(r=>{
-        this.list_of_conditions[i]=r;
-        compteur_conditions++;
-        if(compteur_conditions==5){
-          this.conditions_retrieved=true;
-        }
-      })
-    }
-
-    
+   
 
     this.navbar.notification.subscribe(msg=>{
       if(msg && msg[0].for_notifications){
@@ -530,21 +515,8 @@ export class NavbarLinkartsComponent implements OnInit {
     this.number_of_unchecked_notifications=number;
   }
 
-  indice=0
-  get_date(created,i){
-    if(created){
-      let now=Math.trunc( new Date().getTime()/1000);
-      let date=created
-      date = date.replace("Z",'');
-      date=date.slice(0,19)
-      let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
-      return get_date_to_show_navbar(now-deco_date);
-    }
-    else{
-      return "A l'instant"
-    }
-    
-  }
+ 
+  
 
   /******************************************** SEARCHBAR******************************* */
   /******************************************** SEARCHBAR******************************* */
@@ -1773,7 +1745,6 @@ open_messages(){
         for_notifs:false,
 
         current_user:this.current_user,
-        list_of_conditions:this.list_of_conditions,
         profile_picture:this.profile_picture,
         profile_picture_unsafe:this.profile_picture_unsafe,
         user_id:this.user_id,
@@ -1818,7 +1789,6 @@ open_notifications(){
         for_notifs:true,
 
         current_user:this.current_user,
-        list_of_conditions:this.list_of_conditions,
         profile_picture:this.profile_picture,
         profile_picture_unsafe:this.profile_picture_unsafe,
         user_id:this.user_id,
@@ -2037,7 +2007,6 @@ open_notifications(){
           only_for_notifs:false,
 
           current_user:this.current_user,
-          list_of_conditions:this.list_of_conditions,
           profile_picture:this.profile_picture,
           profile_picture_unsafe:this.profile_picture_unsafe,
           user_id:this.user_id,

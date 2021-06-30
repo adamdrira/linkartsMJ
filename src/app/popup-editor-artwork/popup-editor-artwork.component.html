@@ -42,10 +42,10 @@
         <div class="form-item textarea" [@enterAnimation]>
             <mat-form-field floatLabel='never'>
                 <mat-label>Description</mat-label>
-                <textarea matInput cdkTextareaAutosize formControlName="description" maxLength="200" autocomplete="off" (input)="normalize_input(registerForm, 'description');"></textarea>
+                <textarea matInput cdkTextareaAutosize formControlName="description" maxLength="500" autocomplete="off" (input)="normalize_input(registerForm, 'description');"></textarea>
                 <mat-error *ngIf="registerForm.controls['description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                 </mat-error>
-                <div class="length-indicator">{{registerForm.controls['description'].value?.length || 0}}/100</div>
+                <div class="length-indicator">{{registerForm.controls['description'].value?.length || 0}}/500</div>
             </mat-form-field>
         </div>
 
@@ -55,11 +55,11 @@
         </div>
         <div class="form-item" [@enterAnimation]>
             <mat-form-field floatLabel='never'>
-                <mat-label>Auteurs (format : auteur 1, auteur 2, ...)</mat-label>
-                <input matInput formControlName="authors" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm, 'authors');">
+                <mat-label>Auteur 1, auteur 2, ...</mat-label>
+                <input matInput formControlName="authors" maxLength="200" autocomplete="off" (input)="normalize_input(registerForm, 'authors');">
                 <mat-error *ngIf="registerForm.controls['authors'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                 </mat-error>
-                <div class="length-indicator">{{registerForm.controls['authors'].value?.length || 0}}/100</div>
+                <div class="length-indicator">{{registerForm.controls['authors'].value?.length || 0}}/200</div>
             </mat-form-field>
         </div>
 
@@ -70,11 +70,11 @@
         </div>
         <div class="form-item" [@enterAnimation]>
             <mat-form-field floatLabel='never'>
-                <mat-label>Lien (format : http://www...)</mat-label>
-                <input matInput formControlName="link" maxLength="300" autocomplete="off" (input)="normalize_input(registerForm, 'link');">
+                <mat-label>Lien (format : http://www.monsiteperso.com/achat)</mat-label>
+                <input matInput formControlName="link" maxLength="200" autocomplete="off" (input)="normalize_input(registerForm, 'link');">
                 <mat-error *ngIf="registerForm.controls['link'].invalid ">Veuillez saisir un lien valide
                 </mat-error>
-                <div class="length-indicator">{{registerForm.controls['link'].value?.length || 0}}/500</div>
+                <div class="length-indicator">{{registerForm.controls['link'].value?.length || 0}}/200</div>
             </mat-form-field>
         </div>
 

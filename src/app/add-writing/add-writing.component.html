@@ -43,7 +43,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Titre</mat-label>
                         <input matInput formControlName="fwTitle" maxLength="40" autocomplete="off" (input)="normalize_input(fw, 'fwTitle');">
-                        <mat-error *ngIf="fw.controls['fwTitle'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
+                        <mat-error *ngIf="fw.controls['fwTitle'].invalid">Saisie invalide : les caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{fw.controls['fwTitle'].value?.length || 0}}/40</div>
                     </mat-form-field>
@@ -114,7 +114,7 @@
                         <mat-label>Description</mat-label>
                     
                         <textarea matInput cdkTextareaAutosize formControlName="fwDescription" maxLength="2000" autocomplete="off" (input)="normalize_input(fw, 'fwDescription');"></textarea>
-                        <mat-error *ngIf="fw.controls['fwDescription'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
+                        <mat-error *ngIf="fw.controls['fwDescription'].invalid">Saisie invalide : certains caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{fw.controls['fwDescription'].value?.length || 0}}/2000</div>
                         

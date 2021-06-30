@@ -123,7 +123,7 @@ export class PopupContactComponent implements OnInit {
     if(this.registerForm1.valid){
       this.loading = true;
       this.display_need_information=false;
-      this.Profile_Edition_Service.send_message_contact_us(this.registerForm1.value.firstName,this.registerForm1.value.email,this.registerForm1.value.message.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
+      this.Profile_Edition_Service.send_message_contact_us(this.registerForm1.value.firstName,this.registerForm1.value.email,this.registerForm1.value.message.replace(/\n\s*\n\s*\n/g, '\n\n').trim()).subscribe(r=>{
         this.loading=false;
         this.show_done=true;
       })

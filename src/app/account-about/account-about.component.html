@@ -5,7 +5,7 @@
             <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
             <span>Profil</span>
         </button>
-        <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
+        <button class="logo" *ngIf="type_of_account!='Fan'" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
             <mat-icon [ngClass]="{'invisible': !show_icon }">bar_chart</mat-icon>
             <span>Statistiques</span>
         </button>
@@ -20,33 +20,27 @@
         <div class="left-container">
             <div class="subcategory" [ngClass]="{'opened': opened_subcategory == 0 }" (click)="open_subcategory(0);">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
-                <span *ngIf="!editor">Ma présentation</span>
-                <span *ngIf="editor">Notre présentation</span>
+                <span>Présentation</span>
             </div>
             <div class="subcategory" [ngClass]="{'opened': opened_subcategory == 1 }" (click)="open_subcategory(1);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">list</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">info</mat-icon>
                 <span>Informations générales</span>
             </div>
-            <div class="subcategory" [ngClass]="{'opened': opened_subcategory == 2 }" (click)="open_subcategory(2);" *ngIf="!editor">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">school</mat-icon>
-                <span>Mes cibles et compétences</span>
+            <div class="subcategory" [ngClass]="{'opened': opened_subcategory == 2 }" (click)="open_subcategory(2);" *ngIf="!type_of_account.includes('dit')">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">color_lens</mat-icon>
+                <span>Palette</span>
             </div>
-            <div class="subcategory" [ngClass]="{'opened': opened_subcategory == 3 }" (click)="open_subcategory(3);" *ngIf="editor">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">category</mat-icon>
-                <span>Nous éditons</span>
+            <div class="subcategory" [ngClass]="{'opened': opened_subcategory == 3 }" (click)="open_subcategory(3);" *ngIf="type_of_account.includes('dit')">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">color_lens</mat-icon>
+                <span>Palette</span>
             </div>
-            <div class="subcategory" [ngClass]="{'opened': opened_subcategory == 4 }" (click)="open_subcategory(4);" *ngIf="editor">
+            <div class="subcategory" [ngClass]="{'opened': opened_subcategory == 4 }" (click)="open_subcategory(4);" *ngIf="type_of_account.includes('dit')">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
-                <span>Nos formules</span>
+                <span>Candidatures</span>
             </div>
-            <!--<div class="subcategory" [ngClass]="{'opened': opened_subcategory == 5 }" (click)="open_subcategory(5);" *ngIf="editor && !visitor_mode">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">photo_camera</mat-icon>
-                <span>Ma miniature</span>
-            </div>-->
             <div class="subcategory" [ngClass]="{'opened': opened_subcategory == 6 }" (click)="open_subcategory(6);">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">call</mat-icon>
-                <span *ngIf="!editor">Mes coordonnées</span>
-                <span *ngIf="editor">Nos coordonnées</span>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">explore</mat-icon>
+                <span >Coordonnées</span>
             </div>
         </div>
 
@@ -57,8 +51,8 @@
                 <div *ngIf="opened_subcategory==0" class="account-form-container">
                             
                     <div class="title">
-                        <span *ngIf="!editor">Ma présentation</span>
-                        <span *ngIf="editor">Notre présentation</span>
+                        <span *ngIf="!type_of_account.includes('dit')">Ma présentation</span>
+                        <span *ngIf="type_of_account.includes('dit')">Notre présentation</span>
                         <div class="edit-form-button cancel" (click)="cancel_form_1()" *ngIf="registerForm1_activated && !visitor_mode">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_return</mat-icon>
                         </div>
@@ -68,7 +62,7 @@
                     </div>
 
                             
-                    <div class="form-title" [@enterAnimation] *ngIf="!( registerForm1_activated && !(type_of_account=='Fan' || type_of_account=='Éditeur / Éditrice') )">
+                    <div class="form-title" [@enterAnimation] *ngIf="!registerForm1_activated">
                         <span>Type de compte</span>
                     </div>
                     <div class="form-item" *ngIf="!registerForm1_activated">
@@ -77,7 +71,7 @@
                             <input matInput readonly>
                         </mat-form-field>
                     </div>
-                    <div class="form-item" *ngIf="registerForm1_activated && (type_of_account=='Fan' || type_of_account=='Éditeur / Éditrice')" [@enterAnimation]>
+                    <div class="form-item" *ngIf="registerForm1_activated && type_of_account=='Fan'" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
                             <mat-select  disableOptionCentering formControlName="type_of_account" panelClass="accountAboutSelectClass options-with-description">
                                 <mat-select-trigger>
@@ -99,32 +93,13 @@
 
                     </div>
                     
-                    
-                
-
-                
-                    <ng-container *ngIf="registerForm1_activated && editor ">
-                        <div class="form-title">
-                            <span>Numéro SIREN</span>
-                        </div>
-                        <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>Numéro SIREN</mat-label>
-                                <input matInput formControlName="siret" maxLength="9" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'siret');">
-                                <mat-error *ngIf="registerForm1.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide (9 chiffres)
-                                </mat-error>
-                                <div class="length-indicator">{{registerForm1.controls['siret'].value?.length || 0}}/9</div>
-                            </mat-form-field>
-                        </div>
-                    </ng-container>
-                
 
                     <div class="form-title" [@enterAnimation]>
                         <span>Bio</span>
                     </div>
                     <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
-                            <mat-label>Bio</mat-label>
+                            <mat-label class="label-to-set">Bio</mat-label>
                             <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description');"></textarea>
                             <mat-error *ngIf="registerForm1.controls['primary_description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                             </mat-error>
@@ -134,7 +109,12 @@
                     <div class="form-item" *ngIf="!registerForm1_activated">
                         <mat-form-field floatLabel='never'>
                             <mat-label>{{primary_description}}</mat-label>
-                            <textarea matInput cdkTextareaAutosize readonly class="readonly">{{primary_description}}</textarea>
+                            <ng-container *ngIf="!( primary_description==undefined || primary_description=='' )">
+                                <textarea matInput cdkTextareaAutosize readonly class="readonly">{{primary_description}}</textarea>
+                            </ng-container>
+                            <ng-container *ngIf=" ( primary_description==undefined || primary_description=='' )">
+                                <textarea matInput cdkTextareaAutosize readonly class="readonly italic">Non renseignée</textarea>
+                            </ng-container>
                         </mat-form-field>
                     </div>
 
@@ -150,7 +130,7 @@
                         </div>
                         <div class="form-item input-multiple-lines" *ngIf="registerForm1_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>Description principale</mat-label>
+                                <mat-label class="label-to-set">Description principale</mat-label>
                                 <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
                                 <mat-error *ngIf="registerForm1.controls['primary_description_extended'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                                 </mat-error>
@@ -199,33 +179,6 @@
                     </ng-container>
 
                     
-                    <ng-container *ngIf="((visitor_mode &&  !(job==undefined || job=='') ) || !visitor_mode) && !editor">
-                        <div class="form-title">
-                            <span *ngIf="!registerForm1_activated" class="no-margin-right" [@enterAnimation]>Profession</span>
-                            <span *ngIf="registerForm1_activated" class="no-margin-right" [@enterAnimation]>Profession (optionnelle)</span>
-
-                        </div>
-                        <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>Profession</mat-label>
-                                <input matInput formControlName="job" maxLength="100" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'job');">
-                                <mat-error *ngIf="registerForm1.controls['job'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
-                                </mat-error>
-                                <div class="length-indicator">{{registerForm1.controls['job'].value?.length || 0}}/100</div>
-                            </mat-form-field>
-                        </div>
-                        <div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
-                            <mat-form-field floatLabel='never'
-                            [matTooltip]="( job==undefined || job=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
-                            matTooltipClass='tooltip-account-about-profile' 
-                            [matTooltipPosition]="'below'"
-                            [matTooltipShowDelay]="100">
-                                <mat-label *ngIf="!( job==undefined || job=='' )">{{job}}</mat-label>
-                                <mat-label *ngIf=" ( job==undefined || job=='' )"><i>Non renseignée</i></mat-label>
-                                <input matInput readonly>
-                            </mat-form-field>
-                        </div>
-                    </ng-container>
 
                     
                     <button class="validate-form-button" *ngIf="registerForm1_activated && !visitor_mode" (click)="validate_form_1();" [@enterAnimation]>
@@ -261,11 +214,11 @@
                     </div>
                     
                     <div class="form-title">
-                        <span>Nom</span>
+                        <span *ngIf="">Nom complet</span>
                     </div>
                     <div class="form-item" *ngIf="registerForm3_activated" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
-                            <mat-label>Nom</mat-label>
+                            <mat-label class="label-to-set">Nom complet</mat-label>
                             <input matInput formControlName="firstName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'firstName');">
                             <mat-error *ngIf="registerForm3.controls['firstName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                             </mat-error>
@@ -279,65 +232,121 @@
                         </mat-form-field>
                     </div>
 
-                    <div class="form-title" [@enterAnimation]>
-                        <span class="no-margin-right" *ngIf="registerForm3_activated" [@enterAnimation]>Date de naissance</span>
-                        <span class="no-margin-right" *ngIf="!registerForm3_activated" [@enterAnimation]>Age</span>
-                    </div>
-
-                    <div class="form-item" *ngIf="registerForm3_activated && type_of_profile != 'Groupe'" [@enterAnimation]>
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>Date de naissance</mat-label>
-                            <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="birthday">
-                            <mat-datepicker-toggle matSuffix [for]="picker">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
-                            </mat-datepicker-toggle>
-                            <mat-error *ngIf="registerForm3.controls['birthday'].invalid">Exemple valide : 24/12/1996</mat-error>
-                            <mat-datepicker #picker disabled="false" panelClass="account-about-datepicker" startView="multi-year"></mat-datepicker>
-                        </mat-form-field>
-                    </div>
-                    
-                    <div class="form-item" *ngIf="!registerForm3_activated || type_of_profile == 'Groupe'" [@enterAnimation]>
-                        <mat-form-field floatLabel='never'>
-                            <mat-label>{{birthday}} ans</mat-label>
-                            <input matInput readonly>
-                        </mat-form-field>
-                    </div>
-
-
-
-                    <div class="form-title" [@enterAnimation]>
-                        <span class="no-margin-right" [@enterAnimation]>Mon CV</span>
-                    </div>
-
-                    <div class="validate-form-button" *ngIf="cv && !registerForm3_activated" [@enterAnimation]>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
-                        <span>Voir mon CV</span>
-                    </div>
-                    <div class="validate-form-button no-effects" *ngIf="!cv && !registerForm3_activated" [@enterAnimation]>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
-                        <span>Aucun CV ajouté</span>
-                    </div>
-
-
-                    <div class="cv-form-button" *ngIf="!visitor_mode && registerForm3_activated && !uploaded_cv" [@enterAnimation]>
-                        <label>
-                            <div class="validate-form-button">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }"  class="rotate-icon">attachment</mat-icon>
-                                <span *ngIf="!cv">Ajouter mon CV</span>
-                                <span *ngIf="cv">Modifier mon CV</span>
-                    
-                                <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="cv-form-button" *ngIf="registerForm3_activated && uploaded_cv" [@enterAnimation]>
-                        <span class="uploader-absolute-number" (click)="delete_cv();">Annuler</span>
-                        <div class="validate-form-button no-effects">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
-                            <span>{{uploaded_cv}}</span>
+                    <ng-container *ngIf="type_of_account.includes('dit') ">
+                        <div class="form-title">
+                            <span>Numéro SIREN</span>
                         </div>
-                    </div>
+                        <div class="form-item" *ngIf="registerForm3_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label class="label-to-set">Numéro SIREN</mat-label>
+                                <input matInput formControlName="siret" maxLength="9" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'siret');">
+                                <mat-error *ngIf="registerForm3.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide (9 chiffres)
+                                </mat-error>
+                                <div class="length-indicator">{{registerForm3.controls['siret'].value?.length || 0}}/9</div>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-item" *ngIf="!registerForm3_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label *ngIf="siret">{{siret}}</mat-label>
+                                <mat-label *ngIf="!siret"><i>Non renseigné</i></mat-label>
+                                <input matInput readonly>
+                                <!--<ng-container *ngIf="siret">
+                                    <input matInput readonly >{{siret}}</textarea>
+                                </ng-container>
+                                <ng-container *ngIf=" !siret">
+                                    <textarea matInputreadonly class="italic">Non renseignée</textarea>
+                                </ng-container>-->
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-title">
+                            <span>Nom de la société représentée</span>
+                        </div>
+                        <div class="form-item" *ngIf="registerForm3_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label class="label-to-set">Nom de la société</mat-label>
+                                <input matInput formControlName="society" maxLength="40" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'society');">
+                                <mat-error *ngIf="registerForm3.controls['society'].invalid">Veuillez saisir un nom valide
+                                </mat-error>
+                                <div class="length-indicator">{{registerForm3.controls['society'].value?.length || 0}}/40</div>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-item" *ngIf="!registerForm3_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label *ngIf="!society">{{society}}</mat-label>
+                                <mat-label *ngIf="!society"><i>Non renseigné</i></mat-label>
+                                <input matInput readonly>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+
+
+                    <ng-container *ngIf="!type_of_account.includes('dit')">
+                        <div class="form-title" [@enterAnimation]>
+                            <span class="no-margin-right" *ngIf="registerForm3_activated" [@enterAnimation]>Date de naissance</span>
+                            <span class="no-margin-right" *ngIf="!registerForm3_activated" [@enterAnimation]>Age</span>
+                        </div>
+    
+                        <div class="form-item" *ngIf="registerForm3_activated && type_of_profile != 'Groupe'" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label class="label-to-set">Date de naissance</mat-label>
+                                <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="birthday">
+                                <mat-datepicker-toggle matSuffix [for]="picker">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                                </mat-datepicker-toggle>
+                                <mat-error *ngIf="registerForm3.controls['birthday'].invalid">Exemple valide : 24/12/1996</mat-error>
+                                <mat-datepicker #picker disabled="false" panelClass="account-about-datepicker" startView="multi-year"></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        
+                        <div class="form-item" *ngIf="(!registerForm3_activated || type_of_profile == 'Groupe')" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label *ngIf="birthday">{{birthday}} ans</mat-label>
+                                <mat-label *ngIf="!birthday"><i>Non renseigné</i></mat-label>
+                                <input matInput readonly>
+                            </mat-form-field>
+                        </div>
+    
+    
+    
+                        <div class="form-title" [@enterAnimation]>
+                            <span class="no-margin-right" [@enterAnimation]>Mon CV</span>
+                        </div>
+    
+                        <div class="validate-form-button" *ngIf="cv_name && !registerForm3_activated" (click)="read_cv();" [@enterAnimation]>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
+                            <span>Voir mon CV</span>
+                        </div>
+                        <div class="validate-form-button no-effects" *ngIf="!cv_name && !registerForm3_activated" [@enterAnimation]>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
+                            <span>Aucun CV</span>
+                        </div>
+    
+    
+                        <div class="cv-form-button" *ngIf="!visitor_mode && registerForm3_activated && !uploaded_cv" [@enterAnimation]>
+                            <label>
+                                <div class="validate-form-button">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }"  class="rotate-icon">attachment</mat-icon>
+                                    <span *ngIf="!cv_name">Ajouter un CV</span>
+                                    <span *ngIf="cv_name">Modifier mon CV</span>
+                        
+                                    <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                                </div>
+                            </label>
+                        </div>
+    
+                        <div class="cv-form-button" *ngIf="registerForm3_activated && uploaded_cv" [@enterAnimation]>
+                            <span class="uploader-absolute-number" (click)="delete_cv();">Annuler</span>
+                            <div class="validate-form-button no-effects">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
+                                <span>{{uploaded_cv}}</span>
+                            </div>
+                        </div>
+    
+                        <div class="cv-form-button" *ngIf="registerForm3_activated && cv_name" [@enterAnimation]>
+                            <span class="uploader-absolute-number" (click)="remove_cv();">Retirer</span>
+                        </div>
+                    </ng-container>
 
                     
                     <button class="validate-form-button" *ngIf="registerForm3_activated && !visitor_mode" (click)="validate_form_3();" [@enterAnimation]>
@@ -357,100 +366,6 @@
 
 
 
-            <!--<div>
-                <div *ngIf="opened_subcategory==5" class="account-form-container">
-
-                            
-                    <div class="title">
-                        <span>Éditer ma miniature</span>
-                    </div>
-
-
-                    <div class="thumbnail-container">
-                        <div class="thumbnail">
-                            <div class="cover-picture" >
-                                <div  class="button-cover big" *ngIf="!can_show_cover_editor" (click)="change_cover_picture()">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                                    <span>Ajouter une photo de couverture</span>
-                                </div>
-                                <div  class="button-cover small" *ngIf="can_show_cover_editor" (click)="change_cover_picture()">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-                                    <span>Modifier</span>
-                                </div>
-                                <img [src]="cover_picture_editor" class="background-image" *ngIf="can_show_cover_editor" >
-                                
-                            </div>
-                            <div class="data-container"  >
-                                <div class="img-container" >
-
-                                    <div class="big-button-pp" *ngIf="!can_show_pp_editor" (click)="change_profile_picture()">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                                        <span>Ajouter une photo de profil</span>
-                                    </div>
-
-                                    <img [src]="profile_picture_editor" class="background-image" *ngIf="can_show_pp_editor" >
-
-                                    <div  class="button-cover pp" *ngIf="can_show_pp_editor" (click)="change_profile_picture()">
-                                        <span>Modifier</span>
-                                    </div>
-                                </div>
-
-                
-                                <div class="right-container">
-                                    <div class="name" [@enterFromLeftAnimation]>
-                                        <span>{{society}}</span>
-                                        
-                                    </div>
-                
-                                
-                                    <div class="section" *ngIf="userLocation" [@enterFromLeftAnimation]>
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
-                                        <span class="section-value">{{userLocation}}</span>
-                                    </div>
-                                    <div class="section" *ngIf="categories_retrieved && categories_retrieved.length>0" [@enterFromLeftAnimation] >
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">color_lens</mat-icon>
-                                        <span class="section-value">
-                                            <ng-container *ngFor="let cat of categories_retrieved;let j=index">
-                                                <ng-container *ngIf="j==0">{{cat}}</ng-container>
-                                                <ng-container *ngIf="j>0">, {{cat}}</ng-container>
-                                            </ng-container>
-                                        </span>
-                                    </div>
-                                    <div class="section" *ngIf="published_categories_retrieved && published_categories_retrieved.length>0" [@enterFromLeftAnimation] >
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">receipt_long</mat-icon>
-                                        <span class="section-value">
-                                            <ng-container *ngFor="let gen of published_categories_retrieved.slice(0,6);let j=index">
-                                                <ng-container *ngIf="j==0">{{gen}}</ng-container>
-                                                <ng-container *ngIf="j>0">, {{gen}}</ng-container>
-                                            </ng-container>
-                                            <span style="opacity: 0.75; cursor: pointer;" *ngIf="published_categories_retrieved.length>6"
-                                                [matTooltip]="published_categories_retrieved.slice(6,published_categories_retrieved.length) | tooltipList"  
-                                                matTooltipClass='linkarts-tooltip tooltip-list' 
-                                                [matTooltipPosition]="'below'"
-                                                [matTooltipShowDelay]="0">
-                                                (+{{published_categories_retrieved.length - 6}} {{published_categories_retrieved.length === 7 ? 'autre' : 'autres'}})
-                                            </span>
-                                        </span>
-                                        
-                                    </div>
-                                
-                                </div>
-                                
-                            </div>
-                            
-                            
-                            <div class="apply-button">
-                                <div class="left-side" >
-                                    <ng-container *ngIf="standard_price==0">Gratuit</ng-container>
-                                    <ng-container *ngIf="standard_price>0">Dès {{standard_price}}€</ng-container>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>-->
 
             
             
@@ -461,8 +376,8 @@
 
 
                     <div class="title">
-                        <span *ngIf="!editor">Mes coordonnées</span>
-                        <span *ngIf="editor">Nos coordonnées</span>
+                        <span *ngIf="!type_of_account.includes('dit')">Mes coordonnées</span>
+                        <span *ngIf="type_of_account.includes('dit')">Nos coordonnées</span>
                         <div class="edit-form-button cancel" (click)="cancel_form_2()" *ngIf="registerForm2_activated && !visitor_mode">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_return</mat-icon>
                         </div>
@@ -491,14 +406,14 @@
         
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>Ville</mat-label>
+                                <mat-label class="label-to-set">Ville</mat-label>
                                 <input matInput formControlName="city" maxLength="30" autocomplete="off" (input)="normalize_input(registerForm2, 'city');adding_city();">
                                 <mat-error *ngIf="registerForm2.controls['city'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
                                 </mat-error>
                                 <div class="length-indicator">{{registerForm2.controls['city'].value?.length || 0}}/30</div>
                             </mat-form-field>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>Pays</mat-label>
+                                <mat-label class="label-to-set">Pays</mat-label>
                                 <mat-select [(value)]="selected_country" (selectionChange)="adding_country()" placeholder="Mode" panelClass="accountAboutSelectCountryClass" disableOptionCentering formControlName="country">
                                     <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
                                         {{ obj }}
@@ -531,7 +446,7 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>E-mail de contact</mat-label>
+                                <mat-label class="label-to-set">E-mail de contact</mat-label>
                                 <input matInput formControlName="email_about" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm2, 'email_about');">
                                 <mat-error *ngIf="registerForm2.controls['email_about'].invalid ">Veuillez saisir un e-mail valide
                                 </mat-error>
@@ -545,7 +460,7 @@
                     <ng-container *ngIf="(visitor_mode && !(phone_about==undefined || phone_about=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Numéro de contact</span>
-                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Numéro de contact (optionnel)</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Numéro de contact </span>
         
                         </div>
                         
@@ -562,11 +477,11 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>Numéro de contact</mat-label>
-                                <input matInput formControlName="phone_about" maxLength="10" autocomplete="off" (input)="normalize_input(registerForm2, 'phone_about');">
+                                <mat-label class="label-to-set">Numéro de contact</mat-label>
+                                <input matInput formControlName="phone_about" maxLength="20" autocomplete="off" (input)="normalize_input(registerForm2, 'phone_about');">
                                 <mat-error *ngIf="registerForm2.controls['phone_about'].invalid ">Veuillez saisir un numéro valide
                                 </mat-error>
-                                <div class="length-indicator">{{registerForm2.controls['phone_about'].value?.length || 0}}/10</div>
+                                <div class="length-indicator">{{registerForm2.controls['phone_about'].value?.length || 0}}/20</div>
                             </mat-form-field>
                         </div>
         
@@ -575,7 +490,7 @@
                     <ng-container *ngIf="(visitor_mode && !(facebook==undefined || facebook=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Facebook</span>
-                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Facebook (optionnel)</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Facebook </span>
         
                         </div>
                         
@@ -592,7 +507,7 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>https://www.facebook.com/MonPseudo</mat-label>
+                                <mat-label class="label-to-set">https://www.facebook.com/MonPseudo</mat-label>
                                 <input matInput formControlName="facebook" autocomplete="off" (input)="normalize_input(registerForm2, 'facebook');">
                                 <mat-error *ngIf="registerForm2.controls['facebook'].invalid ">Veuillez saisir un lien valide
                                 </mat-error>
@@ -605,7 +520,7 @@
                     <ng-container *ngIf="(visitor_mode && !(instagram==undefined || instagram=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Instagram</span>
-                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Instagram (optionnel)</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Instagram </span>
         
                         </div>
                         
@@ -622,7 +537,7 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>https://www.instagram.com/MonPseudo</mat-label>
+                                <mat-label class="label-to-set">https://www.instagram.com/MonPseudo</mat-label>
                                 <input matInput formControlName="instagram" autocomplete="off" (input)="normalize_input(registerForm2, 'instagram');">
                                 <mat-error *ngIf="registerForm2.controls['instagram'].invalid ">Veuillez saisir un lien valide
                                 </mat-error>
@@ -635,7 +550,7 @@
                     <ng-container *ngIf="(visitor_mode && !(pinterest==undefined || pinterest=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Pinterest</span>
-                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Pinterest (optionnel)</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Pinterest </span>
         
                         </div>
                         
@@ -652,7 +567,7 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>https://www.pinterest.com/MonPseudo</mat-label>
+                                <mat-label class="label-to-set">https://www.pinterest.com/MonPseudo</mat-label>
                                 <input matInput formControlName="pinterest" autocomplete="off" (input)="normalize_input(registerForm2, 'pinterest');">
                                 <mat-error *ngIf="registerForm2.controls['pinterest'].invalid ">Veuillez saisir un lien valide
                                 </mat-error>
@@ -665,7 +580,7 @@
                     <ng-container *ngIf="(visitor_mode && !(twitter==undefined || twitter=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Twitter</span>
-                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Twitter (optionnel)</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Twitter </span>
         
                         </div>
                         
@@ -682,7 +597,7 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>https://www.twitter.com/MonPseudo</mat-label>
+                                <mat-label class="label-to-set">https://www.twitter.com/MonPseudo</mat-label>
                                 <input matInput formControlName="twitter" autocomplete="off" (input)="normalize_input(registerForm2, 'twitter');">
                                 <mat-error *ngIf="registerForm2.controls['twitter'].invalid ">Veuillez saisir un lien valide
                                 </mat-error>
@@ -695,7 +610,7 @@
                     <ng-container *ngIf="(visitor_mode && !(deviantart==undefined || deviantart=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Deviantart</span>
-                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Deviantart (optionnel)</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Deviantart </span>
         
                         </div>
                         
@@ -712,7 +627,7 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>https://www.deviantart.com/MonPseudo</mat-label>
+                                <mat-label class="label-to-set">https://www.deviantart.com/MonPseudo</mat-label>
                                 <input matInput formControlName="deviantart" autocomplete="off" (input)="normalize_input(registerForm2, 'deviantart');">
                                 <mat-error *ngIf="registerForm2.controls['deviantart'].invalid ">Veuillez saisir un lien valide
                                 </mat-error>
@@ -725,7 +640,7 @@
                     <ng-container *ngIf="(visitor_mode && !(artstation==undefined || artstation=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Artstation</span>
-                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Artstation (optionnel)</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien Artstation </span>
         
                         </div>
                         
@@ -742,7 +657,7 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>https://www.artstation.com/MonPseudo</mat-label>
+                                <mat-label class="label-to-set">https://www.artstation.com/MonPseudo</mat-label>
                                 <input matInput formControlName="artstation" autocomplete="off" (input)="normalize_input(registerForm2, 'artstation');">
                                 <mat-error *ngIf="registerForm2.controls['artstation'].invalid ">Veuillez saisir un lien valide
                                 </mat-error>
@@ -755,7 +670,7 @@
                     <ng-container *ngIf="(visitor_mode && !(website==undefined || website=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Site perso</span>
-                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Site perso (optionnel)</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Site perso </span>
         
                         </div>
                         
@@ -772,7 +687,7 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>https://www.monsiteperso.com</mat-label>
+                                <mat-label class="label-to-set">https://www.monsiteperso.com</mat-label>
                                 <input matInput formControlName="website" autocomplete="off" (input)="normalize_input(registerForm2, 'website');">
                                 <mat-error *ngIf="registerForm2.controls['website'].invalid ">Veuillez saisir un lien valide
                                 </mat-error>
@@ -785,7 +700,7 @@
                     <ng-container *ngIf="(visitor_mode && !(other_website==undefined || other_website=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Autre site</span>
-                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Autre site (optionnel)</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Autre site </span>
         
                         </div>
                         
@@ -802,7 +717,7 @@
                         </div>
                         <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label>https://www.autresite.com</mat-label>
+                                <mat-label class="label-to-set">https://www.autresite.com</mat-label>
                                 <input matInput formControlName="other_website" autocomplete="off" (input)="normalize_input(registerForm2, 'other_website');">
                                 <mat-error *ngIf="registerForm2.controls['other_website'].invalid ">Veuillez saisir un lien valide
                                 </mat-error>
@@ -839,11 +754,11 @@
             
             <div [formGroup]="registerForm4">
 
-                <div *ngIf="opened_subcategory==2 && !editor" class="account-form-container">
+                <div *ngIf="opened_subcategory==2 && !type_of_account.includes('dit')" class="account-form-container">
 
 
                     <div class="title">
-                        <span>Mes cibles et compétences</span>
+                        <span>Ma palette</span>
                         <div class="edit-form-button cancel" (click)="cancel_form_4()" *ngIf="registerForm4_activated && !visitor_mode">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_return</mat-icon>
                         </div>
@@ -854,7 +769,7 @@
 
 
                     <div class="form-title">
-                        <span>Catégories ciblées</span>
+                        <span>Mes catégories phares</span>
                     </div>
                     <div class="form-item" *ngIf="registerForm4_activated">
                         <mat-form-field floatLabel='never' >
@@ -890,7 +805,7 @@
 
 
                     <div class="form-title">
-                        <span>Compétences</span>
+                        <span>Mes compétences</span>
                     </div>
                     <div class="form-item" style="height:unset" *ngIf="registerForm4_activated">
                         <mat-form-field floatLabel='never'>
@@ -904,7 +819,7 @@
                                 <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
                               </mat-chip>
                               <input
-                                placeholder="Compétences (maximum : 15)"
+                                placeholder="Compétences (maximum : 20)"
                                 #skillsInput
                                 [formControl]="skillsCtrl"
                                 [matAutocomplete]="auto"
@@ -932,7 +847,7 @@
                                 {{skill}}
                               </mat-chip>
                               <input
-                                placeholder="Compétences (maximum : 15)"
+                                placeholder="Compétences (maximum : 20)"
                                 #skillsInput
                                 [formControl]="skillsCtrl"
                                 [matAutocomplete]="auto"
@@ -976,7 +891,7 @@
 
             <div [formGroup]="registerForm5">
 
-                <div *ngIf="opened_subcategory==3 && editor" class="account-form-container">
+                <div *ngIf="opened_subcategory==3 && type_of_account.includes('dit')" class="account-form-container">
 
 
                     <div class="title">
@@ -991,11 +906,11 @@
 
 
                     <div class="form-title">
-                        <span>Catégories publiées</span>
+                        <span>Catégories phares</span>
                     </div>
                     <div class="form-item" *ngIf="registerForm5_activated">
                         <mat-form-field floatLabel='never' >
-                            <mat-label >Catégories</mat-label>
+                            <mat-label class="label-to-set">Catégories</mat-label>
                             <mat-select  disableOptionCentering formControlName="categories" panelClass="accountAboutSelectClass edition" multiple>
                                 <mat-option  *ngFor="let obj of list_of_categories" [value]="obj">
                                     {{ obj }}
@@ -1043,7 +958,7 @@
                                 <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
                             </mat-chip>
                             <input
-                                placeholder="Genres (maximum : 15)"
+                                placeholder="Genres (maximum : 20)"
                                 #genresInput
                                 [formControl]="genresCtrl"
                                 [matAutocomplete]="auto"
@@ -1071,7 +986,7 @@
                                 {{genre}}
                             </mat-chip>
                             <input
-                                placeholder="Genres (maximum : 15)"
+                                placeholder="Genres (maximum : 20)"
                                 #genresInput
                                 [formControl]="genresCtrl"
                                 [matAutocomplete]="auto"
@@ -1116,11 +1031,76 @@
             
             <div [formGroup]="registerForm6">
 
-                <div *ngIf="opened_subcategory==4 && editor" class="account-form-container">
+                <div *ngIf="opened_subcategory==4 && type_of_account.includes('dit')" class="account-form-container">
 
 
                     <div class="title">
-                        <span>Nos formules</span>
+                        <span>Candidatures</span>
+                        <div class="edit-form-button cancel" (click)="cancel_form_6()" *ngIf="registerForm6_activated && !visitor_mode">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_return</mat-icon>
+                        </div>
+                        <div class="edit-form-button" (click)="edit_form_6()" *ngIf="!registerForm6_activated && !visitor_mode">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                        </div>
+                    </div>
+
+
+                    
+                    <div class="form-title" [@enterAnimation] >
+                        <span>Quelles consignes voulez-vous défnir ?</span>
+                    </div>
+                    <div class="form-item" *ngIf="registerForm6_activated" [@enterAnimation]>
+                        <mat-form-field floatLabel='never'>
+                            <mat-label class="label-to-set">Consignes</mat-label>
+                            <textarea matInput cdkTextareaAutosize formControlName="instructions" maxLength="400" autocomplete="off" (input)="normalize_input(registerForm6, 'instructions');"></textarea>
+                            <mat-error *ngIf="registerForm6.controls['instructions'].invalid">Saisie invalide : certains caractères spéciaux ne sont pas autorisés
+                            </mat-error>
+                            <div class="length-indicator">{{registerForm6.controls['instructions'].value?.length || 0}}/400</div>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-item" *ngIf="!registerForm6_activated">
+                        <mat-form-field floatLabel='never'>
+                            <mat-label>{{instructions}}</mat-label>
+                            <ng-container *ngIf="!( instructions==undefined || instructions=='' )">
+                                <textarea matInput cdkTextareaAutosize readonly class="readonly">{{instructions}}</textarea>
+                            </ng-container>
+                            <ng-container *ngIf=" ( instructions==undefined || instructions=='' )">
+                                <textarea matInput cdkTextareaAutosize readonly class="readonly italic">Non renseignée</textarea>
+                            </ng-container>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-title with-see-more" [@enterAnimation] >
+                        <span>Quelle est votre réponse par défaut ?</span>
+                        <div class="see-more-button align-right">
+                            ?
+                            <div class="information" >
+                                <div class="first-text">
+                                    <span> <img  src='../../assets/img/tuto-logos/light.svg'>Votre réponse par défaut est le message qui s'envoie automatiquement à un artiste qui a déposé son projet, une fois le délais d'attente passé.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-item" *ngIf="registerForm6_activated" [@enterAnimation]>
+                        <mat-form-field floatLabel='never'>
+                            <mat-label class="label-to-set">Exemple : Nous sommes dans le regret de vous informer que votre candidature n'a pas retenu notre attention.</mat-label>
+                            <textarea matInput cdkTextareaAutosize formControlName="editor_default_response" maxLength="400" autocomplete="off" (input)="normalize_input(registerForm6, 'editor_default_response');"></textarea>
+                            <mat-error *ngIf="registerForm6.controls['editor_default_response'].invalid">Saisie invalide : certains caractères spéciaux ne sont pas autorisés
+                            </mat-error>
+                            <div class="length-indicator">{{registerForm6.controls['editor_default_response'].value?.length || 0}}/400</div>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-item" *ngIf="!registerForm6_activated">
+                        <mat-form-field floatLabel='never'>
+                            <mat-label>{{editor_default_response}}</mat-label>
+                            <ng-container *ngIf="!( editor_default_response==undefined || editor_default_response=='' )">
+                                <textarea matInput cdkTextareaAutosize readonly class="readonly">{{editor_default_response}}</textarea>
+                            </ng-container>
+                            <ng-container *ngIf=" ( editor_default_response==undefined || editor_default_response=='' )">
+                                <textarea matInput cdkTextareaAutosize readonly class="readonly italic">Non renseignée</textarea>
+                            </ng-container>
+                        </mat-form-field>
                     </div>
 
                     <div class="form-title with-see-more">
@@ -1159,14 +1139,14 @@
                                 <div class="type">
                                     <span>Tarif</span>
                                 </div>
-                                <div class="value" *ngIf="indice_edited!=0">
+                                <div class="value" *ngIf="indice_edited!=0" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
                                     <span *ngIf="standard_price==0">Gratuit</span>
                                     <span *ngIf="standard_price==1">{{standard_price}} euro</span>
                                     <span *ngIf="standard_price>1">{{standard_price}} euros</span>
                                 </div>
 
-                                <div class="value" *ngIf="indice_edited==0">
+                                <div class="value" *ngIf="indice_edited==0" [@enterFromLeftAnimation]>
 
                                         <span *ngIf="standard_price==0">Gratuit</span>
                                         <span *ngIf="standard_price==1">{{standard_price}} euro</span>
@@ -1188,12 +1168,12 @@
                                 <div class="type">
                                     <span>Temps d'attente</span>
                                 </div>
-                                <div class="value" *ngIf="indice_edited!=0">
+                                <div class="value" *ngIf="indice_edited!=0" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
                                     <span>{{list_of_real_delays[standard_delay]}}</span>
                                 </div>
 
-                                <div class="value" *ngIf="indice_edited==0">
+                                <div class="value" *ngIf="indice_edited==0" [@enterFromLeftAnimation]>
 
                                     <span>{{list_of_real_delays[standard_delay]}}</span>
                                     <mat-slider
@@ -1206,16 +1186,16 @@
 
                             </div>
                             
-                            <ng-container *ngIf="!visitor_mode">
-                                <div class="edit-formula" (click)="edit_formulas(0)" *ngIf="indice_edited==-1">
+                            <ng-container *ngIf="!visitor_mode && registerForm6_activated">
+                                <div class="edit-formula" (click)="edit_formulas(0)" *ngIf="indice_edited==-1" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                                     <span>Modifier</span>
                                 </div>
-                                <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==0">
+                                <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==0" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                                     <span>Annuler</span>
                                 </div>
-                                <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==0">
+                                <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==0" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                                     <span>Valider</span>
                                 </div>
@@ -1247,12 +1227,12 @@
                                     <span>Tarif</span>
                                 </div>
 
-                                <div class="value" *ngIf="indice_edited!=1">
+                                <div class="value" *ngIf="indice_edited!=1" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
                                     <span>{{express_price}} euros</span>
                                 </div>
 
-                                <div class="value" *ngIf="indice_edited==1">
+                                <div class="value" *ngIf="indice_edited==1" [@enterFromLeftAnimation]>
 
                                     <span>{{express_price}} euros</span>
                                     <mat-slider
@@ -1272,14 +1252,14 @@
                                     <span>Temps d'attente</span>
                                 </div>
 
-                                <div class="value" *ngIf="indice_edited!=1">
+                                <div class="value" *ngIf="indice_edited!=1" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
                                     <span>{{list_of_real_delays[express_delay]}}</span>
                                 </div>
-                                <div class="value" *ngIf="indice_edited==1">
+                                <div class="value" *ngIf="indice_edited==1" [@enterFromLeftAnimation]>
 
                                     <span>{{list_of_real_delays[express_delay]}}</span>
-                                    <mat-slider *ngIf="indice_edited==1"
+                                    <mat-slider 
                                     thumbLabel
                                     formControlName="express_delay"
                                     (change)="update_delay($event)"  [displayWith]="value_to_display_delay"
@@ -1288,16 +1268,16 @@
                             </div>
 
 
-                            <ng-container *ngIf="!visitor_mode">
-                                <div class="edit-formula" (click)="edit_formulas(1)" *ngIf="indice_edited==-1">
+                            <ng-container *ngIf="!visitor_mode && registerForm6_activated">
+                                <div class="edit-formula" (click)="edit_formulas(1)" *ngIf="indice_edited==-1" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                                     <span>Modifier</span>
                                 </div>
-                                <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==1">
+                                <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==1" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                                     <span>Annuler</span>
                                 </div>
-                                <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==1">
+                                <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==1" [@enterFromLeftAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                                     <span>Valider</span>
                                 </div>
@@ -1307,68 +1287,13 @@
                     </div>
 
 
-
-                    <!--<div class="formules" style="display: flex;" *ngIf="formula_in_edition">
-                        <div class="standard-block" style="margin : auto 10px auto auto" >
-                                <div class="title">
-                                    <ng-container *ngIf="indice_edited==0">Standard</ng-container>
-                                    <ng-container *ngIf="indice_edited==1">Express</ng-container>
-                                </div>
-                                <div class="price">
-                                    <span>Tarif : <mat-slider *ngIf="indice_edited==0"
-                                        thumbLabel
-                                        formControlName="standard_price"
-                                        (change)="update_price($event)" 
-                                        [displayWith]="value_to_display"
-                                        step="1" min="0" max="5" aria-label="units"></mat-slider>
-                                        <mat-slider *ngIf="indice_edited==1"
-                                        thumbLabel
-                                        formControlName="express_price"
-                                        (change)="update_price($event)" 
-                                        [displayWith]="value_to_display"
-                                        
-                                        step="2" min="6" max="20" aria-label="units"></mat-slider>
-                                    </span>
-                                </div>
-                                <div class="price-extension">
-                                    <ng-container *ngIf="indice_edited==0">
-                                        <span *ngIf="standard_price==0">Gratuit</span>
-                                        <span *ngIf="standard_price!=0">{{standard_price}} euros</span>
-                                    </ng-container>
-                                    <ng-container *ngIf="indice_edited==1">
-                                        <span>{{express_price}} euros</span>
-                                    </ng-container>
-                                
-                                </div>
-                                <div class="delay">
-                                    <span>Temps d'attente :
-                                        <mat-slider *ngIf="indice_edited==0"
-                                        thumbLabel
-                                        formControlName="standard_delay"
-                                        (change)="update_delay($event)"  [displayWith]="value_to_display_delay"
-                                        step="1" min="0" max="10" aria-label="units"></mat-slider>
-                                        <mat-slider *ngIf="indice_edited==1"
-                                        thumbLabel
-                                        formControlName="express_delay"
-                                        (change)="update_delay($event)"  [displayWith]="value_to_display_delay"
-                                        step="1" min="0" max="10" aria-label="units"></mat-slider>
-                                    </span>
-                                </div>
-                                <div class="price-extension">
-                                    <ng-container *ngIf="indice_edited==0">
-                                        <span>{{list_of_real_delays[standard_delay]}}</span>
-                                    </ng-container>
-                                    <ng-container *ngIf="indice_edited==1">
-                                        <span>{{list_of_real_delays[express_delay]}}</span>
-                                    </ng-container>
-                                
-                                </div>
-                                <button (click)="cancel_edition()">annuler</button>
-                                <button (click)="validate_price()">valider</button>
-                            
+                    <button class="validate-form-button" *ngIf="registerForm6_activated && !visitor_mode" (click)="validate_form_6();" [@enterAnimation]>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_validation_form_6">done_all</mat-icon>
+                        <span *ngIf="!loading_validation_form_6">Valider</span>
+                        <div *ngIf="loading_validation_form_6" class="loading-page-form">
+                            <mat-spinner diameter="20"></mat-spinner>
                         </div>
-                    </div>-->
-
+                    </button>
 
                     <div *ngIf="display_error_validator_6" class="error_validator" [@enterAnimation]>
                         <span>Les informations saisies sont incorrectes ou manquantes.</span>
@@ -1384,736 +1309,7 @@
 
     </div>
         
-    <!--<div *ngIf="(opened_category==0 && !list_of_privacy_retrieved)" >
-
-        <div class="account-title-container">
-            <!- -TITRE + BOUTON EDITER/CACHER- ->
-            <div class="category">
-                <div class="category-title shiny">
-                </div>
-            </div>
-        </div>
-
-        <div class="account-form-container height-loading" >
-
-            <div class="form-title " >
-                <div class="category1">
-                    <div class="category-title1 shiny">
-                    </div>
-                </div>
-            </div>
-            <div class="form-item " >
-                <div class="category2">
-                    <div class="category-title2 shiny">
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="form-title " >
-                <div class="category1">
-                    <div class="category-title1 shiny">
-                    </div>
-                </div>
-            </div>
-            <div class="form-item " >
-                <div class="category2">
-                    <div class="category-title2 shiny">
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-title " >
-                <div class="category1">
-                    <div class="category-title1 shiny">
-                    </div>
-                </div>
-            </div>
-            <div class="form-item " >
-                <div class="category2">
-                    <div class="category-title2 shiny">
-                    </div>
-                </div>
-            </div>
-            
-
-        </div>
-
-    </div>
-
-    <div *ngIf="opened_category==0" [ngClass]="{'invisible':  !list_of_privacy_retrieved}">
-
-        <!- - Description principale - ->
-        <div class="account-title-container">
-            <!- -TITRE + BOUTON EDITER/CACHER- ->
-            <div class="title">
-                <span>Ma présentation</span>
-                <button class="accountAboutAbsoluteButton" (click)="cancel_form_1()" *ngIf="registerForm1_activated && !visitor_mode">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">cancel</mat-icon>
-                </button>
-                <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout0" *ngIf="!registerForm1_activated && !visitor_mode">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
-                </button>
-                <mat-menu #accountAbout0="matMenu" xPosition='before' class="account-title-mat-menu">
-                    <button (click)="edit_form_1()" class="account-title-menu-item" mat-menu-item > 	
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">create</mat-icon>
-                        <span>Modifier</span>
-                    </button>
-                </mat-menu>
-            </div>
-        </div>
-
-
-        <div class="account-form-container" [formGroup]="registerForm1">
-
-            <div class="form-title" [@enterAnimation]>
-                <span>Type de compte</span>
-            </div>
-            <div class="form-item" *ngIf="!registerForm1_activated">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>{{type_of_account}}</mat-label>
-                    <input matInput readonly>
-                </mat-form-field>
-            </div>
-            <div class="form-item" *ngIf="registerForm1_activated && (type_of_account=='Fan' || type_of_account=='Éditeur / Éditrice')" [@enterAnimation]>
-                <mat-form-field floatLabel='never'>
-                    <mat-select  disableOptionCentering formControlName="type_of_account" panelClass="accountAboutSelectClass options-with-description">
-                        <mat-select-trigger>
-                            {{registerForm1.value?.type_of_account}}
-                        </mat-select-trigger>
-                        
-                        <div *ngFor="let obj of listOfAccounts; let i = index">
-                            <mat-option [value]="obj" *ngIf="listOfAccounts[i]==type_of_account || listOfAccounts[i]=='Artiste'">
-                                {{ obj }}
-                                <div class="text-container">
-                                    <img  [src]="listOfAccountsImages[i]" >
-                                    <span >{{listOfAccountsDescriptions[i]}}</span>
-                                </div>
-                                
-                            </mat-option>
-                        </div>
-                    </mat-select>
-                </mat-form-field>
-
-            </div>
-            
-            
-           
-
-          
-            <ng-container *ngIf="registerForm1_activated && registerForm1.value.type_of_account.includes('dit') ">
-                <div class="form-title">
-                    <span>Numéro SIREN</span>
-                </div>
-                <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>Numéro SIREN</mat-label>
-                        <input matInput formControlName="siret" maxLength="9" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'siret');">
-                        <mat-error *ngIf="registerForm1.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide (9 chiffres)
-                        </mat-error>
-                        <div class="length-indicator">{{registerForm1.controls['siret'].value?.length || 0}}/9</div>
-                    </mat-form-field>
-                </div>
-            </ng-container>
-           
-
-            <div class="form-title" [@enterAnimation]>
-                <span>Bio</span>
-            </div>
-            <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Bio</mat-label>
-                    <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description');"></textarea>
-                    <mat-error *ngIf="registerForm1.controls['primary_description'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm1.controls['primary_description'].value?.length || 0}}/100</div>
-                </mat-form-field>
-            </div>
-            <div class="form-item" *ngIf="!registerForm1_activated">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>{{primary_description}}</mat-label>
-                    <textarea matInput cdkTextareaAutosize readonly class="readonly">{{primary_description}}</textarea>
-                </mat-form-field>
-            </div>
-
-
-            <ng-container *ngIf="(visitor_mode && list_of_privacy[0]=='public' && !(primary_description_extended==undefined || primary_description_extended=='') ) || !visitor_mode">
-                <div class="form-title" *ngIf="visitor_mode">
-                    <span>Description principale</span>
-                </div>
-                <div class="form-title" *ngIf="!visitor_mode" [@enterAnimation]>
-
-                    <span class="no-margin-right">Description principale</span>
-                    
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity2" *ngIf="!visitor_mode && list_of_privacy[1]=='public'"
-                    matTooltip="Information publique"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                    </button>
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity2" *ngIf="!visitor_mode && list_of_privacy[1]=='private'"
-                    matTooltip="Information privée"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                    </button>
-
-                    <mat-menu #accountAboutVisiblity2="matMenu" xPosition='before' class="account-title-mat-menu">
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[1]=='private'" (click)="change_information_privacy_public(1)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                            <span>Rendre public</span>
-                        </button>
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[1]=='public'" (click)="change_information_privacy_private(1)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                            <span>Rendre privé</span>
-                        </button>
-                    </mat-menu>
-                </div>
-                <div class="form-item input-multiple-lines" *ngIf="registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>Description principale</mat-label>
-                        <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
-                        <mat-error *ngIf="registerForm1.controls['primary_description_extended'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
-                        </mat-error>
-                        <div class="length-indicator">{{registerForm1.controls['primary_description_extended'].value?.length || 0}}/1000</div>
-
-                        
-                        <div #emojisSpinner class="emojis-spinner" [@enterAnimation]>
-                            <mat-spinner diameter="20"></mat-spinner>
-                        </div>
-                        
-
-                        <div *ngIf="load_emoji" #emojis class="emojis-main-container" [@enterAnimation]>
-                            <div class="emojis-container">
-                                <emoji-mart [set]="set" [isNative]="native" [hideRecent]="false"
-                                    (emojiSelect)="handleClick($event)">
-                                </emoji-mart>
-                            </div>
-                        </div>
-
-
-                        <div #emoji_button (click)="open_emojis()" class="emojis-button"
-                        matTooltip="Emojis"
-                        matTooltipClass='linkarts-tooltip'
-                        [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="100">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">sentiment_satisfied</mat-icon>
-                        </div>
-
-                    </mat-form-field>
-                </div>
-                <div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'
-                    [matTooltip]="( primary_description_extended==undefined || primary_description_extended=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-label>{{primary_description_extended}}</mat-label>
-                        <ng-container *ngIf="!( primary_description_extended==undefined || primary_description_extended=='' )">
-                            <textarea matInput cdkTextareaAutosize readonly class="readonly">{{primary_description_extended}}</textarea>
-                        </ng-container>
-                        <ng-container *ngIf=" ( primary_description_extended==undefined || primary_description_extended=='' )">
-                            <textarea matInput cdkTextareaAutosize readonly class="readonly italic">Non renseignée</textarea>
-                        </ng-container>
-                    </mat-form-field>
-                </div>
-            </ng-container>
-
-            
-            <ng-container *ngIf="(visitor_mode && list_of_privacy[4]=='public' &&  !(job==undefined || job=='') ) || !visitor_mode">
-                <div class="form-title">
-                    <span *ngIf="!registerForm1_activated" class="no-margin-right" [@enterAnimation]>Profession</span>
-                    <span *ngIf="registerForm1_activated" class="no-margin-right" [@enterAnimation]>Profession (optionnelle)</span>
-                    
-                    
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity3" *ngIf="!visitor_mode && list_of_privacy[4]=='public'"
-                    matTooltip="Information publique"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                    </button>
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity3" *ngIf="!visitor_mode && list_of_privacy[4]=='private'"
-                    matTooltip="Information privée"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                    </button>
-
-                    <mat-menu #accountAboutVisiblity3="matMenu" xPosition='before' class="account-title-mat-menu">
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[4]=='private'" (click)="change_information_privacy_public(4)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                            <span>Rendre public</span>
-                        </button>
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[4]=='public'" (click)="change_information_privacy_private(4)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                            <span>Rendre privé</span>
-                        </button>
-                    </mat-menu>
-
-                </div>
-                <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>Profession</mat-label>
-                        <input matInput formControlName="job" maxLength="100" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'job');">
-                        <mat-error *ngIf="registerForm1.controls['job'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
-                        </mat-error>
-                        <div class="length-indicator">{{registerForm1.controls['job'].value?.length || 0}}/100</div>
-                    </mat-form-field>
-                </div>
-                <div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'
-                    [matTooltip]="( job==undefined || job=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-label *ngIf="!( job==undefined || job=='' )">{{job}}</mat-label>
-                        <mat-label *ngIf=" ( job==undefined || job=='' )"><i>Non renseignée</i></mat-label>
-                        <input matInput readonly>
-                    </mat-form-field>
-                </div>
-            </ng-container>
-
-
-            
-            <ng-container *ngIf="(visitor_mode && list_of_privacy[5]=='public' &&  !(training==undefined || training=='') ) || !visitor_mode">
-                <div class="form-title">
-                    <span *ngIf="!registerForm1_activated" class="no-margin-right" [@enterAnimation]>Formation ou compétences</span>
-                    <span *ngIf="registerForm1_activated" class="no-margin-right" [@enterAnimation]>Formation ou compétences (optionnel)</span>
-                    
-                    
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity4" *ngIf="!visitor_mode && list_of_privacy[5]=='public'"
-                    matTooltip="Information publique"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                    </button>
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity4" *ngIf="!visitor_mode && list_of_privacy[5]=='private'"
-                    matTooltip="Information privée"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                    </button>
-
-                    <mat-menu #accountAboutVisiblity4="matMenu" xPosition='before' class="account-title-mat-menu">
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[5]=='private'" (click)="change_information_privacy_public(5)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                            <span>Rendre public</span>
-                        </button>
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[5]=='public'" (click)="change_information_privacy_private(5)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                            <span>Rendre privé</span>
-                        </button>
-                    </mat-menu>
-                    
-                </div>
-
-
-                <div class="form-item input-multiple-lines" *ngIf="registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>Formation ou compétences</mat-label>
-                        <textarea matInput cdkTextareaAutosize formControlName="training" maxLength="250" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
-                        <mat-error *ngIf="registerForm1.controls['training'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
-                        </mat-error>
-                        <div class="length-indicator">{{registerForm1.controls['training'].value?.length || 0}}/250</div>
-                    </mat-form-field>
-                </div>
-                <div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'
-                    [matTooltip]="( training==undefined || training=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-label>{{training}}</mat-label>
-                        <ng-container *ngIf="!( training==undefined || training=='' )">
-                            <textarea matInput cdkTextareaAutosize readonly class="readonly">{{training}}</textarea>
-                        </ng-container>
-                        <ng-container *ngIf=" ( training==undefined || training=='' )">
-                            <textarea matInput cdkTextareaAutosize readonly class="readonly italic">Non renseignée</textarea>
-                        </ng-container>
-                    </mat-form-field>
-                </div>
-
-            </ng-container>
-
-
-            <button class="validate-form-button" *ngIf="registerForm1_activated && !visitor_mode" (click)="validate_form_1();" [@enterAnimation]>
-                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_validation_form_1">done_all</mat-icon>
-                <span *ngIf="!loading_validation_form_1">Valider</span>
-                <div *ngIf="loading_validation_form_1 " class="loading-page-form">
-                    <mat-spinner diameter="20"></mat-spinner>
-                </div>
-            </button>
-
-            <div *ngIf="display_error_validator_1" class="error_validator" [@enterAnimation]>
-                <span>Les informations saisies sont incorrectes ou manquantes.</span>
-            </div>
-        </div>
-
-
-
-
-        <!- - Description principale - ->
-        <div class="account-title-container" *ngIf="!visitor_mode || ( visitor_mode && (userLocation!=undefined && userLocation!='') || (email_about!=undefined && email_about!='') || (links.length>0) ) ">
-            <!- -TITRE + BOUTON EDITER/CACHER- ->
-            <div class="title">
-                <span>En savoir plus</span>
-                
-                <button class="accountAboutAbsoluteButton" (click)="cancel_form_2()" *ngIf="registerForm2_activated && !visitor_mode">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">cancel</mat-icon>
-                </button>
-                <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout1" *ngIf="!registerForm2_activated && !visitor_mode">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
-                </button>
-                <mat-menu #accountAbout1="matMenu" xPosition='before' class="account-title-mat-menu">
-                    <button (click)="edit_form_2()" class="account-title-menu-item" mat-menu-item > 	
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">create</mat-icon>
-                        <span>Modifier</span>
-                    </button>
-                </mat-menu>
-            </div>
-        </div>
-
-
-        <div class="account-form-container" [formGroup]="registerForm2" *ngIf="!visitor_mode || ( visitor_mode && (userLocation!=undefined && userLocation!='') || (email_about!=undefined && email_about!='') || (links.length>0) ) ">
-
-
-            <ng-container *ngIf="!visitor_mode || (visitor_mode && !(userLocation==undefined || userLocation==''))">
-                <div class="form-title">
-                    <span *ngIf="!registerForm2_activated" [@enterAnimation]>Localisation</span>
-                    <span *ngIf="registerForm2_activated" [@enterAnimation]>Localisation (optionnel)</span>
-                </div>
-                
-                <div class="form-item" *ngIf="!registerForm2_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'
-                    [matTooltip]="( userLocation==undefined || userLocation=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-label *ngIf="!( userLocation==undefined || userLocation=='' )">{{userLocation}}</mat-label>
-                        <mat-label *ngIf=" ( userLocation==undefined || userLocation=='' )"><i>Non renseignée</i></mat-label>
-                        <input matInput readonly>
-                    </mat-form-field>
-                </div>
-
-                <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>Ville</mat-label>
-                        <input matInput formControlName="city" maxLength="30" autocomplete="off" (input)="normalize_input(registerForm2, 'city');adding_city();">
-                        <mat-error *ngIf="registerForm2.controls['city'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
-                        </mat-error>
-                        <div class="length-indicator">{{registerForm2.controls['city'].value?.length || 0}}/30</div>
-                    </mat-form-field>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>Pays</mat-label>
-                        <mat-select [(value)]="selected_country" (selectionChange)="adding_country()" placeholder="Mode" panelClass="accountAboutSelectCountryClass" disableOptionCentering formControlName="country">
-                            <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
-                                {{ obj }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="registerForm2.controls['country'].invalid ">Veuillez selectionner un pays</mat-error>
-                    </mat-form-field>
-                    
-                </div>
-            </ng-container>
-
-
-            <ng-container *ngIf="(visitor_mode && list_of_privacy[2]=='public' && !(email_about==undefined || email_about=='')) || !visitor_mode">
-                <div class="form-title">
-                    <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>E-mail de contact</span>
-                    <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>E-mail de contact (optionnel)</span>
-
-                    
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity5" *ngIf="!visitor_mode && list_of_privacy[2]=='public'"
-                    matTooltip="Information publique"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                    </button>
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity5" *ngIf="!visitor_mode && list_of_privacy[2]=='private'"
-                    matTooltip="Information privée"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                    </button>
-
-                    <mat-menu #accountAboutVisiblity5="matMenu" xPosition='before' class="account-title-mat-menu">
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[2]=='private'" (click)="change_information_privacy_public(2)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                            <span>Rendre public</span>
-                        </button>
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[2]=='public'" (click)="change_information_privacy_private(2)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                            <span>Rendre privé</span>
-                        </button>
-                    </mat-menu>
-                </div>
-                
-                <div class="form-item" *ngIf="!registerForm2_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'
-                    [matTooltip]="( email_about==undefined || email_about=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-label *ngIf="!( email_about==undefined || email_about=='' )">{{email_about}}</mat-label>
-                        <mat-label *ngIf=" ( email_about==undefined || email_about=='' )"><i>Non renseigné</i></mat-label>
-                        <input matInput readonly>
-                    </mat-form-field>
-                </div>
-                <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>E-mail de contact</mat-label>
-                        <input matInput formControlName="email_about" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm2, 'email_about');">
-                        <mat-error *ngIf="registerForm2.controls['email_about'].invalid ">Veuillez saisir un e-mail valide
-                        </mat-error>
-                        <div class="length-indicator">{{registerForm2.controls['email_about'].value?.length || 0}}/100</div>
-                    </mat-form-field>
-                </div>
-
-            </ng-container>
-            
-            <ng-container *ngIf="visitor_mode && links.length>0">
-                <div class="form-title">
-                    <span>Réseaux sociaux</span>
-                </div>
-                <div class="form-item" >
-                    <div class="form-item-flex" *ngFor="let item of links_titles;let i=index">
-                        <div class="left-container">
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>{{item}}</mat-label>
-                                <input matInput readonly>
-                            </mat-form-field>
-                        </div>
-                        <div class="right-container">
-                            <mat-form-field floatLabel='never'>
-                                    <mat-label>
-                                        {{links[i]}}
-                                    </mat-label>
-                                    <a [href]="links[i]"><input matInput readonly style="cursor:pointer;"></a>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-            </ng-container>
-
-            <ng-container *ngIf="!visitor_mode">
-                <div class="form-title">
-                    <span *ngIf="!registerForm2_activated" [@enterAnimation]>Liens externes</span>
-                    <span *ngIf="registerForm2_activated" [@enterAnimation]>Liens externes (optionnel)</span>
-                </div>
-
-                <div class="form-item" *ngIf="links.length==0 && !registerForm2_activated" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'
-                    matTooltip="Ce champ non renseigné ne sera pas visible"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="100">
-                        <mat-label><i>Aucun lien renseigné</i></mat-label>
-                        <input matInput readonly>
-                    </mat-form-field>
-                </div>
-                
-                <div class="form-item" *ngIf="links.length>0" [@enterAnimation]>
-                    <ng-container *ngFor="let item of links_titles;let i=index">
-
-                        <div class="form-item-flex">
-                            <div class="left-container">
-                                <mat-form-field floatLabel='never'>
-                                    <mat-label>{{item}}</mat-label>
-                                    <input matInput readonly>
-                                </mat-form-field>
-                            </div>
-                            <div class="right-container">
-                                <mat-form-field floatLabel='never'>
-                                    <mat-label>{{links[i]}}</mat-label>
-                                    <a [href]="links[i]"><input matInput readonly style="cursor:pointer;"></a>
-                                </mat-form-field>
-                            </div>
-    
-                            <button class="aboutLinkButton" [matMenuTriggerFor]="accountAboutOptions0" *ngIf="registerForm2_activated">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
-                            </button>
-                            <mat-menu #accountAboutOptions0="matMenu" xPosition='before' class="account-title-mat-menu">
-                                <button class="account-title-menu-item" mat-menu-item (click)="remove_link(i)"> 	
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
-                                    <span>Supprimer</span>
-                                </button>
-                            </mat-menu>
-                        </div>
-
-                    </ng-container>
-                </div>
-
-                <div class="form-title" *ngIf="registerForm2_activated" [@enterAnimation]>
-                    <span *ngIf="3>links_titles.length">Ajouter un lien</span>
-                    <span *ngIf="links_titles.length==3">Vous avez atteint la limite de 3 liens externes</span>
-                </div>
-                <div class="form-item" *ngIf="registerForm2_activated && 3>links_titles.length" [@enterAnimation]>
-                    <div class="form-item-flex">
-                        <div class="left-container">
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>Titre du lien</mat-label>
-                                <input matInput formControlName="link_title" maxLength="15" autocomplete="off" (input)="normalize_input(registerForm2, 'link_title');">
-                                <mat-error *ngIf="registerForm2.controls['link_title'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
-                                </mat-error>
-                                <div class="length-indicator">{{registerForm2.controls['link_title'].value?.length || 0}}/15</div>
-                            </mat-form-field>
-                        </div>
-                        <div class="right-container">
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>Lien URL</mat-label>
-                                <input matInput formControlName="link" maxLength="60" autocomplete="off" (input)="normalize_input(registerForm2, 'link');">
-                                <mat-error *ngIf="registerForm2.controls['link'].invalid">Veuillez saisir un URL valide
-                                </mat-error>
-                                <div class="length-indicator">{{registerForm2.controls['link'].value?.length || 0}}/60</div>
-                            </mat-form-field>
-                        </div>
-                        <button class="aboutLinkButton" (click)="add_link();" *ngIf="registerForm2_activated">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                        </button>
-                    </div>
-                </div>
-            </ng-container>
-
-
-            <button class="validate-form-button" *ngIf="registerForm2_activated && !visitor_mode" (click)="validate_form_2();" [@enterAnimation]>
-                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_validation_form_2">done_all</mat-icon>
-                <span *ngIf="!loading_validation_form_2">Valider</span>
-                <div *ngIf="loading_validation_form_2 " class="loading-page-form">
-                    <mat-spinner diameter="20"></mat-spinner>
-                </div>
-            </button>
-
-            <div *ngIf="display_error_validator_2" class="error_validator" [@enterAnimation]>
-                <span>Les informations saisies sont incorrectes ou manquantes.</span>
-            </div>
-            
-        </div>
-
-
-
-
-
-
-        <!- - Description principale - ->
-        <div class="account-title-container">
-            <!- -TITRE + BOUTON EDITER/CACHER- ->
-            <div class="title">
-                <span>Mon identité</span>
-                <button class="accountAboutAbsoluteButton" (click)="cancel_form_3()" *ngIf="registerForm3_activated && !visitor_mode">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">cancel</mat-icon>
-                </button>
-                <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout2" *ngIf="!registerForm3_activated && !visitor_mode">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
-                </button>
-                <mat-menu #accountAbout2="matMenu" xPosition='before' class="account-title-mat-menu">
-                    <button (click)="edit_form_3()" class="account-title-menu-item" mat-menu-item > 	
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">create</mat-icon>
-                        <span>Modifier</span>
-                    </button>
-                </mat-menu>
-            </div>
-        </div>
-
-        <div class="account-form-container" [formGroup]="registerForm3">
-
-            <div class="form-title">
-                <span>Prénom</span>
-            </div>
-            <div class="form-item" *ngIf="registerForm3_activated" [@enterAnimation]>
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Prénom</mat-label>
-                    <input matInput formControlName="firstName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'firstName');">
-                    <mat-error *ngIf="registerForm3.controls['firstName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm3.controls['firstName'].value?.length || 0}}/20</div>
-                </mat-form-field>
-            </div>
-            <div class="form-item" *ngIf="!registerForm3_activated" [@enterAnimation]>
-                <mat-form-field floatLabel='never'>
-                    <mat-label>{{firstName}}</mat-label>
-                    <input matInput readonly>
-                </mat-form-field>
-            </div>
-
-            <ng-container *ngIf="(visitor_mode && list_of_privacy[3]=='public') || !visitor_mode">
-
-                <div class="form-title" [@enterAnimation]>
-                    <span class="no-margin-right" *ngIf="registerForm3_activated" [@enterAnimation]>Date de naissance</span>
-                    <span class="no-margin-right" *ngIf="!registerForm3_activated" [@enterAnimation]>Age</span>
-                    
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity1" *ngIf="!visitor_mode && list_of_privacy[3]=='public'"
-                    matTooltip="Information publique"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                    </button>
-                    <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity1" *ngIf="!visitor_mode && list_of_privacy[3]=='private'"
-                    matTooltip="Information privée"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                    </button>
-
-                    <mat-menu #accountAboutVisiblity1="matMenu" xPosition='before' class="account-title-mat-menu">
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[3]=='private'" (click)="change_information_privacy_public(3)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                            <span>Rendre public</span>
-                        </button>
-                        <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[3]=='public'" (click)="change_information_privacy_private(3)"> 	
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
-                            <span>Rendre privé</span>
-                        </button>
-                    </mat-menu>
-                </div>
-
-                <div class="form-item" *ngIf="registerForm3_activated && type_of_profile != 'Groupe'" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>Date de naissance</mat-label>
-                        <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="birthday">
-                        <mat-datepicker-toggle matSuffix [for]="picker">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
-                        </mat-datepicker-toggle>
-                        <mat-error *ngIf="registerForm3.controls['birthday'].invalid">Exemple valide : 24/12/1996</mat-error>
-                        <mat-datepicker #picker disabled="false" panelClass="account-about-datepicker" startView="multi-year"></mat-datepicker>
-                    </mat-form-field>
-                </div>
-                
-                <div class="form-item" *ngIf="!registerForm3_activated || type_of_profile == 'Groupe'" [@enterAnimation]>
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>{{birthday}} ans</mat-label>
-                        <input matInput readonly>
-                    </mat-form-field>
-                </div>
-
-            </ng-container>
-
-
-            <button class="validate-form-button" *ngIf="registerForm3_activated && !visitor_mode" (click)="validate_form_3();" [@enterAnimation]>
-                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_validation_form_3">done_all</mat-icon>
-                <span *ngIf="!loading_validation_form_3">Valider</span>
-                <div *ngIf="loading_validation_form_3" class="loading-page-form">
-                    <mat-spinner diameter="20"></mat-spinner>
-                </div>
-            </button>
-
-            <div *ngIf="display_error_validator_3" class="error_validator" [@enterAnimation]>
-                <span>Les informations saisies sont incorrectes ou manquantes.</span>
-            </div>
-
-        </div>
-
-    </div>-->
-
+ 
 
 
 
@@ -2175,7 +1371,7 @@
                     <div class="stats-number-container" *ngIf="trendings_found && trendings_loaded">
                         <div>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                            <span>Apparition en Tendances pour la catégorie Bbandes dessinées : <b>{{number_of_comics_trendings}}</b></span>
+                            <span>Apparition en Tendances pour la catégorie Bandes dessinées : <b>{{number_of_comics_trendings}}</b></span>
                         </div>
                         <div>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>

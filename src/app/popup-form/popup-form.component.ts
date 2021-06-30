@@ -44,9 +44,9 @@ export class PopupFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private NotificationsService:NotificationsService,
     private sanitizer:DomSanitizer,
+    private cd:ChangeDetectorRef,
     private navbar: NavbarService,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
-      dialogRef.disableClose = true;
 
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
@@ -291,6 +291,7 @@ export class PopupFormComponent implements OnInit {
       return
     }
     this.dialogRef.close();
+    this.cd.detectChanges()
   }
 
 
@@ -305,11 +306,13 @@ export class PopupFormComponent implements OnInit {
     this.ChatService.archive_chat_message(this.message.id,this.list_of_folders[i].id).subscribe(r=>{
       this.message.id_folder=this.list_of_folders[i].id;
       this.dialogRef.close(true);
+      this.cd.detectChanges()
     })
   }
 
   receive_picture_for_signup(event){
     this.dialogRef.close(event.image_to_show);
+    this.cd.detectChanges()
   }
  
 }

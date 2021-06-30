@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, Input, Inject } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Trending_service } from '../services/trending.service';
@@ -6,6 +6,7 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { NotationService } from '../services/notation.service';
 import { NavbarService } from '../services/navbar.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
+import { Location } from '@angular/common';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
@@ -22,20 +23,21 @@ import { convert_timestamp_to_number, date_in_seconds, get_date_to_show } from '
 import { trigger, transition, style, animate } from '@angular/animations';
 import { normalize_to_nfc } from '../helpers/patterns';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { FileUploader, FileItem } from 'ng2-file-upload';
+import { FileUploader } from 'ng2-file-upload';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { ConstantsService } from '../services/constants.service';
 import { map, startWith } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { PopupFormComponent } from '../popup-form/popup-form.component';
+import { DOCUMENT } from '@angular/common';
+import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 
 
 declare var $: any;
 
 //ajouter une url pour upload de cv
-const url = '';
+const url = 'http://localhost:4600/routes/upload_cv/';
 
 @Component({
   selector: 'app-account-about',
@@ -94,6 +96,7 @@ export class AccountAboutComponent implements OnInit {
     private rd: Renderer2, 
     private NavbarService:NavbarService,
     private NotationService:NotationService,
+    private location:Location,
     public route: ActivatedRoute, 
     private formBuilder: FormBuilder,
     private cd: ChangeDetectorRef,
@@ -108,6 +111,7 @@ export class AccountAboutComponent implements OnInit {
     private Ads_service:Ads_service,
     public dialog: MatDialog,
     private ConstantsService:ConstantsService,
+    @Inject(DOCUMENT) private document: Document,
   ) { 
     NavbarService.visibility_observer_font.subscribe(font=>{
       if(font){
@@ -125,7 +129,7 @@ export class AccountAboutComponent implements OnInit {
       map((genre: string | null) => genre ? this._filter(genre) : this.list_of_skills.slice()));
     this.filteredGenres = this.genresCtrl.valueChanges.pipe(
       startWith(null),
-      map((genre: string | null) => genre ? this._filter(genre) : this.list_of_genres.slice()));
+      map((genre: string | null) => genre ? this._filter_genre(genre) : this.list_of_genres.slice()));
   }
 
 
@@ -144,8 +148,9 @@ export class AccountAboutComponent implements OnInit {
   @Input('id_user') id_user:number;
   @Input('visitor_mode') visitor_mode:boolean;
   @Input('author') author:any;
+  @Input('opened_subcategory') opened_subcategory:any;
   
-  listOfAccounts=["Artiste","Éditeur / Éditrice","Fan"];
+  listOfAccounts=["Artiste","Éditeur","Fan"];
   listOfAccountsDescriptions = [
     "Vous souhaitez devenir un artiste du monde de la bande dessinée, de la littérature ou du dessin, et vous souhaitez collaborer avec des maisons d'édition ou d'autres artistes, mais aussi être rémunéré pour les œuvres que vous partagez dans votre quête de progression.",
     "Vous êtes un éditeur ou une éditrice, et vous souhaitez optimiser le tri de vos candidatures, et dénicher des artistes talentueux avec qui collaborer efficacement une fois que vous les avez trouvés.",
@@ -180,14 +185,17 @@ export class AccountAboutComponent implements OnInit {
   trendings_found=false; // after checked if there are trendings
   now_in_seconds:number=Math.trunc( new Date().getTime()/1000);
 
-  type_of_account:string;
+  type_of_account:String;
   siret:number;
-  firstName:string;
-  userLocation:string;
-  primary_description:string;
-  primary_description_extended:string;
+  society:String='';
+  firstName:String;
+  userLocation:String;
+  primary_description:String;
+  primary_description_extended:String;
   profile_data_retrieved=false;
-  
+  cv_name:String;
+  cv:any;
+  links:any;
 
   phone_about: String;
   facebook: String;
@@ -200,11 +208,11 @@ export class AccountAboutComponent implements OnInit {
   other_website: String;
   
   
-  type_of_profile:string;
-  birthday:string;
-  job:string='';
-  training:string='';
-  email_about:string='';
+  type_of_profile:String;
+  birthday:String;
+  //job:string='';
+  //training:string='';
+  email_about:String='';
 
 
   registerForm1: FormGroup;
@@ -248,16 +256,51 @@ export class AccountAboutComponent implements OnInit {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
       const currentYear = moment().year();
       this.maxDate = moment([currentYear - 7, 11, 31]);
-      this.siret=this.author.siret;
       this.firstName = this.author.firstname;
       this.primary_description =this.author.primary_description;
       this.primary_description_extended =this.author.primary_description_extended;
       this.userLocation =this.author.location;
       this.type_of_profile =this.author.gender;
       this.type_of_account = this.author.type_of_account;
-      this.birthday = this.find_age(this.author.birthday);
-      this.job = (this.author.job)?this.author.job:'';
-      this.training = (this.author.training)?this.author.training:'';
+      if(this.type_of_account.includes("edit")){
+        this.siret=this.author.siret;
+        this.society=this.author.society;
+        this.instructions=this.author.editor_instructions;
+        this.editor_default_response=this.author.editor_default_response;
+        this.retrieved_genres=this.author.editor_genres;
+        this.published_categories_retrieved=this.author.editor_categories;
+        this.standard_price=this.author.standard_price?this.author.standard_price:0
+        this.standard_delay=this.author.standard_delay?this.author.standard_delay:"4m";
+        this.express_price=this.author.express_price?this.author.express_price:6;
+        this.express_delay= this.author.express_delay?this.author.express_delay:"1m"
+      }
+      else{
+        this.retrieved_skills=this.author.skills;
+        this.categories_retrieved=this.author.artist_categories;
+      }
+      
+      
+      this.phone_about=this.author.phone_about;
+      this.links=this.author.links;
+      if(this.links){
+        this.facebook=this.links.facebook;
+        this.instagram=this.links.instagram;
+        this.website=this.links.website;
+        this.artstation=this.links.artstation;
+        this.pinterest=this.links.pinterest;
+        this.twitter=this.links.twitter;
+        this.deviantart=this.links.deviantart;
+        this.other_website=this.links.other_website;
+      }
+      this.cv_name=this.author.cv;
+      
+      if(this.cv_name){
+        this.Profile_Edition_Service.retrieve_cv(this.pseudo).subscribe(r=>{
+          this.cv=r;
+        })
+      }
+     
+      this.birthday =(this.author.birthday && this.author.birthday!='Non renseigné')? this.find_age(this.author.birthday):null;
       this.email_about = (this.author.email_about)?this.author.email_about:'';
 
       this.build_form_1();
@@ -272,7 +315,7 @@ export class AccountAboutComponent implements OnInit {
         let yy =parseInt(values[2]);
         let mm =parseInt(values[1])-1
         let dd =parseInt(values[0])
-        //this.registerForm3.controls['birthday'].setValue(moment([yy, mm, dd]));
+        this.registerForm3.controls['birthday'].setValue(moment([yy, mm, dd]));
       }
 
       
@@ -305,7 +348,6 @@ export class AccountAboutComponent implements OnInit {
 
         
         var re = /(?:\.([^.]+))?$/;
-        let index = this.uploader.queue.indexOf(file);
         let size = file._file.size/1024/1024;
         let sufix =re.exec(file._file.name)[1].toLowerCase()
 
@@ -335,6 +377,14 @@ export class AccountAboutComponent implements OnInit {
         }
       };
 
+      this.uploader.onCompleteItem = (file) => {
+        this.Profile_Edition_Service.retrieve_cv(this.pseudo).subscribe(r=>{
+          this.cv_name="something";
+          this.cv=r;
+          this.loading_validation_form_3=false;
+          this.registerForm3_activated=false;
+        })
+      }
 
   }
 
@@ -392,7 +442,7 @@ export class AccountAboutComponent implements OnInit {
       this.cd.detectChanges();
     }
     else{
-      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/about`,this.device_info).subscribe();
+      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/${this.opened_subcategory}`,this.device_info).subscribe();
       this.opened_category=i;
       this.cd.detectChanges();
     }
@@ -2466,11 +2516,13 @@ export class AccountAboutComponent implements OnInit {
 
 
 
-  opened_subcategory=0;
+
   open_subcategory(i:number) {
     this.opened_subcategory = i;
+    this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account/about/${this.opened_subcategory}`,this.device_info).subscribe();
+    this.location.go(`/account/${this.pseudo}/about/${i}`); 
   }
-  editor=true;
+
 
 
 
@@ -2487,13 +2539,7 @@ export class AccountAboutComponent implements OnInit {
           Validators.required,
         ]),
       ],
-      siret: [this.siret, 
-        Validators.compose([
-          Validators.pattern(pattern("siret")),
-          Validators.minLength(9),
-          Validators.maxLength(9),
-        ]),
-      ],
+      
       primary_description: [this.primary_description, 
         Validators.compose([
           Validators.minLength(3),
@@ -2507,7 +2553,7 @@ export class AccountAboutComponent implements OnInit {
           Validators.maxLength(1000),
         ]),
       ],
-      job:[this.job, 
+      /*job:[this.job, 
         Validators.compose([
           Validators.minLength(3),
           Validators.maxLength(100),
@@ -2520,7 +2566,7 @@ export class AccountAboutComponent implements OnInit {
           Validators.maxLength(100),
           Validators.pattern(pattern("text_with_linebreaks")),
         ]),
-      ]
+      ]*/
     });
   }
 
@@ -2550,60 +2596,26 @@ export class AccountAboutComponent implements OnInit {
     if(this.type_of_account!=form.type_of_account){
       change_type_of_account=true;
     }
-    if (this.registerForm1.value.type_of_account.includes('edit')){
-      if(!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<9)){
-
-        this.display_error_validator_1=true;
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
-          panelClass: "popupConfirmationClass",
-        });
-        this.loading_validation_form_1=false;
-      }
-      else{
-        this.display_error_validator_1=false;
-        let siret = form.siret
-        let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''):'';
-        let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''):'';
-        this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,siret,primary ,secondary,form.job,form.training).subscribe(l=>{
-          this.type_of_account=form.type_of_account;
-          this.primary_description=primary;
-          this.primary_description_extended=secondary;
-          this.job=form.job;
-          this.training=form.training;
+    this.display_error_validator_1=false;
+    let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').trim():'';
+    let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n').trim():'';
+    this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,primary,secondary).subscribe(l=>{
+      this.type_of_account=form.type_of_account;
+      this.primary_description=primary;
+      this.primary_description_extended=secondary;
+      if(change_type_of_account){
+        this.NavbarService.update_type_of_account(this.type_of_account).subscribe(r=>{
           this.loading_validation_form_1=false;
           this.registerForm1_activated=false;
-          if(change_type_of_account){
-              this.NavbarService.update_type_of_account(this.type_of_account).subscribe(r=>{
-              })
-          }
-          this.cd.detectChanges();
-        });
-
-        
+          location.reload();
+        })
       }
-  
-    }
-    else{
-      this.display_error_validator_1=false;
-      let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''):'';
-      let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''):'';
-      this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,null,primary,secondary,form.job,form.training).subscribe(l=>{
-        this.type_of_account=form.type_of_account;
-        this.primary_description=primary;
-        this.primary_description_extended=secondary;
-        this.job=form.job;
-        this.training=form.training;
+      else{
         this.loading_validation_form_1=false;
         this.registerForm1_activated=false;
-        if(change_type_of_account){
-          this.NavbarService.update_type_of_account(this.type_of_account).subscribe(r=>{
-          })
-        }
-        this.cd.detectChanges();
-      })
-      
-    }
+      }
+      this.cd.detectChanges();
+    })
   }
   cancel_form_1(){
     this.registerForm1_activated=false;
@@ -2632,6 +2644,7 @@ export class AccountAboutComponent implements OnInit {
         Validators.compose([
         ]),
       ],
+      
       email_about: [this.email_about, 
         Validators.compose([
           Validators.pattern(pattern("mail")),
@@ -2640,8 +2653,8 @@ export class AccountAboutComponent implements OnInit {
       ],
       phone_about: [this.phone_about, 
         Validators.compose([
-          Validators.pattern(pattern("integer")),
-          Validators.maxLength(10),
+          Validators.pattern(pattern("phone")),
+          Validators.maxLength(20),
         ]),
       ],
       facebook: [this.facebook, 
@@ -2720,10 +2733,26 @@ export class AccountAboutComponent implements OnInit {
     else if(!form.city && form.country){
      userLocation= this.capitalizeFirstLetter( form.country.toLowerCase() );
     }
+
+
+    let links={"facebook":this.registerForm2.value.facebook,"instagram":this.registerForm2.value.instagram,
+    "artstation":this.registerForm2.value.artstation,"website":this.registerForm2.value.website,
+    "deviantart":this.registerForm2.value.deviantart,"pinterest":this.registerForm2.value.pinterest,
+    "other_website":this.registerForm2.value.other_website,"twitter":this.registerForm2.value.twitter
+    }
     
-    this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about).subscribe(l=>{
+    this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).subscribe(l=>{
       this.userLocation=userLocation;
       this.email_about=form.email_about;
+      this.phone_about=form.phone_about;
+      this.facebook=links.facebook;
+      this.instagram=links.instagram;
+      this.website=links.website;
+      this.artstation=links.artstation;
+      this.pinterest=links.pinterest;
+      this.twitter=links.twitter;
+      this.deviantart=links.deviantart;
+      this.other_website=links.other_website;
       this.loading_validation_form_2=false;
       this.registerForm2_activated=false;
     });
@@ -2761,6 +2790,20 @@ export class AccountAboutComponent implements OnInit {
             Validators.maxLength(20),
           ]),
         ],
+        siret: [this.siret, 
+          Validators.compose([
+            Validators.pattern(pattern("siret")),
+            Validators.minLength(9),
+            Validators.maxLength(9),
+          ]),
+        ],
+        society:[this.society, 
+          Validators.compose([
+            Validators.pattern(pattern("society")),
+            Validators.minLength(2),
+            Validators.maxLength(40),
+          ]),
+        ],
         birthday: ['', 
           Validators.compose([
             Validators.required
@@ -2784,8 +2827,6 @@ export class AccountAboutComponent implements OnInit {
   }
 
 
-  //cv actuel
-  cv:String;
 
   //cv uploadé
   uploaded_cv:String;
@@ -2800,7 +2841,23 @@ export class AccountAboutComponent implements OnInit {
     }
   }
 
+  remove_cv(){
+    this.Profile_Edition_Service.remove_cv(this.cv_name).subscribe(r=>{
+      this.cv_name=null;
+      this.cv=null
+    })
+  }
 
+  read_cv(){
+
+    this.document.body.classList.add('popup-attachment-scroll');
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.cv},
+      panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
+    });
+  }
   //primary description 
   edit_form_3(){
     this.registerForm3_activated=true;
@@ -2823,11 +2880,22 @@ export class AccountAboutComponent implements OnInit {
       });
       return 
     }
+    else if( (!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<9)) && this.type_of_account.includes('dit')){
+
+        this.display_error_validator_3=true;
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
+          panelClass: "popupConfirmationClass",
+        });
+        return
+    }
     this.loading_validation_form_3=true;
     this.display_error_validator_3=false;
     let form =this.registerForm3.value;
+    let siret = form.siret;
+    let society = form.society;
     let birthday='';
-    if(this.registerForm3.controls['birthday'] && this.registerForm3.controls['birthday'].valid){
+    if( !this.type_of_account.includes('dit') && this.registerForm3.controls['birthday'] && this.registerForm3.controls['birthday'].valid){
       if(this.registerForm3.value.birthday._i.date){
         birthday = this.registerForm3.value.birthday._i.date  + '-' + this.registerForm3.value.birthday._i.month  + '-' + this.registerForm3.value.birthday._i.year ;
       }
@@ -2839,11 +2907,13 @@ export class AccountAboutComponent implements OnInit {
         birthday = this.registerForm3.value.birthday._i[2] + '-'+ this.registerForm3.value.birthday._i[1] +'-'+ this.registerForm3.value.birthday._i[0];
       }
     }
-    this.Profile_Edition_Service.edit_account_about_3(form.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),birthday).subscribe(l=>{
+
+   
+    this.Profile_Edition_Service.edit_account_about_3(form.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),birthday,siret,society).subscribe(l=>{
       this.firstName=form.firstName;
+      this.uploader.queue[0].upload();
       this.birthday=this.find_age(birthday)
-      this.loading_validation_form_3=false;
-      this.registerForm3_activated=false;
+     
     });
       
   
@@ -2863,14 +2933,15 @@ export class AccountAboutComponent implements OnInit {
 
 
   /* FORM 4 */
-  categories_retrieved=["Mangas","Livres","Livres jeunesses"];
+  categories_retrieved=[];
   build_form_4() {
-    
+    this.skills = Object.assign([], this.retrieved_skills);
     this.registerForm4 = this.formBuilder.group({      
       categories: new FormControl( this.categories_retrieved, [Validators.required]),
       skills: new FormControl( this.skills, [Validators.required]),
     });
 
+   
   }
 
   //primary description 
@@ -2897,7 +2968,11 @@ export class AccountAboutComponent implements OnInit {
     }
     this.loading_validation_form_4=true;
     this.display_error_validator_4=false;
-      
+    let categories = this.registerForm4.value.categories;
+    this.Profile_Edition_Service.edit_account_signup_page4(this.id_user,categories,this.skills).subscribe(r=>{    
+      this.loading_validation_form_4=false;
+      this.registerForm4_activated=false;
+    })
   
     
   }
@@ -2913,13 +2988,14 @@ export class AccountAboutComponent implements OnInit {
 
 
   /* FORM 4 */
-  published_categories_retrieved=["Mangas","Livres","Livres jeunesses","Comics"];
+  published_categories_retrieved=[];
   build_form_5() {
     
     this.registerForm5 = this.formBuilder.group({      
       categories: new FormControl( this.published_categories_retrieved, [Validators.required]),
       genres: new FormControl( this.genres, [Validators.required]),
     });
+    this.genres = Object.assign([], this.retrieved_genres);
 
   }
 
@@ -2962,12 +3038,14 @@ export class AccountAboutComponent implements OnInit {
 
 
 
-  /* FORM 4 */
+  /* FORM 6 */
   standard_price=0;
   standard_delay="4m";
   express_price=6;
   express_delay="1m";
 
+  instructions:any;
+  editor_default_response:any;
   indice_edited=-1;
   formula_in_edition=false;
 
@@ -2985,6 +3063,21 @@ export class AccountAboutComponent implements OnInit {
   "1m":"1 mois","6s":"6 semaines","7s":"7 semaines","2m":"2 mois",
   "3m":"3 mois","4m":"4 mois","5m":"5 mois","6m":"6 mois"}
 
+  edit_form_6(){
+    this.registerForm6_activated=true;
+    this.loading_validation_form_6=false;
+    this.display_error_validator_6=false;
+  }
+
+  loading_validation_form_6=false;
+  
+  cancel_form_6(){
+    this.registerForm6_activated=false;
+    this.loading_validation_form_6=false;
+    this.display_error_validator_6=false;
+  }
+
+
   build_form_6() {
     
     this.registerForm6 = this.formBuilder.group({
@@ -2995,6 +3088,20 @@ export class AccountAboutComponent implements OnInit {
       standard_delay: [this.standard_delay
       ],
       express_delay: [this.express_delay
+      ],
+      instructions: [this.instructions, 
+        Validators.compose([
+          Validators.minLength(3),
+          Validators.maxLength(400),
+          Validators.pattern(pattern("text_with_linebreaks")),
+        ]),
+      ],
+      editor_default_response: [this.editor_default_response, 
+        Validators.compose([
+          Validators.minLength(3),
+          Validators.maxLength(400),
+          Validators.pattern(pattern("text_with_linebreaks")),
+        ]),
       ],
     });
 
@@ -3069,45 +3176,37 @@ export class AccountAboutComponent implements OnInit {
   }
 
 
+  validate_form_6(){
+    //fonction backend
+    
+    if(this.loading_validation_form_6){
+      return
+    }
+    if(this.registerForm6.invalid ){
+      this.display_error_validator_6=true;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Le formulaire est incomplet ou invalide'},
+        panelClass: "popupConfirmationClass",
+      });
+      return 
+    }
+
+    this.loading_validation_form_6=true;
+    this.display_error_validator_6=false;
+    console.log(this.registerForm6.value.instructions)
+    this.Profile_Edition_Service.add_editor_instructions(this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm6.value.editor_default_response.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.standard_price,this.standard_delay,this.express_price,this.express_delay).subscribe(r=>{
+      this.loading_validation_form_6=false;
+      console.log(r)
+    })
+    
+      
+  
+    
+  }
   
   /********************************* FORTH PAGE / EDITORS ONLY *********************************/
   /********************************* FORTH PAGE / EDITORS ONLY *********************************/
 
-  /*society="society";
-
-  can_show_cover_editor=false;
-  can_show_pp_editor=false;
-
-
-  cover_picture_editor:any;
-  change_cover_picture() {
-    this.NavbarService.add_page_visited_to_history(`/PopupFormComponent/edit_cover_picture/signup`,this.device_info).subscribe();
-    const dialogRef = this.dialog.open(PopupFormComponent, {
-      data: {type:"edit_cover_picture_signup",id_user:this.id_user},
-      panelClass: 'popupUploadPictureClass',
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.cover_picture_editor=result;
-        this.can_show_cover_editor=true;
-      }
-    })
-  }
-
-  profile_picture_editor:any;
-  change_profile_picture() {
-    this.NavbarService.add_page_visited_to_history(`/PopupFormComponent/edit_profile_picture/signup`,this.device_info).subscribe();
-    const dialogRef = this.dialog.open(PopupFormComponent, {
-      data: {type:"edit_profile_picture_signup",id_user:this.id_user},
-      panelClass: 'popupUploadPictureClass',
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.profile_picture_editor=result;
-        this.can_show_pp_editor=true;
-      }
-    })
-  }*/
 
 
 
@@ -3120,7 +3219,7 @@ export class AccountAboutComponent implements OnInit {
   
   @ViewChild('genresInput') genresInput: ElementRef<HTMLInputElement>;
   genresCtrl = new FormControl();
-  retrieved_genres: string[] = ['Sport','Voyage'];
+  retrieved_genres: string[] = [];
   genres: string[] = Object.assign([], this.retrieved_genres);
   filteredGenres: Observable<string[]>;
   list_of_genres=this.ConstantsService.list_of_genres;
@@ -3132,7 +3231,7 @@ export class AccountAboutComponent implements OnInit {
     const input = event.input;
     const value = event.value;
 
-    if( this.genres.length >= 15 ) {
+    if( this.genres.length >= 20 ) {
       return;
     }
 
@@ -3176,7 +3275,7 @@ export class AccountAboutComponent implements OnInit {
     
     
 
-    if( this.genres.length >= 15 ) {
+    if( this.genres.length >= 20 ) {
       this.genresInput.nativeElement.value = '';
       this.genresCtrl.setValue(null);  
       return;
@@ -3203,7 +3302,7 @@ export class AccountAboutComponent implements OnInit {
 
   @ViewChild('skillsInput') skillsInput: ElementRef<HTMLInputElement>;
   skillsCtrl = new FormControl();
-  retrieved_skills: string[] = ['Articles historiques','Articles scientifiques'];
+  retrieved_skills: string[] = [];
   skills: string[] = Object.assign([], this.retrieved_skills);
   filteredSkills: Observable<string[]>;
   list_of_skills=this.ConstantsService.list_of_skills;
@@ -3215,7 +3314,7 @@ export class AccountAboutComponent implements OnInit {
     const input = event.input;
     const value = event.value;
 
-    if( this.skills.length >= 15 ) {
+    if( this.skills.length >= 20 ) {
       return;
     }
 
@@ -3259,7 +3358,7 @@ export class AccountAboutComponent implements OnInit {
     
     
 
-    if( this.skills.length >= 15 ) {
+    if( this.skills.length >= 20 ) {
       this.skillsInput.nativeElement.value = '';
       this.skillsCtrl.setValue(null);  
       return;
@@ -3325,244 +3424,7 @@ export class AccountAboutComponent implements OnInit {
 
 
   selected_country='Aucun pays';
-  list_of_countries=[
-    'Aucun pays',
-    "France",
-    "Afghanistan", 
-    "Afrique Centrale", 
-    "Afrique du sud", 
-    "Albanie", 
-    "Algerie", 
-    "Allemagne", 
-    "Andorre", 
-    "Angola", 
-    "Anguilla", 
-    "Arabie Saoudite", 
-    "Argentine", 
-    "Armenie", 
-    "Australie", 
-    "Autriche", 
-    "Azerbaidjan", 
-    "Bahamas", 
-    "Bangladesh", 
-    "Barbade", 
-    "Bahrein", 
-    "Belgique", 
-    "Belize", 
-    "Benin", 
-    "Bermudes", 
-    "Bielorussie", 
-    "Bolivie", 
-    "Botswana", 
-    "Bhoutan", 
-    "Boznie Herzegovine", 
-    "Bresil", 
-    "Brunei", 
-    "Bulgarie", 
-    "Burkina Faso", 
-    "Burundi", 
-    "Caiman", 
-    "Cambodge", 
-    "Cameroun", 
-    "Canada", 
-    "Canaries", 
-    "Cap vert", 
-    "Chili", 
-    "Chine", 
-    "Chypre", 
-    "Colombie", 
-    "Comores", 
-    "Congo", 
-    "Congo democratique", 
-    "Cook", 
-    "Coree du Nord", 
-    "Coree du Sud", 
-    "Costa Rica", 
-    "Cote d'Ivoire", 
-    "Croatie", 
-    "Cuba", 
-    "Danemark", 
-    "Djibouti", 
-    "Dominique", 
-    "Egypte", 
-    "Emirats Arabes Unis", 
-    "Equateur", 
-    "Erythree", 
-    "Espagne", 
-    "Estonie", 
-    "Etats-Unis", 
-    "Ethiopie", 
-    "Falkland", 
-    "Feroe", 
-    "Fidji", 
-    "Finlande", 
-    "France", 
-    "Gabon", 
-    "Gambie", 
-    "Georgie", 
-    "Ghana", 
-    "Gibraltar", 
-    "Grece", 
-    "Grenade", 
-    "Groenland", 
-    "Guadeloupe", 
-    "Guam", 
-    "Guatemala",
-    "Guernesey", 
-    "Guinee", 
-    "Guinee Bissau", 
-    "Guinee equatoriale", 
-    "Guyana", 
-    "Guyane Francaise ", 
-
-    "Haiti", 
-    "Hawaii", 
-    "Honduras", 
-    "Hong Kong", 
-    "Hongrie", 
-
-    "Inde", 
-    "Indonesie", 
-    "Iran", 
-    "Iraq", 
-    "Irlande", 
-    "Islande", 
-    "Israel", 
-    "Italie", 
-
-    "Jamaique", 
-    "Jan Mayen", 
-    "Japon", 
-    "Jersey", 
-    "Jordanie", 
-
-    "Kazakhstan", 
-    "Kenya", 
-    "Kirghizstan", 
-    "Kiribati", 
-    "Koweit", 
-
-    "Laos", 
-    "Lesotho", 
-    "Lettonie", 
-    "Liban", 
-    "Liberia", 
-    "Liechtenstein", 
-    "Lituanie", 
-    "Luxembourg", 
-    "Lybie", 
-
-    "Macao", 
-    "Macedoine", 
-    "Madagascar", 
-    "Madère", 
-    "Malaisie", 
-    "Malawi", 
-    "Maldives", 
-    "Mali", 
-    "Malte", 
-    "Man", 
-    "Mariannes du Nord", 
-    "Maroc", 
-    "Marshall", 
-    "Martinique", 
-    "Maurice", 
-    "Mauritanie", 
-    "Mayotte", 
-    "Mexique", 
-    "Micronesie", 
-    "Midway", 
-    "Moldavie", 
-    "Monaco", 
-    "Mongolie", 
-    "Montserrat", 
-    "Mozambique", 
-    "Namibie", 
-    "Nauru", 
-    "Nepal", 
-    "Nicaragua", 
-    "Niger", 
-    "Nigeria", 
-    "Niue", 
-    "Norfolk", 
-    "Norvege", 
-    "Nouvelle Caledonie", 
-    "Nouvelle Zelande", 
-    "Oman", 
-    "Ouganda", 
-    "Ouzbekistan", 
-    "Pakistan", 
-    "Palau", 
-    "Palestine", 
-    "Panama", 
-    "Papouasie Nouvelle Guinee", 
-    "Paraguay", 
-    "Pays Bas", 
-    "Perou", 
-    "Philippines", 
-    "Pologne", 
-    "Polynesie", 
-    "Porto Rico", 
-    "Portugal", 
-    "Qatar", 
-    "Republique Dominicaine", 
-    "Republique Tcheque", 
-    "Reunion", 
-    "Roumanie", 
-    "Royaume Uni", 
-    "Russie", 
-    "Rwanda", 
-    "Sahara Occidental",
-    "Sainte Lucie", 
-    "Saint Marin", 
-    "Salomon", 
-    "Salvador", 
-    "Samoa Occidentales",
-    "Samoa Americaine", 
-    "Sao Tome et Principe", 
-    "Senegal", 
-    "Seychelles", 
-    "Sierra Leone",
-    "Singapour", 
-    "Slovaquie", 
-    "Slovenie",
-    "Somalie", 
-    "Soudan", 
-    "Sri Lanka", 
-    "Suede", 
-    "Suisse", 
-    "Surinam", 
-    "Swaziland", 
-    "Syrie", 
-    "Tadjikistan", 
-    "Taiwan", 
-    "Tonga", 
-    "Tanzanie", 
-    "Tchad", 
-    "Thailande", 
-    "Tibet", 
-    "Timor Oriental", 
-    "Togo", 
-    "Trinite et Tobago", 
-    "Tristan da cunha",
-    "Tunisie", 
-    "Turkmenistan", 
-    "Turquie", 
-    "Ukraine", 
-    "Uruguay", 
-    "Vanuatu", 
-    "Vatican", 
-    "Venezuela", 
-    "Vierges Americaines", 
-    "Vierges Britanniques", 
-    "Vietnam", 
-    "Wake", 
-    "Wallis et Futuma", 
-    "Yemen", 
-    "Yougoslavie", 
-    "Zambie", 
-    "Zimbabwe",
-  ]
+  list_of_countries=this.ConstantsService.list_of_countries;
 
   adding_city(){
     if(this.registerForm2.value.city && this.registerForm2.value.city.length>0){

@@ -271,7 +271,7 @@ export class AddComicComponent implements OnInit {
         /********************** A CHANGER (ENLEVER COULEUR) ************************/
         
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.bdOneShotService.ModifyBdOneShot(this.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.monetised )
+          this.bdOneShotService.ModifyBdOneShot(this.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised )
           .subscribe(inf=>{
             this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
               this.CURRENT_step++;
@@ -287,7 +287,7 @@ export class AddComicComponent implements OnInit {
         }
         //Else if NEW Step1
         else {
-          this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.monetised )
+          this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised )
           .subscribe((val)=> {
             this.bd_id=val[0].bd_id;
               this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
@@ -312,7 +312,7 @@ export class AddComicComponent implements OnInit {
         /********************** A CHANGER (ENLEVER COULEUR) ************************/
         
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.bdSerieService.ModifyBdSerie(this.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.monetised )
+          this.bdSerieService.ModifyBdSerie(this.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised )
           .subscribe(inf=>{
             this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(m=>{
               this.bdSerieService.modify_chapter_bd_serie(this.bd_id,1,this.f00SerieFirstChapter.value).subscribe(m=>{
@@ -329,7 +329,7 @@ export class AddComicComponent implements OnInit {
         }
         //Else if NEW Step1
         else {
-          this.bdSerieService.CreateBdSerie(this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''), this.monetised )
+          this.bdSerieService.CreateBdSerie(this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised )
           .subscribe((val)=> {
             this.bd_id=val[0].bd_id;
             this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{

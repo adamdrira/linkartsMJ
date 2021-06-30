@@ -1,15 +1,17 @@
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
-import { ConstantsService } from '../services/constants.service';
+import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-import { FileUploader, FileItem } from 'ng2-file-upload';
+import { FileUploader } from 'ng2-file-upload';
 import { DomSanitizer } from '@angular/platform-browser';
+
+const url = 'http://localhost:4600/routes/upload_artwork_for_editor/';
 
 @Component({
   selector: 'app-popup-editor-artwork',
@@ -39,10 +41,9 @@ export class PopupEditorArtworkComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private sanitizer:DomSanitizer, 
-    private cd: ChangeDetectorRef,
     public navbar: NavbarService,
+    private Profile_Edition_Service:Profile_Edition_Service,
     public dialogRef: MatDialogRef<PopupEditorArtworkComponent,any>,
-    private ConstantsService:ConstantsService,
     public dialog: MatDialog,
     @Inject(DOCUMENT) private document: Document,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
@@ -55,7 +56,8 @@ export class PopupEditorArtworkComponent implements OnInit {
     })
 
     this.uploader = new FileUploader({
-    itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
+    itemAlias: 'image', 
+    url:url,
 
     });
 
@@ -64,9 +66,12 @@ export class PopupEditorArtworkComponent implements OnInit {
   }
 
   show_icon=false;
-  
+  id_user:number;
+  file_name='';
   
   ngOnInit(): void {
+    
+    this.id_user=this.data.id_user;
     this.build_form();
 
     
@@ -94,6 +99,16 @@ export class PopupEditorArtworkComponent implements OnInit {
           });
         }
         else{
+          var today = new Date();
+          var ss = String(today.getSeconds()).padStart(2, '0');
+          var mi = String(today.getMinutes()).padStart(2, '0');
+          var hh = String(today.getHours()).padStart(2, '0');
+          var dd = String(today.getDate()).padStart(2, '0');
+          var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+          var yyyy = today.getFullYear();
+          let Today = yyyy + mm + dd + hh+ mi + ss;
+          this.file_name = this.id_user + '-' + Today + '.' + sufix;
+
           let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
           this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
           this.image_uploaded = true;
@@ -122,20 +137,19 @@ export class PopupEditorArtworkComponent implements OnInit {
         Validators.compose([
           Validators.required,
           Validators.minLength(2),
-          Validators.maxLength(100),
+          Validators.maxLength(200),
           Validators.pattern(pattern("text")),
         ]),
       ],
       description: new FormControl( '', [
         Validators.minLength(2),
-        Validators.maxLength(200),
+        Validators.maxLength(500),
         Validators.required,
         Validators.pattern(pattern("text_with_linebreaks")),
       ]),
       link: new FormControl( '', [
         Validators.minLength(2),
-        Validators.maxLength(500),
-        Validators.required,
+        Validators.maxLength(200),
         Validators.pattern(pattern("link")),
       ]),
       
@@ -176,6 +190,15 @@ export class PopupEditorArtworkComponent implements OnInit {
       }
       else {
 
+        let URL = url + `${this.file_name}`;
+        this.uploader.setOptions({ url: URL});
+        this.uploader.queue[0].upload();
+
+        this.Profile_Edition_Service.add_editor_artwork(this.registerForm.value.title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.authors.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.link?this.registerForm.value.link:'',this.file_name).subscribe(r=>{
+          console.log("after file added")
+          console.log(r)
+          this.dialogRef.close(r[0]);
+        })
 
 
       }

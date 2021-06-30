@@ -123,7 +123,6 @@ export class PopupNavbarComponent implements OnInit {
   data_retrieved=this.data.data_retrieved;
   number_of_empties=this.data.number_of_empties
  
-  list_of_conditions=this.data.list_of_conditions;
   list_of_account_groups_names=this.data.list_of_account_groups_names;
   list_of_account_groups_ids=this.data.list_of_account_groups_ids;
   list_of_account_groups_status=this.data.list_of_account_groups_status;

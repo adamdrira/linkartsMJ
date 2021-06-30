@@ -16,6 +16,8 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
 import * as WebFont from 'webfontloader';
 
+
+
 @Component({
   selector: 'app-add-artwork',
   templateUrl: './add-artwork.component.html',

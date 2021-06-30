@@ -35,8 +35,6 @@ export class UploaderProfilePictureComponent implements OnInit {
   constructor(
     private sanitizer:DomSanitizer, 
     private Profile_Edition_Service:Profile_Edition_Service,
-    private router: Router,
-    private cd: ChangeDetectorRef,
     public dialog: MatDialog,
     private navbar: NavbarService,
     ) { 
@@ -87,7 +85,7 @@ export class UploaderProfilePictureComponent implements OnInit {
   ngOnInit() {
 
     if(this.id_user){
-      this.type_of_account="editor"
+      this.type_of_account="editor";
     }
     else{
       this.Profile_Edition_Service.get_current_user().subscribe(r=>{
@@ -183,6 +181,7 @@ export class UploaderProfilePictureComponent implements OnInit {
       if(this.id_user){
         this.Profile_Edition_Service.send_profile_pic_to_data_signup(blob,this.id_user).subscribe(res=>{
           this.send_picture.emit({image_to_show:this.image_to_show});
+          this.loading=false;
         },
         error => {
             this.loading = false;

@@ -117,22 +117,22 @@ export class PopupReportComponent implements OnInit {
     if(this.from_account){
       if(this.open_plagiarism){
         this.type_of_report="plagiarism_from_content";
-        this.message=this.registerForm1.value.message_for_plagiarism;
+        this.message=this.registerForm1.value.message_for_plagiarism.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
        
       }
       else{
         this.type_of_report="inappropriate_from_content";
-        this.message=this.registerForm.value.message_for_content;
+        this.message=this.registerForm.value.message_for_content.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
       }
     }
     else{
       if(this.open_plagiarism){
         this.type_of_report="plagiarism";
-        this.message=this.registerForm1.value.message_for_plagiarism;
+        this.message=this.registerForm1.value.message_for_plagiarism.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
       }
       else{
         this.type_of_report="inappropriate";
-        this.message=this.registerForm.value.message_for_content;
+        this.message=this.registerForm.value.message_for_content.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
       }
     }
     
