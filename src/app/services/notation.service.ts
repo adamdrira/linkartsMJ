@@ -207,4 +207,10 @@ export class NotationService {
         return information;
       }));
     }
+
+    get_user_public_stats(pseudo){
+      return this.httpClient.get(`routes/get_user_public_stats/${pseudo}`, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
 }

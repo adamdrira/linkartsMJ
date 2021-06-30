@@ -301,22 +301,35 @@ export class Profile_Edition_Service {
     }));
   }
 
-  edit_account_about_1(type_of_account,siret,primary_description,primary_description_extended,job,training){
-    return this.httpClient.post('routes/edit_account_about_1', {type_of_account:type_of_account, siret:siret,primary_description:primary_description,primary_description_extended:primary_description_extended,training:training, job:job},{withCredentials: true}  ).pipe(map((information)=>{
+  edit_account_about_1(type_of_account,primary_description,primary_description_extended){
+    return this.httpClient.post('routes/edit_account_about_1', {type_of_account:type_of_account,primary_description:primary_description,primary_description_extended:primary_description_extended},{withCredentials: true}  ).pipe(map((information)=>{
       return information;
     }));
   }
 
-  edit_account_about_2(location,email_about){
-    return this.httpClient.post('routes/edit_account_about_2', { email_about:email_about, location:location},{withCredentials: true}  ).pipe(map((information)=>{
+  edit_account_about_2(location,email_about,phone_about,links){
+    return this.httpClient.post('routes/edit_account_about_2', { email_about:email_about, location:location,phone_about:phone_about,links:links},{withCredentials: true}  ).pipe(map((information)=>{
       return information;
     }));
 
   }
 
-  edit_account_about_3(firstname,birthday) {
-    return this.httpClient.post('routes/edit_account_about_3',{firstname:firstname,birthday:birthday},{withCredentials:true} ).pipe(map((information)=>{
+  edit_account_about_3(firstname,birthday,siret,society) {
+    return this.httpClient.post('routes/edit_account_about_3',{firstname:firstname,birthday:birthday,siret:siret,society:society},{withCredentials:true} ).pipe(map((information)=>{
       return information;
+    }));
+  }
+
+  remove_cv(cv) {
+    return this.httpClient.delete(`routes/remove_cv/${cv}`,{withCredentials: true} ).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+  retrieve_cv(pseudo){
+    return this.httpClient.get(`routes/retrieve_cv/${pseudo}`, {withCredentials:true,responseType:'blob'}).pipe(map(information=>{
+      console.log(information)
+      return information;   
     }));
   }
 
@@ -496,8 +509,74 @@ export class Profile_Edition_Service {
   };
 
   remove_emphasizing(category:string,format:string,publication_id:number) {
-  return this.httpClient.post('routes/remove_emphasizing', {category:category,format:format,publication_id:publication_id}, {withCredentials:true}).pipe(map(information=>{
-    return information;
-  }));
+    return this.httpClient.post('routes/remove_emphasizing', {category:category,format:format,publication_id:publication_id}, {withCredentials:true}).pipe(map(information=>{
+      return information;
+    }));
   };
+
+
+  get_user_news(pseudo){
+    console.log("get_user_news")
+    return this.httpClient.get(`routes/get_user_news/${pseudo}`).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+  add_user_news(piece_of_news){
+    return this.httpClient.post(`routes/add_user_news`,{piece_of_news:piece_of_news}, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+  update_user_news(piece_of_news){
+    return this.httpClient.post(`routes/update_user_news`,{piece_of_news:piece_of_news}, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+  remove_user_news(id_news){
+    return this.httpClient.post(`routes/remove_user_news`,{id_news:id_news}, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+
+  get_number_of_followers(){
+    return this.httpClient.get(`https://www.instagram.com/driradam`, {withCredentials:true,responseType:'json'}).pipe(map(information=>{
+        return information;
+      }));
+  };
+  
+
+  
+  add_editor_instructions(add_editor_instructions,editor_default_response,standard_price,standard_delay,express_price,express_delay){
+    return this.httpClient.post(`routes/add_editor_instructions`,{add_editor_instructions:add_editor_instructions,editor_default_response:editor_default_response,standard_price:standard_price,standard_delay:standard_delay,express_price:express_price,express_delay:express_delay}, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+  add_editor_artwork(title,description,authors,link,picture_name){
+    return this.httpClient.post(`routes/add_editor_artwork`,{title:title,description:description,authors:authors,link:link,picture_name:picture_name}, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+  remove_editor_artwork(id_artwork){
+    return this.httpClient.post(`routes/remove_editor_artwork`,{id_artwork:id_artwork}, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+  get_editor_artworks(pseudo){
+    return this.httpClient.get(`routes/get_editor_artworks/${pseudo}`, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  };
+
+  
+  retrieve_editor_artwork_picture(picture_name){
+    return this.httpClient.get(`routes/retrieve_editor_artwork_picture/${picture_name}`, {responseType:'blob'} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
 }

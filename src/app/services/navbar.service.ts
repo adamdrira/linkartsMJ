@@ -344,4 +344,11 @@ export class NavbarService {
       return information;
     }));
   }
+
+
+  get_number_of_account_viewers(){
+    return this.httpClient.get(`routes/get_number_of_account_viewers`, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
+  }
 }
