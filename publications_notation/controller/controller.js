@@ -3711,4 +3711,82 @@ module.exports = (router,
         }
     
     });
+
+
+    router.get('/get_user_public_stats/:pseudo', function (req, res) {
+
+        if( ! req.headers['authorization'] ) {
+          return res.status(401).json({msg: "error"});
+        }
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
+        }
+        let pseudo = req.params.pseudo;
+        
+        
+
+        let likes=0;
+        let views=0;
+        let loves=0
+        let compteur_category=0;
+
+
+        User.findOne({
+            where:{
+                nickname:pseudo
+            }
+        }).then(r=>{
+            if(r){
+                get_stats(r)
+            }
+            else{
+                return res.status(200).json([{likes:likes,loves:loves,views:views}]);
+            }
+        })
+  
+        function get_stats(user){
+            Liste_of_likes.count({
+                where:{
+                    author_id_liked:user.id
+                }
+            }).then(num=>{
+                likes=num;
+                compteur_category+=1
+                if(compteur_category==3){
+                    return res.status(200).json([{likes:likes,loves:loves,views:views}]);
+                }
+            })
+
+            List_of_views.count({
+                where:{
+                    author_id_viewed:user.id
+                }
+            }).then(num=>{
+                views=num;
+                compteur_category+=1
+                if(compteur_category==3){
+                    return res.status(200).json([{likes:likes,loves:loves,views:views}]);
+                }
+            })
+
+            Liste_of_loves.count({
+                where:{
+                    author_id_loved:user.id
+                }
+            }).then(num=>{
+                loves=num;
+                compteur_category+=1
+                if(compteur_category==3){
+                    return res.status(200).json([{likes:likes,loves:loves,views:views}]);
+                }
+            })
+        }
+        
+          
+      
+    });
 }

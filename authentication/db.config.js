@@ -37,4 +37,7 @@ db.users_connexions= require('./user.model.js')(sequelize, Sequelize).users_conn
 db.users_ips= require('./user.model.js')(sequelize, Sequelize).users_ips;
 db.users_visited_pages= require('./user.model.js')(sequelize, Sequelize).users_visited_pages;
 db.users_contact_us= require('./user.model.js')(sequelize, Sequelize).users_contact_us;
+db.users_news= require('./user.model.js')(sequelize, Sequelize).users_news;
+db.editor_artworks= require('./user.model.js')(sequelize, Sequelize).editor_artworks;
+
 module.exports = db;

@@ -813,6 +813,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
           return res.status(401).json({msg: "error"});
         }
       }
+      console.log("retrieve_ad_by_id")
       const id= parseInt(req.params.id);
         list_of_ads.findOne({
            where: {
@@ -820,10 +821,16 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
            },
          })
          .catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(ad =>  {
-           res.status(200).send([ad]);
+          console.log(err)
+            res.status(500).json({msg: "error", details: err});		
+          }).then(ad =>  {
+            if(ad){
+              res.status(200).send([ad]);
+            }
+            else{
+              res.status(200).send([null]);
+            }
+           
          }); 
    });
 

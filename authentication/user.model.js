@@ -8,6 +8,7 @@ module.exports = (sequelize, Sequelize) => {
 		certified_account:{type: Sequelize.BOOLEAN},
 		email: {type: Sequelize.STRING},
 		email_about: {type: Sequelize.STRING},
+		phone_about: {type: Sequelize.STRING},
 		email_checked:{type: Sequelize.BOOLEAN},
 		email_authorization:{type: Sequelize.STRING},
 		nickname: {type: Sequelize.STRING},
@@ -47,6 +48,8 @@ module.exports = (sequelize, Sequelize) => {
 
 		editor_categories:Sequelize.ARRAY(Sequelize.STRING),
 		editor_genres:Sequelize.ARRAY(Sequelize.STRING),
+		editor_instructions:{type: Sequelize.STRING(500)},
+		editor_default_response :{type: Sequelize.STRING(500)},
 		express_delay:{type: Sequelize.STRING},
 		express_price:{type: Sequelize.INTEGER},
 		standard_delay:{type: Sequelize.STRING},
@@ -55,7 +58,8 @@ module.exports = (sequelize, Sequelize) => {
 		artist_categories:Sequelize.ARRAY(Sequelize.STRING),
 		skills:Sequelize.ARRAY(Sequelize.STRING),
 		links:{type:Sequelize.JSON},
-		
+
+		cv:{type: Sequelize.STRING},
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,
@@ -77,6 +81,32 @@ module.exports = (sequelize, Sequelize) => {
 		drawings_stats:{type: Sequelize.STRING}, 
 		writings_stats:{type: Sequelize.STRING},
 		profile_stats:{type: Sequelize.STRING},
+
+	},
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name,
+		//timestamps: false,
+	});
+
+	const users_news = sequelize.define('users_news', {
+		id_user:{type: Sequelize.INTEGER},
+		piece_of_news:{type: Sequelize.STRING},
+		status:{type: Sequelize.STRING},
+
+	},
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name,
+		//timestamps: false,
+	});
+
+	const editor_artworks = sequelize.define('editor_artworks', {
+		id_user:{type: Sequelize.INTEGER},
+		title:{type: Sequelize.STRING},
+		description:{type: Sequelize.STRING(500)},
+		authors:{type: Sequelize.STRING(500)},
+		link:{type: Sequelize.STRING},
+		picture_name:{type: Sequelize.STRING},
+		status:{type: Sequelize.STRING},
 
 	},
 	{
@@ -239,5 +269,5 @@ module.exports = (sequelize, Sequelize) => {
 		//timestamps: false,
 	});
 
-	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing,users_strikes,users_cookies,users_remuneration,users_connexions,users_ips,users_visited_pages,users_contact_us};
+	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing,users_strikes,users_cookies,users_remuneration,users_connexions,users_ips,users_visited_pages,users_contact_us,users_news,editor_artworks};
 }

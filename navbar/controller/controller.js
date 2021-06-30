@@ -2,21 +2,21 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
-const pool = new Pool({
+/*const pool = new Pool({
     port: 5432,
     database: 'linkarts',
     user: 'adamdrira',
     password: 'E273adamZ9Qvps',
     host: 'localhost',
-});
+});*/
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});*/
+});
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -2707,6 +2707,82 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
 
+
+    router.get('/get_number_of_account_viewers',function(req,res){
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
+          }
+          else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+              return res.status(401).json({msg: "error"});
+            }
+          }
+        let id_user = get_current_user(req.cookies.currentUser);
+        let views=0;
+        let views_after_research=0;
+        let compteur=0;
+        console.log("get_number_of_account_viewers")
+        list_of_users.findOne({
+            where:{
+                id:id_user,
+            }
+        }).catch(err => {
+        
+            res.status(500).json({msg: "error", details: err});		
+        }).then(user=>{
+            if(user){
+                get_number_of_views(user)
+            }
+            else{
+                return res.status(200).json([{views:views,views_after_research:views_after_research}]);
+            }
+        })
+
+        
+        
+
+        function get_number_of_views(user){
+            list_of_navbar_researches.count({
+                where:{
+                    status:"clicked",
+                    target_id:user.id,
+                    publication_category:'Account',
+                }
+            }).catch(err => {
+                    
+                res.status(500).json({msg: "error", details: err});		
+            }).then(num=>{
+
+                views=num;
+                compteur++;
+                if(compteur==2){
+                    return res.status(200).json([{views:views,views_after_research:views_after_research}]);
+                }
+            })
+
+            list_of_navbar_researches.count({
+                where:{
+                    status:"clicked_after_research",
+                    target_id:user.id,
+                    publication_category:'Account',
+                }
+            }).catch(err => {
+                    
+                res.status(500).json({msg: "error", details: err});		
+            }).then(num=>{
+
+                views_after_research=num;
+                compteur++;
+                if(compteur==2){
+                    return res.status(200).json([{views:views,views_after_research:views_after_research}]);
+                }
+            })
+        }
+
+       
+    })
 
 
 

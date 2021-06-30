@@ -28,6 +28,8 @@ module.exports = (router,
   users_remuneration,
   users_visited_pages,
   users_contact_us,
+  users_news,
+  editor_artworks,
   List_of_views,
   List_of_likes,
   List_of_loves,
@@ -987,7 +989,6 @@ router.post('/retrieve_number_of_contents', function (req, res) {
                 status:"public"
               }
             }).catch(err => {
-              console.log(err)
               res.status(500).json({msg: "error", details: err});		
             }).then(drawings_os=>{
               number_of_drawings+=drawings_os?drawings_os.length:0;
@@ -1341,9 +1342,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     }
 
     const categories=req.body.categories;
-    const skills= req.body.genres;
+    const skills= req.body.skills;
     const id_user=req.body.id_user;
-    
     users.findOne({
       where: {
         id: id_user,
@@ -1420,8 +1420,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     const primary_description= req.body.primary_description;
     const primary_description_extended= req.body.primary_description_extended;
     const training = req.body.training;
-    const job = req.body.job;
     const siret = req.body.siret;
+    const society = req.body.society;
     users.findOne({
       where: {
         id: current_user,
@@ -1433,11 +1433,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 		}).then(User =>  {
       User.update({
         "type_of_account":type_of_account,
-        "siret":siret,
         "training":training,
+        "society":society,
+        "siret":siret,
         "primary_description_extended":primary_description_extended,
         "primary_description":primary_description,
-        "job":job,
       }).catch(err => {
         
         res.status(500).json({msg: "error", details: err});		
@@ -1463,6 +1463,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     
     const email_about=req.body.email_about;
     const location= req.body.location;
+    const phone_about=req.body.phone_about;
+    const links= req.body.links;
     users.findOne({
       where: {
         id: current_user,
@@ -1475,6 +1477,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       User.update({
         "email_about":email_about,
         "location":location,
+        "phone_about":phone_about,
+        "links":links,
       }).catch(err => {
         
         res.status(500).json({msg: "error", details: err});		
@@ -3309,7 +3313,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     }); 
 
  
-});
+  });
   
 
 
@@ -4159,4 +4163,541 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     res.status(200).send([{ id: session.id, key:stripe_key}]);
   });
  
+
+  router.post('/upload_cv', function (req, res) {
+    let current_user = get_current_user(req.cookies.currentUser);
+    if(!current_user){
+      return res.status(401).json({msg: "error"});
+    }
+    var file_name='';
+    const PATH1= './data_and_routes/cvs';
+    
+
+    let storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, PATH1);
+      },
+
+      filename: (req, file, cb) => {
+        var today = new Date();
+        var ss = String(today.getSeconds()).padStart(2, '0');
+        var mi = String(today.getMinutes()).padStart(2, '0');
+        var hh = String(today.getHours()).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+        var yyyy = today.getFullYear();
+        let Today = yyyy + mm + dd + hh+ mi + ss;
+        file_name = current_user + '-' + Today + path.extname(file.originalname);
+        cb(null, current_user + '-' + Today + path.extname(file.originalname));
+        //enlever nickname
+      }
+    });
+
+    let upload = multer({
+      storage: storage
+    }).any();
+
+    upload(req, res, function(err) {
+      if (err) {
+        return res.send({
+          success: false
+        });
+    
+      } else { 
+        users.update({
+          "cv":file_name  
+        },{
+        where:{
+          id:current_user,
+          }
+        }).then(r=>{
+          return res.status(200).send([{file_name:file_name}])
+        })
+      }
+    })
+  });
+
+  router.get('/retrieve_cv/:pseudo', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+   
+    pseudo=req.params.pseudo;
+    users.findOne({
+      where:{
+        nickname:pseudo  
+      }
+    }).then(r=>{
+      if(r){
+        let filename = "./data_and_routes/cvs/" + r.cv;
+        fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/file-not-found.pdf";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(res);
+          }  
+          else{
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(res);
+          }     
+        })
+      }
+      else{
+        let  filename = "./data_and_routes/file-not-found.pdf";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(res);
+      }
+     
+    })
+      
+
+
+
+  });
+
+  router.delete('/remove_cv/:cv', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    let current_user = get_current_user(req.cookies.currentUser);
+    const name_cv  = req.params.cv;
+    fs.access('./data_and_routes/cvs/' + name_cv, fs.F_OK, (err) => {
+      if(err){
+        return res.status(200).send([{delete:'suppression done'}])
+      }
+      
+      fs.unlink('./data_and_routes/cvs/' + name_cv,  function (err) {
+        if (err) {
+          return res.status(200).send([{delete:'suppression done'}])
+        }  
+        else {
+          users.update({
+              "cv":null  
+            },{
+            where:{
+              id:current_user,
+            }
+          }).then(r=>{
+            return res.status(200).send([{delete:'suppression done'}])
+          })
+         
+        }
+      });
+    });
+  });
+
+
+  router.get('/get_user_news/:pseudo', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    let pseudo=req.params.pseudo;
+
+    users.findOne({
+      where:{
+        nickname:pseudo
+      }
+    }).then(user=>{
+      if(user){
+        users_news.findAll({
+          where:{
+            id_user:user.id,
+            status:"public"
+          },
+          limit:50,
+          order: [
+            ['createdAt', 'DESC']
+          ],
+        })
+        .catch(err => {
+          
+          res.status(500).json({msg: "error", details: err});		
+        }).then(news =>  {
+          if(news){
+              res.status(200).send([news])
+          }
+        }); 
+      }
+      else{
+        res.status(200).send([null])
+      }
+    })
+    
+
+ 
+  });
+
+  router.post('/add_user_news', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    let current_user = get_current_user(req.cookies.currentUser);
+    let piece_of_news=req.body.piece_of_news;
+    users_news.create({
+      "id_user":current_user,
+      "piece_of_news": piece_of_news,
+      "status":"public",
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(piece =>  {
+      if(piece){
+          res.status(200).send([piece])
+      }
+    }); 
+
+ 
+  });
+
+  router.post('/update_user_news', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let id_news=req.body.id_news;
+    let piece_of_news=req.body.piece_of_news;
+    users_news.update({
+      "status":"public",
+      "piece_of_news":piece_of_news,
+    },{
+      where:{
+        id:id_news
+      }
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(piece =>  {
+      if(piece){
+          res.status(200).send([piece])
+      }
+    }); 
+
+ 
+  });
+
+  router.post('/remove_user_news', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let id_news=req.body.id_news;
+    users_news.update({
+      "status":"deleted",
+    },{
+      where:{
+        id:id_news
+      }
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(piece =>  {
+      if(piece){
+          res.status(200).send([piece])
+      }
+    }); 
+
+ 
+  });
+
+  router.post('/add_editor_instructions', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    let current_user = get_current_user(req.cookies.currentUser);
+    let editor_instructions=req.body.editor_instructions;
+    let editor_default_response=req.body.editor_default_response;
+    const standard_price= req.body.standard_price;
+    const standard_delay = req.body.standard_delay;
+    const express_price = req.body.express_price;
+    const express_delay = req.body.express_delay;
+    users.update(
+      {
+      "editor_instructions": editor_instructions,
+      "editor_default_response":editor_default_response,
+      "standard_price":standard_price,
+      "standard_delay":standard_delay,
+      "express_price":express_price,
+      "express_delay":express_delay,
+    },{
+      where:{
+        id:current_user
+      }
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(piece =>  {
+      if(piece){
+          res.status(200).send([piece])
+      }
+    }); 
+
+ 
+  });
+
+  router.post('/remove_editor_artwork', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let id_artwork=req.body.id_artwork;
+    editor_artworks.update({
+      "status":"deleted",
+    },{
+      where:{
+        id:id_artwork
+      }
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(piece =>  {
+      if(piece){
+          res.status(200).send([piece])
+      }
+    }); 
+
+ 
+  });
+
+  router.get('/get_editor_artworks/:pseudo', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    let pseudo=req.params.pseudo;
+
+    users.findOne({
+      where:{
+        nickname:pseudo
+      }
+    }).then(user=>{
+      if(user){
+        editor_artworks.findAll({
+          where:{
+            id_user:user.id,
+            status:"public"
+          },
+          limit:6,
+          order: [
+            ['createdAt', 'DESC']
+          ],
+        })
+        .catch(err => {
+          
+          res.status(500).json({msg: "error", details: err});		
+        }).then(artwork =>  {
+          if(artwork){
+              res.status(200).send([artwork])
+          }
+        }); 
+      }
+      else{
+        res.status(200).send([null])
+      }
+    })
+    
+
+ 
+  });
+
+  router.post('/add_editor_artwork', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    let current_user = get_current_user(req.cookies.currentUser);
+    let picture_name=req.body.picture_name;
+    const title= req.body.title;
+    const description = req.body.description;
+    const link = req.body.link;
+    const authors = req.body.authors;
+    editor_artworks.create(
+      {
+      "id_user": current_user,
+      "title":title,
+      "description":description,
+      "authors":authors,
+      "link":link,
+      "picture_name":picture_name,
+      "status":"public",
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(artwork =>  {
+      if(artwork){
+          res.status(200).send([artwork])
+      }
+    }); 
+
+ 
+  });
+
+
+  router.post('/upload_artwork_for_editor/:file_name', function (req, res) {
+    let current_user = get_current_user(req.cookies.currentUser);
+    if(!current_user){
+      return res.status(401).json({msg: "error"});
+    }
+    var filename = ''
+    let PATH = './data_and_routes/editor_artworks/';
+
+    var storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, PATH);
+          },
+        filename: (req, file, cb) => {
+            filename = req.params.file_name
+            cb(null,filename);
+          }
+    });
+    
+    var upload = multer({
+        storage: storage
+    }).any();
+
+    upload(req, res, function(err) {
+        (async () => {
+        if (err) {
+            return res.end('Error');
+        } else {
+            let file_name = "./data_and_routes/editor_artworks/" + filename ;
+            const files = await imagemin([file_name], {
+              destination: './data_and_routes/editor_artworks',
+              plugins: [
+                imageminPngquant({
+                  quality: [0.85, 0.95]
+              })
+              ]
+            });
+            res.status(200).send(([{ "picture_name": filename}]))
+        }
+        })();
+    });
+  });
+
+  router.get('/retrieve_editor_artwork_picture/:picture_name', function (req, res) {
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+
+    const picture_name = parseInt(req.params.picture_name);
+    
+      let transform = sharp()
+        transform = transform.resize({fit:sharp.fit.contain,height:275})
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+        });
+        let filename = "./data_and_routes/editor_artworks/" + picture_name;
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(transform)
+          }  
+          else{
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(transform)
+          }     
+        })
+      
+
+
+  });
+
 }
