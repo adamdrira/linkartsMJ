@@ -1,29 +1,25 @@
-
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SignupRoutingModule } from './signup-routing';
-import { SignupComponent } from '../signup/signup.component';
+import { RouterModule} from '@angular/router';
 
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+import { PopupApplyComponent } from '../popup-apply/popup-apply.component';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule} from '@angular/material/checkbox';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
+
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatSliderModule } from '@angular/material/slider';
-import { CommonComponentsModule } from './common-components.module';
-import { AngularResizedEventModule } from 'angular-resize-event';
-
-
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { FileUploadModule } from 'ng2-file-upload';
+import { ToastrModule } from 'ngx-toastr';
 
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -32,35 +28,36 @@ import { ErrorInterceptor } from '../helpers/error.interceptor';
 import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
 
 
-
 @NgModule({
   declarations: [
-    SignupComponent,
+   
+    PopupApplyComponent,
   ],
   imports: [
+    RouterModule,
     CommonModule,
-    SignupRoutingModule,
-    CommonComponentsModule,
-    AngularResizedEventModule,
+    LazyLoadImageModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    FileUploadModule,
     FormsModule,
     ReactiveFormsModule,
-    MatCheckboxModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatToolbarModule,
-    MatNativeDateModule,
-    MatTooltipModule,
-    MatSlideToggleModule,
-    MatSliderModule,
-    MatDatepickerModule,
-    LazyLoadImageModule,
-    MatChipsModule,
     MatAutocompleteModule,
-    
+    MatChipsModule,
+    MatInputModule,
+    MatSelectModule,
+    DragDropModule,
+    MatExpansionModule,
+    MatInputModule,
+    MatSelectModule,
+    DragDropModule,
+    ToastrModule,
+  ],
+  exports: [
+    PopupApplyComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -69,9 +66,8 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
       provide: MatDialogRef,
       useValue: {}
     },
-    MatDatepickerModule,
     { provide: LAZYLOAD_IMAGE_HOOKS, useClass: ScrollHooks },
   ]
+
 })
-export class SignupModuleModule { 
-}
+export class ApplyModule { }

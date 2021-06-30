@@ -1,10 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener, QueryList } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, QueryList, Inject } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import { ChatService } from '../services/chat.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { DOCUMENT, Location } from '@angular/common';
 import { Reports_service } from '../services/reports.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -23,6 +23,7 @@ import { PopupStoriesComponent } from '../popup-stories/popup-stories.component'
 import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
+import { PopupEditorArtworkComponent } from '../popup-editor-artwork/popup-editor-artwork.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Story_service } from '../services/story.service';
 import { NotificationsService } from '../services/notifications.service';
@@ -31,6 +32,8 @@ import {LoginComponent} from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import {date_in_seconds} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
+import {get_date_to_show_navbar} from '../helpers/dates';
+import { merge, fromEvent } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { pattern } from '../helpers/patterns';
@@ -42,6 +45,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faPinterest } from '@fortawesome/free-brands-svg-icons';
+import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 
 declare var $: any;
 declare var Swiper:any;
@@ -96,7 +100,8 @@ export class AccountComponent implements OnInit {
     private Ads_service:Ads_service,
     private formBuilder: FormBuilder,
     private title: Title,
-    private meta: Meta
+    private meta: Meta,
+    @Inject(DOCUMENT) private document: Document,
     ) {
 
     navbar.visibility_observer_font.subscribe(font=>{
@@ -209,7 +214,9 @@ export class AccountComponent implements OnInit {
               this.list_of_ads_responses[i+ len]=r[0][i];
               this.list_of_ads_responses_dates[i + len]= get_date_to_show_for_ad(date_in_seconds(this.now_in_seconds,r[0][i].createdAt) );
                 this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).subscribe(m=>{
-                  this.list_of_ads_responses_data[i+ len]=m[0];
+                  if(m[0]){
+                    this.list_of_ads_responses_data[i+ len]=m[0];
+                  }
                   this.cd.detectChanges();
                   compt++;
                   if(compt==r[0].length){
@@ -392,9 +399,7 @@ export class AccountComponent implements OnInit {
   user_blocked_retrieved=false;
 
 
-  links_titles:any[]=[];
-  links:any[]=[];
-  links_retrieved=false;
+  links:any;
 
 
 
@@ -414,6 +419,8 @@ export class AccountComponent implements OnInit {
 
   device_info='';
   ngOnInit()  {
+
+    
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
    
     window.scroll(0,0);
@@ -424,25 +431,50 @@ export class AccountComponent implements OnInit {
       return
     }
 
+
+    
     this.route.data.subscribe(resp => {
+      
+      let user_news=resp.user_news;
+      if(user_news[0]){
+        this.list_of_news=user_news[0];
+        if(this.list_of_news.length>0){
+          for(let i=0;i<this.list_of_news.length;i++){
+            let now=Math.trunc( new Date().getTime()/1000);
+            let date=this.list_of_news[i].createdAt;
+            date = date.replace("Z",'');
+            date=date.slice(0,19)
+            let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
+            this.list_of_news_date[i]=get_date_to_show_navbar(now-deco_date);
+          }
+          
+        }
+      }
+
+      let public_user_stats=resp.public_user_stats;
+      this.number_of_views=number_in_k_or_m(public_user_stats[0].views)
+      this.number_of_likes=number_in_k_or_m(public_user_stats[0].likes)
+      this.number_of_loves=number_in_k_or_m(public_user_stats[0].loves)
+
+
       let r=resp.user_pp_pseudo;
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
-    })
 
-    this.route.data.subscribe(resp => {
-      let r=resp.user_cp_pseudo;
-      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.cover_picture = SafeURL;
+      let cp=resp.user_cp_pseudo;
+      let url2 = (window.URL) ? window.URL.createObjectURL(cp) : (window as any).webkitURL.createObjectURL(cp);
+      const SafeURL2 = this.sanitizer.bypassSecurityTrustUrl(url2);
+      this.cover_picture = SafeURL2;
     })
    
+
 
     if(!this.for_reset_password){
       this.initialize_page_for_visitor()
       this.get_contents_infos();
       this.get_subscribings_infos();
+      
 
     }
     else{
@@ -468,7 +500,7 @@ export class AccountComponent implements OnInit {
         else if(user && user.status=="deleted"){
           
           this.profile_not_found=true;
-          this.author_name = user.firstname;
+          this.author_name = user.society ? user.society : user.firstname;
           this.navbar.delete_research_from_navbar("Account","unknown",this.user_id).subscribe(l=>{
           });
           
@@ -490,7 +522,7 @@ export class AccountComponent implements OnInit {
         }
         else{
           this.author=user;
-          this.author_name = user.firstname;
+          this.author_name = user.society ? user.society : user.firstname;
           this.gender=user.gender;
           this.firstName=user.firstname;
           this.primary_description=user.primary_description;
@@ -498,7 +530,15 @@ export class AccountComponent implements OnInit {
           this.primary_description_extended=user.primary_description_extended;
           this.certified_account=user.certified_account;
           this.user_location=user.location;
-          
+
+          if(this.type_of_account.includes("edit")){
+            this.list_of_skills=this.author.editor_genres?this.author.editor_genres:[];
+            this.list_of_categories=this.author.editor_categories?this.author.editor_categories:[];
+          }
+          else{
+            this.list_of_skills=this.author.skills?this.author.skills:[];
+            this.list_of_categories=this.author.artist_categories?this.author.artist_categories:[];
+          }
           this.user_blocked_retrieved=true;
           this.list_writings_added=true; 
           this.list_drawings_artbook_added=true;
@@ -533,6 +573,10 @@ export class AccountComponent implements OnInit {
   initialize_page_for_visitor(){
 
 
+    
+  
+
+
     this.Story_service.check_stories_for_account(this.user_id).subscribe(r => {
       if(r[0] && r[0].story_found){
         this.list_of_stories[0]=r[0].stories_retrieved;
@@ -554,6 +598,10 @@ export class AccountComponent implements OnInit {
       this.type_of_profile=s[0].status;
       this.type_of_profile_retrieved=true;
       this.cd.detectChanges();
+
+      if(user.type_of_account.includes('dit')){
+        this.get_list_of_artworks_for_editor()
+      }
   
      
       if( user  && this.visitor_id==user.id){
@@ -570,7 +618,7 @@ export class AccountComponent implements OnInit {
         // if author suspended and visitor, if account doesn't exist or deleted
         this.profile_not_found=true;
 
-        this.author_name = user.firstname;
+        this.author_name = user.society ? user.society : user.firstname;
         this.cd.detectChanges();
         if(user.status=="suspended"){
           this.gender=user.gender;
@@ -609,7 +657,7 @@ export class AccountComponent implements OnInit {
           
         }
         this.author=user;
-        this.author_name = user.firstname;
+        this.author_name = user.society ? user.society : user.firstname;
         this.gender=user.gender;
         this.list_of_members=user.list_of_members;
         this.firstName=user.firstname;
@@ -618,8 +666,58 @@ export class AccountComponent implements OnInit {
         this.primary_description_extended=user.primary_description_extended;
         this.certified_account=user.certified_account;
         this.user_location=user.location;
+
+        if(this.type_of_account.includes("edit")){
+          this.list_of_skills=this.author.editor_genres?this.author.editor_genres:[];
+          this.list_of_categories=this.author.editor_categories?this.author.editor_categories:[];
+        }
+        else{
+          this.list_of_skills=this.author.skills?this.author.skills:[];
+          this.list_of_categories=this.author.artist_categories?this.author.artist_categories:[];
+        }
+        console.log("list of sills")
+        console.log(this.list_of_skills)
+
+        this.email_about=this.author.email_about;
+        this.phone_about=this.author.phone_about;
+
+        this.links=this.author.links;
+        if(this.links){
+          this.facebook=this.links.facebook;
+          this.instagram=this.links.instagram;
+          this.website=this.links.website;
+          this.artstation=this.links.artstation;
+          this.pinterest=this.links.pinterest;
+          this.twitter=this.links.twitter;
+          this.deviantart=this.links.deviantart;
+          this.other_website=this.links.other_website;
+        }
+
+
+        this.cv_name=this.author.cv;
+        if(this.cv_name){
+          this.Profile_Edition_Service.retrieve_cv(this.pseudo).subscribe(r=>{
+            this.cv=r;
+          })
+        }
         
         if (this.visitor_id==user.id){
+
+          
+          /*if(this.visitor_id<3){
+            console.log("in the good thing")
+            this.Profile_Edition_Service.get_number_of_followers().subscribe(r=>{
+              console.log("num of followers")
+              console.log(r)
+            })
+          }*/
+          this.navbar.get_number_of_account_viewers().subscribe(r=>{
+          
+            this.number_of_visits=number_in_k_or_m(r[0].views);
+            this.number_of_visits_after_research=number_in_k_or_m(r[0].views_after_research);
+            this.profil_vews_found=true;
+            this.cd.detectChanges()
+          });
           this.user_blocked=false;
           this.user_blocked_retrieved=true;
           this.cd.detectChanges();
@@ -678,17 +776,18 @@ export class AccountComponent implements OnInit {
           let cat = this.route.snapshot.data['category']
           if(cat>=0){
             this.opened_category=cat;
-            this.open_section( 7,false );
+            this.open_section( 7,false,0 );
           }
           else{
-            this.open_section( 7,true );
+            this.open_section( 7,true,0 );
           }
           
         }
-        else if(this.route.snapshot.data['section']>5){
+        else if(this.route.snapshot.data['section']>=5){
+          console.log("in if >=5")
           if(this.mode_visiteur){
             if(this.route.snapshot.data['section']==9){
-              this.open_section( 0,true );
+              this.open_section( 0,true ,0);
               this.cd.detectChanges();
               let id_friend = parseInt(this.route.snapshot.paramMap.get('id_friend'));
               let pseudo_friend = this.route.snapshot.paramMap.get('pseudo_friend');
@@ -707,7 +806,7 @@ export class AccountComponent implements OnInit {
               })
             }
             else if(this.route.snapshot.data['section']==10){
-              this.open_section( 0,true );
+              this.open_section( 0,true,0 );
               this.cd.detectChanges();
               this.update_background_position(this.opened_section);
               let pseudo= this.route.snapshot.paramMap.get('pseudo');
@@ -724,11 +823,22 @@ export class AccountComponent implements OnInit {
               })
             }
             else{
-              this.open_section( 1,true );
+              this.open_section( 0,true,0 );
               this.cd.detectChanges();
               this.update_background_position(this.opened_section)
             }
             
+          }
+          else if(this.route.snapshot.data['section']==1 && this.type_of_account.includes('dit')){
+            this.open_section( 0,true,0 );
+            this.cd.detectChanges();
+            this.update_background_position(this.opened_section)
+          }
+          else if(this.route.snapshot.data['section']==5 ){
+            let num =this.route.snapshot.paramMap.get('form_number')
+            this.open_section( this.route.snapshot.data['section'],true, num);
+            this.cd.detectChanges();
+            this.update_background_position(this.opened_section)
           }
           else{
             if(this.route.snapshot.data['section']==9){
@@ -740,19 +850,20 @@ export class AccountComponent implements OnInit {
             }
             else if(this.route.snapshot.data['section']==10){
               let section =7;
-              this.open_section( section,true );
+              this.open_section( section,true,0 );
               this.cd.detectChanges();
               this.update_background_position(this.opened_section)
             }
+            
             else{
               let cat = this.route.snapshot.data['category']
               let section =this.route.snapshot.data['section'];
               if(cat>=0){
                 this.opened_category=cat;
-                this.open_section( section,false );
+                this.open_section( section,false,0 );
               }
               else{
-                this.open_section( section,true );
+                this.open_section( section,true,0 );
               }
               this.cd.detectChanges();
               this.update_background_position(this.opened_section)
@@ -765,10 +876,10 @@ export class AccountComponent implements OnInit {
           let cat = this.route.snapshot.data['category']
           if(cat>=0){
             this.opened_category=cat;
-            this.open_section( this.route.snapshot.data['section'],false );
+            this.open_section( this.route.snapshot.data['section'],false,0 );
           }
           else{
-            this.open_section( this.route.snapshot.data['section'],true );
+            this.open_section( this.route.snapshot.data['section'],true,0 );
           }
           this.cd.detectChanges();
           this.update_background_position(this.opened_section)
@@ -993,7 +1104,10 @@ export class AccountComponent implements OnInit {
           this.list_of_ads_responses[i]=r[0][i];
           this.list_of_ads_responses_dates[i]= get_date_to_show_for_ad(date_in_seconds(this.now_in_seconds,r[0][i].createdAt) ).replace("Envoyée","Réponse envoyée");
             this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).subscribe(m=>{
-              this.list_of_ads_responses_data[i]=m[0];
+              if(m[0]){
+                this.list_of_ads_responses_data[i]=m[0];
+              }
+              
               compt++;
               if(compt==r[0].length){
                 this.list_of_ads_responses_added=true;
@@ -1337,7 +1451,7 @@ export class AccountComponent implements OnInit {
       if(e.value==this.opened_section){
         return
       }
-      this.open_section(e.value,true);
+      this.open_section(e.value,true,0);
     }
   }
 
@@ -1432,8 +1546,12 @@ export class AccountComponent implements OnInit {
 
   
   show_icon=false;
+  scrollobs:any;
   ngAfterViewInit() {
     this.initialize_swiper();
+    this.scrollobs = merge(
+      fromEvent(window, 'scroll'),
+    );
     if(!this.for_reset_password){
       this.update_background_position( this.opened_section );
       let main_width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
@@ -1470,8 +1588,8 @@ export class AccountComponent implements OnInit {
     }
   }
 
-
-  open_section(i : number,not_first) {
+  opened_subcategory=0;
+  open_section(i : number,not_first,form_number) {
     if( this.opened_section == i ) {
       this.cd.detectChanges();
       this.update_background_position(i);
@@ -1516,8 +1634,9 @@ export class AccountComponent implements OnInit {
         this.location.go(`/account/${this.pseudo}/ads`); 
       }
       else if( i == 5 ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about`,this.device_info).subscribe();
-        this.location.go(`/account/${this.pseudo}/about`); 
+        this.opened_subcategory=form_number
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about/${form_number}`,this.device_info).subscribe();
+        this.location.go(`/account/${this.pseudo}/about/${form_number}`); 
       }
       else if( i == 6 ) { 
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/archives`,this.device_info).subscribe();
@@ -1526,6 +1645,10 @@ export class AccountComponent implements OnInit {
       else if( i == 7 ) {
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/my_account`,this.device_info).subscribe(); 
         this.location.go(`/account/${this.pseudo}/my_account`); 
+      }
+      else if( i == 11 ) {
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/applications`,this.device_info).subscribe(); 
+        this.location.go(`/account/${this.pseudo}/applications`); 
       }
     }
     
@@ -2712,7 +2835,7 @@ report(){
   }
 
   open_from_news(i){
-    this.open_section(1,false);
+    this.open_section(1,false,0);
     this.open_category(i,false)
   }
 
@@ -2733,35 +2856,9 @@ report(){
   
 
 
-  /* VARIABLES ARTISTES ET EDITEURS*/
-  editor = true;
-
-  list_of_news=[
-    {
-      date:"Il y a 2 semaines",
-      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
-    },
-    {
-      date:"Il y a 2 jours",
-      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
-    },
-    {
-      date:"Il y a 2 semaines",
-      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
-    },
-    {
-      date:"Il y a 2 semaines",
-      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
-    },
-    {
-      date:"Il y a 2 semaines",
-      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
-    },
-    {
-      date:"Il y a 2 semaines",
-      text:"Salut ! voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news. voici un exemple de news.",
-    }
-  ]
+ 
+  list_of_news=[];
+  list_of_news_date=[];
   add_news_input=false;
   add_news() {
     this.add_news_input = true;
@@ -2780,103 +2877,152 @@ report(){
     ],
   });
 
+  adding_news=false;
   send_news() {
     if( this.newsForm.valid ) {
-      //sauvegarder actualité
+      if(this.adding_news){
+        return false
+      }
+      this.adding_news=true;
 
+      this.Profile_Edition_Service.add_user_news(this.newsForm.value.news).subscribe(r=>{
+        this.add_news_input=false;
+        this.adding_news=false;
+        this.list_of_news.splice(0,0,r[0])
+       
+        let now=Math.trunc( new Date().getTime()/1000);
+        let date=r[0].createdAt;
+        date = date.replace("Z",'');
+        date=date.slice(0,19)
+        let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
+        this.list_of_news_date.splice(0,0,get_date_to_show_navbar(now-deco_date))
 
+        this.newsForm.reset();
 
-      this.add_news_input=false;
-      this.newsForm.reset();
+      })
+      
     }
   }
 
+  remove_user_news(i){
+
+    if(this.adding_news){
+      return false
+    }
+    this.adding_news=true;
+
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer cette actualité ?'},
+      panelClass: "popupConfirmationClass",
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        let id=this.list_of_news[i].id
+        this.Profile_Edition_Service.remove_user_news(id).subscribe(r=>{
+          this.add_news_input=false;
+          this.adding_news=false;
+          this.list_of_news.splice(i,1)
+          this.list_of_news_date.splice(i,1)
+          this.newsForm.reset();
+        })
+      }
+      else{
+        this.adding_news=false;
+
+      }
+    })
+    
+  }
 
   number_of_news_limit=4;
   show_more_news() {
     this.number_of_news_limit+=4;
   }
-  number_of_visits=number_in_k_or_m(0);
+
+
+  
   
   faPinterest = faPinterest;
   faFacebookSquare = faFacebookSquare;
   faInstagram = faInstagram;
 
-  instagram='http://www.google.fr';
-  facebook='http://www.google.fr';
-  pinterest='http://www.google.fr';
-  deviantart='http://www.deviantart.com';
-  artstation='http://www.artstation.com';
-  site_perso='http://www.siteperso.com';
-  autre_site='http://www.othersite.com';
+  facebook: String;
+  instagram: String;
+  pinterest: String;
+  twitter: String;
+  deviantart: String;
+  artstation: String;
+  website: String;
+  other_website: String;
 
-  email_about:String='test@gmail.com';
-  phone:String='+33781702530';
+  email_about:String;
+  phone_about:String;
 
 
   /* VARIABLES ARTISTES */
   //chiffres clés pour un artiste
+  profil_vews_found=false;
+  number_of_flagship_clicks=number_in_k_or_m(0);
+  number_of_visits=number_in_k_or_m(0);
+  number_of_visits_after_research=number_in_k_or_m(0);
   number_of_views=number_in_k_or_m(0);
   number_of_likes=number_in_k_or_m(0);
   number_of_loves=number_in_k_or_m(0);
   number_of_comments=number_in_k_or_m(0);
   //compétences pour un artiste
-  list_of_skills=[
-    {
-      category:"Outils",
-      skills:["Photoshop","Primavera"]
-    },
-    {
-      category:"Développement",
-      skills:["JAVA","C++","Python"]
-    }
-  ];
-  //profession pour un artiste
-  job:String='Profession';
+  list_of_skills=[];
+  list_of_categories=[];
   //cv pour un artiste
-  cv:String='cv';
+  cv_name:String;
+  cv:any;
 
 
   /* VARIABLES EDITEURS */
   //chiffres clés pour un éditeur
   number_of_forms=number_in_k_or_m(0);
   //catégories pour un éditeur
-  list_of_genres=[
-    {
-      category:"Catégories",
-      skills:["BD","Comics"]
-    },
-    {
-      category:"Genres",
-      skills:["Humour","Action"]
-    }
-  ];
+  instructions:any;
   //oeuvres phares pour un éditeur
+  list_of_editor_artworks=[]
+  editor_pictures_loaded={}
+  editor_pictures_by_name={};
+  load_editor_picture(name){
+    this.editor_pictures_loaded[name]=true;
+  }
+
+  list_of_artworks_retrieved=false;
+  get_list_of_artworks_for_editor(){
+      this.Profile_Edition_Service.get_editor_artworks(this.pseudo).subscribe(r=>{
+        this.list_of_artworks=r[0];
+        this.list_of_artworks_retrieved=true;
+        console.log("list of artworks");
+        console.log(r[0])
+
+        if(this.list_of_artworks.length>0){
+          for (let i=0;i<r[0].length;i++){
+
+            this.Profile_Edition_Service.retrieve_editor_artwork_picture(r[0].picture_name).subscribe(t=>{
+              let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+              this.editor_pictures_by_name[r[0].picture_name] = url;
+              console.log(this.editor_pictures_by_name)
+              this.cd.detectChanges()
+            })
+            
+          }
+        }
+      })
+  }
+
+  remove_editor_artwork(i){
+    this.Profile_Edition_Service.remove_editor_artwork(this.list_of_artworks[i].id).subscribe(r=>{
+      this.list_of_artworks.splice(i,1);
+    })
+  }
+
   list_of_artworks=[
-    {
-      picture:"",
-      title:"Naryguto : le dernier survivant",
-      authors:"Paul Henry, Marc Eric, Pierre Samuel",
-      description:"Ceci estgy un test.",
-      link:"http://www.google.fr"
-    },
-    {
-      picture:"",
-      title:"Saga one-piece",
-      authors:"Paul Henry, Marc Eric, Pierre Samuel",
-      description:"Ceci est unyg test de ygdescription. Ceci est un test de degyscription. Ceci est un test de description.",
-      link:"http://www.google.fr"
-    },
-    {
-      picture:"",
-      title:"Titre 3",
-      authors:"Paul Henry, Marc Eric, Pierre Samuel",
-      description:"Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. ",
-      link:"http://www.google.fr"
-    },
   ];
   //liste des membres pour un éditeur
-  list_of_editors=[
+  /*list_of_editors=[
     {
       admin:true,
       picture:"",
@@ -2891,7 +3037,7 @@ report(){
       description:"Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. ",
       cv:""
     },
-  ];
+  ];*/
 
   list_of_real_delays={"1s":"1 semaine","2s":"2 semaines","3s":"3 semaines",
   "1m":"1 mois","6s":"6 semaines","7s":"7 semaines","2m":"2 mois",
@@ -2903,6 +3049,28 @@ report(){
 
 
 
+  read_cv(){
+
+    this.document.body.classList.add('popup-attachment-scroll');
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.cv},
+      panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
+    });
+  }
+
+  
+  open_add_editor_artwork(){
+
+    const dialogRef = this.dialog.open(PopupEditorArtworkComponent, {
+      data: {},
+      panelClass: "popupEditorArtworkClass",
+    }).afterClosed().subscribe(result => {
+      console.log("closed ")
+      console.log(result)
+    });
+  }
 
 }
 

@@ -51,10 +51,12 @@ import { NgxMasonryModule } from 'ngx-masonry';
 
 
 import { CommonComponentsModule } from '../modules/common-components.module';
+import { ApplyModule } from '../modules/apply-module.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
 import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
+import { PopupEditorArtworkComponent } from '../popup-editor-artwork/popup-editor-artwork.component';
 import { PopupApplyResponseComponent } from '../popup-apply-response/popup-apply-response.component';
 import { ApplicationsComponent } from '../applications/applications.component';
 
@@ -73,6 +75,7 @@ import { ApplicationsComponent } from '../applications/applications.component';
     ThumbnailAlbumWritingComponent,
     PopupSubscribingsComponent,
     PopupSubscribersComponent,
+    PopupEditorArtworkComponent,
     PopupApplyResponseComponent,
     ApplicationsComponent,
   ],
@@ -80,6 +83,7 @@ import { ApplicationsComponent } from '../applications/applications.component';
     CommonModule,
     CommonComponentsModule,
     AccountRoutingModule,
+    ApplyModule,
     AngularResizedEventModule,
     FormsModule,
     LazyLoadImageModule,
