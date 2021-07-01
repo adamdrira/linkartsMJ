@@ -130,7 +130,7 @@ export class AccountComponent implements OnInit {
     })
     
     let section =  route.snapshot.data['section'];
-    if(section==8 ){
+    if(section==9 ){
       this.for_reset_password=true;
     }
     else{
@@ -552,7 +552,7 @@ export class AccountComponent implements OnInit {
           let password = this.route.snapshot.paramMap.get('password');
           this.Profile_Edition_Service.check_password_for_registration2(id,password).subscribe(r=>{
             if(r[0].user_found){
-              this.opened_section=8;
+              this.opened_section=9;//ok
               this.cd.detectChanges()
             }
             else{
@@ -776,17 +776,17 @@ export class AccountComponent implements OnInit {
           let cat = this.route.snapshot.data['category']
           if(cat>=0){
             this.opened_category=cat;
-            this.open_section( 7,false,0 );
+            this.open_section( 8,false,0 );
           }
           else{
-            this.open_section( 7,true,0 );
+            this.open_section( 8,true,0 );
           }
           
         }
         else if(this.route.snapshot.data['section']>=5){
           console.log("in if >=5")
           if(this.mode_visiteur){
-            if(this.route.snapshot.data['section']==9){
+            if(this.route.snapshot.data['section']==10){//ok
               this.open_section( 0,true ,0);
               this.cd.detectChanges();
               let id_friend = parseInt(this.route.snapshot.paramMap.get('id_friend'));
@@ -805,7 +805,7 @@ export class AccountComponent implements OnInit {
                 
               })
             }
-            else if(this.route.snapshot.data['section']==10){
+            else if(this.route.snapshot.data['section']==11){//ok
               this.open_section( 0,true,0 );
               this.cd.detectChanges();
               this.update_background_position(this.opened_section);
@@ -834,22 +834,22 @@ export class AccountComponent implements OnInit {
             this.cd.detectChanges();
             this.update_background_position(this.opened_section)
           }
-          else if(this.route.snapshot.data['section']==5 ){
+          else if(this.route.snapshot.data['section']==6 ){//ok
             let num =this.route.snapshot.paramMap.get('form_number')
             this.open_section( this.route.snapshot.data['section'],true, num);
             this.cd.detectChanges();
             this.update_background_position(this.opened_section)
           }
           else{
-            if(this.route.snapshot.data['section']==9){
+            if(this.route.snapshot.data['section']==10){//ok
               let id_friend = parseInt(this.route.snapshot.paramMap.get('id_friend'));
               let pseudo_friend = this.route.snapshot.paramMap.get('pseudo_friend');
               this.location.go("/chat/" + pseudo_friend + '/' + id_friend)
               location.reload();
               return
             }
-            else if(this.route.snapshot.data['section']==10){
-              let section =7;
+            else if(this.route.snapshot.data['section']==11){
+              let section =9;//ok
               this.open_section( section,true,0 );
               this.cd.detectChanges();
               this.update_background_position(this.opened_section)
@@ -1438,13 +1438,13 @@ export class AccountComponent implements OnInit {
 
  
   onCategoryChange(e:any) {
-    if( e.value == 3 ) {
+    if( e.value == 4 ) {
       this.see_subscribers();
     }
-    else if ( e.value == 4 ) {
+    else if ( e.value == 5 ) {
       this.see_subscribings();
     }
-    else if ( e.value == 8 ) {
+    else if ( e.value == 9 ) {
       this.router.navigateByUrl('/add-artwork');
     }
     else {
@@ -1633,22 +1633,22 @@ export class AccountComponent implements OnInit {
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/ads`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/ads`); 
       }
-      else if( i == 5 ) { 
+      else if( i == 3 ) {
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/applications`,this.device_info).subscribe(); 
+        this.location.go(`/account/${this.pseudo}/applications`); 
+      }
+      else if( i == 6 ) { 
         this.opened_subcategory=form_number
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about/${form_number}`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/about/${form_number}`); 
       }
-      else if( i == 6 ) { 
+      else if( i == 7 ) { 
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/archives`,this.device_info).subscribe();
         this.location.go(`/account/${this.pseudo}/archives`); 
       }
-      else if( i == 7 ) {
+      else if( i == 8 ) {
         this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/my_account`,this.device_info).subscribe(); 
         this.location.go(`/account/${this.pseudo}/my_account`); 
-      }
-      else if( i == 11 ) {
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/applications`,this.device_info).subscribe(); 
-        this.location.go(`/account/${this.pseudo}/applications`); 
       }
     }
     
