@@ -57,7 +57,7 @@
             <span>Quels genres lui correspondent le mieux ?</span>
         </div>
         <div class="form-item" style="height:unset">
-            <mat-form-field floatLabel='never'>
+            <mat-form-field floatLabel='never' class="matautocompleteclass">
                 <mat-chip-list #chipList formControlName="genres" aria-label="Genres">
                 <mat-chip
                     *ngFor="let genre of genres"

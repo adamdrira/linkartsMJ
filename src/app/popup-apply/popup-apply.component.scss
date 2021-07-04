@@ -544,18 +544,33 @@
             }
         }
 
+        mat-chip.mat-standard-chip {
+            margin:0px 4px !important;
+            min-height:30px !important;
+        }
         .mat-input-element {
             font-size: 14px;
             line-height: 22px !important;
             padding-right: 70px !important;
         }
 
-        mat-form-field .mat-form-field-wrapper {
-            padding-bottom: 20px !important;
-            mat-error {
-                font-size: 11px;
-                @media (max-width: 650px) {
-                    font-size: 9px;
+        mat-form-field {
+            margin-bottom: 0px !important;
+            
+            .mat-form-field-wrapper {
+                padding-bottom: 20px !important;
+                mat-error {
+                    font-size: 11px;
+                    @media (max-width: 650px) {
+                        font-size: 9px;
+                    }
+                }
+            }
+            
+            &.matautocompleteclass {
+                margin-bottom: 20px !important;
+                .mat-form-field-wrapper {
+                    padding-bottom: 0px !important;
                 }
             }
         }
@@ -683,7 +698,7 @@
     .popupApplyMatautocompleteClass.mat-autocomplete-panel {
         position: absolute;
         //overflow: hidden;
-        top: 4px;
+        bottom: 52px;
         left: 0px;
         border-radius: 23px 15px 15px 23px !important;
         box-shadow: 0px 0px 0px 2px #cce9fb, 0px 0px 2px 4px #b3e0fb;

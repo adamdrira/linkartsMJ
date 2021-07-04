@@ -1,6 +1,6 @@
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -10,12 +10,11 @@ import { ConstantsService } from '../services/constants.service';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { map, startWith } from 'rxjs/operators';
 
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
 //ajouter une url pour upload de dossier
 const url = '';
 
@@ -112,6 +111,22 @@ export class PopupApplyComponent implements OnInit {
     
   }
 
+  ngAfterViewInit() {
+
+    if (document.getElementsByClassName('mat-dialog-container')[0].getAttribute('listener') !== 'true') {
+      document.getElementsByClassName('mat-dialog-container')[0].addEventListener('scroll', function(event) {
+        window.dispatchEvent(new Event('resize'));
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    document.getElementsByClassName('mat-dialog-container')[0].removeEventListener('scroll', function(event) {
+      window.dispatchEvent(new Event('resize'));
+    });
+  }
+  
+
   close_dialog(){
     this.dialogRef.close();
   }
@@ -169,6 +184,7 @@ export class PopupApplyComponent implements OnInit {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   
   @ViewChild('genresInput') genresInput: ElementRef<HTMLInputElement>;
+
   genresCtrl = new FormControl();
   genres: string[] = [];
   filteredGenres: Observable<string[]>;
