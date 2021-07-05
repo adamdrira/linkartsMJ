@@ -16,13 +16,14 @@
 
         <div class="step-name">
             <!--DATA : Mettre nom en entrée-->
-            <span>Réponse à {{data.name}}</span>
+            <span *ngIf="!data.read_response">Réponse à {{data.name}}</span>
+            <span *ngIf="data.read_response">Réponse de {{data.name}}</span><!--METTRE LE NOM DE L'EDITEUR-->
         </div>
         
         <div class="form-title">
             <span>Avis final</span>
         </div>
-        <div class="form-item">
+        <div class="form-item" *ngIf="!data.read_response">
             <mat-form-field floatLabel='never' >
                 <mat-label>Avis</mat-label>
                 <mat-select disableOptionCentering formControlName="feedback" panelClass="popupApplyResponseSelectClass">
@@ -35,11 +36,20 @@
             </mat-form-field>
         </div>
 
+        <div class="form-item" *ngIf="data.read_response">
+            <mat-form-field floatLabel='never'>
+                <mat-label>{{data.feedback}}</mat-label>
+                <input matInput readonly formControlName="feedback">
+            </mat-form-field>
+        </div>
+
+
+
         <div class="form-title flex">
             <span>Note sur la qualité du dossier</span>
             <span class="note">{{registerForm.controls['note'].value}} / 20</span>
         </div>
-        <div class="form-item">
+        <div class="form-item" *ngIf="!data.read_response">
             <mat-slider
             class="popupApplyResponseSlider"
             max="20"
@@ -50,7 +60,7 @@
         </div>
 
         
-        <div class="form-title">
+        <div class="form-title" *ngIf="!data.read_response">
             <span>Votre retour</span>
 
             <div class="see-more-button">
@@ -63,7 +73,13 @@
                 </div>
             </div>
         </div>
-        <div class="form-item" style="height:unset !important; margin-bottom: 15px;">
+
+        <div class="form-title" *ngIf="data.read_response" style="margin-top:20px;">
+            <span>Retour</span>
+        </div>
+
+        
+        <div class="form-item" style="height:unset !important; margin-bottom: 15px;" *ngIf="!data.read_response">
             <mat-form-field floatLabel='never'>
                 <mat-label>Veuillez saisir votre retour</mat-label>
                 <textarea matInput cdkTextareaAutosize formControlName="comment" maxLength="1500" autocomplete="off" (input)="normalize_input(registerForm, 'comment');"></textarea>
@@ -73,8 +89,14 @@
             </mat-form-field>
         </div>
 
+        <div class="form-item" style="height:unset !important; margin-bottom: 15px;" *ngIf="data.read_response">
+            <mat-form-field floatLabel='never'>
+                <textarea matInput cdkTextareaAutosize readonly formControlName="comment" autocomplete="off"></textarea>
+            </mat-form-field>
+        </div>
 
-        <button class="submit-button" type="submit" (click)="onSubmit();">
+
+        <button class="submit-button" type="submit" (click)="onSubmit();" *ngIf="!data.read_response">
             <span>Envoyer</span>
         </button>
     </div>

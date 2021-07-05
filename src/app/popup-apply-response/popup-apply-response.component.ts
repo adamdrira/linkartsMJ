@@ -57,7 +57,19 @@ export class PopupApplyResponseComponent implements OnInit {
   
   ngOnInit(): void {
     this.build_form();
+
+    if( this.data.read_response ) {
+      this.registerForm.controls['feedback'].setValue( this.data.feedback );
+      this.registerForm.controls['note'].setValue( this.data.note );
+      this.registerForm.controls['comment'].setValue( this.data.comment );
+    }
   }
+
+  //data.read_response : true/false
+  //data.feedback: 'Positif'/'Négatif'
+  //data.note : integer
+  //data.comment : string
+
 
 
   list_of_categories=['Positif','Négatif'];
