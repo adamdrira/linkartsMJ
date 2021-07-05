@@ -249,76 +249,86 @@
     <!--------------------------------------------------------------------------------->
     <div class="panel-controller" *ngIf="!user_blocked && user_blocked_retrieved && !profile_not_found && !for_reset_password">
         
-        <div class="middle-container">
-            <div class="absolute-background-color" #absoluteBackgroundColor></div>
+        <div class="left-arrow" (click)="arrow_categories('left');" *ngIf="show_left_arrow_categories">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+        </div>
+        <div class="right-arrow" (click)="arrow_categories('right');" *ngIf="show_right_arrow_categories">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+        </div>
 
-            <div #buttonSection>
-                <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0,true,0);">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">home</mat-icon>
-                    <span>Accueil</span>
-                </button>
-            </div>
-            <div #buttonSection >
-                <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1,true,0);">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" >auto_stories</mat-icon>
-                    <span *ngIf="!type_of_account.includes('dit')">Œuvres ({{number_of_artpieces}})</span>
-                    <span *ngIf="type_of_account.includes('dit')"> Extraits d'œuvres ({{number_of_artpieces}})</span>
-                </button>
-            </div>
-            <div #buttonSection>
-                <button [ngClass]="{'opened': opened_section == 2 }" (click)="open_section(2,true,0);">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
-                    <span>Annonces ({{list_of_ads.length}})</span>
-                </button>
-            </div>
-            <div #buttonSection>
-                <button [ngClass]="{'opened': opened_section == 3 }" *ngIf="type_of_account.includes('dit')" (click)="open_section(3,true,0);">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
-                    <span>Candidatures</span>
-                </button>
-            </div>
+        <div class="middle-container2" #accountCategories (scroll)="update_arrows_account_categories();">
+            <div class="middle-container">
 
-            
-            <div #buttonSection>
-                <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 4 }" (click)="see_subscribers();">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
-                    <span>Abonnés ({{subscribed_users_list.length}})</span>
-                </button>
+                <div class="absolute-background-color" #absoluteBackgroundColor></div>
+
+                <div #buttonSection>
+                    <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0,true,0);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">home</mat-icon>
+                        <span>Accueil</span>
+                    </button>
+                </div>
+                <div #buttonSection >
+                    <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1,true,0);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" >auto_stories</mat-icon>
+                        <span *ngIf="!type_of_account.includes('dit')">Œuvres ({{number_of_artpieces}})</span>
+                        <span *ngIf="type_of_account.includes('dit')"> Extraits d'œuvres ({{number_of_artpieces}})</span>
+                    </button>
+                </div>
+                <div #buttonSection>
+                    <button [ngClass]="{'opened': opened_section == 2 }" (click)="open_section(2,true,0);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
+                        <span>Annonces ({{list_of_ads.length}})</span>
+                    </button>
+                </div>
+                <div #buttonSection>
+                    <button [ngClass]="{'opened': opened_section == 3 }" *ngIf="type_of_account.includes('dit')" (click)="open_section(3,true,0);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
+                        <span>Candidatures</span>
+                    </button>
+                </div>
+
+                
+                <div #buttonSection>
+                    <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 4 }" (click)="see_subscribers();">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
+                        <span>Abonnés ({{subscribed_users_list.length}})</span>
+                    </button>
+                </div>
+                <div #buttonSection>
+                    <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 5 }" (click)="see_subscribings();">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">subscriptions</mat-icon>
+                        <span>Abonnements ({{users_subscribed_to_list.length}})</span>
+                    </button>
+                </div>
+                <div #buttonSection>
+                    <button *ngIf="!mode_visiteur" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6,true,0);">
+                    
+                        <div class="profile-picture">
+                            <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
+                        </div>
+                        <span>Profil</span>
+                    </button>
+                </div>
+                <div #buttonSection>
+                    <button *ngIf="!mode_visiteur && !my_profile_is_suspended" [ngClass]="{'opened': opened_section == 7 }" (click)="open_section(7,true,0);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">bookmarks</mat-icon>
+                        <span>Archives</span>
+                    </button>
+                </div>
+                <div #buttonSection>
+                    <button *ngIf="!mode_visiteur" [ngClass]="{'opened': opened_section == 8 }" (click)="open_section(8,true,0);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
+                        <span>Compte</span>
+                    </button>
+                </div>
+                
+                <a href="/add-artwork" *ngIf="!my_profile_is_suspended">
+                    <button *ngIf="!mode_visiteur">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">add_circle_outline</mat-icon>
+                        <span>Publier</span> 
+                    </button>
+                </a>
             </div>
-            <div #buttonSection>
-                <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 5 }" (click)="see_subscribings();">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">subscriptions</mat-icon>
-                    <span>Abonnements ({{users_subscribed_to_list.length}})</span>
-                </button>
-            </div>
-            <div #buttonSection>
-                <button *ngIf="!mode_visiteur" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6,true,0);">
-                   
-                    <div class="profile-picture">
-                        <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
-                    </div>
-                    <span>Profil</span>
-                </button>
-            </div>
-            <div #buttonSection>
-                <button *ngIf="!mode_visiteur && !my_profile_is_suspended" [ngClass]="{'opened': opened_section == 7 }" (click)="open_section(7,true,0);">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">bookmarks</mat-icon>
-                    <span>Archives</span>
-                </button>
-            </div>
-            <div #buttonSection>
-                <button *ngIf="!mode_visiteur" [ngClass]="{'opened': opened_section == 8 }" (click)="open_section(8,true,0);">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
-                    <span>Compte</span>
-                </button>
-            </div>
-            
-            <a href="/add-artwork" *ngIf="!my_profile_is_suspended">
-                <button *ngIf="!mode_visiteur">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">add_circle_outline</mat-icon>
-                    <span>Publier</span> 
-                </button>
-            </a>
         </div>
 
             
@@ -609,8 +619,9 @@
                                                 <div class="absolute-hover-data d-flex flex-column">
                                                     <span class="description">{{item.description}}</span>
                                                     <a  *ngIf="item.link && item.link!=''" [href]="item.link" target="_blank" class="link">Découvrir</a>
-                                                </div>
+                                                </div><!--
                                                 <img [lazyLoad]="editor_pictures_by_name[picture_name]"   [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_editor_picture(item.picture_name)"  [ngClass]="{'invisible':!editor_pictures_loaded[item.picture_name]}">
+                                            -->
                                             </div>
 
                                             <div class="title-and-author">

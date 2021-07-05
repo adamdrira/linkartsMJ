@@ -707,6 +707,122 @@
             <div class="account-title-container">
                 <!--TITRE + BOUTON EDITER/CACHER-->
                 <div class="title">
+                    <span>Candidatures</span>
+                </div>
+            </div>
+
+            <div class="account-form-container" >
+                <div class="dropdowns-container">
+                    <select name="somename" class="Sumo_applications" [ngClass]="{'invisible':!sumo_ready }">
+                        <option selected label="Depuis toujours">Depuis toujours</option>
+                        <option label="Depuis 1 semaine">Depuis 1 semaine</option>
+                        <option label="Depuis 1 mois">Depuis 1 mois</option>
+                        <option label="Depuis 1 an">Depuis 1 an</option>
+                    </select>
+                </div>
+                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
+                <!--CHANGER LES NGIF-->
+                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
+                <div class="no-data-container" *ngIf="!trendings_found">
+                    <ng-container *ngIf="trendings_loaded">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                        <span>
+                            Vous n'avez aucune candidature sur cette période. 
+                        </span>
+                    </ng-container>
+                    <div *ngIf="!trendings_loaded ">
+                        <mat-spinner diameter="20"></mat-spinner>
+                    </div>
+                </div>
+
+
+                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
+                <!--CHANGER LES NGIF-->
+                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
+                <div class="stats-number-container" *ngIf="trendings_found && trendings_loaded">
+                    <div>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <span>Total des gains des formules standard : <b>{{total_gains_standard.toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <span>Total des gains des formules express : <b>{{total_gains_express.toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <span>Total des gains reliés aux candidatures Articles : <b>{{number_of_applications_articles_gains.toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <span>Total des gains reliés aux candidatures BD : <b>{{number_of_applications_bd_gains.toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <span>Total des gains reliés aux candidatures Comics : <b>{{number_of_applications_comics_gains.toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <span>Total des gains reliés aux candidatures Mangas : <b>{{number_of_applications_mangas_gains.toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <span>Total des gains reliés aux candidatures Livres : <b>{{number_of_applications_livres_gains.toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <span>Total des gains reliés aux candidatures Livres jeunesses : <b>{{number_of_applications_livres_jeunesses_gains.toFixed(2)}} &euro; </b></span>
+                    </div>
+                </div>
+
+
+                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
+                <!--CHANGER LES NGIF-->
+                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
+                <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
+                    <!--paramétrer graphiques-->
+                    <ngx-charts-line-chart
+                   
+                    [scheme]="colorScheme"
+                    [results]="multi_trendings_1"
+                    [gradient]="gradient"
+                    [xAxis]="showXAxis"
+                    [yAxis]="showYAxis"
+                    [legend]="show_legends"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxisLabel]="xAxis_trendings_1"
+                    [yAxisLabel]="yAxis_trendings_1">
+                    </ngx-charts-line-chart>
+                </div>
+
+                <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
+                    <!--paramétrer graphiques-->
+                    <ngx-charts-line-chart
+                   
+                    [scheme]="colorScheme"
+                    [results]="multi_trendings_2"
+                    [gradient]="gradient"
+                    [xAxis]="showXAxis"
+                    [yAxis]="showYAxis"
+                    [legend]="show_legends"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxisLabel]="xAxis_trendings_2"
+                    [yAxisLabel]="yAxis_trendings_2">
+                    </ngx-charts-line-chart>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="stats-container "  >
+            
+            <!-- Title container -->
+            <div class="account-title-container">
+                <!--TITRE + BOUTON EDITER/CACHER-->
+                <div class="title">
                     <span>Tendances</span>
                 </div>
             </div>

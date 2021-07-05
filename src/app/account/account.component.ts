@@ -176,6 +176,7 @@ export class AccountComponent implements OnInit {
       this.update_new_contents();
     }
    
+    this.update_arrows_account_categories();
   }
 
   for_reset_password=false;
@@ -1573,6 +1574,7 @@ export class AccountComponent implements OnInit {
     }
     
 
+    this.update_arrows_account_categories();
   }
 
 
@@ -2787,6 +2789,44 @@ report(){
   }
 
   
+  show_left_arrow_categories=false;//myScrollContainer.scrollLeft > 100
+  show_right_arrow_categories=false;//-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth
+  @ViewChild('accountCategories', {static: false}) accountCategories:ElementRef;
+  arrow_categories(s:string) {
+
+    if(s=='right') {
+      $('.panel-controller .middle-container2').animate({
+        scrollLeft: $('.panel-controller .middle-container2').scrollLeft() + 250,
+      }, 300, 'swing');
+    }
+    else if(s=='left') {
+      $('.panel-controller .middle-container2').animate({
+        scrollLeft: $('.panel-controller .middle-container2').scrollLeft() - 250,
+      }, 300, 'swing');
+    }
+  }
+
+  update_arrows_account_categories() {
+
+    if(this.accountCategories) {
+      if(this.accountCategories.nativeElement.scrollLeft>100) {
+        this.show_left_arrow_categories = true;
+      }
+      else {
+        this.show_left_arrow_categories = false;
+      }
+  
+      if(-100 > this.accountCategories.nativeElement.scrollLeft + this.accountCategories.nativeElement.offsetWidth - this.accountCategories.nativeElement.scrollWidth) {
+        this.show_right_arrow_categories = true;
+      }
+      else {
+        this.show_right_arrow_categories = false;
+      }
+    }
+  };
+
+
+
 
   click_absolute_arrow1(e:any,s:string) {
 

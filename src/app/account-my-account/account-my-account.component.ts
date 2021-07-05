@@ -1185,6 +1185,7 @@ export class AccountMyAccountComponent implements OnInit {
     let THIS=this;
   
     $(document).ready(function () {
+      $(".Sumo_applications").SumoSelect({});    
       $(".Sumo_trendings").SumoSelect({});    
       $(".Sumo_trendings_groups").SumoSelect({});  
       $(".Sumo_trendings_chose_group").SumoSelect({});  
@@ -1195,6 +1196,11 @@ export class AccountMyAccountComponent implements OnInit {
 
       THIS.sumo_ready=true;
       THIS.cd.detectChanges();
+    });
+
+    
+    $(".Sumo_applications").change(function(){
+
     });
 
     $(".Sumo_trendings").change(function(){
@@ -2046,4 +2052,14 @@ export class AccountMyAccountComponent implements OnInit {
     })
     
   }
+
+
+  total_gains_standard:number=12;
+  total_gains_express:number=14;
+  number_of_applications_articles_gains:number=14;
+  number_of_applications_bd_gains:number=14;
+  number_of_applications_comics_gains:number=14;
+  number_of_applications_mangas_gains:number=14;
+  number_of_applications_livres_gains:number=14;
+  number_of_applications_livres_jeunesses_gains:number=14;
 }
