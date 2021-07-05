@@ -190,18 +190,95 @@
                             </div>
                             
                         </div>
+                    </div>
+
+                    <div class="thumbnail-profile-data">
+                        <div class="title">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">insert_chart</mat-icon>
+                            <span>Statistiques de l'artiste</span><!--OU : MES STATISTIQUES-->
+                        </div>
+                        <div class="data-container">
+                            
+                            <!--Abonnés-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
+                                <span *ngIf="subscribers==0">Aucun abonné</span>
+                                <span *ngIf="subscribers==1">{{subscribers}} abonné</span>
+                                <span *ngIf="subscribers>1">{{subscribers}} abonnés</span>
+                            </div>
+
+                            <!--Abonnements-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">subscriptions</mat-icon>
+                                <span *ngIf="subscribings==0">Aucun abonnement</span>
+                                <span *ngIf="subscribings==1">{{subscribings}} abonnement</span>
+                                <span *ngIf="subscribings>1">{{subscribings}} abonnements</span>
+                            </div>
+
+                            <!--Visites du profil-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">person</mat-icon>
+                                <span *ngIf="visits==0">Aucune visite du profil</span>
+                                <span *ngIf="visits==1">{{visits}} visite du profil</span>
+                                <span *ngIf="visits>1">{{visits}} visites du profil</span>
+                            </div>
+
+                            <!--Visites après recherche-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">find_in_page</mat-icon>
+                                <span *ngIf="visits_after_search==0">Aucune visite après recherche</span>
+                                <span *ngIf="visits_after_search==1">{{visits_after_search}} visite après recherche</span>
+                                <span *ngIf="visits_after_search>1">{{visits_after_search}} visites après recherche</span>
+                            </div>
+
+                            <!--Oeuvres-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">auto_stories</mat-icon>
+                                <span *ngIf="artworks==0">Aucune œuvre</span>
+                                <span *ngIf="artworks==1">{{artworks}} œuvre</span>
+                                <span *ngIf="artworks>1">{{artworks}} œuvres</span>
+                            </div>
+
+                            <!--Annonces-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
+                                <span *ngIf="ads==0">Aucune annonce</span>
+                                <span *ngIf="ads==1">{{ads}} annonce</span>
+                                <span *ngIf="ads>1">{{ads}} annonces</span>
+                            </div>
+
+                            <!--Oeuvres consultées-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
+                                <span *ngIf="views==0">Aucune lecture d'œuvre</span>
+                                <span *ngIf="views==1">{{views}} lecture d'œuvre</span>
+                                <span *ngIf="views>1">{{views}} lectures d'œuvres</span>
+                            </div>
+
+                            <!--Mentions j'aime-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
+                                <span *ngIf="likes==0">Aucune mention j'aime</span>
+                                <span *ngIf="likes==1">{{likes}} mention j'aime</span>
+                                <span *ngIf="likes>1">{{likes}} mentions j'aime</span>
+                            </div>
+
+                            <!--Mentions j'adore-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
+                                <span *ngIf="loves==0">Aucune mention j'adore</span>
+                                <span *ngIf="loves==1">{{loves}} mention j'adore</span>
+                                <span *ngIf="loves>1">{{loves}} mentions j'adore</span>
+                            </div>
 
 
+                            
 
+
+                        </div>
                     </div>
                 </div>
             </ng-container>
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
         </div>
 
     </ng-container>
@@ -306,15 +383,96 @@
 
 
                     </div>
+
+                    
+                    <div class="thumbnail-profile-data">
+                        <div class="title">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">insert_chart</mat-icon>
+                            <span>Statistiques de l'artiste</span><!--OU : MES STATISTIQUES-->
+                        </div>
+                        <div class="data-container">
+                            
+                            <!--Abonnés-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
+                                <span *ngIf="subscribers==0">Aucun abonné</span>
+                                <span *ngIf="subscribers==1">{{subscribers}} abonné</span>
+                                <span *ngIf="subscribers>1">{{subscribers}} abonnés</span>
+                            </div>
+
+                            <!--Abonnements-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">subscriptions</mat-icon>
+                                <span *ngIf="subscribings==0">Aucun abonnement</span>
+                                <span *ngIf="subscribings==1">{{subscribings}} abonnement</span>
+                                <span *ngIf="subscribings>1">{{subscribings}} abonnements</span>
+                            </div>
+
+                            <!--Visites du profil-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">person</mat-icon>
+                                <span *ngIf="visits==0">Aucune visite du profil</span>
+                                <span *ngIf="visits==1">{{visits}} visite du profil</span>
+                                <span *ngIf="visits>1">{{visits}} visites du profil</span>
+                            </div>
+
+                            <!--Visites après recherche-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">find_in_page</mat-icon>
+                                <span *ngIf="visits_after_search==0">Aucune visite après recherche</span>
+                                <span *ngIf="visits_after_search==1">{{visits_after_search}} visite après recherche</span>
+                                <span *ngIf="visits_after_search>1">{{visits_after_search}} visites après recherche</span>
+                            </div>
+
+                            <!--Oeuvres-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">auto_stories</mat-icon>
+                                <span *ngIf="artworks==0">Aucune œuvre</span>
+                                <span *ngIf="artworks==1">{{artworks}} œuvre</span>
+                                <span *ngIf="artworks>1">{{artworks}} œuvres</span>
+                            </div>
+
+                            <!--Annonces-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
+                                <span *ngIf="ads==0">Aucune annonce</span>
+                                <span *ngIf="ads==1">{{ads}} annonce</span>
+                                <span *ngIf="ads>1">{{ads}} annonces</span>
+                            </div>
+
+                            <!--Oeuvres consultées-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
+                                <span *ngIf="views==0">Aucune lecture d'œuvre</span>
+                                <span *ngIf="views==1">{{views}} lecture d'œuvre</span>
+                                <span *ngIf="views>1">{{views}} lectures d'œuvres</span>
+                            </div>
+
+                            <!--Mentions j'aime-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
+                                <span *ngIf="likes==0">Aucune mention j'aime</span>
+                                <span *ngIf="likes==1">{{likes}} mention j'aime</span>
+                                <span *ngIf="likes>1">{{likes}} mentions j'aime</span>
+                            </div>
+
+                            <!--Mentions j'adore-->
+                            <div class="data">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
+                                <span *ngIf="loves==0">Aucune mention j'adore</span>
+                                <span *ngIf="loves==1">{{loves}} mention j'adore</span>
+                                <span *ngIf="loves>1">{{loves}} mentions j'adore</span>
+                            </div>
+
+
+                            
+
+
+                        </div>
+                    </div>
+                    
                 </div>
             </ng-container>
-
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
-            <div class="fake-thumbnail"></div>
         </div>
 
 

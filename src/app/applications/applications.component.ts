@@ -127,6 +127,16 @@ export class ApplicationsComponent implements OnInit {
 
 
 
+  subscribers=5;
+  subscribings=12;
+  visits=122;
+  visits_after_search=65;
+  artworks=12;
+  ads=5;
+  views=122;
+  likes=22;
+  loves=52;
+
 
 
   
