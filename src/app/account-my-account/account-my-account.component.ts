@@ -2062,4 +2062,12 @@ export class AccountMyAccountComponent implements OnInit {
   number_of_applications_mangas_gains:number=14;
   number_of_applications_livres_gains:number=14;
   number_of_applications_livres_jeunesses_gains:number=14;
+
+  
+  popup_message() {
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:false, text:"La rémunération n'est pour le moment pas active. Tout gain généré avant la date d'activation ne sera pas récupérable et ne vous sert que de représentatif de vos gains potentiels. La date de début d'activation des gains est actuellement fixée au 15 septembre 2021, mais peut évoluer. Nous vous tiendront informés un mois au préalable."},
+      panelClass: "popupConfirmationClass",
+    });
+  }
 }

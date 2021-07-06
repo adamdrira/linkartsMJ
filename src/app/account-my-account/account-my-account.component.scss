@@ -936,6 +936,18 @@
         color: #203864;
         font-size:13px;
         cursor:default;
+        &.with-animation {
+          cursor:pointer;
+          width: 119px;
+          margin: 8px auto;
+          padding: 6px 6px 8px 6px;
+          border-radius: 20px;
+          box-shadow: 0px 0px 2px 0px #b1cdd6;
+          background: #ffffff;
+          &:hover {
+            box-shadow: 0px 0px 2px 0px #8cb3c0;
+          }
+        }
       }
       > div {
         margin-left:auto;
