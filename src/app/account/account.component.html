@@ -944,7 +944,7 @@
                                     </div>
                                    
                                    
-                                    <div class="block-info" *ngIf="number_of_flagship_clicks && type_of_account.includes('dit')">
+                                    <div class="block-info" *ngIf="number_of_flagship_clicks && type_of_account.includes('dit') && !mode_visiteur">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                         <span><span class="emphasize">{{number_of_flagship_clicks}}</span> œuvres phares consultées</span>
                                     </div>
@@ -989,7 +989,7 @@
                                         <span>Mon CV</span>
                                     </div>
                                     <div class="list-of-skills" *ngIf="!mode_visiteur && !cv_name">
-                                        <span >Aucune catégorie ajoutée</span>
+                                        <span >Aucun CV ajoutée</span>
                                     </div>
                                     <div class="see-cv" *ngIf="cv_name" (click)="read_cv();">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>

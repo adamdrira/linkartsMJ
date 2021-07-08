@@ -787,7 +787,7 @@ export class AccountComponent implements OnInit {
           })
         }
         
-        if (this.visitor_id==user.id){
+        if (this.visitor_id==user.id && this.visitor_id<2){
 
           
           /*if(this.visitor_id<3){
@@ -800,12 +800,22 @@ export class AccountComponent implements OnInit {
             this.number_of_visits=number_in_k_or_m(r[0].views);
             this.number_of_visits_after_research=number_in_k_or_m(r[0].views_after_research);
             this.profil_vews_found=true;
+            if(this.visitor_id<2){
+              console.log("number of visits :")
+              console.log(this.number_of_visits)
+              console.log(this.number_of_visits_after_research)
+            }
+           
             this.cd.detectChanges()
           });
 
           this.navbar.get_number_of_flagship_clicks(this.user_id).subscribe(r=>{
             this.number_of_flagship_clicks=number_in_k_or_m(r[0].number);
             this.number_of_flagship_clicks_retrieved=true;
+            if(this.visitor_id<2){
+              console.log("number of flagships :")
+              console.log(this.number_of_flagship_clicks)
+            }
             this.cd.detectChanges()
           });
           this.user_blocked=false;
