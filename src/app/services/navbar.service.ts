@@ -346,9 +346,17 @@ export class NavbarService {
   }
 
 
-  get_number_of_account_viewers(){
-    return this.httpClient.get(`routes/get_number_of_account_viewers`, {withCredentials:true}).pipe(map((information)=>{
+  get_number_of_account_viewers(id_user){
+    return this.httpClient.get(`routes/get_number_of_account_viewers/${id_user}`, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }
+
+  get_number_of_flagship_clicks(id_user){
+    return this.httpClient.get(`routes/get_number_of_flagship_clicks/${id_user}`, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  
 }

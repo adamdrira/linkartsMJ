@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, tap, map, delay, shareReplay, publishReplay, refCount } from 'rxjs/operators';
+import {map } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
-import { EMPTY, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { User } from './user';
 
 const httpOptions = {
@@ -164,6 +164,8 @@ export class Profile_Edition_Service {
     }));
   }
 
+  
+
 
   get_current_user_and_cookies(){
     return this.httpClient.get('api/userid_and_cookies',{withCredentials:true} ).pipe(map((information)=>{   
@@ -295,6 +297,12 @@ export class Profile_Edition_Service {
     }));
   }
 
+  edit_account_signup_page4_editors(id_user,categories,genres){
+    return this.httpClient.post('routes/edit_account_signup_page4_editors', {id_user:id_user,categories:categories, genres:genres},{withCredentials: true}  ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
   edit_account_signup_page5(id_user,links){
     return this.httpClient.post('routes/edit_account_signup_page5', {id_user:id_user,links:links},{withCredentials: true}  ).pipe(map((information)=>{
       return information;
@@ -328,7 +336,6 @@ export class Profile_Edition_Service {
 
   retrieve_cv(pseudo){
     return this.httpClient.get(`routes/retrieve_cv/${pseudo}`, {withCredentials:true,responseType:'blob'}).pipe(map(information=>{
-      console.log(information)
       return information;   
     }));
   }
@@ -516,7 +523,6 @@ export class Profile_Edition_Service {
 
 
   get_user_news(pseudo){
-    console.log("get_user_news")
     return this.httpClient.get(`routes/get_user_news/${pseudo}`).pipe(map(information=>{
         return information;
       }));
@@ -549,8 +555,8 @@ export class Profile_Edition_Service {
   
 
   
-  add_editor_instructions(add_editor_instructions,editor_default_response,standard_price,standard_delay,express_price,express_delay){
-    return this.httpClient.post(`routes/add_editor_instructions`,{add_editor_instructions:add_editor_instructions,editor_default_response:editor_default_response,standard_price:standard_price,standard_delay:standard_delay,express_price:express_price,express_delay:express_delay}, {withCredentials:true}).pipe(map(information=>{
+  add_editor_instructions(editor_instructions,editor_default_response,standard_price,standard_delay,express_price,express_delay){
+    return this.httpClient.post(`routes/add_editor_instructions`,{editor_instructions:editor_instructions,editor_default_response:editor_default_response,standard_price:standard_price,standard_delay:standard_delay,express_price:express_price,express_delay:express_delay}, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };

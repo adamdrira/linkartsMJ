@@ -65,7 +65,7 @@ export class ConstantsService {
   "Software Astute Phantasm", "Software IOS", "Software Linux", "Software Microsoft Office", 
   "Software Procreate", "Software Ron’s Brushes", "Software Windows", "Story-board","Tablette graphique"]
 
-  list_of_genres=["Action","Ados","Adultes","Animalié","Art","Aventure","Autobiographie","BD",
+  list_of_genres=["Action","Actualité","Ados","Adultes","Animalié","Art","Aventure","Autobiographie","BD",
   "Caricatural","Comics","Drame","Educatif","Enigmatique","Enfants","Epique","Epistolaire",
   "Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Historique","Horreur","Humoristique",
   "Journalisme","Kawai","Ludique","Mangas","Mystère","Nouvelles","Pensées","Philosophie","Poésie","Polar","Policier",
