@@ -591,6 +591,36 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
     })
 
+    
+
+    router.get('/get_number_of_flagship_clicks/:id_user',function(req,res){
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
+          }
+          else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+              return res.status(401).json({msg: "error"});
+            }
+          }
+        let id_user=req.params.id_user;
+        const Op = Sequelize.Op;
+        list_of_navbar_researches.findAll({
+            where:{
+                status:"clicked",
+                target_id:id_user,
+                publication_category:"Flagship",
+            }
+        }).catch(err => {
+				
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ads=>{
+            res.status(200).send([{number:ads.length}])
+        })
+
+    })
+
     router.post('/get_number_of_results_for_categories', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
@@ -2202,8 +2232,8 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                         [Sequelize.fn('DISTINCT', Sequelize.col('id_user'),Sequelize.col('target_id')), 'users'],'id_user','target_id'],
                 }).catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(viewers=>{
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(viewers=>{
                     list_of_views[i]=viewers.length;
                     compteur_of_days++;
                     if(compteur_of_days==8){
@@ -2239,8 +2269,8 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                         [Sequelize.fn('DISTINCT', Sequelize.col('id_user'),Sequelize.col('target_id')), 'users'],'id_user','target_id'],
                 }).catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(viewers=>{
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(viewers=>{
                     list_of_views[i]=viewers.length;
                     compteur_of_days++;
                     if(compteur_of_days==30){
@@ -2274,9 +2304,9 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                     attributes: [
                         [Sequelize.fn('DISTINCT', Sequelize.col('id_user'),Sequelize.col('target_id')), 'users'],'id_user','target_id'],
                 }).catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(viewers=>{
+                        
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(viewers=>{
                     list_of_views[i]=viewers.length;
                     compteur_of_months++;
                     if(compteur_of_months==53){
@@ -2312,9 +2342,9 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                     attributes: [
                         [Sequelize.fn('DISTINCT', Sequelize.col('id_user'),Sequelize.col('target_id')), 'users'],'id_user','target_id'],
                 }).catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(viewers=>{
+                        
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(viewers=>{
                     list_of_views[i]=viewers.length;
                     compteur_of_years++;
                     if(compteur_of_years==weeks){
@@ -2708,7 +2738,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
 
-    router.get('/get_number_of_account_viewers',function(req,res){
+    router.get('/get_number_of_account_viewers/:id_user',function(req,res){
         if( ! req.headers['authorization'] ) {
             return res.status(401).json({msg: "error"});
           }
@@ -2719,7 +2749,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
               return res.status(401).json({msg: "error"});
             }
           }
-        let id_user = get_current_user(req.cookies.currentUser);
+        let id_user = parseInt(req.params.id_user);
         let views=0;
         let views_after_research=0;
         let compteur=0;
@@ -2746,7 +2776,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         function get_number_of_views(user){
             list_of_navbar_researches.count({
                 where:{
-                    status:"clicked",
+                    status:["clicked","clicked_after_research"],
                     target_id:user.id,
                     publication_category:'Account',
                 }

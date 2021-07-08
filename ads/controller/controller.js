@@ -813,7 +813,6 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
           return res.status(401).json({msg: "error"});
         }
       }
-      console.log("retrieve_ad_by_id")
       const id= parseInt(req.params.id);
         list_of_ads.findOne({
            where: {

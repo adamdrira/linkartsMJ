@@ -85,7 +85,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
     router.post('/check_if_publication_archived/:publication_category/:format/:publication_id', function (req, res) {
 
-        console.log("check_if_publication_archived")
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -265,7 +264,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
           return res.status(401).json({msg: "error"});
         }
       }
-      console.log("subscribe_to_a_user")
       const Op = Sequelize.Op;
         let current_user = get_current_user(req.cookies.currentUser);
         const id_user_to_subscribe = req.body.id_user_to_subscribe;
@@ -295,7 +293,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                         res.status(200).send([{"subscribtion":"already sbscribed 0"}])  
                     }
                     else{
-                        console.log("check blocked !")
                         users_blocked.findOne({
                             where:{
                               [Op.or]:[{id_user: current_user,id_user_blocked:id_user_to_subscribe},{id_user_blocked:current_user,id_user:id_user_to_subscribe}],
@@ -305,7 +302,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                                   res.status(500).json({msg: "error", details: err});		
                               }).then(blocked=>{
                             if(blocked){
-                                console.log("user blocked !")
                                 res.status(200).send([{blocked:"blocked"}])
                             }
                             else{
@@ -935,7 +931,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
     router.post('/change_content_status', function (req, res) {
 
-        console.log("change_content_status")
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1282,7 +1277,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
       }
         
         const id_user = parseInt(req.params.id_user);
-        console.log("get_emphasized_content " + id_user)
         list_of_contents.findOne({
             where: {
                 id_user:id_user,

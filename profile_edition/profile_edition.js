@@ -49,7 +49,8 @@ module.exports = (router,
   Liste_Drawings_Artbook,
   Drawings_one_page,
   Liste_Writings,
-  List_of_notifications
+  List_of_notifications,
+  list_of_projects
   ) => {
 
 
@@ -1365,6 +1366,43 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   });
 
+  router.post('/edit_account_signup_page4_editors', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    const categories=req.body.categories;
+    const genres= req.body.genres;
+    const id_user=req.body.id_user;
+    users.findOne({
+      where: {
+        id: id_user,
+      }
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(User =>  {
+      User.update({
+        "editor_categories":categories,
+        "editor_genres":genres,
+      }).catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(res.status(200).send([User]))
+    }); 
+
+
+  });
+
   router.post('/edit_account_signup_page5', function (req, res) {
 
     if( ! req.headers['authorization'] ) {
@@ -1503,6 +1541,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
     
     const firstname=req.body.firstname;
+    const society=req.body.society;
+    const siret=req.body.siret;
     const birthday= req.body.birthday;
     users.findOne({
       where: {
@@ -1515,6 +1555,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 		}).then(User =>  {
       User.update({
         "firstname":firstname,
+        "society":society?society:null,
+        "siret":siret?siret:null,
         "birthday":birthday,
       }).catch(err => {
         
@@ -4139,6 +4181,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/create_checkout_session', async (req, res) => {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
     let value=req.body.value;
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -4160,6 +4213,56 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       success_url: `https://www.linkarts.fr/donation/success`,
       cancel_url: `https://www.linkarts.fr/donation/`,
     });
+    res.status(200).send([{ id: session.id, key:stripe_key}]);
+  });
+
+
+  router.post('/create_checkout_project_submission', async (req, res) => {
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    
+    let value=req.body.value;
+    let title=req.body.title;
+    let pseudo=req.body.pseudo;
+    let id_project=req.body.id_project;
+    let password=genere_random_id(id_project);
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      submit_type: 'pay',
+      line_items: [
+        {
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: 'Dépôt du projet : ' + title,
+              images: ['https://www.linkarts.fr/assets/img/Logo-LA3.png'],
+            },
+            unit_amount: value,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `https://www.linkarts.fr/account/${pseudo}/project_submitted/${id_project}/${password}`,
+      cancel_url: `https://www.linkarts.fr/account/${pseudo}`,
+    })
+
+    const project_modif = await list_of_projects.update({
+        "password_payement":password,
+      },{
+        where:{
+          id:id_project
+        }
+    })
+    
     res.status(200).send([{ id: session.id, key:stripe_key}]);
   });
  
@@ -4471,6 +4574,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     const standard_delay = req.body.standard_delay;
     const express_price = req.body.express_price;
     const express_delay = req.body.express_delay;
+
     users.update(
       {
       "editor_instructions": editor_instructions,
@@ -4674,7 +4778,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     }
 
 
-    const picture_name = parseInt(req.params.picture_name);
+    const picture_name =req.params.picture_name;
     
       let transform = sharp()
         transform = transform.resize({fit:sharp.fit.contain,height:275})
@@ -4684,7 +4788,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             }
         });
         let filename = "./data_and_routes/editor_artworks/" + picture_name;
-        fs.access(filename, fs.F_OK, (err) => {
+        fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
           if(err){
             filename = "./data_and_routes/not-found-image.jpg";
             var not_found = fs.createReadStream( path.join(process.cwd(),filename))

@@ -1041,9 +1041,6 @@ module.exports = (router,
         }
       }
 
-      console.log("add_view_time")
-      console.log(req.body.id_view_created)
-      console.log(req.body.view_time)
         let current_user = get_current_user(req.cookies.currentUser);
         const id_view_created = req.body.id_view_created;
         const view_time = req.body.view_time;
@@ -1058,10 +1055,7 @@ module.exports = (router,
                 res.status(500).json({msg: "error", details: err});		
             }).then(view =>  {
                 if(view){
-                    console.log("view found")
-                    console.log(view.format)
                     if(view_time>5){
-                        console.log("view time >5")
                         if (view.publication_category=== "comic" ) {
                             if(view.format === "one-shot"){
                                 Liste_Bd_Oneshot.findOne({
@@ -1379,12 +1373,10 @@ module.exports = (router,
                         }
                     }
                     else{
-                        console.log("first else")
                         res.status(200).send([{error:"already_added_view_time"}])
                     }
                 }
                 else{
-                    console.log("second else")
                     res.status(200).send([{error:"already_added_view_time"}])
                 }
                     
@@ -1392,7 +1384,6 @@ module.exports = (router,
             });  
         }
         else{
-            console.log("second else")
             res.status(200).send([{error:"already_added_view_time"}])
         }
             
