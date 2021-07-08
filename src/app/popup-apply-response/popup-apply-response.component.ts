@@ -1,12 +1,11 @@
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
+import { Edtior_Projects } from '../services/editor_projects.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
-import { ConstantsService } from '../services/constants.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 @Component({
@@ -36,14 +35,11 @@ export class PopupApplyResponseComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private cd: ChangeDetectorRef,
+    private Edtior_Projects:Edtior_Projects,
     public navbar: NavbarService,
     public dialogRef: MatDialogRef<PopupApplyResponseComponent,any>,
-    private ConstantsService:ConstantsService,
     public dialog: MatDialog,
-    @Inject(DOCUMENT) private document: Document,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
-    dialogRef.disableClose = true;
 
     navbar.visibility_observer_font.subscribe(font=>{
       if(font){
@@ -53,26 +49,34 @@ export class PopupApplyResponseComponent implements OnInit {
   }
 
   show_icon=false;
-  
+  read_response:boolean;
+  response:any;
+  project:any;
   
   ngOnInit(): void {
+
+    this.read_response=this.data.read_response;
+    if(this.read_response){
+      this.response=this.data.response;
+    }
+    
+    this.project=this.data.project;
+    
+    
     this.build_form();
 
     if( this.data.read_response ) {
-      this.registerForm.controls['feedback'].setValue( this.data.feedback );
-      this.registerForm.controls['note'].setValue( this.data.note );
-      this.registerForm.controls['comment'].setValue( this.data.comment );
+      this.registerForm.controls['feedback'].setValue( this.data.response.jugement );
+      this.registerForm.controls['note'].setValue( this.data.response.mark );
+      this.registerForm.controls['comment'].setValue( this.data.response.response );
     }
   }
 
-  //data.read_response : true/false
-  //data.feedback: 'Positif'/'Négatif'
-  //data.note : integer
-  //data.comment : string
 
 
 
-  list_of_categories=['Positif','Négatif'];
+
+  list_of_categories=['Projet retenu','Projet non retenu'];
   registerForm: FormGroup;
   build_form() {
     this.registerForm = this.formBuilder.group({
@@ -92,9 +96,33 @@ export class PopupApplyResponseComponent implements OnInit {
   close_dialog(){
     this.dialogRef.close();
   }
+  loading_response=false;
   onSubmit() {
+    if(this.loading_response){
+      return
+    }
+    
     if(this.registerForm.valid) {
+      this.loading_response=true
 
+      let data={
+        id_project:this.project.id,
+        user_name:this.data.author_name,
+        user_nickname:this.data.author.nickname,
+        target_id:this.project.id_user,
+        target_name:this.project.user_name,
+        price:this.data.project.price,
+        formula:this.project.formula,
+        target_nickname:this.project.user_nickname,
+        mark:this.registerForm.value.note,
+        jugement:this.registerForm.value.feedback,
+        response:this.registerForm.value.comment,
+        
+      }
+      this.Edtior_Projects.submit_response_for_artist(data).subscribe(r=>{
+        this.loading_response=false;
+        this.dialogRef.close(data);
+      })
       
     }
     else {

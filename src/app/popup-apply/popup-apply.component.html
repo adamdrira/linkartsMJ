@@ -8,14 +8,14 @@
     <img src="../../assets/img/svg/Logo-LA3.svg">
 </div>
 
-<button *ngIf="step>0" class="back-button" (click)="step_back();">
+<button *ngIf="step==1 && !loading_check" class="back-button" (click)="step_back();">
     <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
 </button>
 
 <div class="popup-apply">
 
 
-    <div class="step-form" [formGroup]="registerForm" *ngIf="step==0">
+    <div class="step-form" [formGroup]="registerForm" *ngIf="step==0 && !loading_check">
 
         <div class="step-name">
             <span>Soumettez votre projet</span>
@@ -23,15 +23,15 @@
 
         
         <div class="form-title">
-            <span>Quel est son titre ?</span>
+            <span>Quel est le titre de votre projet ?</span>
         </div>
         <div class="form-item">
             <mat-form-field floatLabel='never'>
                 <mat-label >Titre</mat-label>
-                <input matInput formControlName="title" maxLength="100" type="search" autocomplete="off" (input)="normalize_input(registerForm, 'title');">
+                <input matInput formControlName="title" maxLength="45" type="search" autocomplete="off" (input)="normalize_input(registerForm, 'title');">
                 <mat-error *ngIf="registerForm.controls['title'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                 </mat-error>
-                <div class="length-indicator">{{registerForm.controls['title'].value?.length || 0}}/100</div>
+                <div class="length-indicator">{{registerForm.controls['title'].value?.length || 0}}/45</div>
             </mat-form-field>
         </div>
         
@@ -87,7 +87,7 @@
 
 
         <div class="form-title">
-            <span>Uploadez votre projet</span>
+            <span>Votre projet</span>
         </div>
 
 
@@ -95,7 +95,7 @@
             <label>
                 <div class="validate-upload-button">
                     <mat-icon [ngClass]="{'invisible': !show_icon }"  class="rotate-icon">attachment</mat-icon>
-                    <span>Sélectionner mon PDF</span>
+                    <span>Déposez votre projet au format PDF</span>
         
                     <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
                 </div>
@@ -111,13 +111,14 @@
 
 
         <button class="submit-button" (click)="validate_step(0);">
-            <span>Suivant</span>
+            <mat-spinner *ngIf="loading_project" diameter="25"  style="margin:auto;"></mat-spinner>
+            <span *ngIf="!loading_project">Finaliser</span>
         </button>
 
     </div>
 
 
-    <div class="step-form" [formGroup]="registerForm" *ngIf="step==1">
+    <div class="step-form" [formGroup]="registerForm" *ngIf="step==1 && !loading_check">
 
         <div class="step-name">
             <span>Choisissez vos formules</span>
@@ -160,7 +161,7 @@
                         ?
                         <div class="information" >
                             <div class="first-text">
-                                <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Standard est votre formule par défaut. Sélectionnez le temps de réponse maximal que vous pouvez garantir ainsi que le tarif que vous voulez imposer (il peut être gratuit). Une fois le délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
+                                <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Standard est votre formule par défaut. Sélectionnez le temps de réponse maximal que vous pouvez garantir ainsi que le tarif que vous voulez imposer (il peut être gratuit). Une fois le délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste ayant déposé son projet, mais vous ne pourrez plus tirer profit de cette réponse.
                                 </span>
                             </div>
                         </div>
@@ -194,7 +195,7 @@
                         ?
                         <div class="information" >
                             <div class="first-text">
-                                <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Express est votre formule premium. Sélectionnez le temps de réponse maximal que vous pouvez garantir en un minimum de temps (par exemple : 3 semaines), ainsi que le tarif que vous voulez imposer. Une fois ce délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste candidat mais vous ne pourrez pas tirer profit de cette réponse.
+                                <span> <img  src='../../assets/img/tuto-logos/light.svg'>La formule Express est votre formule premium. Sélectionnez le temps de réponse maximal que vous pouvez garantir en un minimum de temps (par exemple : 3 semaines), ainsi que le tarif que vous voulez imposer. Une fois ce délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste ayant déposé son projet, mais vous ne pourrez pas tirer profit de cette réponse.
                                 </span>
                             </div>
                         </div>
@@ -232,7 +233,53 @@
 
 
 
+    <ng-container *ngIf="loading_check">
+        <div class="step-form"  [@enterFromTopAnimation]>
+            <div class="sent-mail-icon" >
+                <img class="logo1" src='../../assets/img/tuto-logos/tuto-books.svg'>
+                <mat-spinner diameter="40" style="margin:auto;"></mat-spinner>
+                <img class="logo1" src='../../assets/img/tuto-logos/tuto-books.svg'>
+            </div>
+            
+            <div class="sent-mail-text" >
+                <span>Vérification du payement</span>
+            </div>
+            
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!loading_check" >
+        <div class="step-form " *ngIf="step==2" [@enterFromTopAnimation]>
+            <div class="sent-mail-icon" >
+                <img class="logo1" src='../../assets/img/tuto-logos/tuto-books.svg'>
+                <img class="logo" src='../../assets/img/svg/fireworks.svg'>
+                <img class="logo1" src='../../assets/img/tuto-logos/tuto-books.svg'>
+            </div>
+            
+            <div class="sent-mail-text" >
+                <span>Votre projet a été envoyé avec succès !</span>
+                <span>Consultez la section "Projets" de votre profil afin d'être tenu au courant des avancements sur ce projet.</span>
+            </div>
+            <div (click)="open_applications()" class="submit-button" >
+                <span class="go-back">Accéder à mon profil</span>
+            </div>
+        </div>
 
+        <div class="step-form " *ngIf="step==3">
+            
+            <div class="sent-mail-icon" >
+                <img class="logo" src='../../assets/img/tuto-logos/light.svg'>
+            </div>
+            <div class="sent-mail-text" >
+                <span>Cette session est expirée !</span>
+                <span></span>
+            </div>
+            <div (click)="close_dialog()" class="submit-button" style="width: 230px !important;" >
+                <span class="go-back">Retour</span>
+            </div>
+        </div>
+    </ng-container>
+
+    
 
 
 </div>

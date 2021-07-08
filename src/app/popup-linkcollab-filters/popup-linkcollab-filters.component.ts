@@ -1,8 +1,7 @@
 import { trigger, transition, style, animate } from '@angular/animations';
-import { ChangeDetectorRef, Component, Inject, OnInit, Renderer2 } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
-import { data } from 'jquery';
 import { NavbarService } from '../services/navbar.service';
 
 @Component({
@@ -24,6 +23,7 @@ export class PopupLinkcollabFiltersComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<PopupLinkcollabFiltersComponent>,
+    private fb: FormBuilder,
     private navbar: NavbarService,
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any) {
@@ -58,7 +58,15 @@ export class PopupLinkcollabFiltersComponent implements OnInit {
 
   show_icon=false;
   ngOnInit() {
-    let THIS=this;
+    if(this.data.account_page){
+      this.f1 = this.fb.group({
+        category: [this.category],
+        genres:[this.genres],
+        sort_time: [this.sort_time],
+        sort_pertinence: [this.sort_pertinence],
+        sort_formula: [this.sort_formula],
+      })
+    }
   }
 
   change_select1(e:any) {
@@ -105,29 +113,49 @@ export class PopupLinkcollabFiltersComponent implements OnInit {
 
 
   
-  section0_categories = this.data.filter0;
-  section1_categories = this.data.filter1;
-  section2_categories = this.data.filter2;
+  list_of_categories = this.data.filter0;
+  list_of_genres = this.data.filter1;
+  list_of_pertinences = this.data.filter2;
+  list_of_times = this.data.filter3;
+  list_of_formulas = this.data.filter4;
+
   category:string="none";
-  formula:string="none";
-  sort:string="none";
+  genres:string[]=[];
+  sort_pertinence:string="none";
+  sort_formula:string="none";
+  sort_time:string=this.list_of_times[1];
+
+
+  f1: FormGroup;
   
   change_select_section0(e:any) {
     this.category= e.value;
   }
   change_select_section1(e:any) {
-    this.sort= e.value;
+    this.genres= e.value;
   }
   change_select_section2(e:any) {
-    this.formula= e.value;
+    this.sort_pertinence= e.value;
+  }
+  change_select_section3(e:any) {
+    this.sort_time= e.value;
+  }
+  change_select_section4(e:any) {
+    this.sort_formula= e.value;
   }
 
   
   validate_account() {
     this.dialogRef.close({
-      category:this.category,
-      sort:this.sort,
-      formula:this.formula,
+      category: this.category,
+      genres:this.genres,
+      sort_time: this.sort_time,
+      sort_pertinence: this.sort_pertinence,
+      sort_formula: this.sort_formula,
     });
+  }
+
+  close_popup(){
+    this.dialogRef.close()
   }
 }

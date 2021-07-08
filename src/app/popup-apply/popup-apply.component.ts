@@ -1,22 +1,25 @@
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
+import { StripeService } from '../services/stripe.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
 import { ConstantsService } from '../services/constants.service';
+import { Edtior_Projects } from '../services/editor_projects.service';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent  } from '@angular/material/autocomplete';
 import { map, startWith } from 'rxjs/operators';
 
-import { FileUploader, FileItem } from 'ng2-file-upload';
+import { FileUploader } from 'ng2-file-upload';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+
 //ajouter une url pour upload de dossier
-const url = '';
+declare var Stripe: any;
+const url = 'http://localhost:4600/routes/upload_project_for_editor/'
 
 @Component({
   selector: 'app-popup-apply',
@@ -48,7 +51,9 @@ export class PopupApplyComponent implements OnInit {
     private cd: ChangeDetectorRef,
     public navbar: NavbarService,
     public dialogRef: MatDialogRef<PopupApplyComponent,any>,
+    private Edtior_Projects:Edtior_Projects,
     private ConstantsService:ConstantsService,
+    private StripeService:StripeService,
     public dialog: MatDialog,
     @Inject(DOCUMENT) private document: Document,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
@@ -70,7 +75,100 @@ export class PopupApplyComponent implements OnInit {
   }
 
   show_icon=false;
+
+
+  multiple_submission:boolean;
+
+
+  list_of_editors_ids=[];
+  editor_pictures={};
+  editor_names={};
+  editor_nicknames={};
+  formulas={};
+  prices={};
+  delays={};
+  total_price=0;
+  //visitor
+  visitor_id:number;
+  visitor_certified:boolean;
+  visitor_description:string;
+  user_name:string;
+  user_nickname:string;
+  likes:number;
+  loves:number;
+  views:number;
+  subscribers_number:number;
+  number_of_visits:number;
+  number_of_comics:number;
+  number_of_drawings:number;
+  number_of_writings:number;
+  number_of_ads:number;
+  number_of_artpieces:number;
+
+  after_payement:boolean
+  file_name:string;
+  id_project:number;
+
+  loading_check=false;
+  step=0;
+  loading_project=false;
   ngOnInit() {
+
+    this.after_payement=this.data.after_payement;
+    if(this.after_payement){
+      this.loading_check=true;
+      this.step=2;
+      this.id_project=this.data.id_project;
+      let password=this.data.password;
+      this.Edtior_Projects.check_if_payement_done(this.id_project,password).subscribe(r=>{
+        if(r[0]){
+          this.Edtior_Projects.set_payement_done_for_project(this.id_project).subscribe(r=>{
+            this.loading_check=false;
+            this.step=2;
+          })
+        }
+        else{
+          this.loading_check=false;
+          this.step=3
+        }
+      })
+      
+
+      return
+    }
+
+    this.user_name=this.data.visitor_name;
+    this.user_nickname=this.data.visitor_nickname;
+      
+    this.multiple_submission=this.data.multiple_submission;
+
+    this.list_of_editors_ids=this.data.list_of_editors_ids;
+    this.editor_pictures=this.data.editor_pictures;
+    this.editor_names=this.data.editor_names;
+    this.editor_nicknames=this.data.editor_nicknames;
+    this.formulas=this.data.formulas;
+    this.prices=this.data.prices;
+    this.delays=this.data.delays;
+
+    this.visitor_id=this.data.visitor_id;
+    this.visitor_certified=this.data.visitor_certified;
+    this.visitor_description=this.data.visitor_description;
+    this.likes=this.data.visitor_likes;
+    this.loves=this.data.visitor_loves;
+    this.views=this.data.visitor_views;
+    this.subscribers_number=this.data.visitor_subscribers_number;
+    this.number_of_visits=this.data.visitor_number_of_visits;
+    this.number_of_comics=this.data.visitor_number_of_comics;
+    this.number_of_drawings=this.data.visitor_number_of_drawings;
+    this.number_of_writings=this.data.visitor_number_of_writings;
+    this.number_of_ads=this.data.visitor_number_of_ads;
+    this.number_of_artpieces=this.data.visitor_number_of_artpieces;
+   
+
+    for(let i=0;i<this.list_of_editors_ids.length;i++){
+      this.total_price+=this.prices[this.list_of_editors_ids[i]]
+    }
+
     this.build_form();
 
     
@@ -79,7 +177,6 @@ export class PopupApplyComponent implements OnInit {
         
 
       var re = /(?:\.([^.]+))?$/;
-      let index = this.uploader.queue.indexOf(file);
       let size = file._file.size/1024/1024;
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
@@ -91,7 +188,7 @@ export class PopupApplyComponent implements OnInit {
         });
       }
       else{
-        if(Math.trunc(size)>=10){
+        if(Math.trunc(size)>=15){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
@@ -99,7 +196,16 @@ export class PopupApplyComponent implements OnInit {
           });
         }
         else{
-          
+          var today = new Date();
+          var ss = String(today.getSeconds()).padStart(2, '0');
+          var mi = String(today.getMinutes()).padStart(2, '0');
+          var hh = String(today.getHours()).padStart(2, '0');
+          var dd = String(today.getDate()).padStart(2, '0');
+          var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+          var yyyy = today.getFullYear();
+          let Today = yyyy + mm + dd + hh+ mi + ss;
+          this.file_name = this.visitor_id + '-' + Today + '.' + sufix;
+
           this.uploaded_file=this.uploader.queue[0]._file.name;
           file.withCredentials = true;
 
@@ -108,6 +214,10 @@ export class PopupApplyComponent implements OnInit {
         
       }
     };
+
+    this.uploader.onCompleteItem = (file) => {
+      this.check_payement_after_project_submited()
+    }
     
   }
 
@@ -125,12 +235,11 @@ export class PopupApplyComponent implements OnInit {
       window.dispatchEvent(new Event('resize'));
     });
   }
-  
 
   close_dialog(){
     this.dialogRef.close();
   }
-  step=0;
+ 
   step_back() {
     if(this.step > 0) {
       this.step--;
@@ -141,11 +250,52 @@ export class PopupApplyComponent implements OnInit {
     }
   }
 
+  
   validate_step(i:number) {
 
     if(i==0) {
       if(this.registerForm.valid && this.uploaded_file) {
-        this.step++;
+
+        if(this.multiple_submission){
+          this.step++;
+        }
+        else{
+          //Cas dépôt de projet depuis account
+          
+          this.loading_project=true;
+          
+          let data={
+            
+            id_user: this.visitor_id,
+            user_name:this.user_name,
+            user_nickname:this.user_nickname,
+            user_verified:this.visitor_certified,
+            user_description:this.visitor_description,
+            title:this.registerForm.value.title,
+            category:this.registerForm.value.category,
+            genres:this.genres,
+            target_id:this.list_of_editors_ids[0],
+            editor_name:this.editor_names[this.list_of_editors_ids[0]],
+            editor_nickname:this.editor_nicknames[this.list_of_editors_ids[0]],
+            formula:this.formulas[this.list_of_editors_ids[0]],
+            price:this.total_price,
+            delay:this.list_of_delays_in_days[this.delays[this.list_of_editors_ids[0]]],
+            likes: this.likes,
+            loves: this.loves,
+            views: this.views,
+            subscribers_number:this.subscribers_number,
+            number_of_visits: this.number_of_visits,
+            number_of_comics: this.number_of_comics,
+            number_of_drawings: this.number_of_drawings,
+            number_of_writings: this.number_of_writings,
+            number_of_ads: this.number_of_ads,
+            number_of_artpieces: this.number_of_artpieces,
+            payement_status:"not_done",
+            file_name:this.file_name,
+            
+          }
+          this.submit_single_project(data)
+        }
         this.cd.detectChanges();
       }
       else if( !this.uploaded_file ) {
@@ -161,17 +311,57 @@ export class PopupApplyComponent implements OnInit {
   }
 
 
+  
+  open_applications(){
+    this.dialogRef.close(true);
+  }
+
+  stripe:any;
+  submit_single_project(data){
+    this.Edtior_Projects.submit_project_for_editor(data).subscribe(r=>{
+      this.id_project=r[0].id
+      let URL = url + `${r[0].id}/${this.file_name}`;
+      this.uploader.setOptions({ url: URL});
+      this.uploader.queue[0].upload();
+    })
+  }
+  check_payement_after_project_submited(){
+    if(this.multiple_submission){
+
+    }
+    else{
+      if(this.total_price==0){
+        //cas gratuit
+        this.Edtior_Projects.set_payement_done_for_project(this.id_project).subscribe(r=>{
+          this.step=2;
+          this.loading_project=false;
+        })
+      }
+      else{
+        this.StripeService.create_checkout_project_submission(this.total_price*100,this.user_nickname,this.id_project,this.registerForm.value.title).subscribe(r=>{
+          this.stripe=Stripe(r[0].key)
+          return this.stripe.redirectToCheckout({ sessionId: r[0].id });
+        })
+      }
+    }
+  }
+
+
+  /*************************************** FORMS MANAGMENT ***********************************/
+  /*************************************** FORMS MANAGMENT ***********************************/
+  /*************************************** FORMS MANAGMENT ***********************************/
+
   list_of_categories=this.ConstantsService.list_of_categories;
   registerForm: FormGroup;
   build_form() {
     this.registerForm = this.formBuilder.group({
-      category: new FormControl( [], [Validators.required]),
+      category: new FormControl( '', [Validators.required]),
       genres: new FormControl( this.genres, [Validators.required]),
       title:['', 
         Validators.compose([
           Validators.required,
           Validators.minLength(3),
-          Validators.maxLength(100),
+          Validators.maxLength(45),
           Validators.pattern(pattern("text")),
         ]),
       ],
@@ -184,7 +374,6 @@ export class PopupApplyComponent implements OnInit {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   
   @ViewChild('genresInput') genresInput: ElementRef<HTMLInputElement>;
-
   genresCtrl = new FormControl();
   genres: string[] = [];
   filteredGenres: Observable<string[]>;
@@ -286,6 +475,10 @@ export class PopupApplyComponent implements OnInit {
   list_of_real_delays={"1s":"1 semaine","2s":"2 semaines","3s":"3 semaines",
   "1m":"1 mois","6s":"6 semaines","7s":"7 semaines","2m":"2 mois",
   "3m":"3 mois","4m":"4 mois","5m":"5 mois","6m":"6 mois"}
+
+  list_of_delays_in_days={"1s":7,"2s":14,"3s":21,
+  "1m":30,"6s":42,"7s":49,"2m":60,
+  "3m":90,"4m":120,"5m":150,"6m":180}
   list_of_editors=[
     {
       "picture": 'pp safeurl',
@@ -316,7 +509,6 @@ export class PopupApplyComponent implements OnInit {
     }
   ]
   
-  total_price:number;
   update_total_price() {
     this.total_price=0;
     for(let i=0;i<this.list_of_editors.length;i++) {
@@ -356,5 +548,7 @@ export class PopupApplyComponent implements OnInit {
     normalize_to_nfc(fg,fc);
   }
 
+
+ 
 
 }

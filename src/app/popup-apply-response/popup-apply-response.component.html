@@ -15,17 +15,25 @@
     <div class="step-form" [formGroup]="registerForm">
 
         <div class="step-name">
-            <!--DATA : Mettre nom en entrée-->
-            <span *ngIf="!data.read_response">Réponse à {{data.name}}</span>
-            <span *ngIf="data.read_response">Réponse de {{data.name}}</span><!--METTRE LE NOM DE L'EDITEUR-->
+            <span >Réponse finale de l'Éditeur</span>
+       </div>
+
+        <div class="form-title-b">
+            <span><b>Titre du projet</b> : {{data.project.title}}</span>
+        </div>
+        <div class="form-title-b" >
+            <span><b>Auteur</b> : {{data.project.user_name}}</span>
+        </div>
+        <div class="form-title-b">
+            <span><b>Éditeur</b> : {{data.author_name}}</span>
         </div>
         
         <div class="form-title">
-            <span>Avis final</span>
+            <span><b>Avis final</b></span>
         </div>
         <div class="form-item" *ngIf="!data.read_response">
             <mat-form-field floatLabel='never' >
-                <mat-label>Avis</mat-label>
+                <mat-label>Avis final</mat-label>
                 <mat-select disableOptionCentering formControlName="feedback" panelClass="popupApplyResponseSelectClass">
                     <mat-option  *ngFor="let obj of list_of_categories" [value]="obj">
                         {{ obj }}
@@ -38,15 +46,15 @@
 
         <div class="form-item" *ngIf="data.read_response">
             <mat-form-field floatLabel='never'>
-                <mat-label>{{data.feedback}}</mat-label>
+                <mat-label>{{data.response.jugement}}</mat-label>
                 <input matInput readonly formControlName="feedback">
             </mat-form-field>
         </div>
 
 
 
-        <div class="form-title flex">
-            <span>Note sur la qualité du dossier</span>
+        <div class="form-title flex" style="align-items: center;">
+            <span><b>Note sur la qualité du dossier : </b></span>
             <span class="note">{{registerForm.controls['note'].value}} / 20</span>
         </div>
         <div class="form-item" *ngIf="!data.read_response">
@@ -61,13 +69,13 @@
 
         
         <div class="form-title" *ngIf="!data.read_response">
-            <span>Votre retour</span>
+            <span><b>Compte-rendu</b></span>
 
             <div class="see-more-button">
                 ?
                 <div class="information" >
                     <div class="first-text">
-                        <span> <img  src='../../assets/img/tuto-logos/light.svg'>Les artistes attendent votre retour avec impatience. Nous vous prions donc de leur fournir un retour aussi constructif que possible si ce dernier est négatif.
+                        <span> <img  src='../../assets/img/tuto-logos/light.svg'>Les artistes attendent votre retour avec impatience. Nous vous prions donc de leur fournir un retour aussi constructif que possible, même si le projet n'est pas retenu.
                         </span>
                     </div>
                 </div>
@@ -75,13 +83,13 @@
         </div>
 
         <div class="form-title" *ngIf="data.read_response" style="margin-top:20px;">
-            <span>Retour</span>
+            <span><b>Compte-rendu</b></span>
         </div>
 
         
         <div class="form-item" style="height:unset !important; margin-bottom: 15px;" *ngIf="!data.read_response">
             <mat-form-field floatLabel='never'>
-                <mat-label>Veuillez saisir votre retour</mat-label>
+                <mat-label>Votre compte-rendu</mat-label>
                 <textarea matInput cdkTextareaAutosize formControlName="comment" maxLength="1500" autocomplete="off" (input)="normalize_input(registerForm, 'comment');"></textarea>
                 <mat-error *ngIf="registerForm.controls['comment'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                 </mat-error>
@@ -97,7 +105,8 @@
 
 
         <button class="submit-button" type="submit" (click)="onSubmit();" *ngIf="!data.read_response">
-            <span>Envoyer</span>
+            <mat-spinner *ngIf="loading_response" diameter="25"  style="margin:auto;"></mat-spinner>
+            <span *ngIf="!loading_response">Envoyer</span>
         </button>
     </div>
 </div>

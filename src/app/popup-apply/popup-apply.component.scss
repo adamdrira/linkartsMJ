@@ -102,6 +102,56 @@
             color: rgb(32, 56, 100);
         }
 
+        .sent-mail-icon {
+            cursor: default;
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+            margin-bottom: 10px;
+
+            .logo1{
+                height:65px;
+            }
+            .logo{
+                height:90px;
+            }
+            
+          }
+        .sent-mail-text {
+            display: flex;
+            flex-direction: column;
+            span {
+              &:first-of-type {
+                text-align: center;
+                font-size: 16px;
+                color: #203864;
+                font-weight: 600;
+                margin-top: 20px;
+                padding: 0px 5px;
+        
+                @media (max-width: 400px) {
+                  font-size: 12px;
+                }
+              }
+              &:last-of-type {
+                text-align: center;
+                margin-top: 4px;
+                margin-bottom: 20px;
+                font-weight: 600;
+                color: #203864;
+                font-size: 13px;
+                padding: 0px 5px;
+        
+                @media (max-width: 400px) {
+                  font-size: 13px;
+                }
+                @media (max-width: 350px) {
+                  font-size: 11px;
+                }
+              }
+            }
+        }
+
         .upload-pdf {
             width: 100%;
             margin-bottom: 30px;
@@ -178,7 +228,7 @@
             height: 70px;
             margin-top: 15px;
             margin-bottom: 10px;
-
+            position: relative;
             .length-indicator {
                 position: absolute;
                 right: 10px;
@@ -471,6 +521,7 @@
     }
 
     .submit-button {
+        cursor:pointer;
         justify-content: center;
         height: 48px;
         width: 100%;
@@ -544,10 +595,12 @@
             }
         }
 
+
         mat-chip.mat-standard-chip {
-            margin:0px 4px !important;
+            margin:2px 4px !important;
             min-height:30px !important;
         }
+
         .mat-input-element {
             font-size: 14px;
             line-height: 22px !important;
@@ -556,7 +609,7 @@
 
         mat-form-field {
             margin-bottom: 0px !important;
-            
+
             .mat-form-field-wrapper {
                 padding-bottom: 20px !important;
                 mat-error {
@@ -566,7 +619,7 @@
                     }
                 }
             }
-            
+
             &.matautocompleteclass {
                 margin-bottom: 20px !important;
                 .mat-form-field-wrapper {
@@ -697,7 +750,7 @@
 
     .popupApplyMatautocompleteClass.mat-autocomplete-panel {
         position: absolute;
-        //overflow: hidden;
+        max-height: 185px;
         bottom: 52px;
         left: 0px;
         border-radius: 23px 15px 15px 23px !important;

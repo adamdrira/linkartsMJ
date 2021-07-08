@@ -1,6 +1,6 @@
 
 
-<div class="fake-navbar">
+<div class="fake-navbar"  [ngClass]="{'fake-navbar-hidden': fake_navbar_hidden}">
 
     <img  src="../../assets/img/tuto-logos/tuto-palette.svg"  class="invisible-height">
     <img  src="../../assets/img/tuto-logos/tuto-books.svg" class="invisible-height">
@@ -29,7 +29,7 @@
     </div>
 
 
-    <div class="middle-container" *ngIf="!for_group_creation" [@enterAnimation]>
+    <div (resized)="onResized($event)" class="middle-container" *ngIf="!for_group_creation" [@enterAnimation]>
  
         <div class="back" *ngIf="step>1">
             <button mat-button class="mat-icon-button back-button" (click)="step_back()" tabIndex="-1">
@@ -90,7 +90,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label >Nom complet*</mat-label>
                         <input matInput formControlName="firstName" maxLength="40" type="search" autocomplete="off" (input)="normalize_input(registerForm1, 'firstName');">
-                        <mat-error *ngIf="registerForm1.controls['firstName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
+                        <mat-error *ngIf="registerForm1.controls['firstName'].invalid">Saisie invalide : les caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{registerForm1.controls['firstName'].value?.length || 0}}/40</div>
                     </mat-form-field>
@@ -190,7 +190,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label >Nom de la société représentée*</mat-label>
                         <input matInput formControlName="SocietyName" maxLength="40" type="search" autocomplete="off" (input)="normalize_input(registerForm2, 'SocietyName');">
-                        <mat-error *ngIf="registerForm2.controls['SocietyName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
+                        <mat-error *ngIf="registerForm2.controls['SocietyName'].invalid">Saisie invalide : les caractères spéciaux ne sont pas autorisés
                         </mat-error>
                         <div class="length-indicator">{{registerForm2.controls['SocietyName'].value?.length || 0}}/40</div>
                     </mat-form-field>
@@ -234,7 +234,7 @@
                     <mat-form-field floatLabel='never'>
                         <mat-label>Ville</mat-label>
                         <input matInput formControlName="city" (input)="normalize_input(registerForm2, 'city');adding_city();" autocomplete="off" maxLength="30" type="search">
-                        <mat-error *ngIf="registerForm2.controls['city'].invalid ">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
+                        <mat-error *ngIf="registerForm2.controls['city'].invalid ">Saisie invalide. Caractères autorisés : chiffres, lettres, ".", "'", "’", "&", "_", "-" 
                         </mat-error>
                         <div class="length-indicator">{{registerForm2.controls['city'].value?.length || 0}}/30</div>
                     </mat-form-field>
@@ -321,7 +321,7 @@
                             <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
                           </mat-chip>
                           <input
-                            placeholder="Compétences (maximum : 15)"
+                            placeholder="Genres (maximum : 20)"
                             #genresInput
                             [formControl]="genresCtrl"
                             [matAutocomplete]="auto"
@@ -378,14 +378,14 @@
                             <div class="type">
                                 <span>Tarif</span>
                             </div>
-                            <div class="value" *ngIf="indice_edited!=0">
+                            <div class="value" *ngIf="indice_edited!=0" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
                                 <span *ngIf="standard_price==0">Gratuit</span>
                                 <span *ngIf="standard_price==1">{{standard_price}} euro</span>
                                 <span *ngIf="standard_price>1">{{standard_price}} euros</span>
                             </div>
 
-                            <div class="value" *ngIf="indice_edited==0">
+                            <div class="value" *ngIf="indice_edited==0" [@enterFromLeftAnimation]>
 
                                     <span *ngIf="standard_price==0">Gratuit</span>
                                     <span *ngIf="standard_price==1">{{standard_price}} euro</span>
@@ -407,12 +407,12 @@
                             <div class="type">
                                 <span>Temps d'attente</span>
                             </div>
-                            <div class="value" *ngIf="indice_edited!=0">
+                            <div class="value" *ngIf="indice_edited!=0" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
                                 <span>{{list_of_real_delays[standard_delay]}}</span>
                             </div>
 
-                            <div class="value" *ngIf="indice_edited==0">
+                            <div class="value" *ngIf="indice_edited==0" [@enterFromLeftAnimation]>
 
                                 <span>{{list_of_real_delays[standard_delay]}}</span>
                                 <mat-slider
@@ -425,16 +425,16 @@
 
                         </div>
                         
-                        <ng-container *ngIf="!visitor_mode">
-                            <div class="edit-formula" (click)="edit_formulas(0)" *ngIf="indice_edited==-1">
+                        <ng-container >
+                            <div class="edit-formula" (click)="edit_formulas(0)" *ngIf="indice_edited==-1" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                                 <span>Modifier</span>
                             </div>
-                            <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==0">
+                            <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==0" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                                 <span>Annuler</span>
                             </div>
-                            <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==0">
+                            <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==0" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                                 <span>Valider</span>
                             </div>
@@ -461,12 +461,12 @@
                                 <span>Tarif</span>
                             </div>
 
-                            <div class="value" *ngIf="indice_edited!=1">
+                            <div class="value" *ngIf="indice_edited!=1" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
                                 <span>{{express_price}} euros</span>
                             </div>
 
-                            <div class="value" *ngIf="indice_edited==1">
+                            <div class="value" *ngIf="indice_edited==1" [@enterFromLeftAnimation]>
 
                                 <span>{{express_price}} euros</span>
                                 <mat-slider
@@ -486,11 +486,11 @@
                                 <span>Temps d'attente</span>
                             </div>
 
-                            <div class="value" *ngIf="indice_edited!=1">
+                            <div class="value" *ngIf="indice_edited!=1" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
                                 <span>{{list_of_real_delays[express_delay]}}</span>
                             </div>
-                            <div class="value" *ngIf="indice_edited==1">
+                            <div class="value" *ngIf="indice_edited==1" [@enterFromLeftAnimation]>
 
                                 <span>{{list_of_real_delays[express_delay]}}</span>
                                 <mat-slider *ngIf="indice_edited==1"
@@ -502,16 +502,16 @@
                         </div>
 
 
-                        <ng-container *ngIf="!visitor_mode">
-                            <div class="edit-formula" (click)="edit_formulas(1)" *ngIf="indice_edited==-1">
+                        <ng-container>
+                            <div class="edit-formula" (click)="edit_formulas(1)" *ngIf="indice_edited==-1" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                                 <span>Modifier</span>
                             </div>
-                            <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==1">
+                            <div class="edit-formula" (click)="cancel_edition()" *ngIf="indice_edited==1" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                                 <span>Annuler</span>
                             </div>
-                            <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==1">
+                            <div class="edit-formula" (click)="validate_price()" *ngIf="indice_edited==1" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                                 <span>Valider</span>
                             </div>
@@ -610,19 +610,19 @@
                                     </ng-container>
                                 </span>
                             </div>
-                            <div class="section" *ngIf="registerForm3.value.genres && registerForm3.value.genres.length>0" [@enterFromLeftAnimation]>
+                            <div class="section" *ngIf="genres && genres.length>0" [@enterFromLeftAnimation]>
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">receipt_long</mat-icon>
                                 <span class="section-value">
-                                    <ng-container *ngFor="let gen of registerForm3.value.genres.slice(0,6);let j=index">
+                                    <ng-container *ngFor="let gen of genres.slice(0,6);let j=index">
                                         <ng-container *ngIf="j==0">{{gen}}</ng-container>
                                         <ng-container *ngIf="j>0">, {{gen}}</ng-container>
                                     </ng-container>
-                                    <span style="opacity: 0.75; cursor: pointer;" *ngIf="registerForm3.value.genres.length>6"
-                                        [matTooltip]="registerForm3.value.genres.slice(6,registerForm3.value.genres.length) | tooltipList"  
+                                    <span style="opacity: 0.75; cursor: pointer;" *ngIf="genres.length>6"
+                                        [matTooltip]="genres.slice(6,genres.length) | tooltipList"  
                                         matTooltipClass='linkarts-tooltip tooltip-list' 
                                         [matTooltipPosition]="'below'"
                                         [matTooltipShowDelay]="0">
-                                        (+{{registerForm3.value.genres.length - 6}} {{registerForm3.value.genres.length === 7 ? 'autre' : 'autres'}})
+                                        (+{{genres.length - 6}} {{genres.length === 7 ? 'autre' : 'autres'}})
                                     </span>
                                 </span>
                                 
@@ -710,7 +710,7 @@
                             <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
                           </mat-chip>
                           <input
-                            placeholder="Compétences (maximum : 15)"
+                            placeholder="Compétences (maximum : 20)"
                             #skillsInput
                             [formControl]="skillsCtrl"
                             [matAutocomplete]="auto"
@@ -875,7 +875,7 @@
     </div>
 
 </div>
-<div class="bottom-container">
+<div class="bottom-container" #bottomContainer>
 
 </div>
 

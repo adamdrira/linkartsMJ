@@ -146,8 +146,6 @@ export class StripeComponent implements OnInit {
   step=0;
   display_select=false;
   stripe:any;
-  //stripe = Stripe("pk_test_51IXGypFGsFyjiwAlbgLfAIKuRSkJgKvBfCfFmkdmSKoOAV9INm9lmiHWhfIfHNXpoBpMz15lyA9rr2BuB3wzX1VG00h0IhTM9u");
-
   validate_step() {
       if(this.loading){
         return

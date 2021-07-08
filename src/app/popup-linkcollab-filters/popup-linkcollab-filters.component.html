@@ -8,7 +8,7 @@
             <ng-container *ngIf="category_index==1">Collaborations bénévoles</ng-container>
             <ng-container *ngIf="category_index==2">Collaborations rémunérées</ng-container></span>
 
-        <button class="close-button" (click)="validate();">
+        <button class="close-button" (click)="close_popup();">
             <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
         </button>
 
@@ -144,49 +144,80 @@
 </div>
 
 
-<div class="component-container popupLinkcollabFilters" *ngIf="data.account_page">
+<div class="component-container popupLinkcollabFilters" *ngIf="data.account_page && f1" [formGroup]="f1" >
 
 
     
     <div class="title">
         <span>Filtrer</span>
 
-        <button class="close-button" (click)="validate_account();">
+        <button class="close-button" (click)="close_popup();">
             <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
         </button>
     </div>
-    
+
+
     <div class="form-item swiper-slide">
         <mat-form-field floatLabel='never' class="select-class">
             <mat-label>Catégorie du projet</mat-label>
-            <mat-select #matSelectSection0 (selectionChange)="change_select_section0($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass">
-                <ng-container *ngFor="let obj of section0_categories, let i = index">
+            <mat-select #matSelectSection0 (selectionChange)="change_select_section0($event)" formControlName="category" disableOptionCentering panelClass="applicationsSelectClass">
+                <ng-container *ngFor="let obj of list_of_categories, let i = index">
                     <mat-option *ngIf="!( i==0 && category=='none' )" [value]="obj">
                         {{ obj }}
                     </mat-option>
                 </ng-container>
             </mat-select>
+
+            
         </mat-form-field>
     </div>
     <div class="form-item swiper-slide">
         <mat-form-field floatLabel='never' class="select-class">
-            <mat-label>Trier par</mat-label>
-            <mat-select #matSelectSection0 (selectionChange)="change_select_section1($event)" disableOptionCentering panelClass="applicationsSelectClass">
-                <ng-container *ngFor="let obj of section1_categories, let i = index">
-                    <mat-option *ngIf="!( i==0 && sort=='none' )" [value]="obj">
+            <mat-label>Genres du projet</mat-label>
+
+            <mat-select  disableOptionCentering formControlName="genres" (selectionChange)="change_select_section1($event)" panelClass="applicationsSelectClass" multiple>
+                <mat-select-trigger>
+                    {{f1.value.genres ? f1.value.genres[0] : 'Tous les genres'}}
+                    <span *ngIf="f1.value.genres?.length > 1" style="opacity: 0.75; cursor: pointer;">
+                      (+{{f1.value.genres.length - 1}} {{f1.value.genres?.length === 2 ? 'autre' : 'autres'}})
+                    </span>
+                  </mat-select-trigger>
+                <mat-option  *ngFor="let obj of list_of_genres" [value]="obj">
+                    {{ obj }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="form-item swiper-slide">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Type de formule</mat-label>
+            <mat-select #matSelectSection0 (selectionChange)="change_select_section4($event)" formControlName="sort_formula" disableOptionCentering panelClass="applicationsSelectClass">
+                <ng-container *ngFor="let obj of list_of_formulas, let i = index">
+                    <mat-option *ngIf="!( i==0 && sort_formula=='none' )" [value]="obj">
                         {{ obj }}
                     </mat-option>
                 </ng-container>
             </mat-select>
         </mat-form-field>
     </div>
-    
+    <div class="form-item swiper-slider">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Tri par pertinence</mat-label>
+            <mat-select #matSelectSection0 (selectionChange)="change_select_section2($event)" formControlName="sort_pertinence" disableOptionCentering panelClass="applicationsSelectClass">
+                <ng-container *ngFor="let obj of list_of_pertinences, let i = index">
+                    <mat-option *ngIf="!( i==0 && sort_pertinence=='none' )" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
     <div class="form-item swiper-slide">
         <mat-form-field floatLabel='never' class="select-class">
-            <mat-label>Formule choisie</mat-label>
-            <mat-select #matSelectSection0 (selectionChange)="change_select_section2($event)" disableOptionCentering panelClass="applicationsSelectClass">
-                <ng-container *ngFor="let obj of section2_categories, let i = index">
-                    <mat-option *ngIf="!( i==0 && formula=='none' )" [value]="obj">
+            <mat-label>Tri par date</mat-label>
+            <mat-select #matSelectSection0 (selectionChange)="change_select_section3($event)" formControlName="sort_time" disableOptionCentering panelClass="applicationsSelectClass">
+                <ng-container *ngFor="let obj of list_of_times, let i = index">
+                    <mat-option *ngIf="!( i==0 && sort_time=='none' )" [value]="obj">
                         {{ obj }}
                     </mat-option>
                 </ng-container>

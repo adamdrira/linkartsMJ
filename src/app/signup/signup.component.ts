@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, Inject, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavbarService } from '../services/navbar.service';
 import { User } from '../services/user';
-import { Router } from '@angular/router';
+import { ResizedEvent } from 'angular-resize-event';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { pattern } from '../helpers/patterns';
 import { ConstantsService } from '../services/constants.service';
@@ -15,7 +15,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import {Writing_Upload_Service} from '../services/writing.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { DOCUMENT } from '@angular/common';
-
+import {LoginComponent} from '../login/login.component';
 import { normalize_to_nfc } from '../helpers/patterns';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
@@ -88,7 +88,7 @@ export class SignupComponent implements OnInit {
       private Writing_Upload_Service:Writing_Upload_Service,
       private formBuilder: FormBuilder,
       public navbar: NavbarService,
-      private router:Router,
+      private rd: Renderer2,
       private cd: ChangeDetectorRef,
       private _adapter: DateAdapter<any>,
       private ConstantsService:ConstantsService,
@@ -114,7 +114,7 @@ export class SignupComponent implements OnInit {
         map((genre: string | null) => genre ? this._filter(genre) : this.list_of_skills.slice()));
       this.filteredGenres = this.genresCtrl.valueChanges.pipe(
         startWith(null),
-        map((genre: string | null) => genre ? this._filter(genre) : this.list_of_genres.slice()));
+        map((genre: string | null) => genre ? this._filter_genre(genre) : this.list_of_genres.slice()));
   }
 
 
@@ -136,25 +136,11 @@ export class SignupComponent implements OnInit {
   //LinksGroup:FormGroup;
   links_submitted=false;
   user = new User();
-  links_titles:any[]=[];
-  links:any[]=[];
   hide=true; // password
-  hide2=true;
 
   logo_is_loaded=false;
 
-  display_no_pseudos_found=false;
-  research_member_loading=false;
-  list_of_ids=[];
-  list_of_birthdays=[];
-  birthday_found:string;
-  list_of_pseudos=[];
-  list_of_profile_pictures=[];
-  list_of_pp_found=[];
 
-  pseudo_found='';
-  id_found:number;
-  profile_picture_found:SafeUrl;
   compteur_research=0;
   pp_found_loaded=false;
   display_max_length_members=false;
@@ -366,13 +352,24 @@ export class SignupComponent implements OnInit {
     this.cgu_accepted = false;
     }
   }
+
+  fake_navbar_hidden=false;
+  hide_fake_navbar() {
+    this.fake_navbar_hidden = true;
+  }
+  show_fake_navbar() {
+    this.fake_navbar_hidden = false;
+  }
   read_conditions() {
+
+    this.hide_fake_navbar();
     this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
       panelClass: "popupDocumentClass",
     }).afterClosed().subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
+      this.show_fake_navbar()
     });
   }
 
@@ -395,9 +392,7 @@ export class SignupComponent implements OnInit {
     this.hide=!this.hide;
   }
 
-  change_password_type2(){
-    this.hide2=!this.hide2;
-  }
+ 
 
   
   display_pseudo_found_1=false;
@@ -440,6 +435,7 @@ export class SignupComponent implements OnInit {
   loading_signup=false;
   id_user:number;
   register() {
+   
     if( !this.cgu_accepted ) {
       this.display_cgu_error = true;
       return;
@@ -454,8 +450,7 @@ export class SignupComponent implements OnInit {
     this.user.password = this.registerForm1.value.password;
     this.user.gender = "user";
     this.user.type_of_account = this.registerForm1.value.type_of_account;
-    this.user.firstname = this.capitalizeFirstLetter( this.registerForm1.value.firstName.toLowerCase() ).replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
-
+    this.user.firstname = this.registerForm1.value.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
     this.Profile_Edition_Service.addUser( this.user ).subscribe(r=>{
       if(!r[0].error){
         this.display_email_and_password_error=false;
@@ -465,6 +460,7 @@ export class SignupComponent implements OnInit {
           if(this.user.type_of_account=="Fan"){
             this.step=-1;
             this.show_sent_mail=true;
+            window.scroll(0,0);
           }
           else{
             this.step = 1;
@@ -576,7 +572,7 @@ export class SignupComponent implements OnInit {
     const input = event.input;
     const value = event.value;
 
-    if( this.genres.length >= 15 ) {
+    if( this.genres.length >= 20 ) {
       return;
     }
 
@@ -610,9 +606,9 @@ export class SignupComponent implements OnInit {
     this.registerForm3.controls['genres'].updateValueAndValidity();
   }
   remove_genre(genre: string): void {
-    const index = this.skills.indexOf(genre);
+    const index = this.genres.indexOf(genre);
     if (index >= 0) {
-      this.skills.splice(index, 1);
+      this.genres.splice(index, 1);
     }
     this.registerForm3.controls['genres'].updateValueAndValidity();
   }
@@ -620,7 +616,7 @@ export class SignupComponent implements OnInit {
     
     
 
-    if( this.genres.length >= 15 ) {
+    if( this.genres.length >= 20 ) {
       this.genresInput.nativeElement.value = '';
       this.genresCtrl.setValue(null);  
       return;
@@ -806,7 +802,7 @@ export class SignupComponent implements OnInit {
     const input = event.input;
     const value = event.value;
 
-    if( this.skills.length >= 15 ) {
+    if( this.skills.length >= 20 ) {
       return;
     }
 
@@ -850,7 +846,7 @@ export class SignupComponent implements OnInit {
     
     
 
-    if( this.skills.length >= 15 ) {
+    if( this.skills.length >= 20 ) {
       this.skillsInput.nativeElement.value = '';
       this.skillsCtrl.setValue(null);  
       return;
@@ -953,7 +949,7 @@ export class SignupComponent implements OnInit {
         }
 
         this.show_text=false;
-        let primary_description = this.registerForm2.value.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
+        let primary_description = this.registerForm2.value.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
         this.Profile_Edition_Service.edit_account_signup_page1(this.id_user,primary_description,this.location,birthday,siret, this.society).subscribe(r=>{
           if(r[0]){
 
@@ -994,9 +990,6 @@ export class SignupComponent implements OnInit {
 
         let categories = this.registerForm3.value.categories;
         this.loading_signup=true;
-        console.log(this.registerForm3.value)
-        console.log(categories)
-        console.log(this.genres)
         
         this.Profile_Edition_Service.edit_account_signup_page2(this.id_user,categories,this.genres,this.standard_price,this.standard_delay,this.express_price,this.express_delay).subscribe(r=>{
           if(r[0]){
@@ -1014,13 +1007,11 @@ export class SignupComponent implements OnInit {
       else if(i==3){
         this.show_sent_mail=true;
         this.step=-1;
+        window.scroll(0,0);
       }
 
       else if(i==4){
         let categories = this.registerForm4.value.categories;
-        console.log(this.registerForm4.value)
-        console.log(this.skills)
-
         if(this.loading_signup){
           return
         }
@@ -1039,12 +1030,11 @@ export class SignupComponent implements OnInit {
       }
 
       else if(i==5){
-        console.log(this.registerForm5.value)
         let links={"facebook":this.registerForm5.value.facebook,"instagram":this.registerForm5.value.instagram,
         "artstation":this.registerForm5.value.artstation,"website":this.registerForm5.value.website,
         "deviantart":this.registerForm5.value.deviantart,"pinterest":this.registerForm5.value.pinterest,
         "other_website":this.registerForm5.value.other_website,"twitter":this.registerForm5.value.twitter
-      }
+        }
         if(this.loading_signup){
           return
         }
@@ -1054,6 +1044,7 @@ export class SignupComponent implements OnInit {
             this.loading_signup=false;
             this.show_sent_mail=true;
             this.step=-1;
+            window.scroll(0,0);
           }
         })
         
@@ -1089,267 +1080,23 @@ export class SignupComponent implements OnInit {
   @ViewChild('input') input:ElementRef;
   
   
-  @HostListener('document:click', ['$event.target'])
-  clickout(btn) {
-    if(this.research_member_loading && this.research){
-      if (!this.research.nativeElement || !this.research.nativeElement.contains(btn)){
-        this.research_member_loading=false;
-      }
-    }
-  }
 
 
 
 
 
   selected_country='Aucun pays';
-  list_of_countries=[
-    'Aucun pays',
-    "France",
-    "Afghanistan", 
-    "Afrique Centrale", 
-    "Afrique du sud", 
-    "Albanie", 
-    "Algerie", 
-    "Allemagne", 
-    "Andorre", 
-    "Angola", 
-    "Anguilla", 
-    "Arabie Saoudite", 
-    "Argentine", 
-    "Armenie", 
-    "Australie", 
-    "Autriche", 
-    "Azerbaidjan", 
-    "Bahamas", 
-    "Bangladesh", 
-    "Barbade", 
-    "Bahrein", 
-    "Belgique", 
-    "Belize", 
-    "Benin", 
-    "Bermudes", 
-    "Bielorussie", 
-    "Bolivie", 
-    "Botswana", 
-    "Bhoutan", 
-    "Boznie Herzegovine", 
-    "Bresil", 
-    "Brunei", 
-    "Bulgarie", 
-    "Burkina Faso", 
-    "Burundi", 
-    "Caiman", 
-    "Cambodge", 
-    "Cameroun", 
-    "Canada", 
-    "Canaries", 
-    "Cap vert", 
-    "Chili", 
-    "Chine", 
-    "Chypre", 
-    "Colombie", 
-    "Comores", 
-    "Congo", 
-    "Congo democratique", 
-    "Cook", 
-    "Coree du Nord", 
-    "Coree du Sud", 
-    "Costa Rica", 
-    "Cote d'Ivoire", 
-    "Croatie", 
-    "Cuba", 
-    "Danemark", 
-    "Djibouti", 
-    "Dominique", 
-    "Egypte", 
-    "Emirats Arabes Unis", 
-    "Equateur", 
-    "Erythree", 
-    "Espagne", 
-    "Estonie", 
-    "Etats-Unis", 
-    "Ethiopie", 
-    "Falkland", 
-    "Feroe", 
-    "Fidji", 
-    "Finlande", 
-    "France", 
-    "Gabon", 
-    "Gambie", 
-    "Georgie", 
-    "Ghana", 
-    "Gibraltar", 
-    "Grece", 
-    "Grenade", 
-    "Groenland", 
-    "Guadeloupe", 
-    "Guam", 
-    "Guatemala",
-    "Guernesey", 
-    "Guinee", 
-    "Guinee Bissau", 
-    "Guinee equatoriale", 
-    "Guyana", 
-    "Guyane Francaise ", 
-
-    "Haiti", 
-    "Hawaii", 
-    "Honduras", 
-    "Hong Kong", 
-    "Hongrie", 
-
-    "Inde", 
-    "Indonesie", 
-    "Iran", 
-    "Iraq", 
-    "Irlande", 
-    "Islande", 
-    "Israel", 
-    "Italie", 
-
-    "Jamaique", 
-    "Jan Mayen", 
-    "Japon", 
-    "Jersey", 
-    "Jordanie", 
-
-    "Kazakhstan", 
-    "Kenya", 
-    "Kirghizstan", 
-    "Kiribati", 
-    "Koweit", 
-
-    "Laos", 
-    "Lesotho", 
-    "Lettonie", 
-    "Liban", 
-    "Liberia", 
-    "Liechtenstein", 
-    "Lituanie", 
-    "Luxembourg", 
-    "Lybie", 
-
-    "Macao", 
-    "Macedoine", 
-    "Madagascar", 
-    "Madère", 
-    "Malaisie", 
-    "Malawi", 
-    "Maldives", 
-    "Mali", 
-    "Malte", 
-    "Man", 
-    "Mariannes du Nord", 
-    "Maroc", 
-    "Marshall", 
-    "Martinique", 
-    "Maurice", 
-    "Mauritanie", 
-    "Mayotte", 
-    "Mexique", 
-    "Micronesie", 
-    "Midway", 
-    "Moldavie", 
-    "Monaco", 
-    "Mongolie", 
-    "Montserrat", 
-    "Mozambique", 
-    "Namibie", 
-    "Nauru", 
-    "Nepal", 
-    "Nicaragua", 
-    "Niger", 
-    "Nigeria", 
-    "Niue", 
-    "Norfolk", 
-    "Norvege", 
-    "Nouvelle Caledonie", 
-    "Nouvelle Zelande", 
-    "Oman", 
-    "Ouganda", 
-    "Ouzbekistan", 
-    "Pakistan", 
-    "Palau", 
-    "Palestine", 
-    "Panama", 
-    "Papouasie Nouvelle Guinee", 
-    "Paraguay", 
-    "Pays Bas", 
-    "Perou", 
-    "Philippines", 
-    "Pologne", 
-    "Polynesie", 
-    "Porto Rico", 
-    "Portugal", 
-    "Qatar", 
-    "Republique Dominicaine", 
-    "Republique Tcheque", 
-    "Reunion", 
-    "Roumanie", 
-    "Royaume Uni", 
-    "Russie", 
-    "Rwanda", 
-    "Sahara Occidental",
-    "Sainte Lucie", 
-    "Saint Marin", 
-    "Salomon", 
-    "Salvador", 
-    "Samoa Occidentales",
-    "Samoa Americaine", 
-    "Sao Tome et Principe", 
-    "Senegal", 
-    "Seychelles", 
-    "Sierra Leone",
-    "Singapour", 
-    "Slovaquie", 
-    "Slovenie",
-    "Somalie", 
-    "Soudan", 
-    "Sri Lanka", 
-    "Suede", 
-    "Suisse", 
-    "Surinam", 
-    "Swaziland", 
-    "Syrie", 
-    "Tadjikistan", 
-    "Taiwan", 
-    "Tonga", 
-    "Tanzanie", 
-    "Tchad", 
-    "Thailande", 
-    "Tibet", 
-    "Timor Oriental", 
-    "Togo", 
-    "Trinite et Tobago", 
-    "Tristan da cunha",
-    "Tunisie", 
-    "Turkmenistan", 
-    "Turquie", 
-    "Ukraine", 
-    "Uruguay", 
-    "Vanuatu", 
-    "Vatican", 
-    "Venezuela", 
-    "Vierges Americaines", 
-    "Vierges Britanniques", 
-    "Vietnam", 
-    "Wake", 
-    "Wallis et Futuma", 
-    "Yemen", 
-    "Yougoslavie", 
-    "Zambie", 
-    "Zimbabwe",
-  ]
-
+  list_of_countries=this.ConstantsService.list_of_countries;
 
 
   
 
 
   finish() {
-    this.router.navigate(['/login']);
-   
+    const dialogRef = this.dialog.open(LoginComponent, {
+      data: {usage:"login",signup:true},
+      panelClass:"loginComponentClass"
+    });
   }
 
   normalize_input(fg: FormGroup, fc: string) {
@@ -1357,6 +1104,15 @@ export class SignupComponent implements OnInit {
       return;
     }
     normalize_to_nfc(fg,fc);
+  }
+
+
+  @ViewChild('bottomContainer') bottomContainer:ElementRef;
+  @ViewChild('middleContainer') middleContainer:ElementRef;
+  onResized(event:ResizedEvent) {
+    let middle_height=event.newHeight;
+    this.rd.setStyle( this.bottomContainer.nativeElement, "height", middle_height +"px" );
+
   }
 
 }

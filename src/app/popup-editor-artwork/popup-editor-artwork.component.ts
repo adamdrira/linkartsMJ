@@ -2,7 +2,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
@@ -195,8 +194,6 @@ export class PopupEditorArtworkComponent implements OnInit {
         this.uploader.queue[0].upload();
 
         this.Profile_Edition_Service.add_editor_artwork(this.registerForm.value.title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.authors.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.link?this.registerForm.value.link:'',this.file_name).subscribe(r=>{
-          console.log("after file added")
-          console.log(r)
           this.dialogRef.close(r[0]);
         })
 
