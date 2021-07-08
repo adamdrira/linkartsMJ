@@ -3748,18 +3748,28 @@ module.exports = (router,
                 likes=num;
                 compteur_category+=1
                 if(compteur_category==3){
+                    if(user.id<4 && user.id>1){
+                        likes=0;
+                        loves=0;
+                        views=0;
+                    }
                     return res.status(200).json([{likes:likes,loves:loves,views:views}]);
                 }
             })
 
             List_of_views.count({
                 where:{
-                    author_id_viewed:user.id
+                    author_id_viewed:user.id,
                 }
             }).then(num=>{
                 views=num;
                 compteur_category+=1
                 if(compteur_category==3){
+                    if(user.id<4 && user.id>1){
+                        likes=0;
+                        loves=0;
+                        views=0;
+                    }
                     return res.status(200).json([{likes:likes,loves:loves,views:views}]);
                 }
             })
@@ -3772,6 +3782,11 @@ module.exports = (router,
                 loves=num;
                 compteur_category+=1
                 if(compteur_category==3){
+                    if(user.id<4 && user.id>1){
+                        likes=0;
+                        loves=0;
+                        views=0;
+                    }
                     return res.status(200).json([{likes:likes,loves:loves,views:views}]);
                 }
             })
