@@ -1,7 +1,9 @@
-import { NgModule } from '@angular/core';
+import { NgModule,LOCALE_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatRoutingModule } from './chat-routing';
-
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+registerLocaleData(localeFr, 'fr');
 import { ChatFriendsListComponent } from '../chat-friends-list/chat-friends-list.component';
 import { ChatComponent } from '../chat/chat.component';
 import { ChatRightContainerComponent } from '../chat-right-container/chat-right-container.component';
@@ -99,6 +101,7 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    {provide: LOCALE_ID, useValue: 'fr' },
     {
       provide: MatDialogRef,
       useValue: {}

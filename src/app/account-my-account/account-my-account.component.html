@@ -4,7 +4,7 @@
             <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
             <span>Paramètres</span>
         </button>
-        <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
+        <button class="logo" *ngIf="!type_of_account.includes('Fan')" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
             <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
             <span>Rémunération</span>
         </button>
@@ -713,7 +713,7 @@
 
             <div class="account-form-container" >
                 <div class="dropdowns-container">
-                    <select name="somename" class="Sumo_applications" [ngClass]="{'invisible':!sumo_ready }">
+                    <select name="somename" class="Sumo_editors" [ngClass]="{'invisible':!sumo_ready }">
                         <option selected label="Depuis toujours">Depuis toujours</option>
                         <option label="Depuis 1 semaine">Depuis 1 semaine</option>
                         <option label="Depuis 1 mois">Depuis 1 mois</option>
@@ -723,14 +723,14 @@
                 <!--!!!!!!!!!!!!!!!!!!!!!!!-->
                 <!--CHANGER LES NGIF-->
                 <!--!!!!!!!!!!!!!!!!!!!!!!!-->
-                <div class="no-data-container" *ngIf="!trendings_found">
-                    <ng-container *ngIf="trendings_loaded">
+                <div class="no-data-container" *ngIf="!editors_found">
+                    <ng-container *ngIf="editors_found">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                         <span>
-                            Vous n'avez aucune candidature sur cette période. 
+                            Vous n'avez répondu à aucun projet sur cette période. 
                         </span>
                     </ng-container>
-                    <div *ngIf="!trendings_loaded ">
+                    <div *ngIf="!editors_loaded ">
                         <mat-spinner diameter="20"></mat-spinner>
                     </div>
                 </div>
@@ -739,78 +739,44 @@
                 <!--!!!!!!!!!!!!!!!!!!!!!!!-->
                 <!--CHANGER LES NGIF-->
                 <!--!!!!!!!!!!!!!!!!!!!!!!!-->
-                <div class="stats-number-container" *ngIf="trendings_found && trendings_loaded">
+                <div class="stats-number-container" *ngIf="editors_found && editors_loaded">
                     <div>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                        <span>Total des gains des formules standard : <b>{{total_gains_standard.toFixed(2)}} &euro; </b></span>
+                        <span>Total des gains sur la période : <b>{{total_gains_editors.toFixed(2)}} &euro; </b></span>
                     </div>
                     <div>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                        <span>Total des gains des formules express : <b>{{total_gains_express.toFixed(2)}} &euro; </b></span>
+                        <span>Total des gains des formules Standard : <b>{{number_of_standard_gains.toFixed(2)}} &euro; </b></span>
                     </div>
                     <div>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                        <span>Total des gains reliés aux candidatures Articles : <b>{{number_of_applications_articles_gains.toFixed(2)}} &euro; </b></span>
+                        <span>Total des gains des formules Express : <b>{{number_of_express_gains.toFixed(2)}} &euro; </b></span>
                     </div>
-                    <div>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                        <span>Total des gains reliés aux candidatures BD : <b>{{number_of_applications_bd_gains.toFixed(2)}} &euro; </b></span>
-                    </div>
-                    <div>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                        <span>Total des gains reliés aux candidatures Comics : <b>{{number_of_applications_comics_gains.toFixed(2)}} &euro; </b></span>
-                    </div>
-                    <div>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                        <span>Total des gains reliés aux candidatures Mangas : <b>{{number_of_applications_mangas_gains.toFixed(2)}} &euro; </b></span>
-                    </div>
-                    <div>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                        <span>Total des gains reliés aux candidatures Livres : <b>{{number_of_applications_livres_gains.toFixed(2)}} &euro; </b></span>
-                    </div>
-                    <div>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                        <span>Total des gains reliés aux candidatures Livres jeunesses : <b>{{number_of_applications_livres_jeunesses_gains.toFixed(2)}} &euro; </b></span>
-                    </div>
+                    
+                    
                 </div>
 
 
                 <!--!!!!!!!!!!!!!!!!!!!!!!!-->
                 <!--CHANGER LES NGIF-->
                 <!--!!!!!!!!!!!!!!!!!!!!!!!-->
-                <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
+                <div class="chart-container" #chartContainer *ngIf="editors_found && editors_loaded">
                     <!--paramétrer graphiques-->
                     <ngx-charts-line-chart
                    
                     [scheme]="colorScheme"
-                    [results]="multi_trendings_1"
+                    [results]="multi_editors"
                     [gradient]="gradient"
                     [xAxis]="showXAxis"
                     [yAxis]="showYAxis"
                     [legend]="show_legends"
                     [showXAxisLabel]="showXAxisLabel"
                     [showYAxisLabel]="showYAxisLabel"
-                    [xAxisLabel]="xAxis_trendings_1"
-                    [yAxisLabel]="yAxis_trendings_1">
+                    [xAxisLabel]="xAxis_editors"
+                    [yAxisLabel]="yAxis_editors">
                     </ngx-charts-line-chart>
                 </div>
 
-                <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
-                    <!--paramétrer graphiques-->
-                    <ngx-charts-line-chart
-                   
-                    [scheme]="colorScheme"
-                    [results]="multi_trendings_2"
-                    [gradient]="gradient"
-                    [xAxis]="showXAxis"
-                    [yAxis]="showYAxis"
-                    [legend]="show_legends"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxisLabel]="xAxis_trendings_2"
-                    [yAxisLabel]="yAxis_trendings_2">
-                    </ngx-charts-line-chart>
-                </div>
                 
 
             </div>
@@ -819,11 +785,9 @@
 
 
 
-        <div class="stats-container "  >
+        <div class="stats-container"  *ngIf="type_of_account.includes('Artiste')">
             
-            <!-- Title container -->
             <div class="account-title-container">
-                <!--TITRE + BOUTON EDITER/CACHER-->
                 <div class="title">
                     <span>Tendances</span>
                 </div>
@@ -907,11 +871,9 @@
 
 
 
-        <div class="stats-container "  [ngClass]="{'really-invisible':!user_is_in_a_group }">
+        <div class="stats-container "  [ngClass]="{'really-invisible':!user_is_in_a_group }" *ngIf="type_of_account.includes('Artiste')">
             
-            <!-- Title container -->
             <div class="account-title-container">
-                <!--TITRE + BOUTON EDITER/CACHER-->
                 <div class="title">
                     <span>Tendances partagées</span>
                 </div>
@@ -999,11 +961,9 @@
         </div>
 
 
-        <div class="stats-container " *ngIf="concerned_by_favorites" >
+        <div class="stats-container " *ngIf="concerned_by_favorites && type_of_account.includes('Artiste')">
             
-            <!-- Title container -->
             <div class="account-title-container">
-                <!--TITRE + BOUTON EDITER/CACHER-->
                 <div class="title">
                     <span>Coups de cœur</span>
                 </div>
@@ -1059,11 +1019,9 @@
 
         
 
-        <div class="stats-container " [ngClass]="{'really-invisible':!user_is_in_a_group }">
+        <div class="stats-container " [ngClass]="{'really-invisible':!user_is_in_a_group }" *ngIf="type_of_account.includes('Artiste')">
             
-            <!-- Title container -->
             <div class="account-title-container">
-                <!--TITRE + BOUTON EDITER/CACHER-->
                 <div class="title">
                     <span>Coups de cœur partagés</span>
                 </div>
@@ -1127,9 +1085,7 @@
 
         <div class="stats-container " >
             
-            <!-- Title container -->
             <div class="account-title-container">
-                <!--TITRE + BOUTON EDITER/CACHER-->
                 <div class="title">
                     <span>Gestion des gains</span>
                 </div>
@@ -1153,9 +1109,6 @@
                     <span>Me rémunérer</span>
                 </button>
                
-                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
-                <!--CHANGER LES NGIF-->
-                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
                 <div class="no-data-container" *ngIf="type_of_account.includes('Artiste')">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">warning</mat-icon>
                     <span>

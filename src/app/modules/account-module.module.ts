@@ -1,7 +1,9 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AccountRoutingModule } from './account-routing';
-
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+registerLocaleData(localeFr, 'fr');
 import { AccountComponent } from '../account/account.component';
 import { AccountAboutComponent } from '../account-about/account-about.component';
 import { AccountMyAccountComponent } from '../account-my-account/account-my-account.component';
@@ -120,6 +122,7 @@ import { ApplicationsComponent } from '../applications/applications.component';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    {provide: LOCALE_ID, useValue: 'fr' },
     {
       provide: MatDialogRef,
       useValue: {}

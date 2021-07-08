@@ -5,7 +5,7 @@
             <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
             <span>Profil</span>
         </button>
-        <button class="logo" *ngIf="type_of_account!='Fan'" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
+        <button class="logo" *ngIf="type_of_account!='Fan' && !visitor_mode" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
             <mat-icon [ngClass]="{'invisible': !show_icon }">bar_chart</mat-icon>
             <span>Statistiques</span>
         </button>
@@ -52,7 +52,7 @@
                             
                     <div class="title">
                         <span *ngIf="!type_of_account.includes('dit')">Ma présentation</span>
-                        <span *ngIf="type_of_account.includes('dit')">Notre présentation</span>
+                        <span *ngIf="type_of_account.includes('dit')">Présentation</span>
                         <div class="edit-form-button cancel" (click)="cancel_form_1()" *ngIf="registerForm1_activated && !visitor_mode">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_return</mat-icon>
                         </div>
@@ -214,7 +214,7 @@
                     </div>
                     
                     <div class="form-title">
-                        <span *ngIf="">Nom complet</span>
+                        <span >Nom de l'administrateur</span>
                     </div>
                     <div class="form-item" *ngIf="registerForm3_activated" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
@@ -273,7 +273,7 @@
                         </div>
                         <div class="form-item" *ngIf="!registerForm3_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
-                                <mat-label *ngIf="!society">{{society}}</mat-label>
+                                <mat-label *ngIf="society">{{society}}</mat-label>
                                 <mat-label *ngIf="!society"><i>Non renseigné</i></mat-label>
                                 <input matInput readonly>
                             </mat-form-field>
@@ -377,7 +377,7 @@
 
                     <div class="title">
                         <span *ngIf="!type_of_account.includes('dit')">Mes coordonnées</span>
-                        <span *ngIf="type_of_account.includes('dit')">Nos coordonnées</span>
+                        <span *ngIf="type_of_account.includes('dit')">Coordonnées</span>
                         <div class="edit-form-button cancel" (click)="cancel_form_2()" *ngIf="registerForm2_activated && !visitor_mode">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_return</mat-icon>
                         </div>
@@ -1425,17 +1425,106 @@
         </ng-container>
 
 
+        <!-- PROJECTS STATS -->
+        <!-- PROJECTS STATS -->
+        <!-- PROJECTS STATS -->
+        <ng-container >
+            <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready }">
+            
+            
+                <div class="account-title-container">
+                    <div class="title">
+                        <span>Projets</span>
+                    </div>
+                </div>
+
+                
+                <div class="account-form-container">
+                    <div class="dropdowns-container"  >
+                        <select name="somename" class="Sumo_editors">
+                            <option selected label="Depuis toujours">Depuis toujours</option>
+                            <option label="Depuis 1 semaine">Depuis 1 semaine</option>
+                            <option label="Depuis 1 mois">Depuis 1 mois</option>
+                            <option label="Depuis 1 an">Depuis 1 an</option>
+                        </select>
+                        
+
+                    </div>
+                    <div class="no-data-container" *ngIf="!list_of_projects_loaded && list_of_projects_retrieved">
+                        <ng-container *ngIf="list_of_projects_retrieved">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                            <span *ngIf="author.type_of_account.includes('dit')">
+                                Vous n'avez reçu aucun projet sur cette période.
+                            </span>
+                            <span  *ngIf="!author.type_of_account.includes('dit')">
+                                Vous n'avez soumis aucun projet sur cette période.
+                            </span>
+                        </ng-container>
+                        <div *ngIf="!list_of_projects_retrieved ">
+                            <mat-spinner diameter="20"></mat-spinner>
+                        </div>
+                    </div>
+        
+
+                    
+
+                    <div class="stats-number-container" *ngIf="list_of_projects_retrieved && list_of_projects_loaded">
+                        <div>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                            <span  *ngIf="!author.type_of_account.includes('dit')">Nombre de projets soumis : <b>{{number_of_projects}}</b></span>
+                            <span  *ngIf="author.type_of_account.includes('dit')">Nombre de projets reçus : <b>{{number_of_projects}}</b></span>
+                        </div>
+                        <div>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                            <span >Nombre de réponses <b>{{number_of_projects_responses}}</b></span>
+                        </div>
+                        <div>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                            <span >Nombre de projets consultés <b>{{number_of_projects_consulted}}</b></span>
+                        </div>
+                    </div>
+
+
+
+
+                    <div *ngIf="!list_of_projects_retrieved && !list_of_projects_loaded">
+                        <div class="loading-page" >
+                            <mat-spinner diameter="20"  ></mat-spinner>
+                        </div>
+                    </div>
+        
+                    <div class="chart-container" *ngIf="list_of_projects_retrieved && list_of_projects_loaded">
+                        <ngx-charts-line-chart
+                        
+                        [scheme]="colorScheme"
+                        [results]="multi_projects_stats"
+                        [gradient]="gradient"
+                        [xAxis]="showXAxis"
+                        [yAxis]="showYAxis"
+                        [legend]="show_legends"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [xAxisLabel]="xAxis_projects"
+                        [yAxisLabel]="yAxis_projects"
+                        >
+                        </ngx-charts-line-chart>
+                    </div>
+
+
+                </div>
+                
+            </div>
+        </ng-container>
+
 
         <!-- ADS STATS -->
         <!-- ADS STATS -->
         <!-- ADS STATS -->
-        <ng-container *ngIf="( visitor_mode ) || (!visitor_mode)">
+        <ng-container >
             <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !(( visitor_mode ) || (!visitor_mode)) }">
             
             
-                <!-- Title container -->
                 <div class="account-title-container">
-                    <!--TITRE + BOUTON EDITER/CACHER-->
                     <div class="title">
                         <span>Annonces</span>
                     </div>
@@ -1543,7 +1632,7 @@
         <!-- COMICS STATS -->
         <!-- COMICS STATS -->
         <!-- COMICS STATS -->
-        <ng-container *ngIf="( visitor_mode) || (!visitor_mode )">
+        <ng-container >
             <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !(( visitor_mode ) || (!visitor_mode )) }">
             
             
@@ -1652,7 +1741,7 @@
         <!-- DRAWINGS STATS -->
         <!-- DRAWINGS STATS -->
         <!-- DRAWINGS STATS -->
-        <ng-container *ngIf="( visitor_mode ) || (!visitor_mode)">
+        <ng-container >
             <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !(( visitor_mode ) || (!visitor_mode)) }">
 
                 
@@ -1765,7 +1854,7 @@
         <!-- WRITINGS STATS -->
         <!-- WRITINGS STATS -->
         <!-- WRITINGS STATS -->
-        <ng-container *ngIf="( visitor_mode ) || (!visitor_mode )">
+        <ng-container>
             <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !(( visitor_mode ) || (!visitor_mode )) }">
 
                 
@@ -1876,13 +1965,11 @@
         <!-- PROFILE STATS -->
         <!-- PROFILE STATS -->
         <!-- PROFILE STATS -->
-        <ng-container *ngIf="(visitor_mode) || !visitor_mode  ">
+        <ng-container >
             <div  class="stats-container"  [ngClass]="{'invisible': !sumo_ready,'really-invisible': !(( visitor_mode ) || !visitor_mode )}">
                 
 
-                <!-- Title container -->
                 <div class="account-title-container">
-                    <!--TITRE + BOUTON EDITER/CACHER-->
                     <div class="title">
                         <span>Profil</span>
                     </div>

@@ -22,10 +22,12 @@ import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.compo
 import { PopupStoriesComponent } from '../popup-stories/popup-stories.component';
 import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PopupApplyComponent } from '../popup-apply/popup-apply.component';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupEditorArtworkComponent } from '../popup-editor-artwork/popup-editor-artwork.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Story_service } from '../services/story.service';
+import { Edtior_Projects } from '../services/editor_projects.service';
 import { NotificationsService } from '../services/notifications.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import {LoginComponent} from '../login/login.component';
@@ -37,7 +39,7 @@ import { merge, fromEvent } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { pattern } from '../helpers/patterns';
-
+import { NotationService } from '../services/notation.service';
 import { normalize_to_nfc } from '../helpers/patterns';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -80,6 +82,7 @@ export class AccountComponent implements OnInit {
     private Reports_service:Reports_service,
     private chatService:ChatService,
     private router: Router,
+    private NotationService:NotationService,
     public route: ActivatedRoute, 
     private activatedRoute: ActivatedRoute,
     private Story_service:Story_service,
@@ -89,6 +92,7 @@ export class AccountComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private Profile_Edition_Service: Profile_Edition_Service,
     private sanitizer:DomSanitizer,
+    private Edtior_Projects:Edtior_Projects,
     private BdOneShotService: BdOneShotService,
     private BdSerieService:BdSerieService,
     private Writing_Upload_Service:Writing_Upload_Service,
@@ -176,7 +180,6 @@ export class AccountComponent implements OnInit {
       this.update_new_contents();
     }
    
-    this.update_arrows_account_categories();
   }
 
   for_reset_password=false;
@@ -290,6 +293,22 @@ export class AccountComponent implements OnInit {
 
   visitor_id:number;
   visitor_name:string;
+  visitor_certified:boolean;
+  visitor_description:string;
+  visitor_first_name:string;
+  visitor_likes:number;
+  visitor_loves:number;
+  visitor_views:number;
+  visitor_number_of_visits:number;
+  visitor_subscribers_number:number;
+  visitor_number_of_comics:number;
+  visitor_number_of_drawings:number;
+  visitor_number_of_writings:number;
+  visitor_number_of_ads:number;
+  visitor_number_of_artpieces:number;
+  last_emitted_project:any;
+  visitor_stats_retrieved=false;
+
   mode_visiteur:boolean=true;
   mode_visiteur_added:boolean=false;
   pseudo:string;
@@ -386,6 +405,7 @@ export class AccountComponent implements OnInit {
   //type of profile
   type_of_profile:string;
   type_of_profile_retrieved=false;
+  visitor_type_of_account:string;
 
   //number of publications
   number_of_comics:number;
@@ -485,7 +505,11 @@ export class AccountComponent implements OnInit {
         let user=this.user_data;
         this.visitor_id=s[0].id
         this.visitor_name=s[0].nickname;
+        this.visitor_certified=s[0].certified_account;
+        this.visitor_description=s[0].primary_description;
+        this.visitor_first_name=s[0].firstname;
         this.type_of_profile=s[0].status;
+        this.visitor_type_of_account=s[0].type_of_account;
         this.type_of_profile_retrieved=true;
     
        
@@ -532,9 +556,14 @@ export class AccountComponent implements OnInit {
           this.certified_account=user.certified_account;
           this.user_location=user.location;
 
-          if(this.type_of_account.includes("edit")){
+          if(this.type_of_account.includes("dit")){
             this.list_of_skills=this.author.editor_genres?this.author.editor_genres:[];
             this.list_of_categories=this.author.editor_categories?this.author.editor_categories:[];
+            this.instructions=this.author.instructions;
+            this.standard_price=this.author.standard_price?this.author.standard_price:0
+            this.standard_delay=this.author.standard_delay?this.author.standard_delay:"4m";
+            this.express_price=this.author.express_price?this.author.express_price:6;
+            this.express_delay= this.author.express_delay?this.author.express_delay:"1m";
           }
           else{
             this.list_of_skills=this.author.skills?this.author.skills:[];
@@ -596,10 +625,17 @@ export class AccountComponent implements OnInit {
       let user=this.user_data;
       this.visitor_id=s[0].id
       this.visitor_name=s[0].nickname;
+      this.visitor_certified=s[0].certified_account;
+      this.visitor_description=s[0].primary_description;
+      this.visitor_type_of_account=s[0].type_of_account;
+      this.visitor_first_name=s[0].firstname;
       this.type_of_profile=s[0].status;
       this.type_of_profile_retrieved=true;
       this.cd.detectChanges();
 
+      
+
+     
       if(user.type_of_account.includes('dit')){
         this.get_list_of_artworks_for_editor()
       }
@@ -607,6 +643,53 @@ export class AccountComponent implements OnInit {
      
       if( user  && this.visitor_id==user.id){
         this.mode_visiteur = false;
+      }
+      else if (user && this.type_of_profile=='account'){
+        let compteur_visitor_stats=0;
+        this.NotationService.get_user_public_stats(this.visitor_name).subscribe(r=>{
+          this.visitor_likes=r[0].likes;
+          this.visitor_loves=r[0].loves;
+          this.visitor_views=r[0].views;
+          compteur_visitor_stats++;
+          check_visitor_stats(this);
+        })
+  
+        this.Subscribing_service.get_all_subscribers_by_pseudo(this.visitor_name).subscribe(r=>{
+          this.visitor_subscribers_number=r[0].length;
+          compteur_visitor_stats++;
+          check_visitor_stats(this);
+        })
+        this.navbar.get_number_of_account_viewers(this.visitor_id).subscribe(r=>{
+          this.visitor_number_of_visits=r[0].views;
+          compteur_visitor_stats++;
+          check_visitor_stats(this);
+        });
+
+        this.Edtior_Projects.get_last_emitted_project(this.visitor_id,this.user_id).subscribe(r=>{
+          if(r[0] && r[0][0]){
+            this.last_emitted_project=r[0][0]
+          }
+          compteur_visitor_stats++;
+          check_visitor_stats(this);
+        });
+  
+        this.Profile_Edition_Service.retrieve_number_of_contents_by_pseudo(this.visitor_name).subscribe(r=>{
+          this.visitor_number_of_comics=r[0].number_of_comics;
+          this.visitor_number_of_drawings=r[0].number_of_drawings;
+          this.visitor_number_of_writings=r[0].number_of_writings;
+          this.visitor_number_of_ads=r[0].number_of_ads;
+          this.visitor_number_of_artpieces=this.number_of_comics+ this.number_of_drawings +  this.number_of_writings;
+          compteur_visitor_stats++;
+          check_visitor_stats(this);
+        })
+
+        //ajouter fonction pour vérifier quand il a envoyé son dernier projet
+
+        function check_visitor_stats(THIS){
+          if(compteur_visitor_stats==5){
+            THIS.visitor_stats_retrieved=true;
+          }
+        }
       }
       this.mode_visiteur_added = true;
 
@@ -635,7 +718,6 @@ export class AccountComponent implements OnInit {
           this.navbar.delete_research_from_navbar("Account","unknown",this.user_id).subscribe(l=>{
           });
         }
-        this.mode_visiteur_added = true;
         this.user_blocked=false;
         this.user_blocked_retrieved=true;
         this.list_writings_added=true; 
@@ -668,16 +750,19 @@ export class AccountComponent implements OnInit {
         this.certified_account=user.certified_account;
         this.user_location=user.location;
 
-        if(this.type_of_account.includes("edit")){
+        if(this.type_of_account.includes("dit")){
           this.list_of_skills=this.author.editor_genres?this.author.editor_genres:[];
           this.list_of_categories=this.author.editor_categories?this.author.editor_categories:[];
+          this.instructions=this.author.editor_instructions;
+          this.standard_price=this.author.standard_price?this.author.standard_price:0
+          this.standard_delay=this.author.standard_delay?this.author.standard_delay:"4m";
+          this.express_price=this.author.express_price?this.author.express_price:6;
+          this.express_delay= this.author.express_delay?this.author.express_delay:"1m";
         }
         else{
           this.list_of_skills=this.author.skills?this.author.skills:[];
           this.list_of_categories=this.author.artist_categories?this.author.artist_categories:[];
         }
-        console.log("list of sills")
-        console.log(this.list_of_skills)
 
         this.email_about=this.author.email_about;
         this.phone_about=this.author.phone_about;
@@ -706,17 +791,21 @@ export class AccountComponent implements OnInit {
 
           
           /*if(this.visitor_id<3){
-            console.log("in the good thing")
+            // pour abonnés isnta à tester
             this.Profile_Edition_Service.get_number_of_followers().subscribe(r=>{
-              console.log("num of followers")
-              console.log(r)
             })
           }*/
-          this.navbar.get_number_of_account_viewers().subscribe(r=>{
+          this.navbar.get_number_of_account_viewers(this.user_id).subscribe(r=>{
           
             this.number_of_visits=number_in_k_or_m(r[0].views);
             this.number_of_visits_after_research=number_in_k_or_m(r[0].views_after_research);
             this.profil_vews_found=true;
+            this.cd.detectChanges()
+          });
+
+          this.navbar.get_number_of_flagship_clicks(this.user_id).subscribe(r=>{
+            this.number_of_flagship_clicks=number_in_k_or_m(r[0].number);
+            this.number_of_flagship_clicks_retrieved=true;
             this.cd.detectChanges()
           });
           this.user_blocked=false;
@@ -773,6 +862,8 @@ export class AccountComponent implements OnInit {
           } 
         })
 
+        
+
         if(this.type_of_profile=="suspended"){
           let cat = this.route.snapshot.data['category']
           if(cat>=0){
@@ -785,7 +876,6 @@ export class AccountComponent implements OnInit {
           
         }
         else if(this.route.snapshot.data['section']>=5){
-          console.log("in if >=5")
           if(this.mode_visiteur){
             if(this.route.snapshot.data['section']==10){//ok
               this.open_section( 0,true ,0);
@@ -806,7 +896,7 @@ export class AccountComponent implements OnInit {
                 
               })
             }
-            else if(this.route.snapshot.data['section']==11){//ok
+            else if(this.route.snapshot.data['section']==11){
               this.open_section( 0,true,0 );
               this.cd.detectChanges();
               this.update_background_position(this.opened_section);
@@ -820,6 +910,30 @@ export class AccountComponent implements OnInit {
                   this.location.go("/account/" + pseudo + '/my_account')
                   location.reload();
                   return
+                }
+              })
+            }
+            else if(this.route.snapshot.data['section']==12){
+              this.open_section( 0,true,0 );
+              this.cd.detectChanges();
+              this.update_background_position(this.opened_section);
+              let id_project= parseInt(this.route.snapshot.paramMap.get('id_project'));
+              let password =this.route.snapshot.paramMap.get('password')
+              const dialogRef = this.dialog.open(LoginComponent, {
+                data: {usage:"for_chat"},
+                panelClass: "loginComponentClass",
+              });
+              dialogRef.afterClosed().subscribe(result => {
+                if(result){
+                  const dialogRef = this.dialog.open(PopupApplyComponent, {
+                    data: {
+                      multiple_submission:false,
+                      after_payement:true,
+                      id_project:id_project,
+                      password:password,
+                    },
+                    panelClass: "popupLinkcollabApplyClass",
+                  })
                 }
               })
             }
@@ -855,6 +969,28 @@ export class AccountComponent implements OnInit {
               this.cd.detectChanges();
               this.update_background_position(this.opened_section)
             }
+            else if(this.route.snapshot.data['section']==12){
+              let section =0;
+              this.open_section( section,true,0 );
+              this.cd.detectChanges();
+              this.update_background_position(this.opened_section)
+
+              let id_project= parseInt(this.route.snapshot.paramMap.get('id_project'));
+              let password =this.route.snapshot.paramMap.get('password')
+              
+              
+              const dialogRef = this.dialog.open(PopupApplyComponent, {
+                data: {
+                  multiple_submission:false,
+                  after_payement:true,
+                  id_project:id_project,
+                  password:password,
+                },
+                panelClass: "popupLinkcollabApplyClass",
+              })
+
+            }
+            
             
             else{
               let cat = this.route.snapshot.data['category']
@@ -1574,7 +1710,6 @@ export class AccountComponent implements OnInit {
     }
     
 
-    this.update_arrows_account_categories();
   }
 
 
@@ -1636,8 +1771,8 @@ export class AccountComponent implements OnInit {
         this.location.go(`/account/${this.pseudo}/ads`); 
       }
       else if( i == 3 ) {
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/applications`,this.device_info).subscribe(); 
-        this.location.go(`/account/${this.pseudo}/applications`); 
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/projects`,this.device_info).subscribe(); 
+        this.location.go(`/account/${this.pseudo}/projects`); 
       }
       else if( i == 6 ) { 
         this.opened_subcategory=form_number
@@ -2732,7 +2867,7 @@ report(){
   this.Reports_service.check_if_content_reported('account',this.user_id,"unknown",0).subscribe(r=>{
     if(r[0].nothing){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:true, text:'Vous ne pouvez pas signaler deux fois le même compte'},
+        data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois le même compte'},
         panelClass: "popupConfirmationClass",
       });
     }
@@ -2789,44 +2924,6 @@ report(){
   }
 
   
-  show_left_arrow_categories=false;//myScrollContainer.scrollLeft > 100
-  show_right_arrow_categories=false;//-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth
-  @ViewChild('accountCategories', {static: false}) accountCategories:ElementRef;
-  arrow_categories(s:string) {
-
-    if(s=='right') {
-      $('.panel-controller .middle-container2').animate({
-        scrollLeft: $('.panel-controller .middle-container2').scrollLeft() + 250,
-      }, 300, 'swing');
-    }
-    else if(s=='left') {
-      $('.panel-controller .middle-container2').animate({
-        scrollLeft: $('.panel-controller .middle-container2').scrollLeft() - 250,
-      }, 300, 'swing');
-    }
-  }
-
-  update_arrows_account_categories() {
-
-    if(this.accountCategories) {
-      if(this.accountCategories.nativeElement.scrollLeft>100) {
-        this.show_left_arrow_categories = true;
-      }
-      else {
-        this.show_left_arrow_categories = false;
-      }
-  
-      if(-100 > this.accountCategories.nativeElement.scrollLeft + this.accountCategories.nativeElement.offsetWidth - this.accountCategories.nativeElement.scrollWidth) {
-        this.show_right_arrow_categories = true;
-      }
-      else {
-        this.show_right_arrow_categories = false;
-      }
-    }
-  };
-
-
-
 
   click_absolute_arrow1(e:any,s:string) {
 
@@ -2986,23 +3083,24 @@ report(){
   faFacebookSquare = faFacebookSquare;
   faInstagram = faInstagram;
 
-  facebook: String;
-  instagram: String;
-  pinterest: String;
-  twitter: String;
-  deviantart: String;
-  artstation: String;
-  website: String;
-  other_website: String;
+  facebook: string;
+  instagram: string;
+  pinterest: string;
+  twitter: string;
+  deviantart: string;
+  artstation: string;
+  website: string;
+  other_website: string;
 
-  email_about:String;
-  phone_about:String;
+  email_about:string;
+  phone_about:string;
 
 
   /* VARIABLES ARTISTES */
   //chiffres clés pour un artiste
   profil_vews_found=false;
   number_of_flagship_clicks=number_in_k_or_m(0);
+  number_of_flagship_clicks_retrieved=false;
   number_of_visits=number_in_k_or_m(0);
   number_of_visits_after_research=number_in_k_or_m(0);
   number_of_views=number_in_k_or_m(0);
@@ -3013,7 +3111,7 @@ report(){
   list_of_skills=[];
   list_of_categories=[];
   //cv pour un artiste
-  cv_name:String;
+  cv_name:string;
   cv:any;
 
 
@@ -3035,16 +3133,12 @@ report(){
       this.Profile_Edition_Service.get_editor_artworks(this.pseudo).subscribe(r=>{
         this.list_of_artworks=r[0];
         this.list_of_artworks_retrieved=true;
-        console.log("list of artworks");
-        console.log(r[0])
 
         if(this.list_of_artworks.length>0){
           for (let i=0;i<r[0].length;i++){
-
-            this.Profile_Edition_Service.retrieve_editor_artwork_picture(r[0].picture_name).subscribe(t=>{
+            this.Profile_Edition_Service.retrieve_editor_artwork_picture(r[0][i].picture_name).subscribe(t=>{
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-              this.editor_pictures_by_name[r[0].picture_name] = url;
-              console.log(this.editor_pictures_by_name)
+              this.editor_pictures_by_name[r[0][i].picture_name] = url;
               this.cd.detectChanges()
             })
             
@@ -3059,25 +3153,7 @@ report(){
     })
   }
 
-  list_of_artworks=[
-  ];
-  //liste des membres pour un éditeur
-  /*list_of_editors=[
-    {
-      admin:true,
-      picture:"",
-      name:"Mokhtar Meghaichi",
-      description:"Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. ",
-      cv:"mon cv"
-    },
-    {
-      admin:false,
-      picture:"",
-      name:"Mokhtar Meghaichi Mokhtar Meghaichi Mokhtar Meghaichi Mokhtar Meghaichi",
-      description:"Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. Ceci est un test de description. ",
-      cv:""
-    },
-  ];*/
+  list_of_artworks=[];
 
   list_of_real_delays={"1s":"1 semaine","2s":"2 semaines","3s":"3 semaines",
   "1m":"1 mois","6s":"6 semaines","7s":"7 semaines","2m":"2 mois",
@@ -3101,17 +3177,139 @@ report(){
   }
 
   
+  loading_editor_artworks=false;
   open_add_editor_artwork(){
 
     const dialogRef = this.dialog.open(PopupEditorArtworkComponent, {
-      data: {},
+      data: {id_user:this.user_id},
       panelClass: "popupEditorArtworkClass",
     }).afterClosed().subscribe(result => {
-      console.log("closed ")
-      console.log(result)
+      this.loading_editor_artworks=true;
+      this.Profile_Edition_Service.retrieve_editor_artwork_picture(result.picture_name).subscribe(t=>{
+
+        let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+        this.editor_pictures_by_name[result.picture_name] = url;
+        this.list_of_artworks.splice(0,0,result)
+        this.loading_editor_artworks=false;
+        this.cd.detectChanges()
+        this.scrollobs = merge(
+          fromEvent(window, 'scroll'),
+        );
+      })
     });
   }
 
+
+  submit_project(i){
+    if(this.last_emitted_project){
+      let s=date_in_seconds(this.now_in_seconds,this.last_emitted_project.createdAt);
+      let time_left;
+      if( Math.trunc(s/86400)<=1 ) {
+        time_left= "1 mois";
+      }
+      else {
+        time_left= 30-Math.trunc(s/86400) + " jours";
+      }
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:true, 
+          text:`Vous avez déjà soumis un projet auprès de cet éditeur, il y a moins de 30 jours. Vous pourrez à nouveau soumettre un projet dans ${time_left}.`},
+          panelClass: "popupConfirmationClass",
+      });
+      
+    }
+    else{
+      this.submit_project_end(i)
+    }
+
+    
+  }
+
+
+  submit_project_end(i){
+    
+    let formula=""
+    let delay=""
+    let price=0
+    if(i==0){
+      formula="standard";
+      price=this.standard_price;
+      delay=this.standard_delay;
+    }
+    else if(i==1){
+      formula="express";
+      price=this.express_price;
+      delay=this.express_delay;
+    }
+    else if(i==2){
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
+      });
+      return
+    }
+
+
+    let list_of_editors_ids=[this.user_id];
+    let editor_pictures={};
+    editor_pictures[this.user_id]=this.profile_picture;
+    let editor_nicknames={};
+    editor_nicknames[this.user_id]=this.pseudo;
+    let editor_names={};
+    editor_names[this.user_id]=this.author_name;
+    let formulas={};
+    formulas[this.user_id]=formula;
+    let prices={};
+    prices[this.user_id]=price;
+    let delays={};
+    delays[this.user_id]=delay;
+    
+    // number of trendings,
+    const dialogRef = this.dialog.open(PopupApplyComponent, {
+      data: {
+        multiple_submission:false,
+        //editor
+        list_of_editors_ids:list_of_editors_ids,
+        editor_pictures:editor_pictures,
+        editor_names:editor_names,
+        editor_nicknames:editor_nicknames,
+        formulas:formulas,
+        prices:prices,
+        delays:delays,
+
+        //visitor
+
+        visitor_id:this.visitor_id,
+        visitor_certified:this.visitor_certified,
+        visitor_name: this.visitor_first_name,
+        visitor_nickname:this.visitor_name,
+        visitor_description:this.visitor_description,
+        visitor_likes:this.visitor_likes,
+        visitor_loves:this.visitor_loves,
+        visitor_views:this.visitor_views,
+        visitor_subscribers_number:this.visitor_subscribers_number,
+        visitor_number_of_visits:this.visitor_number_of_visits,
+        visitor_number_of_comics:this.visitor_number_of_comics,
+        visitor_number_of_drawings:this.visitor_number_of_drawings,
+        visitor_number_of_writings:this.visitor_number_of_writings,
+        visitor_number_of_ads:this.visitor_number_of_ads,
+        visitor_number_of_artpieces:this.visitor_number_of_artpieces,
+      },
+      panelClass: "popupLinkcollabApplyClass",
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.router.navigateByUrl('/account/' + this.visitor_name + "/projects" );
+      }
+    })
+  }
+
+
+  add_flagship_click(){
+    if(this.mode_visiteur){
+      this.navbar.add_main_research_to_history("Flagship","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
+    }
+    
+  }
 }
 
 

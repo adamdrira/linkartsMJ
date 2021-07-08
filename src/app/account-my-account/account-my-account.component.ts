@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import { Trending_service } from '../services/trending.service';
+import { Edtior_Projects } from '../services/editor_projects.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Favorites_service } from '../services/favorites.service';
@@ -56,6 +57,7 @@ export class AccountMyAccountComponent implements OnInit {
     private Favorites_service:Favorites_service,
     private cd: ChangeDetectorRef,
     private location: Location,
+    private Edtior_Projects:Edtior_Projects,
     private AuthenticationService:AuthenticationService,
     private Trending_service:Trending_service,
     private Profile_Edition_Service: Profile_Edition_Service,
@@ -97,7 +99,7 @@ export class AccountMyAccountComponent implements OnInit {
   trendings_found_groups=false;
   date_format_trendings=3;
   date_format_trendings_groups=3;
-
+  date_format_editors=3;
 
   date_format_favorites=3;
   date_format_favorites_groups=3;
@@ -582,7 +584,9 @@ export class AccountMyAccountComponent implements OnInit {
 
       
     }
-    else{
+    else if(this.type_of_account.includes("dit")){
+      this.get_editors_remuneration();
+      this.get_total_gains();
       this.show_group_managment=false;
       this.groups_owned_found=true;
     }
@@ -1184,8 +1188,7 @@ export class AccountMyAccountComponent implements OnInit {
 
     let THIS=this;
   
-    $(document).ready(function () {
-      $(".Sumo_applications").SumoSelect({});    
+    $(document).ready(function () {   
       $(".Sumo_trendings").SumoSelect({});    
       $(".Sumo_trendings_groups").SumoSelect({});  
       $(".Sumo_trendings_chose_group").SumoSelect({});  
@@ -1194,13 +1197,31 @@ export class AccountMyAccountComponent implements OnInit {
       $(".Sumo_favorites_groups").SumoSelect({});  
       $(".Sumo_favorites_chose_group").SumoSelect({});  
 
+      $(".Sumo_editors").SumoSelect({}); 
+
       THIS.sumo_ready=true;
       THIS.cd.detectChanges();
     });
 
     
-    $(".Sumo_applications").change(function(){
-
+    $(".Sumo_editors").change(function(){
+      let old_date=THIS.date_format_editors;
+      if($(this).val()=="Depuis 1 mois"){
+        THIS.date_format_editors=1;
+      }
+      else if($(this).val()=="Depuis 1 semaine"){
+        THIS.date_format_editors=0;
+      }
+      else if($(this).val()=="Depuis 1 an"){
+        THIS.date_format_editors=2;
+      }
+      else{
+        THIS.date_format_editors=3;
+      }
+      THIS.cd.detectChanges();
+      if(old_date!=THIS.date_format_editors){
+        THIS.get_editors_remuneration();
+      }
     });
 
     $(".Sumo_trendings").change(function(){
@@ -1959,60 +1980,201 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
 
-  /************************************** FAVORITES GROUP GAINS *********************************/
-  /************************************** FAVORITES GROUP GAINS *********************************/
-  /************************************** FAVORITES GROUP GAINS *********************************/
-  /************************************** FAVORITES GROUP GAINS *********************************/
-  /************************************** FAVORITES GROUP GAINS *********************************/
+  /************************************* EDITORS GAINS  **************************************/
+  /************************************* EDITORS GAINS  **************************************/
+  /************************************* EDITORS GAINS  **************************************/
+  /************************************* EDITORS GAINS  **************************************/
+
+  
+
+ 
+  // options for the chart
+  
+  xAxis_editors = "Date";
+  yAxis_editors = "Somme des gains";
+  multi_editors=[];
+
+
+  editors_loaded=false;
+  editors_found=false;
+
+  compteur_editors=0;
+
+  total_gains_editors=0
+  number_of_standard_gains=0;
+  number_of_express_gains=0;
+
+
+  
+  get_editors_remuneration(){
+    this.compteur_editors++;
+    this.editors_loaded=false;
+    this.editors_found=false;
+    this.Edtior_Projects.get_all_editors_gains(this.date_format_editors,this.compteur_editors).subscribe(r=>{
+      if(r[1]== this.compteur_editors){
+        if(r[0][0].list_of_contents.length>0){
+          this.total_gains_editors=0;
+          this.number_of_standard_gains=0;
+          this.number_of_express_gains=0;
+          this.multi_editors=[{
+            "name": "Formules Standard",
+            "series": []
+          },
+          {
+            "name": "Formules Express",
+            "series": []
+          }]
+  
+          for( let i=0;i<r[0][0].list_of_contents.length;i++){
+              let gain = r[0][0].list_of_contents[i].price;
+              this.total_gains_editors+=gain;
+              let timestamp= r[0][0].list_of_contents[i].createdAt;
+              let uploaded_date = timestamp.substring(0,timestamp.length - 5);
+              uploaded_date = uploaded_date.replace("T",' ');
+              uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
+              let first_date = new Date(uploaded_date + ' GMT');
+              let date= first_date.getDate()+'-'+(first_date.getMonth()+1)+'-'+first_date.getFullYear();
+
+              let index = this.multi_editors[0].series.findIndex(x => x.name === date)
+
+  
+              if(index>=0){
+                if(r[0][0].list_of_contents[i].formula=="standard"){
+                  this.multi_editors[0].series[index].value+=gain;
+                }
+                else if(r[0][0].list_of_contents[i].formula=="express"){
+                  this.multi_editors[1].series[index].value+=gain;
+                }
+                
+              }
+              else{
+                if(r[0][0].list_of_contents[i].formula=="standard"){
+                  this.number_of_standard_gains+=gain;
+  
+                  this.multi_editors[0].series.splice(0,0,
+                    {
+                      "name": date,
+                      "value": gain
+                    }
+                  )
+                  this.multi_editors[1].series.splice(0,0,
+                    {
+                      "name": date,
+                      "value": 0
+                    }
+                  )
+                }
+                else if(r[0][0].list_of_contents[i].formula=="express"){
+                  this.number_of_express_gains+=gain;
+                  this.multi_editors[0].series.splice(0,0,
+                    {
+                      "name": date,
+                      "value": 0
+                    }
+                  )
+                  this.multi_editors[1].series.splice(0,0,
+                    {
+                      "name": date,
+                      "value": gain
+                    }
+                  )
+                }
+              }
+          }
+          this.editors_found=true;
+        }
+        else{
+          this.editors_found=false;
+        }
+        
+        this.editors_loaded=true;
+      }
+      
+      this.cd.detectChanges()
+    })
+  
+  }
+
+  /************************************** TOTAL GAINS *********************************/
+  /************************************** TOTAL GAINS *********************************/
+  /************************************** TOTAL GAINS *********************************/
+  /************************************** TOTAL GAINS *********************************/
+  /************************************** TOTAL GAINS *********************************/
 
   trendings_gains_retrieved=false;
   trendings_group_gains_retrieved=false;
   favorites_gains_retrieved=false;
   favorites_group_gains_retrieved=false;
+  editors_gains_retrieved=false;
   total_gains=0;
   display_all_gains=false;
   get_total_gains(){
-    this.Favorites_service.get_total_favorites_gains_by_user().subscribe(r=>{
-      this.total_gains+=r[0].total;
-      this.favorites_gains_retrieved=true;
-      this.display_total_gains()
-    })
-
-    this.Trending_service.get_total_trendings_gains_by_user().subscribe(r=>{
-      this.total_gains+=r[0].total;
-      this.trendings_gains_retrieved=true;
-      this.display_total_gains()
-    })
+    if(this.type_of_account.includes('Artiste')){
+      this.Favorites_service.get_total_favorites_gains_by_user().subscribe(r=>{
+        this.total_gains+=r[0].total;
+        this.favorites_gains_retrieved=true;
+        this.display_total_gains()
+      })
+  
+      this.Trending_service.get_total_trendings_gains_by_user().subscribe(r=>{
+        this.total_gains+=r[0].total;
+        this.trendings_gains_retrieved=true;
+        this.display_total_gains()
+      })
+    }
+    else{
+      this.Edtior_Projects.get_total_editors_gains().subscribe(r=>{
+        this.total_gains+=r[0].total;
+        this.editors_gains_retrieved=true;
+        this.display_total_gains()
+      })
+    }
+    
   }
 
   get_total_group_gains(){
-    this.Favorites_service.get_total_favorites_gains_by_users_group(this.list_of_groups_ids).subscribe(r=>{
-      this.total_gains+=r[0].total;
-      this.favorites_group_gains_retrieved=true;
-      this.display_total_gains()
-    })
-
-    this.Trending_service.get_total_trendings_gains_by_users_group(this.list_of_groups_ids).subscribe(r=>{
-      this.total_gains+=r[0].total;
-      this.trendings_group_gains_retrieved=true;
-      this.display_total_gains()
-    })
+    if(this.type_of_account.includes('Artiste')){
+      this.Favorites_service.get_total_favorites_gains_by_users_group(this.list_of_groups_ids).subscribe(r=>{
+        this.total_gains+=r[0].total;
+        this.favorites_group_gains_retrieved=true;
+        this.display_total_gains()
+      })
+  
+      this.Trending_service.get_total_trendings_gains_by_users_group(this.list_of_groups_ids).subscribe(r=>{
+        this.total_gains+=r[0].total;
+        this.trendings_group_gains_retrieved=true;
+        this.display_total_gains()
+      })
+    }
+    
   }
 
 
   display_total_gains(){
-    if(this.user_is_in_a_group){
-      if( this.trendings_group_gains_retrieved &&  this.favorites_group_gains_retrieved &&  this.trendings_gains_retrieved &&  this.favorites_gains_retrieved){
-        this.display_all_gains=true;
-        this.cd.detectChanges();
+
+    if(this.type_of_account.includes("Artiste")){
+      if(this.user_is_in_a_group){
+      
+        if( this.trendings_group_gains_retrieved &&  this.favorites_group_gains_retrieved &&  this.trendings_gains_retrieved &&  this.favorites_gains_retrieved){
+          this.display_all_gains=true;
+          this.cd.detectChanges();
+        }
+      }
+      else{
+        if(  this.trendings_gains_retrieved &&  this.favorites_gains_retrieved){
+          this.display_all_gains=true;
+          this.cd.detectChanges();
+        }
       }
     }
     else{
-      if(  this.trendings_gains_retrieved &&  this.favorites_gains_retrieved){
+      if(this.editors_gains_retrieved){
         this.display_all_gains=true;
         this.cd.detectChanges();
       }
     }
+
+    
   }
   
 
@@ -2027,7 +2189,13 @@ export class AccountMyAccountComponent implements OnInit {
 
       }
       else{
-        if(r[0].reason=="money"){
+        if(this.type_of_account.includes('dit')){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Cette option est actuellement indisponible. Elle sera disponible d'ici peu ! Merci de réessayer ultérieurement."},
+            panelClass: "popupConfirmationClass",
+          });
+        }
+        else if(r[0].reason=="money"){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:"Cette option n'est pas disponible pour le moment. Votre compte doit avoir été créé il y a au moins 3 mois"},
             panelClass: "popupConfirmationClass",

@@ -21,6 +21,7 @@ import { UserPseudoProfilePicResolverService } from '../services/resolver-user-p
 import { UserPseudoCoverPicResolverService } from '../services/resolver-user-cp-pseudo.service';
 import { UserAdsResponsesResolverService } from '../services/resolver-user-ads-responses.service';
 import { UserNewsResolverService } from '../services/resolver-user-news.service';
+import { UserStatsResolverService } from '../services/resolver-user-stats.service';
 
 let accountResolvers={ 
   user_data_by_pseudo:UserDataPseudoResolverService,
@@ -46,28 +47,29 @@ let accountResolvers={
   ads_responses:UserAdsResponsesResolverService,
   number_of_contents:UserNumberContentsResolverService,
 
+  public_user_stats:UserStatsResolverService,
 
 
 
 }
 
 const routes: Routes = [
-    {path:':pseudo', component:AccountComponent , data: {section: 0,preload: true}, resolve: accountResolvers },
-    {path:':pseudo/artworks', component:AccountComponent, data: {section: 1}, resolve: accountResolvers},
-    {path:':pseudo/artworks/comics', component:AccountComponent, data: {section: 1, category:0}, resolve: accountResolvers},
-    {path:':pseudo/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}, resolve: accountResolvers},
-    {path:':pseudo/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}, resolve: accountResolvers},
-    {path:':pseudo/ads', component:AccountComponent,  data: {section: 2}, resolve: accountResolvers},
-    {path:':pseudo/about/:form_number', component:AccountComponent,  data: {section: 6}, resolve: accountResolvers},
-    {path:':pseudo/archives', component:AccountComponent,  data: {section: 7}, resolve: accountResolvers},
-    {path:':pseudo/my_account', component:AccountComponent,  data: {section: 8}, resolve: accountResolvers},
-    {path:':pseudo/:id/my_account/:password', component:AccountComponent,  data: {section: 9}, resolve: accountResolvers},
-    {path:'for_chat/:pseudo/:id/:pseudo_friend/:id_friend', component:AccountComponent,  data: {section: 10}, resolve: accountResolvers},
-    {path:':pseudo/my_account/email/management', component:AccountComponent,  data: {section: 11}, resolve: accountResolvers},
-    {path:':pseudo/my_account/connexion', component:AccountComponent,  data: {section: 11}, resolve: accountResolvers},
-    {path:':pseudo/applications', component:AccountComponent,  data: {section: 3}, resolve: accountResolvers},
-     
-];
+  {path:':pseudo', component:AccountComponent , data: {section: 0,preload: true}, resolve: accountResolvers },
+  {path:':pseudo/artworks', component:AccountComponent, data: {section: 1}, resolve: accountResolvers},
+  {path:':pseudo/artworks/comics', component:AccountComponent, data: {section: 1, category:0}, resolve: accountResolvers},
+  {path:':pseudo/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}, resolve: accountResolvers},
+  {path:':pseudo/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}, resolve: accountResolvers},
+  {path:':pseudo/projects', component:AccountComponent,  data: {section: 3}, resolve: accountResolvers},
+  {path:':pseudo/ads', component:AccountComponent,  data: {section: 2}, resolve: accountResolvers},
+  {path:':pseudo/about/:form_number', component:AccountComponent,  data: {section: 6}, resolve: accountResolvers},
+  {path:':pseudo/archives', component:AccountComponent,  data: {section: 7}, resolve: accountResolvers},
+  {path:':pseudo/my_account', component:AccountComponent,  data: {section: 8}, resolve: accountResolvers},
+  {path:':pseudo/:id/my_account/:password', component:AccountComponent,  data: {section: 9}, resolve: accountResolvers},
+  {path:'for_chat/:pseudo/:id/:pseudo_friend/:id_friend', component:AccountComponent,  data: {section: 10}, resolve: accountResolvers},
+  {path:':pseudo/my_account/email/management', component:AccountComponent,  data: {section: 11}, resolve: accountResolvers},
+  {path:':pseudo/my_account/connexion', component:AccountComponent,  data: {section: 11}, resolve: accountResolvers},
+  {path:':pseudo/project_submitted/:id_project/:password', component:AccountComponent,  data: {section: 12}, resolve: accountResolvers},
+ ];
 
 
 @NgModule({

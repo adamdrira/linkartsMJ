@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule} from '@angular/core';
+import { NgModule,LOCALE_ID} from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS }    from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -78,6 +78,7 @@ import { UploaderReportsAttachmentsComponent } from './uploader-reports-attachme
 import { CommonComponentsModule } from './modules/common-components.module';
 import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
 import { PopupShareComponent } from './popup-share/popup-share.component';
+
 
 
 const icons = [
@@ -165,6 +166,7 @@ const shareProp = {
     CookieService,
     WebSocketService,
     ChatService,
+    
     {
       provide: MatDialogRef,
       useValue: {}

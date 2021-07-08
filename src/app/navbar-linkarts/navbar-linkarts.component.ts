@@ -281,7 +281,6 @@ export class NavbarLinkartsComponent implements OnInit {
   @ViewChild('navbarMargin', { read: ElementRef }) navbarMargin:ElementRef;
     
 
-  conditions_retrieved=false;
   current_user_type='';
   change_number=0;
 
@@ -2000,7 +1999,7 @@ open_notifications(){
 
   popup_opened=false;
   open_menu_for_phone(){
-    if(this.data_retrieved && this.using_chat_retrieved && this.conditions_retrieved && this.check_group_done){
+    if(this.data_retrieved && this.using_chat_retrieved && this.check_group_done){
       this.popup_opened=true;
       const dialogRef = this.dialog.open(PopupNavbarComponent, {
         data: {

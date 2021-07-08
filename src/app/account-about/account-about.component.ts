@@ -12,6 +12,7 @@ import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Ads_service } from '../services/ads.service';
+import { Edtior_Projects } from '../services/editor_projects.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { pattern } from '../helpers/patterns';
@@ -19,6 +20,7 @@ import * as moment from 'moment';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+
 import { convert_timestamp_to_number, date_in_seconds, get_date_to_show } from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { normalize_to_nfc } from '../helpers/patterns';
@@ -103,6 +105,7 @@ export class AccountAboutComponent implements OnInit {
     private Trending_service:Trending_service,
     private Profile_Edition_Service: Profile_Edition_Service,
     private deviceService: DeviceDetectorService,
+    private Edtior_Projects:Edtior_Projects,
     private BdOneShotService: BdOneShotService,
     private BdSerieService:BdSerieService,
     private Writing_Upload_Service:Writing_Upload_Service,
@@ -136,6 +139,7 @@ export class AccountAboutComponent implements OnInit {
 
   
 
+  date_format_editors=3;
   date_format_trendings=3;
   date_format_ads=3;
   date_format_comics=3;
@@ -262,7 +266,7 @@ export class AccountAboutComponent implements OnInit {
       this.userLocation =this.author.location;
       this.type_of_profile =this.author.gender;
       this.type_of_account = this.author.type_of_account;
-      if(this.type_of_account.includes("edit")){
+      if(this.type_of_account.includes("dit")){
         this.siret=this.author.siret;
         this.society=this.author.society;
         this.instructions=this.author.editor_instructions;
@@ -272,7 +276,7 @@ export class AccountAboutComponent implements OnInit {
         this.standard_price=this.author.standard_price?this.author.standard_price:0
         this.standard_delay=this.author.standard_delay?this.author.standard_delay:"4m";
         this.express_price=this.author.express_price?this.author.express_price:6;
-        this.express_delay= this.author.express_delay?this.author.express_delay:"1m"
+        this.express_delay= this.author.express_delay?this.author.express_delay:"1m";
       }
       else{
         this.retrieved_skills=this.author.skills;
@@ -303,6 +307,7 @@ export class AccountAboutComponent implements OnInit {
       this.birthday =(this.author.birthday && this.author.birthday!='Non renseigné')? this.find_age(this.author.birthday):null;
       this.email_about = (this.author.email_about)?this.author.email_about:'';
 
+
       this.build_form_1();
       this.build_form_2();
       this.build_form_3();
@@ -321,26 +326,36 @@ export class AccountAboutComponent implements OnInit {
       
       this.profile_data_retrieved=true;
 
-      this.Trending_service.check_if_user_has_trendings(this.id_user).subscribe(r=>{
-        if(r[0].found){
-          this.number_of_comics_trendings=Object.keys(r[0].list_of_comics).length;
-          this.number_of_drawings_trendings=Object.keys(r[0].list_of_drawings).length;
-          this.number_of_writings_trendings=Object.keys(r[0].list_of_writings).length;
-          this.get_trendings();
-          this.trendings_found=true;
-        }
-        else{
-          this.trendings_loaded=true;
-        }
-        this.cd.detectChanges();
-      })
+      if(this.author.type_of_account.includes("Artiste")){
+        this.Trending_service.check_if_user_has_trendings(this.id_user).subscribe(r=>{
+          if(r[0].found){
+            this.number_of_comics_trendings=Object.keys(r[0].list_of_comics).length;
+            this.number_of_drawings_trendings=Object.keys(r[0].list_of_drawings).length;
+            this.number_of_writings_trendings=Object.keys(r[0].list_of_writings).length;
+            this.get_trendings();
+            this.trendings_found=true;
+          }
+          else{
+            this.trendings_loaded=true;
+          }
+          this.cd.detectChanges();
+        })
+      }
+      else{
+        this.trendings_loaded=true;
+      }
+     
 
+
+      if(!this.author.type_of_account.includes("Fan")){
+        this.get_projects_stats()
+        this.get_ads_stats();
+        this.get_comics_stats()
+        this.get_drawings_stats()
+        this.get_writings_stats()
+        this.get_profile_stats()
+      }
       
-      this.get_ads_stats();
-      this.get_comics_stats()
-      this.get_drawings_stats()
-      this.get_writings_stats()
-      this.get_profile_stats()
       
       
         
@@ -477,6 +492,7 @@ export class AccountAboutComponent implements OnInit {
     let THIS=this;
   
     $(document).ready(function () {
+      $(".Sumo_editors").SumoSelect({});   
       $(".Sumo_trendings").SumoSelect({});    
       $(".Sumo_profile_stats").SumoSelect({});
       $(".Sumo_ads_stats").SumoSelect({});
@@ -486,6 +502,27 @@ export class AccountAboutComponent implements OnInit {
       THIS.sumo_ready=true;
       THIS.cd.detectChanges();
       window.dispatchEvent(new Event('resize'))
+    });
+
+    $(".Sumo_editors").change(function(){
+      let old_date=THIS.date_format_editors;
+      if($(this).val()=="Depuis 1 mois"){
+        THIS.date_format_editors=1;
+      }
+      else if($(this).val()=="Depuis 1 semaine"){
+        THIS.date_format_editors=0;
+      }
+      else if($(this).val()=="Depuis 1 an"){
+        THIS.date_format_editors=2;
+      }
+      else{
+        THIS.date_format_editors=3;
+      }
+      THIS.cd.detectChanges();
+      if(old_date!=THIS.date_format_editors){
+        THIS.get_projects_stats();
+      }
+        
     });
 
     $(".Sumo_trendings").change(function(){
@@ -931,6 +968,209 @@ export class AccountAboutComponent implements OnInit {
   }
 
 
+
+/********************************************** PROJECTS STATS  ****************************/
+/********************************************** PROJECTS STATS  ****************************/
+/********************************************** PROJECTS STATS  ****************************/
+/********************************************** PROJECTS STATS  ****************************/
+
+xAxis_projects= "Date";
+yAxis_projects = "Nombre projets";
+
+number_of_projects=0;
+number_of_projects_responses=0;
+number_of_projects_consulted=0;
+
+compteur_projects_stats=0;
+list_of_projects_retrieved=false;
+list_of_projects_loaded=false;
+multi_projects_stats=[];
+
+get_projects_stats(){
+  this.compteur_projects_stats++;
+  this.list_of_projects_retrieved=false;
+  this.list_of_projects_loaded=false;
+  this.comments_loaded=false;
+  this.views_loaded=false;
+
+  this.Edtior_Projects.get_projects_stats(this.author.type_of_account,this.date_format_editors,this.compteur_projects_stats).subscribe(r=>{
+    if(r[1]==this.compteur_projects_stats){
+      this.number_of_projects=r[0][0].number_of_projects ;
+      this.number_of_projects_responses=r[0][0].number_of_projects_responses;
+      this.number_of_projects_consulted=r[0][0].number_of_projects_consulted;
+      if(r[0][0].list_of_projects_number){
+        if(this.date_format_editors==0){
+          let today=new Date();
+          let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+          this.multi_projects_stats=[{
+            "name": "Nombre de projets reçus",
+            "series": [
+              {
+                "name": date,
+                "value": r[0][0].list_of_projects_number[0]
+              },
+              
+            ]
+          },
+          {
+            "name": "Nombre de réponses",
+            "series": [
+              {
+                "name": date,
+                "value": r[0][0].list_of_projects_responses_number[0]
+              },
+              
+            ]
+          }]
+          for(let i=1;i<8;i++){
+            let date_i=new Date();
+            date_i.setDate(date_i.getDate() - i);
+            let date_name= date_i.getDate()+'-'+(date_i.getMonth()+1)+'-'+date_i.getFullYear();
+            this.multi_projects_stats[0].series.splice(0,0,{
+              "name": date_name,
+              "value": r[0][0].list_of_projects_number[i]
+            });
+            this.multi_projects_stats[1].series.splice(0,0,{
+              "name": date_name,
+              "value": r[0][0].list_of_projects_responses_number[i]
+            })
+          }
+          
+        }
+
+        if(this.date_format_editors==1){
+          let today=new Date();
+          let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+          this.multi_projects_stats=[{
+            "name": "Nombre de projets reçus",
+            "series": [
+              {
+                "name": date,
+                "value": r[0][0].list_of_projects_number[0]
+              },
+              
+            ]
+          },
+          {
+            "name": "Nombre de réponses",
+            "series": [
+              {
+                "name": date,
+                "value": r[0][0].list_of_projects_responses_number[0]
+              },
+              
+            ]
+          }]
+          for(let i=1;i<30;i++){
+            let date_i=new Date();
+            date_i.setDate(date_i.getDate() - i);
+            let date_name= date_i.getDate()+'-'+(date_i.getMonth()+1)+'-'+date_i.getFullYear();
+            this.multi_projects_stats[0].series.splice(0,0,{
+              "name": date_name,
+              "value": r[0][0].list_of_projects_number[i]
+            });
+            this.multi_projects_stats[1].series.splice(0,0,{
+              "name": date_name,
+              "value": r[0][0].list_of_projects_responses_number[i]
+            })
+          }
+          
+        }
+
+        if(this.date_format_editors==2){
+          let today=new Date();
+          let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+          this.multi_projects_stats=[{
+            "name": "Nombre de projets reçus",
+            "series": [
+              {
+                "name": date,
+                "value": r[0][0].list_of_projects_number[0]
+              },
+              
+            ]
+          },
+          {
+            "name": "Nombre de réponses",
+            "series": [
+              {
+                "name": date,
+                "value": r[0][0].list_of_projects_responses_number[0]
+              },
+              
+            ]
+          }]
+          for(let i=1;i<53;i++){
+            let date_i=new Date();
+            date_i.setDate(date_i.getDate() - 7*i);
+            let date_name= date_i.getDate()+'-'+(date_i.getMonth()+1)+'-'+date_i.getFullYear();
+            this.multi_projects_stats[0].series.splice(0,0,{
+              "name": date_name,
+              "value": r[0][0].list_of_projects_number[i]
+            });
+            this.multi_projects_stats[1].series.splice(0,0,{
+              "name": date_name,
+              "value": r[0][0].list_of_projects_responses_number[i]
+            })
+          }
+          
+        }
+
+        if(this.date_format_editors==3){
+          let date1 = new Date('01/02/2021');
+          let date2 = new Date();
+          let difference = date2.getTime() - date1.getTime();
+          let days = Math.ceil(difference / (1000 * 3600 * 24));
+          let weeks = Math.ceil(days/7) + 1;
+
+          let today=new Date();
+          let date= today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+          this.multi_projects_stats=[{
+            "name": "Nombre de projets reçus",
+            "series": [
+              {
+                "name": date,
+                "value": r[0][0].list_of_projects_number[0]
+              },
+              
+            ]
+          },
+          {
+            "name": "Nombre de réponses",
+            "series": [
+              {
+                "name": date,
+                "value": r[0][0].list_of_projects_responses_number[0]
+              },
+              
+            ]
+          }]
+          for(let i=1;i<weeks;i++){
+            let date_i=new Date();
+            date_i.setDate(date_i.getDate() - 7*i);
+            let date_name= date_i.getDate()+'-'+(date_i.getMonth()+1)+'-'+date_i.getFullYear();
+            this.multi_projects_stats[0].series.splice(0,0,{
+              "name": date_name,
+              "value": r[0][0].list_of_projects_number[i]
+            });
+            this.multi_projects_stats[1].series.splice(0,0,{
+              "name": date_name,
+              "value": r[0][0].list_of_projects_responses_number[i]
+            })
+            
+          }
+        }
+        this.list_of_projects_loaded=true;
+        this.list_of_projects_retrieved=true;
+      }
+      else{
+        this.list_of_projects_retrieved=true;
+      }
+    }
+    
+  })
+ 
+}
 
 
 /********************************************** ADS STATS **********************************/
@@ -2806,7 +3046,6 @@ export class AccountAboutComponent implements OnInit {
         ],
         birthday: ['', 
           Validators.compose([
-            Validators.required
           ]),
         ],
       });
@@ -2867,8 +3106,6 @@ export class AccountAboutComponent implements OnInit {
 
   loading_validation_form_3=false;
   validate_form_3(){
-    //fonction backend
-    
     if(this.loading_validation_form_3){
       return
     }
@@ -2880,7 +3117,7 @@ export class AccountAboutComponent implements OnInit {
       });
       return 
     }
-    else if( (!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<9)) && this.type_of_account.includes('dit')){
+    else if( (!this.registerForm3.value.siret || (this.registerForm3.value.siret && this.registerForm3.value.siret.length<9)) && this.type_of_account.includes('dit')){
 
         this.display_error_validator_3=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -2908,11 +3145,31 @@ export class AccountAboutComponent implements OnInit {
       }
     }
 
-   
     this.Profile_Edition_Service.edit_account_about_3(form.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),birthday,siret,society).subscribe(l=>{
       this.firstName=form.firstName;
-      this.uploader.queue[0].upload();
-      this.birthday=this.find_age(birthday)
+      if(!this.type_of_account.includes('dit') ){
+
+        if(birthday && birthday!=''){
+          this.birthday=this.find_age(birthday)
+        }
+
+        if( this.uploader.queue &&  this.uploader.queue[0]){
+          this.uploader.queue[0].upload();
+        }
+        else{
+          this.loading_validation_form_3=false;
+          this.registerForm3_activated=false;
+        }
+        
+        
+      }
+      else{
+        this.society=society;
+        this.siret=siret;
+        this.loading_validation_form_3=false;
+        this.registerForm3_activated=false;
+      }
+      
      
     });
       
@@ -2937,8 +3194,8 @@ export class AccountAboutComponent implements OnInit {
   build_form_4() {
     this.skills = Object.assign([], this.retrieved_skills);
     this.registerForm4 = this.formBuilder.group({      
-      categories: new FormControl( this.categories_retrieved, [Validators.required]),
-      skills: new FormControl( this.skills, [Validators.required]),
+      categories: new FormControl( this.categories_retrieved),
+      skills: new FormControl( this.skills),
     });
 
    
@@ -2953,8 +3210,6 @@ export class AccountAboutComponent implements OnInit {
 
   loading_validation_form_4=false;
   validate_form_4(){
-    //fonction backend
-    
     if(this.loading_validation_form_4){
       return
     }
@@ -2990,12 +3245,12 @@ export class AccountAboutComponent implements OnInit {
   /* FORM 4 */
   published_categories_retrieved=[];
   build_form_5() {
-    
-    this.registerForm5 = this.formBuilder.group({      
-      categories: new FormControl( this.published_categories_retrieved, [Validators.required]),
-      genres: new FormControl( this.genres, [Validators.required]),
-    });
     this.genres = Object.assign([], this.retrieved_genres);
+    this.registerForm5 = this.formBuilder.group({      
+      categories: new FormControl( this.published_categories_retrieved),
+      genres: new FormControl( this.genres),
+    });
+    
 
   }
 
@@ -3023,7 +3278,11 @@ export class AccountAboutComponent implements OnInit {
     }
     this.loading_validation_form_5=true;
     this.display_error_validator_5=false;
-      
+    let categories = this.registerForm5.value.categories;
+    this.Profile_Edition_Service.edit_account_signup_page4_editors(this.id_user,categories,this.genres).subscribe(r=>{    
+      this.loading_validation_form_5=false;
+      this.registerForm5_activated=false;
+    })
   
     
   }
@@ -3080,14 +3339,15 @@ export class AccountAboutComponent implements OnInit {
 
   build_form_6() {
     
+    let list_of_delays=["1s","2s","3s","1m","6s","7s","2m","3m","4m","5m","6m"]
     this.registerForm6 = this.formBuilder.group({
       standard_price: [this.standard_price
       ],
       express_price: [this.express_price
       ],
-      standard_delay: [this.standard_delay
+      standard_delay: [list_of_delays.indexOf(this.standard_delay)
       ],
-      express_delay: [this.express_delay
+      express_delay: [list_of_delays.indexOf(this.express_delay)
       ],
       instructions: [this.instructions, 
         Validators.compose([
@@ -3193,10 +3453,10 @@ export class AccountAboutComponent implements OnInit {
 
     this.loading_validation_form_6=true;
     this.display_error_validator_6=false;
-    console.log(this.registerForm6.value.instructions)
     this.Profile_Edition_Service.add_editor_instructions(this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm6.value.editor_default_response.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.standard_price,this.standard_delay,this.express_price,this.express_delay).subscribe(r=>{
       this.loading_validation_form_6=false;
-      console.log(r)
+      this.instructions=this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
+      this.editor_default_response=this.registerForm6.value.editor_default_response.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
     })
     
       
