@@ -19,7 +19,7 @@
           "deleteOutputPath": false,
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/linkarts",
+            "outputPath": "dist/linkarts/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -67,13 +67,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "40mb",
-                  "maximumError": "45mb"
+                  "maximumWarning": "45mb",
+                  "maximumError": "50mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "65kb",
-                  "maximumError": "75kb"
+                  "maximumWarning": "90kb",
+                  "maximumError": "100kb"
                 }
               ]
             }
@@ -139,6 +139,62 @@
             "production": {
               "devServerTarget": "linkarts:serve:production"
             }
+          }
+        },
+        "server": {
+          "builder": "@angular-builders/custom-webpack:server",
+          "options": {
+            "customWebpackConfig": {
+              "path": "./extra-webpack.config.js",
+              "mergeRules": {
+                "module": {
+                  "rules": "prepend"
+                }
+              },
+              "replaceDuplicatePlugins": true
+            },
+            "outputPath": "dist/linkarts/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": false
+            }
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "linkarts:build",
+            "serverTarget": "linkarts:server"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "linkarts:build:production",
+              "serverTarget": "linkarts:server:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "linkarts:build:production",
+            "serverTarget": "linkarts:server:production",
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {}
           }
         }
       }
