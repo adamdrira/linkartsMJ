@@ -20,6 +20,7 @@ const controller_albums= require('../../albums_edition/controller/controller');
 const controller_ads= require('../../ads/controller/controller');
 const controller_chat= require('../../chat/controller/controller');
 const controller_navbar= require('../../navbar/controller/controller');
+const controller_editor_projects= require('../../editor_projects/controller/controller');
 const controller_notifications= require('../../notifications/controller/controller');
 const controller_trendings= require('../../p_trendings/controller/controller');
 const controller_favorites =require('../../favorites/controller/controller');
@@ -39,6 +40,7 @@ const albums_seq = require('../../albums_edition/model/sequelize');
 const notifications_seq = require('../../notifications/model/sequelize');
 const trendings_seq = require('../../p_trendings/model/sequelize');
 const favorites_seq = require('../../favorites/model/sequelize');
+const edtior_project_seq = require('../../editor_projects/model/sequelize');
 const authentification = require('../../authentication/db.config');
 
 
@@ -137,6 +139,7 @@ profile_edition(router,
   drawings_one_page_seq.Drawings_one_page,
   writings_seq.Liste_Writings,
   notifications_seq.list_of_notifications,
+  edtior_project_seq.list_of_projects,
   );
 controller_reports(router, 
   authentification.reports,
@@ -219,7 +222,7 @@ controller_notifications(router,
   ads_seq.list_of_ads_responses,
   );
 controller_navbar(router,navbar_seq.list_of_navbar_researches,subscribings_seq.list_of_subscribings,authentification.users,ads_seq.list_of_ads,subscribings_seq.list_of_contents)
-
+controller_editor_projects(router,edtior_project_seq.list_of_projects,edtior_project_seq.list_of_projects_responses,authentification.users)
 
 
 
