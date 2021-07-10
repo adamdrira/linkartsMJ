@@ -1040,7 +1040,7 @@ router.post('/retrieve_number_of_contents', function (req, res) {
 });
 
 
-router.post('/retrieve_number_of_contents_by_pseudo', function (req, res) {
+router.get('/retrieve_number_of_contents_by_pseudo/:pseudo', function (req, res) {
 
   if( ! req.headers['authorization'] ) {
     return res.status(401).json({msg: "error"});
@@ -1053,7 +1053,7 @@ router.post('/retrieve_number_of_contents_by_pseudo', function (req, res) {
     }
   }
 
-    const pseudo = req.body.pseudo;
+    const pseudo = req.params.pseudo;
     let number_of_comics=0;
     let number_of_drawings=0;
     let number_of_writings=0;
@@ -1258,7 +1258,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     const birthday = req.body.birthday;
     const siret = req.body.siret;
     const society = req.body.society;
-    
     users.findOne({
       where: {
         id: id_user,
@@ -1498,7 +1497,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         }
       }
     let current_user = get_current_user(req.cookies.currentUser);
-    
     const email_about=req.body.email_about;
     const location= req.body.location;
     const phone_about=req.body.phone_about;

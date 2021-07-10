@@ -332,6 +332,40 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
     const offset_applications = req.body.offset_applications;
     const responded=req.body.responded;
 
+    let pertinence_to_sort='';
+    if(sort_pertinence!='none'){
+      if(sort_pertinence=="Nombre d'abonnés"){
+        pertinence_to_sort="subscribers_number";
+      }
+      else if(sort_pertinence=="Nombre de visites du profil"){
+        pertinence_to_sort="number_of_visits";
+      }
+      else if(sort_pertinence=="Nombre d'œuvres"){
+        pertinence_to_sort="number_of_artpieces";
+      }
+      else if(sort_pertinence=="Nombre de bandes dessinées"){
+        pertinence_to_sort="number_of_comics";
+      }
+      else if(sort_pertinence=="Nombre de dessins"){
+        pertinence_to_sort="number_of_drawings";
+      }
+      else if(sort_pertinence=="Nombre d'écrits"){
+        pertinence_to_sort="number_of_writings";
+      }
+      else if(sort_pertinence=="Nombre d'annonces"){
+        pertinence_to_sort="number_of_ads";
+      }
+      else if(sort_pertinence=="Mentions j'aime"){
+        pertinence_to_sort="likes";
+      }
+      else if(sort_pertinence=="Mentions j'adore"){
+        pertinence_to_sort="loves";
+      }
+      else if(sort_pertinence=="Mentions vues"){
+        pertinence_to_sort="views";
+      }
+    }
+
     const Op = Sequelize.Op;
     let number_of_applications=0;
     let applications_to_look_for={}
@@ -353,13 +387,13 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
       if(sort_pertinence!="none" ){
         if(sort_time.toLowerCase().includes("asc")){
           order_to_look_for=[
-            [sort_pertinence, 'DESC'],
+            [pertinence_to_sort, 'DESC'],
             ['delay_date', 'ASC'],
           ]
         }
         else{
           order_to_look_for=[
-            [sort_pertinence, 'DESC'],
+            [pertinence_to_sort, 'DESC'],
             ['delay_date', 'DESC'],
           ]
         }
@@ -382,13 +416,13 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
       if(sort_pertinence!="none" ){
         if(sort_time.toLowerCase().includes("asc")){
           order_to_look_for=[
-            [sort_pertinence, 'DESC'],
+            [pertinence_to_sort, 'DESC'],
             ['createdAt', 'ASC'],
           ]
         }
         else{
           order_to_look_for=[
-            [sort_pertinence, 'DESC'],
+            [pertinence_to_sort, 'DESC'],
             ['createdAt', 'DESC'],
           ]
         }
