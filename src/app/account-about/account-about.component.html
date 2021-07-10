@@ -214,15 +214,16 @@
                     </div>
                     
                     <div class="form-title">
-                        <span >Nom de l'administrateur</span>
+                        <span *ngIf="type_of_account.includes('dit')">Nom de l'administrateur</span>
+                        <span *ngIf="!type_of_account.includes('dit')">Mon nom</span>
                     </div>
                     <div class="form-item" *ngIf="registerForm3_activated" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
                             <mat-label class="label-to-set">Nom complet</mat-label>
-                            <input matInput formControlName="firstName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'firstName');">
-                            <mat-error *ngIf="registerForm3.controls['firstName'].invalid">Saisie invalide : les espaces en début de saisie ainsi que les caractères spéciaux ne sont pas autorisés
+                            <input matInput formControlName="firstName" maxLength="40" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'firstName');">
+                            <mat-error *ngIf="registerForm3.controls['firstName'].invalid">Saisie invalide : les caractères spéciaux ne sont pas autorisés
                             </mat-error>
-                            <div class="length-indicator">{{registerForm3.controls['firstName'].value?.length || 0}}/20</div>
+                            <div class="length-indicator">{{registerForm3.controls['firstName'].value?.length || 0}}/40</div>
                         </mat-form-field>
                     </div>
                     <div class="form-item" *ngIf="!registerForm3_activated" [@enterAnimation]>
@@ -250,12 +251,6 @@
                                 <mat-label *ngIf="siret">{{siret}}</mat-label>
                                 <mat-label *ngIf="!siret"><i>Non renseigné</i></mat-label>
                                 <input matInput readonly>
-                                <!--<ng-container *ngIf="siret">
-                                    <input matInput readonly >{{siret}}</textarea>
-                                </ng-container>
-                                <ng-container *ngIf=" !siret">
-                                    <textarea matInputreadonly class="italic">Non renseignée</textarea>
-                                </ng-container>-->
                             </mat-form-field>
                         </div>
 
@@ -284,7 +279,7 @@
                     <ng-container *ngIf="!type_of_account.includes('dit')">
                         <div class="form-title" [@enterAnimation]>
                             <span class="no-margin-right" *ngIf="registerForm3_activated" [@enterAnimation]>Date de naissance</span>
-                            <span class="no-margin-right" *ngIf="!registerForm3_activated" [@enterAnimation]>Age</span>
+                            <span class="no-margin-right" *ngIf="!registerForm3_activated" [@enterAnimation]>Mon Age</span>
                         </div>
     
                         <div class="form-item" *ngIf="registerForm3_activated && type_of_profile != 'Groupe'" [@enterAnimation]>

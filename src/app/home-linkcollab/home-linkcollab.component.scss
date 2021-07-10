@@ -282,7 +282,8 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            height: 365px;
+            //height: 365px;
+            height:325px;
             overflow: hidden;
             padding: 5px;
             border-radius: 10px;
@@ -365,6 +366,11 @@
                   height:fit-content !important;
                 }
 
+                .tartamundo{
+                  height: unset !important;
+                  background: black;
+                }
+
                 @media  (max-width: 850px) {
                   width: 60px !important;
                   height: 60px !important;
@@ -440,7 +446,7 @@
             .apply-button {
               display: flex;
               width: 100%;
-              padding: 0px 5px 5px 5px;
+              padding: 0px 10px 5px 5px;
               margin-top: auto;
               margin-bottom: 0px;
 

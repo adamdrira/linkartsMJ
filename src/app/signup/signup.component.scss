@@ -618,6 +618,8 @@ $default-color: #203864;
           display: flex;
           flex-direction: column;
           overflow: hidden;
+          width:77px;
+          min-width: 77px;
           
           .big-button-pp{
             border: solid #d7e1f1 2px;
@@ -1533,7 +1535,7 @@ $default-color: #203864;
 
 .bottom-container{
   position: relative;
-  min-height: 550px;
+  min-height: calc(100vh - 200px);
   height: 100vh;
   width: 100%;
   background: linear-gradient( 0.5turn, rgb(255 255 255 / 90%), #e6ebf1);

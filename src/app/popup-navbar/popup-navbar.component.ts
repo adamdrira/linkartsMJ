@@ -330,8 +330,10 @@ load_notification_pp(i){
 
 
 close_notifications(){
+  console.log("close notifs")
   this.show_notifications=false;
   this.change_notifications_status_to_checked();
+  this.close_dialog();
   this.cd.detectChanges();
 }
 

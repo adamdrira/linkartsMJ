@@ -685,22 +685,25 @@ export class HomeLinkcollabComponent implements OnInit {
       panelClass: "popupFiltersComponentClass",
     }).afterClosed().subscribe(
       result => {
-        this.f1.controls['type_of_project'].setValue(result.type_of_project);
-        this.f1.controls['author'].setValue(result.author);
-        this.f1.controls['target'].setValue(result.target);
-        this.f1.controls['type_of_service'].setValue(result.type_of_service);
-        this.f1.controls['offer_or_demand'].setValue(result.offer_or_demand);
-        this.f1.controls['type_of_remuneration'].setValue(result.type_of_remuneration);
-        this.f1.controls['sorting'].setValue(result.sorting);
-        
-        this.change_select1({value: result.type_of_project});
-        this.change_select2({value: result.author});
-        this.change_select3({value: result.target});
-        this.change_select4({value: result.type_of_service});
-        this.change_select5({value: result.offer_or_demand});
-        this.change_select6({value: result.type_of_remuneration});
-        this.change_select7({value: result.sorting});
-        this.change_select8({value: result.sorting});
+        if(result){
+          this.f1.controls['type_of_project'].setValue(result.type_of_project);
+          this.f1.controls['author'].setValue(result.author);
+          this.f1.controls['target'].setValue(result.target);
+          this.f1.controls['type_of_service'].setValue(result.type_of_service);
+          this.f1.controls['offer_or_demand'].setValue(result.offer_or_demand);
+          this.f1.controls['type_of_remuneration'].setValue(result.type_of_remuneration);
+          this.f1.controls['sorting'].setValue(result.sorting);
+          
+          this.change_select1({value: result.type_of_project});
+          this.change_select2({value: result.author});
+          this.change_select3({value: result.target});
+          this.change_select4({value: result.type_of_service});
+          this.change_select5({value: result.offer_or_demand});
+          this.change_select6({value: result.type_of_remuneration});
+          this.change_select7({value: result.sorting});
+          this.change_select8({value: result.sorting});
+        }
+       
       });
   }
 
@@ -728,6 +731,15 @@ export class HomeLinkcollabComponent implements OnInit {
 
 
  
+  open_website(i){
+    if(this.list_of_editors[i].id==0){
+      return this.list_of_editors[i].page;
+    }
+    else{
+      return this.list_of_editors[i].website;
+    }
+    
+  }
 
   public searchText:any;
   is_a_special_pp={"Kana":true,"les Éditions 100 bulles":true,"Les Avrils":true,"Éditions Soleil":true,"Les Éditions La croisée":true,"Drakoo":true};
@@ -735,11 +747,22 @@ export class HomeLinkcollabComponent implements OnInit {
   list_of_editors = [
 
     {
+      title:"Éditions Tartamundo",
+      categories:["BD","Mangas"],
+      website:"https://tartamudobd.wordpress.com/",
+      page:"https://www.linkarts.fr/account/Tartamudo",
+      email:"lisez-moi@wanadoo.fr",
+      pp:"../../assets/img/editors/pp-tartamundo.jpeg",
+      cover:"../../assets/img/editors/cover-tartamundo.jpg",
+      location:"Toulon, France",
+      phone:"04 94 41 01 18",
+      id:0,
+    },
+    
+    {
       title:"Éditions Glénat",
       categories:["BD","Comics","Mangas","Livres","Livres jeunesse"],
-      genres:["Ados","Aventure","Fantaisie","Héroïque","Humoristique","Polar","Romantique","S-F","Seinen","Shônen","Western"],
       website:"https://www.glenat.com/",
-      standard_price:4,
       email:"mcg@glenat.com",
       pp:"../../assets/img/editors/pp-glenat.png",
       cover:"../../assets/img/editors/cover-glenat.jpg",
@@ -750,9 +773,7 @@ export class HomeLinkcollabComponent implements OnInit {
     },
     {
       title:"Éditions Quatre Fleuves",
-      standard_price:0,
       categories:["Livres jeunesse"],
-      genres:["Action","Ados","Adultes","Animaux","Animés","Art","Aventure"],
       website:"https://www.glenat.com/livres-jeunesse/collections/editions-quatre-fleuves",
       pp:"../../assets/img/editors/pp-Editions_Quatre_Fleuves.jpg",
       cover:"../../assets/img/editors/cover-quatre-fleuves.jpg",
@@ -763,7 +784,6 @@ export class HomeLinkcollabComponent implements OnInit {
     {
       title:"Kazé",
       categories:["Mangas"],
-      genres:["Action","Ados","Adultes","Animaux","Animés","Art"],
       website:"http://www.kazemanga.fr/",
       email:"contact@vizeurope.com",
       pp:"../../assets/img/editors/pp-kaze.png",
@@ -1151,15 +1171,15 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   submite_project(){
-    /*const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Aucune maison d'édition n'a été sélectionnée."},
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:false, text:"Cette option sera bientot disponible !"},
       panelClass: "popupConfirmationClass",
-    });*/
+    });
     
-    const dialogRef = this.dialog.open(PopupApplyComponent, {
+    /*const dialogRef = this.dialog.open(PopupApplyComponent, {
       data: {},
       panelClass: "popupLinkcollabApplyClass",
-    });
+    });*/
 
   }
 

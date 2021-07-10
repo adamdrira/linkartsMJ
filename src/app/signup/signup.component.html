@@ -316,7 +316,7 @@
                             *ngFor="let genre of genres"
                             [selectable]="selectable"
                             [removable]="removable"
-                            (removed)="remove(genre)">
+                            (removed)="remove_genre(genre)">
                             {{genre}}
                             <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
                           </mat-chip>
@@ -328,7 +328,7 @@
                             matAutocompletePosition="below"
                             [matChipInputFor]="chipList"
                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                            (matChipInputTokenEnd)="add($event)">
+                            (matChipInputTokenEnd)="add_genre($event)">
                         </mat-chip-list>
                         <mat-autocomplete #auto="matAutocomplete" class="custom-scroll SignupMatautocompleteClass" (optionSelected)="selected_genre($event)">
                           <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre" (click)="genre_clicked()">
@@ -817,7 +817,7 @@
                     <div class="form-item" style="margin-bottom: 5px;">
                         <mat-form-field floatLabel='never'>
                             <mat-label>https://www.twitter.com/MonPseudo</mat-label>
-                            <input matInput formControlName="deviantart" (input)="normalize_input(registerForm5, 'twitter')" autocomplete="off" maxLength="100" >
+                            <input matInput formControlName="twitter" (input)="normalize_input(registerForm5, 'twitter')" autocomplete="off" maxLength="100" >
                             <mat-error *ngIf="registerForm5.controls['twitter'].invalid ">Veuillez saisir un lien valide
                             </mat-error>
                         </mat-form-field>

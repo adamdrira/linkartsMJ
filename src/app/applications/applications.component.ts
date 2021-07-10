@@ -90,7 +90,7 @@ export class ApplicationsComponent implements OnInit {
   list_of_categories =["Tout"].concat(this.ConstantsService.list_of_categories);
   list_of_genres=this.ConstantsService.list_of_genres;
   list_of_times= ["Date de réception ASC","Date de réception DESC","Date de retour attendu ASC","Date de retour attendu DESC"];
-  list_of_pertinences =["Tout","Nombre de visites du profil","Nombre d'abonnés","Nombre d'œuvres","Nombre de bandes dessinées","Nombre de dessins","Nombre d'écrits","Nombre d'annonces","Mentions j'aime","Mentions j'adore","Nombre de vues"]
+  list_of_pertinences =["Tout","Nombre de visites du profil","Nombre d'abonnés","Nombre d'œuvres","Nombre de bandes dessinées","Nombre de dessins","Nombre d'écrits","Nombre d'annonces","Mentions vues","Mentions j'aime","Mentions j'adore"]
   list_of_formulas=["Tout","Express","Standard"];
   
   ngOnInit(): void {
@@ -459,8 +459,6 @@ export class ApplicationsComponent implements OnInit {
           data: { 
             read_response:true,
             project:this.list_of_applications[i],
-            author_name:this.author_name,
-            author:this.author,
             response:r[0],
           },
           panelClass: "popupLinkcollabApplyResponseClass",
@@ -474,8 +472,6 @@ export class ApplicationsComponent implements OnInit {
         data: { 
           read_response:true,
           project:this.list_of_applications[i],
-          author_name:this.author_name,
-          author:this.author,
           response:this.list_of_responses[i],
         },
         panelClass: "popupLinkcollabApplyResponseClass",

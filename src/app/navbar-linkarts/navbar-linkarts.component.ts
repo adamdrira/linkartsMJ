@@ -704,7 +704,6 @@ export class NavbarLinkartsComponent implements OnInit {
             this.initialize_swiper();
             this.initialize_swiper2();
             this.cd.detectChanges();
-
             if(m[0][0].length<10){
               specific_retrieved=true;
               check_with_global(this)
@@ -721,7 +720,6 @@ export class NavbarLinkartsComponent implements OnInit {
 
         let global_result:any;
         this.navbar.get_global_propositions_navbar(this.publication_category,this.input.nativeElement.value,10,this.compteur_research).subscribe(r=>{
-
           global_result=r[0][0]
           global_retrieved=true;
           if(r[1]==this.compteur_research && specific_retrieved){
@@ -1042,7 +1040,7 @@ export class NavbarLinkartsComponent implements OnInit {
       })
     }
 
-    if(this.list_of_first_propositions[i].publication_category=="Ad"){
+    else if(this.list_of_first_propositions[i].publication_category=="Ad"){
       this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions[i].target_id).subscribe(profile=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=profile[0];
@@ -1064,7 +1062,7 @@ export class NavbarLinkartsComponent implements OnInit {
       })
     }
 
-    if(this.list_of_first_propositions[i].publication_category=="Comic"){
+    else if(this.list_of_first_propositions[i].publication_category=="Comic"){
       if(this.list_of_first_propositions[i].format=="one-shot"){
         this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_research){
@@ -1107,7 +1105,7 @@ export class NavbarLinkartsComponent implements OnInit {
       }
     }
 
-    if(this.list_of_first_propositions[i].publication_category=="Drawing"){
+    else if(this.list_of_first_propositions[i].publication_category=="Drawing"){
       if(this.list_of_first_propositions[i].format=="one-shot"){
         this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_research){
@@ -1150,7 +1148,7 @@ export class NavbarLinkartsComponent implements OnInit {
       }
     }
 
-    if(this.list_of_first_propositions[i].publication_category=="Writing"){
+    else if(this.list_of_first_propositions[i].publication_category=="Writing"){
       this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=comic[0];
@@ -1170,6 +1168,26 @@ export class NavbarLinkartsComponent implements OnInit {
         }
        
       })
+    }
+    else{
+      this.compteur_other_propositions++;
+      if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+        if(this.list_of_last_propositions.length>0){
+          this.display_other_propositions("account")
+        }
+        else{
+          this.loading_other=false;
+          this.show_other_propositions=true;
+          this.cd.detectChanges();
+          if(this.propositions){
+            this.scroll_propositions= merge(
+              fromEvent(window, 'scroll'),
+              fromEvent(this.propositions.nativeElement, 'scroll')
+            );
+          }
+        }
+        
+      }
     }
   }
 

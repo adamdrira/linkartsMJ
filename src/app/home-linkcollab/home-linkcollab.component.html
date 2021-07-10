@@ -482,9 +482,11 @@
                                 <img class="background-image" alt="list_of_editors[i].title" [lazyLoad]="item.cover"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.cover)" [ngClass]="{'invisible':!pictures_loaded[item.cover]}">
                                 <div class="first-message" *ngIf="indexes_selected[i]"  [@enterFromTop2Animation]>
                                     <div class="alert-icon">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">sentiment_dissatisfied</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="!item.page">sentiment_dissatisfied</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="item.page">info</mat-icon>
                                     </div>
-                                    <span style="margin-bottom: auto;">Nous sommes dans le regret de vous informer que cette maison d'édition n'est pas encore partenaire.<br><br> Vous pouvez néanmoins les joindre personnellement grâce aux informations ci-dessous.</span>
+                                    <span style="margin-bottom: auto; font-weight: 700;" *ngIf="!item.page">Nous sommes dans le regret de vous informer que cette maison d'édition n'est pas encore partenaire.<br><br> Vous pouvez néanmoins les joindre personnellement grâce aux informations ci-dessous.</span>
+                                    <span style="margin-bottom: auto; font-weight: 700;" *ngIf="item.page">Cette option n'est actuellement pas disponible.<br><br> Vous pouvez néanmoins soumettre votre projet auprès de cet éditeur directement depuis leur page de profil !</span>
                                </div>
                             </div>
                             <div class="data-container"  >
@@ -493,10 +495,10 @@
                                 </div>
 
                                 <div class="right-container">
-                                    <div class="name" [@enterFromLeftAnimation]>
+                                    <a [href]=open_website(i) target="_blank" class="name" [@enterFromLeftAnimation] >
                                         <span>{{item.title}}</span>
                                         
-                                    </div>
+                                    </a>
         
                                    
                                     <div class="section" *ngIf="!indexes_selected[i]" [@enterFromLeftAnimation]>

@@ -701,7 +701,7 @@
 
 
 
-        <div class="stats-container "  >
+        <div class="stats-container " *ngIf="type_of_account.includes('dit')" >
             
             <!-- Title container -->
             <div class="account-title-container">
@@ -724,7 +724,7 @@
                 <!--CHANGER LES NGIF-->
                 <!--!!!!!!!!!!!!!!!!!!!!!!!-->
                 <div class="no-data-container" *ngIf="!editors_found">
-                    <ng-container *ngIf="editors_found">
+                    <ng-container *ngIf="editors_loaded">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                         <span>
                             Vous n'avez répondu à aucun projet sur cette période. 

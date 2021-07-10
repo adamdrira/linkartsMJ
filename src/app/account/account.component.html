@@ -297,7 +297,7 @@
                     <div class="profile-picture">
                         <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
                     </div>
-                    <span>Gestion du profil</span>
+                    <span>Profil & Stat.</span>
                 </button>
             </div>
             <div #buttonSection>
@@ -356,7 +356,7 @@
                             <div class="profile-picture">
                                 <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
                             </div>
-                            <span>Gestion du profil</span>
+                            <span>Profil & Stat.</span>
                         </ng-container>
                         <ng-container *ngIf="opened_section==7">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">bookmarks</mat-icon>
@@ -400,7 +400,7 @@
                         <div class="profile-picture">
                             <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
                         </div>
-                        <span>Gestion du profil</span>
+                        <span>Profil & Stat.</span>
                     </mat-option>
                     <mat-option [value]="7" *ngIf="!mode_visiteur && !my_profile_is_suspended">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">bookmarks</mat-icon>
@@ -605,7 +605,7 @@
                                             <div class="img">
 
                                                 <div class="absolute-hover-data d-flex flex-column">
-                                                    <span class="description">{{item.description}}</span>
+                                                    <span class="description" [ngStyle]="{'margin':!(item.link && item.link!='')? 'auto 5px auto 5px' : 'auto 5px 10px 5px'}">{{item.description}}</span>
                                                     <a  *ngIf="item.link && item.link!=''" [href]="item.link" target="_blank" class="link" (click)="add_flagship_click()">Découvrir</a>
                                                 </div>
                                                 <img [lazyLoad]="editor_pictures_by_name[item.picture_name]"   [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_editor_picture(item.picture_name)"  [ngClass]="{'invisible':!editor_pictures_loaded[item.picture_name]}">
@@ -623,16 +623,24 @@
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                                         <span> Vous n'avez ajouté aucune œuvre phare</span>
                                     </div>
-                                    <div *ngIf="list_of_artworks.length==0 && loading_editor_artworks" class="bottom-no-content">
+                                    <div *ngIf="loading_editor_artworks" class="bottom-no-content">
                                         <mat-spinner diameter="20" style="margin:auto" ></mat-spinner>
                                     </div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
+                                    <div class="artwork-highlighted-thumbnail empty"></div>
                                 </div>
                             </div>
 
 
 
 
-                            <div class="block" *ngIf="(list_of_news && list_of_news.length>0)  || (!list_of_news && !mode_visiteur)">
+                            <div class="block" *ngIf="(list_of_news && list_of_news.length>0 && mode_visiteur)  || !mode_visiteur">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">whatshot</mat-icon>
                                     <span *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Mon actualité</span>
@@ -681,7 +689,7 @@
                                     <ng-container *ngIf="!mode_visiteur && list_of_news.length==0 && !add_news_input">
                                         <div class="news" >
                                             <div class="news-text nothing">
-                                                <span>Vous n'avez aucune actualité</span>
+                                                <span>Vous n'avez ajouté aucune actualité</span>
                                             </div>
                                         </div>
                                     </ng-container>
@@ -730,7 +738,7 @@
                                         matTooltipClass='tooltip-account-profile' 
                                         [matTooltipPosition]="'below'"
                                         [matTooltipShowDelay]="200">feed</mat-icon>
-                                        <span>Nos formulues</span>
+                                        <span>Nos formules</span>
                                     </div>
                                     <div class="formulas">
 
@@ -951,7 +959,7 @@
                                     
                                     <div class="block-info" *ngIf="number_of_forms && type_of_account.includes('dit')">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
-                                        <span><span class="emphasize">{{number_of_forms}}</span>  projets reçues</span>
+                                        <span><span class="emphasize">{{number_of_forms}}</span>  projets reçus</span>
                                     </div>
                                 </div>
                             </div>
@@ -989,7 +997,7 @@
                                         <span>Mon CV</span>
                                     </div>
                                     <div class="list-of-skills" *ngIf="!mode_visiteur && !cv_name">
-                                        <span >Aucun CV ajoutée</span>
+                                        <span >Aucun CV ajouté</span>
                                     </div>
                                     <div class="see-cv" *ngIf="cv_name" (click)="read_cv();">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
@@ -1189,22 +1197,13 @@
                             </div>
         
                         </ng-container >
-                        <ng-container *ngIf="new_contents_added && !(no_new_contents && mode_visiteur)">
+                        <ng-container *ngIf="new_contents_added && !no_new_contents">
         
                             <div class="account-title medium-icon">
                                 <span>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
                                     Nouveautés
                                 </span>
-                            </div>
-        
-                            <div class="add-artwork-button" *ngIf="no_new_contents && !mode_visiteur">
-                                <a [routerLink]=get_add_artwork_link()>
-                                    <button>
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                                        <span>Publier votre première œuvre</span>
-                                    </button>
-                                </a>
                             </div>
         
                             <div class="add-artwork-button" *ngIf="no_new_contents && mode_visiteur">

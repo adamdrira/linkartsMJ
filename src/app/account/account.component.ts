@@ -603,10 +603,6 @@ export class AccountComponent implements OnInit {
   initialize_page_for_visitor(){
 
 
-    
-  
-
-
     this.Story_service.check_stories_for_account(this.user_id).subscribe(r => {
       if(r[0] && r[0].story_found){
         this.list_of_stories[0]=r[0].stories_retrieved;
@@ -678,7 +674,7 @@ export class AccountComponent implements OnInit {
           this.visitor_number_of_drawings=r[0].number_of_drawings;
           this.visitor_number_of_writings=r[0].number_of_writings;
           this.visitor_number_of_ads=r[0].number_of_ads;
-          this.visitor_number_of_artpieces=this.number_of_comics+ this.number_of_drawings +  this.number_of_writings;
+          this.visitor_number_of_artpieces=this.visitor_number_of_comics+ this.visitor_number_of_drawings +  this.visitor_number_of_writings;
           compteur_visitor_stats++;
           check_visitor_stats(this);
         })
@@ -896,7 +892,7 @@ export class AccountComponent implements OnInit {
           }
           
         }
-        else if(this.route.snapshot.data['section']>=5){
+        else if(this.route.snapshot.data['section']>2){
           if(this.mode_visiteur){
             if(this.route.snapshot.data['section']==10){//ok
               this.open_section( 0,true ,0);
@@ -3205,18 +3201,21 @@ report(){
       data: {id_user:this.user_id},
       panelClass: "popupEditorArtworkClass",
     }).afterClosed().subscribe(result => {
-      this.loading_editor_artworks=true;
-      this.Profile_Edition_Service.retrieve_editor_artwork_picture(result.picture_name).subscribe(t=>{
-
-        let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-        this.editor_pictures_by_name[result.picture_name] = url;
-        this.list_of_artworks.splice(0,0,result)
-        this.loading_editor_artworks=false;
-        this.cd.detectChanges()
-        this.scrollobs = merge(
-          fromEvent(window, 'scroll'),
-        );
-      })
+      if(result){
+        this.loading_editor_artworks=true;
+        this.Profile_Edition_Service.retrieve_editor_artwork_picture(result.picture_name).subscribe(t=>{
+  
+          let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+          this.editor_pictures_by_name[result.picture_name] = url;
+          this.list_of_artworks.splice(0,0,result)
+          this.loading_editor_artworks=false;
+          this.cd.detectChanges()
+          this.scrollobs = merge(
+            fromEvent(window, 'scroll'),
+          );
+        })
+      }
+     
     });
   }
 

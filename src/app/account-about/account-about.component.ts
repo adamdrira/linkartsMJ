@@ -296,6 +296,7 @@ export class AccountAboutComponent implements OnInit {
         this.deviantart=this.links.deviantart;
         this.other_website=this.links.other_website;
       }
+
       this.cv_name=this.author.cv;
       
       if(this.cv_name){
@@ -2963,7 +2964,7 @@ get_projects_stats(){
     this.loading_validation_form_2=true;
     this.display_error_validator_2=false;
     let form =this.registerForm2.value;
-    var userLocation;
+    var userLocation=null;
     if( form.city && !form.country){
       userLocation =this.capitalizeFirstLetter( form.city.toLowerCase() )
     }
@@ -2980,7 +2981,6 @@ get_projects_stats(){
     "deviantart":this.registerForm2.value.deviantart,"pinterest":this.registerForm2.value.pinterest,
     "other_website":this.registerForm2.value.other_website,"twitter":this.registerForm2.value.twitter
     }
-    
     this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).subscribe(l=>{
       this.userLocation=userLocation;
       this.email_about=form.email_about;
@@ -3027,7 +3027,7 @@ get_projects_stats(){
             Validators.required,
             Validators.pattern(pattern("name")),
             Validators.minLength(2),
-            Validators.maxLength(20),
+            Validators.maxLength(40),
           ]),
         ],
         siret: [this.siret, 
@@ -3057,7 +3057,7 @@ get_projects_stats(){
             Validators.required,
             Validators.pattern(pattern("name")),
             Validators.minLength(2),
-            Validators.maxLength(20),
+            Validators.maxLength(40),
           ]),
         ],
       });
@@ -3351,7 +3351,6 @@ get_projects_stats(){
       ],
       instructions: [this.instructions, 
         Validators.compose([
-          Validators.minLength(3),
           Validators.maxLength(400),
           Validators.pattern(pattern("text_with_linebreaks")),
         ]),
@@ -3437,8 +3436,6 @@ get_projects_stats(){
 
 
   validate_form_6(){
-    //fonction backend
-    
     if(this.loading_validation_form_6){
       return
     }
@@ -3450,13 +3447,13 @@ get_projects_stats(){
       });
       return 
     }
-
     this.loading_validation_form_6=true;
     this.display_error_validator_6=false;
-    this.Profile_Edition_Service.add_editor_instructions(this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm6.value.editor_default_response.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.standard_price,this.standard_delay,this.express_price,this.express_delay).subscribe(r=>{
+    this.Profile_Edition_Service.add_editor_instructions(this.registerForm6.value.instructions?this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim():null,this.registerForm6.value.editor_default_response?this.registerForm6.value.editor_default_response.replace(/\n\s*\n\s*\n/g, '\n\n').trim():null,this.standard_price,this.standard_delay,this.express_price,this.express_delay).subscribe(r=>{
       this.loading_validation_form_6=false;
-      this.instructions=this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
-      this.editor_default_response=this.registerForm6.value.editor_default_response.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
+      this.registerForm6_activated=false;
+      this.instructions=this.registerForm6.value.instructions?this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim():null;
+      this.editor_default_response=this.registerForm6.value.editor_default_response?this.registerForm6.value.editor_default_response.replace(/\n\s*\n\s*\n/g, '\n\n').trim():null;
     })
     
       
