@@ -19,7 +19,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 
 //ajouter une url pour upload de dossier
 declare var Stripe: any;
-const url = 'http://localhost:4600/routes/upload_project_for_editor/'
+const url = 'https://www.linkarts.fr/routes/upload_project_for_editor/'
 
 @Component({
   selector: 'app-popup-apply',

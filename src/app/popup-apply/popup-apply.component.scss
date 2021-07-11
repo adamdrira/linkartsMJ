@@ -74,7 +74,7 @@
         line-height: 22px;
         height: 40px;
         margin-top: 34px;
-        margin-bottom: 14px;
+        margin-bottom: 10px;
         width: 100%;
 
         &.add-group-members {
@@ -91,6 +91,14 @@
             margin: auto auto;
         }
     }
+
+    .step-name-b{
+        text-align: center;
+        font-weight: 500;
+        color: #203864;
+        position: relative;
+        margin-bottom: 25px;
+}
 
     .step-form {
         font-size: 14px;
