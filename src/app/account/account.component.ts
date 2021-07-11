@@ -3025,7 +3025,7 @@ report(){
     news: ['', 
       Validators.compose([
         Validators.required,
-        Validators.pattern(pattern("text")),
+        Validators.pattern(pattern("text_title")),
         Validators.maxLength(200),
       ]),
     ],
