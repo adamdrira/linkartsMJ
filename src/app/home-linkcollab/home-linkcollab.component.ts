@@ -1172,7 +1172,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
   submite_project(){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Cette option sera bientot disponible !"},
+      data: {showChoice:false, text:"Cette option n'est pas encore disponible ! Vous pouvez néanmoins soumettre vos projets directement depuis la page de profil de nos éditeurs partenaires."},
       panelClass: "popupConfirmationClass",
     });
     
