@@ -50,7 +50,7 @@ export class ConstantsService {
   "Écrit romans", "Écrit romantique", "Écrit réaliste", "Écrit spirituel", "Écrit suspens", 
   "Écrit voyage", "Écrit éducatif", "Écrit épistolaire", "Écrit ésotérique", "Écrit adulte", 
   
-  "Scénario", "Scénario BD", "Scénario Comics", "Scénario Mangas", "Scénario Science fiction", "Scénario action/combat", 
+  "Scénario", "Scénario BD", "Scénario Comics", "Scénario Mangas", "Scénario science fiction", "Scénario action/combat", 
   "Scénario ados", "Scénario adulte", "Scénario aventure", "Scénario de guerre", "Scénario de survie", 
   "Scénario dramatique", "Scénario enfants", "Scénario fanfiction", "Scénario fantaisie", 
   "Scénario historique", "Scénario horreur", "Scénario humoristique", "Scénario héroïque", 
