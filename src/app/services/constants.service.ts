@@ -10,12 +10,12 @@ export class ConstantsService {
   constructor() { }
 
 
-  drawings_filters=["Abstrait","Animaux","Animés","Architecture","Art","Botanique","BD","Campagne","Caricatural","Cartoons","Cinéma","Comics","Culture","Décoration","Design","Enigmatique","Enfants","Fanart","Fanfiction","Fantaisie","Femmes","Fête","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Hommes","Horreur","Humour","Immeubles","Intérieur","Kawaii","Maisons",
+  drawings_filters=["Abstrait","Animaux","Animés","Architecture","Art","Botanique","BD","Campagne","Caricatural","Cartoons","Cinéma","Combats","Comics","Culture","Décoration","Design","Enigmatique","Enfants","Fanart","Fanfiction","Fantaisie","Femmes","Fête","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Hommes","Horreur","Humour","Immeubles","Intérieur","Kawaii","Maisons",
   "Mangas","Monstre","Montagnes","Motos","Nature","Nature morte","Paysage","Personnages","Photographie","Portrait",
   "Réaliste","Religion","Retro","Romantique","Rural","SF","Sociologie","Spatial","Sport","Survie","Transports","Urbanisme","Véhicules","Villes","Voitures","Voyage","Western"]
   writings_filters=["Action","Animaux","Animés","Art","Aventure","Autobiographie","BD","Caricatural","Cartoons","Comics","Drame","Enigmatique","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Mangas","Pensées","Philosophie","Polar",
   "Policier","Réaliste","Réflexions","Religion","Romantique","Satirique","SF","Sociologie","Spatial","Spiritualité","Sport","Survie","Thriller","Voyage","Webtoon","Western"];
-  comics_filters=["Action","Animaux","Art","Aventure","Biographie","Caricatural","Drame","Enigmatique","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kawaii","Kodomo","Nekketsu","Pantso shoto","Philosophie","Photographie","Polar","Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Spatial","Sport","Survie","Thriller","Voyage","Western","Yaoi","Yuri"];
+  comics_filters=["Action","Animaux","Art","Aventure","Biographie","Caricatural","Combats","Drame","Enigmatique","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kawaii","Kodomo","Nekketsu","Pantso shoto","Philosophie","Photographie","Polar","Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Spatial","Sport","Survie","Thriller","Voyage","Western","Yaoi","Yuri"];
   
   type_of_accounts=["Artiste","Éditeur","Fan"];
   
@@ -45,7 +45,7 @@ export class ConstantsService {
   
   "Écrit Science fiction", "Écrit ados", "Écrit autobiographique", "Écrit aventure", "Écrit de guerre", 
   "Écrit dramatique", "Écrit enfants", "Écrit historique", "Écrit horreur", "Écrit héroïque", 
-  "Écrit mystérieux", "Écrit nouvelles", "Écrit nouvelles", "Écrit pensées & réflexions", 
+  "Écrit mystérieux","Écrit nouvelles", "Écrit pensées & réflexions", 
   "Écrit philosophique", "Écrit polar", "Écrit policier", "Écrit poésie", "Écrit religieux", 
   "Écrit romans", "Écrit romantique", "Écrit réaliste", "Écrit spirituel", "Écrit suspens", 
   "Écrit voyage", "Écrit éducatif", "Écrit épistolaire", "Écrit ésotérique", "Écrit adulte", 
@@ -54,11 +54,11 @@ export class ConstantsService {
   "Scénario ados", "Scénario adulte", "Scénario aventure", "Scénario de guerre", "Scénario de survie", 
   "Scénario dramatique", "Scénario enfants", "Scénario fanfiction", "Scénario fantaisie", 
   "Scénario historique", "Scénario horreur", "Scénario humoristique", "Scénario héroïque", 
-  "Scénario intergalactiques", "Scénario mystique", "Scénario mystérieux", "Scénario philosophique", 
+  "Scénario intergalactique", "Scénario mystique", "Scénario mystérieux", "Scénario philosophique", 
   "Scénario policier", "Scénario religieux", "Scénario romantique", "Scénario réaliste", 
   "Scénario satirique", "Scénario seinen", "Scénario shojo", "Scénario shônen", "Scénario sociologique", 
   "Scénario spirituel", "Scénario sport", "Scénario suspens", "Scénario voyage", "Scénario western", 
-  "Scénario éducatif", "Scénario énigmatique", "Scénario épiques", "Scénario ésotérique",
+  "Scénario éducatif", "Scénario énigmatique", "Scénario épique", "Scénario ésotérique",
   
   "Software Clip Studio Paint", "Software Adobe", "Software Adobe After Effects", 
   "Software Adobe Creative Cloud tools", "Software Adobe Illustrator", "Software Adobe Photoshop", 
@@ -66,7 +66,7 @@ export class ConstantsService {
   "Software Procreate", "Software Ron’s Brushes", "Software Windows", "Story-board","Tablette graphique"]
 
   list_of_genres=["Action","Actualité","Ados","Adultes","Animalié","Art","Aventure","Autobiographie","BD",
-  "Caricatural","Comics","Drame","Educatif","Enigmatique","Enfants","Epique","Epistolaire",
+  "Caricatural","Comics","Combats","Drame","Educatif","Enigmatique","Enfants","Epique","Epistolaire",
   "Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Historique","Horreur","Humoristique",
   "Journalisme","Kawai","Ludique","Mangas","Mystère","Nouvelles","Pensées","Philosophie","Poésie","Polar","Policier",
   "Réaliste","Réflexions","Religion","Romans","Romantique","Satirique","Science fiction","Seinen","Shojo",
