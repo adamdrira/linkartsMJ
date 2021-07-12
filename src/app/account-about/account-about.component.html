@@ -2025,31 +2025,12 @@
                         </div>
                     </ng-container>
 
-                    <ng-container *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
-                        <div class="title2">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                            <span>Types de profil des 100 derniers visiteurs</span>
-                        </div>
-                        <div class="chart-container" #chartContainer>
-                            <ngx-charts-pie-chart
-                            
-                            [scheme]="colorScheme_viewers_stats"
-                            [results]="single_viewers_profiles_stats"
-                            [gradient]="gradient"
-                            [legend]="show_legends"
-                            [legendPosition]="legend_position"
-                            [labels]="showLabels"
-                            [doughnut]="isDoughnut_viewers_stats"
-                            
-                            >
-                            </ngx-charts-pie-chart>
-                        </div>
-                    </ng-container>
+                
                     
                     <ng-container  *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
                         <div class="title2">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                            <span>Types de compte des 100 derniers visiteurs</span>
+                            <span>Types de profil des 100 derniers visiteurs</span>
                         </div>
                         <div class="chart-container" #chartContainer>
                             <ngx-charts-pie-chart

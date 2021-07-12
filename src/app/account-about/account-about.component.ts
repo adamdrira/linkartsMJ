@@ -2508,7 +2508,6 @@ get_projects_stats(){
 
 
   // options
-  single_viewers_profiles_stats=[];
   single_viewers_accounts_stats=[];
   single_viewers_locations_stats=[];
 
@@ -2647,34 +2646,25 @@ get_projects_stats(){
     /*************************************** Accounts and profiles  of viewers ************************************/
 
    
-    this.single_viewers_profiles_stats=[{
-      "name": "Hommes",
+    
+
+    this.single_viewers_accounts_stats=[{
+      "name": "Artistes",
       "value": 0
     },
     {
-      "name": "Femmes",
-      "value": 0
-    },
-    {
-      "name": "Groupes",
+      "name": "Éditeurs",
       "value": 0
     },
     {
       "name": "Visiteurs",
       "value": 0
     }]
-
-    this.single_viewers_accounts_stats=[{
-      "name": "Artistes",
-      "value": 0
-    }]
     this.NavbarService.get_last_100_viewers(this.id_user).subscribe(r=>{
       if(Object.keys(r[0].list_of_viewers).length>0){
         for(let i=0;i<Object.keys(r[0].list_of_viewers).length;i++){
-          if( r[0].list_of_viewers[i].gender){
-            let index = this.single_viewers_profiles_stats.findIndex(x => x.name === r[0].list_of_viewers[i].gender+'s')
           
-            this.single_viewers_profiles_stats[index].value++;
+          if( r[0].list_of_viewers[i].type_of_account){
     
             let index_account = this.single_viewers_accounts_stats.findIndex(x => x.name === r[0].list_of_viewers[i].type_of_account+'s')
             if(index_account>=0){
@@ -2688,7 +2678,6 @@ get_projects_stats(){
             }
           }
           else{
-            this.single_viewers_profiles_stats[3].value++;
             let index_account = this.single_viewers_accounts_stats.findIndex(x => x.name === "Visiteurs");
             if(index_account>=0){
               this.single_viewers_accounts_stats[index_account].value++;
@@ -2981,6 +2970,8 @@ get_projects_stats(){
     "deviantart":this.registerForm2.value.deviantart,"pinterest":this.registerForm2.value.pinterest,
     "other_website":this.registerForm2.value.other_website,"twitter":this.registerForm2.value.twitter
     }
+
+   
     this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).subscribe(l=>{
       this.userLocation=userLocation;
       this.email_about=form.email_about;
