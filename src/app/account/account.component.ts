@@ -763,7 +763,7 @@ export class AccountComponent implements OnInit {
         this.email_about=this.author.email_about;
         this.phone_about=this.author.phone_about;
 
-        this.links=this.author.links;
+        this.links=this.author.links?this.author.links[0]:null;
         if(this.links){
           this.facebook=this.links.facebook;
           this.instagram=this.links.instagram;

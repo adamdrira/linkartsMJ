@@ -285,7 +285,7 @@ export class AccountAboutComponent implements OnInit {
       
       
       this.phone_about=this.author.phone_about;
-      this.links=this.author.links;
+      this.links=this.author.links?this.author.links[0]:null;
       if(this.links){
         this.facebook=this.links.facebook;
         this.instagram=this.links.instagram;
@@ -2965,25 +2965,25 @@ get_projects_stats(){
     }
 
 
-    let links={"facebook":this.registerForm2.value.facebook,"instagram":this.registerForm2.value.instagram,
+    let links=[{"facebook":this.registerForm2.value.facebook,"instagram":this.registerForm2.value.instagram,
     "artstation":this.registerForm2.value.artstation,"website":this.registerForm2.value.website,
     "deviantart":this.registerForm2.value.deviantart,"pinterest":this.registerForm2.value.pinterest,
     "other_website":this.registerForm2.value.other_website,"twitter":this.registerForm2.value.twitter
-    }
+    }]
 
    
     this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).subscribe(l=>{
       this.userLocation=userLocation;
       this.email_about=form.email_about;
       this.phone_about=form.phone_about;
-      this.facebook=links.facebook;
-      this.instagram=links.instagram;
-      this.website=links.website;
-      this.artstation=links.artstation;
-      this.pinterest=links.pinterest;
-      this.twitter=links.twitter;
-      this.deviantart=links.deviantart;
-      this.other_website=links.other_website;
+      this.facebook=links[0].facebook;
+      this.instagram=links[0].instagram;
+      this.website=links[0].website;
+      this.artstation=links[0].artstation;
+      this.pinterest=links[0].pinterest;
+      this.twitter=links[0].twitter;
+      this.deviantart=links[0].deviantart;
+      this.other_website=links[0].other_website;
       this.loading_validation_form_2=false;
       this.registerForm2_activated=false;
     });
