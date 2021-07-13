@@ -1280,7 +1280,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
         res.status(500).json({msg: "error", details: err});		
       }).then(usr=>{
-        console.log(usr)
         res.status(200).send([User])
       })
     }); 
@@ -1507,8 +1506,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     const location= req.body.location;
     const phone_about=req.body.phone_about;
     const links= req.body.links;
-    console.log("edit_account_about_2")
-    console.log(links)
     users.findOne({
       where: {
         id: current_user,
@@ -1531,7 +1528,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         console.log(err)
         res.status(500).json({msg: "error", details: err});		
       }).then(usr=>{
-        console.log(usr)
         res.status(200).send([User])
       })
     }); 

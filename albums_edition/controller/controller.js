@@ -29,11 +29,9 @@ module.exports = (router, list_of_albums) => {
         }
       }
 
-      console.log("add album")
         let current_user = get_current_user(req.cookies.currentUser);
         const album = req.body.album;
         const title = req.body.title;
-        console.log(album)
         list_of_albums.findOne({
           where:{
             album_name:title,
