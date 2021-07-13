@@ -28,9 +28,12 @@ module.exports = (router, list_of_albums) => {
           return res.status(401).json({msg: "error"});
         }
       }
+
+      console.log("add album")
         let current_user = get_current_user(req.cookies.currentUser);
         const album = req.body.album;
         const title = req.body.title;
+        console.log(album)
         list_of_albums.findOne({
           where:{
             album_name:title,
@@ -50,7 +53,7 @@ module.exports = (router, list_of_albums) => {
               "status":"public"
             })
             .catch(err => {
-              	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(album=>{res.status(200).send([album])})  
           }
