@@ -39,7 +39,7 @@ import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-at
 declare var $: any;
 
 //ajouter une url pour upload de cv
-const url = 'http://localhost:4600/routes/upload_cv/';
+const url = 'https://www.linkarts.fr/routes/upload_cv/';
 
 @Component({
   selector: 'app-account-about',
@@ -2971,7 +2971,6 @@ get_projects_stats(){
     "other_website":this.registerForm2.value.other_website,"twitter":this.registerForm2.value.twitter
     }]
 
-   
     this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).subscribe(l=>{
       this.userLocation=userLocation;
       this.email_about=form.email_about;

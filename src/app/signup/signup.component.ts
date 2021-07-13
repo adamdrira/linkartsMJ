@@ -1030,11 +1030,11 @@ export class SignupComponent implements OnInit {
       }
 
       else if(i==5){
-        let links={"facebook":this.registerForm5.value.facebook,"instagram":this.registerForm5.value.instagram,
+        let links=[{"facebook":this.registerForm5.value.facebook,"instagram":this.registerForm5.value.instagram,
         "artstation":this.registerForm5.value.artstation,"website":this.registerForm5.value.website,
         "deviantart":this.registerForm5.value.deviantart,"pinterest":this.registerForm5.value.pinterest,
         "other_website":this.registerForm5.value.other_website,"twitter":this.registerForm5.value.twitter
-        }
+        }]
         if(this.loading_signup){
           return
         }
