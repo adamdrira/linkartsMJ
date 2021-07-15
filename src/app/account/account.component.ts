@@ -441,6 +441,13 @@ export class AccountComponent implements OnInit {
   device_info='';
   ngOnInit()  {
 
+    try {
+      throw new Error('An error occurred');
+    }
+    catch (error) {
+    console.error('Here is the error message', error);
+    }
+    console.log('Execution continues');
     
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
    

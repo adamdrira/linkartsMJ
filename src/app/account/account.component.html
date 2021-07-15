@@ -993,7 +993,7 @@
 
                               
 
-                                    <div class="title">
+                                    <div class="title" *ngIf="!mode_visiteur || cv_name">
                                         <span>Mon CV</span>
                                     </div>
                                     <div class="list-of-skills" *ngIf="!mode_visiteur && !cv_name">
