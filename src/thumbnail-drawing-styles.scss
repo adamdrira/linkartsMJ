@@ -102,9 +102,10 @@
     width: calc(100% - 15px) !important;
   }
   
-   .title-container span.title {
+   .title-container span.title, .title-container h4.title {
     font-weight: bold;
     line-height: 17px;  
+    font-size: 14px;
    
     -webkit-box-orient: vertical;
     overflow: hidden;
