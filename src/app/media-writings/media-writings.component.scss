@@ -196,7 +196,7 @@
     align-items: center;
   }
 
-  .category span {
+  .category span, .category h3 {
     font-size: 18px;
     font-weight: 600;
     @media (max-width: 500px) {

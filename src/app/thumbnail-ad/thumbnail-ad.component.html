@@ -51,14 +51,14 @@
 
         <div class="left-container no-border-style">
             <img #image  [lazyLoad]="thumbnail_picture"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnail()"
-                [ngClass]="{'invisible':!thumbnail_is_loaded}" >
+                [ngClass]="{'invisible':!thumbnail_is_loaded}" [alt]="'photo de couverture de '+item.title">
         </div>
 
 
         <div class="right-container">
 
             <div class="name">
-                <span>{{item.title}}</span>
+                <h3>{{item.title}}</h3>
             </div>
 
             <div class="top-container-2">
@@ -69,7 +69,7 @@
                     matTooltipClass='tooltip-thumbnail-ad' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200">
-                        <img [lazyLoad]="profile_picture"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                        <img [lazyLoad]="profile_picture"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}" [alt]="'photo de profil de '+author_name">
                     </a>
 
                     <div class="right-container">
@@ -196,7 +196,7 @@
                     <div *ngIf="category_index==1" class="attachments-container" [@enterAnimation]>
                         <div *ngFor="let picture of list_of_pictures, let i=index"
                             (click)="read_pictures(i);stop($event);" class="image-container">
-                            <img [lazyLoad]="list_of_pictures[i]"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_pictures(i)" [ngClass]="{'invisible':!pictures_loaded[i]}">
+                            <img [lazyLoad]="list_of_pictures[i]"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_pictures(i)" [ngClass]="{'invisible':!pictures_loaded[i]}" [alt]="'photos miniatures'">
                         </div>
                     </div>
                     <div *ngIf="category_index==2" class="attachments-container" [@enterAnimation]>

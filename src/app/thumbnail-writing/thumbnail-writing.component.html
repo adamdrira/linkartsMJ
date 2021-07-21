@@ -16,7 +16,7 @@
                             <div class="element-writing border-recto">
 
                                 <div class="miniature" [ngClass]="{ 'shiny':!imageloaded}" >
-                                    <img  [lazyLoad]="thumbnail_picture" [customObservable]="scroll? scroll : null"   loading="lazy"  (load)="loaded()" [ngClass]="{ 'invisible':!imageloaded}" >
+                                    <img  [lazyLoad]="thumbnail_picture" [customObservable]="scroll? scroll : null"   loading="lazy"  (load)="loaded()" [ngClass]="{ 'invisible':!imageloaded}" [alt]="'couverture de '+title">
                                 </div>
 
                                 <div #thumbnailRecto class="absolute-thumbnail-data" [ngClass]="{ 'invisible':!marks_retrieved}" >
@@ -24,14 +24,14 @@
                                     <!--Title container-->
                                     <!--********************-->
                                     <div class="title-container">
-                                        <span class="title">{{title}}</span>
+                                        <h4 class="title">{{title}}</h4>
                                     </div>
                                     <!--********************-->
                                     <!--Author container-->
                                     <!--********************-->
                                     <div class="author-container">
                                         <div class="left-container" style="border-radius: 50px;"  [ngClass]="{'shiny':!pp_is_loaded}">
-                                            <img  [lazyLoad]="profile_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="pp_loaded()" [ngClass]="{ 'invisible':!pp_is_loaded}">
+                                            <img  [lazyLoad]="profile_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="pp_loaded()" [ngClass]="{ 'invisible':!pp_is_loaded}" [alt]="'photo de profil de '+author_name">
                                         </div>
                                         <div class="right-container">
                                             <span class="author-name">

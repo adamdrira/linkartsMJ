@@ -86,6 +86,10 @@
 </div>
 
 
+<h1 class="main-title" *ngIf="category_index==0">LinkCollab – Recherche de collaborateurs pour projets éditoriaux</h1>
+<h1 class="main-title" *ngIf="category_index==1">Annonces de collaborations bénévoles</h1>
+<h1 class="main-title" *ngIf="category_index==2">Annonces de collaborations rémunérées</h1>
+
 <div class="page">
 
     <div class="slogan">
@@ -97,18 +101,18 @@
         <div class="section-0" *ngIf="category_index==1 || category_index==2">
 
             <div class="large-text" *ngIf="category_index==1">
-                <span >Dénichez le collaborateur idéal pour vos projets éditoriaux !</span>
+                <h2 >Dénichez le collaborateur idéal pour vos projets éditoriaux !</h2>
                 
                 <div class="see-more-button">
                     ?
                     <div class="information" >
                         <div class="first-text">
-                            <span> <img  src='../../assets/img/tuto-logos/tuto-benevole.svg'> Vous souhaitez réaliser un projet éditorial, mais il vous manque un collaborateur ? Alors c’est ici que vous trouverez le partenaire idéal pour vos projets ne nécessitant ni contrat ni rémunération ! 
+                            <span> <img  src='../../assets/img/tuto-logos/tuto-benevole.svg' [alt]="'logo projet éditorial'"> Vous souhaitez réaliser un projet éditorial, mais il vous manque un collaborateur ? Alors c’est ici que vous trouverez le partenaire idéal pour vos projets ne nécessitant ni contrat ni rémunération ! 
                             </span>
                         </div>
                         
                         <div class="second-text">
-                            <span> <img src='../../assets/img/tuto-logos/light.svg'>Une messagerie, disposant de nombreux outils pratiques est mise à votre disposition afin de vous permettre de travailler avec votre collaborateur. Sachez par ailleurs, que tout fichier échangé au sein de notre messagerie peut vous protéger contre le plagiat.
+                            <span> <img src='../../assets/img/tuto-logos/light.svg' [alt]="'logo projet éditorial'">Une messagerie, disposant de nombreux outils pratiques est mise à votre disposition afin de vous permettre de travailler avec votre collaborateur. Sachez par ailleurs, que tout fichier échangé au sein de notre messagerie peut vous protéger contre le plagiat.
                             </span>
                         </div>
                     </div>
@@ -116,18 +120,18 @@
                 
             </div>
             <div class="large-text"  *ngIf="category_index==2">
-                <span>Dénichez le service artistique ou éditorial qui vous convient le mieux !</span>
+                <h2>Dénichez le service artistique ou éditorial qui vous convient le mieux !</h2>
                 <div class="see-more-button">
                     ?
                     <div class="information" >
                         <div class="first-text">
                             
-                            <span><img src='../../assets/img/tuto-logos/tuto-remunere.svg'>Vous recherchez un artiste pour effectuer une tâche en particulier ? Alors c'est ici que vous trouverez les artistes cherchant à faire valoir leur savoir et leur savoir-faire, en échange d'une rémunération.
+                            <span><img src='../../assets/img/tuto-logos/tuto-remunere.svg' [alt]="'logo projet éditorial'">Vous recherchez un artiste pour effectuer une tâche en particulier ? Alors c'est ici que vous trouverez les artistes cherchant à faire valoir leur savoir et leur savoir-faire, en échange d'une rémunération.
                             </span>
                         </div>
                         
                         <div class="second-text">
-                            <span><img src='../../assets/img/tuto-logos/light.svg'> Une messagerie, disposant de nombreux outils pratiques est mise à votre disposition afin de faciliter les échanges avec votre interlocuteur. Une plateforme de paiement sera bientôt mise à votre disposition afin de vous faciliter et de vous sécuriser les transactions. 
+                            <span><img src='../../assets/img/tuto-logos/light.svg' [alt]="'logo projet éditorial'"> Une messagerie, disposant de nombreux outils pratiques est mise à votre disposition afin de faciliter les échanges avec votre interlocuteur. Une plateforme de paiement sera bientôt mise à votre disposition afin de vous faciliter et de vous sécuriser les transactions. 
                             </span>
                             
                         </div>
@@ -349,18 +353,18 @@
         <div  class="section-0" *ngIf="category_index==0">
 
             <div class="large-text">
-                <span>La maison d’édition de vos rêves se trouve ici !</span>
+                <h2>La maison d’édition de vos rêves se trouve ici !</h2>
                 <div class="see-more-button">
                     ?
                     <div class="information" >
                         <div class="first-text">
                            
-                            <span> <img src='../../assets/img/tuto-logos/tuto-projects.svg'>Notre objectif est de mobiliser les maisons d’édition pour vous faire des retours constructifs, en des temps impartis, même si votre projet n'est pas retenu.
+                            <span> <img src='../../assets/img/tuto-logos/tuto-projects.svg' [alt]="'logo projet éditorial'">Notre objectif est de mobiliser les maisons d’édition pour vous faire des retours constructifs, en des temps impartis, même si votre projet n'est pas retenu.
                             </span>
                         </div>
                         
                         <div class="second-text">
-                            <span> <img src='../../assets/img/tuto-logos/light.svg'>Si votre projet est retenu, Linkarts met à votre disposition une plateforme de discussion. Celle-ci est entièrement adaptée à la collaboration. Vous pourrez ainsi efficacement y travailler sur vos projets et signer vos contrats.
+                            <span> <img src='../../assets/img/tuto-logos/light.svg' [alt]="'logo projet éditorial'">Si votre projet est retenu, Linkarts met à votre disposition une plateforme de discussion. Celle-ci est entièrement adaptée à la collaboration. Vous pourrez ainsi efficacement y travailler sur vos projets et signer vos contrats.
                            
                             </span>
                            
@@ -479,7 +483,7 @@
                         
                         <div class="thumbnail">
                             <div class="cover-picture"  [ngClass]="{'shiny':!pictures_loaded[item.cover]}" >
-                                <img class="background-image" alt="list_of_editors[i].title" [lazyLoad]="item.cover"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.cover)" [ngClass]="{'invisible':!pictures_loaded[item.cover]}">
+                                <img class="background-image" alt="list_of_editors[i].title" [lazyLoad]="item.cover"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.cover)" [ngClass]="{'invisible':!pictures_loaded[item.cover]}" [alt]="'photo de couverture de '+item.title">
                                 <div class="first-message" *ngIf="indexes_selected[i]"  [@enterFromTop2Animation]>
                                     <div class="alert-icon">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="!item.page">sentiment_dissatisfied</mat-icon>
@@ -491,12 +495,12 @@
                             </div>
                             <div class="data-container"  >
                                 <div class="img-container"  [ngClass]="{'shiny':!pictures_loaded[item.pp]}">
-                                    <img  [lazyLoad]="item.pp" alt="list_of_editors[i].title"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.pp)" [ngClass]="{'invisible':!pictures_loaded[item.pp],'fit-pic':is_a_special_pp[item.title]}" >
+                                    <img  [lazyLoad]="item.pp" alt="list_of_editors[i].title"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.pp)" [ngClass]="{'invisible':!pictures_loaded[item.pp],'fit-pic':is_a_special_pp[item.title]}" [alt]="'photo de profil de '+item.title">
                                 </div>
 
                                 <div class="right-container">
                                     <a [href]=open_website(i) target="_blank" class="name" [@enterFromLeftAnimation] >
-                                        <span>{{item.title}}</span>
+                                        <h3>{{item.title}}</h3>
                                         
                                     </a>
         

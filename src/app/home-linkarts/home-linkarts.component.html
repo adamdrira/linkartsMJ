@@ -148,6 +148,11 @@
     
 </div>
 
+<h1 class="main-title" *ngIf="category_index==0">LinkArts - La plateforme de collaboration pour artistes et éditeurs</h1>
+<h1 class="main-title" *ngIf="category_index==1">Lire nos BD, dessins et écrits en tendances</h1>
+<h1 class="main-title" *ngIf="category_index==2">Fil d'actualité</h1>
+<h1 class="main-title" *ngIf="category_index==3">Découvrir notre top des artistes et auteurs</h1>
+
 <div class="page" *ngIf="type_of_profile_retrieved">
 
     <div class="slogan">
@@ -215,7 +220,7 @@
 
 
 
-<div class="footer" *ngIf="(type_of_profile_retrieved || category_index!=-1) && category_index>=0 && 4>category_index">
+<footer class="footer" *ngIf="(type_of_profile_retrieved || category_index!=-1) && category_index>=0 && 4>category_index">
     <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
 
     <div class="links-container">
@@ -275,5 +280,5 @@
 
     <span>LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</span>
     <span>LinkArts © 2021</span>
-</div>
+</footer>
 

@@ -131,6 +131,8 @@ export class AccountComponent implements OnInit {
       
       this.title.setTitle('@'+r[0].nickname+' • LinkArts – Collaboration éditoriale');
       this.meta.updateTag({ name: 'description', content: "Découvrir le profil de "+r[0].firstname+", ses œuvres, annonces, et abonnements." });
+      
+      this.h1="Découvrir le profil de "+r[0].firstname+", ses œuvres, annonces, et abonnements.";
     })
     
     let section =  route.snapshot.data['section'];
@@ -181,6 +183,8 @@ export class AccountComponent implements OnInit {
     }
    
   }
+
+  h1:String="";
 
   for_reset_password=false;
   width:number;

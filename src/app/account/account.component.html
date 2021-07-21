@@ -87,7 +87,7 @@
     <div class="account-container" [ngClass]="{'really-invisible': !(list_writings_added && list_drawings_artbook_added
     && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && user_blocked_retrieved)}">
 
-        <img [src]="cover_picture" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }">
+        <img [src]="cover_picture" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }" [alt]="'photo de couverture de '+author_name">
 
         <button *ngIf="!mode_visiteur && showEditCoverPic && !for_reset_password" class="change-cover-picture" (click)="change_cover_picture();">
             <mat-icon [ngClass]="{'invisible': !show_icon }">camera_alt</mat-icon>
@@ -158,7 +158,7 @@
 
             <div class="profile-picture" [ngClass]="{'visiteur': mode_visiteur && (!story_retrieved || !story_found),'new-story': story_state }">
                 
-                <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
+                <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }" [alt]="'photo de profil de '+author_name">
                 
                 <ng-container *ngIf="!mode_visiteur && mode_visiteur_added && story_retrieved && !for_reset_password">
                     <div *ngIf="story_found" class="watch-top-story" (click)="watch_story();">
@@ -179,7 +179,7 @@
                
             </div>
             
-            
+            <h1 class="main-title">{{h1}}</h1>
             <div *ngIf="mode_visiteur_added" class="profile-information">
                 <div class="profile-name">
                     <span class="author-name">{{author_name}} 
@@ -255,26 +255,26 @@
             <div #buttonSection>
                 <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0,true,0);">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">home</mat-icon>
-                    <span>Accueil</span>
+                    <h2>Accueil</h2>
                 </button>
             </div>
             <div #buttonSection >
                 <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1,true,0);">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" >auto_stories</mat-icon>
-                    <span *ngIf="!type_of_account.includes('dit')">Œuvres ({{number_of_artpieces}})</span>
-                    <span *ngIf="type_of_account.includes('dit')"> Extraits d'œuvres ({{number_of_artpieces}})</span>
+                    <h2 *ngIf="!type_of_account.includes('dit')">Œuvres ({{number_of_artpieces}})</h2>
+                    <h2 *ngIf="type_of_account.includes('dit')">Extraits d'œuvres ({{number_of_artpieces}})</h2>
                 </button>
             </div>
             <div #buttonSection>
                 <button [ngClass]="{'opened': opened_section == 2 }" (click)="open_section(2,true,0);">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
-                    <span>Annonces ({{list_of_ads.length}})</span>
+                    <h2>Annonces ({{list_of_ads.length}})</h2>
                 </button>
             </div>
             <div #buttonSection>
                 <button [ngClass]="{'opened': opened_section == 3 }" *ngIf="!mode_visiteur" (click)="open_section(3,true,0);">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
-                    <span>Projets</span>
+                    <h2>Projets</h2>
                 </button>
             </div>
 
@@ -282,46 +282,58 @@
             <div #buttonSection >
                 <!--<button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 4 }" (click)="see_subscribers();">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
-                    <span>Abonnés ({{subscribed_users_list.length}})</span>
+                    <h2>Abonnés ({{subscribed_users_list.length}})</h2>
                 </button>-->
             </div>
             <div #buttonSection  >
                 <!--<button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 5 }" (click)="see_subscribings();">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">subscriptions</mat-icon>
-                    <span>Abonnements ({{users_subscribed_to_list.length}})</span>
+                    <h2>Abonnements ({{users_subscribed_to_list.length}})</h2>
                 </button>-->
             </div>
             <div #buttonSection>
                 <button *ngIf="!mode_visiteur" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6,true,0);">
                    
                     <div class="profile-picture">
-                        <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
+                        <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }" [alt]="'photo de profil de '+author_name">
                     </div>
-                    <span>Profil & Stat.</span>
+                    <h2>Profil & Stat.</h2>
                 </button>
             </div>
             <div #buttonSection>
                 <button *ngIf="!mode_visiteur && !my_profile_is_suspended" [ngClass]="{'opened': opened_section == 7 }" (click)="open_section(7,true,0);">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">bookmarks</mat-icon>
-                    <span>Archives</span>
+                    <h2>Archives</h2>
                 </button>
             </div>
             <div #buttonSection>
                 <button *ngIf="!mode_visiteur" [ngClass]="{'opened': opened_section == 8 }" (click)="open_section(8,true,0);">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
-                    <span>Compte</span>
+                    <h2>Compte</h2>
                 </button>
             </div>
             
             <a href="/add-artwork" *ngIf="!my_profile_is_suspended">
                 <button *ngIf="!mode_visiteur">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">add_circle_outline</mat-icon>
-                    <span>Publier</span> 
+                    <h2>Publier</h2> 
                 </button>
             </a>
         </div>
 
             
+        <div class="h2-small-screen">
+            <h2>Accueil</h2>
+            <h2>Œuvres</h2>
+            <h2>Extraits d'œuvres</h2>
+            <h2>Annonces</h2>
+            <h2>Projets</h2>
+            <h2>Profil & Stat.</h2>
+            <h2>Archives</h2>
+            <h2>Compte</h2>
+            <h2>Publier</h2>
+        </div>
+        
         <div class="small-screen-categories component-account">
             <mat-form-field floatLabel='never'>
                 <mat-select  #accountSelect panelClass="accountCategorySelectClass" [(value)]="opened_section_small" disableOptionCentering (selectionChange)="onCategoryChange($event)">
@@ -333,7 +345,8 @@
                         </ng-container>
                         <ng-container *ngIf="opened_section==1">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">auto_stories</mat-icon>
-                            <span>Œuvres ({{number_of_artpieces}})</span>
+                            <span *ngIf="!type_of_account.includes('dit')">Œuvres ({{number_of_artpieces}})</span>
+                            <span *ngIf="type_of_account.includes('dit')">Extraits d'œuvres ({{number_of_artpieces}})</span>
                         </ng-container>
                         <ng-container *ngIf="opened_section==2">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
@@ -354,7 +367,7 @@
                         <ng-container *ngIf="opened_section==6">
                             
                             <div class="profile-picture">
-                                <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
+                                <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }" [alt]="'photo de profil de '+author_name">
                             </div>
                             <span>Profil & Stat.</span>
                         </ng-container>
@@ -378,7 +391,8 @@
                     </mat-option>
                     <mat-option [value]="1" *ngIf="!my_profile_is_suspended">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">auto_stories</mat-icon>
-                        <span>Œuvres ({{number_of_artpieces}})</span>
+                        <span *ngIf="!type_of_account.includes('dit')">Œuvres ({{number_of_artpieces}})</span>
+                        <span *ngIf="type_of_account.includes('dit')">Extraits d'œuvres ({{number_of_artpieces}})</span>
                     </mat-option>
                     <mat-option [value]="2">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
@@ -398,7 +412,7 @@
                     </mat-option>-->
                     <mat-option [value]="6" *ngIf="!mode_visiteur">
                         <div class="profile-picture">
-                            <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
+                            <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }" [alt]="'photo de profil de '+author_name">
                         </div>
                         <span>Profil & Stat.</span>
                     </mat-option>
@@ -483,7 +497,7 @@
                             <div class="block" *ngIf="gender=='Groupe' && type_of_account.includes('Artiste')">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
-                                    <span >Liste des membres</span>
+                                    <h3 >Liste des membres</h3>
                                 </div>
                                 <div class="bottom">
                                     <div *ngIf="!list_of_members_data_retrieved" class="skeletons-container" [@enterAnimation]>
@@ -527,8 +541,8 @@
                             <div class="block">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">list</mat-icon>
-                                    <span *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Qui suis-je ?</span>
-                                    <span *ngIf="type_of_account.includes('dit') || type_of_account.includes('es')">Qui sommes-nous ?</span>
+                                    <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Qui suis-je ?</h3>
+                                    <h3 *ngIf="type_of_account.includes('dit') || type_of_account.includes('es')">Qui sommes-nous ?</h3>
 
                                     <div class="right-button" *ngIf="!mode_visiteur" (click)="open_section(6,true,0);">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
@@ -580,7 +594,7 @@
                             <div class="block" *ngIf="type_of_account.includes('dit') && list_of_artworks_retrieved && ((mode_visiteur && list_of_artworks.length > 0) || !mode_visiteur)">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">auto_stories</mat-icon>
-                                    <span>Nos œuvres phares</span>
+                                    <h3>Nos œuvres phares</h3>
 
                                     <div class="right-button" *ngIf="!mode_visiteur" (click)="open_add_editor_artwork()">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
@@ -643,8 +657,8 @@
                             <div class="block" *ngIf="(list_of_news && list_of_news.length>0 && mode_visiteur)  || !mode_visiteur">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">whatshot</mat-icon>
-                                    <span *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Mon actualité</span>
-                                    <span *ngIf="type_of_account.includes('dit') || type_of_account.includes('es')">Notre actualité</span>
+                                    <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Mon actualité</h3>
+                                    <h3 *ngIf="type_of_account.includes('dit') || type_of_account.includes('es')">Notre actualité</h3>
 
 
                                     <div class="right-button" *ngIf="!mode_visiteur && !add_news_input" (click)="add_news();">
@@ -706,7 +720,7 @@
                             <div class="block" *ngIf="type_of_account.includes('dit')">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">mail</mat-icon>
-                                    <span>Déposez votre projet</span>
+                                    <h3>Déposez votre projet</h3>
 
                                     <div class="right-button" *ngIf="!mode_visiteur" (click)="open_section(6,true,4);">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
@@ -852,7 +866,7 @@
                                 <div class="block" *ngIf="emphasized_artwork_added">
                                     <div class="top">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">stars</mat-icon>
-                                        <span>Œuvre mise en avant</span>
+                                        <h3>Œuvre mise en avant</h3>
                                     </div>
                                     <div class="bottom contains-artwork fit-size">
                                         <app-thumbnail-artwork 
@@ -867,7 +881,7 @@
                                 <div class="block" *ngIf="!emphasized_artwork_added && !mode_visiteur && !(!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added)" >
                                     <div class="top">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">stars</mat-icon>
-                                        <span>Œuvre mise en avant</span>
+                                        <h3>Œuvre mise en avant</h3>
                                     </div>
                                     <div class="bottom min-height">
                                         <div class="text-lines">
@@ -882,7 +896,7 @@
                                 <div class="block" *ngIf="list_of_ads.length>0 && list_of_ads_added">
                                     <div class="top">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
-                                        <span>Annonce récente</span>
+                                        <h3>Annonce récente</h3>
                                     </div>
                                     <div class="bottom contains-artwork fit-size">
                                         <app-thumbnail-ad
@@ -903,7 +917,7 @@
                             <div class="block-right">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">insert_chart</mat-icon>
-                                    <span>En quelques chiffres</span>
+                                    <h3>En quelques chiffres</h3>
                                 </div>
                                 <div class="bottom">
                                     
@@ -968,7 +982,7 @@
                             <div class="block-right" *ngIf="( list_of_skills.length || list_of_categories.length || cv_name || !mode_visiteur ) && !type_of_account.includes('dit') && !type_of_account.includes('es')">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">color_lens</mat-icon>
-                                    <span>Ma palette</span>
+                                    <h3>Ma palette</h3>
                                 </div>
                                 <div class="bottom">
                                     <div class="title">
@@ -1016,7 +1030,7 @@
                             <div class="block-right" *ngIf="( list_of_skills.length>0 || !mode_visiteur ) && (type_of_account.includes('dit') || type_of_account.includes('es'))">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
-                                    <span>Notre palette</span>
+                                    <h3>Notre palette</h3>
                                 </div>
                                 <div class="bottom">
                                     <div class="title">
@@ -1053,8 +1067,8 @@
                             <div class="block-right" *ngIf="!( mode_visiteur && !instagram && !facebook && !pinterest && !deviantart && !artstation && !website && !other_website )">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">share</mat-icon>
-                                    <span *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Mes réseaux</span>
-                                    <span *ngIf="type_of_account.includes('dit') || type_of_account.includes('es')">Nos réseaux</span>
+                                    <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Mes réseaux</h3>
+                                    <h3 *ngIf="type_of_account.includes('dit') || type_of_account.includes('es')">Nos réseaux</h3>
                                 </div>
                                 <div class="bottom">
                                         
@@ -1106,8 +1120,8 @@
                             <div class="block-right" *ngIf="!( mode_visiteur && !email_about && !phone_about )">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">explore</mat-icon>
-                                    <span *ngIf="!type_of_account.includes('dit')">Mes coordonnées</span>
-                                    <span *ngIf="type_of_account.includes('dit')">Nos coordonnées</span>
+                                    <h3 *ngIf="!type_of_account.includes('dit')">Mes coordonnées</h3>
+                                    <h3 *ngIf="type_of_account.includes('dit')">Nos coordonnées</h3>
                                 </div>
                                 <div class="bottom">
 

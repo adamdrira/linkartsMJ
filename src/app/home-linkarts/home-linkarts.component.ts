@@ -93,6 +93,7 @@ export class HomeLinkartsComponent implements OnInit {
     this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
 
 
+
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
     this.route.data.subscribe(resp => {
@@ -107,6 +108,9 @@ export class HomeLinkartsComponent implements OnInit {
         
       this.change_profile_number++;
       this.category_index = this.route.snapshot.data['category'];
+
+      this.update_meta_data(this.category_index);
+
       this.status[this.category_index]=true;
       this.categories_to_load[this.category_index]=true;
       this.cd.detectChanges()
@@ -152,8 +156,7 @@ export class HomeLinkartsComponent implements OnInit {
 
 
     
-    
-
+    this.open_category(this.category_index);
   }
 
 
@@ -231,32 +234,27 @@ export class HomeLinkartsComponent implements OnInit {
         this.allow_sub=true;
       }
       this.category_index = 0;
-      this.title.setTitle('LinkArts – Collaboration éditoriale');
-      this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
       this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).subscribe();
       this.location.go('/home/recommendations');
     }
     else if( i==1 ) {
       this.category_index = 1;
       this.navbar.add_page_visited_to_history(`/home/trendings`,this.device_info).subscribe();
-      this.title.setTitle('LinkArts – Tendances');
-      this.meta.updateTag({ name: 'description', content: "La liste des meilleures œuvres du jour pour chaque catégorie !" })
       this.location.go('/home/trendings')
     }
     else if( i==2 ) {
       this.category_index = 2;
-      this.title.setTitle("LinkArts – Fil d'actualité");
-      this.meta.updateTag({ name: 'description', content: "Découvrez votre fil d'actualité !" })
       this.navbar.add_page_visited_to_history(`/subscribings`,this.device_info).subscribe();
       this.location.go('/home/subscribings')
     }
     else if( i==3 ) {
       this.category_index = 3;
-      this.title.setTitle('LinkArts – Coups de cœur');
-      this.meta.updateTag({ name: 'description', content: "La liste des meilleures artistes du moment !" })
       this.navbar.add_page_visited_to_history(`/favorites`,this.device_info).subscribe();
       this.location.go('/home/favorites')
     }
+
+    this.update_meta_data(i);
+
     this.status[i]=true;
     this.categories_to_load[i]=true;
     
@@ -271,6 +269,24 @@ export class HomeLinkartsComponent implements OnInit {
   }
 
  
+  update_meta_data(i : number) {
+    if( i==0 ) {
+      this.title.setTitle('LinkArts - La plateforme de collaboration pour artistes et éditeurs');
+      this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
+    }
+    else if( i==1 ) {
+      this.title.setTitle('Lire nos BD, dessins et écrits en tendances - Linkarts');
+      this.meta.updateTag({ name: 'description', content: "La liste des meilleures BD, dessins et écrits du jour ! Découvrez nos mangas, bandes dessinées, comics, webtoons, romans, nouvelles, dessins, pitchs et scénarios." })
+    }
+    else if( i==2 ) {
+      this.title.setTitle("Fil d'actualité - Linkarts");
+      this.meta.updateTag({ name: 'description', content: "Découvrez votre fil d'actualité !" })
+    }
+    else if( i==3 ) {
+      this.title.setTitle('Découvrir notre top des artistes et auteurs - Linkarts');
+      this.meta.updateTag({ name: 'description', content: "La liste des meilleurs artistes et auteurs du moment !" })
+    }
+  }
 
     
 

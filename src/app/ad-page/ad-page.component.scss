@@ -137,6 +137,7 @@ div.data-container {
         display: flex;
         flex-wrap: nowrap;
         justify-content: space-between;
+        position: relative;
 
         > span {
             margin: auto auto auto 0px;
@@ -153,6 +154,12 @@ div.data-container {
             white-space: normal;
             word-break: break-all;
             -webkit-line-clamp: 2;
+        }
+        > h1 {
+            position: absolute;
+            color: rgba(0, 0, 0, 0);
+            top: 0;
+            left: 0;
         }
         button {
             /*margin: auto 10px auto auto;

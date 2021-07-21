@@ -105,6 +105,11 @@
     min-width: 420px;
 
 
+    .main-title {
+      position: absolute;
+      color: rgba(0, 0, 0, 0);
+    }
+
     .more-left{
       top: 20px !important;
       left: 20px !important;
@@ -605,6 +610,13 @@
     box-shadow: 0px 1px 2px 0px #001c50;
   }
 
+  .h2-small-screen {
+    display:none;
+    position:absolute;
+    h2 {
+      color:rgba(0, 0, 0, 0);
+    }
+  }
   .small-screen-categories.component-account {
     display: none;
 
@@ -797,7 +809,7 @@
         width: unset;
         height: unset;
       }
-      span {
+      span, h2 {
         margin: auto auto auto 0px;
         font-weight: 600;
         font-size: 14px;
@@ -1067,7 +1079,7 @@
           width:unset;
           margin:auto 10px auto 10px;
         }
-        > span {
+        > span, > h3 {
           font-size:18px;
           color:white;
           margin:auto auto auto 0px;
@@ -1969,7 +1981,7 @@
           width:unset;
           margin: auto 10px auto 0px;
         }
-        span {
+        span, h3 {
           font-size:18px;
           color:rgb(32,56,100);
           margin:auto auto auto 0px;
@@ -2180,7 +2192,7 @@
         padding: 0px 0px 0px 20px;
 
         .top {
-          span {
+          span, h3 {
             font-size: 16px;
           }
         }
@@ -3339,6 +3351,11 @@
   .panel-controller {
     .small-screen-categories.component-account {
       display: flex;
+    }
+    .h2-small-screen {
+      display: flex;
+      position: absolute;
+      flex-direction: column;
     }
     .middle-container {
       display: none;

@@ -68,6 +68,10 @@
                     <span>
                         {{item.title}}
                     </span>
+
+                    <h1>{{item.my_description}}&nbsp;recherche&nbsp;{{item.target_one}}&nbsp;{{item.title}}</h1>
+
+
                     <button *ngIf="visitor_mode_added && visitor_mode && response_checked && !response_found" (click)="respond();" [@enterAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">post_add</mat-icon>
                         <span>Répondre à l'annonce</span>
@@ -139,29 +143,29 @@
 
                         <div *ngIf="list_of_pictures.length == 1" class="one-picture"  [@enterAnimation]>
                             <div class="images" (click)="read_pictures(0)"  >
-                                <img [src]="list_of_pictures[0]" (load)="load_picture(0)"  [ngClass]="{'invisible': !picture_loaded[0] }" >
+                                <img [src]="list_of_pictures[0]" (load)="load_picture(0)"  [ngClass]="{'invisible': !picture_loaded[0] }" [alt]="'pièce-jointe '+item.title">
                             </div>
                         </div>
 
                         <div *ngIf="list_of_pictures.length == 2" class="two-pictures"  [@enterAnimation]>
                             <div class="images first" (click)="read_pictures(0)">
-                                <img [src]="list_of_pictures[0]" (load)="load_picture(0)"  [ngClass]="{'invisible': !picture_loaded[0] }" >
+                                <img [src]="list_of_pictures[0]" (load)="load_picture(0)"  [ngClass]="{'invisible': !picture_loaded[0] }" [alt]="'pièce-jointe '+item.title">
                             </div>
                             <div class="images second" (click)="read_pictures(1)" >
-                                <img [src]="list_of_pictures[1]" (load)="load_picture(1)"  [ngClass]="{'invisible': !picture_loaded[1] }" >
+                                <img [src]="list_of_pictures[1]" (load)="load_picture(1)"  [ngClass]="{'invisible': !picture_loaded[1] }" [alt]="'pièce-jointe '+item.title">
                             </div>
                         </div>
         
                         <div *ngIf="list_of_pictures.length >= 3" class="three-pictures"  [@enterAnimation]>
                             <div class="images first" (click)="read_pictures(0)">
-                                <img [src]="list_of_pictures[0]" (load)="load_picture(0)"  [ngClass]="{'invisible': !picture_loaded[0] }" >
+                                <img [src]="list_of_pictures[0]" (load)="load_picture(0)"  [ngClass]="{'invisible': !picture_loaded[0] }" [alt]="'pièce-jointe '+item.title">
                             </div>
                             <div class="images second">
                                 <div class="first" (click)="read_pictures(1)">
-                                    <img [src]="list_of_pictures[1]" (load)="load_picture(1)"  [ngClass]="{'invisible': !picture_loaded[1] }" >
+                                    <img [src]="list_of_pictures[1]" (load)="load_picture(1)"  [ngClass]="{'invisible': !picture_loaded[1] }" [alt]="'pièce-jointe '+item.title">
                                 </div>
                                 <div class="second" (click)="read_pictures(2)">
-                                    <img [src]="list_of_pictures[2]" (load)="load_picture(2)"  [ngClass]="{'invisible': !picture_loaded[2] }" >
+                                    <img [src]="list_of_pictures[2]" (load)="load_picture(2)"  [ngClass]="{'invisible': !picture_loaded[2] }" [alt]="'pièce-jointe '+item.title">
                                 </div>
                             </div>
                             
@@ -276,7 +280,7 @@
                                 <div class="subscriber">
                                     <a [routerLink]=get_response_author_link(i) class="user-container"   (click)="stop($event);close_popup()">
                                         <div class="left-container"  [ngClass]="{'shiny':!response_pictures_loaded[i]}" >
-                                            <img [lazyLoad]="list_of_profile_pictures[i]"  [customObservable]="scroll? scroll : null" loading="lazy"   (load)="load_reponse_picture(i)" [ngClass]="{'invisible':!response_pictures_loaded[i]}">
+                                            <img [lazyLoad]="list_of_profile_pictures[i]"  [customObservable]="scroll? scroll : null" loading="lazy"   (load)="load_reponse_picture(i)" [ngClass]="{'invisible':!response_pictures_loaded[i]}" [alt]="'photo de profil'">
                                         </div>
                                         
                                         
@@ -356,7 +360,7 @@
     
                             <div class="images-container">
                                 <div *ngFor="let picture of response_list_of_pictures, let i=index" (click)="read_pictures_response(i)">
-                                    <img [src]="response_list_of_pictures[i]">
+                                    <img [src]="response_list_of_pictures[i]" [alt]="'photo de profil réponse'">
                                 </div>
                             </div>
                         </ng-container>
@@ -554,7 +558,7 @@
                     <a [routerLink]=open_account()   (click)="stop($event);close_popup()" class="left-container" matTooltip="Voir le profil"
                         matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
                         <img [src]="profile_picture" (load)="profile_picture_loaded()"
-                            [ngClass]="{'really-invisible':!profile_picture_is_loaded}">
+                            [ngClass]="{'really-invisible':!profile_picture_is_loaded}" [alt]="'photo de profil de '+author_name">
                         <div *ngIf="!profile_picture_is_loaded" class="dark-shiny"></div>
                     </a>
                     <div class="right-container">
@@ -717,7 +721,7 @@
                 
                 <div class="first-comment-container" *ngIf="commentariesnumber>0 && first_comment_retrieved">
                     <div class="profile-picture " [ngClass]="{'dark-shiny': !first_comment_pp_loaded }">
-                        <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }">
+                        <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }" [alt]="'photo de profil'">
                     </div>
                     <div class="comment" >
                         {{first_comment}}

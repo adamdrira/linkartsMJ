@@ -254,7 +254,8 @@
         <div class="artwork-title"  [ngClass]="{'really-invisible': !archive_retrieved || !mode_visiteur_added || !subscribtion_retrieved}">
             
             <div class="artwork-serie" >
-                <div class="first-line">{{title}}</div> 
+                <span class="first-line">{{title}}</span> 
+                <h1 class="first-line h1">{{style}}&nbsp;{{title}}</h1> 
            
             </div>
             
@@ -437,7 +438,7 @@
             matTooltipClass='linkarts-tooltip' 
             [matTooltipPosition]="'below'"
             [matTooltipShowDelay]="200">
-                <img [src]="profile_picture" (load)="profile_picture_loaded()" [ngClass]="{'really-invisible':!pp_loaded}">
+                <img [src]="profile_picture" (load)="profile_picture_loaded()" [ngClass]="{'really-invisible':!pp_loaded}" [alt]="'photo de profil de '+user_name">
                 <div *ngIf="!pp_loaded" class="dark-shiny"></div>
             </a>
             <div class="right-container">
@@ -522,7 +523,7 @@
             
             <div class="first-comment-container" *ngIf="commentariesnumber && first_comment_retrieved">
                 <div class="profile-picture " [ngClass]="{'dark-shiny': !first_comment_pp_loaded }">
-                    <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }">
+                    <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }" [alt]="'photo de profil'">
                 </div>
                 <div class="comment" >
                     {{first_comment}}

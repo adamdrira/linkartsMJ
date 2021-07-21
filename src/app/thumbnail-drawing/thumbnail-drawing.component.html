@@ -5,14 +5,14 @@
     <a class="click-popup" (click)="open_popup($event)"  href="/artwork-drawing/{{format}}/{{title_for_url}}/{{drawing_id}}" target="_blank" [ngClass]="{ 'for_news':for_news=='yes','shadow-news':for_news=='yes'}">
         <div #final_thumbnail class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();" [ngClass]="{'shiny':!show_picture && !prevent_shiny,'for_news':for_news=='yes'}">
 
-            <img [src]="thumbnail_picture"  (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'min-height-news':for_news=='yes'}">
+            <img [src]="thumbnail_picture"  (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'min-height-news':for_news=='yes'}" [alt]="'couverture de '+title">
             <div class="display-on-hover" [ngClass]="{'small-display-on-hover':small_thumbnail,'visible':showDrawingDetails,'invisible':!marks_retrieved}" *ngIf="showDrawingDetails" [@enterAnimation]>
                 
                 <!--********************-->
                 <!--Title container-->
                 <!--********************-->
                 <div class="title-container" [ngClass]="{'small-title-container':small_thumbnail}">
-                    <span class="title" [ngClass]="{'small-title':small_thumbnail}">{{title}}</span>
+                    <h4 class="title" [ngClass]="{'small-title':small_thumbnail}">{{title}}</h4>
                     <div class="artbook" [ngClass]="{'small-artbook':small_thumbnail}" *ngIf="pagesnumber && pagesnumber>=0">
                         <mat-icon [ngClass]="{'invisible': !show_icon }" style="color:white;font-size:20px" >photo_library</mat-icon>
                     </div>
@@ -23,7 +23,7 @@
                 <!--********************-->
                 <div class="author-container"  [ngClass]="{'small-author-container':small_thumbnail}">
                     <div class="left-container"  [ngClass]="{ 'small-left-container':small_thumbnail,'invisible':!pp_is_loaded}">
-                        <img [lazyLoad]="profile_picture"  loading="lazy" (load)="pp_loaded()" >
+                        <img [lazyLoad]="profile_picture"  loading="lazy" (load)="pp_loaded()" [alt]="'photo de profil de '+author_name">
                     </div>
                     <div class="right-container" [ngClass]="{'small-right-container':small_thumbnail}">
                         <span class="author-name" [ngClass]="{'small-author-name':small_thumbnail}">

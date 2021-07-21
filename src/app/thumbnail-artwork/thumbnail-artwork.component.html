@@ -77,7 +77,7 @@
 
         <div class="left-container" [ngClass]="{'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
 
-            <img  *ngIf="thumbnail_picture_received " #image [lazyLoad]="thumbnail_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
+            <img  *ngIf="thumbnail_picture_received " #image [lazyLoad]="thumbnail_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture" [alt]="'couverture de '+title">
 
             <div class="skeleton swiper-thumbnails shiny" *ngIf="!thumbnail_picture_received"></div>
 
@@ -147,7 +147,7 @@
             </div>
 
             <div class="name show-on-large-screen">
-                <span>{{title}}</span>
+                <h3>{{title}}</h3>
                 <button *ngIf="type_of_profile=='account' " class="options-name" tabIndex="-1" [matMenuTriggerFor]="options3"
                     (click)="stop($event)">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
@@ -350,7 +350,7 @@
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
                  
-                    <img   [lazyLoad]="profile_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                    <img   [lazyLoad]="profile_picture" [customObservable]="scroll? scroll : null"  loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}" [alt]="'photo de profil de '+author_name">
                 </a>
                 <div class="right-container">
                     <span class="author-name" *ngIf="author_name!=''">
@@ -407,7 +407,7 @@
             <div #swiperArtworkPreview style="height:100%;width:100%" *ngIf="list_of_images_to_show_retrieved">
                 <div class="swiper-wrapper" [ngClass]="{'only-one-slide': swiperArtworkPreview && swiper_initialized && swiper.slides.length==1}">
                     <div class="swiper-slide" *ngFor="let item of list_of_images_to_show; let i=index">
-                        <img *ngIf="swiper_launched" (load)="load_image(i)" [src]="item" [ngClass]="{'invisible':!loaded_images[i]}">
+                        <img *ngIf="swiper_launched" (load)="load_image(i)" [src]="item" [ngClass]="{'invisible':!loaded_images[i]}" [alt]="'premières pages'">
                     </div>
                     
                     <div class="pagination-container">

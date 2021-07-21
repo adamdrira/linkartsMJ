@@ -17,6 +17,9 @@
             font-size: 11px;
             &.name {
               font-size: 12px;
+              h3 {
+                font-size: 12px;
+              }
             }
           }
         }
@@ -117,7 +120,7 @@
     .global-container > .right-container {
       padding: 10px 25px 10px 20px !important;
       .name {
-        span {
+        span, h3 {
           -webkit-line-clamp: 2;
         }
       }
@@ -205,6 +208,9 @@
             font-size: 11px;
             &.name {
               font-size: 12px;
+              h3 {
+                font-size: 12px;
+              }
             }
           }
         }
@@ -315,7 +321,7 @@
     .global-container > .right-container {
       padding: 10px 25px 10px 20px !important;
       .name {
-        span {
+        span, h3 {
           -webkit-line-clamp: 2;
         }
       }
@@ -498,6 +504,10 @@
     font-weight: bold;
     align-items: center;
     text-align: left;
+    h3 {
+      font-size: 16px;
+      font-weight: bold;
+    }
     
   }
 

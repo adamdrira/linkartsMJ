@@ -3,7 +3,7 @@
   <img src="../../assets/img/svg/Logo-LA3.svg" (load)="logo_loaded()" class="hidden-img">
   
 
-  <div #fixedtop class="fixed-top" *ngIf="navbar.visible"
+  <header #fixedtop class="fixed-top" *ngIf="navbar.visible"
     [ngClass]="{'navbarBoxShadow': navbarBoxShadow}">
 
     <div class="navbar-container">
@@ -12,7 +12,7 @@
         [ngClass]="{'invisible': !logo_is_loaded, 'connected-user': type_of_profile=='account' || type_of_profile=='suspended', 'disconnected-user': type_of_profile!='account' && type_of_profile!='suspended'}">
 
         <a class="logoLinkarts " *ngIf="!activated_search" routerLink="/" (click)="not_using_chat()" >
-          <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
+          <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg' [alt]="'logo linkarts'">
         </a>
 
         <div class="HIDDEN-ON-SMALL-SCREEN-1" *ngIf="!activated_search"
@@ -106,7 +106,7 @@
 
 
           <a class="SMALL-SCREEN-LOGO" [ngClass]="{'SMALL-SCREEN-LOGO-VISITOR': type_of_profile=='visitor'}"  *ngIf="!activated_search" routerLink="/" (click)="not_using_chat()" >
-            <img class="logo" (load)="logo2_loaded()" src='../../assets/img/svg/Logo-LA3-18-01.svg'>
+            <img class="logo" (load)="logo2_loaded()" src='../../assets/img/svg/Logo-LA3-18-01.svg' [alt]="'logo linkarts'">
           </a>
           
           <div class="navbar-l1-searchbar-container"
@@ -230,7 +230,7 @@
                           <div class="result-container">
                             <div class="image-container">
                               <img  [lazyLoad]="list_of_thumbnails[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy" (load)="pp_thumb_load(i)"
-                                [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
+                                [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }" [alt]="'photo de profil'">
                             </div>
                             <div class="name-container block">
                               <div>{{list_of_last_propositions[i].firstname}}
@@ -256,7 +256,7 @@
                           <div class="result-container">
                             <div class="image-container">
                               <img [lazyLoad]="list_of_thumbnails[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy" (load)="pp_thumb_load(i)"
-                                [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
+                                [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }" [alt]="'photo de profil'">
                             </div>
                             <div class="name-container">
                               <span>{{list_of_last_propositions[i].title}}</span>
@@ -329,7 +329,7 @@
                           <a class="result-container" (click)="open_history_account(i);" [routerLink]="get_history_account(i)">
                             <div class="image-container">
                               <img [lazyLoad]="list_of_thumbnails_history[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy" (load)="pp_thumb_hist_load(i)"
-                                [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
+                                [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }" [alt]="'photo de profil'">
                             </div>
                             <div class="name-container block">
                               <div>{{list_of_last_propositions_history[i].firstname}}
@@ -362,7 +362,7 @@
 
                             <div class="image-container">
                               <img  [lazyLoad]="list_of_thumbnails_history[i]"  [customObservable]="scroll_propositions? scroll_propositions : null" loading="lazy" (load)="pp_thumb_hist_load(i)"
-                                [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
+                                [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }" [alt]="'photo de profil'">
                             </div>
                             <div class="name-container">
                               <span>{{list_of_last_propositions_history[i].title}}</span>
@@ -513,7 +513,7 @@
             <a class="profile-container" [routerLink]="get_my_profile()"  (click)="not_using_chat();go_to_profile()">
               <div *ngIf="!show_profile_spinner" class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
                 <img [src]="profile_picture" (load)="pp_loaded()"
-                  [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
+                  [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}" [alt]="'photo de profil'">
               </div>
               <div *ngIf="show_profile_spinner" class="profile-picture loader" >
                 <mat-spinner diameter="25"></mat-spinner>
@@ -526,7 +526,7 @@
 
               <div class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}" (click)="open_menu_for_phone()">
                 <img [src]="profile_picture" (load)="pp_loaded()"
-                  [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
+                  [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}" [alt]="'photo de profil'">
 
               </div>
 
@@ -627,7 +627,7 @@
             <mat-menu #myGroups="matMenu" class="navbar-mat-menu sub-menu">
               <ng-container *ngFor="let group of list_of_account_groups_names; let k=index">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_group(k)">
-                  <img [src]="list_of_account_groups_pp[k]" (load)="load_pp_group(k)"[ngClass]="{'invisible': !pp_group_loaded[k]}" >
+                  <img [src]="list_of_account_groups_pp[k]" (load)="load_pp_group(k)"[ngClass]="{'invisible': !pp_group_loaded[k]}" [alt]="'photo de profil'">
                   <span>{{group}}</span>
                 </button>
               </ng-container>
@@ -661,7 +661,7 @@
     
 
    
-  </div>
+  </header>
 
   <div #navbarMargin class="navbar-margin"></div>
 

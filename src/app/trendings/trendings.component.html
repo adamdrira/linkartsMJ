@@ -23,16 +23,16 @@
     <div class="logos-container" *ngIf="status" [@enterFromTopAnimation]>
         <button class="logo" [ngClass]="{'opened': subcategory == 0 }" (click)="open_subcategory(0);">
             <div class="image1"></div>
-            <span class="long-title">Bandes dessinées</span>
-            <span class="short-title">BD</span>
+            <h2 class="long-title">Bandes dessinées</h2>
+            <h2 class="short-title">BD</h2>
         </button>
         <button class="logo" [ngClass]="{'opened': subcategory == 1 }" (click)="open_subcategory(1);">
             <div class="image2"></div>
-            <span>Dessins</span>
+            <h2>Dessins</h2>
         </button>
         <button class="logo" [ngClass]="{'opened': subcategory == 2 }" (click)="open_subcategory(2);">
             <div class="image3"></div>
-            <span>Écrits</span>
+            <h2>Écrits</h2>
         </button>
     </div>
 </div>
@@ -58,7 +58,7 @@
         <ng-container *ngFor="let item of comics_trendings_sorted; let i = index">
             <div *ngIf="comics_trendings_length > i" class="ranked-thumbnail-container" [@enterAnimation]>
 
-
+                
                 <div *ngIf="item.chaptersnumber > 0 " [@enterAnimation]>
                     <app-thumbnail-artwork 
                         [item]=item

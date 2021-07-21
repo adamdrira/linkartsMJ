@@ -12,6 +12,8 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { Meta, Title } from '@angular/platform-browser';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupApplyComponent } from '../popup-apply/popup-apply.component';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 declare var Swiper: any
 
@@ -110,6 +112,8 @@ export class HomeLinkcollabComponent implements OnInit {
     private fb: FormBuilder,
     private title: Title,
     private meta: Meta,
+    private route: ActivatedRoute, 
+    private location: Location,
     
     ) {
       navbar.visibility_observer_font.subscribe(font=>{
@@ -173,16 +177,20 @@ export class HomeLinkcollabComponent implements OnInit {
   /*********************************************************************** */
   device_info='';
   ngOnInit() {
+
+
     this.navbar.add_page_visited_to_history(`/linkcollab/home_depot`,this.device_info ).subscribe();
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
-    this.title.setTitle('LinkCollab – Espace collaboration');
-    this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour soumettre votre projet auprès des éditeurs et dénicher le partenaire idéal." });
-
     
 
+    this.category_index = this.route.snapshot.data['category'];
+    this.update_meta_data(this.category_index);
+
+
     window.scroll(0,0);
-    this.open_category(0, true);
+    this.open_category(this.category_index, false);
+    this.update_meta_data(this.category_index);
 
     this.f1 = this.fb.group({
       type_of_project: [this.type_of_project],
@@ -274,29 +282,29 @@ export class HomeLinkcollabComponent implements OnInit {
     this.sorting="pertinence";
 
     if(i==1){
-      this.title.setTitle('LinkCollab – annonces de collaborations bénévoles');
-      this.meta.updateTag({ name: 'description', content: "Dénichez le collaborateur idéal pour vos projets éditoriaux !" });
       this.navbar.add_page_visited_to_history(`/home/benev`,this.device_info ).subscribe();
       this.remuneration=false;
       this.service=false;
       this.get_sorted_ads();
+      this.location.go('/linkcollab/voluntary-collaborations');
     }
     else if(i==2){
-      this.title.setTitle('LinkCollab – annonces de collaborations rémunérées');
-      this.meta.updateTag({ name: 'description', content: "Dénichez le service artistique ou éditorial qui vous conviens le mieux !" });
       this.navbar.add_page_visited_to_history(`/home/remuneration`,this.device_info ).subscribe();
       this.remuneration=true;
       this.service=false;
       this.get_sorted_ads();
+      this.location.go('/linkcollab/remunerated-collaborations');
     }
     else{
-      this.title.setTitle('LinkCollab – Espace collaboration');
-      this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour soumettre votre projet auprès des éditeurs et dénicher le partenaire idéal." });
       this.navbar.add_page_visited_to_history(`/linkcollab/depot`,this.device_info ).subscribe();
       this.remuneration=false;
       this.service=false;
       this.get_sorted_ads();
+      this.location.go('/linkcollab');
     }
+
+    this.update_meta_data(i);
+
     this.category_index=i;
     this.cd.detectChanges();
     
@@ -306,6 +314,21 @@ export class HomeLinkcollabComponent implements OnInit {
     return;
   }
 
+
+  update_meta_data(i : number) {
+    if( i==0 ) {
+      this.title.setTitle('LinkCollab – Recherche de collaborateurs pour projets éditoriaux');
+      this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour soumettre votre projet auprès des éditeurs ou chercher le partenaire idéal. Recherchez un dessinateur, scénariste, illustrateur, ou auteur." });
+    }
+    if( i==1 ) {
+      this.title.setTitle('Annonces de collaborations bénévoles - LinkCollab');
+      this.meta.updateTag({ name: 'description', content: "Recherchez le collaborateur idéal pour vos projets éditoriaux !" });
+    }
+    else if( i==2 ) {
+      this.title.setTitle('Annonces de collaborations rémunérées - LinkCollab');
+      this.meta.updateTag({ name: 'description', content: "Recherchez le service artistique ou éditorial qui vous conviens le mieux !" });
+    }
+  }
 
   swiper: any;
   @ViewChild("swiperCategories") swiperCategories: ElementRef;

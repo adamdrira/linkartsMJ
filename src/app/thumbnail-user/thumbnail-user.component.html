@@ -18,16 +18,16 @@
         </div>
 
         <div class="cover-picture" >
-            <img *ngIf="display_thumbnail"  [lazyLoad]="cover_picture"  loading="lazy" (load)="load_cover()" [ngClass]="{'invisible':!cover_is_loaded}">
+            <img *ngIf="display_thumbnail"  [lazyLoad]="cover_picture"  loading="lazy" (load)="load_cover()" [ngClass]="{'invisible':!cover_is_loaded}" [alt]="'photo de couverture de '+author_name">
         </div>
 
         <a class="absolute-profile-data" [routerLink]=open_account()>
             <div class="profile-picture" [ngClass]="{'shiny':!pp_is_loaded}">
-                <img [lazyLoad]="profile_picture"  loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                <img [lazyLoad]="profile_picture"  loading="lazy" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}" [alt]="'photo de profil de '+author_name">
             </div>
     
             <div class="profile-name"  *ngIf="display_thumbnail ">
-                <span>{{author_name}}</span>
+                <h2>{{author_name}}</h2>
             </div>
     
 

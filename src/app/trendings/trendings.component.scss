@@ -167,7 +167,7 @@
       box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 
 
-      span {
+      span, h2 {
         display: flex;
         font-size: 14px;
         width: 100%;
@@ -229,7 +229,7 @@
         .image3 {
           background:rgb(32,56,100);
         }
-        span {
+        span, h2 {
           font-weight: 600;
           color: rgb(32,56,100) !important;
         }
@@ -246,7 +246,7 @@
         .image3 {
           background: #f9f9f9;
         }
-        span {
+        span, h2 {
           font-weight: 600;
           color: #f9f9f9 !important;
         }
@@ -442,7 +442,7 @@ mat-spinner {
         .image1,.image2,.image3 {
           height: calc(100% - 70px);
         }
-        span {
+        span, h2 {
           font-size:12px;
           height:22px;
         }
@@ -463,7 +463,7 @@ mat-spinner {
           height: calc(100% - 45px);
           margin: auto auto 0px auto;
         }
-        span {
+        span, h2 {
           font-size:9px;
           height:22px;
         }
