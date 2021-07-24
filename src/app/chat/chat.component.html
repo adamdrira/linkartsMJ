@@ -52,6 +52,18 @@
                 </ng-container>
 
 
+                <button style="position:relative;" (click)="contract();" [@enterAnimation]
+                matTooltip="Contrats"
+                matTooltipClass='linkarts-tooltip'
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="100">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">assignment</mat-icon>
+                    <div class="number-of-notifs contract green" (click)="contract();" *ngIf="show_green_contract_notification">
+                    </div>
+                    <div class="number-of-notifs contract" (click)="contract();" *ngIf="!show_green_contract_notification">
+                    </div>
+                </button>
+
                 <button *ngIf="search_popup_closed && !show_research_results" (click)="search_in_conv();" [@enterAnimation]>
                     <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
                 </button>
@@ -68,6 +80,10 @@
                     </button>
 
                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
+                        <button class="chat-menu-item" mat-menu-item>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">assignment</mat-icon>
+                            <span>Proposer un contrat</span>
+                        </button>
                         <button  class="chat-menu-item" *ngIf="spam!='true' && chat_friend_id>0 && list_of_friends_ids.includes(friend_id)" mat-menu-item  (click)="remove_contact()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
                             <span>Retirer de mes contacts</span>
@@ -94,6 +110,10 @@
                     </button>
 
                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
+                        <button class="chat-menu-item" mat-menu-item>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">assignment</mat-icon>
+                            <span>Proposer un contrat</span>
+                        </button>
                         <button class="chat-menu-item" mat-menu-item (click)="change_profile_picture()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">camera_alt</mat-icon>
                             <span>Modifier la photo de profil</span>

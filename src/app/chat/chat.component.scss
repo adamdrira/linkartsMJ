@@ -203,9 +203,20 @@
                         cursor: pointer;
                         z-index: 10;
 
+                        &.contract {
+                            right: 5px;
+                            top: 5px;
+                        }
+                        &.green {
+                            background-image: linear-gradient(70deg, #33ff00e6, #00c000e6, #1d7400e6);
+                        }
                         @media (max-width: 500px) {
                             right: 5px !important;
                             top: 14px!important;
+                            &.contract {
+                                right: 0px !important;
+                                top: 0px !important;
+                            }
                         }
                        
                     

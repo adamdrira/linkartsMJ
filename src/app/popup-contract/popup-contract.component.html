@@ -1,0 +1,204 @@
+
+
+<button class="close-button" (click)="close_dialog()">
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+</button>
+
+<div class="logo-container" >
+    <img src="../../assets/img/svg/Logo-LA3.svg">
+</div>
+
+<button *ngIf="data.page==0 && page_0_step==1" class="back-button" (click)="step_back();">
+    <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+</button>
+
+<div class="popup-contract">
+
+
+    <ng-container *ngIf="data.page==0">
+        <div class="step-form" *ngIf="page_0_step==0">
+
+            <div class="step-name">
+                <span>Quel contrat désirez-vous proposer ?</span>
+            </div>
+
+            <div class="choice-button" (click)="set_category(0);">
+                <mat-icon [ngClass]="{'really-invisible': !show_icon }">extension</mat-icon>
+                <span>Collaboration bénévole</span>
+            </div>
+            <div class="choice-button" (click)="set_category(1);">
+                <mat-icon [ngClass]="{'really-invisible': !show_icon }">work</mat-icon>
+                <span>Collaboration rémunérée</span>
+            </div>
+            <div class="choice-button" (click)="set_category(2);">
+                <mat-icon [ngClass]="{'really-invisible': !show_icon }">assignment</mat-icon>
+                <span>Contrat de travail</span>
+            </div>
+        </div>
+
+        <div class="step-form" *ngIf="page_0_step==1">
+
+            <div class="step-name">
+                <span>Importez votre contrat</span>
+            </div>
+
+
+            <div class="download-modele">
+                <div class="left-container">
+                    <span class="top">Modèle :</span>
+                    <span class="bottom">
+                        <ng-container *ngIf="category==0">Pour cette collaboration bénévole, </ng-container>
+                        <ng-container *ngIf="category==1">Pour cette collaboration rémunérée, </ng-container>
+                        <ng-container *ngIf="category==2">Pour ce contrat de travail, </ng-container>
+                        veuillez télécharger le modèle ci-joint et le modifier de manière cohérente avant de l'importer.</span>
+                </div>
+                <div class="right-container">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">attach_file</mat-icon>
+                    <span>Télécharger</span>
+                </div>
+            </div>
+
+
+            <div class="dropzone-container">
+                <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone">
+                    
+                    <div class="upload-pdf" *ngIf="!uploaded_file" [@enterAnimation]>
+                        <label>
+                            <div class="validate-upload-button">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }"  class="rotate-icon">attachment</mat-icon>
+                                <span>Importez votre contrat au format PDF</span>
+                    
+                                <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="upload-pdf" *ngIf="uploaded_file" [@enterAnimation]>
+                        <div class="validate-upload-button no-effects">
+                            <mat-icon [ngClass]="{'really-invisible': !show_icon }">description</mat-icon>
+                            <span>{{uploaded_file}}</span>
+                        </div>
+                    </div>
+
+                    <span class="cancel" *ngIf="uploaded_file" (click)="delete_file();">Annuler</span>
+
+                </div>
+            </div>
+
+
+            <div class="form-item height-unset">
+                <div class="cgu-container2">
+                    <mat-slide-toggle [checked]="cgu_accepted" (change)="setCgu( $event )" style="font-weight:bold;">
+                        J’accepte les modalités du contrat ci-dessus dans leur intégralité.
+                    </mat-slide-toggle>
+                </div>
+            </div>
+
+
+            <button class="submit-button" (click)="validate_step(1);">
+                <span *ngIf="!loading_step_1">Suivant</span>
+                <div class="loading-dots" *ngIf="loading_step_1">
+                    &nbsp; <span>.</span><span>.</span><span>.</span>
+                </div>
+            </button>
+
+        </div>
+        
+    </ng-container>
+
+
+
+    <ng-container *ngIf="data.page==1">
+        <div class="step-form">
+
+            <div class="step-name">
+                <span>Votre proposition de contrat</span>
+            </div>
+
+            <div class="contract-text">
+                <span>Le contrat envoyé ci-dessous a pour but d’assurer une atmosphère de sécurité et d’apaisement au sein d’un projet. Veuillez donc lire attentivement la proposition de contrat ci-dessous, et l’accepter s’il elle vous convient, avant d’échanger des informations que vous jugez discrètes.</span>
+                <span>Nous vous rappelons par ailleurs, que tout document envoyé dans la messagerie peut vous servir de preuve contre le plagiat même sans la signature contrat.</span>
+            </div>
+
+            <div class="read-contract" (click)="read_contract()">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">attach_file</mat-icon>
+                <span>Lire</span>
+            </div>
+
+
+            <div class="buttons">
+                <div class="choice-button">
+                    <mat-icon [ngClass]="{'really-invisible': !show_icon }">close</mat-icon>
+                    <span>Refuser</span>
+                </div>
+                <div class="choice-button">
+                    <mat-icon [ngClass]="{'really-invisible': !show_icon }">done_all</mat-icon>
+                    <span>Accepter</span>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+
+
+    <ng-container *ngIf="data.page==2">
+        <div class="step-form">
+
+            <div class="step-name left">
+                <span>Contrat d'engagement</span>
+            </div>
+
+
+            <div class="read-contract" (click)="read_contract()">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">attach_file</mat-icon>
+                <span>Lire le contrat</span>
+            </div>
+
+
+            <div class="step-name left">
+                <span>Liste des signataires</span>
+            </div>
+
+            
+            <a [routerLink]="'/account/'+item.pseudo" (click)="close_dialog()" *ngFor="let item of list_of_members; let i=index" class="subscriber-card">
+                
+                <div class="subscriber">
+                    <div class="user-container">
+
+                            <div class="left-container">
+                                <img src="https://img-0.journaldunet.com/8Lx3YQeOcn4AzbwIH3NzsuWBc38=/1500x/smart/1502e1bca6ce409c87a54d0da9158267/ccmcms-jdn/16511568.png">
+                            </div>
+
+                            <div class="right-container">
+                                <span class="author-name">{{item.name}}
+                                </span>
+                                <span class="user-description">@{{item.pseudo}}</span>
+                            </div>
+
+                    </div>
+                </div>
+
+
+                <!--fonction pour eviter le ahref-->
+                <div class="status break" (click)="stop($event);" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+                    <span>Rompre</span>
+                </div>
+
+                <div *ngIf="item.status=='signed'" class="status subscribe-button" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+                    <span>Signé</span>
+                </div>
+                <div *ngIf="item.status!='signed'" class="status unsubscribe-button" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">access_time</mat-icon>
+                    <span>En attente</span>
+                </div>
+
+            </a>
+
+
+
+        </div>
+    </ng-container>
+
+
+</div>

@@ -14,6 +14,7 @@ import { PopupChatGroupMembersComponent } from '../popup-chat-group-members/popu
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { PopupChatSearchComponent } from '../popup-chat-search/popup-chat-search.component';
+import { PopupContractComponent } from '../popup-contract/popup-contract.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { ResizedEvent } from 'angular-resize-event';
@@ -1551,7 +1552,8 @@ export class ChatComponent implements OnInit  {
           this.list_of_show_pp_left.splice(0,0,false);
           let THIS=this;
           let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-         THIS.list_of_messages_files.splice(0,0,false);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          THIS.list_of_messages_files.splice(0,0,false);
           THIS.list_of_messages_pictures.splice(0,0,url);
           THIS.list_of_messages.splice(0,0,message);
           THIS.list_of_messages_date.splice(0,0,THIS.date_of_message("time",1));
@@ -3968,6 +3970,21 @@ onResized(event: ResizedEvent) {
 
 
 
+
+
+  show_green_contract_notification=false;
+  contract() {
+    
+    const dialogRef = this.dialog.open(PopupContractComponent, {
+      //page 0 : envoyer un contrat
+      //page 1 : répondre à un contrat
+      //page 2 : liste des réponses
+      data: {page:2,},
+      panelClass: "popupContractClass"
+    });
+
+
+  }
 
 }
 
