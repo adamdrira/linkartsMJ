@@ -16,16 +16,16 @@ const pool = new Pool({
   host: 'localhost',
 });
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
-});*/
+});
 
-pool.connect((err, client, release) => {
+/*pool.connect((err, client, release) => {
     if (err) {
       return console.error('Error acquiring client', err.stack)
     }
@@ -35,7 +35,7 @@ pool.connect((err, client, release) => {
         return console.error('Error executing query', err.stack)
       }
     })
-})
+})*/
 
 
 function get_current_user(token){
@@ -112,8 +112,10 @@ function get_current_user(token){
             
           })
         }
-        
+        else{
           generate_favorites();
+        }
+          
         
         
       }
@@ -137,8 +139,8 @@ function get_current_user(token){
             })
             .on("finish", function() {
                 //pour ubuntu  
-                 //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
-                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
+                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
+                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
                 pythonProcess.stderr.pipe(process.stderr);
                 pythonProcess.stdout.on('data', (data) => {
                   //console.log("python res")
@@ -219,12 +221,12 @@ function get_current_user(token){
             send_email_to_users(list_of_users_for_email_final,list_of_rankings)
           }
           let remuneration= '0';
-          if( Number(mm)<4){
+          /*if( Number(mm)<4){
             remuneration="0";
           }
           else if(list_of_users[i] && day==1){
             remuneration= get_remuneration(list_of_users[i].subscribers.length,ranking);
-          }
+          }*/
 
           if(list_of_users[i] && list_of_users[i].gender=='Groupe'){
             finalize_add_to_data(list_of_users[i],i,ranking,remuneration)
@@ -377,8 +379,8 @@ function get_current_user(token){
                 })
   
                function send_email(){
-                  let text=``;
-                  if(day==1 && parseInt(list_of_rankings[i])<=15){
+                  let text=`Vous avez atteint le top 30 des <b>Coups de cœur</b> du jour.`;
+                  /*if(day==1 && parseInt(list_of_rankings[i])<=15){
                     text+=`Vous avez atteint le top 30 des <b>Coups de cœur</b> du jour. Et puisque nous sommes lundi vous allez être rémunéré ! Le montant de cette rémunération est disponible dans la section "rémunération" de votre compte.`
                   }
                   else if(parseInt(list_of_rankings[i])>15){
@@ -386,7 +388,7 @@ function get_current_user(token){
                   }
                   else if(day!=1 && parseInt(list_of_rankings[i])<=15){
                     text+=`Vous avez atteint le top 30 des <b>Coups de cœur</b> du jour. Continuez ainsi afin d'obtenir une rémunération le prochain lundi !`
-                  }
+                  }*/
                   
                   let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
                   mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
@@ -469,11 +471,11 @@ function get_current_user(token){
                     html: mail_to_send, // html body
                 };
           
-                /*transport.sendMail(mailOptions, (error, info) => {
+                transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   }
-              })*/
+                })
   
                }
                 

@@ -15,22 +15,22 @@ const Pool = require('pg').Pool;
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});
+});*/
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
-});*/
+});
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -123,8 +123,8 @@ pool.connect((err, client, release) => {
                             })
                             .on("finish", function() {
                               //pour ubuntu
-                              const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings_preview.py', date]);
-                              //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings_preview.py', date]);
+                              //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings_preview.py', date]);
+                              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings_preview.py', date]);
                               pythonProcess.stderr.pipe(process.stderr);
                               pythonProcess.stdout.on('data', (data) => {
                               });
@@ -230,6 +230,7 @@ pool.connect((err, client, release) => {
             
             
           })
+         
         }
         else{
           call_python()
@@ -282,12 +283,14 @@ pool.connect((err, client, release) => {
                               .on('error', function(e){
                               })
                               .on("finish", function() {
-                                
+                                console.log("after finish")
                                 //pour ubuntu
-                                //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
-                                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
+                                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
+                                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
                                 pythonProcess.stderr.pipe(process.stderr);
                                 pythonProcess.stdout.on('data', (data) => {
+                                  console.log("python res")
+                                  console.log(data.toString())
                                 });
                                 pythonProcess.stdout.on("end", (data) => {
                                   let files = [__dirname + Path1,__dirname + Path2,__dirname + Path3];
@@ -622,13 +625,13 @@ const get_writings_trendings = (request, response) => {
           }).catch(err => {
             	
           }).then(user=>{
-            let remuneration=''
-            if(set_money){
+            let remuneration='0';
+            /*if(set_money){
               remuneration= get_remuneration(user.subscribers.length,ranking);
             }
             else{
               remuneration='0'
-            }
+            }*/
             if(user.gender=='Groupe'){
               finalize_add_to_data(user,i,ranking,remuneration)
             }
@@ -656,13 +659,13 @@ const get_writings_trendings = (request, response) => {
                   }).catch(err => {
               	
             }).then(user=>{
-            let remuneration=''
-            if(set_money){
+            let remuneration='0';
+            /*if(set_money){
               remuneration= get_remuneration(user.subscribers.length,ranking);
             }
             else{
               remuneration='0'
-            }
+            }*/
 
            
             if(user.gender=='Groupe'){
@@ -946,13 +949,13 @@ const get_writings_trendings = (request, response) => {
             	
             		
           }).then(user=>{
-            let remuneration=''
-            if(set_money){
+            let remuneration='0';
+            /*if(set_money){
               remuneration= get_remuneration(user.subscribers.length,ranking);
             }
             else{
               remuneration='0'
-            }
+            }*/
             if(user.gender=='Groupe'){
               finalize_add_to_data(user,i,ranking,remuneration);
             }
@@ -982,13 +985,13 @@ const get_writings_trendings = (request, response) => {
             	
             		
           }).then(user=>{
-            let remuneration=''
-            if(set_money){
+            let remuneration='0';
+            /*if(set_money){
               remuneration= get_remuneration(user.subscribers.length,ranking);
             }
             else{
               remuneration='0'
-            }
+            }*/
             if(user.gender=='Groupe'){
               finalize_add_to_data(user,i,ranking,remuneration);
             }
@@ -1243,13 +1246,13 @@ const get_writings_trendings = (request, response) => {
             	
             		
           }).then(user=>{ 
-            let remuneration=''
-              if(set_money){
+            let remuneration='0';
+              /*if(set_money){
                 remuneration= get_remuneration(user.subscribers.length,ranking);
               }
               else{
                 remuneration='0'
-              }
+              }*/
               if(user.gender='Groupe'){
                 finalize_add_to_data(user,i,ranking,remuneration)
               }
