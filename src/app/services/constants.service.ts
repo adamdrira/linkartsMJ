@@ -37,11 +37,12 @@ export class ConstantsService {
   "Dessin BD", "Dessin Comics", "Dessin Mangas", "Dessin action/combat", 
   "Dessin architectural", "Dessin arme", "Dessin au crayon", "Dessin caricatural", "Dessin colorié", 
   "Dessin d'horreur", "Dessin de mouvements", "Dessin digital", "Dessin encre de Chine", "Dessin enfants", 
-  "Dessin fantaisie", "Dessin feutre", "Dessin gore", "Dessin guerre","Dessin kawai", "Dessin ludique", 
+  "Dessin fantaisie", "Dessin feutre", "Dessin gore", "Dessin guerre","Dessin kawaii", "Dessin ludique", 
   "Dessin lumières & ombres", "Dessin noir & blanc", "Dessin paysage", "Dessin pers. fiction", 
   "Dessin pers. réaliste", "Dessin personnages", "Dessin portrait", "Dessin pour adulte", 
   "Dessin romantique", "Dessin rural", "Dessin réaliste",  "Dessin science-fiction","Dessin sketch", 
-  "Dessin traditionnel", "Dessin urbain", "Dessin vectoriel", "Dessin véhicules",
+  "Dessin story-board","Dessin tablette graphique", "Dessin traditionnel", "Dessin urbain", 
+  "Dessin vectoriel", "Dessin véhicules",
   
   "Écrit ados", "Écrit adulte", "Écrit autobiographique", "Écrit aventure", 
   "Écrit de guerre", "Écrit dramatique", "Écrit éducatif", "Écrit enfants", "Écrit épistolaire", 
@@ -62,15 +63,15 @@ export class ConstantsService {
   "Scénario spirituel", "Scénario sport", "Scénario suspens", "Scénario voyage", "Scénario western", 
   
   
-  "Software Clip Studio Paint", "Software Adobe", "Software Adobe After Effects", 
-  "Software Adobe Creative Cloud tools", "Software Adobe Illustrator", "Software Adobe Photoshop", 
-  "Software Astute Phantasm", "Software IOS", "Software Linux", "Software Microsoft Office", 
-  "Software Procreate", "Software Ron’s Brushes", "Software Windows", "Story-board","Tablette graphique"]
+  "Logiciel Adobe", "Logiciel Adobe After Effects","Logiciel Adobe Creative Cloud tools", 
+  "Logiciel Adobe Illustrator", "Logiciel Adobe Photoshop", "Logiciel Astute Phantasm", 
+  "Logiciel Clip Studio Paint", "Logiciel IOS", "Logiciel Linux", "Logiciel Microsoft Office", "Logiciel Paint",
+  "Logiciel Procreate", "Logiciel Ron’s Brushes", "Logiciel Windows",]
 
   list_of_genres=["Action","Actualité","Ados","Adultes","Animalié","Art","Aventure","Autobiographie","BD",
   "Caricatural","Comics","Combats","Drame","Educatif","Enigmatique","Enfants","Epique","Epistolaire",
   "Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Historique","Horreur","Humoristique",
-  "Journalisme","Kawai","Ludique","Mangas","Mystère","Nouvelles","Pensées","Philosophie","Poésie","Polar","Policier",
+  "Journalisme","Kawaii","Ludique","Mangas","Mystère","Nouvelles","Pensées","Philosophie","Poésie","Polar","Policier",
   "Réaliste","Réflexions","Religion","Romans","Romantique","Satirique","Science fiction","Seinen","Shojo",
   "Shônen","Sociologie","Spatial","Spiritualité","Sport","Survie","Thriller","Voyage","Webtoon","Western"]
 
