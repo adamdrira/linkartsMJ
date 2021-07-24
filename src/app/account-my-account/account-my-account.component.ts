@@ -2191,13 +2191,13 @@ export class AccountMyAccountComponent implements OnInit {
       else{
         if(this.type_of_account.includes('dit')){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Cette option est actuellement indisponible. Elle sera disponible d'ici peu ! Merci de réessayer ultérieurement."},
+            data: {showChoice:false, text:"Vous n'avez aucune rémunération à percevoir pour le moment."},
             panelClass: "popupConfirmationClass",
           });
         }
         else if(r[0].reason=="money"){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Cette option n'est pas disponible pour le moment. Votre compte doit avoir été créé il y a au moins 3 mois"},
+            data: {showChoice:false, text:"Vous n'avez aucune rémunération à percevoir pour le moment."},
             panelClass: "popupConfirmationClass",
           });
         }
@@ -2234,7 +2234,7 @@ export class AccountMyAccountComponent implements OnInit {
   
   popup_message() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"La rémunération n'est pour le moment pas active. Tout gain généré avant la date d'activation ne sera pas récupérable et ne vous sert que de représentatif de vos gains potentiels. La date de début d'activation des gains est actuellement fixée au 15 septembre 2021, mais peut évoluer. Nous vous tiendront informés un mois au préalable."},
+      data: {showChoice:false, text:"Nous réalisons régulièrement des concours d'une semaine. Durant chacun des jours de cette semaine, une rémunération est attribuée à chaque artiste, pour chacune de ses œuvres classées dans le top 15 des tendances, en fonction de sa position dans le classement."},
       panelClass: "popupConfirmationClass",
     });
   }

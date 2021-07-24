@@ -6,13 +6,12 @@
         ?
         <div class="information" >
             <div class="first-text">
-               
-                <span >  <img src='../../assets/img/tuto-logos/tuto-trendings.svg'>C'est ici que se trouve la liste des meilleures œuvres du jour pour chaque catégorie ! Seules les œuvres monétisées sont autorisées à apparaitre dans ce classement.
+                <span >  <img src='../../assets/img/tuto-logos/tuto-trendings.svg' alt="logo linkarts"> C'est ici que se trouve la liste des meilleures œuvres du jour pour chaque catégorie ! Seules les œuvres monétisées sont autorisées à apparaitre dans ce classement.
                 </span>
             </div>
             
             <div class="second-text">
-                <span>  <img src='../../assets/img/tuto-logos/tuto-euro.svg'>Une rémunération est attribuée à chaque artiste, pour chacune de ses œuvres classées dans le top 15 des tendances, en fonction de son nombre d'abonnés et de sa position dans le classement. 
+                <span>  <img src='../../assets/img/tuto-logos/tuto-euro.svg'  alt="logo linkarts">Nous réalisons régulièrement des concours d'une semaine. Durant chacun des jours de cette semaine, une rémunération est attribuée à chaque artiste, pour chacune de ses œuvres classées dans le top 15 des tendances, en fonction de sa position dans le classement.
                 </span>
             </div>
         </div>
@@ -38,6 +37,15 @@
 </div>
 
 <div class="horizontal-bar" *ngIf="status" [@enterFromTop]></div>
+
+<div class="concours">
+    <img alt="logo linkarts" src='../../assets/img/svg/fireworks.svg'[@enterAnimation]>
+    <img alt="logo linkarts" src='../../assets/img/tuto-logos/tuto-books.svg' style="margin-left: 5px;" [@enterAnimation]>
+    <span [@enterAnimation] >Prochain concours : du 15 octobre au 22 octobre</span>
+    <img alt="logo linkarts" src='../../assets/img/tuto-logos/tuto-books.svg' style="margin-right: 5px;" [@enterAnimation]>
+    <img alt="logo linkarts" src='../../assets/img/svg/fireworks.svg' [@enterAnimation]>
+
+</div>
 
 <div class="trendings-global-container">
         

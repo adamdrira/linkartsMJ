@@ -848,6 +848,18 @@
                     </div>
 
                     <div class="link-title">
+                        <span>Youtube</span>
+                    </div>
+                    <div class="form-item" style="margin-bottom: 5px;">
+                        <mat-form-field floatLabel='never'>
+                            <mat-label>https://www.youtube.com/MonPseudo</mat-label>
+                            <input matInput formControlName="youtube" (input)="normalize_input(registerForm5, 'youtube')" autocomplete="off" maxLength="100" >
+                            <mat-error *ngIf="registerForm5.controls['youtube'].invalid ">Veuillez saisir un lien valide
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="link-title">
                         <span>Autre site</span>
                     </div>
                     <div class="form-item" style="margin-bottom: 5px;">

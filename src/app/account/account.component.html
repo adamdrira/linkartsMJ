@@ -590,6 +590,7 @@
                                 </div>
                             </div>
 
+                            
 
                             <div class="block" *ngIf="type_of_account.includes('dit') && list_of_artworks_retrieved && ((mode_visiteur && list_of_artworks.length > 0) || !mode_visiteur)">
                                 <div class="top">
@@ -862,7 +863,7 @@
                             </div>
 
 
-                            <ng-container *ngIf="!type_of_account.includes('dit')">
+                            <ng-container *ngIf="!type_of_account.includes('dit')" >
                                 <div class="block" *ngIf="emphasized_artwork_added">
                                     <div class="top">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">stars</mat-icon>
@@ -907,7 +908,120 @@
                                 </div>
                             </ng-container>
 
-                            
+                            <!-- nouveauté -->
+                            <div class="block" *ngIf="!type_of_account.includes('Fan')">
+                                <div class="top">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
+                                    <h3 *ngIf="!type_of_account.includes('dit') ">Mes nouveautés</h3>
+                                    <h3 *ngIf="type_of_account.includes('dit')">Nos nouveautés</h3>
+
+                                    <a [routerLink]=get_add_artwork_link() class="right-button" *ngIf="!mode_visiteur" >
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                                        <span>Publier une œuvre</span>
+                                    </a>
+                                </div>
+                                <div class="bottom">
+                                    <div class="add-artwork-button" *ngIf="no_new_contents && mode_visiteur">
+                                        <span class="visitor" *ngIf="!type_of_account.includes('dit') ">Aucune œuvre disponible</span>
+                                        <span class="visitor" *ngIf="type_of_account.includes('dit') ">Aucune extrait d'œuvre disponible</span>
+                                    </div>
+                                    <div *ngIf="display_new_comic_contents" class="bd-container no-max-width" >
+                                        <div class="artwork-type-title" (click)="open_from_news(0);scroll(target)" #target>
+                                            <span>Bandes dessinées</span>
+                                        </div>
+                                        
+                                        <div #myScrollContainer class="container-account container-comics container-small-screen-news new-comics">
+                
+                                            <div (click)="click_absolute_arrow1(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow" style="top: 49% !important;">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                            </div>
+                
+                                            <div *ngFor="let item of new_comic_contents.slice(0,number_of_new_contents_to_show),let i=index" >
+                                                <app-thumbnail-comics 
+                                                *ngIf="item.chaptersnumber == null" 
+                                                [item]=item 
+                                                [width]=width_for_news
+                                                [myScrollContainer]=myScrollContainer
+                                                format='one-shot' 
+                                                now_in_seconds={{now_in_seconds}}
+                                                ></app-thumbnail-comics> 
+                                                <app-thumbnail-comics 
+                                                *ngIf="item.chaptersnumber>=0"
+                                                [item]=item 
+                                                [myScrollContainer]=myScrollContainer
+                                                [width]=width_for_news
+                                                format='serie' 
+                                                now_in_seconds={{now_in_seconds}}
+                                                ></app-thumbnail-comics>
+                                            </div>
+                
+                                            <div (click)="click_absolute_arrow1(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow" style="top: 49% !important;">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    <div *ngIf="display_new_drawing_contents" class="bd-container no-max-width" >
+                                        <div class="artwork-type-title"  (click)="open_from_news(1);scroll(target)" #target>
+                                            <span>Dessins</span>
+                                        </div>
+                
+                                        <div #myScrollContainer class="container-account container-drawings newDrawings container-small-screen-news ">
+                
+                                            <div (click)="click_absolute_arrow2(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                            </div>
+                
+                                            <div *ngFor="let item of new_drawing_contents.slice(0,number_of_new_contents_to_show)" class="drawing-container" >
+                                                <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                                                    [item]=item
+                                                    for_news="yes"
+                                                    format='one-shot'
+                                                    [width]=width_for_news
+                                                    now_in_seconds={{now_in_seconds}}
+                                                ></app-thumbnail-drawing>
+                                                <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                                                    [item]=item 
+                                                    [width]=width_for_news
+                                                    for_news="yes"
+                                                    format='artbook'
+                                                    now_in_seconds={{now_in_seconds}}
+                                                ></app-thumbnail-drawing>
+                                            </div>
+                
+                                            <div (click)="click_absolute_arrow2(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    <div *ngIf="display_new_writing_contents" class="bd-container no-max-width">
+                                        <div class="artwork-type-title"  (click)="open_from_news(2);scroll(target)" #target>
+                                            <span>Écrits</span>
+                                        </div>
+                
+                                        <div #myScrollContainer class="container-account container-writings newWritings container-small-screen-news ">
+                
+                                            <div (click)="click_absolute_arrow3(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow" style="top: 49% !important;">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                            </div>
+                                            <div *ngFor="let item of new_writing_contents.slice(0,number_of_new_contents_to_show)" >
+                                                <app-thumbnail-writing
+                                                [item]=item
+                                                [myScrollContainer]=myScrollContainer
+                                                [width]=width_for_news
+                                                now_in_seconds={{now_in_seconds}}
+                                                ></app-thumbnail-writing>
+                                            </div>
+                                            
+                                            <div (click)="click_absolute_arrow3(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow" style="top: 49% !important;">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
 
                         </div>
 
@@ -1084,6 +1198,14 @@
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Pinterest</span>
                                         </a>
+                                        <a [href]="twitter" target="_blank" class="network other" *ngIf="twitter">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Twitter</span>
+                                        </a>
+                                        <a [href]="youtube" target="_blank" class="network other" *ngIf="youtube">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Youtube</span>
+                                        </a>
                                         <a [href]="deviantart" target="_blank" class="network other" *ngIf="deviantart">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Deviantart</span>
@@ -1127,22 +1249,35 @@
 
                                     <ng-container *ngIf="!( mode_visiteur && !email_about && !phone_about )">
 
-                                        <div class="block-info-contact" *ngIf="email_about">
+                                        <div class="block-info-contact" *ngIf="(email_about && !mode_visiteur) || (mode_visiteur && email_about && visitor_type_of_account.includes('dit') && visitor_certified)">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
-                                            <span>{{email_about}}</span>
+                                            <span matTooltip="Visible uniquement par les éditeurs certifiés" 
+                                            matTooltipClass='linkarts-tooltip' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">{{email_about}}</span>
                                         </div>
                                         <div class="block-info-contact" *ngIf="!email_about && !mode_visiteur">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
-                                            <span>Aucun e-mail ajouté</span>
+                                            <span matTooltip="Visible uniquement par les éditeurs certifiés" 
+                                            matTooltipClass='linkarts-tooltip' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">Aucun e-mail ajouté</span>
                                         </div>
 
-                                        <div class="block-info-contact" *ngIf="phone_about">
+                                        <div class="block-info-contact" *ngIf="(phone_about && !mode_visiteur) || (mode_visiteur && phone_about && visitor_type_of_account.includes('dit') && visitor_certified) " >
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">local_phone</mat-icon>
-                                            <span>{{phone_about}}</span>
+                                            <span
+                                            matTooltip="Visible uniquement par les éditeurs certifiés" 
+                                            matTooltipClass='linkarts-tooltip' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">{{phone_about}}</span>
                                         </div>
                                         <div class="block-info-contact" *ngIf="!phone_about && !mode_visiteur">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">local_phone</mat-icon>
-                                            <span>Aucun numéro ajouté</span>
+                                            <span matTooltip="Visible uniquement par les éditeurs certifiés" 
+                                            matTooltipClass='linkarts-tooltip' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">Aucun numéro ajouté</span>
                                         </div>
 
                                         <div class="add-skills" *ngIf="!mode_visiteur" (click)="open_section(6,true,6);">
@@ -1163,166 +1298,6 @@
                     </div>
 
 
-                    <ng-container *ngIf="!type_of_account.includes('dit')">
-                        <!--NOUVELLES OEUVRES-->
-                        <ng-container *ngIf="!new_contents_added">
-        
-                            <div class="account-title medium-icon">
-                                <span>
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
-                                    Nouveautés
-                                </span>
-                            </div>
-        
-                            <div *ngFor="let item of categories_array; let j=index">
-                                <div class="category">
-                                    <div class="category-title shiny"></div>
-                                </div>
-                                <div  *ngIf="j==0" class="container-skeletons d-flex flex-wrap skeleton" [@enterAnimation]>
-                                    <ng-container *ngFor="let item of skeleton_array; let i = index">
-                                        <app-thumbnail-skeleton class="thumbnail-component-container"
-                                            *ngIf="number_of_new_contents_to_show>i"
-                                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                                            type_of_skeleton="comic"></app-thumbnail-skeleton>
-                                    </ng-container>
-                                </div>
-        
-                                <div  *ngIf="j==1"  class="container-skeletons d-flex flex-wrap skeleton"
-                                    [@enterAnimation]>
-                                    <ng-container *ngFor="let item of skeleton_array; let i = index">
-                                        <app-thumbnail-skeleton class="thumbnail-component-container"
-                                            *ngIf="number_of_new_contents_to_show>i"
-                                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                                            type_of_skeleton="new-drawing"></app-thumbnail-skeleton>
-                                    </ng-container>
-                                </div>
-        
-                                <div *ngIf="j==2" class="container-skeletons d-flex flex-wrap skeleton"
-                                    [@enterAnimation]>
-                                    <ng-container *ngFor="let item of skeleton_array; let i = index">
-                                        <app-thumbnail-skeleton class="thumbnail-component-container"
-                                            *ngIf="number_of_new_contents_to_show>i"
-                                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                                            type_of_skeleton="writing"></app-thumbnail-skeleton>
-                                    </ng-container>
-                                </div>
-                            
-                            
-                            </div>
-        
-                        </ng-container >
-                        <ng-container *ngIf="new_contents_added && !no_new_contents">
-        
-                            <div class="account-title medium-icon">
-                                <span>
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
-                                    Nouveautés
-                                </span>
-                            </div>
-        
-                            <div class="add-artwork-button" *ngIf="no_new_contents && mode_visiteur">
-                                <span class="visitor">Aucune œuvre disponible</span>
-                            </div>
-        
-                            <div *ngIf="display_new_comic_contents" class="bd-container no-max-width" >
-                                <div class="artwork-type-title" (click)="open_from_news(0);scroll(target)" #target>
-                                    <span>Bandes dessinées</span>
-                                </div>
-                                
-                                <div #myScrollContainer class="container-account container-comics container-small-screen new-comics">
-        
-                                    <div (click)="click_absolute_arrow1(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow" style="top: 49% !important;">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
-                                    </div>
-        
-                                    <div *ngFor="let item of new_comic_contents.slice(0,number_of_new_contents_to_show),let i=index" >
-                                        <app-thumbnail-comics 
-                                        *ngIf="item.chaptersnumber == null" 
-                                        [item]=item 
-                                        [width]=width
-                                        [myScrollContainer]=myScrollContainer
-                                        format='one-shot' 
-                                        now_in_seconds={{now_in_seconds}}
-                                        ></app-thumbnail-comics> 
-                                        <app-thumbnail-comics 
-                                        *ngIf="item.chaptersnumber>=0"
-                                        [item]=item 
-                                        [myScrollContainer]=myScrollContainer
-                                        [width]=width
-                                        format='serie' 
-                                        now_in_seconds={{now_in_seconds}}
-                                        ></app-thumbnail-comics>
-                                    </div>
-        
-                                    <div (click)="click_absolute_arrow1(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow" style="top: 49% !important;">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
-                                    </div>
-                                </div>
-                            </div>
-        
-                            <div *ngIf="display_new_drawing_contents" class="bd-container no-max-width" >
-                                <div class="artwork-type-title"  (click)="open_from_news(1);scroll(target)" #target>
-                                    <span>Dessins</span>
-                                </div>
-        
-                                <div #myScrollContainer class="container-account container-drawings newDrawings container-small-screen ">
-        
-                                    <div (click)="click_absolute_arrow2(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
-                                    </div>
-        
-                                    <div *ngFor="let item of new_drawing_contents.slice(0,number_of_new_contents_to_show)" class="drawing-container" >
-                                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
-                                            [item]=item
-                                            for_news="yes"
-                                            format='one-shot'
-                                            [width]=width
-                                            now_in_seconds={{now_in_seconds}}
-                                        ></app-thumbnail-drawing>
-                                        <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
-                                            [item]=item 
-                                            [width]=width
-                                            for_news="yes"
-                                            format='artbook'
-                                            now_in_seconds={{now_in_seconds}}
-                                        ></app-thumbnail-drawing>
-                                    </div>
-        
-                                    <div (click)="click_absolute_arrow2(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
-                                    </div>
-                                </div>
-                            </div>
-        
-                            <div *ngIf="display_new_writing_contents" class="bd-container no-max-width">
-                                <div class="artwork-type-title"  (click)="open_from_news(2);scroll(target)" #target>
-                                    <span>Écrits</span>
-                                </div>
-        
-                                <div #myScrollContainer class="container-account container-writings newWritings container-small-screen ">
-        
-                                    <div (click)="click_absolute_arrow3(myScrollContainer,'left');" *ngIf="myScrollContainer.scrollLeft > 100" class="left-absolute-arrow" style="top: 49% !important;">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
-                                    </div>
-                                    <div *ngFor="let item of new_writing_contents.slice(0,number_of_new_contents_to_show)" >
-                                        <app-thumbnail-writing
-                                        [item]=item
-                                        [myScrollContainer]=myScrollContainer
-                                        [width]=width
-                                        now_in_seconds={{now_in_seconds}}
-                                        ></app-thumbnail-writing>
-                                    </div>
-                                    
-                                    <div (click)="click_absolute_arrow3(myScrollContainer,'right');" *ngIf="-100 > myScrollContainer.scrollLeft + myScrollContainer.offsetWidth - myScrollContainer.scrollWidth " class="right-absolute-arrow" style="top: 49% !important;">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-container>
-                    </ng-container>
-
-                    
-    
                 
                 </div>
                 <!--********************************************FIN PAGE ACCUEIL********************************************-->

@@ -661,6 +661,33 @@
         
                     </ng-container>
 
+                    <ng-container *ngIf="(visitor_mode && !(youtube==undefined || youtube=='')) || !visitor_mode">
+                        <div class="form-title">
+                            <span class="no-margin-right" [@enterAnimation]>Lien Youtube</span>
+        
+                        </div>
+                        
+                        <div class="form-item" *ngIf="!registerForm2_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'
+                            [matTooltip]="( youtube==undefined || youtube=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="100">
+                                <mat-label *ngIf="!( youtube==undefined || youtube=='' )">{{youtube}}</mat-label>
+                                <mat-label *ngIf=" ( youtube==undefined || youtube=='' )"><i>Non renseigné</i></mat-label>
+                                <input matInput readonly>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label class="label-to-set">https://www.youtube.com/MonPseudo</mat-label>
+                                <input matInput formControlName="youtube" autocomplete="off" (input)="normalize_input(registerForm2, 'youtube');">
+                                <mat-error *ngIf="registerForm2.controls['youtube'].invalid ">Veuillez saisir un lien valide
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+        
+                    </ng-container>
 
                     <ng-container *ngIf="(visitor_mode && !(website==undefined || website=='')) || !visitor_mode">
                         <div class="form-title">

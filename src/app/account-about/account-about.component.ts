@@ -206,6 +206,7 @@ export class AccountAboutComponent implements OnInit {
   instagram: String;
   pinterest: String;
   twitter: String;
+  youtube: String;
   deviantart: String;
   artstation: String;
   website: String;
@@ -293,6 +294,7 @@ export class AccountAboutComponent implements OnInit {
         this.artstation=this.links.artstation;
         this.pinterest=this.links.pinterest;
         this.twitter=this.links.twitter;
+        this.youtube=this.links.youtube;
         this.deviantart=this.links.deviantart;
         this.other_website=this.links.other_website;
       }
@@ -2907,6 +2909,11 @@ get_projects_stats(){
           Validators.pattern(pattern("link")),
         ]),
       ],
+      youtube: [this.youtube, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
       deviantart: [this.deviantart, 
         Validators.compose([
           Validators.pattern(pattern("link")),
@@ -2968,7 +2975,8 @@ get_projects_stats(){
     let links=[{"facebook":this.registerForm2.value.facebook,"instagram":this.registerForm2.value.instagram,
     "artstation":this.registerForm2.value.artstation,"website":this.registerForm2.value.website,
     "deviantart":this.registerForm2.value.deviantart,"pinterest":this.registerForm2.value.pinterest,
-    "other_website":this.registerForm2.value.other_website,"twitter":this.registerForm2.value.twitter
+    "other_website":this.registerForm2.value.other_website,"twitter":this.registerForm2.value.twitter,
+    "youtube":this.registerForm2.value.youtube,
     }]
 
     this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).subscribe(l=>{
@@ -2981,6 +2989,7 @@ get_projects_stats(){
       this.artstation=links[0].artstation;
       this.pinterest=links[0].pinterest;
       this.twitter=links[0].twitter;
+      this.youtube=links[0].youtube;
       this.deviantart=links[0].deviantart;
       this.other_website=links[0].other_website;
       this.loading_validation_form_2=false;

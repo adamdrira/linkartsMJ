@@ -311,6 +311,11 @@ export class SignupComponent implements OnInit {
           Validators.pattern(pattern("link")),
         ]),
       ],
+      youtube: ['', 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
       website: ['', 
         Validators.compose([
           Validators.pattern(pattern("link")),
@@ -1033,7 +1038,8 @@ export class SignupComponent implements OnInit {
         let links=[{"facebook":this.registerForm5.value.facebook,"instagram":this.registerForm5.value.instagram,
         "artstation":this.registerForm5.value.artstation,"website":this.registerForm5.value.website,
         "deviantart":this.registerForm5.value.deviantart,"pinterest":this.registerForm5.value.pinterest,
-        "other_website":this.registerForm5.value.other_website,"twitter":this.registerForm5.value.twitter
+        "other_website":this.registerForm5.value.other_website,"twitter":this.registerForm5.value.twitter,
+        "youtube":this.registerForm5.value.youtube
         }]
         if(this.loading_signup){
           return

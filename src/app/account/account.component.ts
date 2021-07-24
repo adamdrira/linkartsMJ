@@ -173,6 +173,12 @@ export class AccountComponent implements OnInit {
         this.show_selector_for_album=false;
       }
       this.width=main_width;
+      let account_bottom=this.main_container.nativeElement.offsetWidth*0.95;
+      let account_d_f=(account_bottom*0.90)<1150?account_bottom*0.90:1150;
+      let account_d_f_l=(window.innerWidth<1000)?(account_d_f):(window.innerWidth<1200)?(account_d_f-220):(account_d_f-300);
+      let block_width=account_d_f_l- 20;
+      this.width_for_news= block_width*0.95
+
       this.update_background_position(this.opened_section);
       this.update_number_of_comics_to_show();
       if(this.list_visibility_albums_drawings){
@@ -188,6 +194,7 @@ export class AccountComponent implements OnInit {
 
   for_reset_password=false;
   width:number;
+  width_for_news:number;
   new_contents_loading=false;
   number_of_ads_to_show=10;
   number_of_ads_responses_to_show=10;
@@ -445,13 +452,6 @@ export class AccountComponent implements OnInit {
   device_info='';
   ngOnInit()  {
 
-    try {
-      throw new Error('An error occurred');
-    }
-    catch (error) {
-    console.error('Here is the error message', error);
-    }
-    console.log('Execution continues');
     
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
    
@@ -782,6 +782,7 @@ export class AccountComponent implements OnInit {
           this.artstation=this.links.artstation;
           this.pinterest=this.links.pinterest;
           this.twitter=this.links.twitter;
+          this.youtube=this.links.youtube;
           this.deviantart=this.links.deviantart;
           this.other_website=this.links.other_website;
         }
@@ -1621,7 +1622,7 @@ export class AccountComponent implements OnInit {
   }
 
   update_new_contents() {
-    let width=(window.innerWidth<600)?this.main_container.nativeElement.offsetWidth*0.95:(this.main_container.nativeElement.offsetWidth<1700)?this.main_container.nativeElement.offsetWidth*0.95*0.95:1700*0.95;
+    let width=this.width_for_news;
     if(width>0){
       let n=Math.floor(width/250);
       if(n>3){
@@ -1630,7 +1631,6 @@ export class AccountComponent implements OnInit {
       else{
         this.number_of_new_contents_to_show = 6;
       }
-      
       this.cd.detectChanges();
     }
 
@@ -1708,7 +1708,6 @@ export class AccountComponent implements OnInit {
   
   @ViewChild("main_container") main_container:ElementRef;
 
-
   
   show_icon=false;
   scrollobs:any;
@@ -1727,6 +1726,13 @@ export class AccountComponent implements OnInit {
         this.show_selector_for_album=false;
       }
       this.width=main_width;
+
+      let account_bottom=this.main_container.nativeElement.offsetWidth*0.95;
+      let account_d_f=(account_bottom*0.90)<1150?account_bottom*0.90:1150;
+      let account_d_f_l=(window.innerWidth<1000)?(account_d_f):(window.innerWidth<1200)?(account_d_f-220):(account_d_f-300);
+      let block_width=account_d_f_l- 20;
+      this.width_for_news= block_width*0.95
+
       this.update_new_contents();
       this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
         this.showEditCoverPic = false;
@@ -2955,15 +2961,15 @@ report(){
 
   click_absolute_arrow1(e:any,s:string) {
 
-    var n = Math.floor( ($('.container-comics.container-small-screen.new-comics').scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
+    var n = Math.floor( ($('.container-comics.container-small-screen-news.new-comics').scrollLeft()+1) / (this.width_for_news / Math.floor(this.width_for_news/250)) );
     if(s=='right') {
-      $('.container-comics.container-small-screen.new-comics').animate({
-        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      $('.container-comics.container-small-screen-news.new-comics').animate({
+        scrollLeft: (n+1) * this.width_for_news / Math.floor(this.width_for_news/250)
       }, 300, 'swing');
     }
     else if(s=='left') {
-      $('.container-comics.container-small-screen.new-comics').animate({
-        scrollLeft: (n-1) * this.width / Math.floor(this.width/250)
+      $('.container-comics.container-small-screen-news.new-comics').animate({
+        scrollLeft: (n-1) * this.width_for_news / Math.floor(this.width_for_news/250)
       }, 300, 'swing');
     }
 
@@ -2971,30 +2977,30 @@ report(){
 
   click_absolute_arrow2(e:any,s:string) {
 
-    var n = Math.floor( ($('.container-account.container-drawings.newDrawings.container-small-screen').scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
+    var n = Math.floor( ($('.container-account.container-drawings.newDrawings.container-small-screen-news').scrollLeft()+1) / (this.width_for_news / Math.floor(this.width_for_news/250)) );
     if(s=='right') {
-      $('.container-account.container-drawings.newDrawings.container-small-screen').animate({
-        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      $('.container-account.container-drawings.newDrawings.container-small-screen-news').animate({
+        scrollLeft: (n+1) * this.width_for_news / Math.floor(this.width_for_news/250)
       }, 300, 'swing');
     }
     else if(s=='left') {
-      $('.container-account.container-drawings.newDrawings.container-small-screen').animate({
-        scrollLeft: (n-1) * this.width / Math.floor(this.width/250)
+      $('.container-account.container-drawings.newDrawings.container-small-screen-news').animate({
+        scrollLeft: (n-1) * this.width_for_news / Math.floor(this.width_for_news/250)
       }, 300, 'swing');
     }
   }
 
   click_absolute_arrow3(e:any,s:string) {
-    var n = Math.floor( ($('.container-account.container-writings.newWritings.container-small-screen').scrollLeft()+1) / (this.width / Math.floor(this.width/250)) );
+    var n = Math.floor( ($('.container-account.container-writings.newWritings.container-small-screen-news').scrollLeft()+1) / (this.width_for_news / Math.floor(this.width_for_news/250)) );
 
     if(s=='right') {
-      $('.container-account.container-writings.newWritings.container-small-screen').animate({
-        scrollLeft: (n+1) * this.width / Math.floor(this.width/250)
+      $('.container-account.container-writings.newWritings.container-small-screen-news').animate({
+        scrollLeft: (n+1) * this.width_for_news / Math.floor(this.width_for_news/250)
       }, 300, 'swing');
     }
     else if(s=='left') {
-      $('.container-account.container-writings.newWritings.container-small-screen').animate({
-        scrollLeft: (n-1) * this.width / Math.floor(this.width/250)
+      $('.container-account.container-writings.newWritings.container-small-screen-news').animate({
+        scrollLeft: (n-1) * this.width_for_news / Math.floor(this.width_for_news/250)
       }, 300, 'swing');
     }
   }
@@ -3115,6 +3121,7 @@ report(){
   instagram: string;
   pinterest: string;
   twitter: string;
+  youtube:string;
   deviantart: string;
   artstation: string;
   website: string;

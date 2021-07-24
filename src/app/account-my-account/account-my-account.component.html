@@ -401,7 +401,7 @@
             </div>
         </div>
 
-        <div *ngIf="show_group_managment && gender!='Groupe'">
+        <!--<div *ngIf="show_group_managment && gender!='Groupe'">
             <div class="account-title-container">
                 <div class="title">
                     <span>Gestion des groupes</span>
@@ -418,7 +418,7 @@
                    
                 </div>
     
-                <!--<ng-container [@enterAnimation]>
+                <ng-container [@enterAnimation]>
                     <button class="validate-form-button" 
                     (click)="create_a_group()"
                     [@enterAnimation]>
@@ -426,7 +426,7 @@
                         <span *ngIf="!user_is_in_a_group"  >Créer un groupe</span>
                         <span *ngIf="user_is_in_a_group"  >Créer un nouveau groupe</span>
                     </button>
-                </ng-container>-->
+                </ng-container>
                
                 <div [formGroup]="registerForm2" *ngIf="loading_add_artist" [@enterAnimation]> 
 
@@ -601,24 +601,15 @@
         </div>
 
     
-        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-        <!--!!!!!!!!!!!!!A FAIRE!!!!!!!!!!!!!!!!!-->
-        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
         <div class="category-container" *ngIf="show_list_of_members && gender=='Groupe'">
             
             
             <div class="account-title-container">
-                <!--TITRE + BOUTON EDITER/CACHER-->
                 <div class="title">
                     <span> Membres du groupe</span>
                 </div>
             </div>
 
-            <!--<div class="sub-category-title">
-                <span class="title">
-                    Membres du groupe
-                </span>
-            </div>-->
             <div class="account-form-container" [@enterAnimation]>
 
                     <div class="group-container" *ngFor="let group of list_of_groups_names; let i=index" >
@@ -689,7 +680,7 @@
                     </div>
             </div>
             
-        </div>
+        </div>-->
 
 
     </div>
@@ -871,7 +862,7 @@
 
 
 
-        <div class="stats-container "  [ngClass]="{'really-invisible':!user_is_in_a_group }" *ngIf="type_of_account.includes('Artiste')">
+        <!--<div class="stats-container "  [ngClass]="{'really-invisible':!user_is_in_a_group }" *ngIf="type_of_account.includes('Artiste')">
             
             <div class="account-title-container">
                 <div class="title">
@@ -958,10 +949,10 @@
 
 
             </div>
-        </div>
+        </div>-->
 
 
-        <div class="stats-container " *ngIf="concerned_by_favorites && type_of_account.includes('Artiste')">
+        <!--<div class="stats-container " *ngIf="concerned_by_favorites && type_of_account.includes('Artiste')">
             
             <div class="account-title-container">
                 <div class="title">
@@ -1080,7 +1071,7 @@
 
 
             </div>
-        </div>
+        </div>-->
 
 
         <div class="stats-container " >
@@ -1109,13 +1100,13 @@
                     <span>Me rémunérer</span>
                 </button>
                
-                <div class="no-data-container" *ngIf="type_of_account.includes('Artiste')">
+                <!--<div class="no-data-container" *ngIf="type_of_account.includes('Artiste')">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">warning</mat-icon>
                     <span>
                         La rémunération est actuellement indisponible.&nbsp;
                     </span>
                     <span class="with-animation" (click)="popup_message();">En savoir plus</span>
-                </div>
+                </div>-->
 
 
             </div>
