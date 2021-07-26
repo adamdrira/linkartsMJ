@@ -78,6 +78,7 @@ export class HomeLinkartsComponent implements OnInit {
     
   
   category_index:number = -1;
+  category_index_mat_option:number=-1;
   type_of_profile_retrieved=false;
   type_of_profile:string="visitor";
   current_user:any;
@@ -108,6 +109,7 @@ export class HomeLinkartsComponent implements OnInit {
         
       this.change_profile_number++;
       this.category_index = this.route.snapshot.data['category'];
+      this.category_index_mat_option=this.category_index;
 
       this.update_meta_data(this.category_index);
 
@@ -221,7 +223,7 @@ export class HomeLinkartsComponent implements OnInit {
   top_artists_comic=[];
   top_artists_drawing=[];
   top_artists_writing=[];
- 
+  
   open_category(i : number) {
 
     if(this.category_index==i){
@@ -229,29 +231,29 @@ export class HomeLinkartsComponent implements OnInit {
     }
 
     this.allow_sub=false;
+    this.category_index = i;
+    this.category_index_mat_option=i;
     if( i==0 ) {
       if(this.categories_to_load[2]){
         this.allow_sub=true;
       }
-      this.category_index = 0;
+      
       this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).subscribe();
       this.location.go('/home/recommendations');
     }
     else if( i==1 ) {
-      this.category_index = 1;
       this.navbar.add_page_visited_to_history(`/home/trendings`,this.device_info).subscribe();
       this.location.go('/home/trendings')
     }
     else if( i==2 ) {
-      this.category_index = 2;
       this.navbar.add_page_visited_to_history(`/subscribings`,this.device_info).subscribe();
       this.location.go('/home/subscribings')
     }
     else if( i==3 ) {
-      this.category_index = 3;
       this.navbar.add_page_visited_to_history(`/favorites`,this.device_info).subscribe();
       this.location.go('/home/favorites')
     }
+    
 
     this.update_meta_data(i);
 

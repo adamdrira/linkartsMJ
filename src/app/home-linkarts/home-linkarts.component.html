@@ -18,7 +18,7 @@
             <mat-form-field floatLabel='never' [ngClass]="{'opened': homeLinkartsSelect && homeLinkartsSelect.panelOpen }">
 
                 <mat-select #homeLinkartsSelect panelClass="homeLinkartsSelect" ng-animate-disabled
-                [(value)]="category_index" disableOptionCentering
+                [(value)]="category_index_mat_option" disableOptionCentering
                 (selectionChange)="open_category($event.value)">
                     
                     <mat-select-trigger>
