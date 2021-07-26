@@ -14,6 +14,9 @@ const stripe_pv_key="sk_live_51IXGypFGsFyjiwAlo9N9LDeJUoZfVUZEo3HqnrCunBOaFgGRnR
 const stripe_key="pk_live_51IXGypFGsFyjiwAl8D492zOHpbG8GeS42sjQ9nsl9oSmb8jELhvoUlMBhvLSbfnvf00DPS2Zq7Aq8n5CChdlAV3s00KuTQLvL5";
 const stripe = require('stripe')(stripe_pv_key);
 const sharp = require('sharp');
+var ig = require('instagram-scraping');
+
+     
 
 module.exports = (router, 
   users,
@@ -4812,5 +4815,28 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   });
+
+
+  router.get('/retrieve_instagram_data/:nickname', function (req, res) {
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    let nickname=req.params.nickname;
+    ig.scrapeUserPage(nickname).then((result) => {
+      res.status(200).send(([result]))
+    }).catch(err=>{
+      res.status(200).send(([null]))
+    });
+  });
+
+ 
 
 }
