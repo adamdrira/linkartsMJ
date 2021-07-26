@@ -183,13 +183,13 @@ export class Profile_Edition_Service {
   
   agree_on_cookies(){
     return this.httpClient.post('routes/agree_on_cookies',{},{withCredentials:true} ).pipe(map((information)=>{
-      this.CookieService.set('a_cookies', JSON.stringify([{agreement:"ok"}]), 365*10, '/','www.linkarts.fr',true,'Lax');
+      this.CookieService.set('a_cookies', JSON.stringify([{agreement:"ok"}]), 365*10, '/','localhost',undefined,'Lax');
       return information;
     }));
   }
   
   agree_on_tuto(){
-    this.CookieService.set('a_tuto', JSON.stringify([{agreement:"ok"}]), 365*10, '/','www.linkarts.fr',true,'Lax');
+    this.CookieService.set('a_tuto', JSON.stringify([{agreement:"ok"}]), 365*10, '/','localhost',undefined,'Lax');
   }
 
   get_user_id_by_pseudo(pseudo){
