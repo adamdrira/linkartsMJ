@@ -789,11 +789,14 @@ export class AccountComponent implements OnInit {
           if(this.instagram){
             let insta=this.instagram.replace("://","/");
             let list_of_insta=insta.split("/");
-            this.Profile_Edition_Service.retrieve_instagram_data(list_of_insta[2]).subscribe(r=>{
-              if(r[0]){
-                this.number_of_instagram_followers=number_in_k_or_m(r[0].user.edge_followed_by.count);
-              }
-            })
+            if(list_of_insta && list_of_insta[2]){
+              this.Profile_Edition_Service.retrieve_instagram_data(list_of_insta[2]).subscribe(r=>{
+                if(r[0]){
+                  this.number_of_instagram_followers=number_in_k_or_m(r[0].user.edge_followed_by.count);
+                }
+              })
+            }
+           
           }
         }
 
