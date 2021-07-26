@@ -785,6 +785,16 @@ export class AccountComponent implements OnInit {
           this.youtube=this.links.youtube;
           this.deviantart=this.links.deviantart;
           this.other_website=this.links.other_website;
+
+          if(this.instagram){
+            let insta=this.instagram.replace("://","/");
+            let list_of_insta=insta.split("/");
+            this.Profile_Edition_Service.retrieve_instagram_data(list_of_insta[2]).subscribe(r=>{
+              if(r[0]){
+                this.number_of_instagram_followers=number_in_k_or_m(r[0].user.edge_followed_by.count);
+              }
+            })
+          }
         }
 
 
@@ -3119,6 +3129,7 @@ report(){
 
   facebook: string;
   instagram: string;
+  number_of_instagram_followers:string;
   pinterest: string;
   twitter: string;
   youtube:string;
