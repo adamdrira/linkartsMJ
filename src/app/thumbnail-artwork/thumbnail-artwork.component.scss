@@ -28,7 +28,7 @@
         background: white;
         > .left-container {
             height: 100%;
-            width: 200px;
+            min-width: 200px;
             width: fit-content;
             margin-right: auto;
             cursor: pointer;
