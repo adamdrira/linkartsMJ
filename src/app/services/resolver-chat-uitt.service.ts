@@ -16,7 +16,7 @@ export class ChatListUsersITalkToResolverService implements Resolve<any> {
     ) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        return this.ChatService.get_list_of_users_I_talk_to().pipe(
+        return this.ChatService.get_list_of_users_I_talk_to(0).pipe(
             catchError((error) => {
             return  new Observable<any>();
             })

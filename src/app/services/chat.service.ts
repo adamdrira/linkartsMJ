@@ -28,7 +28,7 @@ export class ChatService {
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
         if(l[0]  && (l[0].status=='visitor' || l[0].status=='account') ){
           this.messages=<Subject<Message>>this.wsService
-          .connect(`ws://localhost:4600/path?id=${l[0].id}`)
+          .connect(`wss://www.linkarts.fr:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               this.wsService.check_state();
               let data = JSON.parse(response.data);
@@ -56,8 +56,8 @@ public get chatLisnerValue(): any {
 }
 
 
-get_list_of_users_I_talk_to():Observable<any>{
-    return this.httpClient.post('routes/get_list_of_users_I_talk_to',{withCredentials:true}).pipe(map(information=>{
+get_list_of_users_I_talk_to(offset):Observable<any>{
+    return this.httpClient.post('routes/get_list_of_users_I_talk_to',{offset:offset},{withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
 }
@@ -82,8 +82,8 @@ get_first_messages(id_1,id_2,id_chat_section,is_a_group_chat,compteur):Observabl
         return [information,compteur];   
       }));
 }
-get_my_real_friend(list_of_friends_ids):Observable<any>{
-    return this.httpClient.post('routes/get_my_real_friend',{data:list_of_friends_ids},{withCredentials:true}).pipe(map(information=>{
+get_my_real_friend():Observable<any>{
+    return this.httpClient.post('routes/get_my_real_friend',{},{withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
 }
@@ -321,6 +321,16 @@ chat_upload_png(blob,file_name:string,friend_type,friend_id):Observable<any>{
   }));
 }
 
+chat_upload_pdf(blob,file_name:string,friend_type,friend_id):Observable<any>{
+  const formData = new FormData();
+  formData.append('picture', blob, "pdf");
+  return this.httpClient.post(`routes/chat_upload_pdf/${file_name}/${friend_type}/${friend_id}`, formData, {withCredentials: true,responseType:'blob'} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+
+
 get_picture_sent_by_msg(file_name):Observable<any>{
   return this.httpClient.get(`routes/get_picture_sent_by_msg/${file_name}`, {responseType:'blob'} ).pipe(map((information)=>{
     return information;
@@ -551,7 +561,7 @@ research_chat_sections(text:string,id_friend,is_a_group_chat):Observable<any>{
 //FRIENDS STATUS
 
 get_users_connected_in_the_chat(list_of_friends){
-  return this.httpClient.post('http://localhost:4600/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post('https://www.linkarts.fr/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
@@ -592,4 +602,41 @@ add_chat_friend(id_friend,date){
 
 
 
+
+
+add_contract(friend_id,is_a_group_chat,list_of_members,contract_name):Observable<any>{
+  return this.httpClient.post('routes/add_contract',{friend_id:friend_id,is_a_group_chat:is_a_group_chat,list_of_members:list_of_members,contract_name:contract_name},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+
+
+update_contract(id_contract):Observable<any>{
+  return this.httpClient.post('routes/update_contract',{id_contract:id_contract},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+
+abort_contract(id_contract):Observable<any>{
+  return this.httpClient.post('routes/abort_contract',{id_contract:id_contract},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+
+
+retrieve_contract(contract_name):Observable<any>{
+  return this.httpClient.post(`routes/retrieve_contract/${contract_name}`,{},{responseType:'blob'}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+
+get_last_contract_involved(friend_id,is_a_group_chat):Observable<any>{
+  return this.httpClient.post('routes/get_last_contract_involved', {friend_id:friend_id,is_a_group_chat:is_a_group_chat},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
 }
