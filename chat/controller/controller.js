@@ -9,7 +9,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 const sharp = require('sharp');
-module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spams,list_of_chat_search,list_of_chat_sections,list_of_subscribings, list_of_users,list_of_chat_groups,list_of_chat_groups_reactions,list_of_chat_folders) => {
+module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spams,list_of_chat_search,list_of_chat_sections,list_of_subscribings, list_of_users,list_of_chat_groups,list_of_chat_groups_reactions,list_of_chat_folders,list_of_chat_contracts) => {
 
     function get_current_user(token){
         var user = 0
@@ -18,68 +18,8 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         });
         return user;
     };
-
     
-    router.post('/get_list_of_users_I_talk_to', function (req, res) {
-
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
-        }
-      }
-        let current_user = get_current_user(req.cookies.currentUser);
-        const Op = Sequelize.Op;
-        list_of_chat_friends.findAll({
-             where: {
-                [Op.or]:[{id_user: current_user},{id_receiver:current_user}],
-                is_a_group_chat:{[Op.not]: true},
-             },
-             order: [
-                 ['date', 'DESC']
-               ],
-           })
-           .catch(err => {
-              res.status(500).json({msg: "error", details: err});		
-            }).then(friends =>  {
-               res.status(200).send([{friends:friends,current_user:current_user}])
-           }); 
-     });
-
-     router.post('/get_list_of_users_I_talk_to_navbar', function (req, res) {
-
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
-        }
-      }
-        let current_user = get_current_user(req.cookies.currentUser);
-        const Op = Sequelize.Op;
-        list_of_chat_friends.findAll({
-             where: {
-                [Op.or]:[{id_user: current_user},{id_receiver:current_user}],
-                is_a_group_chat:{[Op.not]: true},
-             },
-             order: [
-                 ['date', 'DESC']
-               ],
-             limit:10,
-           })
-           .catch(err => {
-              res.status(500).json({msg: "error", details: err});		
-            }).then(friends =>  {
-               res.status(200).send([{friends:friends,current_user:current_user}])
-           }); 
-     });
+   
 
      router.post('/get_number_of_unseen_messages',function(req,res){
        if( ! req.headers['authorization'] ) {
@@ -297,6 +237,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
              order: [
                  ['date', 'DESC']
                ],
+            limit:15,
            })
            .catch(err => {
 			res.status(500).json({msg: "error", details: err});		
@@ -581,12 +522,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         }
       }
         let current_user = get_current_user(req.cookies.currentUser);
-        let data = req.body.data;
         const Op = Sequelize.Op;
         list_of_messages.findAll({
             where: {
                 id_user:current_user,
-                id_receiver:data,
                 is_a_group_chat:{[Op.not]: true},
             },
             order: [
@@ -595,9 +534,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             limit:1,
             })
             .catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(message =>  {
+              
+              res.status(500).json({msg: "error", details: err});		
+            }).then(message =>  {
                 if(message.length>0){
                     res.status(200).send([message])
                 }
@@ -774,9 +713,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           "is_a_group_chat":friend_type,
           "date":date,
         }).catch(err => {
-			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(r=>{
+          
+          res.status(500).json({msg: "error", details: err});		
+        }).then(r=>{
           res.status(200).send([r]);
         })
       }
@@ -1946,7 +1885,42 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         })();
         
         });
+    });
+
+    
+
+    router.post('/chat_upload_pdf/:file_name/:friend_type/:friend_id', function (req, res) {
+      let current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        return res.status(401).json({msg: "error"});
+      }
+      let file_name = req.params.file_name;
+      let friend_type = req.params.friend_type
+      let friend_id = parseInt(req.params.friend_id);
+     
+      const PATH2= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
+      let storage2 = multer.diskStorage({
+        destination: (req, file, cb) => {
+          mkdirp(PATH2, err => {
+            cb(err, PATH2)
+          })
+        },
+      
+        filename: (req, file, cb) => {
+          cb(null, file_name);
+          //enlever nickname
+        }
       });
+      
+      let upload_cover = multer({
+        storage: storage2
+      }).any();
+  
+      upload_cover(req, res, function(err){
+      
+        res.status(200).send([{ok:"ok"}])
+        });
+    });
 
     router.post('/get_size_of_files/:friend_id/:id_chat_section/:friend_type', function (req, res) {
 
@@ -3658,6 +3632,95 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
       })
     });
 
+    router.post('/get_list_of_users_I_talk_to', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+        let current_user = get_current_user(req.cookies.currentUser);
+        const Op = Sequelize.Op;
+        let offset=req.body.offset;
+        list_of_chat_groups.findAll({
+          where: {
+            list_of_receivers_ids: { [Op.contains]: [current_user] },
+          },
+          order: [
+              ['createdAt', 'DESC']
+            ],
+          
+        })
+        .catch(err => {
+          res.status(500).json({msg: "error", details: err});		
+        }).then(groups =>  {
+          let list_of_ids=[];
+          if(groups.length>0){
+            list_of_ids= groups.map(x => x.id);
+          }
+          
+          list_of_chat_friends.findAll({
+            where: {
+               [Op.or]:[{
+                 [Op.or]:[{id_user: current_user},{id_receiver:current_user}],
+                 is_a_group_chat:{[Op.not]: true},
+               },{
+                is_a_group_chat:true,
+                id_receiver:{[Op.in]: list_of_ids},
+               }]
+              
+            },
+            order: [
+                ['date', 'DESC']
+              ],
+           limit:10,
+           offset:offset,
+          })
+          .catch(err => {
+             res.status(500).json({msg: "error", details: err});		
+           }).then(friends =>  {
+              res.status(200).send([{friends:friends,current_user:current_user,groups:groups,list_of_group_ids:list_of_ids}])
+          }); 
+        });
+
+        
+     });
+
+     router.post('/get_list_of_users_I_talk_to_navbar', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+        let current_user = get_current_user(req.cookies.currentUser);
+        const Op = Sequelize.Op;
+        list_of_chat_friends.findAll({
+             where: {
+                [Op.or]:[{id_user: current_user},{id_receiver:current_user}],
+                is_a_group_chat:{[Op.not]: true},
+             },
+             order: [
+                 ['date', 'DESC']
+               ],
+             limit:10,
+           })
+           .catch(err => {
+              res.status(500).json({msg: "error", details: err});		
+            }).then(friends =>  {
+               res.status(200).send([{friends:friends,current_user:current_user}])
+           }); 
+     });
 
     router.post('/get_my_list_of_groups', function (req, res) {
 
@@ -3684,10 +3747,10 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
           })
           .catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(groups =>  {
+        res.status(500).json({msg: "error", details: err});		
+      }).then(groups =>  {
               res.status(200).send([groups])
-          }); 
+      }); 
     });
       
 
@@ -3756,8 +3819,8 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
         })
         .catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(friend =>  {
+        res.status(500).json({msg: "error", details: err});		
+      }).then(friend =>  {
             friends[i]=friend[0]
             compt++;
             if(compt==list_of_ids.length){
@@ -4923,5 +4986,249 @@ router.post('/get_files_by_folder',function(req,res){
     })
   })
 
+
+
+  router.post('/upload_contract/:name', function (req, res) {
+    let current_user = get_current_user(req.cookies.currentUser);
+    if(!current_user){
+      return res.status(401).json({msg: "error"});
+    }
+    var file_name=req.params.name;
+    const PATH1= './data_and_routes/contracts';
+    let storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, PATH1);
+      },
+
+      filename: (req, file, cb) => {
+        file_name =file_name;
+        cb(null, file_name);
+      }
+    });
+
+    let upload = multer({
+      storage: storage
+    }).any();
+
+    upload(req, res, function(err) {
+      if (err) {
+        return res.send({
+          success: false
+        });
+    
+      } else { 
+          res.status(200).send([{file_name:file_name}]);
+      }
+    })
+  });
+  
+
+  router.post('/retrieve_contract/:file_name', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+      let filename = "./data_and_routes/contracts/" + req.params.file_name;
+      
+      fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/file-not-found.pdf";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(res);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(res);
+        }     
+      })
+  });
+
+
+  router.post('/add_contract',function(req,res){
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let id_user = get_current_user(req.cookies.currentUser);
+    let id_receiver=req.body.friend_id;
+    let is_a_group_chat=req.body.is_a_group_chat;
+    let list_of_signing_members=req.body.list_of_members;
+    let contract_name=req.body.contract_name;
+
+
+    list_of_chat_contracts.create({
+        "id_user": id_user,
+        "id_receiver": id_receiver,
+        "is_a_group_chat": is_a_group_chat,
+        "list_of_signing_members":list_of_signing_members,
+        "contract_name":contract_name,
+        "status":"public", 
+    }).catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(contract=>{
+      
+      if(contract){
+        res.status(200).send([contract])
+      }
+      else{
+        res.status(200).send([{nothing:'null'}])
+      }
+      
+    })
+
+  })
+  
+
+  router.post('/abort_contract',function(req,res){
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let id_contract=req.body.id_contract;
+
+    list_of_chat_contracts.update({
+        "status":"deleted", 
+    },{
+      where:{
+        id:id_contract,
+      }
+    }).catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(contract=>{
+        res.status(200).send([contract])
+    })
+
+  })
+
+  router.post('/update_contract',function(req,res){
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let id_contract=req.body.id_contract;
+    let id_user = get_current_user(req.cookies.currentUser);
+
+    list_of_chat_contracts.findOne({
+      where:{
+        id:id_contract,
+      }
+    }).catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(contract=>{
+      if(contract){
+        let list_of_signing_members=contract.list_of_signing_members;
+        if(list_of_signing_members.indexOf(id_user)<0){
+          list_of_signing_members.push(id_user)
+        }
+      
+        list_of_chat_contracts.update({
+          "list_of_signing_members":list_of_signing_members, 
+        },{
+          where:{
+            id:id_contract,
+          }
+        }).catch(err => {
+          
+          res.status(500).json({msg: "error", details: err});		
+        }).then(final=>{
+            res.status(200).send([final])
+        })
+      }
+      else{
+        res.status(200).send([{"nothing":true}])
+      }
+        
+    })
+
+  })
+
+  router.post('/get_last_contract_involved',function(req,res){
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    let id_user = get_current_user(req.cookies.currentUser);
+    let id_friend = req.body.friend_id;
+    let is_a_group_chat=req.body.is_a_group_chat;
+    const Op = Sequelize.Op;
+    if(is_a_group_chat){
+      list_of_chat_contracts.findOne({
+        where:{
+          is_a_group_chat:true,
+          id_receiver:id_friend, 
+          status:"public"     
+        }
+      }).catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(contract=>{
+        
+        if(contract){
+          res.status(200).send([contract])
+        }
+        else{
+          res.status(200).send([{nothing:'null'}])
+        }
+        
+      })
+    }
+    else{
+      list_of_chat_contracts.findOne({
+        where:{
+          status:"public",
+          is_a_group_chat:{[Op.not]: true},
+          [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
+        }
+      }).catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(contract=>{
+        
+        if(contract){
+          res.status(200).send([contract])
+        }
+        else{
+          res.status(200).send([{nothing:'null'}])
+        }
+        
+      })
+    }
+    
+   })
   
 }

@@ -56,6 +56,25 @@ exports.list_of_messages = (sequelize, DataTypes) => {
   }
 )
 
+
+var list_of_chat_contracts= sequelize.define('list_of_chat_contracts', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  id_user: DataTypes.INTEGER,
+  id_receiver: DataTypes.INTEGER,
+  is_a_group_chat: DataTypes.BOOLEAN,
+  list_of_signing_members:DataTypes.ARRAY(DataTypes.INTEGER),
+  contract_name:DataTypes.STRING,
+  status:DataTypes.STRING,
+},
+{
+  freezeTableName: true // Model tableName will be the same as the model name
+}
+)
+
 var list_of_chat_groups = sequelize.define('list_of_chat_groups', {
   id: {
     type: DataTypes.INTEGER,
@@ -190,6 +209,8 @@ list_of_messages.belongsTo(User, {
   list_of_chat_search,
   list_of_chat_emails,
   list_of_chat_sections,
-  list_of_chat_folders};
+  list_of_chat_folders,
+  list_of_chat_contracts
+};
 }
 
