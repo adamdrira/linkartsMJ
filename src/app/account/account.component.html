@@ -1189,29 +1189,39 @@
                                         <a [href]="instagram" target="_blank" class="network instagram" *ngIf="instagram">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Instagram</span>
-                                            <span style="margin: auto 0px auto auto;">{{number_of_instagram_followers}} abonnés</span>
-                                        </a>
-                                        <a [href]="facebook" target="_blank" class="network facebook" *ngIf="facebook">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
-                                            <span>Facebook</span>
+                                            <!--<a [href]="insta_link" class="insta-link" *ngIf="!number_of_instagram_followers"
+                                            matTooltip="Synchroniser votre nombre d'abonnés" 
+                                            matTooltipClass='linkarts-tooltip' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200"> 
+                                                <mat-icon  [ngClass]="{'invisible': !show_icon }">add_box</mat-icon>
+                                            </a>-->
+                                           
+                                            <span *ngIf="number_of_instagram_followers" style="margin: auto 0px auto auto;">{{number_of_instagram_followers}} abonnés</span>
                                         </a>
                                         <a [href]="pinterest" target="_blank" class="network pinterest" *ngIf="pinterest">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Pinterest</span>
                                         </a>
-                                        <a [href]="twitter" target="_blank" class="network other" *ngIf="twitter">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
-                                            <span>Twitter</span>
-                                        </a>
-                                        <a [href]="youtube" target="_blank" class="network other" *ngIf="youtube">
+                                        <a [href]="youtube" target="_blank" class="network youtube" *ngIf="youtube">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Youtube</span>
                                         </a>
-                                        <a [href]="deviantart" target="_blank" class="network other" *ngIf="deviantart">
+                                        <a [href]="facebook" target="_blank" class="network facebook" *ngIf="facebook">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Facebook</span>
+                                        </a>
+                                        
+                                        <a [href]="twitter" target="_blank" class="network twitter" *ngIf="twitter">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Twitter</span>
+                                        </a>
+                                       
+                                        <a [href]="deviantart" target="_blank" class="network deviantart" *ngIf="deviantart">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Deviantart</span>
                                         </a>
-                                        <a [href]="artstation" target="_blank" class="network other" *ngIf="artstation">
+                                        <a [href]="artstation" target="_blank" class="network artstation" *ngIf="artstation">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Artstation</span>
                                         </a>

@@ -450,6 +450,7 @@ export class AccountComponent implements OnInit {
   /******************************************* START ON INIT ********************************************/
 
   device_info='';
+  insta_link=`https://api.instagram.com/oauth/authorize?client_id=2949440818629576&redirect_uri=https://www.linkarts.fr/&scope=user_profile,user_media&response_type=code`;
   ngOnInit()  {
 
     
@@ -792,7 +793,7 @@ export class AccountComponent implements OnInit {
             if(list_of_insta && list_of_insta[2]){
               this.Profile_Edition_Service.retrieve_instagram_data(list_of_insta[2]).subscribe(r=>{
                 if(r[0]){
-                  this.number_of_instagram_followers=number_in_k_or_m(r[0].user.edge_followed_by.count);
+                  //this.number_of_instagram_followers=number_in_k_or_m(r[0].user.edge_followed_by.count);
                 }
               })
             }
@@ -831,12 +832,7 @@ export class AccountComponent implements OnInit {
         }
         if (this.visitor_id==user.id){
 
-          
-          /*if(this.visitor_id<3){
-            // pour abonnés isnta à tester
-            this.Profile_Edition_Service.get_number_of_followers().subscribe(r=>{
-            })
-          }*/
+        
           this.navbar.get_number_of_account_viewers(this.user_id).subscribe(r=>{
           
             this.number_of_visits=number_in_k_or_m(r[0].views);

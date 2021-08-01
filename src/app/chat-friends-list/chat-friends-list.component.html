@@ -199,10 +199,10 @@
                                                 </div>
                                                 <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
                                                     <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
-                                                        Vous avez envoyé une pièce jointe 
+                                                        Vous avez envoyé <ng-container *ngIf="list_of_friends_last_message[i].attachment_name.includes('contract')">un contrat</ng-container><ng-container *ngIf="!list_of_friends_last_message[i].attachment_name.includes('contract')">une pièce jointe</ng-container>
                                                     </div>
                                                     <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
-                                                        Vous a envoyé une pièce jointe
+                                                        Vous a envoyé <ng-container *ngIf="list_of_friends_last_message[i].attachment_name.includes('contract')">un contrat</ng-container><ng-container *ngIf="!list_of_friends_last_message[i].attachment_name.includes('contract')">une pièce jointe</ng-container>
                                                     </div>
                                                 </div>
                                             </div>
@@ -218,10 +218,10 @@
                                                 </div>
                                                 <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
                                                     <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
-                                                        <b>Vous avez envoyé une pièce jointe </b>
+                                                        <b>Vous avez envoyé <ng-container *ngIf="list_of_friends_last_message[i].attachment_name.includes('contract')">un contrat</ng-container><ng-container *ngIf="!list_of_friends_last_message[i].attachment_name.includes('contract')">une pièce jointe</ng-container></b>
                                                     </div>
                                                     <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
-                                                        <b>Vous a envoyé une pièce jointe </b>
+                                                        <b>Vous a envoyé <ng-container *ngIf="list_of_friends_last_message[i].attachment_name.includes('contract')">un contrat</ng-container><ng-container *ngIf="!list_of_friends_last_message[i].attachment_name.includes('contract')">une pièce jointe</ng-container></b>
                                                     </div>
                                                 </div>
                                             </div>
@@ -250,10 +250,10 @@
                                                 </div>
                                                 <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
                                                     <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.length>1)">
-                                                        <b>Vous avez envoyé une pièce jointe </b>
+                                                        <b>Vous avez envoyé <ng-container *ngIf="list_of_friends_last_message[i].attachment_name.includes('contract')">un contrat</ng-container><ng-container *ngIf="!list_of_friends_last_message[i].attachment_name.includes('contract')">une pièce jointe</ng-container></b>
                                                     </div>
                                                     <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0)">
-                                                        <b> {{list_of_friends_last_message[i].id_user_name}} vous a envoyé une pièce jointe </b>
+                                                        <b> {{list_of_friends_last_message[i].id_user_name}} vous a envoyé <ng-container *ngIf="list_of_friends_last_message[i].attachment_name.includes('contract')">un contrat</ng-container><ng-container *ngIf="!list_of_friends_last_message[i].attachment_name.includes('contract')">une pièce jointe</ng-container></b>
                                                     </div>
                                                     <div *ngIf="list_of_friends_last_message[i].id_user==current_user && list_of_friends_last_message[i].list_of_users_who_saw.length>1">
                                                         Vous avez envoyé une pièce jointe 
@@ -515,10 +515,10 @@
                                             <div  *ngIf="list_of_spams_last_message[i].attachment_type=='file_attachment'">
                                                 <div *ngIf="list_of_spams_last_message[i].id_user==current_user">
                                                     <div *ngIf="list_of_spams_last_message[i].status=='seen'">
-                                                        vous avez envoyé une pièce jointe
+                                                        vous avez envoyé <ng-container *ngIf="list_of_spams_last_message[i].attachment_name.includes('contract')">un contrat</ng-container><ng-container *ngIf="!list_of_spams_last_message[i].attachment_name.includes('contract')">une pièce jointe</ng-container>
                                                     </div>
                                                     <div *ngIf="list_of_spams_last_message[i].status!='seen'">
-                                                        <b>vous avez envoyé une pièce jointe</b>
+                                                        <b>vous avez envoyé <ng-container *ngIf="list_of_spams_last_message[i].attachment_name.includes('contract')">une pièce jointe</ng-container><ng-container *ngIf="!list_of_spams_last_message[i].attachment_name.includes('contract')">une pièce jointe</ng-container></b>
                                                     </div>
                                                 </div>
                                                 <div *ngIf="list_of_spams_last_message[i].id_user!=current_user">

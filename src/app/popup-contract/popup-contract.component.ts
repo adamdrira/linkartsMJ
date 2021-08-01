@@ -2,11 +2,14 @@ import { DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
+import { ChatService } from '../services/chat.service';
 import { FileUploader } from 'ng2-file-upload';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { DomSanitizer } from '@angular/platform-browser';
+import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 
-const url = '';
+const url = 'http://localhost:4600/routes/upload_contract/';
 
 @Component({
   selector: 'app-popup-contract',
@@ -30,6 +33,8 @@ export class PopupContractComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     public navbar: NavbarService,
+    private sanitizer:DomSanitizer,
+    private ChatService:ChatService,
     public dialogRef: MatDialogRef<PopupContractComponent,any>,
     public dialog: MatDialog,
     @Inject(DOCUMENT) private document: Document,
@@ -38,7 +43,6 @@ export class PopupContractComponent implements OnInit {
     
 
     this.uploader = new FileUploader({
-      itemAlias: 'cover', 
       url:url,
     });
 
@@ -50,16 +54,56 @@ export class PopupContractComponent implements OnInit {
   }
 
   show_icon=false;
+  id_user:number;
+  is_a_group_chat:boolean;
+  id_receiver:number;
+  file_name:string;
 
-
+  id_contract:number;
+  contract:any;
+  real_contract:any;
+  ben_contract:any;
+  rem_contract:any;
+  ben_contract_pdf:any;
+  rem_contract_pdf:any;
+  size:number;
   ngOnInit(): void {
+
+    this.id_user = this.data.id_user;
+    this.id_contract=this.data.id_contract;
+    this.ChatService.retrieve_contract("collab-ben.docx").subscribe(r=>{
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.ben_contract=SafeURL;
+    })
+    this.ChatService.retrieve_contract("collab-rem.docx").subscribe(r=>{
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.rem_contract=SafeURL;
+    })
+    this.ChatService.retrieve_contract("collab-ben.pdf").subscribe(r=>{
+      this.ben_contract_pdf=r;
+    })
+    this.ChatService.retrieve_contract("collab-rem.pdf").subscribe(r=>{
+      this.rem_contract_pdf=r
+    })
+
+    if(this.data.contract_name){
+      this.ChatService.retrieve_contract(this.data.contract_name).subscribe(r=>{
+        this.contract=r
+        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.real_contract=SafeURL;
+      })
+    }
+    
 
     
     this.uploader.onAfterAddingFile = async (file) => {
         
 
       var re = /(?:\.([^.]+))?$/;
-      let size = file._file.size/1024/1024;
+      this.size = file._file.size/1024/1024;
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="pdf"){
@@ -70,24 +114,30 @@ export class PopupContractComponent implements OnInit {
         });
       }
       else{
-        if(Math.trunc(size)>=15){
+        if(Math.trunc( this.size )>=15){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(this.size * 10) / 10)  +"mo)"},
             panelClass: "popupConfirmationClass",
           });
         }
         else{
-          /*var today = new Date();
-          var ss = String(today.getSeconds()).padStart(2, '0');
-          var mi = String(today.getMinutes()).padStart(2, '0');
-          var hh = String(today.getHours()).padStart(2, '0');
-          var dd = String(today.getDate()).padStart(2, '0');
-          var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-          var yyyy = today.getFullYear();
-          let Today = yyyy + mm + dd + hh+ mi + ss;
-          this.file_name = this.visitor_id + '-' + Today + '.' + sufix;*/
 
+          if(this.data.page==0){
+            var today = new Date();
+            var ss = String(today.getSeconds()).padStart(2, '0');
+            var mi = String(today.getMinutes()).padStart(2, '0');
+            var hh = String(today.getHours()).padStart(2, '0');
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+            var yyyy = today.getFullYear();
+            let Today = yyyy + mm + dd + hh+ mi + ss;
+            this.file_name = "contract-"+this.id_user + '-' + Today + '.' + sufix;
+          }
+          else{
+            this.file_name=this.data.contract_name;
+          }
+         
           this.uploaded_file=this.uploader.queue[0]._file.name;
           file.withCredentials = true;
 
@@ -98,8 +148,32 @@ export class PopupContractComponent implements OnInit {
     };
 
     this.uploader.onCompleteItem = (file) => {
-    }
+      this.dialogRef.close({file_name:this.file_name,size:this.size});
+      this.cd.detectChanges();
+     }
 
+  }
+
+  read_contract() {
+    this.document.body.classList.add('popup-attachment-scroll');
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.contract},
+      panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
+    });
+  }
+
+
+  open_contract_model(){
+    let contract=(this.category==0)?this.ben_contract_pdf:this.rem_contract_pdf;
+    this.document.body.classList.add('popup-attachment-scroll');
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:contract},
+      panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
+    });
   }
 
   close_dialog(){
@@ -119,7 +193,7 @@ export class PopupContractComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
 
-  //file_name:string;
+
   onFileClick(event) {
     event.target.value = '';
   }
@@ -158,56 +232,57 @@ export class PopupContractComponent implements OnInit {
     this.page_0_step++;
   }
   loading_step_1=false;
-  validate_step(i){
-
-    if(i==0) {
-
-    }
-    else if(i==1) {
-
+  validate_step(){
       if( this.uploaded_file && !this.loading_step_1 && this.cgu_accepted ) {
         this.loading_step_1 = true;
-
-
-
+        let URL = url + `${this.file_name}`;
+        this.uploader.setOptions({ url: URL});
+        this.uploader.queue[0].upload();
       }
       else if( !this.uploaded_file ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:"Veuillez télécharger votre contrat PDF"},
+          data: {showChoice:false, text:"Veuillez télécharger votre contrat au format PDF."},
           panelClass: "popupConfirmationClass",
         });
       }
       else if( !this.cgu_accepted ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:"Veuillez accepter les conditions"},
+          data: {showChoice:false, text:"Veuillez accepter les modalités."},
           panelClass: "popupConfirmationClass",
         });
       }
-    }
-    
+  }
+
+  pp_loaded={}
+  load_pp(i){
+    this.pp_loaded[i]=true;
   }
 
 
-  list_of_members = [
-    {
-      name: "adam drira",
-      pseudo: "test",
-      status: "signed",
-    },
-    {
-      name: "mokhtar meghaichi",
-      pseudo: "test_2323",
-      status: "waiting",
-    },
-  ];
+
   
   stop(e: Event) {
     e.preventDefault();
     e.stopPropagation();
+
+   
   };
 
-  read_contract() {
+  abort_contract(i){
+    let message=i==0?"rompre":"refuser";
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:`Etes-vous sûr de vouloir ${message} ce contrat ?`},
+      panelClass: "popupConfirmationClass",
+    }).afterClosed().subscribe(result => {
+      if(result){
+        this.ChatService.abort_contract(this.id_contract).subscribe(r=>{
+          this.dialogRef.close({abort:true,id_contract:this.id_contract});
+        })
+      }
+    })
 
+    
   }
 
+  
 }

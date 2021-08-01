@@ -108,6 +108,7 @@
     .main-title {
       position: absolute;
       color: rgba(0, 0, 0, 0);
+      z-index: -10;
     }
 
     .more-left{
@@ -2061,13 +2062,38 @@
           display: flex;
           margin: 6px auto 10px auto;
           border: 1px solid #cccccc;
-          padding: 5px 20px 8px 20px;
+          padding: 7px 10px 7px 20px;
           border-radius: 9px;
           cursor: pointer;
+          
           user-select: none;
           
           &.pinterest {
-            background:#ff4c4c;
+            background:#BD081C;
+            ::ng-deep fa-icon svg {
+              color:white;
+            }
+          }
+          &.youtube{
+            background:#E62117;
+            ::ng-deep fa-icon svg {
+              color:white;
+            }
+          }
+          &.deviantart{
+            background: linear-gradient(45deg,#00c787,#101010);
+            ::ng-deep fa-icon svg {
+              color:white;
+            }
+          }
+          &.artstation{
+            background: linear-gradient(45deg,#101010, #171717);
+            ::ng-deep fa-icon svg {
+              color:white;
+            }
+          }
+          &.twitter {
+            background: linear-gradient(45deg,#008CFF,#00A3FF 25%,#00B8FF 50%,#00CBFF 75%,#00DEFF);
             ::ng-deep fa-icon svg {
               color:white;
             }
@@ -2077,6 +2103,19 @@
             ::ng-deep fa-icon svg {
               color:white;
             }
+            .insta-link{
+              align-items: center;
+              display: flex;
+              mat-icon{
+                font-size:20px;
+                max-width:20px;
+                color:white;
+                height:unset;
+                width:unset;
+                margin:auto 0px auto auto;
+              }
+            }
+            
           }
           &.facebook {
             background:linear-gradient(to bottom, #3b5998, #2b4170);
@@ -2108,7 +2147,8 @@
             color:white;
             margin:auto auto auto 0px;
             font-weight:600;
-            font-size:12px;
+            font-size:13px;
+            line-height: 20px;
           }
         }
         

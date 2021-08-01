@@ -246,6 +246,25 @@
             }
         }
 
+        .telechargement{
+            font-size: 14px;
+            display: flex;
+            font-weight: 600;
+            justify-content: center;
+            font-size: 12p;
+            margin: auto auto 10px auto;
+            color: #203864;
+            border-top: solid 1px #bec8da;
+
+            &:hover {
+               text-decoration: underline;
+            }
+
+            &:active {
+                transform: scale(0.98);
+            }
+        }
+
         .download-modele {
             display: flex;
             color: rgb(32, 56, 100);
@@ -270,18 +289,18 @@
                 height: 90px;
                 width: 90px;
                 min-width: 90px;
-                cursor: pointer;
-
+                margin-top: 21px;
+               
                 transition: transform 200ms;
                 user-select: none;
-                &:active {
-                    transform: scale(0.98);
-                }
+
+               
                 mat-icon {
                     height: 30px;
                     width: 30px;
                     max-width: 30px;
-                    margin: auto auto 5px auto;
+                    margin: 15px auto auto auto;
+                    cursor: pointer;
                     transform: rotate(45deg);
                     font-size: 32px;
                 }
@@ -289,8 +308,10 @@
                     margin: 4px auto auto auto;
                     padding-top: 3px;
                     font-weight: 600;
-                    border-top: 1px solid #d1d9e8;
+                    border-top: solid 1px #bec8da;
                 }
+
+                
             }
         }
         .dropzone-container {
@@ -336,6 +357,7 @@
             flex-direction: column;
             span {
                 margin:10px auto;
+                text-align: center;
             }
         }
         .read-contract {
@@ -364,12 +386,13 @@
                 margin: auto auto 5px auto;
                 transform: rotate(45deg);
                 font-size: 32px;
+                cursor: pointer;
             }
             span {
                 margin: 4px auto auto auto;
                 padding-top: 3px;
                 font-weight: 600;
-                border-top: 1px solid #d1d9e8;
+                border-top: solid 1px #bec8da;
             }
         }
         .buttons {
@@ -478,6 +501,7 @@
                             text-overflow: ellipsis;
                             white-space: normal;
                             -webkit-line-clamp: 2;
+                            font-size: 16px;
                 
                             mat-icon {
                                 vertical-align: middle;
@@ -489,6 +513,10 @@
                                 width: unset;
                                 font-size: 13px;
                             }
+                        }
+
+                        span.user-description {
+                            font-size: 12px;
                         }
                     }
                 }
@@ -517,12 +545,18 @@
                 }
     
                 &.break {
+                    cursor:pointer;
+                    
                     color:white;
                     background:linear-gradient(70deg, #ff0000e6, #ff3e3ee6, #ff4d4de6);
                     margin-right: 10px;
                     span {
                         margin: auto auto auto 0px;
                     }
+
+                    &:active {
+                        transform: scale(0.98);
+                      }
                 }
                 &.unsubscribe-button {
                     box-shadow: 0px 0px 0px 1.5px #203864;

@@ -52,15 +52,13 @@
                 </ng-container>
 
 
-                <button style="position:relative;" (click)="contract();" [@enterAnimation]
-                matTooltip="Contrats"
+                <button style="position:relative;" (click)="contract();" *ngIf="spam!='true' && contract_data_retrieved" [@enterAnimation]
+                matTooltip="Contrat"
                 matTooltipClass='linkarts-tooltip'
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="100">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">assignment</mat-icon>
-                    <div class="number-of-notifs contract green" (click)="contract();" *ngIf="show_green_contract_notification">
-                    </div>
-                    <div class="number-of-notifs contract" (click)="contract();" *ngIf="!show_green_contract_notification">
+                    <div class="number-of-notifs contract" (click)="contract();" [ngClass]="{'green': show_green_contract_notification,'red': show_red_contract_notification}" >
                     </div>
                 </button>
 
@@ -80,7 +78,7 @@
                     </button>
 
                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
-                        <button class="chat-menu-item" mat-menu-item>
+                        <button class="chat-menu-item" (click)="contract();" mat-menu-item>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">assignment</mat-icon>
                             <span>Proposer un contrat</span>
                         </button>
@@ -110,7 +108,7 @@
                     </button>
 
                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
-                        <button class="chat-menu-item" mat-menu-item>
+                        <button class="chat-menu-item" mat-menu-item (click)="contract();">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">assignment</mat-icon>
                             <span>Proposer un contrat</span>
                         </button>
@@ -176,21 +174,21 @@
                     </span>
                     <button (click)="add_to_contacts()">
                         <span *ngIf="!show_spinner_add">Ajouter</span>
-                        <mat-icon *ngIf="!show_spinner_add">person_add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_spinner_add">person_add</mat-icon>
                         <mat-spinner diameter="20" *ngIf="show_spinner_add" ></mat-spinner>
                     </button>
                 </div>
             </div>
             <div *ngIf="spam!='false' && !block_chat && !response_exist && response_exist_retrieved" class="top-alert-message" [@enterFromTopAnimation]>
                 <div class="message">
-                    <mat-icon>info_outline</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                     <span> Vous devez attendre que {{friend_name}} réponde à votre message pour l'ajouter à vos contacts</span>
                 </div>
             </div>
 
             <div *ngIf="block_chat" class="top-alert-message" [@enterFromTopAnimation]>
                 <div class="message">
-                    <mat-icon>info_outline</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                     <span *ngIf="who_blocked=='user'">
                         Utilisateur suspendu
                     </span>
@@ -244,7 +242,7 @@
 
                     <button [disabled]="show_spinner_for_more" *ngIf="show_research_results && !trigger_no_more" class="show-more" (click)="see_more_messages();">
                         <ng-container *ngIf="!show_spinner_for_more">
-                            <mat-icon>expand_less</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_less</mat-icon>
                             <span>Voir plus</span>
                         </ng-container>
                         <div class="loading-dots" *ngIf="show_spinner_for_more">
@@ -440,17 +438,22 @@
                                             [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}"
                                             [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
                                         </div>
-                                        <div
-                                            *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+
+                                    
+                                        <div class="d-flex align-items-center" *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+                                            <div class="attachment-icon" [@enterAnimation]>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
+                                            </div>
                                             <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                         </div>
+                                    
                                     </div>
                                 </div>
 
                                 <div class="state"
                                     *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='received' || list_of_messages[list_of_messages.length -1 - i].status=='deleted'" [@enterAnimation]>
                                     <div>
-                                        <mat-icon>done</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                                     </div>
                                 </div>
 
@@ -600,8 +603,10 @@
                                                 [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
 
                                         </div>
-                                        <div
-                                            *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+                                        <div class="d-flex align-items-center" *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+                                            <div class="attachment-icon" [@enterAnimation]>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
+                                            </div>
                                             <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                         </div>
                                     </div>
@@ -653,7 +658,7 @@
 
                         <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New' && list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <span>
-                                <mat-icon>person_add</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
                                 <b>{{friend_name}}</b> fait désormais partie de vos contacts
                             </span>
                         </div>
@@ -669,7 +674,7 @@
 
                     <button [disabled]="show_spinner_for_less" *ngIf="show_research_results && show_less_results" class="show-more" (click)="see_less_messages();">
                         <ng-container *ngIf="!show_spinner_for_less">
-                            <mat-icon>expand_more</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
                             <span>Voir plus</span>
                         </ng-container>
                         <div class="loading-dots" *ngIf="show_spinner_for_less">
@@ -756,7 +761,7 @@
 
                     <button [disabled]="show_spinner_for_more" *ngIf="show_research_results && !trigger_no_more" class="show-more" (click)="see_more_messages();">
                         <ng-container *ngIf="!show_spinner_for_more">
-                            <mat-icon>expand_less</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_less</mat-icon>
                             <span>Voir plus</span>
                         </ng-container>
                         <div class="loading-dots" *ngIf="show_spinner_for_more">
@@ -976,8 +981,7 @@
                                                 [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
 
                                         </div>
-                                        <div
-                                            *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'" class="d-flex align-items-center">
                                             <a [href]="list_of_messages_files[list_of_messages.length -1 - i]"
                                                 [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                         </div>
@@ -997,7 +1001,7 @@
                                 </div>
                                 <div class="state" [@enterAnimation] *ngIf="(list_of_messages[list_of_messages.length -1 - i].status=='received' || list_of_messages[list_of_messages.length -1 - i].status=='deleted') &&  list_of_messages[list_of_messages.length -1 - i].list_of_users_who_saw.length==1">                                    
                                     <div>
-                                        <mat-icon>done</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                                     </div>
                                 </div>
                             </div>
@@ -1160,8 +1164,10 @@
                                                 [lazyLoad]="list_of_messages_pictures[list_of_messages.length -1 - i]" loading="lazy">
 
                                         </div>
-                                        <div
-                                            *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'" class="d-flex align-items-center">
+                                            <div class="attachment-icon" [@enterAnimation]>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
+                                            </div>
                                             <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                         </div>
                                     </div>
@@ -1236,13 +1242,13 @@
                             <div class="new-contact-message-content"
                                 *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New'">
                                 <span>
-                                    <mat-icon>group</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
                                     Bienvenue dans le groupe : <b>{{friend_name}}</b></span>
                             </div>
 
                             <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='new_section'">
                                 <span>
-                                    <mat-icon>person_add</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
                                     Bienvenue dans la section <b>{{chat_section_to_open}}</b>
                                 </span>
                             </div>
@@ -1250,11 +1256,11 @@
                             <div class="new-contact-message-content"
                                 *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='Exit'">
                                 <span *ngIf="list_of_messages[list_of_messages.length -1 - i].real_id_user">
-                                    <mat-icon>person_off</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
                                     <b>{{get_name_of_someone_who_exit_group(list_of_messages[list_of_messages.length -1 - i].real_id_user,1,0)}}</b> a quitté le groupe
                                 </span>
                                 <span *ngIf="!list_of_messages[list_of_messages.length -1 - i].real_id_user">
-                                    <mat-icon>person_off</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
                                     <b>{{get_name_of_someone_who_exit_group(list_of_messages[list_of_messages.length -1 - i].id_user,1,0)}}</b> a quitté le groupe
                                 </span>
                             </div>
@@ -1262,11 +1268,11 @@
                             <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New_friend_in_the_group'">
                                 <div  *ngFor="let item of list_of_messages[list_of_messages.length -1 - i].list_of_names_added; let j=index" class="new-contact-message-content">
                                     <span *ngIf="list_of_messages[list_of_messages.length -1 - i].real_id_user">
-                                        <mat-icon>person_add</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
                                         <b>{{get_name_of_someone_who_exit_group(list_of_messages[list_of_messages.length -1 - i].real_id_user,2,item)}}</b> 
                                     </span>
                                    <span *ngIf="!list_of_messages[list_of_messages.length -1 - i].real_id_user">
-                                        <mat-icon>person_add</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
                                         <b>{{get_name_of_someone_who_exit_group(list_of_messages[list_of_messages.length -1 - i].id_user,2,item)}}</b>
                                     </span>
                                 </div>
@@ -1279,7 +1285,7 @@
 
                     <button [disabled]="show_spinner_for_less" *ngIf="show_research_results && show_less_results" class="show-more" (click)="see_less_messages();">
                         <ng-container *ngIf="!show_spinner_for_less">
-                            <mat-icon>expand_more</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
                             <span>Voir plus</span>
                         </ng-container>
                         <div class="loading-dots" *ngIf="show_spinner_for_less">
@@ -1381,7 +1387,7 @@
                         <ng-container
                             *ngIf="attachments_type[i]=='picture_message' || attachments_type[i]=='picture_attachment'">
                             <button (click)="remove_attachment(i)" [@enterAnimation]>
-                                <mat-icon>close</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                             </button>
                             <div class="attachment-picture" [@enterAnimation]>
                                 <img [src]="attachments_safe[i]">
@@ -1390,10 +1396,10 @@
 
                         <ng-container *ngIf="attachments_type[i]=='file_attachment'">
                             <button (click)="remove_attachment(i)" [@enterAnimation]>
-                                <mat-icon>close</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                             </button>
                             <div class="attachment-picture" [@enterAnimation]>
-                                <mat-icon>insert_drive_file</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                             </div>
                         </ng-container>
                         <span [@enterAnimation]><i>{{attachments_name[i]}}</i></span>
@@ -1402,7 +1408,7 @@
 
                     <div *ngIf="attachments && attachments.length==1 && (attachments_type[0]=='picture_message' || attachments_type[0]=='picture_attachment')" 
                     (click)="edit(-1);" class="edit-picture" [@enterFromBottomAnimation]>
-                        <mat-icon>edit</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                         <span>Éditer</span>
                     </div>
 

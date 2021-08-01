@@ -695,9 +695,11 @@ export class ChatComponent implements OnInit  {
           list_of_users_who_saw:[this.current_user_id],
           attachment_type:type,
           is_an_attachment:true,
+          list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
           is_from_server:false,
           id_chat_section:this.id_chat_section,
           size:file._file.size/1024/1024,
+          
           is_a_response:this.respond_to_a_message,
           id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
           message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
@@ -747,10 +749,22 @@ export class ChatComponent implements OnInit  {
   /*******************************************get messages ************************** */
   compteur_selector=0;
   compteur_get_messages=0;
+  contract_data_retrieved=false;
+  list_of_members_for_contract=[];
+  list_of_members_pp_for_contract={};
+  list_of_members_names_for_contract={};
+  list_of_members_pseudos_for_contract={};
   get_messages(id_chat_section,is_group){
     this.compteur_get_messages++;
     this.compteur_image=0;
     this.compteur_loaded=0;
+    this.contract_data_retrieved=false;
+    this.list_of_members_pp_for_contract={};
+    this.list_of_members_pseudos_for_contract={};
+    this.list_of_members_for_contract=[];
+    this.list_of_members_names_for_contract={};
+    this.show_green_contract_notification=false;
+    this.show_red_contract_notification=false;
     if(!is_group){
       this.display_messages=false;
       this.put_messages_visible=false;
@@ -769,6 +783,9 @@ export class ChatComponent implements OnInit  {
 
       }
     }
+
+  
+    this.get_last_contract_involved(is_group)
     
     this.list_of_messages_pictures=[];
     this.list_of_messages_files=[];
@@ -856,6 +873,8 @@ export class ChatComponent implements OnInit  {
                   if(r[1]==this.compteur_get_messages){
                     this.list_of_messages_files[i]=SafeURL;
                   }
+
+                 
                   
                 })
               }
@@ -918,6 +937,8 @@ export class ChatComponent implements OnInit  {
       
     })
   }
+
+  
 
 
   /*************************************DISPLAY CHAT***********************************/
@@ -3086,6 +3107,9 @@ chat_service_managment_function(msg){
               })
             })
             this.reload_list_of_files_subject.next(true)
+            if(msg[0].attachment_type=="file_attachment"  && msg[0].attachment_name.includes('contract')){
+              this.get_last_contract_involved(true)
+            }
           }
           else{
             this.list_of_messages.splice(0,0,message);
@@ -3242,6 +3266,9 @@ chat_service_managment_function(msg){
                 })
               })
               this.reload_list_of_files_subject.next(true)
+              if(msg[0].attachment_type=="file_attachment"  && msg[0].attachment_name.includes('contract')){
+                this.get_last_contract_involved(false)
+              }
             }
             else{
               this.list_of_messages_files.splice(0,0,false)
@@ -3370,6 +3397,9 @@ chat_service_managment_function(msg){
             }
             if(msg[0].message.attachment_type=="picture_attachment" ||msg[0].message.attachment_type=="file_attachment" ){
               this.reload_list_of_files_subject.next(true)
+              if(msg[0].message.attachment_type=="file_attachment"  && msg[0].message.attachment_name.includes('contract')){
+                this.get_last_contract_involved(true)
+              }
             }
           }
           else{
@@ -3397,7 +3427,10 @@ chat_service_managment_function(msg){
                 }
               }
               if(msg[0].message.attachment_type=="picture_attachment" ||msg[0].message.attachment_type=="file_attachment" ){
-                this.reload_list_of_files_subject.next(true)
+                this.reload_list_of_files_subject.next(true);
+                if(msg[0].message.attachment_type=="file_attachment"  && msg[0].message.attachment_name.includes('contract')){
+                  this.get_last_contract_involved(false)
+                }
               }
             }
             else{
@@ -3509,6 +3542,7 @@ chat_service_managment_function(msg){
             this.list_of_messages[i].list_of_users_in_the_group=msg[0].list_of_users_in_the_group;
           }
         }
+        this.get_last_contract_involved(true)
         this.display_exit.emit({friend_id:msg[0].id_user,message:msg[0]});
         this.cd.detectChanges;
       }
@@ -3564,6 +3598,9 @@ chat_service_managment_function(msg){
       }
      
       this.cd.detectChanges
+    }
+    else if(msg[0].server_message=="abort_contract" ){
+      this.get_last_contract_involved((this.friend_type=='user')?false:true)
     }
     else if(msg[0].server_message=="block" ){
       this.blocking_managment.emit({friend_id:msg[0].id_user_blocking,who_is_blocked:"me"})
@@ -3971,19 +4008,235 @@ onResized(event: ResizedEvent) {
 
 
 
-
+  have_a_contract_involved=false;
+  list_of_signing_members=[];
+  contract_name:string;
+  id_contract=0;
+  show_red_contract_notification=false;
   show_green_contract_notification=false;
+  contract_value:any;
+
+
+
+  get_last_contract_involved(is_group){
+    this.chatService.get_last_contract_involved(this.friend_id,is_group).subscribe(r=>{
+      if(r[0].nothing){
+        this.have_a_contract_involved=false;
+        this.contract_data_retrieved=true;
+        this.show_red_contract_notification=false;
+        this.show_green_contract_notification=false;
+      }
+      else{
+        
+        this.have_a_contract_involved=true;
+        this.list_of_signing_members=r[0].list_of_signing_members;
+        this.contract_name=r[0].contract_name;
+        this.id_contract=r[0].id;
+
+        if(this.friend_type=='user'){
+          if(this.list_of_signing_members.length==2){
+            this.show_green_contract_notification=true;
+          }
+          else{
+            this.show_red_contract_notification=true;
+          }
+
+          this.list_of_members_for_contract=[this.current_user_id,this.friend_id];
+
+          this.list_of_members_pp_for_contract[this.friend_id]=this.friend_picture;
+          this.list_of_members_names_for_contract[this.friend_id]=this.friend_name;
+          this.list_of_members_pseudos_for_contract[this.friend_id]=this.friend_pseudo;
+
+          this.list_of_members_pp_for_contract[this.current_user_id]=this.current_user_profile_picture;
+          this.list_of_members_names_for_contract[this.current_user_id]=this.current_user_name;
+          this.list_of_members_pseudos_for_contract[this.current_user_id]=this.current_user_pseudo;
+        
+          this.contract_data_retrieved=true;
+        }
+        else{
+         
+          this.chatService.get_group_chat_information(this.friend_id).subscribe(info=>{
+            let list_of_receivers_ids=info[0].list_of_receivers_ids;
+            this.list_of_members_for_contract=list_of_receivers_ids;
+            let names_retrieved=false;
+            let pp_retrieved=false;
+            let list_of_users_names={};
+            let list_of_members_pseudos_for_contract={};
+            let list_of_users_profile_pictures={};
+
+            for(let i=0;i<list_of_receivers_ids.length;i++){
+              this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).subscribe(p=>{
+                let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                list_of_users_profile_pictures[list_of_receivers_ids[i]]=SafeURL;
+                pp_retrieved=true;
+                check_all(this);
+               
+              })
+              this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).subscribe(r=>{
+                list_of_users_names[list_of_receivers_ids[i]]=r[0].firstname;
+                list_of_members_pseudos_for_contract[list_of_receivers_ids[i]]=r[0].nickname;
+                names_retrieved=true;
+                check_all(this);
+              })
+
+              function check_all(THIS){
+                if(names_retrieved && pp_retrieved){
+                    THIS.contract_data_retrieved=true;
+                    THIS.list_of_members_pp_for_contract=list_of_users_profile_pictures;
+                    THIS.list_of_members_names_for_contract=list_of_users_names;
+                    THIS.list_of_members_pseudos_for_contract=list_of_members_pseudos_for_contract;
+                }
+              }
+             
+            }
+
+            let compt=0
+            for(let i =0;i<this.list_of_signing_members.length;i++){
+              if(list_of_receivers_ids.indexOf(this.list_of_signing_members[i])>=0){
+                compt+=1;
+              }
+            }
+
+            if(compt==list_of_receivers_ids.length){
+              this.show_green_contract_notification=true;
+            }
+            else{
+              this.show_red_contract_notification=true;
+            }
+
+          })
+
+          
+        }
+        
+      }
+    })
+  }
   contract() {
-    
+    let page_number=0;
+    if(this.have_a_contract_involved){
+      if(this.list_of_signing_members.indexOf(this.current_user_id)>=0){
+        page_number=2;
+      } 
+      else{
+        page_number=1;
+      }
+     
+    }
+
     const dialogRef = this.dialog.open(PopupContractComponent, {
-      //page 0 : envoyer un contrat
-      //page 1 : répondre à un contrat
-      //page 2 : liste des réponses
-      data: {page:2,},
+      data: {
+        id_user:this.current_user_id,
+        id_contract:this.id_contract,
+        page:page_number,
+        list_of_members_for_contract:this.list_of_members_for_contract,
+        list_of_signing_members:this.list_of_signing_members,
+        list_of_members_pp_for_contract:this.list_of_members_pp_for_contract,
+        list_of_members_names_for_contract:this.list_of_members_names_for_contract,
+        list_of_members_pseudos_for_contract:this.list_of_members_pseudos_for_contract,
+        contract_name:this.contract_name,
+      
+      },
       panelClass: "popupContractClass"
-    });
+    }).afterClosed().subscribe(result => {
+      if(result){
+        if(result.abort){
+          
+          let message_to_send ={
+            id_user:this.current_user_id,   
+            id_receiver:this.friend_id,  
+            message:"abort_contract",
+            is_an_attachment:false,
+            is_from_server:true,
+            id_chat_section:this.id_chat_section,
+            chat_section_name:this.list_of_chat_sections[this.list_of_chat_sections_id.indexOf(this.id_chat_section)],
+            is_a_response:this.respond_to_a_message,
+            id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
+            message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
+            status:"abort_contract",
+            id_contract:result.id_contract,
+            is_a_group_chat:(this.friend_type=='user')?false:true,
+          }
+          this.chatService.messages.next(message_to_send);
+          this.have_a_contract_involved=false;
+          this.show_red_contract_notification=false;
+          this.show_green_contract_notification=false;
+        }
+        else{
+          this.contract_data_retrieved=false;
+          let list_of_signing_members=[this.current_user_id];
+          if(page_number==0){
+            this.chatService.add_contract(this.friend_id,(this.friend_type=='user')?false:true,list_of_signing_members,result.file_name).subscribe(r=>{
 
+              this.send_contract(result)
+            })
+          }
+          else{
+            this.chatService.update_contract(this.id_contract).subscribe(r=>{
+              this.list_of_signing_members.push(this.current_user_id);
+              this.list_of_members_pp_for_contract[this.current_user_id]=this.current_user_profile_picture;
+              this.list_of_members_names_for_contract[this.current_user_id]=this.current_user_name;
+              this.list_of_members_pseudos_for_contract[this.current_user_id]=this.current_user_pseudo;
+              this.show_red_contract_notification=true;
+              this.have_a_contract_involved=true;
+              this.contract_data_retrieved=true;
+              this.send_contract(result);
+            })
+          }
+         
+  
+          
+      
+  
+        }
+       
+     
 
+        
+      }
+    })
+
+  }
+
+  send_contract(result){
+    this.chatService.retrieve_contract(result.file_name).subscribe(file=>{
+      let url = (window.URL) ? window.URL.createObjectURL(file) : (window as any).webkitURL.createObjectURL(file);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.contract_value=SafeURL;
+       this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,result.file_name,0).subscribe(r=>{
+          this.chatService.chat_upload_pdf(file,r[0].value,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(u=>{
+            let message ={
+              id_user_name:this.current_user_pseudo,
+              id_user:this.current_user_id,   
+              id_receiver:this.friend_id,  
+              message:null,
+              id_chat_section:this.id_chat_section,
+              attachment_name:r[0].value,
+              attachment_type:"file_attachment",
+              is_a_response:this.respond_to_a_message,
+              id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
+              message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
+              list_of_users_who_saw:[this.current_user_id],
+              list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
+              is_an_attachment:true,
+              size:result.size,
+              is_from_server:false,
+              status:"sent",
+              is_a_group_chat:(this.friend_type=='user')?false:true,
+              chat_friend_id:this.chat_friend_id,
+            };
+            this.index_of_show_pp_right=this.index_of_show_pp_right+1;
+            this.list_of_show_pp_left.splice(0,0,false);
+            this.list_of_messages_files.splice(0,0,this.contract_value);
+            this.list_of_messages_pictures.splice(0,0,null);
+            this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
+            this.list_of_messages.splice(0,0,(message));
+            
+            this.chatService.messages.next(message);
+          })
+        })
+    })
   }
 
 }

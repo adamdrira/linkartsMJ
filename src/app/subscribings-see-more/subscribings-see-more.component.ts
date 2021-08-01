@@ -63,8 +63,6 @@ export class SubscribingsSeeMoreComponent implements OnInit,OnDestroy  {
 
   protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
-    // This aborts all HTTP requests.
-    console.log("in ng on destroy")
     this.ngUnsubscribe.next();
     // This completes the subject properlly.
     this.ngUnsubscribe.complete();
@@ -88,20 +86,16 @@ export class SubscribingsSeeMoreComponent implements OnInit,OnDestroy  {
         for (let j=0; j<i;j++){
           if(time > this.convert_timestamp_to_number(list[j].createdAt)){
             list.splice(j, 0, list.splice(i, 1)[0]);
-            
-          }
-          if(j==list.length -2 ){
-            this.list_of_contents_sorted=true;
-            this.last_timestamp=list[list.length-1].createdAt;
           }
         }
       }
+      this.list_of_contents_sorted=true;
+      this.last_timestamp=list[list.length-1].createdAt;
       this.can_show_more=true;
     }
-    else{
+    else {
      
       this.list_of_contents_sorted=true;
-      this.last_timestamp=list[0].createdAt;
       this.can_show_more=false;
       this.function_manage_show_more()
     }

@@ -10,6 +10,7 @@ import { ChatRightContainerComponent } from '../chat-right-container/chat-right-
 
 import { PopupChatGroupMembersComponent } from '../popup-chat-group-members/popup-chat-group-members.component';
 import { PopupChatSearchComponent } from '../popup-chat-search/popup-chat-search.component';
+import { PopupContractComponent } from '../popup-contract/popup-contract.component';
 
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -60,6 +61,7 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     ChatRightContainerComponent,
     PopupChatGroupMembersComponent,
     PopupChatSearchComponent,
+    PopupContractComponent,
   ],
   imports: [
     CommonModule,
@@ -97,6 +99,7 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     PickerModule,
     EmojiModule,
     NgxChartsModule,
+    
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

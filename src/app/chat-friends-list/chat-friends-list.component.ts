@@ -129,7 +129,7 @@ export class ChatFriendsListComponent implements OnInit {
 
   //chat_friends and groups
   list_of_chat_friends_ids:number[]=[]; // id de la liste list_of_chat_friends
-  number_of_friends_to_show:number;
+  number_of_friends_to_show:number=10;
   list_of_friends_types:any[]=[];
   list_of_friends_certifications=[];
   list_of_friends_profile_pictures:any[]=[];
@@ -145,6 +145,7 @@ export class ChatFriendsListComponent implements OnInit {
   list_of_last_connection_dates=[];
   list_of_groups_retrieved=false;
   list_of_groups_ids=[];
+  can_show_more_friends=false;
   // for chat component
   chat_friend_id:number; // id de la list list_of_chat_friends
   friend_id: number;
@@ -155,7 +156,7 @@ export class ChatFriendsListComponent implements OnInit {
   friend_picture: SafeUrl;
   // for chat component when clicking "others"
   waiting_friend_id: number;
-  waiting_friend_type:string;
+  waiting_friend_type:string="user";
   waiting_chat_friend_id:number;
   waiting_friend_pseudo: number;
   waiting_friend_certification:any;
@@ -315,30 +316,6 @@ export class ChatFriendsListComponent implements OnInit {
     /**********************************************SCROLL MANAGMENT ************************** */
     /**********************************************SCROLL MANAGMENT ************************** */
 
-    setInterval(() => {
-      if((this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.8)){
-        if(this.search_more_propositions && this.display_all_searching_proppositions){
-          this.get_all_searching_propositions();
-        }
-        else if(this.list_of_friends_retrieved && this.get_friends && !this.get_propositions && this.number_of_friends_to_show<this.list_of_friends_ids.length){
-          this.number_of_friends_to_show+=10;
-          this.cd.detectChanges();
-        }
-        else if(this.list_of_spams_retrieved && this.get_spams && !this.get_propositions && this.number_of_spams_to_show<this.list_of_spams_ids.length){
-          this.number_of_spams_to_show+=10;
-          this.cd.detectChanges();
-        }
-        else if(this.opened_category_for_research==1 && this.get_propositions && this.loading_other_propositions && this.display_propositions_groups && this.number_of_groups_to_show<this.list_of_propositions_groups_ids.length){
-          this.number_of_groups_to_show+=10;
-        }
-        else if(this.display_add_a_friend_to_a_group &&  this.number_of_new_friends_to_show<this.list_of_new_friends_ids.length){
-          this.number_of_new_friends_to_show+=10;
-        }
-        else if((this.opened_category_for_research==0 || this.select_group_chat_contacts) && this.loading_other_propositions && this.display_other_contacts &&  this.number_of_new_friends_to_show<(this.list_of_related_contacts_names.length + this.list_of_other_contacts_names.length)){
-          this.number_of_new_friends_to_show+=10;
-        }
-      }
-    }, 500);
 
     setInterval(() => {
       if(this.list_of_friends_retrieved){
@@ -367,14 +344,7 @@ export class ChatFriendsListComponent implements OnInit {
     })
 
     
-    /*this.Profile_Edition_Service.retrieve_my_profile_picture().subscribe(r=> {
-        
-      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.profile_picture = SafeURL;
-      this.profile_picture_retrieved=true;
-      
-    });*/
+  
     
     this.sort_friends_list();
     this.sort_spams_list();
@@ -394,82 +364,103 @@ export class ChatFriendsListComponent implements OnInit {
     }
   }
 
- 
+
   sort_friends_list() {
     this.route.data.subscribe( resp => {
       let r=resp.chat_uitt;
       let current_user=r[0].current_user
-      let friends = r[0].friends
+      let friends = r[0].friends;
+
+      let groups=r[0].groups;
       if(friends.length>0){
         let compt=0;
         let compt_pp=0;
+        let list_of_groups=[]
         for(let i=0;i<friends.length;i++){
-          this.list_of_chat_friends_ids[i]=friends[i].id;
-          let data_retrieved=false;
           let last_messages_retrieved=false;
           let real_friend_retrieved=false;
-          if(friends[i].id_user==current_user){
-              this.list_of_friends_types[i]='user';
-              this.list_of_friends_users_only[i]=friends[i].id_receiver;
-              this.list_of_friends_ids[i]=friends[i].id_receiver;
-              
-              this.list_of_friends_date[i]=new Date(friends[i].date).getTime()/1000;
-              this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_receiver).subscribe(s=>{
-                this.list_of_friends_pseudos[i]=s[0].nickname;
-                this.list_of_friends_certifications[i]=s[0].certified_account;
-                this.list_of_friends_names[i]=s[0].firstname;
-                data_retrieved=true;
-                first_check(this)
-              });
-
-              this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).subscribe(t=> {
-                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_pictures_by_ids_users[friends[i].id_receiver] = SafeURL;
-                compt_pp++
-                if(compt_pp==friends.length){
-                  this.sort_list_of_profile_pictures()
-                }
-              });
-
-              
-            
+          if(friends[i].is_a_group_chat){
+            list_of_groups.push(friends[i])
+            first_check(this)
           }
           else{
-              this.list_of_friends_types[i]='user';
-              this.list_of_friends_ids[i]=friends[i].id_user;
-              this.list_of_friends_users_only[i]=friends[i].id_user;
-              this.list_of_friends_date[i]=new Date(friends[i].date).getTime()/1000;
-              this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_user).subscribe(s=>{
-                this.list_of_friends_pseudos[i]=s[0].nickname;
-                this.list_of_friends_certifications[i]=s[0].certified_account;
-                this.list_of_friends_names[i]=s[0].firstname;
-                data_retrieved=true;
-                first_check(this)
-              });
+            this.list_of_chat_friends_ids.push(friends[i].id);
+            
+            if(friends[i].id_user==current_user){
+                this.list_of_friends_types.push('user');
+                this.list_of_friends_users_only.push(friends[i].id_receiver);
+                this.list_of_friends_ids.push(friends[i].id_receiver);
+                this.list_of_friends_date.push(new Date(friends[i].date).getTime()/1000);
+                let indice_friend=this.list_of_friends_ids.indexOf(friends[i].id_receiver);
 
-              this.Profile_Edition_Service.retrieve_profile_picture(  friends[i].id_user ).subscribe(t=> {
-                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_pictures_by_ids_users[friends[i].id_user] = SafeURL;
-                compt_pp++
-                if(compt_pp==friends.length){
-                  this.sort_list_of_profile_pictures()
-                }
-              });
+                this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_receiver).subscribe(s=>{
+                  this.list_of_friends_pseudos[indice_friend]=s[0].nickname;
+                  this.list_of_friends_certifications[indice_friend]=s[0].certified_account;
+                  this.list_of_friends_names[indice_friend]=s[0].firstname;
+                  first_check(this)
+                });
+  
+                let id_receiver=friends[i].id_receiver 
+                this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).subscribe(t=> {
+                  let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                  this.list_of_pictures_by_ids_users[id_receiver] = SafeURL;
+                  compt_pp++
+                  if(compt_pp==friends.length){
+                    this.sort_list_of_profile_pictures()
+                  }
+                });
+  
+                
+              
+            }
+            else{
+                this.list_of_friends_types.push('user');
+                this.list_of_friends_ids.push(friends[i].id_user);
+                this.list_of_friends_users_only.push(friends[i].id_user);
+                this.list_of_friends_date.push(new Date(friends[i].date).getTime()/1000);
+                let indice_friend=this.list_of_friends_ids.indexOf(friends[i].id_user);
+
+                this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_user).subscribe(s=>{
+                  this.list_of_friends_pseudos[indice_friend]=s[0].nickname;
+                  this.list_of_friends_certifications[indice_friend]=s[0].certified_account;
+                  this.list_of_friends_names[indice_friend]=s[0].firstname;
+                  first_check(this)
+                });
+  
+                let id_user=friends[i].id_user 
+                this.Profile_Edition_Service.retrieve_profile_picture(  friends[i].id_user ).subscribe(t=> {
+                  let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                  this.list_of_pictures_by_ids_users[id_user] = SafeURL;
+                  compt_pp++
+                  if(compt_pp==friends.length){
+                    this.sort_list_of_profile_pictures()
+                  }
+                });
+            }
+
+            
           }
-
+         
           function first_check(THIS){
-            if(data_retrieved ){
               compt ++;
               if(compt==friends.length){
-                THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).subscribe(u=>{
-                  THIS.list_of_friends_last_message=u[0].list_of_friends_messages;
+
+                if(THIS.list_of_friends_ids.length>0){
+                  THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).subscribe(u=>{
+                    THIS.list_of_friends_last_message=u[0].list_of_friends_messages;
+                    last_messages_retrieved=true;
+                    last_check(THIS)
+                  });
+                }
+                else{
                   last_messages_retrieved=true;
                   last_check(THIS)
-                });
+                }
+               
 
-                THIS.chatService.get_my_real_friend(THIS.list_of_friends_ids).subscribe(v=>{
+                THIS.chatService.get_my_real_friend().subscribe(v=>{
                   if(v[0].message){
                     THIS.friend_id=v[0][0].id_receiver;
                   }
@@ -482,7 +473,6 @@ export class ChatFriendsListComponent implements OnInit {
 
 
               }
-            }
             
           }
 
@@ -494,127 +484,272 @@ export class ChatFriendsListComponent implements OnInit {
               THIS.friend_name=THIS.list_of_friends_names[ind];
               THIS.friend_pseudo=THIS.list_of_friends_pseudos[ind];
               THIS.friend_certification=THIS.list_of_friends_certifications[ind];
-              THIS.sort_friends_groups_chats_list();
+              THIS.sort_friends_groups_chats_list(groups,list_of_groups)
             }
             
           }
+
+         
         }
       }
       
     })
   };
 
-  
-  sort_friends_groups_chats_list(){
+ 
+
+
+  sort_friends_groups_chats_list(groups,list_of_groups){
     let len =this.list_of_friends_ids.length;
-    this.route.data.subscribe( resp => {
-      let l=resp.chat_mlog;
-      let list_of_names=[]
-      if(l[0].length>0){
-        for(let k=0;k<l[0].length;k++){
-          
-          list_of_names.push(l[0][k].name)
-          this.list_of_friends_names[len+k]=l[0][k].name;
-          this.list_of_friends_pseudos[len+k]=l[0][k].name;
-          this.list_of_friends_certifications[len+k]=null;
-          this.list_of_groups_ids[k]=l[0][k].id;
-          if(k==l[0].length-1){
-            this.chatService.get_list_of_groups_I_am_in( this.list_of_groups_ids).subscribe(r=>{
-              let compt=0;
+    if(list_of_groups.length>0){
+      let compt=0;
               
-              let list_of_ids=[]
-              for(let i=0;i<r[0].friends.length;i++){
-                list_of_ids.push(r[0].friends[i].id_receiver);
-                this.list_of_chat_friends_ids[len+i]=r[0].friends[i].id;
-                this.list_of_friends_ids[len+i]=r[0].friends[i].id_receiver;
-                this.list_of_friends_date[len+i]=new Date(r[0].friends[i].date).getTime()/1000;
-                this.list_of_friends_types[len+i]='group';
-                this.chatService.retrieve_chat_profile_picture(r[0].friends[i].chat_profile_pic_name,r[0].friends[i].profile_pic_origin).subscribe(t=> {
-                  let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  this.list_of_pictures_by_ids_groups[r[0].friends[i].id_receiver] = SafeURL;
-                  compt ++;
-                  if(compt==r[0].friends.length){
-                    this.sort_list_of_profile_pictures();
-                  }
-                });
+      let list_of_ids=[];
+      for(let i=0;i<list_of_groups.length;i++){
+       
+        let friend_data=list_of_groups[i]
+        let group_data=groups[groups.findIndex(x => x.id === friend_data.id_receiver)]
+        this.list_of_friends_names[i+len]=group_data.name;
+        this.list_of_friends_pseudos[i+len]=group_data.name;
+        this.list_of_friends_certifications[i+len]=null;
+        this.list_of_groups_ids[i]=group_data.id;
 
-                
-              }
-              let last_friends_retrieved=false;
-              let real_friend_retrieved=false;
-              this.chatService.get_last_friends_groups_message(list_of_ids).subscribe(u=>{
+        
+        this.list_of_chat_friends_ids[i+len]=friend_data.id;
+        this.list_of_friends_ids[i+len]=friend_data.id_receiver;
+        list_of_ids.push(friend_data.id_receiver)
+        this.list_of_friends_date[i+len]=new Date(friend_data.date).getTime()/1000;
+        this.list_of_friends_types[i+len]='group';
 
-                this.list_of_friends_last_message=this.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
-                last_friends_retrieved=true;
-                last_check(this)
-              });
-
-              this.chatService.get_my_last_real_friend(list_of_ids,this.friend_id).subscribe(v=>{
-                if(!(v[0][0].nothing_found)){
-                  this.friend_id=v[0][0].id_receiver;
-                  this.friend_type=(v[0][0].is_a_group_chat)?'group':'user';
-                }
-                else{
-                  this.friend_type='user';
-                  this.friend_id=this.list_of_friends_ids[0];
-                }
-                real_friend_retrieved=true;
-                last_check(this)
-              });
-
-
-              function last_check(THIS){
-                if(last_friends_retrieved && real_friend_retrieved){
-                  let ind = 0;
-                  for(let i=0;i<THIS.list_of_friends_ids.length;i++){
-                    if(THIS.list_of_friends_ids[i]== THIS.friend_id && THIS.list_of_friends_types[i]==THIS.friend_type){
-                      ind=i;
-                    }
-                  }
-                  if(ind<THIS.list_of_friends_ids.length-1){
-                    THIS.number_of_friends_to_show=ind+10;
-                  }
-                  else{
-                    THIS.number_of_friends_to_show=ind;
-                  }
-                  THIS.id_chat_section=(THIS.list_of_friends_last_message[ind])?THIS.list_of_friends_last_message[ind].id_chat_section:1;
-                  THIS.friend_type=(THIS.list_of_friends_last_message[ind].is_a_group_chat)?'group':'user';
-                  THIS.friend_name=THIS.list_of_friends_names[ind];
-                  THIS.friend_pseudo=THIS.list_of_friends_pseudos[ind];
-                  THIS.friend_certification=THIS.list_of_friends_certifications[ind]
-                  THIS.chat_friend_id=THIS.list_of_chat_friends_ids[ind];
-                  THIS.sort_list_of_groups_and_friends();
-                }
-                
-              }
-            })
+        this.chatService.retrieve_chat_profile_picture(friend_data.chat_profile_pic_name,friend_data.profile_pic_origin).subscribe(t=> {
+          let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_pictures_by_ids_groups[friend_data.id_receiver] = SafeURL;
+          compt ++;
+          if(compt==list_of_groups.length){
+            this.sort_list_of_profile_pictures();
           }
+        });
+
+        
+      }
+      let last_friends_retrieved=false;
+      let real_friend_retrieved=false;
+      this.chatService.get_last_friends_groups_message(list_of_ids).subscribe(u=>{
+
+        this.list_of_friends_last_message=this.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
+        last_friends_retrieved=true;
+        last_check(this)
+      });
+
+      this.chatService.get_my_last_real_friend(list_of_ids,this.friend_id).subscribe(v=>{
+        if(!(v[0][0].nothing_found)){
+          this.friend_id=v[0][0].id_receiver;
+          this.friend_type=(v[0][0].is_a_group_chat)?'group':'user';
+        }
+        else{
+          this.friend_type='user';
+          this.friend_id=this.list_of_friends_ids[0];
+        }
+        real_friend_retrieved=true;
+        last_check(this)
+      });
+
+      function last_check(THIS){
+        if(last_friends_retrieved && real_friend_retrieved){
+          let ind = 0;
+          for(let i=0;i<THIS.list_of_friends_ids.length;i++){
+            if(THIS.list_of_friends_ids[i]== THIS.friend_id && THIS.list_of_friends_types[i]==THIS.friend_type){
+              ind=i;
+            }
+          }
+          THIS.id_chat_section=(THIS.list_of_friends_last_message[ind])?THIS.list_of_friends_last_message[ind].id_chat_section:1;
+          THIS.friend_type=(THIS.list_of_friends_last_message[ind].is_a_group_chat)?'group':'user';
+          THIS.friend_name=THIS.list_of_friends_names[ind];
+          THIS.friend_pseudo=THIS.list_of_friends_pseudos[ind];
+          THIS.friend_certification=THIS.list_of_friends_certifications[ind]
+          THIS.chat_friend_id=THIS.list_of_chat_friends_ids[ind];
+          THIS.sort_list_of_groups_and_friends();
         }
         
       }
-      else{
-        this.friend_type='user';
-        this.can_sort_list_of_profile_pictures=true;
-        if(this.list_of_pp_sorted_tried){
-          this.sort_list_of_profile_pictures()
+
+    }
+    else{
+      this.friend_type='user';
+      this.can_sort_list_of_profile_pictures=true;
+      this.can_show_more_friends=true;
+      if(this.list_of_pp_sorted_tried){
+        this.sort_list_of_profile_pictures()
+      }
+      this.get_connections_status();
+      this.list_of_friends_retrieved=true;
+      this.active_section_managment();
+    }
+  }
+
+
+  sort_more_friends_list() {
+    this.can_sort_list_of_profile_pictures=false;
+    this.list_of_pp_sorted_tried=false;
+    this.chatService.get_list_of_users_I_talk_to(this.number_of_friends_to_show).subscribe( r => {
+      let current_user=r[0].current_user
+      let friends = r[0].friends;
+      let groups=r[0].groups;
+      if(friends.length>0){
+        let compt=0;
+        let compt_pp=0;
+        let list_of_groups=[]
+        let list_of_friend_ids=[]
+        for(let i=0;i<friends.length;i++){
+          if(friends[i].is_a_group_chat && groups.indexOf(friends[i].id_receiver)<0){
+            list_of_groups.push(friends[i])
+            first_check(this)
+          }
+          else if(this.list_of_chat_friends_ids.indexOf(friends[i].id)<0){
+            this.list_of_chat_friends_ids.push(friends[i].id);
+           
+            if(friends[i].id_user==current_user){
+                this.list_of_friends_types.push('user');
+                this.list_of_friends_users_only.push(friends[i].id_receiver);
+                this.list_of_friends_ids.push(friends[i].id_receiver);
+                list_of_friend_ids.push(friends[i].id_user);
+                this.list_of_friends_date.push(new Date(friends[i].date).getTime()/1000);
+                let indice_friend=this.list_of_friends_ids.indexOf(friends[i].id_receiver);
+
+                this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_receiver).subscribe(s=>{
+                  this.list_of_friends_pseudos[indice_friend]=s[0].nickname;
+                  this.list_of_friends_certifications[indice_friend]=s[0].certified_account;
+                  this.list_of_friends_names[indice_friend]=s[0].firstname;
+                  first_check(this)
+                });
+  
+                let id_receiver=friends[i].id_receiver 
+                this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).subscribe(t=> {
+                  let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                  this.list_of_pictures_by_ids_users[id_receiver] = SafeURL;
+                  compt_pp++
+                  if(compt_pp==friends.length){
+                    this.sort_list_of_profile_pictures()
+                  }
+                });
+  
+                
+              
+            }
+            else{
+                this.list_of_friends_types.push('user');
+                list_of_friend_ids.push(friends[i].id_user);
+                this.list_of_friends_ids.push(friends[i].id_user);
+                this.list_of_friends_users_only.push(friends[i].id_user);
+                this.list_of_friends_date.push(new Date(friends[i].date).getTime()/1000);
+                let indice_friend=this.list_of_friends_ids.indexOf(friends[i].id_user);
+
+                this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_user).subscribe(s=>{
+                  this.list_of_friends_pseudos[indice_friend]=s[0].nickname;
+                  this.list_of_friends_certifications[indice_friend]=s[0].certified_account;
+                  this.list_of_friends_names[indice_friend]=s[0].firstname;
+                  first_check(this)
+                });
+  
+                let id_user=friends[i].id_user 
+                this.Profile_Edition_Service.retrieve_profile_picture(  friends[i].id_user ).subscribe(t=> {
+                  let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                  this.list_of_pictures_by_ids_users[id_user] = SafeURL;
+                  compt_pp++
+                  if(compt_pp==friends.length){
+                    this.sort_list_of_profile_pictures()
+                  }
+                });
+            }
+
+            
+          }
+          else{
+            first_check(this)
+          }
+         
+          function first_check(THIS){
+              compt ++;
+             
+              if(compt==friends.length){
+                if(list_of_friend_ids.length>0){
+                  THIS.chatService.get_last_friends_message(list_of_friend_ids).subscribe(u=>{
+                    THIS.list_of_friends_last_message= THIS.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
+                    THIS.sort_more_friends_groups_chats_list(groups,list_of_groups)
+                  });
+                }
+                else{
+                  THIS.sort_more_friends_groups_chats_list(groups,list_of_groups)
+                }
+               
+
+              }
+            
+          }
+         
         }
-        this.get_connections_status();
-        this.list_of_friends_retrieved=true;
-        this.active_section_managment();
+      }
+      else{
+        this.can_show_more_friends=false;
       }
       
-      
-      
     })
+  };
+
+  sort_more_friends_groups_chats_list(groups,list_of_groups){
+    let len =this.list_of_friends_ids.length;
+    if(list_of_groups.length>0){
+      let compt=0;
+              
+      let list_of_ids=[];
+      for(let i=0;i<list_of_groups.length;i++){
+       
+        let friend_data=list_of_groups[i]
+        let group_data=groups[groups.findIndex(x => x.id === friend_data.id_receiver)];
+        this.list_of_friends_names[i+len]=group_data.name;
+        this.list_of_friends_pseudos[i+len]=group_data.name;
+        this.list_of_friends_certifications[i+len]=null;
+        this.list_of_groups_ids[i]=group_data.id;
+
+        
+        this.list_of_chat_friends_ids[i+len]=friend_data.id;
+        this.list_of_friends_ids[i+len]=friend_data.id_receiver;
+        list_of_ids.push(friend_data.id_receiver)
+        this.list_of_friends_date[i+len]=new Date(friend_data.date).getTime()/1000;
+        this.list_of_friends_types[i+len]='group';
+
+        this.chatService.retrieve_chat_profile_picture(friend_data.chat_profile_pic_name,friend_data.profile_pic_origin).subscribe(t=> {
+          let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_pictures_by_ids_groups[friend_data.id_receiver] = SafeURL;
+          compt ++;
+          if(compt==list_of_groups.length){
+            this.sort_list_of_profile_pictures();
+          }
+        });
+
+        
+      }
+      this.chatService.get_last_friends_groups_message(list_of_ids).subscribe(u=>{
+
+        this.list_of_friends_last_message=this.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
+        this.sort_list_of_groups_and_friends();
+      });
+
+
+    }
+    else{
+      this.sort_list_of_groups_and_friends()
+    }
   }
 
   sort_list_of_groups_and_friends(){
-    let length=this.list_of_friends_ids.length
+    let length=this.list_of_friends_ids.length;
     for(let i=1;i<length;i++){
       for(let j=0;j<i;j++){
-        if(i==1){
-        }
         if(this.list_of_friends_date[i]>this.list_of_friends_date[j]){
           this.list_of_chat_friends_ids.splice(j,0,this.list_of_chat_friends_ids.splice(i,1)[0]);
           this.list_of_friends_last_message.splice(j,0,this.list_of_friends_last_message.splice(i,1)[0]);
@@ -624,10 +759,7 @@ export class ChatFriendsListComponent implements OnInit {
           this.list_of_friends_names.splice(j,0,this.list_of_friends_names.splice(i,1)[0]);
           this.list_of_friends_pseudos.splice(j,0,this.list_of_friends_pseudos.splice(i,1)[0]);
           this.list_of_friends_certifications.splice(j,0,this.list_of_friends_certifications.splice(i,1)[0]);
-          
-          
-          //this.list_of_friends_profile_pictures.splice(j,0,this.list_of_friends_profile_pictures.splice(i,1)[0]);
-        }
+       }
       }
     }
     this.can_sort_list_of_profile_pictures=true;
@@ -636,14 +768,18 @@ export class ChatFriendsListComponent implements OnInit {
     }
     
     this.get_connections_status();
-    this.list_of_friends_retrieved=true;
-    this.active_section_managment();
+    this.can_show_more_friends=true;
+    if(this.number_of_friends_to_show<20){
+      this.list_of_friends_retrieved=true;
+      this.active_section_managment();
+    }
   }
 
   list_of_pp_sorted=false;
   can_sort_list_of_profile_pictures=false;
   list_of_pp_sorted_tried=false;
   sort_list_of_profile_pictures(){
+    
     if(this.can_sort_list_of_profile_pictures){
       let length=this.list_of_friends_ids.length;
       let ind = this.list_of_friends_ids.indexOf(this.friend_id);
@@ -884,6 +1020,8 @@ export class ChatFriendsListComponent implements OnInit {
       this.list_of_friends_certifications.splice(0,0,certification);
       this.list_of_friends_last_message.splice(0,0,event.message);
       this.list_of_friends_users_only.splice(0,0,event.spam_id);
+
+      this.list_of_pictures_by_ids_users[event.spam_id] = profile_picture;
   
       if(this.list_of_spams_ids.length>0){
         this.spam_id=this.list_of_spams_ids[0];
@@ -947,6 +1085,7 @@ export class ChatFriendsListComponent implements OnInit {
           THIS.list_of_friends_ids.splice(0,0,event.spam_id);
           THIS.list_of_friends_names.splice(0,0,name);
           THIS.list_of_friends_profile_pictures.splice(0,0,profile_picture);
+          THIS.list_of_pictures_by_ids_users[event.spam_id] = profile_picture;
           THIS.friend_pp_loaded.splice(0,0,false);
           THIS.list_of_friends_pseudos.splice(0,0,pseudo);
           THIS.list_of_friends_certifications.splice(0,0,certification);
@@ -1212,6 +1351,7 @@ change_message_status(event){
                 this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
                 this.list_of_friends_connected.splice(0,0,false);
                 this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
+                this.list_of_pictures_by_ids_users[event.friend_id] = this.profile_picture;
                 this.friend_pp_loaded.splice(0,0,false);
                 this.list_of_friends_pseudos.splice(0,0,this.current_user_pseudo);
                 this.list_of_friends_certifications.splice(0,0,this.current_user_certification);
@@ -1252,6 +1392,7 @@ change_message_status(event){
                     THIS.list_of_friends_names.splice(0,0,name);
                     THIS.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
                     THIS.list_of_friends_profile_pictures.splice(0,0,picture);
+                    THIS.list_of_pictures_by_ids_users[event.friend_id] = picture
                     THIS.friend_pp_loaded.splice(0,0,false);
                     THIS.list_of_friends_pseudos.splice(0,0,pseudo);
                     THIS.list_of_friends_certifications.splice(0,0,certification);
@@ -2694,6 +2835,7 @@ get_group_chat_name(id,message,value){
       this.list_of_friends_last_message[0].status="received";
       this.list_of_friends_names.splice(0,0,name);
       this.list_of_friends_profile_pictures.splice(0,0,picture);
+      this.list_of_pictures_by_ids_groups[id] = picture;
       this.friend_pp_loaded.splice(0,0,false);
       this.list_of_friends_pseudos.splice(0,0,pseudo);
       this.list_of_friends_certifications.splice(0,0,null);
@@ -2850,6 +2992,7 @@ get_connections_status(){
   }
 
   list_scrolled:boolean = false;
+  
   scroll_on_list(e:any) {
     if (e.target.scrollTop == 0) {
       this.list_scrolled = false;
@@ -2858,7 +3001,34 @@ get_connections_status(){
       this.list_scrolled = true;
     }
     this.cd.detectChanges();
-    return;
+
+    if((this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.8)){
+
+      if(this.search_more_propositions && this.display_all_searching_proppositions){
+        this.get_all_searching_propositions();
+      }
+      else if(this.list_of_friends_retrieved && this.get_friends && !this.get_propositions && this.can_show_more_friends){
+        this.can_show_more_friends=false;
+        this.sort_more_friends_list()
+        this.number_of_friends_to_show+=10;
+        this.cd.detectChanges();
+      }
+      else if(this.list_of_spams_retrieved && this.get_spams && !this.get_propositions && this.number_of_spams_to_show<this.list_of_spams_ids.length){
+        this.number_of_spams_to_show+=10;
+        this.cd.detectChanges();
+      }
+      else if(this.opened_category_for_research==1 && this.get_propositions && this.loading_other_propositions && this.display_propositions_groups && this.number_of_groups_to_show<this.list_of_propositions_groups_ids.length){
+        this.number_of_groups_to_show+=10;
+      }
+      else if(this.display_add_a_friend_to_a_group &&  this.number_of_new_friends_to_show<this.list_of_new_friends_ids.length){
+        this.number_of_new_friends_to_show+=10;
+      }
+      else if((this.opened_category_for_research==0 || this.select_group_chat_contacts) && this.loading_other_propositions && this.display_other_contacts &&  this.number_of_new_friends_to_show<(this.list_of_related_contacts_names.length + this.list_of_other_contacts_names.length)){
+        this.number_of_new_friends_to_show+=10;
+      }
+    }
+
+    //return;
   }
  
   
