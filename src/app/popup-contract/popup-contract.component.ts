@@ -9,7 +9,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 
-const url = 'http://localhost:4600/routes/upload_contract/';
+const url = 'https://www.linkarts.fr/routes/upload_contract/';
 
 @Component({
   selector: 'app-popup-contract',

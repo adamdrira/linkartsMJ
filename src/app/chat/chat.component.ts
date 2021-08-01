@@ -22,7 +22,7 @@ import { merge, fromEvent } from 'rxjs'
 import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
 declare var $: any;
 
-var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
+var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
