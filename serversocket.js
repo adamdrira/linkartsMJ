@@ -208,7 +208,14 @@ wss.on('connection', (ws, req)=>{
          
         }
       }
-      else if(messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji' && messageArray.status!='block'){
+      else if(messageArray.status=='abort_contract'){
+        if (toUserWebSocket && toUserWebSocket.length>0) {
+          for(let i=0;i<toUserWebSocket.length;i++){
+            toUserWebSocket[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend, is_from_server:true, server_message:'abort_contract',message:messageArray,id_user_writing:id_user}]));
+          }
+        }
+      }
+      else if(messageArray.status!='abort_contract'  && messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji' && messageArray.status!='block'){
 
 
         if(id_friend==id_user){
@@ -724,7 +731,21 @@ wss.on('connection', (ws, req)=>{
                 }
               }
             }
-            else if(messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji'){
+            else if(messageArray.status=='abort_contract'){
+              for(let k=0;k<list_of_receivers.length;k++){
+                if(list_of_receivers[k]!=userID){
+                  var toUserWebSocket1 = webSockets[list_of_receivers[k]];
+                  const id_friend1=list_of_receivers[k];
+                  if (toUserWebSocket1 && toUserWebSocket1.length>0) {
+                    for(let i=0;i<toUserWebSocket1.length;i++){
+                      toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend1, is_from_server:true, server_message:'abort_contract',message:messageArray,group_chat_id:messageArray.id_receiver,id_user_writing:id_user}]));
+                    }
+                  }
+                }
+              }
+              
+            }
+            else if(messageArray.status!='abort_contract' && messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji'){
               var toUserWebSocket = webSockets[id_friend];
                     chat_seq.list_of_messages.create({
                       "id_user_name":messageArray.id_user_name,
