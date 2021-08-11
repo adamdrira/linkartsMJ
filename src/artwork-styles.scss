@@ -647,6 +647,13 @@ $default-color: #f9f9f9;
                     word-break: break-word;
                     -webkit-line-clamp: 2;
                     text-align: center;
+
+                    &.h1 {
+                        position: absolute;
+                        color: rgba(0, 0, 0, 0);
+                        top: 0;
+                        left: 0;
+                    }
                 }
                 .second-line{
                     margin-top: 10px;
