@@ -901,6 +901,7 @@
       margin-top: 0px !important;
       border-radius: unset !important;
       box-shadow: unset !important;
+      padding-bottom: 50px !important;
     
     }
   }
@@ -918,15 +919,6 @@
 .account-form-container {
   width: 100%;
   position: relative;
-    @media (max-width: 700px) {
-      padding:20px;
-  
-    }
-    @media (max-width: 500px) {
-      padding: 18px 0px 18px 0px;
-    
-    }
-  
 
   
   //************************************************************

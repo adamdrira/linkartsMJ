@@ -19,6 +19,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { PopupSubscribersComponent } from '../popup-subscribers/popup-subscribers.component';
 import { NavbarService } from '../services/navbar.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -66,7 +68,7 @@ export class ArchivesComponent implements OnInit {
     public dialog: MatDialog,
     private navbar: NavbarService,
     ) {
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -151,13 +153,13 @@ export class ArchivesComponent implements OnInit {
 
   ngOnInit(): void {
     // get other comics archived
-    this.Subscribing_service.get_archives_comics().subscribe(l=>{
+    this.Subscribing_service.get_archives_comics().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
       let r=l[0];
       if(r.length>0){
         let comics_compt=0;
         for (let j=0; j< r.length;j++){
           if(r[j].format=="one-shot"){
-            this.BdOneShotService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
+            this.BdOneShotService.retrieve_bd_by_id(r[j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
               if(info[0].status=="public"){
                 this.list_of_comics[j]=(info[0]);
               }
@@ -170,7 +172,7 @@ export class ArchivesComponent implements OnInit {
             })
           }
           if(r[j].format=="serie"){
-            this.BdSerieService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
+            this.BdSerieService.retrieve_bd_by_id(r[j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
               if(info[0].status=="public"){
                 this.list_of_comics[j]=(info[0]);
               }
@@ -192,13 +194,13 @@ export class ArchivesComponent implements OnInit {
     
       
     // get other drawings archived
-    this.Subscribing_service.get_archives_drawings().subscribe(r=>{
+    this.Subscribing_service.get_archives_drawings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       let l=r[0];
       if(l.length>0){
         let drawings_compt=0;
         for (let j=0; j< l.length;j++){
           if(l[j].format=="one-shot"){
-            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(l[j].publication_id).subscribe(info=>{
+            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(l[j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
               if(info[0].status=="public"){
                 this.list_of_drawings[j]=(info[0]);
               }
@@ -211,7 +213,7 @@ export class ArchivesComponent implements OnInit {
             })
           }
           if(l[j].format=="artbook"){
-            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(l[j].publication_id).subscribe(info=>{
+            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(l[j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
               if(info[0].status=="public"){
                 this.list_of_drawings[j]=(info[0]);
               }
@@ -236,12 +238,12 @@ export class ArchivesComponent implements OnInit {
     })
       
       // get other writings archived
-      this.Subscribing_service.get_archives_writings().subscribe(p=>{
+      this.Subscribing_service.get_archives_writings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
         let k=p[0];
         if(k.length>0){
           let writings_compt=0;
           for (let j=0; j< k.length;j++){
-            this.Writing_Upload_Service.retrieve_writing_information_by_id(k[j].publication_id).subscribe(info=>{
+            this.Writing_Upload_Service.retrieve_writing_information_by_id(k[j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
               if(info[0].status=="public"){
                 this.list_of_writings[j]=(info[0]);
               }
@@ -264,7 +266,7 @@ export class ArchivesComponent implements OnInit {
 
     // get private comics archived
     
-    this.BdOneShotService.retrieve_private_oneshot_bd().subscribe(info=>{
+    this.BdOneShotService.retrieve_private_oneshot_bd().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
       if(Object.keys(info[0]).length>0){
         for (let i=0;i<Object.keys(info[0]).length;i++){
           this.private_list_of_comics.push(info[0][i]);
@@ -275,7 +277,7 @@ export class ArchivesComponent implements OnInit {
       
     })
 
-    this.BdSerieService.retrieve_private_serie_bd().subscribe(inf=>{
+    this.BdSerieService.retrieve_private_serie_bd().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(inf=>{
       if(Object.keys(inf[0]).length>0){
         for (let j=0;j<Object.keys(inf[0]).length;j++){
           this.private_list_of_comics.push(inf[0][j]);
@@ -286,7 +288,7 @@ export class ArchivesComponent implements OnInit {
       
     });
 
-    this.Drawings_Onepage_Service.retrieve_private_oneshot_drawings().subscribe(info=>{
+    this.Drawings_Onepage_Service.retrieve_private_oneshot_drawings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
       if(Object.keys(info[0]).length>0){
         for (let i=0;i<Object.keys(info[0]).length;i++){
           this.private_list_of_drawings.push(info[0][i]);
@@ -302,7 +304,7 @@ export class ArchivesComponent implements OnInit {
       }
     })
 
-    this.Drawings_Artbook_Service.retrieve_private_artbook_drawings().subscribe(inf=>{
+    this.Drawings_Artbook_Service.retrieve_private_artbook_drawings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(inf=>{
       if(Object.keys(inf[0]).length>0){
         for (let j=0;j<Object.keys(inf[0]).length;j++){
           this.private_list_of_drawings.push(inf[0][j]);
@@ -321,7 +323,7 @@ export class ArchivesComponent implements OnInit {
    
 
     // get private writings archived
-    this.Writing_Upload_Service.retrieve_private_writings().subscribe(info=>{
+    this.Writing_Upload_Service.retrieve_private_writings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
       this.private_list_of_writings=info[0];
       this.private_list_of_writings_sorted=true;
       this.initialize_categories(0)
@@ -533,7 +535,7 @@ export class ArchivesComponent implements OnInit {
   list_of_viewers_by_story=[];
   list_of_viewers_by_story_found=[];
   get_stories(){
-    this.Story_service.get_all_my_stories().subscribe(r=>{
+    this.Story_service.get_all_my_stories().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
 
       this.list_of_stories_data = r[0];
       this.list_of_stories_data_received = true;
@@ -543,7 +545,7 @@ export class ArchivesComponent implements OnInit {
 
       if (r[0].length>0){
         for (let i=0;i<r[0].length;i++){
-          this.Story_service.retrieve_story(r[0][i].file_name,window.innerWidth ).subscribe(info=>{
+          this.Story_service.retrieve_story(r[0][i].file_name,window.innerWidth ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
 
             if(r[0][i].file_name.includes(".svg")){
               var reader = new FileReader()
@@ -562,13 +564,13 @@ export class ArchivesComponent implements OnInit {
             }
             
           });
-          this.Story_service.get_list_of_viewers_for_story(r[0][i].id).subscribe(m=>{
+          this.Story_service.get_list_of_viewers_for_story(r[0][i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
             this.number_of_views_by_story[i]=m[0].length;
             if(m[0].length>0){
               this.list_of_viewers_by_story[i]=[];
               let compt=0;
               for (let j=0;j<m[0].length;j++){
-                this.Profile_Edition_Service.retrieve_profile_data(m[0][j].id_user_who_looks).subscribe(l=>{
+                this.Profile_Edition_Service.retrieve_profile_data(m[0][j].id_user_who_looks).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
                   this.list_of_viewers_by_story[i][j]=l[0];
                   compt++;
                   if(compt==m[0].length){
@@ -598,7 +600,7 @@ export class ArchivesComponent implements OnInit {
   }
 
   hide_story(i){
-    this.Story_service.hide_story(this.list_of_stories_data[i].id).subscribe(r=>{
+    this.Story_service.hide_story(this.list_of_stories_data[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.list_of_stories_data.splice(i,1);
       this.list_of_stories.splice(i,1);
     })
@@ -760,12 +762,12 @@ export class ArchivesComponent implements OnInit {
   /**************************************************ADS ******************************* */
   //Archives ads
   get_ads(){
-    this.Subscribing_service.get_archives_ads().subscribe(q=>{
+    this.Subscribing_service.get_archives_ads().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(q=>{
       let m = q[0];
       if(m.length>0){
         let ad_compt=0;
         for (let j=0; j< m.length;j++){
-          this.Ads_service.retrieve_ad_by_id(m[j].publication_id).subscribe(info=>{
+          this.Ads_service.retrieve_ad_by_id(m[j].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
             this.list_of_ads[j]=(info[0]);
             ad_compt+=1;
             if(ad_compt == m.length){
@@ -1191,5 +1193,12 @@ see_more_writings(category_number){
   send_number_of_skeletons(object) {
     this.number_of_skeletons_per_line=object.number;
     this.cd.detectChanges();
+  }
+
+
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

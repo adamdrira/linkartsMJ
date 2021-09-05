@@ -48,6 +48,8 @@ import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faPinterest } from '@fortawesome/free-brands-svg-icons';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 declare var $: any;
 declare var Swiper:any;
@@ -108,7 +110,7 @@ export class AccountComponent implements OnInit {
     @Inject(DOCUMENT) private document: Document,
     ) {
 
-    navbar.visibility_observer_font.subscribe(font=>{
+    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -119,7 +121,7 @@ export class AccountComponent implements OnInit {
     };
 
     this.navbar.setActiveSection(-1);
-    route.data.subscribe(resp => {
+    route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.user_data_by_pseudo;
       if(!r[0]){
         this.page_not_found=true;
@@ -221,14 +223,14 @@ export class AccountComponent implements OnInit {
       if(this.list_of_ads_added && !this.loading_responses && this.opened_section==2  && this.opened_category_ad==1 && this.number_of_ads_responses_to_show<this.list_of_ads_responses.length){
         this.loading_responses=true;
         this.number_of_ads_to_show+=10;
-        this.Ads_service.get_all_my_responses(this.pseudo,10, this.number_of_ads_to_show).subscribe(r => {
+        this.Ads_service.get_all_my_responses(this.pseudo,10, this.number_of_ads_to_show).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
           let len= this.list_of_ads_responses.length
           if (r[0].length>0){
             let compt=0
             for (let i=0;i<r[0].length;i++){
               this.list_of_ads_responses[i+ len]=r[0][i];
               this.list_of_ads_responses_dates[i + len]= get_date_to_show_for_ad(date_in_seconds(this.now_in_seconds,r[0][i].createdAt) );
-                this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).subscribe(m=>{
+                this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
                   if(m[0]){
                     this.list_of_ads_responses_data[i+ len]=m[0];
                   }
@@ -466,7 +468,7 @@ export class AccountComponent implements OnInit {
 
 
     
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       
       let user_news=resp.user_news;
       if(user_news[0]){
@@ -512,7 +514,7 @@ export class AccountComponent implements OnInit {
     }
     else{
       this.location.go(`account/${this.pseudo}`)
-      this.route.data.subscribe( resp => {
+      this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( resp => {
         let s = resp.user;
         let user=this.user_data;
         this.visitor_id=s[0].id
@@ -538,7 +540,7 @@ export class AccountComponent implements OnInit {
           
           this.profile_not_found=true;
           this.author_name = user.society ? user.society : user.firstname;
-          this.navbar.delete_research_from_navbar("Account","unknown",this.user_id).subscribe(l=>{
+          this.navbar.delete_research_from_navbar("Account","unknown",this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
           });
           
           this.user_blocked=false;
@@ -588,11 +590,11 @@ export class AccountComponent implements OnInit {
           this.list_bd_series_added=true;
           this.list_bd_oneshot_added=true;
 
-          this.navbar.add_page_visited_to_history(`/account/reset_password/${this.visitor_id}/${this.visitor_name}/for/${this.user_id}/${this.pseudo}`, this.device_info).subscribe();
+          this.navbar.add_page_visited_to_history(`/account/reset_password/${this.visitor_id}/${this.visitor_name}/for/${this.user_id}/${this.pseudo}`, this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
 
           let id = parseInt(this.route.snapshot.paramMap.get('id'));
           let password = this.route.snapshot.paramMap.get('password');
-          this.Profile_Edition_Service.check_password_for_registration2(id,password).subscribe(r=>{
+          this.Profile_Edition_Service.check_password_for_registration2(id,password).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             if(r[0].user_found){
               this.opened_section=9;//ok
               this.cd.detectChanges()
@@ -615,7 +617,7 @@ export class AccountComponent implements OnInit {
   initialize_page_for_visitor(){
 
 
-    this.Story_service.check_stories_for_account(this.user_id).subscribe(r => {
+    this.Story_service.check_stories_for_account(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
       if(r[0] && r[0].story_found){
         this.list_of_stories[0]=r[0].stories_retrieved;
         this.story_state=r[0].status;
@@ -628,7 +630,7 @@ export class AccountComponent implements OnInit {
       this.story_retrieved=true;
     })
 
-    this.route.data.subscribe( resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( resp => {
       let s = resp.user;
       let user=this.user_data;
       this.visitor_id=s[0].id
@@ -654,7 +656,7 @@ export class AccountComponent implements OnInit {
       }
       else if (user && this.type_of_profile=='account'){
         let compteur_visitor_stats=0;
-        this.NotationService.get_user_public_stats(this.visitor_name).subscribe(r=>{
+        this.NotationService.get_user_public_stats(this.visitor_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.visitor_likes=r[0].likes;
           this.visitor_loves=r[0].loves;
           this.visitor_views=r[0].views;
@@ -662,18 +664,18 @@ export class AccountComponent implements OnInit {
           check_visitor_stats(this);
         })
   
-        this.Subscribing_service.get_all_subscribers_by_pseudo(this.visitor_name).subscribe(r=>{
+        this.Subscribing_service.get_all_subscribers_by_pseudo(this.visitor_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.visitor_subscribers_number=r[0].length;
           compteur_visitor_stats++;
           check_visitor_stats(this);
         })
-        this.navbar.get_number_of_account_viewers(this.visitor_id).subscribe(r=>{
+        this.navbar.get_number_of_account_viewers(this.visitor_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.visitor_number_of_visits=r[0].views;
           compteur_visitor_stats++;
           check_visitor_stats(this);
         });
 
-        this.Edtior_Projects.get_last_emitted_project(this.visitor_id,this.user_id).subscribe(r=>{
+        this.Edtior_Projects.get_last_emitted_project(this.visitor_id,this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           if(r[0] && r[0][0]){
             this.last_emitted_project=r[0][0]
           }
@@ -681,7 +683,7 @@ export class AccountComponent implements OnInit {
           check_visitor_stats(this);
         });
   
-        this.Profile_Edition_Service.retrieve_number_of_contents_by_pseudo(this.visitor_name).subscribe(r=>{
+        this.Profile_Edition_Service.retrieve_number_of_contents_by_pseudo(this.visitor_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.visitor_number_of_comics=r[0].number_of_comics;
           this.visitor_number_of_drawings=r[0].number_of_drawings;
           this.visitor_number_of_writings=r[0].number_of_writings;
@@ -723,7 +725,7 @@ export class AccountComponent implements OnInit {
          
         }
         else{
-          this.navbar.delete_research_from_navbar("Account","unknown",this.user_id).subscribe(l=>{
+          this.navbar.delete_research_from_navbar("Account","unknown",this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
           });
         }
         this.user_blocked=false;
@@ -791,7 +793,7 @@ export class AccountComponent implements OnInit {
             let insta=this.instagram.replace("://","/");
             let list_of_insta=insta.split("/");
             if(list_of_insta && list_of_insta[2]){
-              this.Profile_Edition_Service.retrieve_instagram_data(list_of_insta[2]).subscribe(r=>{
+              this.Profile_Edition_Service.retrieve_instagram_data(list_of_insta[2]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 if(r[0]){
                   //this.number_of_instagram_followers=number_in_k_or_m(r[0].user.edge_followed_by.count);
                 }
@@ -804,14 +806,14 @@ export class AccountComponent implements OnInit {
 
         this.cv_name=this.author.cv;
         if(this.cv_name){
-          this.Profile_Edition_Service.retrieve_cv(this.pseudo).subscribe(r=>{
+          this.Profile_Edition_Service.retrieve_cv(this.pseudo).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             this.cv=r;
           })
         }
         
         if(this.visitor_id<2){
           console.log("in visitor id")
-          this.navbar.get_number_of_account_viewers(this.user_id).subscribe(r=>{
+          this.navbar.get_number_of_account_viewers(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           
             let number_of_visits=number_in_k_or_m(r[0].views);
             let number_of_visits_after_research=number_in_k_or_m(r[0].views_after_research);
@@ -821,7 +823,7 @@ export class AccountComponent implements OnInit {
             this.cd.detectChanges()
           });
 
-          this.navbar.get_number_of_flagship_clicks(this.user_id).subscribe(r=>{
+          this.navbar.get_number_of_flagship_clicks(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             let number_of_flagship_clicks=number_in_k_or_m(r[0].number);
             console.log("number of flagships :")
             console.log(number_of_flagship_clicks)
@@ -833,7 +835,7 @@ export class AccountComponent implements OnInit {
         if (this.visitor_id==user.id){
 
         
-          this.navbar.get_number_of_account_viewers(this.user_id).subscribe(r=>{
+          this.navbar.get_number_of_account_viewers(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           
             this.number_of_visits=number_in_k_or_m(r[0].views);
             this.number_of_visits_after_research=number_in_k_or_m(r[0].views_after_research);
@@ -841,7 +843,7 @@ export class AccountComponent implements OnInit {
             this.cd.detectChanges()
           });
 
-          this.navbar.get_number_of_flagship_clicks(this.user_id).subscribe(r=>{
+          this.navbar.get_number_of_flagship_clicks(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             this.number_of_flagship_clicks=number_in_k_or_m(r[0].number);
             this.number_of_flagship_clicks_retrieved=true;
             this.cd.detectChanges()
@@ -853,7 +855,7 @@ export class AccountComponent implements OnInit {
         }
         else{
           // check if the user author blocked the visitor
-          this.Profile_Edition_Service.check_if_user_blocked(this.user_id).subscribe(r => {
+          this.Profile_Edition_Service.check_if_user_blocked(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
             if(r[0].nothing){
               this.user_blocked=false;
             }
@@ -879,7 +881,7 @@ export class AccountComponent implements OnInit {
         }
        
 
-        this.route.data.subscribe(resp => {
+        this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
           let r=resp.number_of_contents;
           this.number_of_comics=r[0].number_of_comics;
           this.number_of_drawings=r[0].number_of_drawings;
@@ -889,14 +891,14 @@ export class AccountComponent implements OnInit {
           this.cd.detectChanges();
           this.update_background_position(this.opened_section)
           if(!this.mode_visiteur){
-            this.navbar.check_if_research_exists("Account","unknown",this.user_id,this.pseudo,"clicked").subscribe(p=>{
+            this.navbar.check_if_research_exists("Account","unknown",this.user_id,this.pseudo,"clicked").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
               if(!p[0].value){
-                this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
+                this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
               }
             })
           }
           else{
-            this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
+            this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
           } 
         })
 
@@ -925,7 +927,7 @@ export class AccountComponent implements OnInit {
                 data: {usage:"for_chat"},
                 panelClass: "loginComponentClass",
               });
-              dialogRef.afterClosed().subscribe(result => {
+              dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
                 if(result){
                   this.location.go("/chat/" + pseudo_friend + '/' + id_friend)
                   location.reload();
@@ -943,7 +945,7 @@ export class AccountComponent implements OnInit {
                 data: {usage:"for_chat"},
                 panelClass: "loginComponentClass",
               });
-              dialogRef.afterClosed().subscribe(result => {
+              dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
                 if(result){
                   this.location.go("/account/" + pseudo + '/my_account')
                   location.reload();
@@ -961,7 +963,7 @@ export class AccountComponent implements OnInit {
                 data: {usage:"for_chat"},
                 panelClass: "loginComponentClass",
               });
-              dialogRef.afterClosed().subscribe(result => {
+              dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
                 if(result){
                   const dialogRef = this.dialog.open(PopupApplyComponent, {
                     data: {
@@ -1069,7 +1071,7 @@ export class AccountComponent implements OnInit {
   get_subscribings_infos(){
 
 
-    this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information => {
+    this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information => {
       if(information[0].value){
         this.already_subscribed=true;
         this.subscribtion_checked=true;
@@ -1079,7 +1081,7 @@ export class AccountComponent implements OnInit {
       }
     }); 
 
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let information=resp.subscribers;
       if(Object.keys(information).length>0){
         this.subscribed_users_list=information[0];
@@ -1088,7 +1090,7 @@ export class AccountComponent implements OnInit {
       this.update_background_position(this.opened_section)
     });
 
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let information=resp.subscribings;
       this.users_subscribed_to_list= information[0];
       this.cd.detectChanges();
@@ -1106,7 +1108,7 @@ export class AccountComponent implements OnInit {
   display_new_drawing_contents=false;
   no_new_contents=false;
   get_contents_infos(){
-    this.Profile_Edition_Service.get_emphasized_content(this.user_id).subscribe(r=>{
+    this.Profile_Edition_Service.get_emphasized_content(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if (r[0]!=null){
         this.emphasized_artwork=r[0];
         this.emphasized_artwork_added=true;
@@ -1115,7 +1117,7 @@ export class AccountComponent implements OnInit {
       this.update_background_position(this.opened_section)
     });
 
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.new_comics;
       if(!r[0]){
         this.page_not_found=true;
@@ -1125,7 +1127,7 @@ export class AccountComponent implements OnInit {
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
           if(r[0][i].format=="one-shot"){
-            this.BdOneShotService.retrieve_bd_by_id(r[0][i].publication_id).subscribe(s=>{
+            this.BdOneShotService.retrieve_bd_by_id(r[0][i].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
               if(s[0] && s[0].status=="public"){
                 this.new_comic_contents[i]=s[0];
               }
@@ -1141,7 +1143,7 @@ export class AccountComponent implements OnInit {
             })
           }
           else{
-            this.BdSerieService.retrieve_bd_by_id(r[0][i].publication_id).subscribe(s=>{
+            this.BdSerieService.retrieve_bd_by_id(r[0][i].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
               
               if(s[0] && s[0].status=="public"){
                 this.new_comic_contents[i]=s[0];
@@ -1167,7 +1169,7 @@ export class AccountComponent implements OnInit {
       }
     });
 
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.new_drawings;
       if(!r[0]){
         this.page_not_found=true;
@@ -1177,7 +1179,7 @@ export class AccountComponent implements OnInit {
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
           if(r[0][i].format=="one-shot"){
-            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][i].publication_id).subscribe(s=>{
+            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][i].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
               if(s[0] && s[0].status=="public"){
                 this.new_drawing_contents[i]=s[0];
               }
@@ -1193,7 +1195,7 @@ export class AccountComponent implements OnInit {
             })
           }
           else{
-            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][i].publication_id).subscribe(s=>{
+            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][i].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
               if(s[0] && s[0].status=="public"){
                 this.new_drawing_contents[i]=s[0];
               }
@@ -1218,7 +1220,7 @@ export class AccountComponent implements OnInit {
       }
     });
 
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.new_writings;
       if(!r[0]){
         this.page_not_found=true;
@@ -1227,7 +1229,7 @@ export class AccountComponent implements OnInit {
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
-          this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][i].publication_id).subscribe(s=>{
+          this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][i].publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
             if(s[0] && s[0].status=="public"){
               this.new_writing_contents[i]=s[0];
             }
@@ -1254,7 +1256,7 @@ export class AccountComponent implements OnInit {
     
     
 
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.ads;
       if (r[0].length>0){
         for (let i=0;i<r[0].length;i++){
@@ -1271,14 +1273,14 @@ export class AccountComponent implements OnInit {
       this.update_background_position(this.opened_section)
     })
 
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.ads_responses;
       if (r[0].length>0){
         let compt=0
         for (let i=0;i<r[0].length;i++){
           this.list_of_ads_responses[i]=r[0][i];
           this.list_of_ads_responses_dates[i]= get_date_to_show_for_ad(date_in_seconds(this.now_in_seconds,r[0][i].createdAt) ).replace("Envoyée","Réponse envoyée");
-            this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).subscribe(m=>{
+            this.Ads_service.retrieve_ad_by_id(r[0][i].id_ad).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
               if(m[0]){
                 this.list_of_ads_responses_data[i]=m[0];
               }
@@ -1304,7 +1306,7 @@ export class AccountComponent implements OnInit {
 
     /*********************************** COMICS *************************************/
   
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.comics_os;
         this.list_bd_oneshot = r[0];
         this.list_bd_oneshot_added=true;
@@ -1313,7 +1315,7 @@ export class AccountComponent implements OnInit {
         this.get_comics_albums();
       });
 
-      this.route.data.subscribe(resp => {
+      this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
         let r=resp.comics_se;
         this.list_bd_series = r[0];
         this.list_bd_series_added=true;   
@@ -1324,7 +1326,7 @@ export class AccountComponent implements OnInit {
 
      /*********************************** DRAWINGS *************************************/
 
-     this.route.data.subscribe(resp => {
+     this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.drawings_os;
       this.list_drawings_onepage = r[0];
       this.list_drawings_onepage_added=true;
@@ -1333,7 +1335,7 @@ export class AccountComponent implements OnInit {
       this.get_drawings_albums()
     });
     
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.drawings_ar;
       this.list_drawings_artbook = r[0];
       this.list_drawings_artbook_added=true;
@@ -1348,13 +1350,13 @@ export class AccountComponent implements OnInit {
     /*********************************** WRITINGS *************************************/
 
     
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let r=resp.writings;
       this.list_writings = r[0];
       this.list_writings_added=true;
       this.cd.detectChanges();
       this.update_background_position( this.opened_section );
-      this.Albums_service.get_albums_writings(this.user_id).subscribe(information => {
+      this.Albums_service.get_albums_writings(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information => {
         if(Object.keys(information).length!=0){
           for (let i=0; i <Object.keys(information).length;i++){
             this.list_titles_albums_writings_added.push(information[i].album_name);
@@ -1407,7 +1409,7 @@ export class AccountComponent implements OnInit {
 
   get_comics_albums(){
     if(this.list_bd_series_added && this.list_bd_oneshot_added){
-      this.Albums_service.get_albums_comics(this.user_id).subscribe(info => {
+      this.Albums_service.get_albums_comics(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info => {
         let information=info[0].albums;
         if((information).length!=0){
           this.list_bd_albums_status[0]=info[0].standard_albums[0].status;        
@@ -1446,7 +1448,7 @@ export class AccountComponent implements OnInit {
   get_drawings_albums(){
 
     if(this.list_drawings_artbook_added && this.list_drawings_onepage_added){
-      this.Albums_service.get_albums_drawings(this.user_id).subscribe(info => {
+      this.Albums_service.get_albums_drawings(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info => {
         let information =info[0].albums;
         if(information.length!=0){   
           this.list_drawing_albums_status[0]=info[0].standard_albums[0].status;        
@@ -1516,7 +1518,7 @@ export class AccountComponent implements OnInit {
     let compt=0;
     for(let i=0;i<this.list_of_members.length;i++){
 
-      this.Profile_Edition_Service.retrieve_profile_data(this.list_of_members[i]).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_profile_data(this.list_of_members[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
         this.list_of_members_names[i] = r[0].firstname;
         this.list_of_members_pseudos[i] = r[0].nickname;
         compt++;
@@ -1526,12 +1528,12 @@ export class AccountComponent implements OnInit {
         }
       });
 
-      this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_members[i]).subscribe(t=> {
+      this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_members[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         this.list_of_profile_pictures[i]=url;
       });
 
-      this.Profile_Edition_Service.retrieve_cover_picture_stories( this.list_of_members[i]).subscribe(v=> {
+      this.Profile_Edition_Service.retrieve_cover_picture_stories( this.list_of_members[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(v=> {
         let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
         this.list_of_cover_pictures[i]=url;
       });
@@ -1656,7 +1658,7 @@ export class AccountComponent implements OnInit {
     if(this.subscribed_users_list.length == 0) {
       return;
     }
-    this.navbar.add_page_visited_to_history(`/PopupSubscribersComponent`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupSubscribersComponent`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     this.dialog.open(PopupSubscribersComponent, {
       data: {
         subscribers:this.subscribed_users_list,
@@ -1674,7 +1676,7 @@ export class AccountComponent implements OnInit {
     if(this.users_subscribed_to_list.length == 0) {
       return;
     }
-    this.navbar.add_page_visited_to_history(`/PopupSubscribingsComponent`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupSubscribingsComponent`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     this.dialog.open(PopupSubscribingsComponent, {
       data: {
         subscribings:this.users_subscribed_to_list,
@@ -1802,32 +1804,32 @@ export class AccountComponent implements OnInit {
       
 
       if( (i == 0) ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}`,this.device_info).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.location.go(`/account/${this.pseudo}`); 
       }
       else if( i == 1 ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks`,this.device_info).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.location.go(`/account/${this.pseudo}/artworks`); 
       }
       else if( i == 2 ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/ads`,this.device_info).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/ads`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.location.go(`/account/${this.pseudo}/ads`); 
       }
       else if( i == 3 ) {
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/projects`,this.device_info).subscribe(); 
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/projects`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(); 
         this.location.go(`/account/${this.pseudo}/projects`); 
       }
       else if( i == 6 ) { 
         this.opened_subcategory=form_number
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about/${form_number}`,this.device_info).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/about/${form_number}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.location.go(`/account/${this.pseudo}/about/${form_number}`); 
       }
       else if( i == 7 ) { 
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/archives`,this.device_info).subscribe();
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/archives`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.location.go(`/account/${this.pseudo}/archives`); 
       }
       else if( i == 8 ) {
-        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/my_account`,this.device_info).subscribe(); 
+        this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/my_account`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(); 
         this.location.go(`/account/${this.pseudo}/my_account`); 
       }
     }
@@ -1882,15 +1884,15 @@ export class AccountComponent implements OnInit {
     this.add_album_to_load[0]=true;
     this.opened_category=i;
     if( this.opened_category==0 && this.opened_section==1) { 
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/comics`,this.device_info).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/comics`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.location.go(`/account/${this.pseudo}/artworks/comics`); 
     }
     else if(this.opened_category==1 && this.opened_section==1 ) { 
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`,this.device_info).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.location.go(`/account/${this.pseudo}/artworks/drawings`); 
     }
     else if( this.opened_category==2 && this.opened_section==1 ) { 
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/writings`,this.device_info).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.user_id}/artworks/writings`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.location.go(`/account/${this.pseudo}/artworks/writings`); 
     }
     this.add_album=-1;
@@ -1911,7 +1913,7 @@ export class AccountComponent implements OnInit {
           data: {showChoice:true, text:'Voulez-vous quitter ce le mode création ?'},
           panelClass: "popupConfirmationClass",
         });
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
           if(result){
             this.start_add_album(this.add_album)
           }
@@ -2052,7 +2054,7 @@ export class AccountComponent implements OnInit {
 
 
   add_story(){
-    this.navbar.add_page_visited_to_history(`/PopupAddStoryComponent`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupAddStoryComponent`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     const dialogRef = this.dialog.open(PopupAddStoryComponent, {
       data: {user_id:this.user_id},
       panelClass: 'popupAddStoryClass',
@@ -2061,7 +2063,7 @@ export class AccountComponent implements OnInit {
 
 
   change_cover_picture() {
-    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_cover_picture`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_cover_picture`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_cover_picture"},
       panelClass: 'popupUploadPictureClass',
@@ -2069,7 +2071,7 @@ export class AccountComponent implements OnInit {
   }
 
   change_profile_picture() {
-    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_profile_picture`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_profile_picture`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_profile_picture"},
       panelClass: 'popupUploadPictureClass',
@@ -2086,13 +2088,13 @@ export class AccountComponent implements OnInit {
       this.loading_subscribtion=true;
       if(!this.already_subscribed){
         this.already_subscribed=true;
-        this.Subscribing_service.subscribe_to_a_user(this.user_id).subscribe(information=>{
+        this.Subscribing_service.subscribe_to_a_user(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
           if(information[0].subscribtion){
             this.loading_subscribtion=false;
             this.cd.detectChanges();
           }
           else{
-            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.user_id,this.user_id.toString(),'none','none',this.visitor_id,0,"add",false,0).subscribe(l=>{
+            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.user_id,this.user_id.toString(),'none','none',this.visitor_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"subscribtion",
@@ -2119,8 +2121,8 @@ export class AccountComponent implements OnInit {
       }
       else{
         this.already_subscribed=false;
-        this.Subscribing_service.remove_subscribtion(this.user_id).subscribe(information=>{
-          this.NotificationsService.remove_notification('subscribtion',this.user_id.toString(),'none',this.visitor_id,0,false,0).subscribe(l=>{
+        this.Subscribing_service.remove_subscribtion(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+          this.NotificationsService.remove_notification('subscribtion',this.user_id.toString(),'none',this.visitor_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"subscribtion",
@@ -2168,9 +2170,9 @@ export class AccountComponent implements OnInit {
         panelClass: "popupConfirmationClass",
     });
   
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if(result){
-        this.Albums_service.remove_drawing_album(this.list_titles_albums_drawings[i],this.list_drawing_albums_status[i-1]).subscribe(r=>{
+        this.Albums_service.remove_drawing_album(this.list_titles_albums_drawings[i],this.list_drawing_albums_status[i-1]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           location.reload();
         })
       }
@@ -2187,9 +2189,9 @@ export class AccountComponent implements OnInit {
         panelClass: "popupConfirmationClass",
     });
   
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if(result){
-        this.Albums_service.remove_comic_album(this.list_titles_albums_bd[i],this.list_bd_albums_status[i-1]).subscribe(r=>{
+        this.Albums_service.remove_comic_album(this.list_titles_albums_bd[i],this.list_bd_albums_status[i-1]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           location.reload();
         })
       }
@@ -2204,9 +2206,9 @@ export class AccountComponent implements OnInit {
         panelClass: "popupConfirmationClass",
     });
   
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if(result){
-        this.Albums_service.remove_writing_album(this.list_titles_albums_writings[i],this.list_writings_albums_status[i-1]).subscribe(r=>{
+        this.Albums_service.remove_writing_album(this.list_titles_albums_writings[i],this.list_writings_albums_status[i-1]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           location.reload();
         })
       }
@@ -2838,11 +2840,11 @@ block_user(){
         panelClass: "popupConfirmationClass",
     });
   
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if(result){
-          this.Subscribing_service.remove_all_subscribtions_both_sides(this.user_id).subscribe(s=>{
-            this.chatService.remove_friend(this.user_id).subscribe(m=>{
-              this.Profile_Edition_Service.block_user(this.user_id,(m[0].date)?(m[0].date):null).subscribe(r=>{
+          this.Subscribing_service.remove_all_subscribtions_both_sides(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
+            this.chatService.remove_friend(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+              this.Profile_Edition_Service.block_user(this.user_id,(m[0].date)?(m[0].date):null).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 let message_to_send ={
                   id_user_name:this.visitor_name,
                   id_user:this.visitor_id,   
@@ -2881,9 +2883,9 @@ block_user(){
 }
 
 unblock_user(){
-  this.Profile_Edition_Service.unblock_user(this.user_id).subscribe(r=>{
+  this.Profile_Edition_Service.unblock_user(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
     if(r[0].date){
-      this.chatService.add_chat_friend(this.user_id,r[0].date).subscribe(r=>{
+      this.chatService.add_chat_friend(this.user_id,r[0].date).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         location.reload()
       })
     }
@@ -2907,7 +2909,7 @@ report(){
   }
 
   this.report_loading=true;
-  this.Reports_service.check_if_content_reported('account',this.user_id,"unknown",0).subscribe(r=>{
+  this.Reports_service.check_if_content_reported('account',this.user_id,"unknown",0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
     if(r[0].nothing){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois le même compte'},
@@ -2941,12 +2943,12 @@ report(){
   story_state=false;
   watch_story(){
     if(this.story_found){
-      this.navbar.add_page_visited_to_history(`/PopupStoriesComponent/watch_stories`,this.device_info).subscribe();
+      this.navbar.add_page_visited_to_history(`/PopupStoriesComponent/watch_stories`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       const dialogRef = this.dialog.open(PopupStoriesComponent, {
         data: { for_account:true, list_of_users: [this.user_id], index_id_of_user: 0, list_of_data:this.list_of_stories,current_user:this.visitor_id,current_user_name:this.visitor_name},
         panelClass: 'popupStoriesClass'
       });
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
         let list_to_end = result.list_of_users_to_end;
         if(list_to_end.length>0){
             this.story_state=false;
@@ -3019,7 +3021,11 @@ report(){
     this.open_category(i,false)
   }
 
-  ngOnDestroy() {
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
     this.title.setTitle('LinkArts – Collaboration éditoriale');
     this.meta.updateTag({ name: 'description', content: "Une galerie pour exposer vos œuvres et promouvoir votre talent." });
   }
@@ -3065,7 +3071,7 @@ report(){
       }
       this.adding_news=true;
 
-      this.Profile_Edition_Service.add_user_news(this.newsForm.value.news).subscribe(r=>{
+      this.Profile_Edition_Service.add_user_news(this.newsForm.value.news).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.add_news_input=false;
         this.adding_news=false;
         this.list_of_news.splice(0,0,r[0])
@@ -3095,10 +3101,10 @@ report(){
       data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer cette actualité ?'},
       panelClass: "popupConfirmationClass",
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if(result){
         let id=this.list_of_news[i].id
-        this.Profile_Edition_Service.remove_user_news(id).subscribe(r=>{
+        this.Profile_Edition_Service.remove_user_news(id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.add_news_input=false;
           this.adding_news=false;
           this.list_of_news.splice(i,1)
@@ -3175,13 +3181,13 @@ report(){
 
   list_of_artworks_retrieved=false;
   get_list_of_artworks_for_editor(){
-      this.Profile_Edition_Service.get_editor_artworks(this.pseudo).subscribe(r=>{
+      this.Profile_Edition_Service.get_editor_artworks(this.pseudo).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.list_of_artworks=r[0];
         this.list_of_artworks_retrieved=true;
 
         if(this.list_of_artworks.length>0){
           for (let i=0;i<r[0].length;i++){
-            this.Profile_Edition_Service.retrieve_editor_artwork_picture(r[0][i].picture_name).subscribe(t=>{
+            this.Profile_Edition_Service.retrieve_editor_artwork_picture(r[0][i].picture_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               this.editor_pictures_by_name[r[0][i].picture_name] = url;
               this.cd.detectChanges()
@@ -3193,7 +3199,7 @@ report(){
   }
 
   remove_editor_artwork(i){
-    this.Profile_Edition_Service.remove_editor_artwork(this.list_of_artworks[i].id).subscribe(r=>{
+    this.Profile_Edition_Service.remove_editor_artwork(this.list_of_artworks[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.list_of_artworks.splice(i,1);
     })
   }
@@ -3216,7 +3222,7 @@ report(){
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.cv},
       panelClass: "popupDocumentClass",
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
@@ -3228,10 +3234,10 @@ report(){
     const dialogRef = this.dialog.open(PopupEditorArtworkComponent, {
       data: {id_user:this.user_id},
       panelClass: "popupEditorArtworkClass",
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if(result){
         this.loading_editor_artworks=true;
-        this.Profile_Edition_Service.retrieve_editor_artwork_picture(result.picture_name).subscribe(t=>{
+        this.Profile_Edition_Service.retrieve_editor_artwork_picture(result.picture_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
   
           let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
           this.editor_pictures_by_name[result.picture_name] = url;
@@ -3344,7 +3350,7 @@ report(){
       },
       panelClass: "popupLinkcollabApplyClass",
     })
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if(result){
         this.router.navigateByUrl('/account/' + this.visitor_name + "/projects" );
       }
@@ -3354,10 +3360,12 @@ report(){
 
   add_flagship_click(){
     if(this.mode_visiteur){
-      this.navbar.add_main_research_to_history("Flagship","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
+      this.navbar.add_main_research_to_history("Flagship","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     }
     
   }
+
+
 }
 
 

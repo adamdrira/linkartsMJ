@@ -8,6 +8,8 @@ import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 export interface reponses {
   author_id:number;
@@ -70,7 +72,7 @@ export class CommentElementComponent implements OnInit {
     private NotationService:NotationService
     
     ) {
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -174,12 +176,12 @@ export class CommentElementComponent implements OnInit {
     this.number_of_likes=this.comment_information.number_of_likes;
     this.likes_checked=true;
 
-    this.NotationService.get_number_of_likes_by_comment(this.comment_information.id).subscribe(r=>{
+    this.NotationService.get_number_of_likes_by_comment(this.comment_information.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.number_of_likes=r[0].length;
       this.number_of_likes_retrieved=true;
     })
     
-    this.NotationService.get_commentary_answers_by_id(this.comment_information.id).subscribe(info=>{
+    this.NotationService.get_commentary_answers_by_id(this.comment_information.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
       
       if(info[0].length!=0){
         for(let i=0;i<info[0].length;i++){
@@ -193,21 +195,21 @@ export class CommentElementComponent implements OnInit {
               see_more:false,
               date:get_date_to_show(date_in_seconds(this.now_in_seconds,info[0][i].createdAt))
             });
-            this.Profile_Edition_Service.retrieve_profile_picture(info[0][i].author_id_who_replies ).subscribe(r=> {
+            this.Profile_Edition_Service.retrieve_profile_picture(info[0][i].author_id_who_replies ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.profile_picture_list[i]=SafeURL;
               
             });
 
-            this.Profile_Edition_Service.retrieve_profile_data(info[0][i].author_id_who_replies).subscribe(l=> {
+            this.Profile_Edition_Service.retrieve_profile_data(info[0][i].author_id_who_replies).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=> {
               this.pseudo_list[i]=(l[0].nickname);
               this.author_name_list[i]=(l[0].firstname);
               
               
             });
 
-            this.Profile_Edition_Service.get_current_user().subscribe(s=>{
+            this.Profile_Edition_Service.get_current_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
               if(info_comment.author_id_who_replies==s[0].id){
                 this.visitor_mode_list[i]=false;
               }
@@ -215,7 +217,7 @@ export class CommentElementComponent implements OnInit {
                 this.visitor_mode_list[i]=true;
               };
               let user = s[0]
-              this.NotationService.get_commentary_answers_likes_by_id(info_comment.id).subscribe(t=>{
+              this.NotationService.get_commentary_answers_likes_by_id(info_comment.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
                 if(t[0].length!=0){
                   for (let j=0;j<t[0].length;j++){
                     if(t[0][j].author_id_who_likes==user.id){
@@ -244,21 +246,21 @@ export class CommentElementComponent implements OnInit {
     })
 
     //récupérer auteur id, etc.
-    this.Profile_Edition_Service.retrieve_profile_picture( this.comment_information.author_id_who_comments ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_picture( this.comment_information.author_id_who_comments ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;  
     });
 
-    this.Profile_Edition_Service.retrieve_profile_data( this.comment_information.author_id_who_comments).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_data( this.comment_information.author_id_who_comments).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       this.user_name = r[0].firstname;
       this.pseudo = r[0].nickname;
       this.authorid=r[0].id;
       this.primary_description=r[0].primary_description;
     });
 
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.NotationService.get_commentary_likes_by_id(this.comment_information.id).subscribe(l=>{
+    this.Profile_Edition_Service.get_current_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.NotationService.get_commentary_likes_by_id(this.comment_information.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
         if(l[0].length!=0){
           for (let i=0;i<l[0].length;i++){
             if(l[0][i].author_id_who_likes==r[0].id){
@@ -304,7 +306,7 @@ export class CommentElementComponent implements OnInit {
       return
     }
     this.loading_remove=true;
-    this.NotationService.remove_commentary_answer(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.responses_list[i].id,this.comment_information.id).subscribe(l=>{
+    this.NotationService.remove_commentary_answer(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.responses_list[i].id,this.comment_information.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
       let index=-1;
       for (let i=0;i<this.responses_list.length;i++){
         if(this.responses_list[i].id==l[0].id){
@@ -320,7 +322,7 @@ export class CommentElementComponent implements OnInit {
         this.liked_list.splice(index, 1);
       }
       this.loading_remove=false;
-      this.NotificationsService.remove_notification('comment_answer',this.category,this.format,this.publication_id,this.chapter_number,true,l[0].id).subscribe(l=>{
+      this.NotificationsService.remove_notification('comment_answer',this.category,this.format,this.publication_id,this.chapter_number,true,l[0].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
         let message_to_send ={
           for_notifications:true,
           type:"comment_answer",
@@ -352,9 +354,9 @@ export class CommentElementComponent implements OnInit {
     this.like_in_progress=true;
 
     if(this.liked){
-      this.NotationService.remove_like_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.id).subscribe(r=>{
+      this.NotationService.remove_like_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(this.visitor_id!=this.authorid){
-          this.NotificationsService.remove_notification('comment_like',this.category,this.format,this.publication_id,this.chapter_number,false,this.id).subscribe(l=>{
+          this.NotificationsService.remove_notification('comment_like',this.category,this.format,this.publication_id,this.chapter_number,false,this.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"comment_like",
@@ -388,10 +390,10 @@ export class CommentElementComponent implements OnInit {
       })
     }
     else{
-      this.NotationService.add_like_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.id).subscribe(r=>{
+      this.NotationService.add_like_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         
           if(this.visitor_id!=this.authorid){
-            this.NotificationsService.add_notification('comment_like',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment,false,this.id).subscribe(l=>{
+            this.NotificationsService.add_notification('comment_like',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment,false,this.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"comment_like",
@@ -433,9 +435,9 @@ export class CommentElementComponent implements OnInit {
     }
     this.answer_like_in_progress[i]=true;
     if(this.liked_list[i]){
-      this.NotationService.remove_like_on_commentary_answer(this.responses_list[i].id).subscribe(r=>{
+      this.NotationService.remove_like_on_commentary_answer(this.responses_list[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(this.visitor_id!=this.responses_list[i].id_user){
-          this.NotificationsService.remove_notification('comment_like',this.category,this.format,this.publication_id,this.chapter_number,true,this.responses_list[i].id).subscribe(l=>{
+          this.NotificationsService.remove_notification('comment_like',this.category,this.format,this.publication_id,this.chapter_number,true,this.responses_list[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"comment_like",
@@ -469,10 +471,10 @@ export class CommentElementComponent implements OnInit {
       })
     }
     else{
-      this.NotationService.add_like_on_commentary_answer(this.responses_list[i].id).subscribe(r=>{
+      this.NotationService.add_like_on_commentary_answer(this.responses_list[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(this.visitor_id!=this.responses_list[i].id_user){
          
-          this.NotificationsService.add_notification('comment_answer_like',this.visitor_id,this.visitor_name,this.responses_list[i].id_user,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.responses_list[i].comment,true,this.responses_list[i].id).subscribe(l=>{
+          this.NotificationsService.add_notification('comment_answer_like',this.visitor_id,this.visitor_name,this.responses_list[i].id_user,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.responses_list[i].comment,true,this.responses_list[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"comment_answer_like",
@@ -559,7 +561,7 @@ export class CommentElementComponent implements OnInit {
         this.textareaREAD.nativeElement.value = this.textareaREAD.nativeElement.value.trim();
 
         this.NotationService.edit_commentary(this.textareaREAD.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.id)
-            .subscribe(l=>{
+            .pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               this.comment=l[0].commentary;
              
         });
@@ -584,7 +586,7 @@ export class CommentElementComponent implements OnInit {
           this.textareaREAD.nativeElement.value = this.textareaREAD.nativeElement.value.trim();
   
           this.NotationService.edit_commentary(this.textareaREAD.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.id)
-              .subscribe(l=>{
+              .pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
                 this.comment=l[0].commentary;
           });
         }
@@ -608,7 +610,7 @@ export class CommentElementComponent implements OnInit {
       
       this.textareaRESPONSE.toArray()[i].nativeElement.value = this.textareaRESPONSE.toArray()[i].nativeElement.value.trim();
 
-      this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).subscribe(l=>{
+      this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
             this.responses_list.splice(i, 1,
               {
                 author_id :l[0].author_id_who_replies,
@@ -638,7 +640,7 @@ export class CommentElementComponent implements OnInit {
           
           this.textareaRESPONSE.toArray()[i].nativeElement.value = this.textareaRESPONSE.toArray()[i].nativeElement.value.trim();
   
-          this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).subscribe(l=>{
+          this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
                 this.responses_list.splice(i, 1,
                   {
                     author_id :l[0].author_id_who_replies,
@@ -688,14 +690,14 @@ export class CommentElementComponent implements OnInit {
       this.textareaRESPONSEtoCOMMENT.nativeElement.value = this.textareaRESPONSEtoCOMMENT.nativeElement.value.trim();
 
       this.NotationService.add_answer_on_commentary(this.category, this.format, this.style, this.publication_id, this.chapter_number, this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'), this.id)
-        .subscribe(l => {
+        .pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l => {
 
           if (this.visitor_id != this.authorid) {
-            this.Profile_Edition_Service.retrieve_profile_picture(l[0].author_id_who_replies).subscribe(r => {
+            this.Profile_Edition_Service.retrieve_profile_picture(l[0].author_id_who_replies).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.profile_picture_list.splice(0, 0, SafeURL);
-              this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).subscribe(s => {
+              this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s => {
                 this.pseudo_list.splice(0, 0, s[0].nickname);
                 this.author_name_list.splice(0, 0, s[0].firstname );
                 this.visitor_mode_list.splice(0, 0, false)
@@ -710,7 +712,7 @@ export class CommentElementComponent implements OnInit {
                     date: get_date_to_show(date_in_seconds(this.now_in_seconds, l[0].createdAt))
                   });
 
-                this.NotificationsService.add_notification('comment_answer', this.visitor_id, this.visitor_name, this.authorid, this.category, this.title, this.format, this.publication_id, this.chapter_number, this.comment, true, l[0].id).subscribe(l => {
+                this.NotificationsService.add_notification('comment_answer', this.visitor_id, this.visitor_name, this.authorid, this.category, this.title, this.format, this.publication_id, this.chapter_number, this.comment, true, l[0].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l => {
                   let message_to_send = {
                     for_notifications: true,
                     type: "comment_answer",
@@ -737,7 +739,7 @@ export class CommentElementComponent implements OnInit {
           }
           else {
             this.profile_picture_list.splice(0, 0, this.profile_picture);
-            this.Profile_Edition_Service.retrieve_profile_data(this.authorid).subscribe(s => {
+            this.Profile_Edition_Service.retrieve_profile_data(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s => {
               this.pseudo_list.splice(0, 0, s[0].nickname);
               this.author_name_list.splice(0, 0, s[0].firstname );
 
@@ -776,14 +778,14 @@ export class CommentElementComponent implements OnInit {
           this.textareaRESPONSEtoCOMMENT.nativeElement.value = this.textareaRESPONSEtoCOMMENT.nativeElement.value.trim();
   
           this.NotationService.add_answer_on_commentary(this.category, this.format, this.style, this.publication_id, this.chapter_number, this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'), this.id)
-            .subscribe(l => {
+            .pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l => {
   
               if (this.visitor_id != this.authorid) {
-                this.Profile_Edition_Service.retrieve_profile_picture(l[0].author_id_who_replies).subscribe(r => {
+                this.Profile_Edition_Service.retrieve_profile_picture(l[0].author_id_who_replies).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
                   let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.profile_picture_list.splice(0, 0, SafeURL);
-                  this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).subscribe(s => {
+                  this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s => {
                     this.pseudo_list.splice(0, 0, s[0].nickname);
                     this.author_name_list.splice(0, 0, s[0].firstname );
                     this.visitor_mode_list.splice(0, 0, false)
@@ -798,7 +800,7 @@ export class CommentElementComponent implements OnInit {
                         date: get_date_to_show(date_in_seconds(this.now_in_seconds, l[0].createdAt))
                       });
   
-                    this.NotificationsService.add_notification('comment_answer', this.visitor_id, this.visitor_name, this.authorid, this.category, this.title, this.format, this.publication_id, this.chapter_number, this.comment, true, l[0].id).subscribe(l => {
+                    this.NotificationsService.add_notification('comment_answer', this.visitor_id, this.visitor_name, this.authorid, this.category, this.title, this.format, this.publication_id, this.chapter_number, this.comment, true, l[0].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l => {
                       let message_to_send = {
                         for_notifications: true,
                         type: "comment_answer",
@@ -825,7 +827,7 @@ export class CommentElementComponent implements OnInit {
               }
               else {
                 this.profile_picture_list.splice(0, 0, this.profile_picture);
-                this.Profile_Edition_Service.retrieve_profile_data(this.authorid).subscribe(s => {
+                this.Profile_Edition_Service.retrieve_profile_data(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s => {
                   this.pseudo_list.splice(0, 0, s[0].nickname);
                   this.author_name_list.splice(0, 0, s[0].firstname );
   
@@ -910,6 +912,12 @@ export class CommentElementComponent implements OnInit {
   @Output() click_on_user2 = new EventEmitter<boolean>();
   send_click(){
     this.click_on_user2.emit(true)
+  }
+
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
 }

@@ -1,7 +1,7 @@
 
 import { Component, OnInit,  ElementRef, Input, ChangeDetectorRef, ViewChild, HostListener } from '@angular/core';
 
-import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormArray } from '@angular/forms';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {NotificationsService}from '../services/notifications.service';
 import {ChatService}from '../services/chat.service';
@@ -16,7 +16,8 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -57,7 +58,7 @@ value:string="add";
       this.edit_name = -1;
       this.current_chapter = 0;
       this.initialized = false;
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -189,14 +190,14 @@ value:string="add";
 
 
       if (this.value=="modify") {
-        this.bdSerieService.modify_chapter_bd_serie(this.bd_id,i+1,this.componentRef[i].name).subscribe(r=>{
+        this.bdSerieService.modify_chapter_bd_serie(this.bd_id,i+1,this.componentRef[i].name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.display_swiper=true;
           return true;
         });
         
       }
       else if (this.value=="add") {
-        this.bdSerieService.add_chapter_bd_serie(this.bd_id, i+1 , this.componentRef[i].name).subscribe(r=>{
+        this.bdSerieService.add_chapter_bd_serie(this.bd_id, i+1 , this.componentRef[i].name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.display_swiper=true;
           return false;
         });
@@ -207,7 +208,7 @@ value:string="add";
 
       this.edit_name = -1;
       if (this.value=="modify") {
-        this.bdSerieService.modify_chapter_bd_serie2(this.list_of_chapters[i].bd_id,this.list_of_chapters[i].chapter_number,(<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).subscribe(r=>{
+        this.bdSerieService.modify_chapter_bd_serie2(this.list_of_chapters[i].bd_id,this.list_of_chapters[i].chapter_number,(<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
           this.cd.detectChanges();
           this.display_swiper=true;
@@ -216,7 +217,7 @@ value:string="add";
         
       }
       else if (this.value=="add") {
-        this.bdSerieService.add_chapter_bd_serie2(this.list_of_chapters[0].bd_id, i+1 , (<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).subscribe(r=>{
+        this.bdSerieService.add_chapter_bd_serie2(this.list_of_chapters[0].bd_id, i+1 , (<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.new_chapter_added=true;
           this.number_of_new_chapters+=1;
           this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'');
@@ -306,7 +307,7 @@ value:string="add";
           panelClass: "popupConfirmationClass",
         });
   
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
           if( result ) {
             this.delete_chapter(i);
           }
@@ -327,7 +328,7 @@ value:string="add";
           panelClass: "popupConfirmationClass",
         });
   
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
           if( result ) {
             this.delete_chapter(i);
           }
@@ -355,8 +356,8 @@ value:string="add";
       }
   
       this.deleteChapter();
-      this.bdSerieService.delete_chapter_bd_serie(this.bd_id,i+1).subscribe(r=>{
-        this.bdSerieService.remove_all_pages_from_bd_chapter(this.bd_id,i+1).subscribe(r=>{
+      this.bdSerieService.delete_chapter_bd_serie(this.bd_id,i+1).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.bdSerieService.remove_all_pages_from_bd_chapter(this.bd_id,i+1).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.chapter_creation_in_progress=false;
         })
         
@@ -370,12 +371,12 @@ value:string="add";
         this.chapter_creation_in_progress=false;
         let done_1=false;
         let done_2=false;
-        this.bdSerieService.delete_chapter_bd_serie2(this.list_of_chapters[0].bd_id,this.list_of_chapters[this.list_of_chapters.length-1].chapter_number).subscribe(r=>{
+        this.bdSerieService.delete_chapter_bd_serie2(this.list_of_chapters[0].bd_id,this.list_of_chapters[this.list_of_chapters.length-1].chapter_number).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           done_1=true;
           check_all(this)
         });
 
-        this.bdSerieService.remove_all_pages_from_bd_chapter(this.list_of_chapters[0].bd_id,this.list_of_chapters[this.list_of_chapters.length-1].chapter_number).subscribe(r=>{
+        this.bdSerieService.remove_all_pages_from_bd_chapter(this.list_of_chapters[0].bd_id,this.list_of_chapters[this.list_of_chapters.length-1].chapter_number).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           done_2=true;
           check_all(this)
         })
@@ -479,9 +480,9 @@ value:string="add";
       else {
         
         this.display_loading=true;
-        this.bdSerieService.validate_bd_serie(this.bd_id,this.componentRef.length).subscribe(r=>{
-           this.Subscribing_service.validate_content("comic","serie",r[0],r[1]).subscribe(l=>{
-            this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length,"add",false,0).subscribe(l=>{
+        this.bdSerieService.validate_bd_serie(this.bd_id,this.componentRef.length).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+           this.Subscribing_service.validate_content("comic","serie",r[0],r[1]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"add_publication",
@@ -543,8 +544,8 @@ value:string="add";
           
         }
         else{
-          this.Subscribing_service.extend_serie_and_update_content(this.bd_id,this.list_of_chapters.length).subscribe(u=>{
-            this.NotificationsService.add_notification(type,this.user_id,this.pseudo,null,'comic',this.bdtitle,'serie',this.bd_id,compt,"add",false,0).subscribe(l=>{
+          this.Subscribing_service.extend_serie_and_update_content(this.bd_id,this.list_of_chapters.length).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(u=>{
+            this.NotificationsService.add_notification(type,this.user_id,this.pseudo,null,'comic',this.bdtitle,'serie',this.bd_id,compt,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:type,
@@ -580,8 +581,8 @@ value:string="add";
     if(!this.block_cancel){
       if(this.form_number==0){
         for( let j = 0; j< this.componentRef.length; j++ ) {
-          this.bdSerieService.delete_chapter_bd_serie(this.bd_id,j+1).subscribe(r=>{
-            this.Subscribing_service.remove_content('comic', 'serie', this.bd_id).subscribe(r=>{
+          this.bdSerieService.delete_chapter_bd_serie(this.bd_id,j+1).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.Subscribing_service.remove_content('comic', 'serie', this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.chapter_creation_in_progress=false;
             })
           });
@@ -593,8 +594,8 @@ value:string="add";
           for(let i=0;i<this.list_of_new_chapters.length;i++){
             if(!this.list_of_chapters_validated[i] ||indice>0){
               indice=i;
-              this.bdSerieService.delete_chapter_bd_serie2(this.list_of_chapters[0].bd_id,this.list_of_chapters[i].chapter_number).subscribe(r=>{
-                this.Subscribing_service.remove_content('comic', 'serie', this.list_of_chapters[0].bd_id).subscribe(r=>{
+              this.bdSerieService.delete_chapter_bd_serie2(this.list_of_chapters[0].bd_id,this.list_of_chapters[i].chapter_number).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+                this.Subscribing_service.remove_content('comic', 'serie', this.list_of_chapters[0].bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 })
               });
             }
@@ -614,6 +615,11 @@ value:string="add";
     e.stopPropagation();
   }
 
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
     
 }

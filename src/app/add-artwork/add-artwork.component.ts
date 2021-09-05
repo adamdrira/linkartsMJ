@@ -1,7 +1,6 @@
 import { Component, OnInit, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { UploadService } from '../services/upload.service';
 import { Observable } from 'rxjs';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Location } from '@angular/common';
 import { Bd_CoverService } from '../services/comics_cover.service';
 import { Writing_CoverService } from '../services/writing_cover.service';
@@ -15,7 +14,8 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
 import * as WebFont from 'webfontloader';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -41,7 +41,7 @@ export class AddArtworkComponent implements OnInit {
     private sanitizer:DomSanitizer,
 
     ) {
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -106,7 +106,7 @@ export class AddArtworkComponent implements OnInit {
     this._upload.category.next( this.route.snapshot.data['section'] );
     this.cd.detectChanges();
 
-    this.route.data.subscribe(resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
       let l=resp.user;
       this.user_id = l[0].id;
       this.author_name = l[0].firstname;
@@ -115,7 +115,7 @@ export class AddArtworkComponent implements OnInit {
       this.type_of_account=l[0].type_of_account;
     });
 
-    this.route.data.subscribe( resp => {
+    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( resp => {
       let r = resp.my_pp;
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -167,25 +167,25 @@ export class AddArtworkComponent implements OnInit {
       panelClass: "popupConfirmationClass",
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if( result ) {
         if(event.bd_cover && event.bd_cover!=''){
-            THIS.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+            THIS.Bd_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             })
           
         }
         else if(event.drawing_cover && event.drawing_cover!='' ){
-          THIS.Drawings_CoverService.remove_cover_from_folder().subscribe(r=>{
+          THIS.Drawings_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             })
         }
         else if (event.writing_cover && event.writing_cover!=''){
-          THIS.Writing_CoverService.remove_cover_from_folder().subscribe(m=>{
-            THIS.Writing_Upload_Service.remove_writing_from_folder2(event.name_writing).subscribe(r=>{
+          THIS.Writing_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+            THIS.Writing_Upload_Service.remove_writing_from_folder2(event.name_writing).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             })
           });
         }
         else if (event.ad_cover && event.ad_cover!=''){
-          THIS.Ads_service.remove_thumbnail_ad_from_folder().subscribe();
+          THIS.Ads_service.remove_thumbnail_ad_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         }
         THIS._upload.setCategory( -1 );
         THIS.location.go("/add-artwork");
@@ -204,7 +204,7 @@ export class AddArtworkComponent implements OnInit {
 
     let THIS = this;
 
-    THIS._upload.step.subscribe( v => { 
+    THIS._upload.step.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( v => { 
       if( v == 0 ) {
         
         THIS.location.go("/add-artwork");
@@ -223,10 +223,13 @@ export class AddArtworkComponent implements OnInit {
   step_changed(e:any) {
     this.step = e;
     this.cd.detectChanges();
-    //this.rd.setStyle(this.navbarContainer.nativeElement, 'width', ($(".form").width()+130) + "px" );
   }
 
 
 
-
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

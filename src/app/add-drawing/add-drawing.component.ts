@@ -23,7 +23,8 @@ import { DOCUMENT } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -58,7 +59,7 @@ export class AddDrawingComponent implements OnInit {
     private navbar: NavbarService,
     @Inject(DOCUMENT) private document: Document,
   ) { 
-    navbar.visibility_observer_font.subscribe(font=>{
+    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -94,9 +95,9 @@ export class AddDrawingComponent implements OnInit {
   device_info='';
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.navbar.add_page_visited_to_history(`/add-drawing`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/add-drawing`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     window.scroll(0,0);
-    this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
+    this.Writing_Upload_Service.retrieve_writing_for_options(5).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.conditions=r;
     })
     this.createFormControlsDrawings();
@@ -150,7 +151,7 @@ export class AddDrawingComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
       panelClass: "popupDocumentClass",
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
       this.showNavbar.emit();
     });
@@ -221,7 +222,7 @@ export class AddDrawingComponent implements OnInit {
 
       if( this.CURRENT_step < (this.REAL_step) ) {
         this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), false)
-        .subscribe(inf=>{
+        .pipe( takeUntil(this.ngUnsubscribe) ).subscribe(inf=>{
           this.stepChanged.emit(1);
           this.CURRENT_step++;
 
@@ -232,8 +233,8 @@ export class AddDrawingComponent implements OnInit {
         });
       }
       else {
-        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), false).subscribe(val=> {
-          this.Subscribing_service.add_content('drawing', 'one-shot', val[0].drawing_id,0).subscribe(r=>{
+        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(val=> {
+          this.Subscribing_service.add_content('drawing', 'one-shot', val[0].drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             this.drawing_id=val[0].drawing_id;
             this.stepChanged.emit(1);
             this.CURRENT_step++;
@@ -253,7 +254,7 @@ export class AddDrawingComponent implements OnInit {
 
         if( this.CURRENT_step < (this.REAL_step) ) {
           this.Drawings_Artbook_Service.ModifyArtbook(this.drawing_id,this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised)
-          .subscribe(inf=>{
+          .pipe( takeUntil(this.ngUnsubscribe) ).subscribe(inf=>{
             this.stepChanged.emit(1);
             this.CURRENT_step++;
            
@@ -265,8 +266,8 @@ export class AddDrawingComponent implements OnInit {
         }
         else {
           this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdCategory, this.fd.value.fdTags,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised)
-          .subscribe((val)=> {
-            this.Subscribing_service.add_content('drawing', 'artbook', val[0].drawing_id,0).subscribe(r=>{
+          .pipe( takeUntil(this.ngUnsubscribe) ).subscribe((val)=> {
+            this.Subscribing_service.add_content('drawing', 'artbook', val[0].drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.stepChanged.emit(1);
               this.CURRENT_step++;
               this.REAL_step++;
@@ -487,4 +488,9 @@ export class AddDrawingComponent implements OnInit {
     }
   }
 
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

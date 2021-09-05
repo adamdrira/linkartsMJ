@@ -9,6 +9,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
 import { normalize_to_nfc } from '../helpers/patterns';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 declare var Swiper:any;
 declare var Muuri:any;
 
@@ -38,7 +42,7 @@ export class AddAlbumWritingComponent implements OnInit {
     public dialog: MatDialog,
     private navbar: NavbarService, 
     ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -108,7 +112,7 @@ export class AddAlbumWritingComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.navbar.add_page_visited_to_history(`/add-album-writing`,'').subscribe();
+    this.navbar.add_page_visited_to_history(`/add-album-writing`,'').pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
   }
 
@@ -276,7 +280,7 @@ export class AddAlbumWritingComponent implements OnInit {
       for( let i = 0; i < solution.length; i++) {
           this.album_list_to_send.push(this.album_list[ solution[i] ].instance.writing_element);
           if(i==solution.length-1){
-            this.Albums_service.add_album_writings(this.albumForm.value.formName.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),this.album_list_to_send).subscribe(information=>{
+            this.Albums_service.add_album_writings(this.albumForm.value.formName.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),this.album_list_to_send).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
               if(information[0].found){
                 const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                   data: {showChoice:false, text:'Ce titre est déjà utilisé.'},
@@ -338,5 +342,10 @@ export class AddAlbumWritingComponent implements OnInit {
     normalize_to_nfc(fg,fc);
   }
 
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
 }

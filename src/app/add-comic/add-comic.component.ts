@@ -20,7 +20,8 @@ import { DOCUMENT } from '@angular/common';
 import { normalize_to_nfc } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-comic',
@@ -63,7 +64,7 @@ export class AddComicComponent implements OnInit {
     this.CURRENT_step = 0;
     this.modal_displayed = false;
 
-    navbar.visibility_observer_font.subscribe(font=>{
+    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -103,9 +104,9 @@ export class AddComicComponent implements OnInit {
   device_info='';
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.navbar.add_page_visited_to_history(`/add-comic`,this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/add-comic`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
    
-    this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
+    this.Writing_Upload_Service.retrieve_writing_for_options(5).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.conditions=r;
     })
     
@@ -203,7 +204,7 @@ export class AddComicComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
       panelClass: "popupDocumentClass",
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
       this.showNavbar.emit();
     });
@@ -272,8 +273,8 @@ export class AddComicComponent implements OnInit {
         
         if( this.CURRENT_step < (this.REAL_step) ) {
           this.bdOneShotService.ModifyBdOneShot(this.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised )
-          .subscribe(inf=>{
-            this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
+          .pipe( takeUntil(this.ngUnsubscribe) ).subscribe(inf=>{
+            this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.CURRENT_step++;
               this.stepChanged.emit(1);
               
@@ -288,9 +289,9 @@ export class AddComicComponent implements OnInit {
         //Else if NEW Step1
         else {
           this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised )
-          .subscribe((val)=> {
+          .pipe( takeUntil(this.ngUnsubscribe) ).subscribe((val)=> {
             this.bd_id=val[0].bd_id;
-              this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
+              this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 this.CURRENT_step++;
                 this.stepChanged.emit(1);
                 this.REAL_step++;
@@ -313,9 +314,9 @@ export class AddComicComponent implements OnInit {
         
         if( this.CURRENT_step < (this.REAL_step) ) {
           this.bdSerieService.ModifyBdSerie(this.bd_id,this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised )
-          .subscribe(inf=>{
-            this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(m=>{
-              this.bdSerieService.modify_chapter_bd_serie(this.bd_id,1,this.f00SerieFirstChapter.value).subscribe(m=>{
+          .pipe( takeUntil(this.ngUnsubscribe) ).subscribe(inf=>{
+            this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+              this.bdSerieService.modify_chapter_bd_serie(this.bd_id,1,this.f00SerieFirstChapter.value).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
                 this.CURRENT_step++;
                 this.stepChanged.emit(1);
                 this.nextButton.nativeElement.disabled = false;
@@ -330,10 +331,10 @@ export class AddComicComponent implements OnInit {
         //Else if NEW Step1
         else {
           this.bdSerieService.CreateBdSerie(this.f00.value.f00Title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.monetised )
-          .subscribe((val)=> {
+          .pipe( takeUntil(this.ngUnsubscribe) ).subscribe((val)=> {
             this.bd_id=val[0].bd_id;
-            this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
-              this.bdSerieService.add_chapter_bd_serie(this.bd_id,1,this.f00SerieFirstChapter.value).subscribe( r=>{
+            this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.bdSerieService.add_chapter_bd_serie(this.bd_id,1,this.f00SerieFirstChapter.value).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( r=>{
                 this.CURRENT_step++;
                 this.stepChanged.emit(1);
                 this.REAL_step++;
@@ -388,7 +389,7 @@ export class AddComicComponent implements OnInit {
   }
   
   cancel_all() {
-    this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+    this.Bd_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
     });
   }
 
@@ -578,4 +579,9 @@ export class AddComicComponent implements OnInit {
     }
   }
 
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }
