@@ -8,8 +8,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NavbarService } from '../services/navbar.service';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var Swiper: any;
 declare var $: any;
@@ -43,7 +42,7 @@ export class SwiperUploadSerieComponent implements OnInit {
     private navbar: NavbarService,
 
     ) {
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -369,7 +368,7 @@ export class SwiperUploadSerieComponent implements OnInit {
         for (let step = 0; step < this.componentRef.length; step++) {
           this.componentRef[ step ].instance.total_pages = this.componentRef.length;
           this.componentRef[ step ].instance.upload = true;
-          this.componentRef[ step ].instance.sendValidated.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( v => {
+          this.componentRef[ step ].instance.sendValidated.pipe( first()).subscribe( v => {
               console.log("received validated")
               this.display_loading=false
               this.validated.emit();
@@ -387,17 +386,13 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   cancel_all() {
     if (this.chapter==0) {
-      this.BdSerieService.RemoveBdSerie(this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(res=>{
-        this.Bd_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.BdSerieService.RemoveBdSerie(this.bd_id).pipe( first()).subscribe(res=>{
+        this.Bd_CoverService.remove_cover_from_folder().pipe( first()).subscribe(r=>{
           console.log(r)
         })
       }); 
     }
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
 }

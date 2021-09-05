@@ -29,8 +29,7 @@ import { merge, fromEvent } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupContactComponent } from '../popup-contact/popup-contact.component';
 import { PopupShareComponent } from '../popup-share/popup-share.component';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var Swiper: any;
 
@@ -90,7 +89,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
       router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .pipe( takeUntil(this.ngUnsubscribe) ).subscribe((event: NavigationEnd) => {
+      .subscribe((event: NavigationEnd) => {
         this.previousUrl.push(event.url);
         if(event.url.includes("chat") || event.url.includes("signup")){
           this.show_menu_phone=false;
@@ -100,12 +99,12 @@ export class NavbarLinkartsComponent implements OnInit {
         }
         this.show_profile_spinner=false;
         let device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-        this.navbar.add_page_visited_to_history(event.url,device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe()
+        this.navbar.add_page_visited_to_history(event.url,device_info).pipe( first()).subscribe()
       });
       
-      AuthenticationService.tokenCheck().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      AuthenticationService.tokenCheck().subscribe(r=>{
         if(r!=this.current_user_type &&  this.change_number<1){
-          this.Profile_Edition_Service.get_current_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Profile_Edition_Service.get_current_user().pipe( first()).subscribe(r=>{
             if(r[0]){
               this.current_user=r;
               if(r[0].status=="account" || r[0].status=="suspended"){
@@ -127,7 +126,7 @@ export class NavbarLinkartsComponent implements OnInit {
         }
       })
 
-      navbar.connexion.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      navbar.connexion.subscribe(r=>{
         if(r!=this.connexion_status){
           this.connexion_status=r
           
@@ -143,12 +142,12 @@ export class NavbarLinkartsComponent implements OnInit {
 
 
 
-      navbar.visibility_observer.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(navbar_visibility=>{
+      navbar.visibility_observer.subscribe(navbar_visibility=>{
         if( navbar_visibility) {
           this.navbar_visible=true;
           this.rd.setStyle(this.navbarMargin.nativeElement, "height", "54px");
           this.initialize_selectors();
-          navbar.check_using_chat.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(using_chat=>{
+          navbar.check_using_chat.pipe( first()).subscribe(using_chat=>{
             this.using_chat=using_chat;
             this.using_chat_retrieved=true
             let chat_messages_interval = setInterval(() => {
@@ -197,7 +196,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   check_chat_service_func(){
-    this.chatService.messages.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(msg=>{
+    this.chatService.messages.pipe( first()).subscribe(msg=>{
       if(msg[0].for_notifications){
         this.sort_notifications(msg);
       }
@@ -319,7 +318,7 @@ export class NavbarLinkartsComponent implements OnInit {
     
    
 
-    this.navbar.notification.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(msg=>{
+    this.navbar.notification.pipe( first()).subscribe(msg=>{
       if(msg && msg[0].for_notifications){
         this.sort_notifications(msg);
       }
@@ -357,11 +356,11 @@ export class NavbarLinkartsComponent implements OnInit {
    }
    this.loading_connexion_unit=true;
    this.disconnecting=true;
-   this.navbar.add_page_visited_to_history(`/navbar/${this.pseudo}/${this.user_id}/switch_to_group/${this.list_of_account_groups_names[i]}/${this.list_of_account_groups_ids[i]}`, this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
-   this.AuthenticationService.login_group_as_member(this.list_of_account_groups_ids[i],this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
+   this.navbar.add_page_visited_to_history(`/navbar/${this.pseudo}/${this.user_id}/switch_to_group/${this.list_of_account_groups_names[i]}/${this.list_of_account_groups_ids[i]}`, this.device_info).pipe( first()).subscribe();
+   this.AuthenticationService.login_group_as_member(this.list_of_account_groups_ids[i],this.user_id).pipe( first()).subscribe( data => {
      if(data.token){
        this.Community_recommendation.delete_recommendations_cookies();
-       this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+       this.Community_recommendation.generate_recommendations().pipe( first()).subscribe(r=>{
          this.loading_connexion_unit=false;
          this.disconnecting=false;
          this.location.go("/account/" + this.list_of_account_groups_names[i])
@@ -387,7 +386,7 @@ export class NavbarLinkartsComponent implements OnInit {
       this.gender=r[0].gender;
       this.author_first_name=r[0].firstname ;
 
-      this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( first()).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
@@ -395,7 +394,7 @@ export class NavbarLinkartsComponent implements OnInit {
       });
 
       if(this.gender!="Groupe"){
-        this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.user_id).pipe( first()).subscribe(r=>{
           if(r[0].length>0){
             for(let i=0;i<r[0].length;i++){
               this.list_of_account_groups_names[i]=(r[0][i].nickname)
@@ -406,7 +405,7 @@ export class NavbarLinkartsComponent implements OnInit {
               else{
                 this.list_of_account_groups_status[i]=true
               }
-              this.Profile_Edition_Service.retrieve_profile_picture(r[0][i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+              this.Profile_Edition_Service.retrieve_profile_picture(r[0][i].id).pipe( first()).subscribe(t=> {
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_account_groups_pp[i] = SafeURL;
@@ -423,7 +422,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
       let chat_re=false;
       let notif_re=false;
-      this.chatService.get_number_of_unseen_messages().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(a=>{
+      this.chatService.get_number_of_unseen_messages().pipe( first()).subscribe(a=>{
         if(a[0]){
           this.number_of_unseen_messages=a[0].number_of_unseen_messages;
         }
@@ -434,7 +433,7 @@ export class NavbarLinkartsComponent implements OnInit {
         check_all(this);
       })
 
-      this.NotificationsService.get_list_of_notifications().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.NotificationsService.get_list_of_notifications().pipe( first()).subscribe(r=>{
         if(r[0].length>0){
           this.list_of_notifications=r[0]
           this.display_number_of_unchecked_notifications();
@@ -498,7 +497,7 @@ export class NavbarLinkartsComponent implements OnInit {
   change_notifications_status_to_checked(){
     let index=this.list_of_notifications.findIndex(x => x.status==="unchecked");
     if(index>=0){
-      this.NotificationsService.change_all_notifications_status_to_checked(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{  
+      this.NotificationsService.change_all_notifications_status_to_checked(this.user_id).pipe( first()).subscribe(r=>{  
       })
     }
     this.number_of_unchecked_notifications=0;
@@ -582,7 +581,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.input.nativeElement.focus();
     this.loading_recent=true;
     this.cd.detectChanges();
-    this.navbar.get_most_researched_navbar(this.publication_category,this.compteur_recent,"researched").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.get_most_researched_navbar(this.publication_category,this.compteur_recent,"researched").pipe( first()).subscribe(r=>{
       if(r[1]==this.compteur_recent){
         this.most_researched_propositions=r[0][0];
         this.show_researches_propositions=true;
@@ -598,7 +597,7 @@ export class NavbarLinkartsComponent implements OnInit {
     });
 
     let last_research_retrieved=false;
-    this.navbar.get_last_researched_navbar(this.publication_category,this.compteur_recent).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+    this.navbar.get_last_researched_navbar(this.publication_category,this.compteur_recent).pipe( first()).subscribe(m=>{
       if(m[1]==this.compteur_recent){
         this.list_of_first_propositions_history=m[0][0];
        
@@ -621,7 +620,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
     let most_researched_results;
     let most_researched_retrieved=false;
-    this.navbar.get_most_researched_navbar(this.publication_category,this.compteur_recent,"clicked").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(n=>{
+    this.navbar.get_most_researched_navbar(this.publication_category,this.compteur_recent,"clicked").pipe( first()).subscribe(n=>{
       most_researched_results=n[0][0];
       if(n[1]==this.compteur_recent){
         most_researched_retrieved=true;
@@ -698,7 +697,7 @@ export class NavbarLinkartsComponent implements OnInit {
         let global_retrieved=false;
         let tags_retrieved=false;
         let run_tags=false;
-        this.navbar.get_specific_propositions_navbar(this.publication_category,this.input.nativeElement.value,this.compteur_research).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+        this.navbar.get_specific_propositions_navbar(this.publication_category,this.input.nativeElement.value,this.compteur_research).pipe( first()).subscribe(m=>{
           if(m[1]==this.compteur_research){
             this.show_researches_propositions=true;
             this.list_of_first_propositions=m[0][0];
@@ -721,7 +720,7 @@ export class NavbarLinkartsComponent implements OnInit {
         })
 
         let global_result:any;
-        this.navbar.get_global_propositions_navbar(this.publication_category,this.input.nativeElement.value,10,this.compteur_research).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.navbar.get_global_propositions_navbar(this.publication_category,this.input.nativeElement.value,10,this.compteur_research).pipe( first()).subscribe(r=>{
           global_result=r[0][0]
           global_retrieved=true;
           if(r[1]==this.compteur_research && specific_retrieved){
@@ -731,7 +730,7 @@ export class NavbarLinkartsComponent implements OnInit {
         })
 
         let tags_result:any;
-        this.navbar.get_global_tags_propositions_navbar(this.publication_category,this.input.nativeElement.value,5,this.compteur_research).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(u=>{
+        this.navbar.get_global_tags_propositions_navbar(this.publication_category,this.input.nativeElement.value,5,this.compteur_research).pipe( first()).subscribe(u=>{
           tags_result=u[0][0];
           tags_retrieved=true;
           if(u[1]==this.compteur_research){
@@ -849,11 +848,11 @@ export class NavbarLinkartsComponent implements OnInit {
   get_first_propositions(i,compteur){
     this.list_of_thumbnails_history[i]=null;
     if(this.list_of_first_propositions_history[i].publication_category=="Account"){
-      this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions_history[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(profile=>{
+      this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions_history[i].target_id).pipe( first()).subscribe(profile=>{
         if(compteur==this.compteur_recent){
           this.list_of_last_propositions_history[i]=profile[0];
           
-          this.Profile_Edition_Service.retrieve_profile_picture(profile[0].id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+          this.Profile_Edition_Service.retrieve_profile_picture(profile[0].id ).pipe( first()).subscribe(t=> {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_recent){
@@ -872,10 +871,10 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions_history[i].publication_category=="Ad"){
-      this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions_history[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(ad=>{
+      this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions_history[i].target_id).pipe( first()).subscribe(ad=>{
         if(compteur==this.compteur_recent){
           this.list_of_last_propositions_history[i]=ad[0];
-          this.Ads_service.retrieve_ad_thumbnail_picture(ad[0].thumbnail_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+          this.Ads_service.retrieve_ad_thumbnail_picture(ad[0].thumbnail_name ).pipe( first()).subscribe(t=> {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_recent){
@@ -894,10 +893,10 @@ export class NavbarLinkartsComponent implements OnInit {
 
     if(this.list_of_first_propositions_history[i].publication_category=="Comic"){
       if(this.list_of_first_propositions_history[i].format=="one-shot"){
-        this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions_history[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions_history[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_recent){
             this.list_of_last_propositions_history[i]=comic[0];
-            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
@@ -915,10 +914,10 @@ export class NavbarLinkartsComponent implements OnInit {
         })
       }
       if(this.list_of_first_propositions_history[i].format=="serie"){
-        this.BdSerieService.retrieve_bd_by_id(this.list_of_first_propositions_history[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.BdSerieService.retrieve_bd_by_id(this.list_of_first_propositions_history[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_recent){
             this.list_of_last_propositions_history[i]=comic[0];
-            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
@@ -937,10 +936,10 @@ export class NavbarLinkartsComponent implements OnInit {
 
     if(this.list_of_first_propositions_history[i].publication_category=="Drawing"){
       if(this.list_of_first_propositions_history[i].format=="one-shot"){
-        this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions_history[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions_history[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_recent){
             this.list_of_last_propositions_history[i]=comic[0];
-            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
@@ -957,10 +956,10 @@ export class NavbarLinkartsComponent implements OnInit {
         })
       }
       if(this.list_of_first_propositions_history[i].format=="artbook"){
-        this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.list_of_first_propositions_history[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.list_of_first_propositions_history[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_recent){
             this.list_of_last_propositions_history[i]=comic[0];
-            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
@@ -979,10 +978,10 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions_history[i].publication_category=="Writing"){
-      this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions_history[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+      this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions_history[i].target_id).pipe( first()).subscribe(comic=>{
         if(compteur==this.compteur_recent){
           this.list_of_last_propositions_history[i]=comic[0];
-          this.Writing_Upload_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+          this.Writing_Upload_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               if(compteur==this.compteur_recent){
@@ -1020,11 +1019,11 @@ export class NavbarLinkartsComponent implements OnInit {
     this.list_of_thumbnails[i]=null;
     if(this.list_of_first_propositions[i].publication_category=="Account"){
       
-      this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(profile=>{
+      this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(profile=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=profile[0];
           this.list_of_thumbnails[i]=null;
-          this.Profile_Edition_Service.retrieve_profile_picture(profile[0].id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+          this.Profile_Edition_Service.retrieve_profile_picture(profile[0].id ).pipe( first()).subscribe(t=> {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_research){
@@ -1043,10 +1042,10 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     else if(this.list_of_first_propositions[i].publication_category=="Ad"){
-      this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(profile=>{
+      this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(profile=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=profile[0];
-          this.Ads_service.retrieve_ad_thumbnail_picture(profile[0].thumbnail_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+          this.Ads_service.retrieve_ad_thumbnail_picture(profile[0].thumbnail_name ).pipe( first()).subscribe(t=> {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_research){
@@ -1066,10 +1065,10 @@ export class NavbarLinkartsComponent implements OnInit {
 
     else if(this.list_of_first_propositions[i].publication_category=="Comic"){
       if(this.list_of_first_propositions[i].format=="one-shot"){
-        this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
-            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
@@ -1087,10 +1086,10 @@ export class NavbarLinkartsComponent implements OnInit {
         })
       }
       if(this.list_of_first_propositions[i].format=="serie"){
-        this.BdSerieService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.BdSerieService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
-            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+            this.BdOneShotService.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
@@ -1109,10 +1108,10 @@ export class NavbarLinkartsComponent implements OnInit {
 
     else if(this.list_of_first_propositions[i].publication_category=="Drawing"){
       if(this.list_of_first_propositions[i].format=="one-shot"){
-        this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
-            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
@@ -1129,10 +1128,10 @@ export class NavbarLinkartsComponent implements OnInit {
         })
       }
       if(this.list_of_first_propositions[i].format=="artbook"){
-        this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
-            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
@@ -1151,10 +1150,10 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     else if(this.list_of_first_propositions[i].publication_category=="Writing"){
-      this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+      this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=comic[0];
-          this.Writing_Upload_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+          this.Writing_Upload_Service.retrieve_thumbnail_picture_navbar(comic[0].name_coverpage).pipe( first()).subscribe(t=>{
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               if(compteur==this.compteur_research){
@@ -1250,7 +1249,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     this.loading_research=true;
     let user =this.list_of_last_propositions[i]
-    this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( first()).subscribe(r=>{
       this.loading_research=false;
       return
     })
@@ -1264,7 +1263,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     this.loading_research=true;
     let user =this.list_of_last_propositions_history[i];
-    this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( first()).subscribe(r=>{
       this.loading_research=false;
       return
     })
@@ -1281,7 +1280,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     this.not_using_chat();
     let ad =this.list_of_last_propositions[i];
-    this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( first()).subscribe(r=>{
       this.loading_research=false;
       return
     })
@@ -1299,7 +1298,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     this.not_using_chat();
     let ad =this.list_of_last_propositions_history[i];
-    this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( first()).subscribe(r=>{
       this.loading_research=false;
       return
     })
@@ -1320,14 +1319,14 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     let title_url=this.list_of_last_propositions[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     if(s.publication_category=="Writing") {
-      this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).pipe( first()).subscribe(r=>{
         this.loading_research=false;
         return
       })
       
     }
     else {
-      this.navbar.add_main_research_to_history(s.publication_category,s.format,s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.add_main_research_to_history(s.publication_category,s.format,s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).pipe( first()).subscribe(r=>{
         this.loading_research=false;
         return
       })
@@ -1354,14 +1353,14 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     let title_url=this.list_of_last_propositions_history[i].title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
     if(s.publication_category=="Writing") {
-      this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).pipe( first()).subscribe(r=>{
         this.loading_research=false;
         return
       })
      
     }
     else {
-      this.navbar.add_main_research_to_history(s.publication_category,s.format,s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.add_main_research_to_history(s.publication_category,s.format,s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).pipe( first()).subscribe(r=>{
         this.loading_research=false;
         return
       })
@@ -1502,7 +1501,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     this.loading_research=true;
     let value=this.input.nativeElement.value.replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F')
-    this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( first()).subscribe(r=>{
       this.router.navigate([`/main-research/1/${value}/${this.publication_category}`]);
       this.loading_research=false;
       this.activated_search=false;
@@ -1515,7 +1514,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.not_using_chat();
     this.loading_research=true;
     let str=this.most_researched_propositions[i].research_string;
-    this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,str,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,str,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).pipe( first()).subscribe(r=>{
       this.loading_research=false;
       this.activated_search=false;
       return;
@@ -1531,13 +1530,13 @@ export class NavbarLinkartsComponent implements OnInit {
   add_clicked_after_research(i){
     let lst=this.list_of_first_propositions[i];
     let lst2=this.list_of_last_propositions[i];
-    this.navbar.add_main_research_to_history(lst.publication_category,lst.format,lst.target_id,lst.research_string,lst.research_string1,"clicked_after_research",lst2.number_of_comics,lst2.number_of_drawings,lst2.number_of_writings,lst2.number_of_ads,lst2.category,lst2.firsttag,lst2.secondtag,lst2.thirdtag,this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe()
+    this.navbar.add_main_research_to_history(lst.publication_category,lst.format,lst.target_id,lst.research_string,lst.research_string1,"clicked_after_research",lst2.number_of_comics,lst2.number_of_drawings,lst2.number_of_writings,lst2.number_of_ads,lst2.category,lst2.firsttag,lst2.secondtag,lst2.thirdtag,this.type_of_profile).pipe( first()).subscribe()
   }
 
   add_clicked_after_research_recent(i){
     let lst=this.list_of_first_propositions_history[i];
     let lst2=this.list_of_last_propositions_history[i];
-    this.navbar.add_main_research_to_history(lst.publication_category,lst.format,lst.target_id,lst.research_string,lst.research_string1,"clicked_after_research",lst2.number_of_comics,lst2.number_of_drawings,lst2.number_of_writings,lst2.number_of_ads,lst2.category,lst2.firsttag,lst2.secondtag,lst2.thirdtag,this.type_of_profile).pipe( takeUntil(this.ngUnsubscribe) ).subscribe()
+    this.navbar.add_main_research_to_history(lst.publication_category,lst.format,lst.target_id,lst.research_string,lst.research_string1,"clicked_after_research",lst2.number_of_comics,lst2.number_of_drawings,lst2.number_of_writings,lst2.number_of_ads,lst2.category,lst2.firsttag,lst2.secondtag,lst2.thirdtag,this.type_of_profile).pipe( first()).subscribe()
   }
 
   delete_from_history(i,event:any){
@@ -1546,7 +1545,7 @@ export class NavbarLinkartsComponent implements OnInit {
     let category =this.list_of_first_propositions_history[i].publication_category;
     let format =this.list_of_first_propositions_history[i].format;
     let target_id =this.list_of_first_propositions_history[i].target_id;
-    this.navbar.delete_click_after_ressearch_from_history(category,format,target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.delete_click_after_ressearch_from_history(category,format,target_id).pipe( first()).subscribe(r=>{
       this.list_of_first_propositions_history.splice(i,1);
       this.list_of_last_propositions_history.splice(i,1);
     })
@@ -1562,7 +1561,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.disconnecting = true;
     clearInterval(this.get_connection_interval)
 
-    this.AuthenticationService.logout().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
+    this.AuthenticationService.logout().pipe( first()).subscribe(r => {
       let recommendations_string = this.CookieService.get('recommendations');
       if(r[0].ok){
         if (recommendations_string) {
@@ -1572,7 +1571,7 @@ export class NavbarLinkartsComponent implements OnInit {
   
         }
         else {
-          this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
+          this.Community_recommendation.generate_recommendations().pipe( first()).subscribe(r => {
             this.disconnecting = false;
             this.cd.detectChanges();
             this.location.go('/')
@@ -1581,8 +1580,8 @@ export class NavbarLinkartsComponent implements OnInit {
         }
       }
       else{
-        this.AuthenticationService.create_visitor().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-          this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
+        this.AuthenticationService.create_visitor().pipe( first()).subscribe(r=>{
+          this.Community_recommendation.generate_recommendations().pipe( first()).subscribe(r => {
             this.disconnecting = false;
             this.cd.detectChanges();
             this.location.go('/')
@@ -1785,7 +1784,7 @@ open_messages(){
       panelClass: 'popupMenuNavbarNotifs',
     });
 
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe( first()).subscribe(result => {
       this.popup_opened=false;
     })
   }
@@ -1829,7 +1828,7 @@ open_notifications(){
       panelClass: 'popupMenuNavbarNotifs',
     });
 
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe( first()).subscribe(result => {
       this.popup_opened=false;
     })
   }
@@ -2002,7 +2001,7 @@ open_notifications(){
   show_cookies=false;
   agree_on_cookies(){
     this.show_cookies=false;
-    this.Profile_Edition_Service.agree_on_cookies().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.agree_on_cookies().pipe( first()).subscribe(r=>{
     })
   }
 
@@ -2047,7 +2046,7 @@ open_notifications(){
         panelClass: 'popupMenuNavbar',
       });
 
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe( first()).subscribe(result => {
         this.popup_opened=false;
       })
     }
@@ -2063,14 +2062,14 @@ open_notifications(){
       data:{type_of_profile:this.type_of_profile},
       panelClass:"popupShareClass"
     });
-    this.navbar.add_page_visited_to_history(`/open-share-maile/${this.type_of_profile}/${this.user_id}/`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/open-share-maile/${this.type_of_profile}/${this.user_id}/`,this.device_info ).pipe( first()).subscribe();
   }
   open_contact() {
     const dialogRef = this.dialog.open(PopupContactComponent, {
       data:{current_user:this.current_user},
       panelClass:"popupContactComponentClass"
     });
-    this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).pipe( first()).subscribe();
   }
   open_donation() {
     this.location.go("/donation/")
@@ -2079,21 +2078,17 @@ open_notifications(){
   tuto_opened=false;
   open_tuto() {
     this.tuto_opened=true;
-    this.navbar.add_page_visited_to_history(`/open_tuto`,'' ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/open_tuto`,'' ).pipe( first()).subscribe();
     const dialogRef = this.dialog.open(PopupShareComponent, {
       data:{type_of_profile:this.type_of_profile, tutorial:true,current_user:this.current_user},
       panelClass:"popupTutoClass"
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe( first()).subscribe(result => {
       if(result){
         this.open_share()
       }
     })
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
 }

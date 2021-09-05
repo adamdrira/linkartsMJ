@@ -6,8 +6,8 @@ import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.compo
 import { PopupStoriesComponent } from '../popup-stories/popup-stories.component';
 import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
+
 declare var Swiper:any;
 
 @Component({
@@ -81,12 +81,7 @@ export class StoriesComponent implements OnInit {
 
   list_index_debut_updated:any[];
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
-
+  
   initialize_swiper() {
     
     this.cd.detectChanges();
@@ -160,7 +155,7 @@ export class StoriesComponent implements OnInit {
     let compt=0;
     let compt_found_stories=0;
     let list_of_users_length=1;
-    this.Story_service.get_stories_and_list_of_users().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Story_service.get_stories_and_list_of_users().pipe( first()).subscribe(r=>{
       list_of_users_length=r[0].list_of_users.length;
       let compteur_pp_rerieved=0;
       let compteur_covers_retrieved=0;
@@ -188,7 +183,7 @@ export class StoriesComponent implements OnInit {
           this.final_list_of_users[k]=r[0].list_of_users[k];
           let data_retrieved=false;
 
-          this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_users[k]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+          this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_users[k]).pipe( first()).subscribe(t=> {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_pictures_by_ids[this.list_of_users[k]]=url;
@@ -198,7 +193,7 @@ export class StoriesComponent implements OnInit {
             }
           });
 
-          this.Profile_Edition_Service.retrieve_cover_picture_stories( this.list_of_users[k] ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(v=> {
+          this.Profile_Edition_Service.retrieve_cover_picture_stories( this.list_of_users[k] ).pipe( first()).subscribe(v=> {
             let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_covers_by_ids[this.list_of_users[k]]=url;
@@ -233,14 +228,14 @@ export class StoriesComponent implements OnInit {
             let cover_found=false;
             let data_retrieved=false;
 
-            this.Profile_Edition_Service.retrieve_my_profile_picture().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+            this.Profile_Edition_Service.retrieve_my_profile_picture().pipe( first()).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_profile_pictures[0]=url;
               pp_found=true;
             });
 
-            this.Profile_Edition_Service.retrieve_cover_picture_stories( this.list_of_users[k] ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(v=> {
+            this.Profile_Edition_Service.retrieve_cover_picture_stories( this.list_of_users[k] ).pipe( first()).subscribe(v=> {
               let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_cover_pictures[0]=url;
@@ -648,7 +643,7 @@ export class StoriesComponent implements OnInit {
         panelClass: 'popupStoriesClass'
       });
 
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe( first()).subscribe(result => {
         let list_to_end = result.list_of_users_to_end;
         if(list_to_end.length>0){
           for(let i=0;i<list_to_end.length;i++){

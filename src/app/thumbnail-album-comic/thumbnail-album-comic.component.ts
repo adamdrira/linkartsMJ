@@ -7,8 +7,7 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 
 
@@ -66,7 +65,7 @@ export class ThumbnailAlbumComicComponent implements OnInit {
     private rd:Renderer2,
     private navbar: NavbarService,
     
-  ) { navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+  ) { navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
     if(font){
       this.show_icon=true;
     }
@@ -85,7 +84,7 @@ export class ThumbnailAlbumComicComponent implements OnInit {
 
     this.user_id = this.bd_element.authorid;
 
-    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( first()).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
@@ -94,7 +93,7 @@ export class ThumbnailAlbumComicComponent implements OnInit {
     });
     
     if(this.format=="one-shot"){
-      this.BdOneShotService.retrieve_thumbnail_picture( this.bd_element.name_coverpage ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.BdOneShotService.retrieve_thumbnail_picture( this.bd_element.name_coverpage ).pipe( first()).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
@@ -104,7 +103,7 @@ export class ThumbnailAlbumComicComponent implements OnInit {
     };
 
     if(this.format=="serie"){
-      this.BdSerieService.retrieve_thumbnail_picture( this.bd_element.name_coverpage ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.BdSerieService.retrieve_thumbnail_picture( this.bd_element.name_coverpage ).pipe( first()).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
@@ -141,12 +140,6 @@ export class ThumbnailAlbumComicComponent implements OnInit {
       
   delay(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
-  }
-
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 
 }

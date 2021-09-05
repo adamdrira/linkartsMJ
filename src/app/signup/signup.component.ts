@@ -24,8 +24,8 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { map, startWith } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-signup',
@@ -94,15 +94,12 @@ export class SignupComponent implements OnInit {
       private cd: ChangeDetectorRef,
       private _adapter: DateAdapter<any>,
       private ConstantsService:ConstantsService,
-      //public dialogRef: MatDialogRef<SignupComponent,any>,
       
       public dialog: MatDialog,
       @Inject(DOCUMENT) private document: Document,
-      //@Inject(MAT_DIALOG_DATA) public data: any
     ) 
     { 
-      //dialogRef.disableClose = true;
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -167,14 +164,14 @@ export class SignupComponent implements OnInit {
  
   ngOnInit() {
   
-    this.Profile_Edition_Service.retrieve_profile_picture(2).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_picture(2).pipe( first()).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
     });
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.navbar.add_page_visited_to_history(`/signup`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
-    this.Writing_Upload_Service.retrieve_writing_for_options(0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.add_page_visited_to_history(`/signup`,this.device_info).pipe( first()).subscribe();
+    this.Writing_Upload_Service.retrieve_writing_for_options(0).pipe( first()).subscribe(r=>{
       this.conditions=r
     })
     const currentYear = moment().year();
@@ -374,7 +371,7 @@ export class SignupComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
       panelClass: "popupDocumentClass",
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    }).afterClosed().pipe( first()).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
       this.show_fake_navbar()
     });
@@ -407,7 +404,7 @@ export class SignupComponent implements OnInit {
   index_check=0
   check_pseudo(){
     this.index_check++;
-    this.Profile_Edition_Service.check_pseudo(this.registerForm1.value.nickname, this.index_check).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.check_pseudo(this.registerForm1.value.nickname, this.index_check).pipe( first()).subscribe(r=>{
       if(r[0][0].msg=="found"){
         this.display_pseudo_found_1=true;
         this.cd.detectChanges()
@@ -427,7 +424,7 @@ export class SignupComponent implements OnInit {
 
   check_email(){
     this.index_check_email++;
-    this.Profile_Edition_Service.check_email(this.registerForm1.value.email,this.index_check_email).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.check_email(this.registerForm1.value.email,this.index_check_email).pipe( first()).subscribe(r=>{
       if(r[0][0].msg=="found" && r[1]== this.index_check_email){
         this.display_email_and_password_error=true;
         this.cd.detectChanges()
@@ -458,11 +455,11 @@ export class SignupComponent implements OnInit {
     this.user.gender = "user";
     this.user.type_of_account = this.registerForm1.value.type_of_account;
     this.user.firstname = this.registerForm1.value.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
-    this.Profile_Edition_Service.addUser( this.user ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.addUser( this.user ).pipe( first()).subscribe(r=>{
       if(!r[0].error){
         this.display_email_and_password_error=false;
         this.id_user=r[0].id_user;
-        this.Profile_Edition_Service.send_email_for_account_creation(this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+        this.Profile_Edition_Service.send_email_for_account_creation(this.id_user).pipe( first()).subscribe(m=>{
           this.loading_signup=false;
           if(this.user.type_of_account=="Fan"){
             this.step=-1;
@@ -757,12 +754,12 @@ export class SignupComponent implements OnInit {
 
   cover_picture_editor:any;
   change_cover_picture() {
-    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_cover_picture/signup`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_cover_picture/signup`,this.device_info).pipe( first()).subscribe();
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_cover_picture_signup",id_user:this.id_user},
       panelClass: 'popupUploadPictureClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe( first()).subscribe(result => {
       if(result){
         this.cover_picture_editor=result;
         this.can_show_cover_editor=true;
@@ -772,12 +769,12 @@ export class SignupComponent implements OnInit {
 
   profile_picture_editor:any;
   change_profile_picture() {
-    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_profile_picture/signup`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/PopupFormComponent/edit_profile_picture/signup`,this.device_info).pipe( first()).subscribe();
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_profile_picture_signup",id_user:this.id_user},
       panelClass: 'popupUploadPictureClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe( first()).subscribe(result => {
       if(result){
         this.profile_picture_editor=result;
         this.can_show_pp_editor=true;
@@ -957,7 +954,7 @@ export class SignupComponent implements OnInit {
 
         this.show_text=false;
         let primary_description = this.registerForm2.value.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
-        this.Profile_Edition_Service.edit_account_signup_page1(this.id_user,primary_description,this.location,birthday,siret, this.society).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.edit_account_signup_page1(this.id_user,primary_description,this.location,birthday,siret, this.society).pipe( first()).subscribe(r=>{
           if(r[0]){
 
             if(this.registerForm1.value.type_of_account=="Artiste"){
@@ -998,7 +995,7 @@ export class SignupComponent implements OnInit {
         let categories = this.registerForm3.value.categories;
         this.loading_signup=true;
         
-        this.Profile_Edition_Service.edit_account_signup_page2(this.id_user,categories,this.genres,this.standard_price,this.standard_delay,this.express_price,this.express_delay).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.edit_account_signup_page2(this.id_user,categories,this.genres,this.standard_price,this.standard_delay,this.express_price,this.express_delay).pipe( first()).subscribe(r=>{
           if(r[0]){
               this.loading_signup=false;
               this.show_text=false;
@@ -1023,7 +1020,7 @@ export class SignupComponent implements OnInit {
           return
         }
         this.loading_signup=true;
-        this.Profile_Edition_Service.edit_account_signup_page4(this.id_user,categories,this.skills).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.edit_account_signup_page4(this.id_user,categories,this.skills).pipe( first()).subscribe(r=>{
           if(r[0]){
               this.loading_signup=false;
               this.show_text=false;
@@ -1047,7 +1044,7 @@ export class SignupComponent implements OnInit {
           return
         }
         this.loading_signup=true;
-        this.Profile_Edition_Service.edit_account_signup_page5(this.id_user,links).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.edit_account_signup_page5(this.id_user,links).pipe( first()).subscribe(r=>{
           if(r[0]){
             this.loading_signup=false;
             this.show_sent_mail=true;
@@ -1124,9 +1121,5 @@ export class SignupComponent implements OnInit {
   }
 
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
 }

@@ -5,8 +5,7 @@ import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-recommendations',
@@ -42,7 +41,7 @@ import { takeUntil } from 'rxjs/operators';
 
 
 
-export class RecommendationsComponent implements OnInit, OnDestroy {
+export class RecommendationsComponent implements OnInit {
 
   constructor(
     private cd:ChangeDetectorRef,
@@ -125,15 +124,10 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   check_drawings_history=false;
   last_consulted_drawings=[];
   device_info='';
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     
-    this.navbar.check_if_contents_clicked().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.check_if_contents_clicked().pipe( first()).subscribe(r=>{
       if(r[0].list_of_comics && r[0].list_of_comics.length>0){
         this.check_comics_history=true;
       }
@@ -160,7 +154,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
         this.manage_styles_recommendation(info,information)
       }
       else{
-        this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Community_recommendation.generate_recommendations().pipe( first()).subscribe(r=>{
           if(r[0].sorted_list_category){
             // normallement on entre ici que la première fois ou navigation privée première fois
             let info=r[0].sorted_list_category;
@@ -177,7 +171,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
       }
     }
     else{
-      this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Community_recommendation.generate_recommendations().pipe( first()).subscribe(r=>{
 
         if(r[0].sorted_list_category){
           // normallement on entre ici que la première fois ou navigation privée première fois
@@ -291,7 +285,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
     else if(this.sorted_category_retrieved){
      
       if(i==0){
-        this.navbar.add_page_visited_to_history(`/home/recommendations/comic`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+        this.navbar.add_page_visited_to_history(`/home/recommendations/comic`,this.device_info).pipe( first()).subscribe();
         this.subcategory=i;
         this.type_of_skeleton="comic";
         window.dispatchEvent(new Event('resize'));
@@ -302,7 +296,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
       }
       else if(i==1){
         this.subcategory=i;  
-        this.navbar.add_page_visited_to_history(`/home/recommendations/drawing`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+        this.navbar.add_page_visited_to_history(`/home/recommendations/drawing`,this.device_info).pipe( first()).subscribe();
         this.type_of_skeleton="drawing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
@@ -313,7 +307,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
       }
       else if(i==2){
         this.subcategory=i;
-        this.navbar.add_page_visited_to_history(`/home/recommendations/writing`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+        this.navbar.add_page_visited_to_history(`/home/recommendations/writing`,this.device_info).pipe( first()).subscribe();
         this.type_of_skeleton="writing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
@@ -338,7 +332,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
 
 
   load_comics_recommendations(){
-    this.Community_recommendation.get_recommendations_comics().subscribe(r=>{
+    this.Community_recommendation.get_recommendations_comics().pipe( first()).subscribe(r=>{
       this.manage_comics_recommendations(r[0])
     })
   }
@@ -368,7 +362,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
 
   
   load_writings_recommendations(){
-    this.Community_recommendation.get_recommendations_writings().subscribe(r=>{
+    this.Community_recommendation.get_recommendations_writings().pipe( first()).subscribe(r=>{
       for(let k=0;k<4;k++){
         if(k==0){
           this.sorted_artpieces_roman=r[0][k];
@@ -393,7 +387,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
 
   
   load_drawings_recommendations(){
-    this.Community_recommendation.get_recommendations_drawings().subscribe(r=>{
+    this.Community_recommendation.get_recommendations_drawings().pipe( first()).subscribe(r=>{
       for(let k=0;k<2;k++){
         if(k==0){
           this.sorted_artpieces_traditional=r[0][k];
@@ -437,7 +431,7 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
  /**************************************** HISTORIQUE ***************************************/
 
  get_history_recommendation(){
-  this.navbar.get_history_recommendations().subscribe(r=>{
+  this.navbar.get_history_recommendations().pipe( first()).subscribe(r=>{
     this.last_consulted_comics=r[0];
     this.last_consulted_drawings=r[1];
     this.last_consulted_writings=r[2];

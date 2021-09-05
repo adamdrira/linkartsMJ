@@ -14,8 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ConstantsService } from '../services/constants.service';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var Swiper: any;
 
@@ -53,7 +52,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private router:Router,
   ) { 
-    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+    navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -339,7 +338,7 @@ export class MainSearchbarResultsComponent implements OnInit {
 
   list_for_styles_and_tags:any;
   get_number_of_results_by_category(){
-    this.navbar.get_number_of_results_for_categories(this.research_string).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.get_number_of_results_for_categories(this.research_string).pipe( first()).subscribe(r=>{
       if(r[0].result){
         this.list_for_styles_and_tags=r[0].result2;
         for(let i=0;i<r[0].result.length;i++){
@@ -510,7 +509,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.pp_thumb_is_loaded=[];
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
-      this.navbar.get_number_of_results_by_category(this.category,this.research_string,this.compteur_research).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_number_of_results_by_category(this.category,this.research_string,this.compteur_research).pipe( first()).subscribe(r=>{
         this.number_of_results=r[0][0][0].number_of_results;
         if(parseInt(r[0][0][0].number_of_results)%5==0){
           this.number_of_pages=Math.trunc(parseInt(r[0][0][0].number_of_results)/5)
@@ -539,7 +538,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.pp_thumb_is_loaded=[];
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
-      this.navbar.get_number_of_results_by_category1(this.category,this.research_string,this.first_filter,this.compteur_research).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_number_of_results_by_category1(this.category,this.research_string,this.first_filter,this.compteur_research).pipe( first()).subscribe(r=>{
         this.number_of_results=r[0][0][0].number_of_results;
         if(parseInt(r[0][0][0].number_of_results)%5==0){
           this.number_of_pages=Math.trunc(parseInt(r[0][0][0].number_of_results)/5)
@@ -568,7 +567,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.pp_thumb_is_loaded=[];
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
-      this.navbar.get_number_of_results_by_category2(this.category,this.research_string,this.second_filter,this.compteur_research,this.type_of_target).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_number_of_results_by_category2(this.category,this.research_string,this.second_filter,this.compteur_research,this.type_of_target).pipe( first()).subscribe(r=>{
         this.number_of_results=r[0][0][0].number_of_results;
         if(parseInt(r[0][0][0].number_of_results)%5==0){
           this.number_of_pages=Math.trunc(parseInt(r[0][0][0].number_of_results)/5)
@@ -597,7 +596,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.pp_thumb_is_loaded=[];
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
-      this.navbar.get_number_of_results_by_category3(this.category,this.research_string,this.first_filter,this.second_filter,this.compteur_research,this.type_of_target).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_number_of_results_by_category3(this.category,this.research_string,this.first_filter,this.second_filter,this.compteur_research,this.type_of_target).pipe( first()).subscribe(r=>{
         if(r[0][0][0].number_of_results==0){
           this.show_propositions=false;
           this.display_no_propositions=true;
@@ -641,7 +640,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.show_propositions=false;
     this.compteur_propositions=0;
     if(i==0){
-      this.navbar.get_propositions_after_research_navbar(this.category,this.research_string,5,offset,compteur).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_propositions_after_research_navbar(this.category,this.research_string,5,offset,compteur).pipe( first()).subscribe(r=>{
         if(r[0][0].length>0){
           if(r[1]==this.compteur_research){
             this.list_of_first_propositions=r[0][0];
@@ -658,7 +657,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       })
     }
     if(i==1){
-      this.navbar.get_propositions_after_research_navbar1(this.category,this.first_filter,this.research_string,5,offset,compteur).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_propositions_after_research_navbar1(this.category,this.first_filter,this.research_string,5,offset,compteur).pipe( first()).subscribe(r=>{
         if(r[0][0].length>0){
           if(r[1]==this.compteur_research){
             this.list_of_first_propositions=r[0][0];
@@ -676,7 +675,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       })
     }
     if(i==2){
-      this.navbar.get_propositions_after_research_navbar2(this.category,this.second_filter,this.research_string,5,offset,compteur,this.type_of_target).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_propositions_after_research_navbar2(this.category,this.second_filter,this.research_string,5,offset,compteur,this.type_of_target).pipe( first()).subscribe(r=>{
         if(r[0][0].length>0){
           if(r[1]==this.compteur_research){
             this.list_of_first_propositions=r[0][0];
@@ -693,7 +692,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       })
     }
     if(i==3){
-      this.navbar.get_propositions_after_research_navbar3(this.category,this.first_filter,this.second_filter,this.research_string,5,offset,compteur,this.type_of_target).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_propositions_after_research_navbar3(this.category,this.first_filter,this.second_filter,this.research_string,5,offset,compteur,this.type_of_target).pipe( first()).subscribe(r=>{
         if(r[0][0].length>0){
           if(r[1]==this.compteur_research){
             this.list_of_first_propositions=r[0][0];
@@ -716,14 +715,14 @@ export class MainSearchbarResultsComponent implements OnInit {
 
   get_propositions(i,compteur){
     if(this.list_of_first_propositions[i].publication_category=="Account"){
-      this.Profile_Edition_Service.retrieve_profile_picture(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+      this.Profile_Edition_Service.retrieve_profile_picture(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(t=> {
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         if(compteur==this.compteur_research){
           this.list_of_thumbnails[i] = SafeURL;
         }
       });
-      this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(profile=>{
+      this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(profile=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=profile[0];
           this.compteur_propositions++;
@@ -737,7 +736,7 @@ export class MainSearchbarResultsComponent implements OnInit {
      
     }
     if(this.list_of_first_propositions[i].publication_category=="Ad"){
-      this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(ad=>{
+      this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(ad=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=ad[0];
           this.compteur_propositions++;
@@ -750,7 +749,7 @@ export class MainSearchbarResultsComponent implements OnInit {
 
     if(this.list_of_first_propositions[i].publication_category=="Comic"){
       if(this.list_of_first_propositions[i].format=="one-shot"){
-        this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
             this.compteur_propositions++;
@@ -761,7 +760,7 @@ export class MainSearchbarResultsComponent implements OnInit {
         })
       }
       if(this.list_of_first_propositions[i].format=="serie"){
-        this.BdSerieService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.BdSerieService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
             this.compteur_propositions++;
@@ -775,7 +774,7 @@ export class MainSearchbarResultsComponent implements OnInit {
 
     if(this.list_of_first_propositions[i].publication_category=="Drawing"){
       if(this.list_of_first_propositions[i].format=="one-shot"){
-        this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
             this.compteur_propositions++;
@@ -787,7 +786,7 @@ export class MainSearchbarResultsComponent implements OnInit {
         })
       }
       if(this.list_of_first_propositions[i].format=="artbook"){
-        this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+        this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
           if(compteur==this.compteur_research){
             this.list_of_last_propositions[i]=comic[0];
             this.compteur_propositions++;
@@ -801,7 +800,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions[i].publication_category=="Writing"){
-      this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+      this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions[i].target_id).pipe( first()).subscribe(comic=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=comic[0];
           this.compteur_propositions++;
@@ -873,7 +872,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.pp_thumb_is_loaded=[];
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
-      this.navbar.get_number_of_results_by_category_sg(this.category,this.first_filter,this.compteur_research).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_number_of_results_by_category_sg(this.category,this.first_filter,this.compteur_research).pipe( first()).subscribe(r=>{
         if(r[0][0][0].number_of_results==0){
           this.show_propositions=false;
           this.display_no_propositions=true;
@@ -911,7 +910,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.pp_thumb_is_loaded=[];
     this.compteur_research+=1;
     if(!this.number_of_page_retrieved){
-      this.navbar.get_number_of_results_by_category_sg1(this.category,this.first_filter,this.second_filter,this.compteur_research,this.type_of_target).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_number_of_results_by_category_sg1(this.category,this.first_filter,this.second_filter,this.compteur_research,this.type_of_target).pipe( first()).subscribe(r=>{
         if(r[0][0][0].number_of_results==0){
           this.show_propositions=false;
           this.display_no_propositions=true;
@@ -949,7 +948,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.show_propositions=false;
     this.compteur_propositions=0;
     if(i==0){
-      this.navbar.get_propositions_after_research_navbar_sg(this.category,this.first_filter,5,offset,compteur).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_propositions_after_research_navbar_sg(this.category,this.first_filter,5,offset,compteur).pipe( first()).subscribe(r=>{
         if(r[0][0].length>0){
           if(compteur==this.compteur_research){
             this.list_of_first_propositions=r[0][0];
@@ -967,7 +966,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       })
     }
     if(i==1){
-      this.navbar.get_propositions_after_research_navbar_sg1(this.category,this.first_filter,this.second_filter,5,offset,compteur,this.type_of_target).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.navbar.get_propositions_after_research_navbar_sg1(this.category,this.first_filter,this.second_filter,5,offset,compteur,this.type_of_target).pipe( first()).subscribe(r=>{
         if(r[0][0].length>0){
           if(compteur==this.compteur_research){
             this.list_of_first_propositions=r[0][0];
@@ -1078,11 +1077,6 @@ export class MainSearchbarResultsComponent implements OnInit {
  
  }
 
- protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
 
 
 }

@@ -15,8 +15,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { Meta, Title } from '@angular/platform-browser';
 import { PopupContactComponent } from '../popup-contact/popup-contact.component';
 import { PopupShareComponent } from '../popup-share/popup-share.component';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var Swiper: any;
 
@@ -52,7 +51,7 @@ export class HomeLinkartsComponent implements OnInit {
     
     ) {
 
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -99,7 +98,7 @@ export class HomeLinkartsComponent implements OnInit {
 
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
-    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
+    this.route.data.pipe( first()).subscribe(resp => {
       let r= resp.user;
       this.current_user=resp.user;
       if(r[0]){
@@ -127,17 +126,17 @@ export class HomeLinkartsComponent implements OnInit {
       if(this.category_index==4){
         let id = parseInt(this.route.snapshot.paramMap.get('id'));
         let password = this.route.snapshot.paramMap.get('password');
-        this.Profile_Edition_Service.check_password_for_registration(id,password).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.check_password_for_registration(id,password).pipe( first()).subscribe(r=>{
           this.location.go('/home/recommendations')
           if(r[0].user_found){
-            this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+            this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info ).pipe( first()).subscribe();
             const dialogRef = this.dialog.open(LoginComponent, {
               data: {usage:"registration",temp_pass:r[0].pass,email:r[0].user_found.email},
               panelClass: "loginComponentClass",
             });
           }
           else{
-            this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+            this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).pipe( first()).subscribe();
           }
         })
       }
@@ -163,21 +162,21 @@ export class HomeLinkartsComponent implements OnInit {
   get_to_artists(){
     this.loading_top_artist=true;
     let compt=0;
-    this.navbar.get_top_artists("comic").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.get_top_artists("comic").pipe( first()).subscribe(r=>{
       this.top_artists_comic=r[0];
       compt++;
       if(compt==3){
         this.manage_top_artists()
       }
     })
-    this.navbar.get_top_artists("drawing").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.get_top_artists("drawing").pipe( first()).subscribe(r=>{
       this.top_artists_drawing=r[0];
       compt++;
       if(compt==3){
         this.manage_top_artists()
       }
     })
-    this.navbar.get_top_artists("writing").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.navbar.get_top_artists("writing").pipe( first()).subscribe(r=>{
       this.top_artists_writing=r[0];
       compt++;
       if(compt==3){
@@ -234,19 +233,19 @@ export class HomeLinkartsComponent implements OnInit {
         this.allow_sub=true;
       }
       
-      this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/home/recommendations`,this.device_info).pipe( first()).subscribe();
       this.location.go('/home/recommendations');
     }
     else if( i==1 ) {
-      this.navbar.add_page_visited_to_history(`/home/trendings`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/home/trendings`,this.device_info).pipe( first()).subscribe();
       this.location.go('/home/trendings')
     }
     else if( i==2 ) {
-      this.navbar.add_page_visited_to_history(`/subscribings`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/subscribings`,this.device_info).pipe( first()).subscribe();
       this.location.go('/home/subscribings')
     }
     else if( i==3 ) {
-      this.navbar.add_page_visited_to_history(`/favorites`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/favorites`,this.device_info).pipe( first()).subscribe();
       this.location.go('/home/favorites')
     }
     
@@ -411,7 +410,7 @@ export class HomeLinkartsComponent implements OnInit {
       data:{current_user:this.current_user},
       panelClass:"popupContactComponentClass"
     });
-    this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).pipe( first()).subscribe();
   }
 
   open_share() {
@@ -453,10 +452,7 @@ export class HomeLinkartsComponent implements OnInit {
     
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
 
     this.navbar.show_help();
     
@@ -466,13 +462,13 @@ export class HomeLinkartsComponent implements OnInit {
   }
 
   open_tuto(){
-    this.navbar.add_page_visited_to_history(`/open_tuto`,'' ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/open_tuto`,'' ).pipe( first()).subscribe();
     const dialogRef = this.dialog.open(PopupShareComponent, {
       data:{type_of_profile:this.type_of_profile, tutorial:true,current_user:this.current_user},
       panelClass:"popupTutoClass"
     });
 
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe( first()).subscribe(result => {
       if(result){
         this.open_share()
       }

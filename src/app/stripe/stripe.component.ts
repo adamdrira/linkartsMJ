@@ -6,8 +6,7 @@ import { StripeService } from '../services/stripe.service';
 import { NavbarService } from '../services/navbar.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var Stripe: any;
 
@@ -81,7 +80,7 @@ export class StripeComponent implements OnInit {
         return false;
       };
       navbar.hide();
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -98,7 +97,7 @@ export class StripeComponent implements OnInit {
    
     window.scroll(0,0);
     let device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.navbar.add_page_visited_to_history(`/donation`,device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/donation`,device_info ).pipe( first()).subscribe();
     this.category_index = this.route.snapshot.data['category'];
     this.StripeForm = this.FormBuilder.group({
       donation: [this.donation, 
@@ -166,7 +165,7 @@ export class StripeComponent implements OnInit {
 
         if(this.StripeForm.valid){
           this.loading = true;
-          this.StripeService.create_checkout_session(this.selected_value*100).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.StripeService.create_checkout_session(this.selected_value*100).pipe( first()).subscribe(r=>{
             this.stripe=Stripe(r[0].key)
             return this.stripe.redirectToCheckout({ sessionId: r[0].id });
             
@@ -187,10 +186,6 @@ export class StripeComponent implements OnInit {
     this.step=0;
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
 
 }

@@ -2,8 +2,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import {Renderer2} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var $:any;
 
@@ -29,7 +28,7 @@ export class MediaWritingsComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private navbar: NavbarService,
     ) { 
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -242,11 +241,5 @@ export class MediaWritingsComponent implements OnInit {
       }, 300, 'swing');
     }
   }
-  
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
-  
+
 }
