@@ -30,8 +30,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { merge, fromEvent } from 'rxjs';
 import { LoginComponent } from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var Swiper: any;
 declare var $: any;
@@ -103,7 +102,7 @@ export class ArtworkDrawingComponent implements OnInit {
     private NotationService:NotationService,
 
     ) { 
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -126,11 +125,7 @@ export class ArtworkDrawingComponent implements OnInit {
     this.add_time_of_view();
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-    
     if(!this.drawing_id_input){
       this.navbar.show_help();
     }
@@ -323,7 +318,7 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     
-    this.Profile_Edition_Service.get_current_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.Profile_Edition_Service.get_current_user().pipe(first() ).subscribe(l=>{
       this.visitor_id = l[0].id;
       this.visitor_name=l[0].nickname;
       this.visitor_status=l[0].status;
@@ -345,12 +340,12 @@ export class ArtworkDrawingComponent implements OnInit {
     
     if (this.type =="one-shot"){
       
-      this.Drawings_Onepage_Service.retrieve_drawing_information_by_id2(this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m => {
+      this.Drawings_Onepage_Service.retrieve_drawing_information_by_id2(this.drawing_id).pipe(first() ).subscribe(m => {
         if(m[0]){
           let r=m[0].data;
           if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
             if(r[0] && r[0].status=="deleted"){
-              this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).pipe(first() ).subscribe(r=>{
                 this.page_not_found=true;
                 this.cd.detectChanges()
                 return
@@ -381,12 +376,12 @@ export class ArtworkDrawingComponent implements OnInit {
 
     else if (this.type =="artbook"){
       
-      this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id2(this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m => {
+      this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id2(this.drawing_id).pipe(first() ).subscribe(m => {
         if(m[0]){
           let r=m[0].data;
           if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
             if(r[0] && r[0].status=="deleted"){
-              this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).pipe(first() ).subscribe(r=>{
                 this.page_not_found=true;
                 this.cd.detectChanges()
                 return
@@ -424,7 +419,7 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   check_archive(){
-    this.Subscribing_service.check_if_publication_archived("drawings",this.type ,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.check_if_publication_archived("drawings",this.type ,this.drawing_id).pipe(first() ).subscribe(r=>{
       if(r[0].value){
         this.content_archived=true;
       }
@@ -448,14 +443,14 @@ export class ArtworkDrawingComponent implements OnInit {
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
       let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-      this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/artwork-drawing/one-shot/${this.title}/${this.drawing_id}`,this.device_info).pipe(first() ).subscribe();
       this.location.go(`/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`);
       this.url=`https://www.linkarts.fr/artwork-drawing/one-shot/${title_url}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show =get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
 
-      this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe(first() ).subscribe(r=>{
         this.pseudo = r[0].nickname;
         this.user_name = r[0].firstname;
         this.primary_description=r[0].primary_description;
@@ -466,7 +461,7 @@ export class ArtworkDrawingComponent implements OnInit {
         this.profile_data_retrieved=true;
       });
 
-      this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+      this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe(first() ).subscribe(l=>{
         if (l[0]!=null && l[0]!=undefined){
           if (l[0].publication_id==this.drawing_id && l[0].publication_category=="drawing" && l[0].format==this.type){
             this.content_emphasized=true;
@@ -478,7 +473,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
       
 
-      this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+      this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).pipe(first() ).subscribe(information=>{
         if(information[0].value){
           this.already_subscribed=true;
         }
@@ -487,7 +482,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
       
 
-      this.NotationService.get_content_marks("drawing", 'one-shot', this.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.NotationService.get_content_marks("drawing", 'one-shot', this.drawing_id,0).pipe(first() ).subscribe(r=>{
         //views and comments
         this.commentariesnumber=r[0].list_of_comments.length;
         this.viewsnumber= r[0].list_of_views.length;
@@ -516,20 +511,20 @@ export class ArtworkDrawingComponent implements OnInit {
    
       
 
-      this.Drawings_Onepage_Service.retrieve_drawing_page(drawing_name,window.innerWidth).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Drawings_Onepage_Service.retrieve_drawing_page(drawing_name,window.innerWidth).pipe(first() ).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.drawing_one_shot=SafeURL;
       });
 
-      this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).pipe(first() ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
         
       });
 
-      this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+      this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe(first() ).subscribe(information=>{
         if(information[0].value){
           this.already_subscribed=true;
         }
@@ -549,21 +544,21 @@ export class ArtworkDrawingComponent implements OnInit {
       if (this.authorid ==this.visitor_id){
         this.mode_visiteur = false;
         if(this.status=="public"){
-          this.navbar.check_if_research_exists("Drawing",this.type,this.drawing_id,this.title,"clicked").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+          this.navbar.check_if_research_exists("Drawing",this.type,this.drawing_id,this.title,"clicked").pipe(first() ).subscribe(p=>{
             if(!p[0].value){
-              this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+              this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe(first() ).subscribe();
             }
           })
         }
        
       }
       else{
-        this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
-        this.NotationService.add_view('drawing', 'one-shot',this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe(first() ).subscribe();
+        this.NotationService.add_view('drawing', 'one-shot',this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
           this.id_view_created = r[0].id;
           if(r[0].id>0){
             this.Community_recommendation.delete_recommendations_cookies();
-            this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{})
+            this.Community_recommendation.generate_recommendations().pipe(first() ).subscribe(r=>{})
           }
         });
                
@@ -597,14 +592,14 @@ export class ArtworkDrawingComponent implements OnInit {
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
       let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-      this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/artwork-drawing/artbook/${this.title}/${this.drawing_id}`,this.device_info).pipe(first() ).subscribe();
       this.location.go(`/artwork-drawing/artbook/${title_url}/${this.drawing_id}`);
       this.url=`https://www.linkarts.fr/artwork-drawing/artbook/${title_url}/${this.drawing_id}`;
       this.location_done=true;
       this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
       
-      this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe(first() ).subscribe(r=>{
         this.pseudo = r[0].nickname;
         this.user_name = r[0].firstname;
         this.primary_description=r[0].primary_description;
@@ -615,14 +610,14 @@ export class ArtworkDrawingComponent implements OnInit {
         this.meta.updateTag({ name: 'description', content: `Découvrer l'artbook de @${this.user_name}.` });
       });
 
-      this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+      this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe(first() ).subscribe(information=>{
         if(information[0].value){
           this.already_subscribed=true;
         }
         this.subscribtion_retrieved=true;
       }); 
 
-      this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+      this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe(first() ).subscribe(l=>{
         if (l[0]!=null && l[0]!=undefined){
           if (l[0].publication_id==this.drawing_id && l[0].publication_category=="drawing" && l[0].format==this.type){
             this.content_emphasized=true;
@@ -630,7 +625,7 @@ export class ArtworkDrawingComponent implements OnInit {
         }
       });
 
-      this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).pipe(first() ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
@@ -643,7 +638,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.artbook_check_view_after_current();
       
       
-      this.NotationService.get_content_marks("drawing", 'artbook', this.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.NotationService.get_content_marks("drawing", 'artbook', this.drawing_id,0).pipe(first() ).subscribe(r=>{
         //views and comments
         this.commentariesnumber=r[0].list_of_comments.length;
         this.viewsnumber= r[0].list_of_views.length;
@@ -681,7 +676,7 @@ export class ArtworkDrawingComponent implements OnInit {
   get_drawing_artbook_pages(drawing_id,total_pages) {
     
     for( var i=0; i< total_pages; i++ ) {
-      this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i,window.innerWidth).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i,window.innerWidth).pipe(first() ).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.list_drawing_pages[r[1]]=url;
@@ -725,21 +720,21 @@ export class ArtworkDrawingComponent implements OnInit {
         if (this.authorid == this.visitor_id){
           this.mode_visiteur = false;
           if(this.status=="public"){
-            this.navbar.check_if_research_exists("Drawing",this.type,this.drawing_id,this.title,"clicked").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+            this.navbar.check_if_research_exists("Drawing",this.type,this.drawing_id,this.title,"clicked").pipe(first() ).subscribe(p=>{
               if(!p[0].value){
-                this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+                this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe(first() ).subscribe();
               }
             })
           }
            
         }
         else{
-          this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
-          this.NotationService.add_view('drawing', 'artbook',this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe(first() ).subscribe();
+          this.NotationService.add_view('drawing', 'artbook',this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
             this.id_view_created = r[0].id;
             if(r[0].id>0){
               this.Community_recommendation.delete_recommendations_cookies();
-              this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{})
+              this.Community_recommendation.generate_recommendations().pipe(first() ).subscribe(r=>{})
             }
           });
                   
@@ -758,7 +753,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
   get_author_recommendations(){
  
-    this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(e=>{
+    this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,this.drawing_id).pipe(first() ).subscribe(e=>{
       if(e[0].list_to_send.length >0){
         for(let j=0;j<e[0].list_to_send.length;j++){
           if(e[0].list_to_send[j].length>0){
@@ -784,7 +779,7 @@ export class ArtworkDrawingComponent implements OnInit {
   get_recommendations_by_tag(){
 
     
-    this.Community_recommendation.get_artwork_recommendations_by_tag('Drawing',this.type,this.drawing_id,this.style,this.firsttag,6).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(u=>{
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Drawing',this.type,this.drawing_id,this.style,this.firsttag,6).pipe(first() ).subscribe(u=>{
       if(u[0].length>0){
         let list_of_first_propositions=u[0];
         this.first_propositions=u[0];
@@ -802,7 +797,7 @@ export class ArtworkDrawingComponent implements OnInit {
       
     })
 
-    this.Community_recommendation.get_artwork_recommendations_by_tag('Drawing',this.type,this.drawing_id,this.style,this.secondtag,6).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Drawing',this.type,this.drawing_id,this.style,this.secondtag,6).pipe(first() ).subscribe(r=>{
       
       this.second_propositions_retrieved=true;
       this.second_propositions=r[0];
@@ -851,7 +846,7 @@ export class ArtworkDrawingComponent implements OnInit {
     if(list_of_first_propositions.length>0){
       for(let i=0;i<list_of_first_propositions.length;i++){
         if(list_of_first_propositions[i].format=="artbook"){
-          this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+          this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(list_of_first_propositions[i].target_id).pipe(first() ).subscribe(comic=>{
             
             if(comic[0].status=="public"){
               this.list_of_recommendations_by_tag.push(comic[0]);
@@ -863,7 +858,7 @@ export class ArtworkDrawingComponent implements OnInit {
           })
         }
         else{
-          this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+          this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(list_of_first_propositions[i].target_id).pipe(first() ).subscribe(comic=>{
             if(comic[0].status=="public"){
               this.list_of_recommendations_by_tag.push(comic[0]);
             }
@@ -971,7 +966,7 @@ export class ArtworkDrawingComponent implements OnInit {
       }, 
       panelClass: 'popupArtworkDataClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -1000,7 +995,7 @@ export class ArtworkDrawingComponent implements OnInit {
       }, 
       panelClass: 'popupCommentsClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -1261,7 +1256,7 @@ export class ArtworkDrawingComponent implements OnInit {
           this.liked=false;
           this.likesnumber-=1;
           if(this.type=='one-shot'){
-            this.NotationService.remove_like('drawing', 'one-shot', this.style, this.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.remove_like('drawing', 'one-shot', this.style, this.drawing_id,0).pipe(first() ).subscribe(r=>{
               let index=this.list_of_users_ids_likes.indexOf(this.visitor_id);
               this.list_of_users_ids_likes.splice(index,1);
               if(this.authorid==this.visitor_id){
@@ -1270,7 +1265,7 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_like','drawing','one-shot',this.drawing_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_like','drawing','one-shot',this.drawing_id,0,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_like",
@@ -1295,7 +1290,7 @@ export class ArtworkDrawingComponent implements OnInit {
             });
           }
           else if(this.type=='artbook'){      
-            this.NotationService.remove_like('drawing', 'artbook', this.style, this.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{      
+            this.NotationService.remove_like('drawing', 'artbook', this.style, this.drawing_id,0).pipe(first() ).subscribe(r=>{      
               let index=this.list_of_users_ids_likes.indexOf(this.visitor_id);
               this.list_of_users_ids_likes.splice(index,1);
             
@@ -1304,7 +1299,7 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_like','drawing','artbook',this.drawing_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_like','drawing','artbook',this.drawing_id,0,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_like",
@@ -1333,7 +1328,7 @@ export class ArtworkDrawingComponent implements OnInit {
           this.liked=true;
           this.likesnumber+=1;
           if(this.type=='one-shot'){  
-            this.NotationService.add_like('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{        
+            this.NotationService.add_like('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{        
               if(!r[0].error){
                 this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
               
@@ -1343,7 +1338,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_like",
@@ -1374,7 +1369,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1383,7 +1378,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1395,7 +1390,7 @@ export class ArtworkDrawingComponent implements OnInit {
           }
           else if(this.type=='artbook'){
             
-            this.NotationService.add_like('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.add_like('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
               if(!r[0].error){
                 this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
                 if(this.authorid==this.visitor_id){
@@ -1403,7 +1398,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_like",
@@ -1434,7 +1429,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1443,7 +1438,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1464,7 +1459,7 @@ export class ArtworkDrawingComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -1488,7 +1483,7 @@ export class ArtworkDrawingComponent implements OnInit {
           this.loved=false;
           this.lovesnumber-=1;
           if(this.type=='one-shot'){
-            this.NotationService.remove_love('drawing', 'one-shot', this.style, this.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.remove_love('drawing', 'one-shot', this.style, this.drawing_id,0).pipe(first() ).subscribe(r=>{
               let index=this.list_of_users_ids_loves.indexOf(this.visitor_id);
               this.list_of_users_ids_loves.splice(index,1);
             
@@ -1498,7 +1493,7 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_love','drawing','one-shot',this.drawing_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_love','drawing','one-shot',this.drawing_id,0,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_love",
@@ -1522,7 +1517,7 @@ export class ArtworkDrawingComponent implements OnInit {
             });
           }
           else if(this.type=='artbook'){      
-            this.NotationService.remove_love('drawing', 'artbook', this.style, this.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{      
+            this.NotationService.remove_love('drawing', 'artbook', this.style, this.drawing_id,0).pipe(first() ).subscribe(r=>{      
               let index=this.list_of_users_ids_loves.indexOf(this.visitor_id);
               this.list_of_users_ids_loves.splice(index,1);
               if(this.authorid==this.visitor_id){
@@ -1530,7 +1525,7 @@ export class ArtworkDrawingComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_love','drawing','artbook',this.drawing_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_love','drawing','artbook',this.drawing_id,0,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_love",
@@ -1559,7 +1554,7 @@ export class ArtworkDrawingComponent implements OnInit {
           this.loved=true;
           this.lovesnumber+=1;
           if(this.type=='one-shot'){  
-            this.NotationService.add_love('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{        
+            this.NotationService.add_love('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{        
               if(!r[0].error){
                 this.list_of_users_ids_loves.splice(0,0,this.visitor_id);
                 if(this.authorid==this.visitor_id){
@@ -1568,7 +1563,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_love",
@@ -1599,7 +1594,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1608,7 +1603,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1621,7 +1616,7 @@ export class ArtworkDrawingComponent implements OnInit {
           }
           else if(this.type=='artbook'){
           
-            this.NotationService.add_love('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.add_love('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
               if(!r[0].error){
                 this.list_of_users_ids_loves.splice(0,0,this.visitor_id)
                             
@@ -1630,7 +1625,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_love",
@@ -1661,7 +1656,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1670,7 +1665,7 @@ export class ArtworkDrawingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1691,7 +1686,7 @@ export class ArtworkDrawingComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -1705,7 +1700,7 @@ export class ArtworkDrawingComponent implements OnInit {
       panelClass: 'popupLikesAndLovesClass',
     });
   
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -1720,7 +1715,7 @@ export class ArtworkDrawingComponent implements OnInit {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -1747,11 +1742,11 @@ export class ArtworkDrawingComponent implements OnInit {
     if(this.mode_visiteur){
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
       if(this.type=='one-shot' && this.id_view_created>0 && ending_time_of_view>5){
-        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).pipe(first() ).subscribe(r=>{
         });
       }
       if(this.type=='artbook' && this.id_view_created>0  && ending_time_of_view>5){
-        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).pipe(first() ).subscribe(r=>{
         });
       }
     }
@@ -1767,7 +1762,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.loading_subscribtion=true;
       if(!this.already_subscribed){
         this.already_subscribed=true;
-        this.Subscribing_service.subscribe_to_a_user(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+        this.Subscribing_service.subscribe_to_a_user(this.authorid).pipe(first() ).subscribe(information=>{
           if(information[0].subscribtion){
             this.loading_subscribtion=false;
             this.cd.detectChanges();
@@ -1781,7 +1776,7 @@ export class ArtworkDrawingComponent implements OnInit {
             this.loading_subscribtion=false;
           }
           else{
-            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.authorid,this.authorid.toString(),'none','none',this.visitor_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.authorid,this.authorid.toString(),'none','none',this.visitor_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"subscribtion",
@@ -1808,8 +1803,8 @@ export class ArtworkDrawingComponent implements OnInit {
       }
       else{
         this.already_subscribed=false;
-        this.Subscribing_service.remove_subscribtion(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
-          this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.Subscribing_service.remove_subscribtion(this.authorid).pipe(first() ).subscribe(information=>{
+          this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).pipe(first() ).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"subscribtion",
@@ -1840,7 +1835,7 @@ export class ArtworkDrawingComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -1852,7 +1847,7 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Subscribing_service.archive("drawings",this.type,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.archive("drawings",this.type,this.drawing_id).pipe(first() ).subscribe(r=>{
       this.content_archived=true;
       this.archive_loading=false;
     });
@@ -1863,7 +1858,7 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Subscribing_service.unarchive("drawings",this.type,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.unarchive("drawings",this.type,this.drawing_id).pipe(first() ).subscribe(r=>{
       this.content_archived=false;
       this.archive_loading=false;
     });
@@ -1875,13 +1870,13 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.checking_report=true;
-    this.Reports_service.check_if_content_reported('drawing',this.drawing_id,this.type,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Reports_service.check_if_content_reported('drawing',this.drawing_id,this.type,0).pipe(first() ).subscribe(r=>{
       if(r[0].nothing){
         this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
       }
@@ -1891,7 +1886,7 @@ export class ArtworkDrawingComponent implements OnInit {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'drawing',publication_id:this.drawing_id,format:this.type,chapter_number:0},
           panelClass:"popupReportClass"
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
       }
@@ -1903,7 +1898,7 @@ export class ArtworkDrawingComponent implements OnInit {
   cancel_report(){
 
     let id=this.drawing_id
-    this.Reports_service.cancel_report("drawing",id,this.type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Reports_service.cancel_report("drawing",id,this.type).pipe(first() ).subscribe(r=>{
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id)>=0){
         let i=this.list_of_reporters.indexOf(this.visitor_id)
         this.list_of_reporters.splice(i,1)
@@ -1917,7 +1912,7 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Profile_Edition_Service.emphasize_content("drawing",this.type,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.emphasize_content("drawing",this.type,this.drawing_id).pipe(first() ).subscribe(r=>{
       this.content_emphasized=true;
       this.archive_loading=false;
     });
@@ -1928,7 +1923,7 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Profile_Edition_Service.remove_emphasizing("drawing",this.type,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+    this.Profile_Edition_Service.remove_emphasizing("drawing",this.type,this.drawing_id).pipe(first() ).subscribe(t=>{
       this.content_emphasized=false;
       this.archive_loading=false;
     });
@@ -1968,7 +1963,7 @@ export class ArtworkDrawingComponent implements OnInit {
       },
       panelClass: 'popupFormDrawingClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })
   }
@@ -1991,7 +1986,7 @@ export class ArtworkDrawingComponent implements OnInit {
       },
       panelClass: 'popupEditCoverClass',
     });     
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })
   }
@@ -2007,12 +2002,12 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
         if( result ) {
           if(this.type=="one-shot"){
-            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-              this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"private").pipe(first() ).subscribe(r=>{
+              this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"private").pipe(first() ).subscribe(r=>{
                 this.status="private";
                 this.archive_loading=false;
               });
@@ -2020,8 +2015,8 @@ export class ArtworkDrawingComponent implements OnInit {
            
           }
           else{
-            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-              this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"private").pipe(first() ).subscribe(r=>{
+              this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"private").pipe(first() ).subscribe(r=>{
                 this.status="private";
                 this.archive_loading=false;
               });
@@ -2048,11 +2043,11 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
-          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"ok").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"public").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"ok").pipe(first() ).subscribe(r=>{
+            this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"public").pipe(first() ).subscribe(r=>{
               this.status="public";
               this.archive_loading=false;
             });
@@ -2060,8 +2055,8 @@ export class ArtworkDrawingComponent implements OnInit {
           
         }
         else{
-          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"ok").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"public").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,"ok").pipe(first() ).subscribe(r=>{
+            this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"public").pipe(first() ).subscribe(r=>{
               this.status="public";
               this.archive_loading=false;
             });
@@ -2087,12 +2082,12 @@ export class ArtworkDrawingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
-          this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-              this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).pipe(first() ).subscribe(r=>{
+            this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).pipe(first() ).subscribe(r=>{
+              this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).pipe(first() ).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"add_publication",
@@ -2120,9 +2115,9 @@ export class ArtworkDrawingComponent implements OnInit {
           
         }
         else{
-          this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-              this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).pipe(first() ).subscribe(r=>{
+            this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).pipe(first() ).subscribe(r=>{
+              this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).pipe(first() ).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"add_publication",
@@ -2161,7 +2156,7 @@ export class ArtworkDrawingComponent implements OnInit {
   
   first_comment_received(e){
     this.first_comment=e.comment.commentary;
-    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=> {
+    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).pipe(first() ).subscribe(p=> {
       let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.pp_first_comment= SafeURL;
@@ -2174,7 +2169,7 @@ export class ArtworkDrawingComponent implements OnInit {
     this.first_comment_pp_loaded=true;
   }
   add_share_history(category){
-    this.navbar.add_page_visited_to_history(`/artwork-drawing-share/${this.type}/${this.title}/${this.drawing_id}/${category}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/artwork-drawing-share/${this.type}/${this.title}/${this.drawing_id}/${category}`,this.device_info).pipe(first() ).subscribe();
   }
 }
 

@@ -30,8 +30,8 @@ import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-d
 import { LoginComponent } from '../login/login.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Meta, Title } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+
+import { first } from 'rxjs/operators';
 
 declare var Swiper: any;
 declare var $: any;
@@ -106,7 +106,7 @@ export class ArtworkComicComponent implements OnInit {
     private chatService:ChatService,
     
     ) { 
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -129,10 +129,7 @@ export class ArtworkComicComponent implements OnInit {
     this.add_time_of_view();
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   
     if(!this.bd_id_input){
       this.navbar.show_help();
@@ -325,7 +322,7 @@ export class ArtworkComicComponent implements OnInit {
     }
 
     
-    this.Profile_Edition_Service.get_current_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.Profile_Edition_Service.get_current_user().pipe(first() ).subscribe(l=>{
       this.visitor_id = l[0].id;
       this.visitor_name=l[0].nickname;
       this.visitor_status=l[0].status;
@@ -360,13 +357,13 @@ export class ArtworkComicComponent implements OnInit {
       if(this.active_section==2){
         this.current_chapter=parseInt(this.activatedRoute.snapshot.paramMap.get('chapter_number')) -1;
       }
-      this.BdSerieService.retrieve_bd_by_id2(this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m => { 
+      this.BdSerieService.retrieve_bd_by_id2(this.bd_id).pipe(first() ).subscribe(m => { 
         
         if(m[0]){
           let r=m[0].data;
           if(!r[0] || r[0].chaptersnumber<this.current_chapter+1 || this.type!='serie' || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
             if(r[0] && r[0].status=="deleted"){
-              this.navbar.delete_research_from_navbar("Comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.navbar.delete_research_from_navbar("Comic",this.type,this.bd_id).pipe(first() ).subscribe(r=>{
                 this.page_not_found=true;
                 this.cd.detectChanges()
                 return
@@ -404,12 +401,12 @@ export class ArtworkComicComponent implements OnInit {
               this.thumbnail_picture_retrieved=true;
               this.monetization=r[0].monetization;
               let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-              this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+              this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${title}/${this.bd_id}/${this.current_chapter + 1}`,this.device_info).pipe(first() ).subscribe();
               this.location.go(`/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`);
               this.url=`https://www.linkarts.fr/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${this.current_chapter + 1}`;
               this.location_done=true;
 
-              this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe(first() ).subscribe(r=>{
                 this.pseudo = r[0].nickname;
                 this.type_of_account_checked=r[0].type_of_account_checked;
                 this.certified_account=r[0].certified_account;
@@ -421,7 +418,7 @@ export class ArtworkComicComponent implements OnInit {
                 this.meta.updateTag({ name: 'description', content: `Découvrer la bande dessinée, de la catégorie ${this.style}, de @${this.user_name}.` });
               });
 
-              this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+              this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe(first() ).subscribe(l=>{
                 if (l[0]!=null && l[0]!=undefined){
                   if (l[0].publication_id==this.bd_id && l[0].publication_category== "comic" && l[0].format==this.type){
                     this.content_emphasized=true;
@@ -457,7 +454,7 @@ export class ArtworkComicComponent implements OnInit {
   /********************************************** RECOMMENDATIONS **************************************/
 
   get_author_recommendations(){
-    this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(e=>{
+    this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,this.bd_id).pipe(first() ).subscribe(e=>{
       if(e[0].list_to_send.length>0){
         for(let j=0;j<e[0].list_to_send.length;j++){
           if(e[0].list_to_send[j].length>0){
@@ -486,7 +483,7 @@ export class ArtworkComicComponent implements OnInit {
   get_recommendations_by_tag(){
 
     
-    this.Community_recommendation.get_artwork_recommendations_by_tag('Comic',this.type,this.bd_id,this.style,this.firsttag,6).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(u=>{
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Comic',this.type,this.bd_id,this.style,this.firsttag,6).pipe(first() ).subscribe(u=>{
       if(u[0].length>0){
         let list_of_first_propositions=u[0];
         this.first_propositions=u[0];
@@ -504,7 +501,7 @@ export class ArtworkComicComponent implements OnInit {
       
     })
 
-    this.Community_recommendation.get_artwork_recommendations_by_tag('Comic',this.type,this.bd_id,this.style,this.secondtag,6).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Comic',this.type,this.bd_id,this.style,this.secondtag,6).pipe(first() ).subscribe(r=>{
       
       this.second_propositions_retrieved=true;
       this.second_propositions=r[0];
@@ -556,7 +553,7 @@ export class ArtworkComicComponent implements OnInit {
     if(list_of_first_propositions.length>0){
       for(let i=0;i<list_of_first_propositions.length;i++){
         if(list_of_first_propositions[i].format=="serie"){
-          this.BdSerieService.retrieve_bd_by_id(list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+          this.BdSerieService.retrieve_bd_by_id(list_of_first_propositions[i].target_id).pipe(first() ).subscribe(comic=>{
             if(comic[0].status=="public"){
               this.list_of_recommendations_by_tag.push(comic[0]);
             }
@@ -567,7 +564,7 @@ export class ArtworkComicComponent implements OnInit {
           })
         }
         else{
-          this.BdOneShotService.retrieve_bd_by_id(list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+          this.BdOneShotService.retrieve_bd_by_id(list_of_first_propositions[i].target_id).pipe(first() ).subscribe(comic=>{
             if(comic[0].status=="public"){
               this.list_of_recommendations_by_tag.push(comic[0]);
             }
@@ -586,7 +583,7 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   check_archive(){
-    this.Subscribing_service.check_if_publication_archived( "comic",this.type ,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.check_if_publication_archived( "comic",this.type ,this.bd_id).pipe(first() ).subscribe(r=>{
       if(r[0].value){
         this.content_archived=true;
       }
@@ -597,12 +594,12 @@ export class ArtworkComicComponent implements OnInit {
 
   bd_one_shot_calls(){
    
-    this.BdOneShotService.retrieve_bd_by_id2(this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m => {
+    this.BdOneShotService.retrieve_bd_by_id2(this.bd_id).pipe(first() ).subscribe(m => {
       if(m[0]){
         let r=m[0].data;
         if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
           if(r[0] && r[0].status=="deleted"){
-            this.navbar.delete_research_from_navbar("Comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.navbar.delete_research_from_navbar("Comic",this.type,this.bd_id).pipe(first() ).subscribe(r=>{
               this.page_not_found=true;
               this.cd.detectChanges()
               return
@@ -638,7 +635,7 @@ export class ArtworkComicComponent implements OnInit {
             this.thumbnail_picture=r[0].name_coverpage;
             this.thumbnail_picture_retrieved=true;
             let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-            this.navbar.add_page_visited_to_history(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+            this.navbar.add_page_visited_to_history(`/artwork-comic/one-shot/${this.title}/${this.bd_id}`,this.device_info).pipe(first() ).subscribe();
             this.location.go(`/artwork-comic/one-shot/${title_url}/${this.bd_id}`);
             this.url=`https://www.linkarts.fr/artwork-comic/one-shot/${title_url}/${this.bd_id}`;
             this.location_done=true;
@@ -648,13 +645,13 @@ export class ArtworkComicComponent implements OnInit {
   
             this.check_archive();
   
-            this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+            this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).pipe(first() ).subscribe(r=> {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.profile_picture = SafeURL;
             });
             
-            this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe(first() ).subscribe(r=>{
               this.pseudo = r[0].nickname;
               this.user_name = r[0].firstname;
               this.primary_description=r[0].primary_description;
@@ -667,7 +664,7 @@ export class ArtworkComicComponent implements OnInit {
               this.meta.updateTag({ name: 'description', content: `Découvrer la bande dessinée, de la catégorie ${this.style}, de @${this.user_name}.` });
             });
   
-            this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe(first() ).subscribe(l=>{
               if (l[0]!=null && l[0]!=undefined){
                 if (l[0].publication_id==this.bd_id && l[0].publication_category== "comic" && l[0].format==this.type){
                   this.content_emphasized=true;
@@ -676,7 +673,7 @@ export class ArtworkComicComponent implements OnInit {
               this.emphasized_contend_retrieved=true;
             });
             
-            this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+            this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe(first() ).subscribe(information=>{
               if(information[0].value){
                 this.already_subscribed=true;
               }
@@ -686,7 +683,7 @@ export class ArtworkComicComponent implements OnInit {
   
             
   
-            this.NotationService.get_content_marks("comic", 'one-shot', this.bd_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.get_content_marks("comic", 'one-shot', this.bd_id,0).pipe(first() ).subscribe(r=>{
               this.commentariesnumber=r[0].list_of_comments.length;
               this.viewsnumber= r[0].list_of_views.length;
               this.list_of_loves= r[0].list_of_loves;
@@ -735,7 +732,7 @@ export class ArtworkComicComponent implements OnInit {
 
   get_comic_oneshot_pages(bd_id,total_pages) {
     for( var i=0; i< total_pages; i++ ) {
-      this.BdOneShotService.retrieve_bd_page(bd_id,i,window.innerWidth).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.BdOneShotService.retrieve_bd_page(bd_id,i,window.innerWidth).pipe(first() ).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         
         if(this.style=="Manga"){
@@ -780,21 +777,21 @@ export class ArtworkComicComponent implements OnInit {
       if (this.authorid == this.visitor_id){
         this.mode_visiteur = false;
         if(this.status=="public"){
-          this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+          this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").pipe(first() ).subscribe(p=>{
             if(!p[0].value){
-              this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+              this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe(first() ).subscribe();
             }
           })
         }
        
       }
       else{
-        this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
-        this.NotationService.add_view("comic", 'one-shot',  this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).pipe(first() ).subscribe();
+        this.NotationService.add_view("comic", 'one-shot',  this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
           this.id_view_created = r[0].id;
           if(r[0].id>0){
             this.Community_recommendation.delete_recommendations_cookies();
-            this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{})
+            this.Community_recommendation.generate_recommendations().pipe(first() ).subscribe(r=>{})
           }
           
         });
@@ -819,7 +816,7 @@ export class ArtworkComicComponent implements OnInit {
 
   bd_serie_calls(){
     
-    this.BdSerieService.retrieve_chapters_by_id(this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
+    this.BdSerieService.retrieve_chapters_by_id(this.bd_id).pipe(first() ).subscribe(r => {
       this.current_chapter_title=r[0][this.current_chapter].title;
       this.chapterList=r[0];
       if(this.chapterList.length/2<(this.current_chapter+1)){
@@ -837,13 +834,13 @@ export class ArtworkComicComponent implements OnInit {
       
       this.sumo_ready=true;
 
-      this.Profile_Edition_Service.retrieve_profile_picture( r[0][this.current_chapter].author_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_profile_picture( r[0][this.current_chapter].author_id).pipe(first() ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
       });
 
-      this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+      this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe(first() ).subscribe(information=>{
         if(information[0].value){
           this.already_subscribed=true;
         }
@@ -873,7 +870,7 @@ export class ArtworkComicComponent implements OnInit {
     this.list_of_users_ids_loves_retrieved=false;
     this.list_of_users_ids_likes_retrieved=false;
     this.chapter_to_check_for_view=chapter_number;
-    this.NotationService.get_content_marks("comic", 'serie', this.bd_id,chapter_number).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.NotationService.get_content_marks("comic", 'serie', this.bd_id,chapter_number).pipe(first() ).subscribe(r=>{
       this.commentariesnumber=r[0].list_of_comments.length;
       this.viewsnumber= r[0].list_of_views.length;
       this.chapterList[chapter_number-1].viewnumber= this.viewsnumber;
@@ -907,7 +904,7 @@ export class ArtworkComicComponent implements OnInit {
 
     let compteur=0;
     for( let k=0; k< total_pages; k++ ) {
-      this.BdSerieService.retrieve_bd_page(bd_id,chapter_number,k,window.innerWidth).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.BdSerieService.retrieve_bd_page(bd_id,chapter_number,k,window.innerWidth).pipe(first() ).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         
         if(this.style=="Manga"){
@@ -959,9 +956,9 @@ export class ArtworkComicComponent implements OnInit {
       if (this.authorid == this.visitor_id){
         this.mode_visiteur = false;
         if(this.status=="public"){
-          this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+          this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").pipe(first() ).subscribe(p=>{
             if(!p[0].value){
-              this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+              this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe(first() ).subscribe(l=>{
               });
             }
           })
@@ -970,12 +967,12 @@ export class ArtworkComicComponent implements OnInit {
         
       }
       else{
-        this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{});
-        this.NotationService.add_view("comic", 'serie',  this.style, this.bd_id,1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe(first() ).subscribe(l=>{});
+        this.NotationService.add_view("comic", 'serie',  this.style, this.bd_id,1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
           this.id_view_created = r[0].id;
           if(r[0].id>0){
             this.Community_recommendation.delete_recommendations_cookies();
-            this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{})
+            this.Community_recommendation.generate_recommendations().pipe(first() ).subscribe(r=>{})
           }
           
         });
@@ -1108,7 +1105,7 @@ export class ArtworkComicComponent implements OnInit {
       }, 
       panelClass: 'popupArtworkDataClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -1137,7 +1134,7 @@ export class ArtworkComicComponent implements OnInit {
       }, 
       panelClass: 'popupCommentsClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -1411,7 +1408,7 @@ export class ArtworkComicComponent implements OnInit {
   
       if (this.mode_visiteur){
         this.add_time_of_view();
-        this.NotationService.add_view("comic", 'serie',this.style, this.bd_id,(parseInt(chapter_number) + 1),this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.NotationService.add_view("comic", 'serie',this.style, this.bd_id,(parseInt(chapter_number) + 1),this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
           this.id_view_created = r[0].id;
           this.begining_time_of_view =  Math.trunc(new Date().getTime()/1000);
         });
@@ -1467,7 +1464,7 @@ export class ArtworkComicComponent implements OnInit {
       this.refresh_swiper_pagination();
       this.display_pages=true;
       let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-      this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${this.title}/${this.bd_id}/${chapter_number + 1}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/artwork-comic/${this.type}/${this.title}/${this.bd_id}/${chapter_number + 1}`,this.device_info).pipe(first() ).subscribe();
       this.location.go(`/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${parseInt(chapter_number) + 1}`);
       this.url=`https://www.linkarts.fr/artwork-comic/${this.type}/${title_url}/${this.bd_id}/${chapter_number + 1}`;
     
@@ -1507,11 +1504,11 @@ export class ArtworkComicComponent implements OnInit {
 
     if (THIS.mode_visiteur){
       this.add_time_of_view();
-      THIS.NotationService.add_view("comic", 'serie',THIS.style, THIS.bd_id,(chapter_number + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      THIS.NotationService.add_view("comic", 'serie',THIS.style, THIS.bd_id,(chapter_number + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).pipe(first() ).subscribe(r=>{
         THIS.id_view_created = r[0].id;
         if(r[0].id>0){
           THIS.Community_recommendation.delete_recommendations_cookies();
-          THIS.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{})
+          THIS.Community_recommendation.generate_recommendations().pipe(first() ).subscribe(r=>{})
         }
         THIS.begining_time_of_view =  Math.trunc(new Date().getTime()/1000);
       });
@@ -1561,7 +1558,7 @@ export class ArtworkComicComponent implements OnInit {
     THIS.refresh_swiper_pagination();
     THIS.display_pages=true;
     let title_url=THIS.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).pipe(first() ).subscribe();
     THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`);
     THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
     
@@ -1595,11 +1592,11 @@ export class ArtworkComicComponent implements OnInit {
 
     if (THIS.mode_visiteur){
       this.add_time_of_view();
-      THIS.NotationService.add_view("comic", 'serie',THIS.style, THIS.bd_id,(chapter_number + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      THIS.NotationService.add_view("comic", 'serie',THIS.style, THIS.bd_id,(chapter_number + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).pipe(first() ).subscribe(r=>{
         THIS.id_view_created = r[0].id;
         if(r[0].id>0){
           THIS.Community_recommendation.delete_recommendations_cookies();
-          THIS.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{})
+          THIS.Community_recommendation.generate_recommendations().pipe(first() ).subscribe(r=>{})
         }
         THIS.begining_time_of_view =  Math.trunc(new Date().getTime()/1000);
       });
@@ -1651,7 +1648,7 @@ export class ArtworkComicComponent implements OnInit {
     THIS.refresh_swiper_pagination();
     THIS.display_pages=true;
     let title_url=THIS.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    THIS.navbar.add_page_visited_to_history(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`,THIS.device_info).pipe(first() ).subscribe();
     THIS.location.go(`/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`);
     THIS.url=`https://www.linkarts.fr/artwork-comic/${THIS.type}/${title_url}/${THIS.bd_id}/${chapter_number + 1}`;
   
@@ -1683,7 +1680,7 @@ export class ArtworkComicComponent implements OnInit {
           this.liked=false;
           this.likesnumber-=1;
           if(this.type=='one-shot'){
-            this.NotationService.remove_like("comic", 'one-shot', this.style, this.bd_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.remove_like("comic", 'one-shot', this.style, this.bd_id,0).pipe(first() ).subscribe(r=>{
 
               let index=this.list_of_users_ids_likes[0].indexOf(this.visitor_id);
               this.list_of_users_ids_likes[0].splice(index,1);
@@ -1692,7 +1689,7 @@ export class ArtworkComicComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_like','comic','one-shot',this.bd_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_like','comic','one-shot',this.bd_id,0,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_like",
@@ -1717,7 +1714,7 @@ export class ArtworkComicComponent implements OnInit {
             });
           }
           else if(this.type=='serie'){      
-            this.NotationService.remove_like("comic", 'serie', this.style, this.bd_id,this.current_chapter + 1).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{      
+            this.NotationService.remove_like("comic", 'serie', this.style, this.bd_id,this.current_chapter + 1).pipe(first() ).subscribe(r=>{      
 
               let index=this.list_of_users_ids_likes[this.current_chapter].indexOf(this.visitor_id);
               this.list_of_users_ids_likes[this.current_chapter].splice(index,1);
@@ -1727,7 +1724,7 @@ export class ArtworkComicComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_like','comic','serie',this.bd_id,this.current_chapter + 1,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_like','comic','serie',this.bd_id,this.current_chapter + 1,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_like",
@@ -1758,7 +1755,7 @@ export class ArtworkComicComponent implements OnInit {
           this.likesnumber+=1;
           if(this.type=='one-shot'){  
             
-            this.NotationService.add_like('comic', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{        
+            this.NotationService.add_like('comic', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{        
 
               if(!r[0].error){
                 this.list_of_users_ids_likes[this.current_chapter].splice(0,0,this.visitor_id);
@@ -1768,7 +1765,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_like",
@@ -1799,7 +1796,7 @@ export class ArtworkComicComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1808,7 +1805,7 @@ export class ArtworkComicComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1820,7 +1817,7 @@ export class ArtworkComicComponent implements OnInit {
           }
           else if(this.type=='serie'){
           
-            this.NotationService.add_like("comic", 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.add_like("comic", 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
               if(!r[0].error){
                 this.list_of_users_ids_likes[this.current_chapter].splice(0,0,this.visitor_id);
               
@@ -1829,7 +1826,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_like",
@@ -1860,7 +1857,7 @@ export class ArtworkComicComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1869,7 +1866,7 @@ export class ArtworkComicComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1890,7 +1887,7 @@ export class ArtworkComicComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
 
@@ -1914,7 +1911,7 @@ export class ArtworkComicComponent implements OnInit {
           this.loved=false;  
           this.lovesnumber-=1;
           if(this.type=='one-shot'){
-            this.NotationService.remove_love("comic", 'one-shot', this.style, this.bd_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.remove_love("comic", 'one-shot', this.style, this.bd_id,0).pipe(first() ).subscribe(r=>{
               let index=this.list_of_users_ids_loves[0].indexOf(this.visitor_id);
               this.list_of_users_ids_loves[0].splice(index,1);
               //his.list_of_users_ids_loves.splice(index,1);
@@ -1924,7 +1921,7 @@ export class ArtworkComicComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_love','comic','one-shot',this.bd_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_love','comic','one-shot',this.bd_id,0,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_love",
@@ -1948,7 +1945,7 @@ export class ArtworkComicComponent implements OnInit {
             });
           }
           else if(this.type=='serie'){      
-            this.NotationService.remove_love("comic", 'serie', this.style, this.bd_id,this.current_chapter + 1).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{      
+            this.NotationService.remove_love("comic", 'serie', this.style, this.bd_id,this.current_chapter + 1).pipe(first() ).subscribe(r=>{      
 
               let index=this.list_of_users_ids_loves[this.current_chapter].indexOf(this.visitor_id);
               this.list_of_users_ids_loves[this.current_chapter].splice(index,1);;
@@ -1957,7 +1954,7 @@ export class ArtworkComicComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_love','comic','serie',this.bd_id,this.current_chapter + 1,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_love','comic','serie',this.bd_id,this.current_chapter + 1,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_love",
@@ -1987,7 +1984,7 @@ export class ArtworkComicComponent implements OnInit {
           this.loved=true;
           this.lovesnumber+=1;
           if(this.type=='one-shot'){  
-            this.NotationService.add_love("comic", 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{        
+            this.NotationService.add_love("comic", 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{        
               if(!r[0].error){
                 this.list_of_users_ids_loves[this.current_chapter].splice(0,0,this.visitor_id);
                 if(this.authorid==this.visitor_id){
@@ -1995,7 +1992,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_love",
@@ -2029,7 +2026,7 @@ export class ArtworkComicComponent implements OnInit {
           }
           else if(this.type=='serie'){
           
-            this.NotationService.add_love("comic", 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.add_love("comic", 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
               if(!r[0].error){
                 this.list_of_users_ids_loves[this.current_chapter].splice(0,0,this.visitor_id);
                               
@@ -2038,7 +2035,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_love",
@@ -2091,7 +2088,7 @@ export class ArtworkComicComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -2105,7 +2102,7 @@ export class ArtworkComicComponent implements OnInit {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes[this.current_chapter],visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
     })
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -2122,7 +2119,7 @@ export class ArtworkComicComponent implements OnInit {
       panelClass: 'popupLikesAndLovesClass',
     });
     
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -2151,10 +2148,10 @@ export class ArtworkComicComponent implements OnInit {
     if(this.mode_visiteur){
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
       if(this.type=='one-shot' && this.id_view_created>0 && ending_time_of_view>5){
-        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).pipe(first() ).subscribe();
       }
       if(this.type=='serie' && this.id_view_created>0 &&  ending_time_of_view>5){
-        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).pipe(first() ).subscribe();
       }
     }
   }
@@ -2169,7 +2166,7 @@ export class ArtworkComicComponent implements OnInit {
       this.loading_subscribtion=true;
       if(!this.already_subscribed){
         this.already_subscribed=true;
-        this.Subscribing_service.subscribe_to_a_user(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+        this.Subscribing_service.subscribe_to_a_user(this.authorid).pipe(first() ).subscribe(information=>{
           if(information[0].subscribtion){
             this.loading_subscribtion=false;
             this.cd.detectChanges();
@@ -2183,7 +2180,7 @@ export class ArtworkComicComponent implements OnInit {
             this.loading_subscribtion=false;
           }
           else{
-            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.authorid,this.authorid.toString(),'none','none',this.visitor_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.authorid,this.authorid.toString(),'none','none',this.visitor_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"subscribtion",
@@ -2211,8 +2208,8 @@ export class ArtworkComicComponent implements OnInit {
       }
       else{
         this.already_subscribed=false;
-        this.Subscribing_service.remove_subscribtion(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
-          this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.Subscribing_service.remove_subscribtion(this.authorid).pipe(first() ).subscribe(information=>{
+          this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).pipe(first() ).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"subscribtion",
@@ -2243,7 +2240,7 @@ export class ArtworkComicComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -2255,7 +2252,7 @@ export class ArtworkComicComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Subscribing_service.archive( "comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.archive( "comic",this.type,this.bd_id).pipe(first() ).subscribe(r=>{
       this.content_archived=true;
       this.archive_loading=false;
     });
@@ -2266,7 +2263,7 @@ export class ArtworkComicComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Subscribing_service.unarchive( "comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.unarchive( "comic",this.type,this.bd_id).pipe(first() ).subscribe(r=>{
       this.content_archived=false;
       this.archive_loading=false;
     });
@@ -2278,13 +2275,13 @@ export class ArtworkComicComponent implements OnInit {
       return
     }
     this.checking_report=true;
-    this.Reports_service.check_if_content_reported('comic',this.bd_id,this.type,(this.type=='serie')?(this.current_chapter+1):0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Reports_service.check_if_content_reported('comic',this.bd_id,this.type,(this.type=='serie')?(this.current_chapter+1):0).pipe(first() ).subscribe(r=>{
       if(r[0].nothing){
         this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
       }
@@ -2294,7 +2291,7 @@ export class ArtworkComicComponent implements OnInit {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'comic',publication_id:this.bd_id,format:this.type,chapter_number:(this.type=='serie')?(this.current_chapter+1):0},
           panelClass:"popupReportClass"
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
       }
@@ -2306,7 +2303,7 @@ export class ArtworkComicComponent implements OnInit {
   cancel_report(){
 
     let id=this.bd_id
-    this.Reports_service.cancel_report("comic",id,this.type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Reports_service.cancel_report("comic",id,this.type).pipe(first() ).subscribe(r=>{
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id)>=0){
         let i=this.list_of_reporters.indexOf(this.visitor_id)
         this.list_of_reporters.splice(i,1)
@@ -2322,13 +2319,13 @@ export class ArtworkComicComponent implements OnInit {
     }
     this.archive_loading=true;
     if(this.type=="serie"){
-      this.Profile_Edition_Service.emphasize_content( "comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+      this.Profile_Edition_Service.emphasize_content( "comic",this.type,this.bd_id).pipe(first() ).subscribe(t=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
     }
     else{
-      this.Profile_Edition_Service.emphasize_content( "comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Profile_Edition_Service.emphasize_content( "comic",this.type,this.bd_id).pipe(first() ).subscribe(r=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
@@ -2341,13 +2338,13 @@ export class ArtworkComicComponent implements OnInit {
     }
     this.archive_loading=true;
     if(this.type=="serie"){
-      this.Profile_Edition_Service.remove_emphasizing( "comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+      this.Profile_Edition_Service.remove_emphasizing( "comic",this.type,this.bd_id).pipe(first() ).subscribe(t=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
     }
     else{
-      this.Profile_Edition_Service.remove_emphasizing( "comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+      this.Profile_Edition_Service.remove_emphasizing( "comic",this.type,this.bd_id).pipe(first() ).subscribe(t=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
@@ -2396,7 +2393,7 @@ export class ArtworkComicComponent implements OnInit {
       },
       panelClass: 'popupFormComicClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })
   }
@@ -2419,7 +2416,7 @@ export class ArtworkComicComponent implements OnInit {
       },
       panelClass: 'popupEditCoverClass',
     });  
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })   
   }
@@ -2442,19 +2439,19 @@ export class ArtworkComicComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
-          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.BdOneShotService.change_oneshot_comic_status(this.bd_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"private").pipe(first() ).subscribe(r=>{
+            this.BdOneShotService.change_oneshot_comic_status(this.bd_id,"private").pipe(first() ).subscribe(r=>{
               this.status="private";
               this.archive_loading=false;
             });
           })
         }
         else{
-          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.BdSerieService.change_serie_comic_status(this.bd_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"private").pipe(first() ).subscribe(r=>{
+            this.BdSerieService.change_serie_comic_status(this.bd_id,"private").pipe(first() ).subscribe(r=>{
               this.status="private";
               this.archive_loading=false;
             });
@@ -2478,11 +2475,11 @@ export class ArtworkComicComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
-          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"ok").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.BdOneShotService.change_oneshot_comic_status(this.bd_id,"public").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"ok").pipe(first() ).subscribe(r=>{
+            this.BdOneShotService.change_oneshot_comic_status(this.bd_id,"public").pipe(first() ).subscribe(r=>{
               this.status="public";
               this.archive_loading=false;
             });
@@ -2490,8 +2487,8 @@ export class ArtworkComicComponent implements OnInit {
           
         }
         else{
-          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"ok").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.BdSerieService.change_serie_comic_status(this.bd_id,"public").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Subscribing_service.change_content_status( "comic",this.type,this.bd_id,"ok").pipe(first() ).subscribe(r=>{
+            this.BdSerieService.change_serie_comic_status(this.bd_id,"public").pipe(first() ).subscribe(r=>{
               this.status="public";
               this.archive_loading=false;
             });
@@ -2518,13 +2515,13 @@ export class ArtworkComicComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
-          this.navbar.delete_publication_from_research("Comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.navbar.delete_publication_from_research("Comic",this.type,this.bd_id).pipe(first() ).subscribe(r=>{
            
-            this.BdOneShotService.RemoveBdOneshot(this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-              this.NotificationsService.remove_notification('add_publication','comic','one-shot',this.bd_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.BdOneShotService.RemoveBdOneshot(this.bd_id).pipe(first() ).subscribe(r=>{
+              this.NotificationsService.remove_notification('add_publication','comic','one-shot',this.bd_id,0,false,0).pipe(first() ).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"add_publication",
@@ -2553,9 +2550,9 @@ export class ArtworkComicComponent implements OnInit {
         else{
          
 
-          this.navbar.delete_publication_from_research("Comic",this.type,this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.BdSerieService.RemoveBdSerie(this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-              this.NotificationsService.remove_notification('add_publication','comic','serie',this.bd_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.navbar.delete_publication_from_research("Comic",this.type,this.bd_id).pipe(first() ).subscribe(r=>{
+            this.BdSerieService.RemoveBdSerie(this.bd_id).pipe(first() ).subscribe(r=>{
+              this.NotificationsService.remove_notification('add_publication','comic','serie',this.bd_id,0,false,0).pipe(first() ).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"add_publication",
@@ -2593,7 +2590,7 @@ export class ArtworkComicComponent implements OnInit {
 
   first_comment_received(e){
     this.first_comment=e.comment.commentary;
-    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=> {
+    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).pipe(first() ).subscribe(p=> {
       let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.pp_first_comment= SafeURL;
@@ -2613,7 +2610,7 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   add_share_history(category){
-    this.navbar.add_page_visited_to_history(`/artwork-comic-share/${this.type}/${this.title}/${this.bd_id}/${this.current_chapter + 1}/${category}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/artwork-comic-share/${this.type}/${this.title}/${this.bd_id}/${this.current_chapter + 1}/${category}`,this.device_info).pipe(first() ).subscribe();
   }
 
   

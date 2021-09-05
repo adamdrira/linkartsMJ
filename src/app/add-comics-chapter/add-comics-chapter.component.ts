@@ -2,8 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-comics-chapter',
@@ -50,7 +49,7 @@ export class AddComicsChapterComponent implements OnInit {
     this.bd_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
 
 
-    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
+    this.route.data.pipe(first() ).subscribe(resp => {
       let l=resp.user;
       this.pseudo=l[0].nickname;
       this.visitor_id=l[0].id;
@@ -58,7 +57,7 @@ export class AddComicsChapterComponent implements OnInit {
       this.check_all()
     });
 
-    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
+    this.route.data.pipe(first() ).subscribe(resp => {
       let r=resp.comic_serie_data;
       this.comics_data=r[0];
       this.comics_data_retrieved=true;
@@ -67,7 +66,7 @@ export class AddComicsChapterComponent implements OnInit {
       this.check_all()
     });
 
-    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
+    this.route.data.pipe(first() ).subscribe(resp => {
       let r=resp.my_pp;
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -75,7 +74,7 @@ export class AddComicsChapterComponent implements OnInit {
     });
 
 
-    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
+    this.route.data.pipe(first() ).subscribe(resp => {
       let r=resp.comic_chapters_data;
       this.list_of_chapters=r[0];
     });
@@ -105,9 +104,5 @@ export class AddComicsChapterComponent implements OnInit {
     this.pp_is_loaded=true;
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
 }

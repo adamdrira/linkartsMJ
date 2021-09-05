@@ -23,8 +23,7 @@ import { NavbarService } from '../services/navbar.service';
 
 import { normalize_to_nfc } from '../helpers/patterns';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-ad',
@@ -62,7 +61,7 @@ export class AddAdComponent implements OnInit {
     private Subscribing_service:Subscribing_service,
     private NavbarService:NavbarService,
   ) { 
-    NavbarService.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+    NavbarService.visibility_observer_font.pipe(first() ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -101,7 +100,7 @@ export class AddAdComponent implements OnInit {
   device_info='';
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.NavbarService.add_page_visited_to_history(`/add-ad`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.NavbarService.add_page_visited_to_history(`/add-ad`,this.device_info).pipe(first() ).subscribe();
     window.scroll(0,0);
     this.createFormControlsAds();
     this.createFormAd();
@@ -179,7 +178,7 @@ export class AddAdComponent implements OnInit {
 
   all_attachments_uploaded( event: boolean) {
     this.attachments_uploaded = event;
-    this.NotificationsService.add_notification("add_publication",this.id,this.author_name,null,'ad',this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.fd.value.fdProject_type,this.ad_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.NotificationsService.add_notification("add_publication",this.id,this.author_name,null,'ad',this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.fd.value.fdProject_type,this.ad_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
       let message_to_send ={
         for_notifications:true,
         type:"add_publication",
@@ -412,14 +411,14 @@ export class AddAdComponent implements OnInit {
 
     if ( this.fd.valid && this.Ads_service.get_thumbnail_confirmation() && !(this.remuneration && this.for_service)) {
         this.display_loading=true;
-        this.Ads_service.check_if_ad_is_ok(this.fd.value.fdProject_type,this.fd.value.fdMydescription,this.fd.value.fdTargets).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Ads_service.check_if_ad_is_ok(this.fd.value.fdProject_type,this.fd.value.fdMydescription,this.fd.value.fdTargets).pipe(first() ).subscribe(r=>{
           if(r[0].result=="ok"){
-            this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdProject_type,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1,this.offer_or_demand).pipe( takeUntil(this.ngUnsubscribe) ).subscribe((val)=> {
+            this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.fd.value.fdProject_type,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1,this.offer_or_demand).pipe(first() ).subscribe((val)=> {
               this.ad_id=val[0].id;
-              this.Ads_service.add_thumbnail_ad_to_database(val[0].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+              this.Ads_service.add_thumbnail_ad_to_database(val[0].id).pipe(first() ).subscribe(l=>{
                 this.id_ad=l[0].id;
-                this.Subscribing_service.add_content("ad",this.fd.value.fdProject_type,this.id_ad,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
-                  this.Subscribing_service.validate_content("ad",this.fd.value.fdProject_type,this.id_ad,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(n=>{
+                this.Subscribing_service.add_content("ad",this.fd.value.fdProject_type,this.id_ad,0).pipe(first() ).subscribe(m=>{
+                  this.Subscribing_service.validate_content("ad",this.fd.value.fdProject_type,this.id_ad,0).pipe(first() ).subscribe(n=>{
                     this.status_pictures=true;
                   })
                 })
@@ -469,7 +468,7 @@ export class AddAdComponent implements OnInit {
   can_delete=true;
   cancel_all(){ 
     if(this.can_delete){
-      this.Ads_service.remove_thumbnail_ad_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.Ads_service.remove_thumbnail_ad_from_folder().pipe(first() ).subscribe();
     }
   }
 
@@ -481,9 +480,5 @@ export class AddAdComponent implements OnInit {
     normalize_to_nfc(fg,fc);
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
 }

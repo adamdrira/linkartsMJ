@@ -5,8 +5,7 @@ import { Trending_service } from '../services/trending.service';
 import { Favorites_service } from '../services/favorites.service';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { NavbarService } from '../services/navbar.service';
 
 @Component({
@@ -33,7 +32,7 @@ import { NavbarService } from '../services/navbar.service';
     ),
   ],
 })
-export class FavoritesComponent implements OnInit, OnDestroy {
+export class FavoritesComponent implements OnInit {
 
   constructor(
     public route: ActivatedRoute, 
@@ -43,7 +42,7 @@ export class FavoritesComponent implements OnInit, OnDestroy {
     private Favorites_service:Favorites_service,
     private navbar:NavbarService,
     ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -60,14 +59,9 @@ export class FavoritesComponent implements OnInit, OnDestroy {
   list_of_users=[];
   favorites_retrieved=false;
   skeleton:boolean=true;
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
   ngOnInit() {
 
-    this.Favorites_service.generate_or_get_favorites().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+    this.Favorites_service.generate_or_get_favorites().pipe( first()).subscribe(info=>{
 
       if(info[0].favorites){
         for(let i=0;i<info[0].favorites.length;i++){
@@ -127,10 +121,10 @@ export class FavoritesComponent implements OnInit, OnDestroy {
   }
 
   send_notification(id,rank,format){
-    this.Trending_service.get_date_of_trendings().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(d=>{
+    this.Trending_service.get_date_of_trendings().pipe( first()).subscribe(d=>{
 
       let date = d[0].date;
-      this.NotificationsService.add_notification_trendings('favorites',1,'Linkarts',id,"favorites","favorites",format,id,rank,date,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+      this.NotificationsService.add_notification_trendings('favorites',1,'Linkarts',id,"favorites","favorites",format,id,rank,date,false,0).pipe( first()).subscribe(l=>{
     
         if(!l[0].found){
           let message_to_send ={

@@ -29,8 +29,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupFormAdComponent } from '../popup-form-ad/popup-form-ad.component';
 import { merge, fromEvent } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var $: any
 declare var Swiper: any
@@ -114,7 +113,7 @@ export class AdPageComponent implements OnInit {
     private cd:ChangeDetectorRef,
     ) { 
       
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -245,11 +244,7 @@ export class AdPageComponent implements OnInit {
       
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-    
     if(!this.ad_id_input){
       this.navbar.show_help();
     }
@@ -295,7 +290,7 @@ export class AdPageComponent implements OnInit {
     this.ad_id = this.ad_id_input?this.ad_id_input:parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     let title = this.ad_title_input?this.ad_title_input:this.activatedRoute.snapshot.paramMap.get('title');
 
-    this.Profile_Edition_Service.get_current_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.Profile_Edition_Service.get_current_user().pipe(first() ).subscribe(l=>{
       this.visitor_id = l[0].id;
       this.visitor_name=l[0].nickname;
       this.type_of_account=l[0].status;
@@ -307,7 +302,7 @@ export class AdPageComponent implements OnInit {
 
 
     
-    this.Ads_service.retrieve_ad_by_id(this.ad_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+    this.Ads_service.retrieve_ad_by_id(this.ad_id).pipe(first() ).subscribe(m=>{
       var re = /(?:\.([^.]+))?$/;
       if(m[0].number_of_attachments>0){
         for(let i=0;i<m[0].number_of_attachments;i++){
@@ -333,14 +328,14 @@ export class AdPageComponent implements OnInit {
       }
       this.item=m[0];
       let title_url=this.item.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-      this.navbar.add_page_visited_to_history(`/ad-page/${this.item.title}/${this.ad_id}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/ad-page/${this.item.title}/${this.ad_id}`,this.device_info).pipe(first() ).subscribe();
       this.location.go(`/ad-page/${title_url}/${this.ad_id}`);
       this.url=`https://www.linkarts.fr/ad-page/${title_url}/${this.ad_id}`;
       this.location_done=true;
       this.list_of_reporters=this.item.list_of_reporters
       if(!m[0] || title!=m[0].title || m[0].status=="deleted" || m[0].status=="suspended"){
         if(m[0] && m[0].status=="deleted"){
-          this.navbar.delete_research_from_navbar("Ad",m[0].type_of_project,this.ad_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.navbar.delete_research_from_navbar("Ad",m[0].type_of_project,this.ad_id).pipe(first() ).subscribe(r=>{
             this.page_not_found=true;
             this.cd.detectChanges();
             return
@@ -356,7 +351,7 @@ export class AdPageComponent implements OnInit {
         
         this.commentariesnumber=m[0].commentariesnumber;
       
-        this.navbar.get_number_of_clicked("Ad",this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.navbar.get_number_of_clicked("Ad",this.item.id).pipe(first() ).subscribe(r=>{
           this.number_of_views=r[0].number
         })
         this.ready_to_check_view=true;
@@ -364,13 +359,13 @@ export class AdPageComponent implements OnInit {
         this.check_archive();
   
     
-        this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+        this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).pipe(first() ).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.profile_picture = SafeURL;
         });
     
-        this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+        this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).pipe(first() ).subscribe(r=> {
           this.author_name = r[0].firstname;
           this.primary_description=r[0].primary_description;
           this.pseudo = r[0].nickname;
@@ -382,7 +377,7 @@ export class AdPageComponent implements OnInit {
           this.meta.updateTag({ name: 'description', content: `Découvrer l'annonce de @${this.author_name}.` });
         });
   
-        this.Subscribing_service.check_if_visitor_susbcribed(this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+        this.Subscribing_service.check_if_visitor_susbcribed(this.item.id_user).pipe(first() ).subscribe(information=>{
           if(information[0].value){
             this.already_subscribed=true;
           }
@@ -390,7 +385,7 @@ export class AdPageComponent implements OnInit {
           
         }); 
   
-        this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+        this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).pipe(first() ).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.thumbnail_picture = SafeURL;
@@ -420,15 +415,15 @@ export class AdPageComponent implements OnInit {
     if(this.current_user_retrieved && this.ready_to_check_view){
       if(this.visitor_id==this.item.id_user){
         this.visitor_mode=false;
-        this.navbar.check_if_research_exists("Ad",null,this.item.id,this.item.title,"clicked").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+        this.navbar.check_if_research_exists("Ad",null,this.item.id,this.item.title,"clicked").pipe(first() ).subscribe(p=>{
           if(!p[0].value){
-            this.navbar.add_main_research_to_history("Ad",null ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,"account").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.navbar.add_main_research_to_history("Ad",null ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,"account").pipe(first() ).subscribe(l=>{
             });
           }
         })
       }
       else{
-        this.navbar.add_main_research_to_history("Ad",this.item.type_of_project ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,this.type_of_account).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+        this.navbar.add_main_research_to_history("Ad",this.item.type_of_project ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,this.type_of_account).pipe(first() ).subscribe();
       }
       this.visitor_mode_added=true;
     }
@@ -439,7 +434,7 @@ export class AdPageComponent implements OnInit {
 
 
   get_recommendations(){
-    this.Ads_service.get_ads_by_user_id(this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.Ads_service.get_ads_by_user_id(this.item.id_user).pipe(first() ).subscribe(l=>{
        for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
          if(l[0][i].id!=this.item.id){
            this.list_of_author_ads.push(l[0][i])
@@ -463,7 +458,7 @@ export class AdPageComponent implements OnInit {
        let firt_retrieved=false;
        let second_retrieved=false;
 
-       this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",0,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+       this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",0,0).pipe(first() ).subscribe(r=>{
          let number_of_results=r[0][0].number_of_ads;
          let results=r[0][0].results;
          if (number_of_results>0){
@@ -477,7 +472,7 @@ export class AdPageComponent implements OnInit {
          check_all(this);
          
        })
-       this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_two,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",5,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+       this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_two,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",5,0).pipe(first() ).subscribe(r=>{
          let number_of_results=r[0][0].number_of_ads;
          let results=r[0][0].results;
          if (number_of_results>0){
@@ -505,7 +500,7 @@ export class AdPageComponent implements OnInit {
        }
      }
      else{
-       this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",0,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+       this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",0,0).pipe(first() ).subscribe(r=>{
          let number_of_results=r[0][0].number_of_ads;
          let results=r[0][0].results;
          if (number_of_results>0){
@@ -576,7 +571,7 @@ export class AdPageComponent implements OnInit {
       data: {list_of_pictures:this.list_of_pictures,index_of_picture:i},
       panelClass: "popupDocumentClass",
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })
   }
@@ -587,7 +582,7 @@ export class AdPageComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.list_of_attachments[i]},
       panelClass: "popupDocumentClass",
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    }).afterClosed().pipe(first() ).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
         this.in_other_popup=false;
     });
@@ -599,7 +594,7 @@ export class AdPageComponent implements OnInit {
       data: {list_of_pictures:this.response_list_of_pictures,index_of_picture:i},
       panelClass: "popupDocumentClass",
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })
   }
@@ -610,7 +605,7 @@ export class AdPageComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.response_list_of_attachments[i]},
       panelClass: "popupDocumentClass",
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    }).afterClosed().pipe(first() ).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
       this.in_other_popup=false;
     });
@@ -626,10 +621,10 @@ export class AdPageComponent implements OnInit {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette annonce ?'},
       panelClass: "popupConfirmationClass",
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
-        this.Ads_service.delete_ad(this.item.id,this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
-          this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Ads_service.delete_ad(this.item.id,this.item.id_user).pipe(first() ).subscribe(l=>{
+          this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).pipe(first() ).subscribe(r=>{
             this.close_popup();
             this.location.go(`/account/${this.pseudo}`);
             location.reload()
@@ -650,7 +645,7 @@ export class AdPageComponent implements OnInit {
 
   
   check_archive(){
-    this.Subscribing_service.check_if_publication_archived("ad",this.item.type_of_project,this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.check_if_publication_archived("ad",this.item.type_of_project,this.item.id).pipe(first() ).subscribe(r=>{
       if(r[0].value){
         this.ad_archived=true;
       }
@@ -659,13 +654,13 @@ export class AdPageComponent implements OnInit {
   }
 
   archive(){
-    this.Subscribing_service.archive("ad",this.item.type_of_project,this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.archive("ad",this.item.type_of_project,this.item.id).pipe(first() ).subscribe(r=>{
       this.ad_archived=true;
     });
   }
 
   unarchive(){
-    this.Subscribing_service.unarchive("ad",this.item.type_of_project,this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.unarchive("ad",this.item.type_of_project,this.item.id).pipe(first() ).subscribe(r=>{
       this.ad_archived=false;
     });
   }
@@ -686,7 +681,7 @@ export class AdPageComponent implements OnInit {
         if(i==0){
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -699,7 +694,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -712,7 +707,7 @@ export class AdPageComponent implements OnInit {
         if(i==1){
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -725,7 +720,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -738,7 +733,7 @@ export class AdPageComponent implements OnInit {
         if(i==2){
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -751,7 +746,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -764,7 +759,7 @@ export class AdPageComponent implements OnInit {
         if(i==3){
           if(re.exec(item.attachment_name_four)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -777,7 +772,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -790,7 +785,7 @@ export class AdPageComponent implements OnInit {
         if(i==4){
           if(re.exec(item.attachment_name_five)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_five;
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -803,7 +798,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_five;
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -867,7 +862,7 @@ export class AdPageComponent implements OnInit {
       this.loading_subscribtion=true;
       if(!this.already_subscribed){
         this.already_subscribed=true;
-        this.Subscribing_service.subscribe_to_a_user(this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+        this.Subscribing_service.subscribe_to_a_user(this.item.id_user).pipe(first() ).subscribe(information=>{
           if(information[0].subscribtion){
         
             this.loading_subscribtion=false;
@@ -882,7 +877,7 @@ export class AdPageComponent implements OnInit {
             this.loading_subscribtion=false;
           }
           else{
-            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.item.id_user,this.item.id_user.toString(),'none','none',this.visitor_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.item.id_user,this.item.id_user.toString(),'none','none',this.visitor_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"subscribtion",
@@ -909,8 +904,8 @@ export class AdPageComponent implements OnInit {
       }
       else{
         this.already_subscribed=false;
-        this.Subscribing_service.remove_subscribtion(this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
-          this.NotificationsService.remove_notification('subscribtion',this.item.id_user.toString(),'none',this.visitor_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.Subscribing_service.remove_subscribtion(this.item.id_user).pipe(first() ).subscribe(information=>{
+          this.NotificationsService.remove_notification('subscribtion',this.item.id_user.toString(),'none',this.visitor_id,0,false,0).pipe(first() ).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"subscribtion",
@@ -941,7 +936,7 @@ export class AdPageComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -955,7 +950,7 @@ export class AdPageComponent implements OnInit {
 
   first_comment_received(e){
     this.first_comment=e.comment.commentary;
-    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=> {
+    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).pipe(first() ).subscribe(p=> {
       let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.pp_first_comment= SafeURL;
@@ -982,7 +977,7 @@ export class AdPageComponent implements OnInit {
   response_checked=false;
   response_found=false;
   check_response(){
-    this.Ads_service.check_if_response_sent(this.ad_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Ads_service.check_if_response_sent(this.ad_id).pipe(first() ).subscribe(r=>{
       if(r[0].response){
         this.response_found=true;
       }
@@ -1003,7 +998,7 @@ export class AdPageComponent implements OnInit {
           data: {showChoice:false, text:'Vous avez déjà répondu à cette annonce.'},
           panelClass: "popupConfirmationClass",
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
         
@@ -1014,7 +1009,7 @@ export class AdPageComponent implements OnInit {
           data: {item:this.item},
           panelClass: 'popupAdWriteReponsesClass',
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
       }
@@ -1028,7 +1023,7 @@ export class AdPageComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -1058,18 +1053,18 @@ export class AdPageComponent implements OnInit {
       return
     }
     
-    this.Ads_service.get_all_responses(this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Ads_service.get_all_responses(this.item.id).pipe(first() ).subscribe(r=>{
       this.list_of_responses=r[0];
       if (r[0]!=null){
         let compt=0
         for (let i=0;i<r[0].length;i++){
           this.list_of_dates[i]= get_date_to_show_for_ad(date_in_seconds(this.now_in_seconds,r[0][i].createdAt) );
-          this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=> {
+          this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user).pipe(first() ).subscribe(p=> {
             let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_profile_pictures[i] = url;
           });
-          this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(q=> {
+          this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).pipe(first() ).subscribe(q=> {
             this.list_of_authors_name[i] = q[0].firstname;
             this.list_of_certified_account[i] = q[0].certified_account;
             this.list_of_ids[i]=q[0].id; 
@@ -1111,7 +1106,7 @@ export class AdPageComponent implements OnInit {
     })
 
 
-    this.Ads_service.set_all_responses_to_seen(this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Ads_service.set_all_responses_to_seen(this.item.id).pipe(first() ).subscribe(r=>{
     })
   }
 
@@ -1199,7 +1194,7 @@ export class AdPageComponent implements OnInit {
         if(i==0){
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1212,7 +1207,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.response_list_of_attachments_name[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe(first() ).subscribe(l=>{
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -1225,7 +1220,7 @@ export class AdPageComponent implements OnInit {
         if(i==1){
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1238,7 +1233,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.response_list_of_attachments_name[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe(first() ).subscribe(l=>{
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -1251,7 +1246,7 @@ export class AdPageComponent implements OnInit {
         if(i==2){
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1264,7 +1259,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.response_list_of_attachments_name[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe(first() ).subscribe(l=>{
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -1277,7 +1272,7 @@ export class AdPageComponent implements OnInit {
         if(i==3){
           if(re.exec(item.attachment_real_name_four)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1290,7 +1285,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.response_list_of_attachments_name[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe(first() ).subscribe(l=>{
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -1303,7 +1298,7 @@ export class AdPageComponent implements OnInit {
         if(i==4){
           if(re.exec(item.attachment_real_name_five)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_five;
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1350,7 +1345,7 @@ export class AdPageComponent implements OnInit {
       data: {item:this.item,category:"ad"},
       panelClass: 'popupEditCoverClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })
   }
@@ -1363,14 +1358,14 @@ export class AdPageComponent implements OnInit {
       return
     }
     this.checking_report=true;
-    this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).pipe(first() ).subscribe(r=>{
       if(r[0].nothing){
         this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
           panelClass: "popupConfirmationClass",
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
         
@@ -1381,7 +1376,7 @@ export class AdPageComponent implements OnInit {
           data: {from_account:false,id_receiver:this.item.id_user,publication_category:'ad',publication_id:this.item.id,format:this.item.type_of_project,chapter_number:0},
           panelClass:"popupReportClass"
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
       }
@@ -1392,7 +1387,7 @@ export class AdPageComponent implements OnInit {
   cancel_report() {
 
 
-    this.Reports_service.cancel_report("ad", this.item.id, this.item.type_of_project).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
+    this.Reports_service.cancel_report("ad", this.item.id, this.item.type_of_project).pipe(first() ).subscribe(r => {
       if (this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id) >= 0) {
         let i = this.list_of_reporters.indexOf(this.visitor_id)
         this.list_of_reporters.splice(i, 1)
@@ -1421,7 +1416,7 @@ export class AdPageComponent implements OnInit {
       }, 
       panelClass: 'popupCommentsClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(!result){
         this.emit_close_click.emit(true);
       }
@@ -1456,14 +1451,14 @@ export class AdPageComponent implements OnInit {
       },
       panelClass: 'popupFormAdClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })
   }
 
 
   add_share_history(category){
-    this.navbar.add_page_visited_to_history(`/ad-page-share/${this.item.title}/${this.ad_id}/${category}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/ad-page-share/${this.item.title}/${this.ad_id}/${category}`,this.device_info).pipe(first() ).subscribe();
   }
 
 }

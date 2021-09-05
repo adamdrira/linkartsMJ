@@ -14,8 +14,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
 import * as WebFont from 'webfontloader';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 
 @Component({
@@ -41,7 +40,7 @@ export class AddArtworkComponent implements OnInit {
     private sanitizer:DomSanitizer,
 
     ) {
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -106,7 +105,7 @@ export class AddArtworkComponent implements OnInit {
     this._upload.category.next( this.route.snapshot.data['section'] );
     this.cd.detectChanges();
 
-    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
+    this.route.data.pipe(first() ).subscribe(resp => {
       let l=resp.user;
       this.user_id = l[0].id;
       this.author_name = l[0].firstname;
@@ -115,7 +114,7 @@ export class AddArtworkComponent implements OnInit {
       this.type_of_account=l[0].type_of_account;
     });
 
-    this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( resp => {
+    this.route.data.pipe(first() ).subscribe( resp => {
       let r = resp.my_pp;
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -167,25 +166,25 @@ export class AddArtworkComponent implements OnInit {
       panelClass: "popupConfirmationClass",
     });
 
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
         if(event.bd_cover && event.bd_cover!=''){
-            THIS.Bd_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            THIS.Bd_CoverService.remove_cover_from_folder().pipe(first() ).subscribe(r=>{
             })
           
         }
         else if(event.drawing_cover && event.drawing_cover!='' ){
-          THIS.Drawings_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          THIS.Drawings_CoverService.remove_cover_from_folder().pipe(first() ).subscribe(r=>{
             })
         }
         else if (event.writing_cover && event.writing_cover!=''){
-          THIS.Writing_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
-            THIS.Writing_Upload_Service.remove_writing_from_folder2(event.name_writing).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          THIS.Writing_CoverService.remove_cover_from_folder().pipe(first() ).subscribe(m=>{
+            THIS.Writing_Upload_Service.remove_writing_from_folder2(event.name_writing).pipe(first() ).subscribe(r=>{
             })
           });
         }
         else if (event.ad_cover && event.ad_cover!=''){
-          THIS.Ads_service.remove_thumbnail_ad_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+          THIS.Ads_service.remove_thumbnail_ad_from_folder().pipe(first() ).subscribe();
         }
         THIS._upload.setCategory( -1 );
         THIS.location.go("/add-artwork");
@@ -204,7 +203,7 @@ export class AddArtworkComponent implements OnInit {
 
     let THIS = this;
 
-    THIS._upload.step.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( v => { 
+    THIS._upload.step.subscribe( v => { 
       if( v == 0 ) {
         
         THIS.location.go("/add-artwork");
@@ -227,9 +226,4 @@ export class AddArtworkComponent implements OnInit {
 
 
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
 }

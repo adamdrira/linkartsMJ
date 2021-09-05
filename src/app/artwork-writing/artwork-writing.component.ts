@@ -27,8 +27,7 @@ import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-d
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Meta, Title } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -105,7 +104,7 @@ export class ArtworkWritingComponent implements OnInit {
       this.fullscreen_mode = false;
       this.navbar.setActiveSection(-1);
       this.navbar.show();
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -118,10 +117,7 @@ export class ArtworkWritingComponent implements OnInit {
     this.add_time_of_view();
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   
     if(!this.writing_id_input){
       this.navbar.show_help();
@@ -313,7 +309,7 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
 
-    this.Profile_Edition_Service.get_current_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.Profile_Edition_Service.get_current_user().pipe(first() ).subscribe(l=>{
       this.visitor_id = l[0].id;
       this.visitor_name=l[0].nickname;
       this.visitor_status=l[0].status;
@@ -327,12 +323,12 @@ export class ArtworkWritingComponent implements OnInit {
     }) 
 
    
-    this.Writing_Upload_Service.retrieve_writing_information_by_id2(this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m => {
+    this.Writing_Upload_Service.retrieve_writing_information_by_id2(this.writing_id).pipe(first() ).subscribe(m => {
       if(m[0]){
         let r=m[0].data;
         if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
           if(r[0] && r[0].status=="deleted"){
-            this.navbar.delete_research_from_navbar("Writing","unknown",this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.navbar.delete_research_from_navbar("Writing","unknown",this.writing_id).pipe(first() ).subscribe(r=>{
               this.page_not_found=true;
               this.cd.detectChanges();
               return
@@ -369,7 +365,7 @@ export class ArtworkWritingComponent implements OnInit {
 
             
             let title_url=this.title.replace(/\%/g, '%25').replace(/\;/g, '%3B').replace(/\#/g, '%23').replace(/\=/g, '%3D').replace(/\&/g, '%26').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\ /g, '%20').replace(/\?/g, '%3F').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\//g, '%2F').replace(/\\/g, '%5C').replace(/\:/g, '%3A');
-            this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+            this.navbar.add_page_visited_to_history(`/artwork-writing/${this.title}/${this.writing_id}`,this.device_info).pipe(first() ).subscribe();
             this.location.go(`/artwork-writing/${title_url}/${this.writing_id}`);
             this.url=`https://www.linkarts.fr/artwork-writing/${title_url}/${this.writing_id}`;
             this.location_done=true;
@@ -378,7 +374,7 @@ export class ArtworkWritingComponent implements OnInit {
   
             this.check_archive();
   
-            this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).pipe(first() ).subscribe(r=>{
               this.pseudo = r[0].nickname;
               this.user_name = r[0].firstname;
               this.primary_description=r[0].primary_description;
@@ -390,7 +386,7 @@ export class ArtworkWritingComponent implements OnInit {
 
             });
   
-            this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.Profile_Edition_Service.get_emphasized_content(r[0].authorid).pipe(first() ).subscribe(l=>{
               if (l[0]!=null && l[0]!=undefined){
                 if (l[0].publication_id==this.writing_id && l[0].publication_category=="writing"){
                   this.content_emphasized=true;
@@ -399,7 +395,7 @@ export class ArtworkWritingComponent implements OnInit {
               this.emphasized_contend_retrieved=true;
             });
             
-            this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+            this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).pipe(first() ).subscribe(information=>{
               if(information[0].value){
                 this.already_subscribed=true;
               }
@@ -412,7 +408,7 @@ export class ArtworkWritingComponent implements OnInit {
             this.ready_to_check_view=true;
             this.check_view_after_current()
       
-            this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+            this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).pipe(first() ).subscribe(information=>{
               if(information[0].value){
                 this.already_subscribed=true;
               }
@@ -421,7 +417,7 @@ export class ArtworkWritingComponent implements OnInit {
             
            
   
-            this.NotationService.get_content_marks('writing',  "unknown", this.writing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.get_content_marks('writing',  "unknown", this.writing_id,0).pipe(first() ).subscribe(r=>{
               //views and comments
               this.commentariesnumber=r[0].list_of_comments.length;
               this.viewsnumber= r[0].list_of_views.length;
@@ -449,13 +445,13 @@ export class ArtworkWritingComponent implements OnInit {
             })
             
       
-            this.Writing_Upload_Service.retrieve_writing_by_name(file_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.Writing_Upload_Service.retrieve_writing_by_name(file_name).pipe(first() ).subscribe(r=>{
               let file = new Blob([r], {type: 'application/pdf'});
               this.pdfSrc = URL.createObjectURL(file);
               this.item_retrieved=true;
             });
       
-            this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+            this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).pipe(first() ).subscribe(r=> {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.profile_picture = SafeURL;
@@ -512,21 +508,21 @@ export class ArtworkWritingComponent implements OnInit {
       if (this.authorid == this.visitor_id){
         this.mode_visiteur = false;
         if(this.status=="public"){
-          this.navbar.check_if_research_exists("Writing","unknown",this.writing_id,this.title,"clicked").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+          this.navbar.check_if_research_exists("Writing","unknown",this.writing_id,this.title,"clicked").pipe(first() ).subscribe(p=>{
             if(!p[0].value){
-              this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+              this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe(first() ).subscribe();
             }
           })
         }
         
       }
       else{
-        this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
-        this.NotationService.add_view('writing',  "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).pipe(first() ).subscribe();
+        this.NotationService.add_view('writing',  "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
           this.id_view_created = r[0].id;
           if(r[0].id>0){
             this.Community_recommendation.delete_recommendations_cookies();
-            this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{})
+            this.Community_recommendation.generate_recommendations().pipe(first() ).subscribe(r=>{})
           }
         });
                 
@@ -542,7 +538,7 @@ export class ArtworkWritingComponent implements OnInit {
 
   get_author_recommendations(){
 
-    this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(e=>{
+    this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,this.writing_id).pipe(first() ).subscribe(e=>{
       if(e[0].list_to_send.length >0){
         for(let j=0;j<e[0].list_to_send.length;j++){
           if(e[0].list_to_send[j].length>0){
@@ -566,7 +562,7 @@ export class ArtworkWritingComponent implements OnInit {
   get_recommendations_by_tag(){
 
     
-    this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.firsttag,6).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(u=>{
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.firsttag,6).pipe(first() ).subscribe(u=>{
       if(u[0].length>0){
         let list_of_first_propositions=u[0];
         this.first_propositions=u[0];
@@ -584,7 +580,7 @@ export class ArtworkWritingComponent implements OnInit {
       
     })
 
-    this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.secondtag,6).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.secondtag,6).pipe(first() ).subscribe(r=>{
       
       this.second_propositions_retrieved=true;
       this.second_propositions=r[0];
@@ -632,7 +628,7 @@ export class ArtworkWritingComponent implements OnInit {
     let compteur_propositions=0;
     if(list_of_first_propositions.length>0){
       for(let i=0;i<list_of_first_propositions.length;i++){
-          this.Writing_Upload_Service.retrieve_writing_information_by_id(list_of_first_propositions[i].target_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(comic=>{
+          this.Writing_Upload_Service.retrieve_writing_information_by_id(list_of_first_propositions[i].target_id).pipe(first() ).subscribe(comic=>{
             if(comic[0].status=="public"){
               this.list_of_recommendations_by_tag.push(comic[0]);
             }
@@ -651,7 +647,7 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   check_archive(){
-    this.Subscribing_service.check_if_publication_archived("writing","unknown" ,this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.check_if_publication_archived("writing","unknown" ,this.writing_id).pipe(first() ).subscribe(r=>{
       if(r[0].value){
         this.content_archived=true;
       }
@@ -789,7 +785,7 @@ export class ArtworkWritingComponent implements OnInit {
       }, 
       panelClass: 'popupArtworkDataClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -818,7 +814,7 @@ export class ArtworkWritingComponent implements OnInit {
       }, 
       panelClass: 'popupCommentsClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -926,7 +922,7 @@ export class ArtworkWritingComponent implements OnInit {
         if(this.liked) {      
           this.liked=false;  
           this.likesnumber-=1;
-            this.NotationService.remove_like('writing', "unknown", this.style, this.writing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{      
+            this.NotationService.remove_like('writing', "unknown", this.style, this.writing_id,0).pipe(first() ).subscribe(r=>{      
               let index=this.list_of_users_ids_likes.indexOf(this.visitor_id);
               this.list_of_users_ids_likes.splice(index,1);
             
@@ -935,7 +931,7 @@ export class ArtworkWritingComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_like','writing','unknown',this.writing_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_like','writing','unknown',this.writing_id,0,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_like",
@@ -963,7 +959,7 @@ export class ArtworkWritingComponent implements OnInit {
         else {
           this.liked=true;
           this.likesnumber+=1;
-            this.NotationService.add_like('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.add_like('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
               if(!r[0].error){
                 this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
               
@@ -973,7 +969,7 @@ export class ArtworkWritingComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_like",
@@ -1004,7 +1000,7 @@ export class ArtworkWritingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1013,7 +1009,7 @@ export class ArtworkWritingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1031,7 +1027,7 @@ export class ArtworkWritingComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -1053,7 +1049,7 @@ export class ArtworkWritingComponent implements OnInit {
         if(this.loved) {    
           this.loved=false; 
           this.lovesnumber-=1; 
-            this.NotationService.remove_love('writing', "unknown", this.style, this.writing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{        
+            this.NotationService.remove_love('writing', "unknown", this.style, this.writing_id,0).pipe(first() ).subscribe(r=>{        
               let index=this.list_of_users_ids_loves.indexOf(this.visitor_id);
               this.list_of_users_ids_loves.splice(index,1);
              
@@ -1063,7 +1059,7 @@ export class ArtworkWritingComponent implements OnInit {
                 this.cd.detectChanges();
               }
               else{
-                this.NotificationsService.remove_notification('publication_love','writing','unknown',this.writing_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.remove_notification('publication_love','writing','unknown',this.writing_id,0,false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"publication_love",
@@ -1091,7 +1087,7 @@ export class ArtworkWritingComponent implements OnInit {
         else {  
           this.loved=true;  
           this.lovesnumber+=1;    
-            this.NotationService.add_love('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.add_love('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).pipe(first() ).subscribe(r=>{
               if(!r[0].error){
                 this.list_of_users_ids_loves.splice(0,0,this.visitor_id)
                 
@@ -1101,7 +1097,7 @@ export class ArtworkWritingComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_love",
@@ -1132,7 +1128,7 @@ export class ArtworkWritingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1141,7 +1137,7 @@ export class ArtworkWritingComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
                   });
-                  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+                  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
                     this.in_other_popup=false;
                   })
                 }
@@ -1160,7 +1156,7 @@ export class ArtworkWritingComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -1194,7 +1190,7 @@ export class ArtworkWritingComponent implements OnInit {
     if(this.mode_visiteur){
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
       if (this.id_view_created>0 && ending_time_of_view>5){
-        this.NotationService.add_view_time(ending_time_of_view,this.id_view_created).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+        this.NotationService.add_view_time(ending_time_of_view,this.id_view_created).pipe(first() ).subscribe();
         }
       }
   }
@@ -1209,7 +1205,7 @@ export class ArtworkWritingComponent implements OnInit {
       this.loading_subscribtion=true;
       if(!this.already_subscribed){
         this.already_subscribed=true;
-        this.Subscribing_service.subscribe_to_a_user(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+        this.Subscribing_service.subscribe_to_a_user(this.authorid).pipe(first() ).subscribe(information=>{
           if(information[0].subscribtion){
             this.loading_subscribtion=false;
             this.cd.detectChanges();
@@ -1223,7 +1219,7 @@ export class ArtworkWritingComponent implements OnInit {
             this.loading_subscribtion=false;
           }
           else{
-            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.authorid,this.authorid.toString(),'none','none',this.visitor_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.authorid,this.authorid.toString(),'none','none',this.visitor_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"subscribtion",
@@ -1250,8 +1246,8 @@ export class ArtworkWritingComponent implements OnInit {
       }
       else{
         this.already_subscribed=false;
-        this.Subscribing_service.remove_subscribtion(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
-          this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.Subscribing_service.remove_subscribtion(this.authorid).pipe(first() ).subscribe(information=>{
+          this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).pipe(first() ).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"subscribtion",
@@ -1282,7 +1278,7 @@ export class ArtworkWritingComponent implements OnInit {
         data: {usage:"login"},
         panelClass:"loginComponentClass"
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         this.in_other_popup=false;
       })
     }
@@ -1294,7 +1290,7 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Subscribing_service.archive("writings","unknown",this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.archive("writings","unknown",this.writing_id).pipe(first() ).subscribe(r=>{
       this.content_archived=true;
       this.archive_loading=false;
     });
@@ -1304,7 +1300,7 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Subscribing_service.unarchive("writings","unknown",this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Subscribing_service.unarchive("writings","unknown",this.writing_id).pipe(first() ).subscribe(r=>{
       this.content_archived=false;
       this.archive_loading=false;
     });
@@ -1317,14 +1313,14 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
     this.checking_report=true;
-    this.Reports_service.check_if_content_reported('writing',this.writing_id,"unknown",0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Reports_service.check_if_content_reported('writing',this.writing_id,"unknown",0).pipe(first() ).subscribe(r=>{
       if(r[0].nothing){
         this.in_other_popup=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
           panelClass: "popupConfirmationClass",
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
       }
@@ -1334,7 +1330,7 @@ export class ArtworkWritingComponent implements OnInit {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'writing',publication_id:this.writing_id,format:"unknown",chapter_number:0},
           panelClass:"popupReportClass"
         });
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe(first() ).subscribe(result => {
           this.in_other_popup=false;
         })
       }
@@ -1347,7 +1343,7 @@ export class ArtworkWritingComponent implements OnInit {
   cancel_report(){
 
     let id=this.writing_id
-    this.Reports_service.cancel_report("writing",id,this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Reports_service.cancel_report("writing",id,this.writing_id).pipe(first() ).subscribe(r=>{
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id)>=0){
         let i=this.list_of_reporters.indexOf(this.visitor_id)
         this.list_of_reporters.splice(i,1)
@@ -1361,7 +1357,7 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-    this.Profile_Edition_Service.emphasize_content("writing","unknown",this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.emphasize_content("writing","unknown",this.writing_id).pipe(first() ).subscribe(r=>{
       this.content_emphasized=true;
       this.archive_loading=false;
     });
@@ -1372,7 +1368,7 @@ export class ArtworkWritingComponent implements OnInit {
       return
     }
     this.archive_loading=true;
-      this.Profile_Edition_Service.remove_emphasizing("writing","unknown",this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+      this.Profile_Edition_Service.remove_emphasizing("writing","unknown",this.writing_id).pipe(first() ).subscribe(t=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
@@ -1384,7 +1380,7 @@ export class ArtworkWritingComponent implements OnInit {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -1400,7 +1396,7 @@ export class ArtworkWritingComponent implements OnInit {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
       panelClass: 'popupLikesAndLovesClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
       if(!result){
         this.add_time_of_view();
@@ -1469,7 +1465,7 @@ pageRendered(e:any) {
     },
     panelClass: 'popupFormWritingClass',
     });
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })
   }
@@ -1492,7 +1488,7 @@ pageRendered(e:any) {
     },
     panelClass: 'popupEditCoverClass',
     }); 
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       this.in_other_popup=false;
     })
 
@@ -1510,10 +1506,10 @@ pageRendered(e:any) {
       return
     }
     this.archive_loading=true;
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
-        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-          this.Writing_Upload_Service.change_writing_status(this.writing_id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,"private").pipe(first() ).subscribe(r=>{
+          this.Writing_Upload_Service.change_writing_status(this.writing_id,"private").pipe(first() ).subscribe(r=>{
             this.status="private";
             this.archive_loading=false;
           });
@@ -1536,10 +1532,10 @@ pageRendered(e:any) {
       return
     }
     this.archive_loading=true;
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
-        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,"ok").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-          this.Writing_Upload_Service.change_writing_status(this.writing_id,"public").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,"ok").pipe(first() ).subscribe(r=>{
+          this.Writing_Upload_Service.change_writing_status(this.writing_id,"public").pipe(first() ).subscribe(r=>{
             this.status="public";
             this.archive_loading=false;
           });
@@ -1563,11 +1559,11 @@ pageRendered(e:any) {
       return
     }
     this.archive_loading=true;
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if( result ) {
-        this.navbar.delete_publication_from_research("Writing","unknown",this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-          this.Writing_Upload_Service.Remove_writing(this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-            this.NotificationsService.remove_notification('add_publication','writing','unknown',this.writing_id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.navbar.delete_publication_from_research("Writing","unknown",this.writing_id).pipe(first() ).subscribe(r=>{
+          this.Writing_Upload_Service.Remove_writing(this.writing_id).pipe(first() ).subscribe(r=>{
+            this.NotificationsService.remove_notification('add_publication','writing','unknown',this.writing_id,0,false,0).pipe(first() ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"add_publication",
@@ -1606,7 +1602,7 @@ pageRendered(e:any) {
   
   first_comment_received(e){
     this.first_comment=e.comment.commentary;
-    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=> {
+    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).pipe(first() ).subscribe(p=> {
       let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.pp_first_comment= SafeURL;
@@ -1625,7 +1621,7 @@ pageRendered(e:any) {
   }
 
   add_share_history(category){
-    this.navbar.add_page_visited_to_history(`/artwork-writing-share/${this.title}/${this.writing_id}/${category}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/artwork-writing-share/${this.title}/${this.writing_id}/${category}`,this.device_info).pipe(first() ).subscribe();
   }
 
 }

@@ -12,8 +12,7 @@ import { DOCUMENT } from '@angular/common';
 import { merge, fromEvent } from 'rxjs';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { PopupApplyResponseComponent } from '../popup-apply-response/popup-apply-response.component';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-applications',
@@ -52,7 +51,7 @@ export class ApplicationsComponent implements OnInit {
     private fb: FormBuilder,
     @Inject(DOCUMENT) private document: Document,
     ) {
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -320,7 +319,7 @@ export class ApplicationsComponent implements OnInit {
     this.list_of_responses=[];
     let responded= this.opened_category==0?false:true;
 
-    this.Edtior_Projects.get_sorted_applications(this.author.type_of_account.includes('dit')?"edior":"artist",this.author,this.category,this.genres,this.sort_formula,this.sort_time,this.sort_pertinence,responded,this.offset_applications,this.compteur_applications).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Edtior_Projects.get_sorted_applications(this.author.type_of_account.includes('dit')?"edior":"artist",this.author,this.category,this.genres,this.sort_formula,this.sort_time,this.sort_pertinence,responded,this.offset_applications,this.compteur_applications).pipe(first() ).subscribe(r=>{
       this.number_of_results=r[0][0].number_of_applications;
       if(parseInt(r[0][0].number_of_applications)%10==0){
         this.number_of_pages=Math.trunc(parseInt(r[0][0].number_of_applications)/10)
@@ -367,7 +366,7 @@ export class ApplicationsComponent implements OnInit {
 
       let id_user =this.author.type_of_account.includes('dit')?list_of_applications[i].id_user:list_of_applications[i].target_id
     
-      this.Profile_Edition_Service.retrieve_profile_picture(id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+      this.Profile_Edition_Service.retrieve_profile_picture(id_user).pipe(first() ).subscribe(t=> {
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         this.list_of_profile_pictures[i] = url;
         this.cd.detectChanges()
@@ -377,14 +376,14 @@ export class ApplicationsComponent implements OnInit {
       })
 
       if(list_of_applications[i].responded){
-        this.Edtior_Projects.get_project_response(this.list_of_applications[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Edtior_Projects.get_project_response(this.list_of_applications[i].id).pipe(first() ).subscribe(r=>{
           this.list_of_responses[i]=r[0];
         })
       }
       
       
 
-      this.Edtior_Projects.retrieve_project_by_name(list_of_applications[i].project_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Edtior_Projects.retrieve_project_by_name(list_of_applications[i].project_name).pipe(first() ).subscribe(r=>{
         this.list_of_projects[i]=r
       })
 
@@ -408,7 +407,7 @@ export class ApplicationsComponent implements OnInit {
 
   open_project(i){
     if(this.author.type_of_account.includes("dit")){
-      this.Edtior_Projects.set_project_read(this.list_of_applications[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Edtior_Projects.set_project_read(this.list_of_applications[i].id).pipe(first() ).subscribe(r=>{
         this.list_of_projects[i]=r
       })
     }
@@ -417,7 +416,7 @@ export class ApplicationsComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.list_of_projects[i]},
       panelClass: "popupDocumentClass",
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    }).afterClosed().pipe(first() ).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
@@ -433,7 +432,7 @@ export class ApplicationsComponent implements OnInit {
         author:this.author,
       },
       panelClass: "popupLinkcollabApplyResponseClass",
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(
+    }).afterClosed().pipe(first() ).subscribe(
       result => {
        if(result){
          this.list_of_applications.splice(i,1);
@@ -456,7 +455,7 @@ export class ApplicationsComponent implements OnInit {
     if(!this.list_of_responses[i]){
       
       this.loading_response=true;
-      this.Edtior_Projects.get_project_response(this.list_of_applications[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Edtior_Projects.get_project_response(this.list_of_applications[i].id).pipe(first() ).subscribe(r=>{
         const dialogRef = this.dialog.open(PopupApplyResponseComponent, {
           data: { 
             read_response:true,
@@ -537,7 +536,7 @@ export class ApplicationsComponent implements OnInit {
         filter4:this.list_of_formulas,
       },
       panelClass: "popupFiltersComponentClass",
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(
+    }).afterClosed().pipe(first() ).subscribe(
       result => {
         if(result){
           this.f1.controls['category'].setValue(result.category);
@@ -559,9 +558,4 @@ export class ApplicationsComponent implements OnInit {
   }
 
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
 }

@@ -21,8 +21,7 @@ import { Location } from '@angular/common';
 import { Community_recommendation } from '../services/recommendations.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -71,7 +70,7 @@ export class AccountMyAccountComponent implements OnInit {
     public dialog: MatDialog,
     private navbar: NavbarService, 
   ) {
-    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+    navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -166,7 +165,7 @@ export class AccountMyAccountComponent implements OnInit {
        });
   
   
-      this.Profile_Edition_Service.decrypt_password(this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Profile_Edition_Service.decrypt_password(this.id_user).pipe(first() ).subscribe(r=>{
         if(r[0].password){
           this.password=r[0].password
           this.registerForm1.controls['old_password_real_value'].setValue(r[0].password)
@@ -198,12 +197,12 @@ export class AccountMyAccountComponent implements OnInit {
       return;
     }
     if(i==0){
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-my-account/account`, this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-my-account/account`, this.device_info).pipe(first() ).subscribe();
       this.opened_category=i;
       this.cd.detectChanges();
     }
     if(i==1){
-      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/remuneration`, this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/remuneration`, this.device_info).pipe(first() ).subscribe();
       this.sumo_ready=false;
       this.opened_category=i;
       this.cd.detectChanges();
@@ -305,7 +304,7 @@ export class AccountMyAccountComponent implements OnInit {
     });
 
     this.registerForm.controls['email'].setValue(this.email);
-    this.Profile_Edition_Service.decrypt_password(this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.decrypt_password(this.id_user).pipe(first() ).subscribe(r=>{
       if(r[0].password){
         this.password=r[0].password
         this.registerForm1.controls['old_password_real_value'].setValue(r[0].password)
@@ -368,7 +367,7 @@ export class AccountMyAccountComponent implements OnInit {
     }
     else{
       this.checking_password=true;
-      this.Profile_Edition_Service.check_password(this.email, this.registerForm1.value.password).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(data => {
+      this.Profile_Edition_Service.check_password(this.email, this.registerForm1.value.password).pipe(first() ).subscribe(data => {
         if(data.token){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Mot de passe invalide.'},
@@ -377,7 +376,7 @@ export class AccountMyAccountComponent implements OnInit {
           this.checking_password=false;
         }
         if(data.msg=="error"){
-          this.Profile_Edition_Service.edit_password(this.registerForm1.value.password,this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Profile_Edition_Service.edit_password(this.registerForm1.value.password,this.id_user).pipe(first() ).subscribe(r=>{
            
             if(this.for_reset_password){
               location.reload();
@@ -400,7 +399,7 @@ export class AccountMyAccountComponent implements OnInit {
             data: {showChoice:true, text:'Ce mot de passe a déjà été utilisé par le passé. Continuer ?'},
             panelClass: "popupConfirmationClass",
           });
-          dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+          dialogRef.afterClosed().pipe(first() ).subscribe(result => {
             if( result ) {
               this.validate_old_password();
             }
@@ -427,7 +426,7 @@ export class AccountMyAccountComponent implements OnInit {
       return
     }
     else{
-      this.Profile_Edition_Service.edit_password(this.registerForm1.value.password,this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Profile_Edition_Service.edit_password(this.registerForm1.value.password,this.id_user).pipe(first() ).subscribe(r=>{
         this.password=this.registerForm1.value.password;
         this.registerForm1.reset();
         this.registerForm1.controls['confirmPassword'].setValue('')
@@ -457,7 +456,7 @@ export class AccountMyAccountComponent implements OnInit {
   }
   change_mailing_agreement(){
     this.loading_email_changes=true;
-    this.Profile_Edition_Service.change_mailing_managment(!this.email_agreement).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.change_mailing_managment(!this.email_agreement).pipe(first() ).subscribe(r=>{
       this.email_agreement=!this.email_agreement;
       this.loading_email_changes=false;
     })
@@ -490,7 +489,7 @@ export class AccountMyAccountComponent implements OnInit {
       this.cd.detectChanges()
     }
     else{
-      this.Profile_Edition_Service.check_email({email:this.registerForm.value.email},0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Profile_Edition_Service.check_email({email:this.registerForm.value.email},0).pipe(first() ).subscribe(r=>{
         if(r[0][0].msg=="found" ){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Cette adresse e-mail est déjà utilisée par un autre utilisateur.'},
@@ -500,7 +499,7 @@ export class AccountMyAccountComponent implements OnInit {
           this.cd.detectChanges()
         }
         else{
-          this.Profile_Edition_Service.edit_email(this.registerForm.value.email).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Profile_Edition_Service.edit_email(this.registerForm.value.email).pipe(first() ).subscribe(r=>{
             this.registerForm_activated=false;
             this.email=this.registerForm.value.email
             this.loading_email=false;
@@ -550,7 +549,7 @@ export class AccountMyAccountComponent implements OnInit {
       this.get_total_gains();
 
       if(this.gender!="Groupe"){
-        this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.id_user).pipe(first() ).subscribe(r=>{
           if(r[0].length>0){
             for(let i=0;i<r[0].length;i++){
               this.list_of_groups_names.push(r[0][i].nickname)
@@ -605,7 +604,7 @@ export class AccountMyAccountComponent implements OnInit {
     }
     else{
       this.manage_group_loading[i]=true;
-      this.Profile_Edition_Service.get_group_information_by_id(id_group).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(users=>{
+      this.Profile_Edition_Service.get_group_information_by_id(id_group).pipe(first() ).subscribe(users=>{
         if(users[0].error){
           let compt=0;
           this.list_of_members_pictures_by_group[id_group]=[];
@@ -616,12 +615,12 @@ export class AccountMyAccountComponent implements OnInit {
           this.list_of_members_status_by_group[id_group]=[];
           this.share_in_edition[id_group]=[];
           for(let k=0;k<this.list_of_members_ids_by_group[id_group].length;k++){
-            this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_members_ids_by_group[id_group][k] ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+            this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_members_ids_by_group[id_group][k] ).pipe(first() ).subscribe(r=> {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_members_pictures_by_group[id_group][k] = SafeURL;
             });
-            this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( l => {  
+            this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).pipe(first() ).subscribe( l => {  
               this.list_of_members_names_by_group[id_group][k]  = l[0].firstname;
               this.list_of_members_pseudos_by_group[id_group][k] = l[0].nickname;
               this.list_of_members_status_by_group[id_group][k] = "En attente";
@@ -654,12 +653,12 @@ export class AccountMyAccountComponent implements OnInit {
           for(let k=0;k<this.list_of_members_ids_by_group[id_group].length;k++){
             
             
-            this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_members_ids_by_group[id_group][k] ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+            this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_members_ids_by_group[id_group][k] ).pipe(first() ).subscribe(r=> {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_members_pictures_by_group[id_group][k] = SafeURL;
             });
-            this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( l => {
+            this.Profile_Edition_Service.retrieve_profile_data( this.list_of_members_ids_by_group[id_group][k]).pipe(first() ).subscribe( l => {
               this.list_of_members_names_by_group[id_group][k]  = l[0].firstname ;
               this.list_of_members_pseudos_by_group[id_group][k] = l[0].nickname;
               compt++;
@@ -775,7 +774,7 @@ export class AccountMyAccountComponent implements OnInit {
       });
     }
     else{
-        this.Profile_Edition_Service.validate_group_creation_and_shares(id_group,this.list_of_members_ids_by_group[id_group],this.list_of_members_shares_by_group[id_group]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.validate_group_creation_and_shares(id_group,this.list_of_members_ids_by_group[id_group],this.list_of_members_shares_by_group[id_group]).pipe(first() ).subscribe(r=>{
           if(r[0].error){
             
             if(r[0].error=="already_validated"){
@@ -813,7 +812,7 @@ export class AccountMyAccountComponent implements OnInit {
             list_of_receivers.splice(user_index,1)
             let user_name=this.list_of_members_names_by_group[id_group][user_index]
             let name=this.list_of_groups_names[index];
-            this.NotificationsService.add_notification_for_group_creation('group_validation',this.id_user,user_name, list_of_receivers,'group_validation',name,'unknown',id_group,0,(r[0].loop=="second")?"add_and_shares":"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.NotificationsService.add_notification_for_group_creation('group_validation',this.id_user,user_name, list_of_receivers,'group_validation',name,'unknown',id_group,0,(r[0].loop=="second")?"add_and_shares":"add",false,0).pipe(first() ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"group_validation",
@@ -851,9 +850,9 @@ export class AccountMyAccountComponent implements OnInit {
       panelClass: "popupConfirmationClass",
     });
   
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
-        this.Profile_Edition_Service.abort_group_creation(id_group).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.abort_group_creation(id_group).pipe(first() ).subscribe(r=>{
           let name=this.list_of_groups_names[index];
           this.list_of_groups_names.splice(index,1);
           this.list_of_groups_ids.splice(index,1);
@@ -864,7 +863,7 @@ export class AccountMyAccountComponent implements OnInit {
           let index_user=this.list_of_members_ids_by_group[id_group].indexOf(this.id_user);
           let user_name=this.list_of_members_pseudos_by_group[id_group][index_user];
           this.list_of_members_ids_by_group[id_group].splice(index_user,1)
-          this.NotificationsService.add_notification_for_group_creation('group_abort',this.id_user,user_name, this.list_of_members_ids_by_group[id_group],'group_abort',name,'unknown',id_group,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.NotificationsService.add_notification_for_group_creation('group_abort',this.id_user,user_name, this.list_of_members_ids_by_group[id_group],'group_abort',name,'unknown',id_group,0,"add",false,0).pipe(first() ).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"group_abort",
@@ -904,9 +903,9 @@ export class AccountMyAccountComponent implements OnInit {
         panelClass: "popupConfirmationClass",
       });
     
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         if(result){
-          this.Profile_Edition_Service.abort_group_creation(id_group).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Profile_Edition_Service.abort_group_creation(id_group).pipe(first() ).subscribe(r=>{
             let name=this.list_of_groups_names[index];
             this.list_of_groups_names.splice(index,1);
             this.list_of_groups_ids.splice(index,1);
@@ -917,7 +916,7 @@ export class AccountMyAccountComponent implements OnInit {
             let index_user=this.list_of_members_ids_by_group[id_group].indexOf(this.id_user);
             let user_name=this.list_of_members_pseudos_by_group[id_group][index_user];
             this.list_of_members_ids_by_group[id_group].splice(index_user,1)
-            this.NotificationsService.add_notification_for_group_creation('group_abort',this.id_user,user_name, this.list_of_members_ids_by_group[id_group],'group_abort',name,'unknown',id_group,0,"abort_and_admin",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.NotificationsService.add_notification_for_group_creation('group_abort',this.id_user,user_name, this.list_of_members_ids_by_group[id_group],'group_abort',name,'unknown',id_group,0,"abort_and_admin",false,0).pipe(first() ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"group_abort",
@@ -953,9 +952,9 @@ export class AccountMyAccountComponent implements OnInit {
         panelClass: "popupConfirmationClass",
       });
     
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe(first() ).subscribe(result => {
         if(result){
-          this.Profile_Edition_Service.exit_group(id_group,this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Profile_Edition_Service.exit_group(id_group,this.id_user).pipe(first() ).subscribe(r=>{
             let name=this.list_of_groups_names[index];
             this.list_of_groups_names.splice(index,1);
             this.list_of_groups_ids.splice(index,1);
@@ -966,7 +965,7 @@ export class AccountMyAccountComponent implements OnInit {
             let index_user=this.list_of_members_ids_by_group[id_group].indexOf(this.id_user);
             let user_name=this.list_of_members_pseudos_by_group[id_group][index_user];
             this.list_of_members_ids_by_group[id_group].splice(index_user,1);
-            this.NotificationsService.add_notification_for_group_creation('group_exit',this.id_user,user_name, this.list_of_members_ids_by_group[id_group],'group_exit',name,'unknown',id_group,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+            this.NotificationsService.add_notification_for_group_creation('group_exit',this.id_user,user_name, this.list_of_members_ids_by_group[id_group],'group_exit',name,'unknown',id_group,0,"add",false,0).pipe(first() ).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"group_exit",
@@ -1005,10 +1004,10 @@ export class AccountMyAccountComponent implements OnInit {
       panelClass: "popupConfirmationClass",
     });
   
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
         this.loading_add_artist=true;
-        this.Profile_Edition_Service.exit_group(id_group,exit_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.exit_group(id_group,exit_user).pipe(first() ).subscribe(r=>{
           this.loading_add_artist=true;
           let index = this.list_of_groups_ids.indexOf(id_group);
           this.list_of_groups_status[index]=false;
@@ -1041,7 +1040,7 @@ export class AccountMyAccountComponent implements OnInit {
     this.list_of_groups_admins_ids=[];
     this.list_of_members_ids_by_group={};
     this.list_of_groups_status=[];
-    this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.id_user).pipe(first() ).subscribe(r=>{
       if(r[0].length>0){
         for(let i=0;i<r[0].length;i++){
           this.list_of_groups_names.push(r[0][i].nickname)
@@ -1087,7 +1086,7 @@ export class AccountMyAccountComponent implements OnInit {
       panelClass: "popupConfirmationClass",
     });
 
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
         const dialogRef = this.dialog.open(LoginComponent, {
           data: {usage:"suspend_account",id_user:this.id_user},
@@ -1104,7 +1103,7 @@ export class AccountMyAccountComponent implements OnInit {
 
  get_back_suspended_account(){
     this.deletion_loading=true;
-    this.Profile_Edition_Service.get_back_suspended_account().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.get_back_suspended_account().pipe(first() ).subscribe(r=>{
       this.deletion_loading=false;
       location.reload();
     })
@@ -1125,7 +1124,7 @@ export class AccountMyAccountComponent implements OnInit {
       panelClass: "popupConfirmationClass",
     });
 
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
         const dialogRef = this.dialog.open(LoginComponent, {
           data: {usage:"delete_account",id_user:this.id_user},
@@ -1157,11 +1156,11 @@ export class AccountMyAccountComponent implements OnInit {
   }
   this.loading_connexion_unit=true;
   this.loading_connexion[i]=true;
-  this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/switch_to_group/${this.list_of_groups_names[i]}/${this.list_of_groups_ids[i]}`, this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
-  this.AuthenticationService.login_group_as_member(this.list_of_groups_ids[i],this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
+  this.navbar.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/switch_to_group/${this.list_of_groups_names[i]}/${this.list_of_groups_ids[i]}`, this.device_info).pipe(first() ).subscribe();
+  this.AuthenticationService.login_group_as_member(this.list_of_groups_ids[i],this.id_user).pipe(first() ).subscribe( data => {
     if(data.token){
       this.Community_recommendation.delete_recommendations_cookies();
-      this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Community_recommendation.generate_recommendations().pipe(first() ).subscribe(r=>{
         this.loading_connexion_unit=false;
         this.loading_connexion[i]=false;
         this.location.go("/account/" + this.list_of_groups_names[i])
@@ -1364,7 +1363,7 @@ export class AccountMyAccountComponent implements OnInit {
     this.compteur_trendings++;
     this.trendings_loaded=false;
     this.trendings_found=false;
-    this.Trending_service.get_all_trendings_by_user(this.date_format_trendings,this.id_user,this.compteur_trendings).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Trending_service.get_all_trendings_by_user(this.date_format_trendings,this.id_user,this.compteur_trendings).pipe(first() ).subscribe(r=>{
 
       if(r[1]== this.compteur_trendings){
         if(Object.keys(r[0][0].list_of_contents).length>0){
@@ -1600,7 +1599,7 @@ export class AccountMyAccountComponent implements OnInit {
     this.compteur_trendings_groups++;
     this.trendings_loaded_groups=false;
     this.trendings_found_groups=false;
-    this.Trending_service.get_all_trendings_by_user(this.date_format_trendings_groups,id_group,this.compteur_trendings_groups).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Trending_service.get_all_trendings_by_user(this.date_format_trendings_groups,id_group,this.compteur_trendings_groups).pipe(first() ).subscribe(r=>{
       if(r[1]== this.compteur_trendings_groups){
         if(Object.keys(r[0][0].list_of_contents).length>0){
           this.total_gains_groups=0;
@@ -1835,7 +1834,7 @@ export class AccountMyAccountComponent implements OnInit {
     this.compteur_favorites++;
     this.favorites_loaded=false;
     this.favorites_found=false;
-    this.Favorites_service.get_all_favorites_by_user(this.date_format_favorites,this.id_user,this.compteur_favorites).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Favorites_service.get_all_favorites_by_user(this.date_format_favorites,this.id_user,this.compteur_favorites).pipe(first() ).subscribe(r=>{
       if(r[1]== this.compteur_favorites){
         if(Object.keys(r[0][0].list_of_favorites).length>0){
           this.total_gains_favorites=0;
@@ -1913,7 +1912,7 @@ export class AccountMyAccountComponent implements OnInit {
     this.compteur_favorites_groups++;
     this.favorites_loaded_groups=false;
     this.favorites_found_groups=false;
-    this.Favorites_service.get_all_favorites_by_user(this.date_format_favorites_groups,id_group,this.compteur_favorites_groups).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Favorites_service.get_all_favorites_by_user(this.date_format_favorites_groups,id_group,this.compteur_favorites_groups).pipe(first() ).subscribe(r=>{
       if(r[1]== this.compteur_favorites_groups){
         if(Object.keys(r[0][0].list_of_favorites).length>0){
           this.total_gains_groups_favorites=0;
@@ -2013,7 +2012,7 @@ export class AccountMyAccountComponent implements OnInit {
     this.compteur_editors++;
     this.editors_loaded=false;
     this.editors_found=false;
-    this.Edtior_Projects.get_all_editors_gains(this.date_format_editors,this.compteur_editors).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Edtior_Projects.get_all_editors_gains(this.date_format_editors,this.compteur_editors).pipe(first() ).subscribe(r=>{
       if(r[1]== this.compteur_editors){
         if(r[0][0].list_of_contents.length>0){
           this.total_gains_editors=0;
@@ -2113,20 +2112,20 @@ export class AccountMyAccountComponent implements OnInit {
   display_all_gains=false;
   get_total_gains(){
     if(this.type_of_account.includes('Artiste')){
-      this.Favorites_service.get_total_favorites_gains_by_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Favorites_service.get_total_favorites_gains_by_user().pipe(first() ).subscribe(r=>{
         this.total_gains+=r[0].total;
         this.favorites_gains_retrieved=true;
         this.display_total_gains()
       })
   
-      this.Trending_service.get_total_trendings_gains_by_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Trending_service.get_total_trendings_gains_by_user().pipe(first() ).subscribe(r=>{
         this.total_gains+=r[0].total;
         this.trendings_gains_retrieved=true;
         this.display_total_gains()
       })
     }
     else{
-      this.Edtior_Projects.get_total_editors_gains().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Edtior_Projects.get_total_editors_gains().pipe(first() ).subscribe(r=>{
         this.total_gains+=r[0].total;
         this.editors_gains_retrieved=true;
         this.display_total_gains()
@@ -2137,13 +2136,13 @@ export class AccountMyAccountComponent implements OnInit {
 
   get_total_group_gains(){
     if(this.type_of_account.includes('Artiste')){
-      this.Favorites_service.get_total_favorites_gains_by_users_group(this.list_of_groups_ids).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Favorites_service.get_total_favorites_gains_by_users_group(this.list_of_groups_ids).pipe(first() ).subscribe(r=>{
         this.total_gains+=r[0].total;
         this.favorites_group_gains_retrieved=true;
         this.display_total_gains()
       })
   
-      this.Trending_service.get_total_trendings_gains_by_users_group(this.list_of_groups_ids).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Trending_service.get_total_trendings_gains_by_users_group(this.list_of_groups_ids).pipe(first() ).subscribe(r=>{
         this.total_gains+=r[0].total;
         this.trendings_group_gains_retrieved=true;
         this.display_total_gains()
@@ -2187,7 +2186,7 @@ export class AccountMyAccountComponent implements OnInit {
       return
     }
     this.loading_remuneration=true;
-    this.Profile_Edition_Service.get_my_remuneration(this.total_gains).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.get_my_remuneration(this.total_gains).pipe(first() ).subscribe(r=>{
       if(r[0].is_ok){
 
       }
@@ -2242,9 +2241,5 @@ export class AccountMyAccountComponent implements OnInit {
     });
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
 }

@@ -20,8 +20,7 @@ import { Router } from '@angular/router';
 import { ResizedEvent } from 'angular-resize-event';
 import { merge, fromEvent } from 'rxjs'
 import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -96,7 +95,7 @@ export class ChatComponent implements OnInit  {
     private navbar :NavbarService,
     private Profile_Edition_Service:Profile_Edition_Service
     ){
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -117,12 +116,12 @@ export class ChatComponent implements OnInit  {
       this.reload_list_of_archives = this.reload_list_of_archives_subject.asObservable();
 
       //message received
-      navbar.connexion.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      navbar.connexion.subscribe(r=>{
         if(r!=this.connexion_status){
           this.connexion_status=r
          
           if(r){
-            chatService.messages.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(msg=>{
+            chatService.messages.pipe(first() ).subscribe(msg=>{
               this.chat_service_managment_function(msg);
               
             })
@@ -285,7 +284,7 @@ export class ChatComponent implements OnInit  {
   ngOnChanges(changes: SimpleChanges) {
     if(changes.user_present ){
       if(this.user_present && this.spam=='false'){
-        this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,(this.friend_type=='group')?true:false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,(this.friend_type=='group')?true:false).pipe(first() ).subscribe(l=>{
           if(!(l[0].message)){
             let message_to_send ={
               id_user_name:this.current_user_pseudo,
@@ -351,8 +350,6 @@ export class ChatComponent implements OnInit  {
   show_spinner=false;
   
   change_user(){
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
 
     this.search_popup_closed = true;
     this.show_research_results=false;
@@ -382,7 +379,7 @@ export class ChatComponent implements OnInit  {
     this.get_messages(this.id_chat_section,false);
     this.change_number=0;
     if(this.user_present && this.spam=='false'){
-      this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+      this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).pipe(first() ).subscribe(l=>{
         if(!(l[0].message)){
           let message_to_send ={
             id_user_name:this.current_user_pseudo,
@@ -419,9 +416,6 @@ export class ChatComponent implements OnInit  {
   }
 
   change_group(){
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-    
     this.search_popup_closed = true;
     this.show_research_results=false;
     this.searched_message = -1;
@@ -447,17 +441,17 @@ export class ChatComponent implements OnInit  {
     this.cd.detectChanges();
     this.get_messages(this.id_chat_section,true);
     this.change_number=0;
-    this.chatService.get_group_chat_information(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+    this.chatService.get_group_chat_information(this.friend_id).pipe(first() ).subscribe(info=>{
       let compt_user=0;
       let list_of_receivers_ids=info[0].list_of_receivers_ids;
       for(let i=0;i<list_of_receivers_ids.length;i++){
-        this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+        this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).pipe(first() ).subscribe(p=>{
           let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=url;
          
         })
-        this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).pipe(first() ).subscribe(r=>{
           this.list_of_users_names[r[0].id]=r[0].firstname;
           compt_user++;
           if(compt_user==list_of_receivers_ids.length){
@@ -470,7 +464,7 @@ export class ChatComponent implements OnInit  {
     })
     
     if(this.user_present){
-      this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,true).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+      this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,true).pipe(first() ).subscribe(l=>{
         if(!(l[0].message)){
           let message_to_send ={
             id_user_name:this.current_user_pseudo,
@@ -517,7 +511,7 @@ export class ChatComponent implements OnInit  {
         this.can_get_other_messages=false;
         this.show_spinner=true;
         if(this.list_of_messages.length>0){
-          this.chatService.get_other_messages(this.compteur_get_messages, this.friend_id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.list_of_messages_reactions,(this.friend_type=='group')?true:false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.chatService.get_other_messages(this.compteur_get_messages, this.friend_id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.list_of_messages_reactions,(this.friend_type=='group')?true:false).pipe(first() ).subscribe(r=>{
             if(r[0][0][0] && this.compteur_get_messages==r[1]){
               let num=this.list_of_messages.length;
               this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
@@ -562,19 +556,19 @@ export class ChatComponent implements OnInit  {
   ngOnInit() {
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
     if(this.friend_type=='group'){
-      this.chatService.get_group_chat_information(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+      this.chatService.get_group_chat_information(this.friend_id).pipe(first() ).subscribe(info=>{
         let compt_user=0;
         let list_of_receivers_ids=info[0].list_of_receivers_ids;
         for(let i=0;i<list_of_receivers_ids.length;i++){
           let data_retrieved=false;
-          this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).pipe(first() ).subscribe(r=>{
             this.list_of_users_names[r[0].id]=r[0].firstname;
             data_retrieved=true;
             check_all(this)
             
           })
 
-          this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+          this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).pipe(first() ).subscribe(p=>{
             let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=url;
@@ -628,7 +622,7 @@ export class ChatComponent implements OnInit  {
     this.uploader.onAfterAddingFile = async (file) => {
       this.input.nativeElement.focus();
       if(this.chat_friend_id==0){
-        this.chatService.get_chat_friend(this.friend_id,(this.friend_type=='group')?true:false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.get_chat_friend(this.friend_id,(this.friend_type=='group')?true:false).pipe(first() ).subscribe(r=>{
           if(r[0]){
             this.chat_friend_id=r[0].id;
           }
@@ -678,7 +672,7 @@ export class ChatComponent implements OnInit  {
     this.uploader.onCompleteItem = (file) => {
       this.k++;
       if(this.k<this.uploader.queue.length){
-        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.uploader.queue[this.k]._file.name,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.uploader.queue[this.k]._file.name,0).pipe(first() ).subscribe(r=>{
           let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
           this.uploader.setOptions({ url: URL});
           this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
@@ -694,7 +688,7 @@ export class ChatComponent implements OnInit  {
       else{
         type='file_attachment';
       }
-      this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,file._file.name,1).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,file._file.name,1).pipe(first() ).subscribe(r=>{
         let message ={
           id_user_name:this.current_user_pseudo,
           id_user:this.current_user_id,   
@@ -803,7 +797,7 @@ export class ChatComponent implements OnInit  {
     this.list_of_time=[];
     this.compteur_pp=0;
     if(this.spam=='false' && this.user_present){
-      this.chatService.let_all_friend_messages_to_seen(this.friend_id,id_chat_section,is_group).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+      this.chatService.let_all_friend_messages_to_seen(this.friend_id,id_chat_section,is_group).pipe(first() ).subscribe(l=>{
         if(!(l[0].message)){
           let message_to_send ={
             id_user_name:this.current_user_pseudo,
@@ -825,7 +819,7 @@ export class ChatComponent implements OnInit  {
       })
     }
     this.get_chat_sections();
-    this.chatService.get_first_messages(this.current_user_id,this.friend_id,id_chat_section,is_group,this.compteur_get_messages).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.chatService.get_first_messages(this.current_user_id,this.friend_id,id_chat_section,is_group,this.compteur_get_messages).pipe(first() ).subscribe(r=>{
       
       if(is_group){
         this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
@@ -837,7 +831,7 @@ export class ChatComponent implements OnInit  {
             this.list_of_messages_date[i]=this.date_of_message(r[0][0][i].createdAt,0);
             if(this.list_of_messages[i].is_an_attachment){
               if(this.list_of_messages[i].attachment_type=='picture_message' && this.list_of_messages[i].status!="deleted"){
-                this.chatService.get_picture_sent_by_msg(this.list_of_messages[i].attachment_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+                this.chatService.get_picture_sent_by_msg(this.list_of_messages[i].attachment_name).pipe(first() ).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   if(r[1]==this.compteur_get_messages){
                     this.list_of_messages_pictures[i]=url;
@@ -848,7 +842,7 @@ export class ChatComponent implements OnInit  {
 
                   var re = /(?:\.([^.]+))?$/;
                   if(re.exec(this.list_of_messages[i].attachment_name.toLowerCase())[1]=="svg"){
-                    this.chatService.get_attachment_svg(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+                    this.chatService.get_attachment_svg(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe(first() ).subscribe(t=>{
                       let THIS=this;
                       var reader = new FileReader()
                       reader.readAsText(t);
@@ -863,7 +857,7 @@ export class ChatComponent implements OnInit  {
                     
                   }
                   else{
-                    this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+                    this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe(first() ).subscribe(t=>{
                       let blob = new Blob([t], {type: 'image/png'});
                       let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                       if(r[1]==this.compteur_get_messages){
@@ -876,7 +870,7 @@ export class ChatComponent implements OnInit  {
                   
               }
               else if(this.list_of_messages[i].attachment_type=='file_attachment' && this.list_of_messages[i].status!="deleted"){
-                this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+                this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe(first() ).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   if(r[1]==this.compteur_get_messages){
@@ -909,7 +903,7 @@ export class ChatComponent implements OnInit  {
             }
             
             if(i==r[0][0].length-1){
-              this.chatService.check_if_response_exist(this.friend_id,id_chat_section,is_group).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+              this.chatService.check_if_response_exist(this.friend_id,id_chat_section,is_group).pipe(first() ).subscribe(l=>{
                 if(l[0].value){
                   this.response_exist=true;
                   this.response_exist_retrieved=true;
@@ -1286,7 +1280,7 @@ export class ChatComponent implements OnInit  {
     };
     
     this.temporary_id+=1;
-    this.chatService.chat_sending_images(file,file_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.chatService.chat_sending_images(file,file_name).pipe(first() ).subscribe(l=>{
       this.chatService.messages.next(message);
     })
     this.index_of_show_pp_right=this.index_of_show_pp_right+1;
@@ -1322,7 +1316,7 @@ export class ChatComponent implements OnInit  {
     }
     else if(this.attachments_type[i]=="picture_attachment"){
       if(this.compt_at==1){
-        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).pipe(first() ).subscribe(r=>{
           var uo: FileUploaderOptions = {};
           uo.headers = [{name:'attachment_name',value:`${r[0].value}`} ];
           let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
@@ -1358,7 +1352,7 @@ export class ChatComponent implements OnInit  {
         })
       }
       else{
-        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).pipe(first() ).subscribe(r=>{
           let message ={
             id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
@@ -1390,7 +1384,7 @@ export class ChatComponent implements OnInit  {
     }
     else if(this.attachments_type[i]=="file_attachment"){
       if(this.compt_at==1){
-        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).pipe(first() ).subscribe(r=>{
            let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
            this.uploader.setOptions({ url: URL});
            this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
@@ -1424,7 +1418,7 @@ export class ChatComponent implements OnInit  {
          })
       }
       else{
-        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).pipe(first() ).subscribe(r=>{
            let message ={
             id_user_name:this.current_user_pseudo,
              id_user:this.current_user_id,   
@@ -1480,8 +1474,8 @@ export class ChatComponent implements OnInit  {
     }
     this.show_spinner_add=true;
     this.cd.detectChanges();
-    this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-      this.chatService.add_spam_to_contacts(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).pipe(first() ).subscribe(r=>{
+      this.chatService.add_spam_to_contacts(this.friend_id).pipe(first() ).subscribe(l=>{
         let message_one ={
           id_user_name:this.current_user_pseudo,
           chat_id:l[0].id,
@@ -1526,7 +1520,7 @@ export class ChatComponent implements OnInit  {
           chat_friend_id:this.chat_friend_id
         },
         panelClass: "popupEditPictureClass",
-      }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      }).afterClosed().pipe(first() ).subscribe(result => {
         if(result){
           this.send_image(result,attachment_name);
         }
@@ -1543,7 +1537,7 @@ export class ChatComponent implements OnInit  {
           chat_friend_id:this.chat_friend_id
         },
         panelClass: "popupEditPictureClass",
-      }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      }).afterClosed().pipe(first() ).subscribe(result => {
         let attachment_name=this.attachments_name[0];
         if(result){
           this.send_image(result,attachment_name);
@@ -1556,7 +1550,7 @@ export class ChatComponent implements OnInit  {
   send_image(blob: Blob,attachment_name) {
       var re = /(?:\.([^.]+))?$/;
       attachment_name=attachment_name.replace(re.exec(attachment_name)[1],"png");
-      this.chatService.check_if_file_exists_png((this.friend_type=='user')?'user':'group',this.chat_friend_id,attachment_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.chatService.check_if_file_exists_png((this.friend_type=='user')?'user':'group',this.chat_friend_id,attachment_name).pipe(first() ).subscribe(r=>{
         let name=r[0].value ;
         this.myScrollContainer.nativeElement.focus();
         let message ={
@@ -1577,7 +1571,7 @@ export class ChatComponent implements OnInit  {
           is_a_group_chat:(this.friend_type=='user')?false:true,
           chat_friend_id:this.chat_friend_id,
         };
-        this.chatService.chat_upload_png(blob,name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+        this.chatService.chat_upload_png(blob,name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).pipe(first() ).subscribe(t=>{
           this.index_of_show_pp_right=this.index_of_show_pp_right+1;
           this.list_of_show_pp_left.splice(0,0,false);
           let THIS=this;
@@ -1614,7 +1608,7 @@ export class ChatComponent implements OnInit  {
       panelClass: "popupConfirmationClass",
     });
 
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
         let is_an_attachment=message_to_delete.is_an_attachment;
         let attachment_type=message_to_delete.attachment_type;
@@ -1623,7 +1617,7 @@ export class ChatComponent implements OnInit  {
          
           this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"delete",friend_id:this.friend_id,friend_type:this.friend_type,spam:(this.spam=='false')?false:true,id_message:message_to_delete.id,temporary_id:message_to_delete.temporary_id});
         }
-        this.chatService.delete_message(message_to_delete.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.delete_message(message_to_delete.id).pipe(first() ).subscribe(r=>{
          if(is_an_attachment && (attachment_type=='picture_attachment' || attachment_type=='file_attachment')){
           this.reload_list_of_files_subject.next(true)
          }
@@ -1950,23 +1944,23 @@ open_emojis(){
 reaction_click($event,i) {
   this.selectedEmoji = $event.emoji;
   if(this.friend_type=='group'){
-    this.chatService.get_my_emojis_reactions_for_msg_group(this.list_of_messages[i].id_receiver,this.list_of_messages[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.chatService.get_my_emojis_reactions_for_msg_group(this.list_of_messages[i].id_receiver,this.list_of_messages[i].id).pipe(first() ).subscribe(r=>{
       if(!r[0].message){
         if(r[0].emoji_reaction==$event.emoji.id){
-          this.chatService.delete_emoji_reaction(r[0].id,"user",true).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.chatService.delete_emoji_reaction(r[0].id,"user",true).pipe(first() ).subscribe(l=>{
             let index= this.list_of_messages_reactions[this.list_of_messages[i].id].indexOf($event.emoji.id)
             this.list_of_messages_reactions[this.list_of_messages[i].id].splice(index,1)
           })
         }
         else{
-          this.chatService.add_emoji_reaction(r[0].id,$event.emoji.id,"update",true).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.chatService.add_emoji_reaction(r[0].id,$event.emoji.id,"update",true).pipe(first() ).subscribe(l=>{
             let index= this.list_of_messages_reactions[this.list_of_messages[i].id].indexOf(r[0].emoji_reaction)
             this.list_of_messages_reactions[this.list_of_messages[i].id].splice(index,1,$event.emoji.id)
           })
         }
       }
       else{
-        this.chatService.add_emoji_reaction(this.list_of_messages[i].id,$event.emoji.id,"create",true).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.chatService.add_emoji_reaction(this.list_of_messages[i].id,$event.emoji.id,"create",true).pipe(first() ).subscribe(l=>{
           if(this.list_of_messages_reactions[this.list_of_messages[i].id]){
             this.list_of_messages_reactions[this.list_of_messages[i].id].push($event.emoji.id);
           }
@@ -2022,14 +2016,14 @@ reaction_click($event,i) {
     }
     if(this.list_of_messages[i].id_user==this.current_user_id){
       if(this.list_of_messages[i].emoji_reaction_user==$event.emoji.id){
-        this.chatService.delete_emoji_reaction(this.list_of_messages[i].id,"user",false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.delete_emoji_reaction(this.list_of_messages[i].id,"user",false).pipe(first() ).subscribe(r=>{
           this.list_of_messages[i].emoji_reaction_user=null;
         })
         message.old_emoji=$event.emoji.id;
         message.new_emoji=$event.emoji.id;
       }
       else{
-        this.chatService.add_emoji_reaction(this.list_of_messages[i].id,$event.emoji.id,"user",false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.add_emoji_reaction(this.list_of_messages[i].id,$event.emoji.id,"user",false).pipe(first() ).subscribe(r=>{
           this.list_of_messages[i].emoji_reaction_user=$event.emoji.id;
         })
         message.old_emoji=this.list_of_messages[i].emoji_reaction_user;
@@ -2039,7 +2033,7 @@ reaction_click($event,i) {
     }
     else{
       if(this.list_of_messages[i].emoji_reaction_receiver==$event.emoji.id){
-        this.chatService.delete_emoji_reaction(this.list_of_messages[i].id,"receiver",false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.delete_emoji_reaction(this.list_of_messages[i].id,"receiver",false).pipe(first() ).subscribe(r=>{
           this.list_of_messages[i].emoji_reaction_receiver=null;
         })
         message.old_emoji=$event.emoji.id;
@@ -2047,7 +2041,7 @@ reaction_click($event,i) {
         message.type_of_user="receiver";
       }
       else{
-        this.chatService.add_emoji_reaction(this.list_of_messages[i].id,$event.emoji.id,"receiver",false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.add_emoji_reaction(this.list_of_messages[i].id,$event.emoji.id,"receiver",false).pipe(first() ).subscribe(r=>{
           this.list_of_messages[i].emoji_reaction_receiver=$event.emoji.id;
         })
         message.old_emoji=this.list_of_messages[i].emoji_reaction_receiver;
@@ -2194,7 +2188,7 @@ add_chat_section_name(e: any){
   }
   this.adding_chat_section_name=true;
   let name= e;
-  this.chatService.add_chat_section(name,this.friend_id,(this.friend_type=='user')?false:true).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+  this.chatService.add_chat_section(name,this.friend_id,(this.friend_type=='user')?false:true).pipe(first() ).subscribe(r=>{
     if(r[0].is_ok){
       let message_one ={
         id_user_name:this.current_user_pseudo,
@@ -2276,10 +2270,10 @@ delete_chat_section(){
       panelClass: "popupConfirmationClass",
     });
 
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
         this.deleting_chat_section=true;
-        this.chatService.delete_chat_section(this.id_chat_section,this.friend_id,(this.friend_type=='user')?false:true).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.delete_chat_section(this.id_chat_section,this.friend_id,(this.friend_type=='user')?false:true).pipe(first() ).subscribe(r=>{
           if(r[0].is_ok){
             this.deleting_chat_section=false;
             this.router.navigateByUrl('/chat');
@@ -2299,7 +2293,7 @@ delete_chat_section(){
 
 compteur_chat_section=0;
 get_chat_sections(){
-  this.chatService.get_chat_sections(this.friend_id,(this.friend_type=='user')?false:true,this.compteur_get_messages).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+  this.chatService.get_chat_sections(this.friend_id,(this.friend_type=='user')?false:true,this.compteur_get_messages).pipe(first() ).subscribe(m=>{
     let l=m[0];
     if(this.compteur_get_messages==m[1]){
       if(l[0][0]){
@@ -2318,7 +2312,7 @@ get_chat_sections(){
         }
         let compt_sections=0;
         for(let j=0;j<this.list_of_chat_sections.length;j++){
-          this.chatService.get_notifications_section(this.list_of_chat_sections_id[j],this.friend_id,(this.friend_type=='user')?false:true).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.chatService.get_notifications_section(this.list_of_chat_sections_id[j],this.friend_id,(this.friend_type=='user')?false:true).pipe(first() ).subscribe(r=>{
             if(this.compteur_get_messages==m[1]){
               if(this.list_of_chat_sections_id[j]==1 ){
                 if( this.chat_section_to_open!="Discussion principale"){
@@ -2446,7 +2440,7 @@ on_keydown_research(s){
   this.current_list_of_messages_pictures=this.list_of_messages_pictures;
   this.current_list_of_messages_files=this.list_of_messages_files;
   
-  this.chatService.get_messages_from_research( s,this.id_chat_section,this.friend_id,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+  this.chatService.get_messages_from_research( s,this.id_chat_section,this.friend_id,this.friend_type).pipe(first() ).subscribe(l=>{
     this.list_of_messages_found_complete=l[0];
    
     this.message_researched= s;
@@ -2491,7 +2485,7 @@ on_keydown_research(s){
           }
         }
         else if(!match){
-            this.chatService.get_messages_around(l[0][i].id,this.id_chat_section,this.friend_id,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.chatService.get_messages_around(l[0][i].id,this.id_chat_section,this.friend_id,this.friend_type).pipe(first() ).subscribe(r=>{
               this.list_of_messages_around[i]=r[0].list_of_messages_to_send;
               second_compt+=1;
               if(second_compt==l[0].length){
@@ -2696,21 +2690,21 @@ sort_pp(i){
 
 get_picture_for_message(i){
     if(this.list_of_messages[i].attachment_type=='picture_message'){
-      this.chatService.get_picture_sent_by_msg(this.list_of_messages[i].attachment_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+      this.chatService.get_picture_sent_by_msg(this.list_of_messages[i].attachment_name).pipe(first() ).subscribe(t=>{
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.list_of_messages_pictures[i]=url;
       })
     }
     else if(this.list_of_messages[i].attachment_type=='picture_attachment'){
-      this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+      this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe(first() ).subscribe(t=>{
         let blob = new Blob([t], {type: 'image/png'});
         let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
          this.list_of_messages_pictures[i]=url;
       })
     }
     else if(this.list_of_messages[i].attachment_type=='file_attachment'){
-      this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+      this.chatService.get_attachment_popup(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',(this.list_of_messages[i].chat_friend_id)?this.list_of_messages[i].chat_friend_id:this.chat_friend_id).pipe(first() ).subscribe(t=>{
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.list_of_messages_files[i]=SafeURL;
@@ -2734,7 +2728,7 @@ see_more_messages(){
     this.show_spinner_for_more=true;
     this.searched_message = -1;
 
-    this.chatService.get_other_messages_more(this.friend_id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.chatService.get_other_messages_more(this.friend_id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.friend_type).pipe(first() ).subscribe(r=>{
       if(r[0][0]){
         let num=this.list_of_messages.length;
         for(let i=0;i<r[0].length;i++){
@@ -2775,7 +2769,7 @@ see_less_messages(){
   this.show_spinner_for_less=true;
   this.searched_message = -1;
   
-  this.chatService.get_less_messages(this.friend_id,this.list_of_messages[0].id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+  this.chatService.get_less_messages(this.friend_id,this.list_of_messages[0].id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.friend_type).pipe(first() ).subscribe(r=>{
     if(r[0]){
       this.searched_message = -1;
       this.put_messages_visible=false;
@@ -2858,9 +2852,9 @@ exit_group(){
     panelClass: "popupConfirmationClass",
   });
 
-  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+  dialogRef.afterClosed().pipe(first() ).subscribe(result => {
     if(result){
-      this.chatService.exit_group(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.chatService.exit_group(this.friend_id).pipe(first() ).subscribe(r=>{
         let message_one ={
           id_user_name:this.current_user_pseudo,
           id_user:this.current_user_id,   
@@ -2895,7 +2889,7 @@ display_members_of_the_group(){
     return
   }
   this.displaying_members_of_the_group=true;
-  this.chatService.get_group_chat_information(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+  this.chatService.get_group_chat_information(this.friend_id).pipe(first() ).subscribe(p=>{
     let list_of_ids=p[0].list_of_receivers_ids;
     let list_of_pseudos=[];
     let list_of_names=[];
@@ -2904,14 +2898,14 @@ display_members_of_the_group(){
     for(let i=0;i<list_of_ids.length;i++){
       let pp_retrieved=false;
       let data_retrieved=false;
-      this.Profile_Edition_Service.retrieve_profile_data(list_of_ids[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+      this.Profile_Edition_Service.retrieve_profile_data(list_of_ids[i]).pipe(first() ).subscribe(l=>{
         list_of_pseudos[i]=l[0].nickname;
         list_of_names[i]=l[0].firstname;
         data_retrieved=true;
         check_all(this)
       })
 
-      this.Profile_Edition_Service.retrieve_profile_picture(list_of_ids[i] ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_profile_picture(list_of_ids[i] ).pipe(first() ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         list_of_pictures[i] = SafeURL;
@@ -2944,7 +2938,7 @@ see_emoji_reaction_by_user(id_message){
     return
   }
   this.emojis_loading=true;
-  this.chatService.get_reactions_by_user(id_message).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+  this.chatService.get_reactions_by_user(id_message).pipe(first() ).subscribe(r=>{
     let list_of_ids=[];
     let list_of_emojis={};
     let list_of_pseudos=[];
@@ -2957,13 +2951,13 @@ see_emoji_reaction_by_user(id_message){
         list_of_emojis[r[0][i].id_user]=r[0][i].emoji_reaction;
         let data_retrieved=false;
         let pp_retrieved=false;
-        this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).pipe(first() ).subscribe(l=>{
           list_of_pseudos[i]=l[0].nickname;
           list_of_names[i]=l[0].firstname;
           data_retrieved=true;
           check_all(this)
         })
-        this.Profile_Edition_Service.retrieve_profile_picture(r[0][i].id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
+        this.Profile_Edition_Service.retrieve_profile_picture(r[0][i].id_user).pipe(first() ).subscribe(t=> {
           let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           list_of_pictures[i] = SafeURL;
@@ -3026,7 +3020,7 @@ get_name_of_someone_who_exit_group(id,l,item){
   }
   else{
     this.loading_deleted_member[id]=true;
-    this.Profile_Edition_Service.retrieve_profile_data(id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.retrieve_profile_data(id).pipe(first() ).subscribe(r=>{
       this.list_of_names_deleted[id]=r[0].firstname;
       this.cd.detectChanges()
     })
@@ -3073,7 +3067,7 @@ chat_service_managment_function(msg){
 
           //add message to list
           if(msg[0].attachment_type=="picture_message"){
-              this.chatService.get_picture_sent_by_msg(msg[0].attachment_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.chatService.get_picture_sent_by_msg(msg[0].attachment_name).pipe(first() ).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_pictures.splice(0,0,url);
@@ -3085,9 +3079,9 @@ chat_service_managment_function(msg){
               })
           }
           else if(msg[0].attachment_type=="picture_attachment" ){
-            this.chatService.get_group_chat_as_friend(msg[0].id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+            this.chatService.get_group_chat_as_friend(msg[0].id_user).pipe(first() ).subscribe(m=>{
               let chat_friend_id=m[0].id
-              this.chatService.get_attachment(msg[0].attachment_name,'group',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.chatService.get_attachment(msg[0].attachment_name,'group',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).pipe(first() ).subscribe(r=>{
                 let blob = new Blob([r], {type: 'image/png'});
                 let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                 this.list_of_messages_pictures.splice(0,0,url)
@@ -3102,9 +3096,9 @@ chat_service_managment_function(msg){
             this.reload_list_of_files_subject.next(true)
           }
           else if(msg[0].attachment_type=="file_attachment" ){
-            this.chatService.get_group_chat_as_friend(msg[0].id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+            this.chatService.get_group_chat_as_friend(msg[0].id_user).pipe(first() ).subscribe(m=>{
               let chat_friend_id=m[0].id;
-              this.chatService.get_attachment_popup(msg[0].attachment_name,'group',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.chatService.get_attachment_popup(msg[0].attachment_name,'group',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).pipe(first() ).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_files.splice(0,0,SafeURL)
@@ -3148,7 +3142,7 @@ chat_service_managment_function(msg){
             }
             //function to update status rows to 'seen'
             this.chatService.messages.next(message_to_send);
-            this.chatService.let_all_friend_messages_to_seen(msg[0].id_user,this.id_chat_section,true).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{ 
+            this.chatService.let_all_friend_messages_to_seen(msg[0].id_user,this.id_chat_section,true).pipe(first() ).subscribe(l=>{ 
 
             })
             
@@ -3194,7 +3188,7 @@ chat_service_managment_function(msg){
             this.response_exist=true;
             //add message to list
             if(msg[0].attachment_type=="picture_message"){
-              this.chatService.get_picture_sent_by_msg(msg[0].attachment_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.chatService.get_picture_sent_by_msg(msg[0].attachment_name).pipe(first() ).subscribe(r=>{
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_pictures.splice(0,0,url)
@@ -3219,9 +3213,9 @@ chat_service_managment_function(msg){
               })
             }
             else if(msg[0].attachment_type=="picture_attachment" ){
-              this.chatService.get_chat_friend(msg[0].id_user,false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+              this.chatService.get_chat_friend(msg[0].id_user,false).pipe(first() ).subscribe(m=>{
                 let chat_friend_id=m[0].id
-                this.chatService.get_attachment(msg[0].attachment_name,'user',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+                this.chatService.get_attachment(msg[0].attachment_name,'user',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).pipe(first() ).subscribe(r=>{
                   let blob = new Blob([r], {type: 'image/png'});
                   let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                   this.list_of_messages_pictures.splice(0,0,url)
@@ -3248,9 +3242,9 @@ chat_service_managment_function(msg){
               this.reload_list_of_files_subject.next(true)
             }
             else if(msg[0].attachment_type=="file_attachment" ){
-              this.chatService.get_chat_friend(msg[0].id_user,false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+              this.chatService.get_chat_friend(msg[0].id_user,false).pipe(first() ).subscribe(m=>{
                 let chat_friend_id=m[0].id
-                this.chatService.get_attachment_popup(msg[0].attachment_name,'user',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+                this.chatService.get_attachment_popup(msg[0].attachment_name,'user',(msg[0].chat_friend_id)?msg[0].chat_friend_id:chat_friend_id).pipe(first() ).subscribe(r=>{
                   let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.list_of_messages_files.splice(0,0,SafeURL)
@@ -3320,7 +3314,7 @@ chat_service_managment_function(msg){
               }
               //function to update status rows to 'seen'
                 this.chatService.messages.next(message_to_send);
-                this.chatService.let_all_friend_messages_to_seen(msg[0].id_user,this.id_chat_section,false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{ 
+                this.chatService.let_all_friend_messages_to_seen(msg[0].id_user,this.id_chat_section,false).pipe(first() ).subscribe(l=>{ 
                 })
               
             }
@@ -3472,7 +3466,7 @@ chat_service_managment_function(msg){
                 }
               }
             }
-            this.chatService.let_all_friend_messages_to_seen(msg[0].message.id_user,this.id_chat_section,false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{ 
+            this.chatService.let_all_friend_messages_to_seen(msg[0].message.id_user,this.id_chat_section,false).pipe(first() ).subscribe(l=>{ 
             })
           }
           this.new_sort_friends_list.emit({friend_id:msg[0].id_receiver,message:msg[0].message,friend_type:'user'});
@@ -3688,10 +3682,10 @@ remove_spam(){
       panelClass: "popupConfirmationClass",
     });
   
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
         this.removing_spam=true;
-        this.chatService.remove_spam(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+        this.chatService.remove_spam(this.friend_id).pipe(first() ).subscribe(m=>{
           if(m[0].nothing){
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
               data: {showChoice:false, text:"Il n'y a rien à supprimer..."},
@@ -3719,11 +3713,11 @@ block_user(){
       panelClass: "popupConfirmationClass",
     });
   
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
-          this.Subscribing_service.remove_all_subscribtions_both_sides(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
-            this.chatService.remove_friend(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
-              this.Profile_Edition_Service.block_user(this.friend_id,(m[0].deletion)?m[0].date:null).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Subscribing_service.remove_all_subscribtions_both_sides(this.friend_id).pipe(first() ).subscribe(s=>{
+            this.chatService.remove_friend(this.friend_id).pipe(first() ).subscribe(m=>{
+              this.Profile_Edition_Service.block_user(this.friend_id,(m[0].deletion)?m[0].date:null).pipe(first() ).subscribe(r=>{
                
                 let message_to_send ={
                   id_user_name:this.current_user_pseudo,
@@ -3755,10 +3749,10 @@ block_user(){
 
 
 unblock_user(){
-  this.Profile_Edition_Service.unblock_user(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+  this.Profile_Edition_Service.unblock_user(this.friend_id).pipe(first() ).subscribe(r=>{
     if(r[0].date){
       //ancien contact
-      this.chatService.add_chat_friend(this.friend_id,r[0].date).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.chatService.add_chat_friend(this.friend_id,r[0].date).pipe(first() ).subscribe(r=>{
         let message=r[0].message;
         message.chat_id=r[0].friend.id
         this.new_sort_friends_list.emit({friend_id:this.friend_id,message:message,friend_type:'user'});
@@ -3785,9 +3779,9 @@ remove_contact(){
       panelClass: "popupConfirmationClass",
     });
   
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
-        this.chatService.remove_friend(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.remove_friend(this.friend_id).pipe(first() ).subscribe(r=>{
           this.remove_friend_from_list.emit({friend_id:this.friend_id,friend_type:"user"})
         })
       }
@@ -3851,7 +3845,7 @@ remove_contact(){
     const dialogRef = this.dialog.open(PopupChatSearchComponent, {
       data: {},
       panelClass: "popupChatSearchClass"
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    }).afterClosed().pipe(first() ).subscribe(result => {
 
       if(result) {
         this.on_keydown_research(result);
@@ -4000,7 +3994,7 @@ onResized(event: ResizedEvent) {
       data: {type:"for_archive",message:this.list_of_messages[index],list_of_folders:this.list_of_folders},
       panelClass: 'popupUploadPictureClass',
     })
-    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
       if(result){
         this.reload_list_of_archives_subject.next({reload:true,add:true,message:this.list_of_messages[index]})
       }
@@ -4008,7 +4002,7 @@ onResized(event: ResizedEvent) {
   }
 
   unarchive(index){
-    this.chatService.unarchive_chat_message(this.list_of_messages[index].id,this.list_of_messages[index].id_folder).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.chatService.unarchive_chat_message(this.list_of_messages[index].id,this.list_of_messages[index].id_folder).pipe(first() ).subscribe(r=>{
       this.list_of_messages[index].id_folder=0;
       this.reload_list_of_archives_subject.next({reload:true,remove:true,message:this.list_of_messages[index]})
     });
@@ -4028,7 +4022,7 @@ onResized(event: ResizedEvent) {
 
 
   get_last_contract_involved(is_group){
-    this.chatService.get_last_contract_involved(this.friend_id,is_group).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.chatService.get_last_contract_involved(this.friend_id,is_group).pipe(first() ).subscribe(r=>{
       if(r[0].nothing){
         this.have_a_contract_involved=false;
         this.contract_data_retrieved=true;
@@ -4064,7 +4058,7 @@ onResized(event: ResizedEvent) {
         }
         else{
          
-          this.chatService.get_group_chat_information(this.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
+          this.chatService.get_group_chat_information(this.friend_id).pipe(first() ).subscribe(info=>{
             let list_of_receivers_ids=info[0].list_of_receivers_ids;
             this.list_of_members_for_contract=list_of_receivers_ids;
             let names_retrieved=false;
@@ -4074,7 +4068,7 @@ onResized(event: ResizedEvent) {
             let list_of_users_profile_pictures={};
 
             for(let i=0;i<list_of_receivers_ids.length;i++){
-              this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+              this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).pipe(first() ).subscribe(p=>{
                 let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 list_of_users_profile_pictures[list_of_receivers_ids[i]]=SafeURL;
@@ -4082,7 +4076,7 @@ onResized(event: ResizedEvent) {
                 check_all(this);
                
               })
-              this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).pipe(first() ).subscribe(r=>{
                 list_of_users_names[list_of_receivers_ids[i]]=r[0].firstname;
                 list_of_members_pseudos_for_contract[list_of_receivers_ids[i]]=r[0].nickname;
                 names_retrieved=true;
@@ -4148,7 +4142,7 @@ onResized(event: ResizedEvent) {
       
       },
       panelClass: "popupContractClass"
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    }).afterClosed().pipe(first() ).subscribe(result => {
       if(result){
         if(result.abort){
           
@@ -4176,13 +4170,13 @@ onResized(event: ResizedEvent) {
           this.contract_data_retrieved=false;
           let list_of_signing_members=[this.current_user_id];
           if(page_number==0){
-            this.chatService.add_contract(this.friend_id,(this.friend_type=='user')?false:true,list_of_signing_members,result.file_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.chatService.add_contract(this.friend_id,(this.friend_type=='user')?false:true,list_of_signing_members,result.file_name).pipe(first() ).subscribe(r=>{
 
               this.send_contract(result)
             })
           }
           else{
-            this.chatService.update_contract(this.id_contract).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.chatService.update_contract(this.id_contract).pipe(first() ).subscribe(r=>{
               this.list_of_signing_members.push(this.current_user_id);
               this.list_of_members_pp_for_contract[this.current_user_id]=this.current_user_profile_picture;
               this.list_of_members_names_for_contract[this.current_user_id]=this.current_user_name;
@@ -4209,12 +4203,12 @@ onResized(event: ResizedEvent) {
   }
 
   send_contract(result){
-    this.chatService.retrieve_contract(result.file_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(file=>{
+    this.chatService.retrieve_contract(result.file_name).pipe(first() ).subscribe(file=>{
       let url = (window.URL) ? window.URL.createObjectURL(file) : (window as any).webkitURL.createObjectURL(file);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.contract_value=SafeURL;
-       this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,result.file_name,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-          this.chatService.chat_upload_pdf(file,r[0].value,(this.friend_type=='user')?'user':'group',this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(u=>{
+       this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,result.file_name,0).pipe(first() ).subscribe(r=>{
+          this.chatService.chat_upload_pdf(file,r[0].value,(this.friend_type=='user')?'user':'group',this.chat_friend_id).pipe(first() ).subscribe(u=>{
             let message ={
               id_user_name:this.current_user_pseudo,
               id_user:this.current_user_id,   
@@ -4249,10 +4243,6 @@ onResized(event: ResizedEvent) {
   }
 
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+  
 }
 

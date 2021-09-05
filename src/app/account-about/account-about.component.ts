@@ -34,8 +34,7 @@ import { map, startWith } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { DOCUMENT } from '@angular/common';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -117,7 +116,7 @@ export class AccountAboutComponent implements OnInit {
     private ConstantsService:ConstantsService,
     @Inject(DOCUMENT) private document: Document,
   ) { 
-    NavbarService.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+    NavbarService.visibility_observer_font.pipe(first() ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -129,10 +128,8 @@ export class AccountAboutComponent implements OnInit {
 
     });
     this.filteredSkills = this.skillsCtrl.valueChanges.pipe(
-      startWith(null),
       map((genre: string | null) => genre ? this._filter(genre) : this.list_of_skills.slice()));
     this.filteredGenres = this.genresCtrl.valueChanges.pipe(
-      startWith(null),
       map((genre: string | null) => genre ? this._filter_genre(genre) : this.list_of_genres.slice()));
   }
 
@@ -216,8 +213,6 @@ export class AccountAboutComponent implements OnInit {
   
   type_of_profile:String;
   birthday:String;
-  //job:string='';
-  //training:string='';
   email_about:String='';
 
 
@@ -303,7 +298,7 @@ export class AccountAboutComponent implements OnInit {
       this.cv_name=this.author.cv;
       
       if(this.cv_name){
-        this.Profile_Edition_Service.retrieve_cv(this.pseudo).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.retrieve_cv(this.pseudo).pipe(first() ).subscribe(r=>{
           this.cv=r;
         })
       }
@@ -331,7 +326,7 @@ export class AccountAboutComponent implements OnInit {
       this.profile_data_retrieved=true;
 
       if(this.author.type_of_account.includes("Artiste")){
-        this.Trending_service.check_if_user_has_trendings(this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Trending_service.check_if_user_has_trendings(this.id_user).pipe(first() ).subscribe(r=>{
           if(r[0].found){
             this.number_of_comics_trendings=Object.keys(r[0].list_of_comics).length;
             this.number_of_drawings_trendings=Object.keys(r[0].list_of_drawings).length;
@@ -397,7 +392,7 @@ export class AccountAboutComponent implements OnInit {
       };
 
       this.uploader.onCompleteItem = (file) => {
-        this.Profile_Edition_Service.retrieve_cv(this.pseudo).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Profile_Edition_Service.retrieve_cv(this.pseudo).pipe(first() ).subscribe(r=>{
           this.cv_name="something";
           this.cv=r;
           this.loading_validation_form_3=false;
@@ -416,7 +411,7 @@ export class AccountAboutComponent implements OnInit {
       return;
     }
     if(i==1){
-      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/stats`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/stats`,this.device_info).pipe(first() ).subscribe();
       this.sumo_ready=false;
       this.sumo_for_ads_ready=false;
       this.opened_category=i;
@@ -461,7 +456,7 @@ export class AccountAboutComponent implements OnInit {
       this.cd.detectChanges();
     }
     else{
-      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/${this.opened_subcategory}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+      this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account-about/${this.opened_subcategory}`,this.device_info).pipe(first() ).subscribe();
       this.opened_category=i;
       this.cd.detectChanges();
     }
@@ -766,7 +761,7 @@ export class AccountAboutComponent implements OnInit {
     this.compteur_trendings++;
     this.trendings_loaded=false;
     this.trendings_found=false;
-    this.Trending_service.get_all_trendings_by_user(this.date_format_trendings,this.id_user,this.compteur_trendings).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Trending_service.get_all_trendings_by_user(this.date_format_trendings,this.id_user,this.compteur_trendings).pipe(first() ).subscribe(r=>{
       if(r[1]== this.compteur_trendings){
         if(Object.keys(r[0][0].list_of_contents).length>0){
           this.number_of_comics_trendings=Object.keys(r[0][0].list_of_comics).length;
@@ -997,7 +992,7 @@ get_projects_stats(){
   this.comments_loaded=false;
   this.views_loaded=false;
 
-  this.Edtior_Projects.get_projects_stats(this.author.type_of_account,this.date_format_editors,this.compteur_projects_stats).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+  this.Edtior_Projects.get_projects_stats(this.author.type_of_account,this.date_format_editors,this.compteur_projects_stats).pipe(first() ).subscribe(r=>{
     if(r[1]==this.compteur_projects_stats){
       this.number_of_projects=r[0][0].number_of_projects ;
       this.number_of_projects_responses=r[0][0].number_of_projects_responses;
@@ -1199,12 +1194,12 @@ get_projects_stats(){
     this.comments_loaded=false;
     this.views_loaded=false;
 
-    this.Ads_service.get_number_of_ads_and_responses(this.id_user,this.date_format_ads,this.compteur_ads_stats).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Ads_service.get_number_of_ads_and_responses(this.id_user,this.date_format_ads,this.compteur_ads_stats).pipe(first() ).subscribe(r=>{
       if(r[1]==this.compteur_ads_stats){
         this.number_of_ads=r[0][0].number_of_ads ;
         this.number_of_ads_answers=r[0][0].number_of_ads_answers;
         if(r[0][0].list_of_ads_ids){
-          this.NotationService.get_number_of_ads_comments(r[0][0].list_of_ads_ids).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.NotationService.get_number_of_ads_comments(r[0][0].list_of_ads_ids).pipe(first() ).subscribe(l=>{
             if(r[1]==this.compteur_ads_stats){
               this.number_of_ads_comments=l[0].number_of_comments;
               this.comments_loaded=true;
@@ -1213,7 +1208,7 @@ get_projects_stats(){
                 this.get_ads_names_by_ids(r[0][0].list_of_ads_ids,this.compteur_ads_stats);
               }
             }
-            this.NavbarService.get_number_of_clicked_on_ads(r[0][0].list_of_ads_ids,this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(p=>{
+            this.NavbarService.get_number_of_clicked_on_ads(r[0][0].list_of_ads_ids,this.id_user).pipe(first() ).subscribe(p=>{
               if(r[1]==this.compteur_ads_stats){
                 this.number_of_ads_views=p[0].number_of_views;
                 this.views_loaded=true;
@@ -1241,7 +1236,7 @@ get_projects_stats(){
     this.list_of_ads_ids=list_of_ads_ids;
     let compt=0;
     for(let i=0;i<list_of_ads_ids.length;i++){
-      this.Ads_service.retrieve_ad_by_id(list_of_ads_ids[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Ads_service.retrieve_ad_by_id(list_of_ads_ids[i]).pipe(first() ).subscribe(r=>{
         if(compteur==this.compteur_ads_stats){
           this.list_of_ads_names[i]=r[0].title + ' (' + get_date_to_show( date_in_seconds( this.now_in_seconds, r[0].createdAt ) ) + ')';
           compt++;
@@ -1279,7 +1274,7 @@ get_projects_stats(){
     let target_id=this.list_of_ads_ids[i]
     this.compteur_get_single_ad_stats++;
     this.single_ad_stats_retrieved=false;
-    this.NavbarService.get_number_of_viewers_by_ad(target_id,this.id_user,this.date_format_ads,this.compteur_get_single_ad_stats).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.NavbarService.get_number_of_viewers_by_ad(target_id,this.id_user,this.date_format_ads,this.compteur_get_single_ad_stats).pipe(first() ).subscribe(r=>{
       if(r[1]==this.compteur_get_single_ad_stats){
         if(r[0][0]){
           if(this.date_format_ads==0){
@@ -1424,10 +1419,10 @@ get_projects_stats(){
     this.list_of_comics_loaded=false;
     this.list_of_comics_retrieved=false;
     
-    this.BdSerieService.get_number_of_bd_series(this.id_user,this.date_format_comics, this.compteur_comics_stats).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.BdSerieService.get_number_of_bd_series(this.id_user,this.date_format_comics, this.compteur_comics_stats).pipe(first() ).subscribe(r=>{
       if(r[0][0].number_of_bd_series>0 && r[1]==this.compteur_comics_stats){
         list_of_comics_series=r[0][0].list_of_comics;
-        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"comic","serie").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
+        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"comic","serie").pipe(first() ).subscribe(s=>{
           list_of_notations_series=s[0];
           if(r[1]==this.compteur_comics_stats){
             this.comics_series_loaded=true;
@@ -1448,10 +1443,10 @@ get_projects_stats(){
         }
       }
     });
-    this.BdOneShotService.get_number_of_bd_oneshot(this.id_user,this.date_format_comics,this.compteur_comics_stats).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.BdOneShotService.get_number_of_bd_oneshot(this.id_user,this.date_format_comics,this.compteur_comics_stats).pipe(first() ).subscribe(r=>{
       if(r[0][0].number_of_bd_oneshot>0 && r[1]==this.compteur_comics_stats){
         list_of_comics_one_shot=r[0][0].list_of_comics;
-        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"comic","one-shot").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
+        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"comic","one-shot").pipe(first() ).subscribe(s=>{
           list_of_notations_one_shot=s[0];
           if(r[1]==this.compteur_comics_stats){
             this.comics_one_shot_loaded=true;
@@ -1614,7 +1609,7 @@ get_projects_stats(){
     
     
     let category="comic";
-    this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_comics,compteur).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_comics,compteur).pipe(first() ).subscribe(r=>{
       let notations=r[0][0];
       if(r[1]==compteur){
         if(r[0][0]){
@@ -1808,10 +1803,10 @@ get_projects_stats(){
     this.list_of_drawings_loaded=false;
     this.list_of_drawings_retrieved=false;
     
-    this.Drawings_Artbook_Service.get_number_of_drawings_artbook(this.id_user,this.date_format_drawings, this.compteur_drawings_stats).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Drawings_Artbook_Service.get_number_of_drawings_artbook(this.id_user,this.date_format_drawings, this.compteur_drawings_stats).pipe(first() ).subscribe(r=>{
       if(r[0][0].number_of_drawings_artbook>0 && r[1]==this.compteur_drawings_stats){
         list_of_drawings_artbook=r[0][0].list_of_drawings;
-        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"drawing","artbook").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
+        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"drawing","artbook").pipe(first() ).subscribe(s=>{
           list_of_notations_artbook=s[0];
           if(r[1]==this.compteur_drawings_stats){
             this.drawings_artbook_loaded=true;
@@ -1831,10 +1826,10 @@ get_projects_stats(){
         }
       }
     });
-    this.Drawings_Onepage_Service.get_number_of_drawings_oneshot(this.id_user,this.date_format_drawings,this.compteur_drawings_stats).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Drawings_Onepage_Service.get_number_of_drawings_oneshot(this.id_user,this.date_format_drawings,this.compteur_drawings_stats).pipe(first() ).subscribe(r=>{
       if(r[0][0].number_of_drawings_oneshot>0 && r[1]==this.compteur_drawings_stats){
         list_of_drawings_one_shot=r[0][0].list_of_drawings;
-        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"drawing","one-shot").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
+        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"drawing","one-shot").pipe(first() ).subscribe(s=>{
           list_of_notations_one_shot=s[0];
           if(r[1]==this.compteur_drawings_stats){
             this.drawings_one_shot_loaded=true;
@@ -1995,7 +1990,7 @@ get_projects_stats(){
     
     let category="drawing"
    
-    this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_drawings,compteur).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_drawings,compteur).pipe(first() ).subscribe(r=>{
       
       let notations=r[0][0];
       if(r[1]==compteur){
@@ -2187,10 +2182,10 @@ get_projects_stats(){
     this.list_of_writings_loaded=false;
     this.list_of_writings_retrieved=false;
     
-    this.Writing_Upload_Service.get_number_of_writings(this.id_user,this.date_format_writings, this.compteur_writings_stats).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Writing_Upload_Service.get_number_of_writings(this.id_user,this.date_format_writings, this.compteur_writings_stats).pipe(first() ).subscribe(r=>{
       if(r[0][0].number_of_writings>0 && r[1]==this.compteur_writings_stats){
         list_of_writings=r[0][0].list_of_writings;
-        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"writing","unknown").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
+        this.NotationService.get_number_of_notations(r[0][0].list_of_ids,"writing","unknown").pipe(first() ).subscribe(s=>{
           list_of_notations_writings=s[0];
           if(r[1]==this.compteur_writings_stats){
             this.writings_loaded=true;
@@ -2333,7 +2328,7 @@ get_projects_stats(){
     
     let category="writing"
    
-    this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_writings,compteur).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.NotationService.get_notations_for_a_content(publication_id,category,format,this.date_format_writings,compteur).pipe(first() ).subscribe(r=>{
 
       let notations=r[0][0];
       if(r[1]==compteur){
@@ -2530,7 +2525,7 @@ get_projects_stats(){
     this.compteur_get_profile_stats++;
     this.profile_stats_number_of_viewers_retrieved=false;
     this.profile_stats_nb_visitors_found=false;
-    this.NavbarService.get_number_of_viewers_by_profile(this.id_user,this.date_format_profile,this.compteur_get_profile_stats).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.NavbarService.get_number_of_viewers_by_profile(this.id_user,this.date_format_profile,this.compteur_get_profile_stats).pipe(first() ).subscribe(r=>{
       
       if(r[1]==this.compteur_get_profile_stats){
         if(r[0][0]){
@@ -2663,7 +2658,7 @@ get_projects_stats(){
       "name": "Visiteurs",
       "value": 0
     }]
-    this.NavbarService.get_last_100_viewers(this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.NavbarService.get_last_100_viewers(this.id_user).pipe(first() ).subscribe(r=>{
       if(Object.keys(r[0].list_of_viewers).length>0){
         for(let i=0;i<Object.keys(r[0].list_of_viewers).length;i++){
           
@@ -2703,7 +2698,7 @@ get_projects_stats(){
     })
 
     /*************************************** Age and locations of viewers  ************************************/
-    this.NavbarService.get_last_100_account_viewers(this.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.NavbarService.get_last_100_account_viewers(this.id_user).pipe(first() ).subscribe(r=>{
       if(Object.keys(r[0].list_of_viewers).length>0){
         for(let i=0;i<Object.keys(r[0].list_of_viewers).length;i++){
           
@@ -2752,7 +2747,7 @@ get_projects_stats(){
 
   open_subcategory(i:number) {
     this.opened_subcategory = i;
-    this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account/about/${this.opened_subcategory}`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.NavbarService.add_page_visited_to_history(`/account/${this.pseudo}/${this.id_user}/account/about/${this.opened_subcategory}`,this.device_info).pipe(first() ).subscribe();
     this.location.go(`/account/${this.pseudo}/about/${i}`); 
   }
 
@@ -2832,12 +2827,12 @@ get_projects_stats(){
     this.display_error_validator_1=false;
     let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n').trim():'';
     let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n').trim():'';
-    this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,primary,secondary).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,primary,secondary).pipe(first() ).subscribe(l=>{
       this.type_of_account=form.type_of_account;
       this.primary_description=primary;
       this.primary_description_extended=secondary;
       if(change_type_of_account){
-        this.NavbarService.update_type_of_account(this.type_of_account).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.NavbarService.update_type_of_account(this.type_of_account).pipe(first() ).subscribe(r=>{
           this.loading_validation_form_1=false;
           this.registerForm1_activated=false;
           location.reload();
@@ -2980,7 +2975,7 @@ get_projects_stats(){
     "youtube":this.registerForm2.value.youtube,
     }]
 
-    this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).pipe(first() ).subscribe(l=>{
       this.userLocation=userLocation;
       this.email_about=form.email_about;
       this.phone_about=form.phone_about;
@@ -3081,7 +3076,7 @@ get_projects_stats(){
   }
 
   remove_cv(){
-    this.Profile_Edition_Service.remove_cv(this.cv_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.remove_cv(this.cv_name).pipe(first() ).subscribe(r=>{
       this.cv_name=null;
       this.cv=null
     })
@@ -3093,7 +3088,7 @@ get_projects_stats(){
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.cv},
       panelClass: "popupDocumentClass",
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    }).afterClosed().pipe(first() ).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
@@ -3145,7 +3140,7 @@ get_projects_stats(){
       }
     }
 
-    this.Profile_Edition_Service.edit_account_about_3(form.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),birthday,siret,society).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.Profile_Edition_Service.edit_account_about_3(form.firstName.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),birthday,siret,society).pipe(first() ).subscribe(l=>{
       this.firstName=form.firstName;
       if(!this.type_of_account.includes('dit') ){
 
@@ -3224,7 +3219,7 @@ get_projects_stats(){
     this.loading_validation_form_4=true;
     this.display_error_validator_4=false;
     let categories = this.registerForm4.value.categories;
-    this.Profile_Edition_Service.edit_account_signup_page4(this.id_user,categories,this.skills).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{    
+    this.Profile_Edition_Service.edit_account_signup_page4(this.id_user,categories,this.skills).pipe(first() ).subscribe(r=>{    
       this.loading_validation_form_4=false;
       this.registerForm4_activated=false;
     })
@@ -3279,7 +3274,7 @@ get_projects_stats(){
     this.loading_validation_form_5=true;
     this.display_error_validator_5=false;
     let categories = this.registerForm5.value.categories;
-    this.Profile_Edition_Service.edit_account_signup_page4_editors(this.id_user,categories,this.genres).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{    
+    this.Profile_Edition_Service.edit_account_signup_page4_editors(this.id_user,categories,this.genres).pipe(first() ).subscribe(r=>{    
       this.loading_validation_form_5=false;
       this.registerForm5_activated=false;
     })
@@ -3449,7 +3444,7 @@ get_projects_stats(){
     }
     this.loading_validation_form_6=true;
     this.display_error_validator_6=false;
-    this.Profile_Edition_Service.add_editor_instructions(this.registerForm6.value.instructions?this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim():null,this.registerForm6.value.editor_default_response?this.registerForm6.value.editor_default_response.replace(/\n\s*\n\s*\n/g, '\n\n').trim():null,this.standard_price,this.standard_delay,this.express_price,this.express_delay).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.add_editor_instructions(this.registerForm6.value.instructions?this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim():null,this.registerForm6.value.editor_default_response?this.registerForm6.value.editor_default_response.replace(/\n\s*\n\s*\n/g, '\n\n').trim():null,this.standard_price,this.standard_delay,this.express_price,this.express_delay).pipe(first() ).subscribe(r=>{
       this.loading_validation_form_6=false;
       this.registerForm6_activated=false;
       this.instructions=this.registerForm6.value.instructions?this.registerForm6.value.instructions.replace(/\n\s*\n\s*\n/g, '\n\n').trim():null;
@@ -3804,9 +3799,5 @@ get_projects_stats(){
   }
 
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+ 
 }

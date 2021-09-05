@@ -23,8 +23,7 @@ import { DOCUMENT } from '@angular/common';
 import { normalize_to_nfc } from '../helpers/patterns';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 
 @Component({
@@ -70,7 +69,7 @@ export class AddWritingComponent implements OnInit {
     this.REAL_step = 0;
     this.CURRENT_step = 0;
     navbar.hide_help();
-    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+    navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -111,9 +110,9 @@ export class AddWritingComponent implements OnInit {
   device_info='';
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.navbar.add_page_visited_to_history(`/add-writing`,this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+    this.navbar.add_page_visited_to_history(`/add-writing`,this.device_info).pipe(first() ).subscribe();
     window.scroll(0,0);
-    this.Writing_Upload_Service.retrieve_writing_for_options(5).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Writing_Upload_Service.retrieve_writing_for_options(5).pipe(first() ).subscribe(r=>{
       this.conditions=r;
     })
   
@@ -148,7 +147,7 @@ export class AddWritingComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
       panelClass: "popupDocumentClass",
-    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+    }).afterClosed().pipe(first() ).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
       this.showNavbar.emit();
     });
@@ -257,12 +256,12 @@ export class AddWritingComponent implements OnInit {
           this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),  
           this.monetised,
           total_pages)
-        .pipe( takeUntil(this.ngUnsubscribe) ).subscribe( v => {
+        .pipe(first() ).subscribe( v => {
           this.writing_id=v[0].writing_id;
-          this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
-            this.Writing_Upload_Service.validate_writing(this.writing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-              this.Subscribing_service.validate_content("writing","unknown",r[0].writing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
-                this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'writing',this.title,'unknown',v[0].writing_id,0,"add",false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).pipe(first() ).subscribe(s=>{
+            this.Writing_Upload_Service.validate_writing(this.writing_id).pipe(first() ).subscribe(r=>{
+              this.Subscribing_service.validate_content("writing","unknown",r[0].writing_id,0).pipe(first() ).subscribe(l=>{
+                this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'writing',this.title,'unknown',v[0].writing_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"add_publication",
@@ -324,8 +323,8 @@ export class AddWritingComponent implements OnInit {
   block_cancel=false;
   cancel_all(){
     if(!this.block_cancel){
-      this.Writing_Upload_Service.remove_writing_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
-        this.Writing_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+      this.Writing_Upload_Service.remove_writing_from_folder().pipe(first() ).subscribe(r=>{
+        this.Writing_CoverService.remove_cover_from_folder().pipe(first() ).subscribe(m=>{
         })
       });
     }
@@ -515,9 +514,5 @@ export class AddWritingComponent implements OnInit {
     }
   }
   
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+ 
 }
