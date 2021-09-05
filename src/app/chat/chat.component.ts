@@ -122,7 +122,7 @@ export class ChatComponent implements OnInit  {
           this.connexion_status=r
          
           if(r){
-            chatService.messages.pipe(first() ).subscribe(msg=>{
+            chatService.messages.pipe(takeUntil(this.ngUnsubscribe)).subscribe(msg=>{
               this.chat_service_managment_function(msg);
               
             })
