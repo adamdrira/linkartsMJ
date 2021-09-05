@@ -12,6 +12,10 @@ import { NavbarService } from '../services/navbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { merge, fromEvent } from 'rxjs';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 declare var Swiper: any;
 declare var $:any;
 
@@ -37,7 +41,7 @@ export class ThumbnailComicsComponent implements OnInit {
     private navbar: NavbarService,
 
   ) { 
-    navbar.visibility_observer_font.subscribe(font=>{
+    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -138,14 +142,14 @@ export class ThumbnailComicsComponent implements OnInit {
     }
     
 
-    this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_data(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       this.author_name = r[0].firstname;
       this.pseudo=r[0].nickname;
       this.certified_account=r[0].certified_account;
       this.primary_description=r[0].primary_description;
     });
 
-    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = url;
@@ -153,13 +157,13 @@ export class ThumbnailComicsComponent implements OnInit {
 
 
     if(this.format=="one-shot"){
-      this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+      this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = url;
       });  
 
-      this.NotationService.get_content_marks("comic", 'one-shot', this.bd_id,0).subscribe(r=>{
+      this.NotationService.get_content_marks("comic", 'one-shot', this.bd_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         //marks
         this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
         this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -169,14 +173,14 @@ export class ThumbnailComicsComponent implements OnInit {
     };
 
     if(this.format=="serie"){
-      this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+      this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = url;
         
       });
       
-      this.BdSerieService.retrieve_chapters_by_id(this.item.bd_id).subscribe(s => {
+      this.BdSerieService.retrieve_chapters_by_id(this.item.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s => {
         let last_week=new Date();
         last_week.setDate(last_week.getDate() - 7);
         let num_last_week= Math.trunc( last_week.getTime()/1000);
@@ -190,7 +194,7 @@ export class ThumbnailComicsComponent implements OnInit {
 
       
 
-      this.NotationService.get_content_marks("comic", 'serie', this.bd_id,0).subscribe(r=>{
+      this.NotationService.get_content_marks("comic", 'serie', this.bd_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         //marks
         this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
         this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -226,7 +230,6 @@ export class ThumbnailComicsComponent implements OnInit {
  
 
   ngAfterViewInit() {
-
     if( this.category == "BD" ) {
       this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
       for(let i=0;i<this.tags.toArray().length;i++){
@@ -402,4 +405,9 @@ export class ThumbnailComicsComponent implements OnInit {
     return  this.router.url;
   }
 
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

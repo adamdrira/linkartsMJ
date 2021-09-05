@@ -9,6 +9,8 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { NavbarService } from '../services/navbar.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 declare var $:any;
@@ -48,7 +50,7 @@ export class SwiperUploadArtbookComponent  {
     private router:Router,
     private navbar: NavbarService,
     ) {
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -359,7 +361,7 @@ export class SwiperUploadArtbookComponent  {
     this.componentRef[ this.componentRef.length - 1 ].instance.user_id = this.user_id;
   
   
-    this.componentRef[ this.componentRef.length - 1 ].instance.sendPicture.subscribe( v => {
+    this.componentRef[ this.componentRef.length - 1 ].instance.sendPicture.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( v => {
       if( v.page == 0 && !v.removing && !v.changePage ) {
 
         THIS.image_uploaded = true;
@@ -443,7 +445,7 @@ export class SwiperUploadArtbookComponent  {
     canvas.toBlob(blob => {
       if(this.imageDestination=='' && !this.loading_thumbnail){
         this.loading_thumbnail=true;
-        this.Drawings_CoverService.send_cover_todata(blob).subscribe(res=>{
+        this.Drawings_CoverService.send_cover_todata(blob).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(res=>{
             this.confirmation = true;
             this.imageDestination = canvas.toDataURL("image/png");
             this.loading_thumbnail=false;
@@ -465,7 +467,7 @@ export class SwiperUploadArtbookComponent  {
     if( !this.imageDestination ) {
       return;
     }
-    this.Drawings_CoverService.remove_cover_from_folder().subscribe(r=>{
+    this.Drawings_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.imageDestination='';
       this.confirmation = false;
     });
@@ -519,12 +521,12 @@ export class SwiperUploadArtbookComponent  {
     }
     else {
       this.displayErrors = false;
-      this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).subscribe(r=>{
-        this.Drawings_Artbook_Service.send_drawing_height_artbook(this.thumbnail_height,this.drawing_id).subscribe(sr=>{
+      this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.Drawings_Artbook_Service.send_drawing_height_artbook(this.thumbnail_height,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(sr=>{
           for (let step = 0; step < this.componentRef.length; step++) {
             this.componentRef[ step ].instance.upload = true;
             this.componentRef[ step ].instance.total_pages = this.componentRef.length;
-            this.componentRef[ step ].instance.sendValidated.subscribe( v => {
+            this.componentRef[ step ].instance.sendValidated.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( v => {
               this.block_cancel=true;
               this.display_loading=false
               this.Drawings_CoverService.remove_covername();
@@ -543,8 +545,8 @@ export class SwiperUploadArtbookComponent  {
   block_cancel=false;
   cancel_all() {
     if(!this.block_cancel){
-      this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(res=>{
-        this.Drawings_CoverService.remove_cover_from_folder().subscribe()
+      this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(res=>{
+        this.Drawings_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe()
       });
     }
       
@@ -565,7 +567,11 @@ export class SwiperUploadArtbookComponent  {
 
 
 
-
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
   
 
 }

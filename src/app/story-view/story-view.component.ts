@@ -5,12 +5,13 @@ import {Reports_service} from '../services/reports.service';
 import {Subscribing_service} from '../services/subscribing.service';
 import {PopupConfirmationComponent} from '../popup-confirmation/popup-confirmation.component';
 import {PopupReportComponent} from '../popup-report/popup-report.component';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import { merge, fromEvent } from 'rxjs';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 declare var Swiper:any;
 declare var $: any;
@@ -43,7 +44,7 @@ export class StoryViewComponent implements OnInit {
     private Story_service:Story_service,
     private navbar: NavbarService,
   ) {
-    navbar.visibility_observer_font.subscribe(font=>{
+    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -135,7 +136,7 @@ ngOnInit() {
 
     for (let i=0;i<this.list_of_data.length;i++){
 
-      this.Story_service.retrieve_story(this.list_of_data[i].file_name,window.innerWidth).subscribe(info=>{
+      this.Story_service.retrieve_story(this.list_of_data[i].file_name,window.innerWidth).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(info=>{
 
         if(this.list_of_data[i].file_name.includes(".svg")){
           var reader = new FileReader()
@@ -155,7 +156,7 @@ ngOnInit() {
         k++;
         if(k== this.list_of_data.length ){
 
-          this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.index_debut].id).subscribe(r=>{
+          this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.index_debut].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             this.number_of_views=r[0].length;
           })
           this.cd.detectChanges();
@@ -175,7 +176,7 @@ ngOnInit() {
 
 
 
-    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = url;
@@ -183,7 +184,7 @@ ngOnInit() {
     });
     
 
-    this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_data(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       this.pseudo = r[0].nickname;
       this.author_name = r[0].firstname;
     });
@@ -222,16 +223,16 @@ ngOnInit() {
     if(this.swiper){
       let id_story =this.list_of_data[this.swiper.activeIndex].id;
       if(this.list_of_data[this.swiper.activeIndex+1]){
-        this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex+1].id).subscribe(r=>{
+        this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex+1].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.number_of_views=r[0].length;
         })
       }
-      this.Story_service.check_if_story_already_seen(id_story).subscribe(r=>{
+      this.Story_service.check_if_story_already_seen(id_story).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(r[0]){
-          this.Story_service.add_view(this.user_id,id_story,false).subscribe();
+          this.Story_service.add_view(this.user_id,id_story,false).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         }
         else{
-          this.Story_service.add_view(this.user_id,id_story,true).subscribe();
+          this.Story_service.add_view(this.user_id,id_story,true).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         }
           
       })
@@ -270,7 +271,7 @@ ngOnInit() {
         this.startTimer();
       }
       
-      this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex - 1].id).subscribe(r=>{
+      this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex - 1].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.number_of_views=r[0].length;
       })
   
@@ -339,9 +340,9 @@ ngOnInit() {
     panelClass: "popupConfirmationClass",
   });
 
-  dialogRef.afterClosed().subscribe(result => {
+  dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
     if(result){
-      this.Story_service.delete_story(this.list_of_data[i].id).subscribe(r=>{
+      this.Story_service.delete_story(this.list_of_data[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         location.reload()
       })
     }
@@ -368,18 +369,18 @@ get_list_of_viewers(i){
   this.number_of_pp_to_show[i]=10;
   this.list_of_viewers[i]=[];
   this.list_of_profile_pictures[i]=[];
-  this.Story_service.get_list_of_viewers_for_story(this.list_of_data[i].id).subscribe(r=>{
+  this.Story_service.get_list_of_viewers_for_story(this.list_of_data[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
     if(r[0].length>0){
       let n =r[0].length;
       let compt=0;
       for (let j=0;j<n;j++){
-        this.Profile_Edition_Service.retrieve_profile_data(r[0][j].id_user_who_looks).subscribe(l=>{
+        this.Profile_Edition_Service.retrieve_profile_data(r[0][j].id_user_who_looks).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
           this.list_of_viewers[i][j]=l[0];
           check_all(this)
          
         })
 
-        this.Profile_Edition_Service.retrieve_profile_picture( r[0][j].id_user_who_looks).subscribe(t=> {
+        this.Profile_Edition_Service.retrieve_profile_picture( r[0][j].id_user_who_looks).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
           let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.list_of_profile_pictures[i][j] = url;
@@ -486,7 +487,7 @@ close_list_of_viewers(){
 }
 
   report(i){
-    this.Reports_service.check_if_content_reported('story',this.list_of_data[i].id,"unknown",0).subscribe(r=>{
+    this.Reports_service.check_if_content_reported('story',this.list_of_data[i].id,"unknown",0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if(r[0].nothing){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -522,5 +523,10 @@ close_list_of_viewers(){
     e.stopPropagation();
   };
 
-
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+  
 }

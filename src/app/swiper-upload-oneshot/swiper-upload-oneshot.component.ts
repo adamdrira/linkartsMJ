@@ -6,7 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Router } from '@angular/router';
 import { NavbarService } from '../services/navbar.service';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 declare var Swiper: any;
 declare var $: any;
@@ -36,7 +37,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
     private navbar: NavbarService,
 
     ) {
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -333,7 +334,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
       for (let step = 0; step < this.componentRef.length; step++) {
         this.componentRef[ step ].instance.upload = true;
         this.componentRef[ step ].instance.total_pages = this.componentRef.length;
-        this.componentRef[ step ].instance.sendValidated.subscribe( v => {
+        this.componentRef[ step ].instance.sendValidated.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( v => {
           this.block_cancel=true;
           this.Bd_CoverService.remove_covername();
           this.router.navigate([`/account/${v.pseudo}`]);
@@ -349,14 +350,18 @@ export class SwiperUploadOneshotComponent implements OnInit {
   block_cancel=false;
   cancel_all() {
     if(!this.block_cancel){
-      this.bdOneShotService.RemoveBdOneshot(this.bd_id).subscribe(res=>{
-        this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+      this.bdOneShotService.RemoveBdOneshot(this.bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(res=>{
+        this.Bd_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         })
       });
     }
       
   }
 
-  
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
 }

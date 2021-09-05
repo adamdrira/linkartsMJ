@@ -11,6 +11,10 @@ import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component'
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { merge, fromEvent } from 'rxjs';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 declare var Swiper: any;
 declare var $:any;
 
@@ -33,7 +37,7 @@ export class ThumbnailWritingComponent implements OnInit {
     private navbar: NavbarService,
 
     ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -131,7 +135,7 @@ export class ThumbnailWritingComponent implements OnInit {
     }
     
 
-    this.NotationService.get_content_marks("writing", 'unknown', this.writing_id,0).subscribe(r=>{
+    this.NotationService.get_content_marks("writing", 'unknown', this.writing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       //marks
       this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
       this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -140,20 +144,20 @@ export class ThumbnailWritingComponent implements OnInit {
     }) 
 
 
-    this.Writing_Upload_Service.retrieve_thumbnail_picture(this.item.name_coverpage).subscribe(r=> {
+    this.Writing_Upload_Service.retrieve_thumbnail_picture(this.item.name_coverpage).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.thumbnail_picture = url;
     }); 
 
-    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = url;
     });
     
 
-    this.Profile_Edition_Service.retrieve_profile_data(Number(this.user_id)).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_data(Number(this.user_id)).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       this.author_name = r[0].firstname;
       this.primary_description=r[0].primary_description;
       this.pseudo=r[0].nickname;
@@ -342,5 +346,11 @@ export class ThumbnailWritingComponent implements OnInit {
       }, 
       panelClass:"popupArtworkClass",
     });
+  }
+
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

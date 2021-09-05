@@ -24,6 +24,8 @@ import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { NavbarService } from '../services/navbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 declare var Swiper:any;
 declare var $:any;
@@ -76,7 +78,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     private navbar: NavbarService,
     private chatService:ChatService,
     ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -210,7 +212,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         this.format=this.item.format;
         this.subscribing_format=this.format;
         this.content_id=this.item.publication_id;
-        this.route.data.subscribe(res => {
+        this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(res => {
          
           let r= res.user
           this.user_id=r[0].id;
@@ -229,14 +231,14 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.visitor_mode_retrieved=true;
         })
 
-        this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
+        this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.profile_picture = url;
           this.profile_picture_safe=SafeURL;
         });
 
-        this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
+        this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
           this.author_name = r[0].firstname;
           this.primary_description=r[0].primary_description;
           this.author_pseudo = r[0].nickname;
@@ -246,7 +248,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.certified_account=r[0].certified_account;
         });
 
-        this.Profile_Edition_Service.get_emphasized_content(this.item.id_user).subscribe(l=>{
+        this.Profile_Edition_Service.get_emphasized_content(this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
           if (l[0]!=null && l[0]!=undefined){
             if(this.category=="comic"){
               if (l[0].publication_id==this.item.publication_id && l[0].publication_category== "comic" && l[0].format==this.format){
@@ -270,7 +272,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         if(this.category=="comic"){
           if(this.format=="one-shot"){
           
-            this.BdOneShotService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
+            this.BdOneShotService.retrieve_bd_by_id(this.item.publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.file_name = r[0].name_coverpage
               
               this.title = r[0].title
@@ -291,7 +293,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
               this.get_images_to_show();
 
-              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -303,7 +305,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               });
 
             });
-            this.NotationService.get_content_marks("comic", 'one-shot', this.item.publication_id,0).subscribe(r=>{
+            this.NotationService.get_content_marks("comic", 'one-shot', this.item.publication_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               //marks
               this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
               this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -315,7 +317,7 @@ export class ThumbnailArtworkComponent implements OnInit {
             
           }
           else{
-            this.BdSerieService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
+            this.BdSerieService.retrieve_bd_by_id(this.item.publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.file_name = r[0].name_coverpage
               this.title = r[0].title
               this.style = r[0].category
@@ -333,7 +335,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               
               this.get_images_to_show();
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -344,7 +346,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               });
 
             });
-            this.NotationService.get_content_marks("comic", 'serie', this.item.publication_id,0).subscribe(r=>{
+            this.NotationService.get_content_marks("comic", 'serie', this.item.publication_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               //marks
               this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
               this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -358,7 +360,7 @@ export class ThumbnailArtworkComponent implements OnInit {
 
         if(this.category=="drawing"){
           if(this.format=="one-shot"){
-            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.item.publication_id).subscribe(r=>{
+            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.item.publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.file_name = r[0].name_coverpage
               this.title = r[0].title
               this.style = r[0].category
@@ -377,7 +379,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.get_images_to_show();
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
 
-              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -388,7 +390,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               });
 
             });
-            this.NotationService.get_content_marks("drawing", 'one-shot', this.item.publication_id,0).subscribe(r=>{
+            this.NotationService.get_content_marks("drawing", 'one-shot', this.item.publication_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               //marks
               this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
               this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -399,7 +401,7 @@ export class ThumbnailArtworkComponent implements OnInit {
             this.check_archive()
           }
           else{
-            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.publication_id).subscribe(r=>{
+            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.file_name = r[0].name_coverpage
               this.title = r[0].title
               this.style = r[0].category
@@ -417,7 +419,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.get_images_to_show();
             
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -428,7 +430,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               });
 
             });
-            this.NotationService.get_content_marks("drawing", 'artbook', this.item.publication_id,0).subscribe(r=>{
+            this.NotationService.get_content_marks("drawing", 'artbook', this.item.publication_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               //marks
               this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
               this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -442,7 +444,7 @@ export class ThumbnailArtworkComponent implements OnInit {
 
         if(this.category=="writing"){
           
-            this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.publication_id).subscribe(r=>{
+            this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.publication_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.file_name = r[0].name_coverpage
               this.title = r[0].title
               this.style = r[0].category
@@ -460,13 +462,13 @@ export class ThumbnailArtworkComponent implements OnInit {
 
               
               
-              this.Writing_Upload_Service.retrieve_writing_by_name_artwork(r[0].file_name).subscribe(r=>{
+              this.Writing_Upload_Service.retrieve_writing_by_name_artwork(r[0].file_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 let file = new Blob([r], {type: 'application/pdf'});
                 this.pdfSrc = URL.createObjectURL(file);
               });
 
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-              this.Writing_Upload_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+              this.Writing_Upload_Service.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -477,7 +479,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               });
 
             });
-            this.NotationService.get_content_marks("writing", 'unknown', this.item.publication_id,0).subscribe(r=>{
+            this.NotationService.get_content_marks("writing", 'unknown', this.item.publication_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               //marks
               this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
               this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -495,7 +497,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         
 
         if(this.in_artwork){
-          this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+          this.Profile_Edition_Service.get_current_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             this.user_id=r[0].id;
             this.user_name=r[0].firstname;
             this.primary_description=r[0].primary_description;
@@ -512,7 +514,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           })
         }
         else{
-          this.route.data.subscribe(resp => {
+          this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
             let r= resp.user;
             this.user_id=r[0].id;
             this.user_name=r[0].firstname;
@@ -530,14 +532,14 @@ export class ThumbnailArtworkComponent implements OnInit {
           })
         }
        
-        this.Profile_Edition_Service.retrieve_profile_picture( this.item.authorid).subscribe(r=> {
+        this.Profile_Edition_Service.retrieve_profile_picture( this.item.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.profile_picture = url;
           this.profile_picture_safe=SafeURL;
         });
 
-        this.Profile_Edition_Service.get_emphasized_content(this.item.authorid).subscribe(l=>{
+        this.Profile_Edition_Service.get_emphasized_content(this.item.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
           if (l[0]!=null && l[0]!=undefined){
             if(this.category=="comic"){
               if (l[0].publication_id==this.item.bd_id && l[0].publication_category== "comic" && l[0].format==this.format){
@@ -558,7 +560,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.emphasized_contend_retrieved=true;
         });
 
-        this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).subscribe(r=> {
+        this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
           this.author_name = r[0].firstname;
           this.primary_description=r[0].primary_description;
           this.author_pseudo = r[0].nickname;
@@ -584,7 +586,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.chaptersnumber = this.item.chaptersnumber
               this.date_upload = this.item.createdAt
               this.data_retrieved=true;
-              this.NotationService.get_content_marks("comic", 'one-shot', this.item.bd_id,0).subscribe(r=>{
+              this.NotationService.get_content_marks("comic", 'one-shot', this.item.bd_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 //marks
                 this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
                 this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -595,7 +597,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.check_archive()
               this.get_images_to_show();
               
-              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -622,7 +624,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.chaptersnumber = this.item.chaptersnumber
               this.date_upload = this.item.createdAt
               this.data_retrieved=true;
-              this.NotationService.get_content_marks("comic", 'serie', this.item.bd_id,0).subscribe(r=>{
+              this.NotationService.get_content_marks("comic", 'serie', this.item.bd_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 //marks
                 this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
                 this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -633,7 +635,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.check_archive()
               this.get_images_to_show();
               
-              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+              this.BdOneShotService.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -664,7 +666,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.chaptersnumber = this.item.chaptersnumber
               this.date_upload = this.item.createdAt;
               this.data_retrieved=true;
-              this.NotationService.get_content_marks("drawing", 'one-shot', this.item.drawing_id,0).subscribe(r=>{
+              this.NotationService.get_content_marks("drawing", 'one-shot', this.item.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 //marks
                 this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
                 this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -676,7 +678,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.get_images_to_show();
               
 
-              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -702,7 +704,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.chaptersnumber = this.item.chaptersnumber
               this.date_upload = this.item.createdAt
               this.data_retrieved=true;
-              this.NotationService.get_content_marks("drawing", 'artbook', this.item.drawing_id,0).subscribe(r=>{
+              this.NotationService.get_content_marks("drawing", 'artbook', this.item.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 //marks
                 this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
                 this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -714,7 +716,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.get_images_to_show();
 
               
-              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.thumbnail_picture = url;
@@ -745,7 +747,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.chaptersnumber = this.item.chaptersnumber
           this.date_upload = this.item.createdAt;
           this.data_retrieved=true;
-          this.NotationService.get_content_marks("writing", 'unknown', this.item.writing_id,0).subscribe(r=>{
+          this.NotationService.get_content_marks("writing", 'unknown', this.item.writing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             //marks
             this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
             this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -756,12 +758,12 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
           
 
-          this.Writing_Upload_Service.retrieve_writing_by_name_artwork(this.item.file_name).subscribe(r=>{
+          this.Writing_Upload_Service.retrieve_writing_by_name_artwork(this.item.file_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             let file = new Blob([r], {type: 'application/pdf'});
             this.pdfSrc = URL.createObjectURL(file);
           });
           
-          this.Writing_Upload_Service.retrieve_thumbnail_picture_artwork( this.file_name ).subscribe(r=> {
+          this.Writing_Upload_Service.retrieve_thumbnail_picture_artwork( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.thumbnail_picture = url;
@@ -883,7 +885,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       this.initialize_swiper();
     }
     this.swiper.slideTo(0);
-    this.subscription = this.timeout.subscribe( val => {
+    this.subscription = this.timeout.pipe( takeUntil(this.ngUnsubscribe) ).subscribe( val => {
       if( this.swiper.isEnd ) {
         this.swiper.slideTo(0);
       }
@@ -916,7 +918,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   afterLoadComplete(pdf: PDFDocumentProxy){
     let total_pages=pdf.numPages;
     if(!this.total_pages_for_writing){
-      this.Writing_Upload_Service.add_total_pages_for_writing(this.content_id,total_pages).subscribe(r=>{
+      this.Writing_Upload_Service.add_total_pages_for_writing(this.content_id,total_pages).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.total_pages_for_writing=total_pages;
         this.cd.detectChanges();
       })
@@ -959,7 +961,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     if(this.category=="comic"){
       let bd_id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
       if(this.format=="serie"){
-        this.BdSerieService.retrieve_chapters_by_id(bd_id).subscribe(s => {
+        this.BdSerieService.retrieve_chapters_by_id(bd_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s => {
           let last_week=new Date();
           last_week.setDate(last_week.getDate() - 7);
           let num_last_week= Math.trunc( last_week.getTime()/1000);
@@ -972,7 +974,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           let total_pages=(s[0][0].pagesnumber<=3)?s[0][0].pagesnumber:3;
           let compteur=0;
           for( let k=0; k< total_pages; k++ ) {
-            this.BdSerieService.retrieve_bd_page_artwork(bd_id,1,k).subscribe(r=>{
+            this.BdSerieService.retrieve_bd_page_artwork(bd_id,1,k).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
               let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_images_to_show[r[1]]= SafeURL;
@@ -993,7 +995,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         let compteur=0;
         let total_pages=(this.pagesnumber<=3)?this.pagesnumber:3;
         for( let k=0; k< total_pages; k++ ) {
-          this.BdOneShotService.retrieve_bd_page_artwork(bd_id,k).subscribe(r=>{
+          this.BdOneShotService.retrieve_bd_page_artwork(bd_id,k).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
             let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_images_to_show[r[1]]= SafeURL;
@@ -1013,7 +1015,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         let compteur=0;
         let total_pages=(this.pagesnumber<=3)?this.pagesnumber:3;
         for( var i=0; i< total_pages; i++ ) {
-          this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook_artwork(drawing_id,i).subscribe(r=>{
+          this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook_artwork(drawing_id,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
             let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_images_to_show[r[1]]= SafeURL;
@@ -1028,7 +1030,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         };
       }
       else{
-        this.Drawings_Onepage_Service.retrieve_drawing_page_artwork(this.drawing_name).subscribe(r=>{
+        this.Drawings_Onepage_Service.retrieve_drawing_page_artwork(this.drawing_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.list_of_images_to_show[0]= SafeURL;
@@ -1069,7 +1071,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id
     }
-    this.Subscribing_service.check_if_publication_archived(this.category,this.format ,id).subscribe(r=>{
+    this.Subscribing_service.check_if_publication_archived(this.category,this.format ,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if(r[0].value){
         this.content_archived=true;
       }
@@ -1088,7 +1090,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id
     }
-    this.Subscribing_service.archive(this.category,this.format,id).subscribe(r=>{
+    this.Subscribing_service.archive(this.category,this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.content_archived=true;
     });
   }
@@ -1104,7 +1106,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id
     }
-    this.Subscribing_service.unarchive( this.category,this.format,id).subscribe(r=>{
+    this.Subscribing_service.unarchive( this.category,this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.content_archived=false;
     });
   }
@@ -1120,21 +1122,21 @@ export class ThumbnailArtworkComponent implements OnInit {
     let id=0;
     if(this.category=="comic"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
-      this.Profile_Edition_Service.emphasize_content( "comic",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.emphasize_content( "comic",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
     }
     else if(this.category=="drawing"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
-      this.Profile_Edition_Service.emphasize_content( "drawing",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.emphasize_content( "drawing",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
     }
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
-      this.Profile_Edition_Service.emphasize_content( "writing",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.emphasize_content( "writing",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.content_emphasized=true;
         this.archive_loading=false;
       });
@@ -1151,21 +1153,21 @@ export class ThumbnailArtworkComponent implements OnInit {
     let id=0;
     if(this.category=="comic"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
-      this.Profile_Edition_Service.remove_emphasizing( "comic",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.remove_emphasizing( "comic",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
     }
     else if(this.category=="drawing"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
-      this.Profile_Edition_Service.remove_emphasizing( "drawing",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.remove_emphasizing( "drawing",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
     }
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
-      this.Profile_Edition_Service.remove_emphasizing( "writing",this.format,id).subscribe(r=>{
+      this.Profile_Edition_Service.remove_emphasizing( "writing",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         this.content_emphasized=false;
         this.archive_loading=false;
       });
@@ -1186,13 +1188,13 @@ export class ThumbnailArtworkComponent implements OnInit {
     });
     if(this.category=="comic"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
         if( result ) {
           if(this.format=="one-shot"){
-            this.navbar.delete_publication_from_research("Comic",this.format,id).subscribe(r=>{
+            this.navbar.delete_publication_from_research("Comic",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
              
-              this.BdOneShotService.RemoveBdOneshot(id).subscribe(r=>{
-                this.NotificationsService.remove_notification('add_publication','comic','one-shot',id,0,false,0).subscribe(l=>{
+              this.BdOneShotService.RemoveBdOneshot(id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+                this.NotificationsService.remove_notification('add_publication','comic','one-shot',id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"add_publication",
@@ -1217,9 +1219,9 @@ export class ThumbnailArtworkComponent implements OnInit {
            
           }
           else{
-            this.navbar.delete_publication_from_research("Comic",this.format,id).subscribe(r=>{
-              this.BdSerieService.RemoveBdSerie(id).subscribe(r=>{
-                this.NotificationsService.remove_notification('add_publication','comic','serie',id,0,false,0).subscribe(l=>{
+            this.navbar.delete_publication_from_research("Comic",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.BdSerieService.RemoveBdSerie(id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+                this.NotificationsService.remove_notification('add_publication','comic','serie',id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"add_publication",
@@ -1251,12 +1253,12 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
     else if(this.category=="drawing"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
         if( result ) {
           if(this.format=="one-shot"){
-            this.navbar.delete_publication_from_research("Drawing",this.format,id).subscribe(r=>{
-              this.Drawings_Onepage_Service.remove_drawing_from_sql(id).subscribe(r=>{
-                this.NotificationsService.remove_notification('add_publication','drawing',this.format,id,0,false,0).subscribe(l=>{
+            this.navbar.delete_publication_from_research("Drawing",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.Drawings_Onepage_Service.remove_drawing_from_sql(id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+                this.NotificationsService.remove_notification('add_publication','drawing',this.format,id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"add_publication",
@@ -1282,9 +1284,9 @@ export class ThumbnailArtworkComponent implements OnInit {
             
           }
           else{
-            this.navbar.delete_publication_from_research("Drawing",this.format,id).subscribe(r=>{
-              this.Drawings_Artbook_Service.RemoveDrawingArtbook(id).subscribe(r=>{
-                this.NotificationsService.remove_notification('add_publication','drawing',this.format,id,0,false,0).subscribe(l=>{
+            this.navbar.delete_publication_from_research("Drawing",this.format,id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.Drawings_Artbook_Service.RemoveDrawingArtbook(id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+                this.NotificationsService.remove_notification('add_publication','drawing',this.format,id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"add_publication",
@@ -1317,11 +1319,11 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
         if( result ) {
-          this.navbar.delete_publication_from_research("Writing","unknown",id).subscribe(r=>{
-            this.Writing_Upload_Service.Remove_writing(id).subscribe(r=>{
-              this.NotificationsService.remove_notification('add_publication','writing','unknown',id,0,false,0).subscribe(l=>{
+          this.navbar.delete_publication_from_research("Writing","unknown",id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.Writing_Upload_Service.Remove_writing(id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.NotificationsService.remove_notification('add_publication','writing','unknown',id,0,false,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"add_publication",
@@ -1366,19 +1368,19 @@ export class ThumbnailArtworkComponent implements OnInit {
     let id;
     if(this.category=="comic"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
         if( result ) {
           if(this.format=="one-shot"){
-            this.Subscribing_service.change_content_status( "comic",this.format,id,"private").subscribe(r=>{
-              this.BdOneShotService.change_oneshot_comic_status(id,"private").subscribe(r=>{
+            this.Subscribing_service.change_content_status( "comic",this.format,id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.BdOneShotService.change_oneshot_comic_status(id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 this.archive_loading=false;
                 location.reload()
               });
             })
           }
           else{
-            this.Subscribing_service.change_content_status( "comic",this.format,id,"private").subscribe(r=>{
-              this.BdSerieService.change_serie_comic_status(id,"private").subscribe(r=>{
+            this.Subscribing_service.change_content_status( "comic",this.format,id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.BdSerieService.change_serie_comic_status(id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 this.archive_loading=false;
                 location.reload()
               });
@@ -1393,19 +1395,19 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
     else if(this.category=="drawing"){
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id;
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
         if( result ) {
           if(this.format=="one-shot"){
-            this.Subscribing_service.change_content_status( "drawing",this.format,id,"private").subscribe(r=>{
-              this.BdOneShotService.change_oneshot_comic_status(id,"private").subscribe(r=>{
+            this.Subscribing_service.change_content_status( "drawing",this.format,id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.BdOneShotService.change_oneshot_comic_status(id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 this.archive_loading=false;
                 location.reload()
               });
             })
           }
           else{
-            this.Subscribing_service.change_content_status( "drawing",this.format,id,"private").subscribe(r=>{
-              this.BdSerieService.change_serie_comic_status(id,"private").subscribe(r=>{
+            this.Subscribing_service.change_content_status( "drawing",this.format,id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+              this.BdSerieService.change_serie_comic_status(id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 this.archive_loading=false;
                 location.reload()
               });
@@ -1420,10 +1422,10 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id;
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
         if( result ) {
-          this.Subscribing_service.change_content_status("writing","unknown",id,"private").subscribe(r=>{
-            this.Writing_Upload_Service.change_writing_status(id,"private").subscribe(r=>{
+          this.Subscribing_service.change_content_status("writing","unknown",id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.Writing_Upload_Service.change_writing_status(id,"private").pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.archive_loading=false;
               location.reload()
             });
@@ -1486,7 +1488,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
     this.loading_report=true;
     if(this.category=="comic"){
-      this.Reports_service.check_if_content_reported('comic',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,this.format,0).subscribe(r=>{
+      this.Reports_service.check_if_content_reported('comic',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,this.format,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1501,7 +1503,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       })
     }
     else if(this.category=="drawing"){
-      this.Reports_service.check_if_content_reported('drawing',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id,this.format,0).subscribe(r=>{
+      this.Reports_service.check_if_content_reported('drawing',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id,this.format,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1516,7 +1518,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       })
     }
     else{
-      this.Reports_service.check_if_content_reported('writing',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id,"unknown",0).subscribe(r=>{
+      this.Reports_service.check_if_content_reported('writing',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id,"unknown",0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1546,7 +1548,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     else{
       id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id
     }
-    this.Reports_service.cancel_report(this.category,id,this.format).subscribe(r=>{
+    this.Reports_service.cancel_report(this.category,id,this.format).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.user_id)>=0){
         let i=this.list_of_reporters.indexOf(this.user_id)
         this.list_of_reporters.splice(i,1)
@@ -1593,5 +1595,11 @@ export class ThumbnailArtworkComponent implements OnInit {
       });
      
     }
+  }
+
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

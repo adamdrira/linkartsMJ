@@ -18,7 +18,8 @@ import { PopupContactComponent } from '../popup-contact/popup-contact.component'
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupShareComponent } from '../popup-share/popup-share.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-popup-navbar',
@@ -95,7 +96,7 @@ export class PopupNavbarComponent implements OnInit {
     public dialogRef: MatDialogRef<PopupNavbarComponent>,
    
     ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -183,7 +184,7 @@ export class PopupNavbarComponent implements OnInit {
   }
 
   get_messages(){
-    this.chatService.get_number_of_unseen_messages().subscribe(a=>{
+    this.chatService.get_number_of_unseen_messages().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(a=>{
       if(a[0]){
         this.number_of_unseen_messages=a[0].number_of_unseen_messages;
       }
@@ -199,7 +200,7 @@ export class PopupNavbarComponent implements OnInit {
   }
 
   get_notifications(){
-    this.NotificationsService.get_list_of_notifications().subscribe(r=>{
+    this.NotificationsService.get_list_of_notifications().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if(r[0].length>0){
         this.list_of_notifications=r[0]
         this.get_final_list_of_notifications_to_show("initialize");
@@ -261,7 +262,7 @@ export class PopupNavbarComponent implements OnInit {
     }
     this.disconnecting = true;
 
-    this.AuthenticationService.logout().subscribe(r => {
+    this.AuthenticationService.logout().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
       let recommendations_string = this.CookieService.get('recommendations');
       if(r[0].ok){
         if (recommendations_string) {
@@ -271,7 +272,7 @@ export class PopupNavbarComponent implements OnInit {
   
         }
         else {
-          this.Community_recommendation.generate_recommendations().subscribe(r => {
+          this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
             this.disconnecting = false;
             this.cd.detectChanges();
             this.location.go('/')
@@ -280,8 +281,8 @@ export class PopupNavbarComponent implements OnInit {
         }
       }
       else{
-        this.AuthenticationService.create_visitor().subscribe(r=>{
-          this.Community_recommendation.generate_recommendations().subscribe(r => {
+        this.AuthenticationService.create_visitor().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
             this.disconnecting = false;
             this.cd.detectChanges();
             this.location.go('/')
@@ -515,7 +516,7 @@ change_notifications_status_to_checked(){
     }
   }
   if(modify){
-    this.NotificationsService.change_all_notifications_status_to_checked(this.user_id).subscribe(r=>{  
+    this.NotificationsService.change_all_notifications_status_to_checked(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{  
     })
   }
   this.number_of_unchecked_notifications=0;
@@ -586,7 +587,7 @@ get_final_list_of_notifications_to_show(status){
    this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt);
 
     if(status=="initialize"){
-      this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
+      this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
         if(this.compteur_get_final_list==t[1]){
          let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
           this.list_of_notifications_profile_pictures[i] = url;
@@ -612,7 +613,7 @@ get_final_list_of_notifications_to_show(status){
         }
       }
       else{
-        this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
+        this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
           if(this.compteur_get_final_list==t[1]){
             let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
             this.list_of_notifications_profile_pictures[i] = url;
@@ -742,7 +743,7 @@ get_name_of_someone_who_exit_group(id,l,item){
   }
   else{
     this.loading_deleted_member[id]=true;
-    this.Profile_Edition_Service.retrieve_profile_data(id).subscribe(r=>{
+    this.Profile_Edition_Service.retrieve_profile_data(id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.list_of_names_deleted[id]=r[0].firstname;
       this.cd.detectChanges()
     })
@@ -829,7 +830,7 @@ sort_friends_list() {
 
  
 
-  this.chatService.get_list_of_users_I_talk_to_navbar().subscribe(r=>{
+  this.chatService.get_list_of_users_I_talk_to_navbar().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
 
     let friends=r[0].friends;
     if(friends.length>0){
@@ -843,7 +844,7 @@ sort_friends_list() {
             this.list_of_friends_users_only[i]=friends[i].id_receiver;
             this.list_of_friends_ids[i]=friends[i].id_receiver;
             this.list_of_friends_date[i]=new Date(friends[i].date).getTime()/1000;
-            this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_receiver).subscribe(s=>{
+            this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_receiver).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
               this.list_of_friends_names[i]=s[0].firstname;
               this.list_of_friends_certifications[i]=s[0].certified_account;
@@ -851,7 +852,7 @@ sort_friends_list() {
               all_retrieved(this);
             });
 
-            this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).subscribe(t=> {
+            this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures_by_ids_users[friends[i].id_receiver] = url;
@@ -866,7 +867,7 @@ sort_friends_list() {
               if(data_retrieved ){
                 compt ++;
                 if(compt==friends.length){
-                  THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).subscribe(u=>{
+                  THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(u=>{
                     THIS.list_of_friends_last_message=u[0].list_of_friends_messages;
                     THIS.sort_friends_groups_chats_list();
                   });
@@ -879,7 +880,7 @@ sort_friends_list() {
             this.list_of_friends_ids[i]=friends[i].id_user;
             this.list_of_friends_users_only[i]=friends[i].id_user;
             this.list_of_friends_date[i]=new Date(friends[i].date).getTime()/1000;
-            this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_user).subscribe(s=>{
+            this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
               this.list_of_friends_names[i]=s[0].firstname;
               this.list_of_friends_certifications[i]=s[0].certified_account;
@@ -887,7 +888,7 @@ sort_friends_list() {
               all_retrieved(this);
             });
 
-            this.Profile_Edition_Service.retrieve_profile_picture(  friends[i].id_user ).subscribe(t=> {
+            this.Profile_Edition_Service.retrieve_profile_picture(  friends[i].id_user ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures_by_ids_users[friends[i].id_user] = url;
@@ -902,7 +903,7 @@ sort_friends_list() {
               if(data_retrieved ){
                 compt ++;
                 if(compt==friends.length){
-                  THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).subscribe(u=>{
+                  THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(u=>{
                     THIS.list_of_friends_last_message=u[0].list_of_friends_messages;
                     THIS.sort_friends_groups_chats_list();
                   });
@@ -919,7 +920,7 @@ sort_friends_list() {
 
 sort_friends_groups_chats_list(){
   let len =this.list_of_friends_ids.length;
-  this.chatService.get_my_list_of_groups_navbar().subscribe(l=>{
+  this.chatService.get_my_list_of_groups_navbar().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
     let list_of_names=[]
     if(l[0].length>0){
       for(let k=0;k<l[0].length;k++){
@@ -931,7 +932,7 @@ sort_friends_groups_chats_list(){
         this.list_of_groups_ids[k]=l[0][k].id;
         if(k==l[0].length-1){
           // get_list_of_groups_I_am_in sans les spams
-          this.chatService.get_list_of_groups_I_am_in( this.list_of_groups_ids).subscribe(r=>{
+          this.chatService.get_list_of_groups_I_am_in( this.list_of_groups_ids).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
            
             let compt=0;
             let list_of_ids=[]
@@ -942,7 +943,7 @@ sort_friends_groups_chats_list(){
               this.list_of_friends_date[len+i]=new Date(r[0].friends[i].date).getTime()/1000;
               this.list_of_friends_types[len+i]='group';
               
-              this.chatService.retrieve_chat_profile_picture(r[0].friends[i].chat_profile_pic_name,r[0].friends[i].profile_pic_origin).subscribe(t=> {
+              this.chatService.retrieve_chat_profile_picture(r[0].friends[i].chat_profile_pic_name,r[0].friends[i].profile_pic_origin).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
                
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -954,7 +955,7 @@ sort_friends_groups_chats_list(){
               });
 
             }
-            this.chatService.get_last_friends_groups_message(list_of_ids).subscribe(u=>{    
+            this.chatService.get_last_friends_groups_message(list_of_ids).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(u=>{    
               this.list_of_friends_last_message=this.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
               this.sort_list_of_groups_and_friends();
             });
@@ -1028,7 +1029,7 @@ load_friends_pp(i){
 }
 
 get_connections_status(){
-  this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
+  this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
     if(this.user_id<4){
       console.log(r[0])
     }
@@ -1054,7 +1055,7 @@ get_connections_status(){
         }
       }
       else{
-        this.chatService.get_group_chat_information(this.list_of_friends_ids[i]).subscribe(l=>{
+        this.chatService.get_group_chat_information(this.list_of_friends_ids[i]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
           let value=false;
           if(l[0]){
             let list=l[0].list_of_receivers_ids;
@@ -1166,7 +1167,7 @@ change_message_status(event){
           this.get_group_chat_name(event.friend_id,event.message);
         }
         else{
-          this.chatService.check_if_is_related(event.friend_id).subscribe(r=>{
+          this.chatService.check_if_is_related(event.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             if(r[0].value){
               if(event.friend_id==this.user_id){
                 this.list_of_friends_types.splice(0,0,'user');
@@ -1187,7 +1188,7 @@ change_message_status(event){
                 let data_retrieved=false;
                 let pp_retrieved=false;
                 let certification= false;
-                this.Profile_Edition_Service.retrieve_profile_data(event.friend_id).subscribe(s=>{
+                this.Profile_Edition_Service.retrieve_profile_data(event.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
                   pseudo = s[0].nickname;
                   certification = s[0].certified_account;
                   name =s[0].firstname;
@@ -1195,7 +1196,7 @@ change_message_status(event){
                   check_all(this)
                 });
     
-                this.Profile_Edition_Service.retrieve_profile_picture( event.friend_id).subscribe(t=> {
+                this.Profile_Edition_Service.retrieve_profile_picture( event.friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   picture = url;
@@ -1239,8 +1240,8 @@ change_message_status(event){
   get_group_chat_name(id,message){
     let pseudo = message.group_name;
     let name =message.group_name;
-    this.chatService.get_group_chat_as_friend(id).subscribe(s=>{
-      this.chatService.retrieve_chat_profile_picture(s[0].chat_profile_pic_name,s[0].profile_pic_origin).subscribe(t=> {
+    this.chatService.get_group_chat_as_friend(id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(s=>{
+      this.chatService.retrieve_chat_profile_picture(s[0].chat_profile_pic_name,s[0].profile_pic_origin).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=> {
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         let picture = url;
@@ -1355,23 +1356,23 @@ change_message_status(event){
       data:{type_of_profile:"account"},
       panelClass:"popupShareClass"
     });
-    this.navbar.add_page_visited_to_history(`/open-share-maile/account`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/open-share-maile/account`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
   }
   open_contact() {
     const dialogRef = this.dialog.open(PopupContactComponent, {
       data:{current_user:this.current_user},
       panelClass:"popupContactComponentClass"
     });
-    this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/contact-us`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
   }
   open_tuto() {
     
-    this.navbar.add_page_visited_to_history(`/open_tuto`,'' ).subscribe();
+    this.navbar.add_page_visited_to_history(`/open_tuto`,'' ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     const dialogRef = this.dialog.open(PopupShareComponent, {
       data:{type_of_profile:"account", tutorial:true,current_user:this.current_user},
       panelClass:"popupTutoClass"
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if(result){
         this.open_share()
       }
@@ -1408,11 +1409,11 @@ change_message_status(event){
    }
    this.loading_connexion_unit=true;
    this.disconnecting=true;
-   this.navbar.add_page_visited_to_history(`/navbar/${this.pseudo}/${this.user_id}/switch_to_group/${this.list_of_account_groups_names[i]}/${this.list_of_account_groups_ids[i]}`, this.device_info).subscribe();
-   this.AuthenticationService.login_group_as_member(this.list_of_account_groups_ids[i],this.user_id).subscribe( data => {
+   this.navbar.add_page_visited_to_history(`/navbar/${this.pseudo}/${this.user_id}/switch_to_group/${this.list_of_account_groups_names[i]}/${this.list_of_account_groups_ids[i]}`, this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
+   this.AuthenticationService.login_group_as_member(this.list_of_account_groups_ids[i],this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
      if(data.token){
        this.Community_recommendation.delete_recommendations_cookies();
-       this.Community_recommendation.generate_recommendations().subscribe(r=>{
+       this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
          this.loading_connexion_unit=false;
          this.disconnecting=false;
          this.location.go("/account/" + this.list_of_account_groups_names[i])
@@ -1428,5 +1429,11 @@ change_message_status(event){
        this.disconnecting=false;
      }
    })
+  }
+
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

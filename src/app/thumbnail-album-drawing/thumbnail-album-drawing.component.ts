@@ -10,6 +10,8 @@ import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-thumbnail-album-drawing',
@@ -36,7 +38,7 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
     private sanitizer:DomSanitizer,
     private navbar: NavbarService,
     ) {
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -113,7 +115,7 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
     this.thumbnail_color = this.item.thumbnail_color;
 
 
-    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
@@ -123,7 +125,7 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
 
 
     if(this.format=="one-shot"){
-      this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+      this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
@@ -134,7 +136,7 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
     };
 
     if(this.format=="artbook"){
-      this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+      this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
@@ -188,6 +190,10 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
 
   }
 
-
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
 }

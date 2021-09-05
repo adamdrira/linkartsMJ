@@ -11,9 +11,12 @@ import { merge, fromEvent } from 'rxjs';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Meta, Title } from '@angular/platform-browser';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { PopupApplyComponent } from '../popup-apply/popup-apply.component';
+//import { PopupApplyComponent } from '../popup-apply/popup-apply.component';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 declare var Swiper: any
 
@@ -116,7 +119,7 @@ export class HomeLinkcollabComponent implements OnInit {
     private location: Location,
     
     ) {
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -179,7 +182,7 @@ export class HomeLinkcollabComponent implements OnInit {
   ngOnInit() {
 
 
-    this.navbar.add_page_visited_to_history(`/linkcollab/home_depot`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/linkcollab/home_depot`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
     
@@ -282,21 +285,21 @@ export class HomeLinkcollabComponent implements OnInit {
     this.sorting="pertinence";
 
     if(i==1){
-      this.navbar.add_page_visited_to_history(`/home/benev`,this.device_info ).subscribe();
+      this.navbar.add_page_visited_to_history(`/home/benev`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.remuneration=false;
       this.service=false;
       this.get_sorted_ads();
       this.location.go('/linkcollab/voluntary-collaborations');
     }
     else if(i==2){
-      this.navbar.add_page_visited_to_history(`/home/remuneration`,this.device_info ).subscribe();
+      this.navbar.add_page_visited_to_history(`/home/remuneration`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.remuneration=true;
       this.service=false;
       this.get_sorted_ads();
       this.location.go('/linkcollab/remunerated-collaborations');
     }
     else{
-      this.navbar.add_page_visited_to_history(`/linkcollab/depot`,this.device_info ).subscribe();
+      this.navbar.add_page_visited_to_history(`/linkcollab/depot`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.remuneration=false;
       this.service=false;
       this.get_sorted_ads();
@@ -421,7 +424,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
 
   change_select1(e:any) {
-    this.navbar.add_page_visited_to_history(`/linkcollab/change_select1/${e.value}`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select1/${e.value}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     if( e.value=="Tout" ){
       if( this.type_of_project == "none" ) {
         return;
@@ -438,7 +441,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select2(e:any) {
-    this.navbar.add_page_visited_to_history(`/linkcollab/change_select2/${e.value}`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select2/${e.value}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     if( e.value=="Tout" ){
       if( this.author == "none" ) {
         return;
@@ -455,7 +458,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select3(e:any) {
-    this.navbar.add_page_visited_to_history(`/linkcollab/change_select3/${e.value}`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select3/${e.value}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     if( e.value=="Tout" ){
       if( this.target == "none" ) {
         return;
@@ -472,7 +475,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select4(e:any) {
-    this.navbar.add_page_visited_to_history(`/linkcollab/change_select4/${e.value}`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select4/${e.value}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     if( e.value=="Tout" ){
       if( this.type_of_service == "none" ) {
         return;
@@ -489,7 +492,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select5(e:any) {
-    this.navbar.add_page_visited_to_history(`/linkcollab/change_select5/${e.value}`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select5/${e.value}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     if( e.value=="Tout" ){
       if( this.offer_or_demand == "none" ) {
         return;
@@ -506,7 +509,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select6(e:any) {
-    this.navbar.add_page_visited_to_history(`/linkcollab/change_select6/${e.value}`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select6/${e.value}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     if( e.value=="Tout" ){
       if( this.type_of_remuneration == "none" ) {
         return;
@@ -523,7 +526,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select7(e:any) {
-    this.navbar.add_page_visited_to_history(`/linkcollab/change_select7/${e.value}`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select7/${e.value}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     if( e.value=="Tri par pertinence" ){
       if( this.sorting == "pertinence" ) {
         return;
@@ -564,7 +567,7 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   change_select8(e:any) {
-    this.navbar.add_page_visited_to_history(`/linkcollab/change_select8/${e.value}`,this.device_info ).subscribe();
+    this.navbar.add_page_visited_to_history(`/linkcollab/change_select8/${e.value}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     if( e.value=="Tri par pertinence" ){
       if( this.sorting == "pertinence" ) {
         return;
@@ -612,7 +615,7 @@ export class HomeLinkcollabComponent implements OnInit {
     this.number_of_results=0;
     this.list_of_ads_received=false;
     this.list_of_ads=[];
-    this.Ads_service.get_sorted_ads_linkcollab(this.type_of_project,this.author,this.target,this.remuneration,this.service,this.type_of_remuneration,this.type_of_service,this.offer_or_demand,this.sorting,this.offset_ads,this.compteur_ads).subscribe(r=>{
+    this.Ads_service.get_sorted_ads_linkcollab(this.type_of_project,this.author,this.target,this.remuneration,this.service,this.type_of_remuneration,this.type_of_service,this.offer_or_demand,this.sorting,this.offset_ads,this.compteur_ads).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.number_of_results=r[0][0].number_of_ads;
       if(parseInt(r[0][0].number_of_ads)%5==0){
         this.number_of_pages=Math.trunc(parseInt(r[0][0].number_of_ads)/5)
@@ -706,7 +709,7 @@ export class HomeLinkcollabComponent implements OnInit {
         remuneration:this.remuneration,
       },
       panelClass: "popupFiltersComponentClass",
-    }).afterClosed().subscribe(
+    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(
       result => {
         if(result){
           this.f1.controls['type_of_project'].setValue(result.type_of_project);
@@ -734,14 +737,14 @@ export class HomeLinkcollabComponent implements OnInit {
 
   change_select_section0(e:any) {
     if( e.value=="Tout" ){
-      this.navbar.add_page_visited_to_history(`/linkcollab/change_select_section0/tout`,this.device_info ).subscribe();
+      this.navbar.add_page_visited_to_history(`/linkcollab/change_select_section0/tout`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       if( this.category == "none" ) {
         return;
       }
       this.category="none";
     }
     else{
-      this.navbar.add_page_visited_to_history(`/linkcollab/change_select_section0/${e.value}`,this.device_info ).subscribe();
+      this.navbar.add_page_visited_to_history(`/linkcollab/change_select_section0/${e.value}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       if( this.category == e.value ) {
         return;
       }
@@ -1136,14 +1139,14 @@ export class HomeLinkcollabComponent implements OnInit {
   box_checked={};
   selectBox(checked,i){
     if(checked){
-      this.navbar.add_page_visited_to_history(`/linkcollab/select_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).subscribe();
+      this.navbar.add_page_visited_to_history(`/linkcollab/select_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.indexes_selected[i]=true;
       this.box_checked[i]=true;
        //this.list_of_editors_selected.splice(0,0,this.list_of_editors[i]); quand on aura des collaborateurs
       //this.show_editors=true;
     }
     else{
-      this.navbar.add_page_visited_to_history(`/linkcollab/unselect_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).subscribe();
+      this.navbar.add_page_visited_to_history(`/linkcollab/unselect_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       this.box_checked[i]=false;
       this.remove_editor(i)
     }
@@ -1213,7 +1216,11 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
 
-  ngOnDestroy() {
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
     this.title.setTitle('LinkArts – Collaboration éditoriale');
     this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
   }

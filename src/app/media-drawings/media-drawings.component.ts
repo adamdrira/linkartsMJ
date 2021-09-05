@@ -1,6 +1,9 @@
 import { Component, OnInit,  Input, Output, EventEmitter, ChangeDetectorRef, SimpleChanges} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 declare var $: any
 
 @Component({
@@ -29,7 +32,7 @@ export class MediaDrawingsComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private navbar: NavbarService,
     ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -416,6 +419,10 @@ export class MediaDrawingsComponent implements OnInit {
     }
   }
 
-
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
   
 }

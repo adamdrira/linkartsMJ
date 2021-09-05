@@ -7,6 +7,8 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-terms',
@@ -57,13 +59,13 @@ export class TermsComponent implements OnInit {
 
       navbar.hide();
       navbar.hide_help();
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
       })
 
-      this.route.data.subscribe(resp => {
+      this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
         if(resp.user && resp.user[0]){
           this.current_user= resp.user[0];
         }
@@ -107,18 +109,18 @@ export class TermsComponent implements OnInit {
           ],
         });
         this.show_contact=true;
-        this.navbar.add_page_visited_to_history(`/contact-us/`,this.device_info ).subscribe();
+        this.navbar.add_page_visited_to_history(`/contact-us/`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         return
       }
 
       this.article_number = parseInt(article);
       if( ! (this.article_number>0 && this.article_number<6) ) {
         this.location.go('/home/1');
-        this.navbar.add_page_visited_to_history(`/services/${this.article_number}`,this.device_info ).subscribe();
+        this.navbar.add_page_visited_to_history(`/services/${this.article_number}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
         this.article_number = 1;
       }
       else{
-        this.navbar.add_page_visited_to_history(`/services/${this.article_number}`,this.device_info ).subscribe();
+        this.navbar.add_page_visited_to_history(`/services/${this.article_number}`,this.device_info ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
       }
     }
 
@@ -140,7 +142,7 @@ export class TermsComponent implements OnInit {
       if(this.registerForm1.valid){
         this.loading = true;
         this.display_need_information=false;
-        this.Profile_Edition_Service.send_message_contact_us(this.registerForm1.value.firstName,this.registerForm1.value.email,this.registerForm1.value.message.replace(/\n\s*\n\s*\n/g, '\n\n').trim()).subscribe(r=>{
+        this.Profile_Edition_Service.send_message_contact_us(this.registerForm1.value.firstName,this.registerForm1.value.email,this.registerForm1.value.message.replace(/\n\s*\n\s*\n/g, '\n\n').trim()).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.loading=false;
           this.show_done=true;
         })
@@ -153,5 +155,11 @@ export class TermsComponent implements OnInit {
 
     go_to_home(){
       this.router.navigateByUrl('/');
+    }
+
+    protected ngUnsubscribe: Subject<void> = new Subject<void>();
+    ngOnDestroy(): void {
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
     }
 }

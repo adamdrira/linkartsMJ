@@ -11,7 +11,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { normalize_to_nfc } from '../helpers/patterns';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -51,7 +52,7 @@ export class LoginComponent implements OnInit {
         this.delete_account=true;
       }
      
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -92,14 +93,14 @@ export class LoginComponent implements OnInit {
   device_info='';
   ngOnInit() {
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-    this.navbar.add_page_visited_to_history(`/login`, this.device_info).subscribe();
+    this.navbar.add_page_visited_to_history(`/login`, this.device_info).pipe( takeUntil(this.ngUnsubscribe) ).subscribe();
     window.scroll(0,0);
     if(this.usage=="rest_pass" || this.usage=="registration"){
       this.loading=true;
-      this.authenticationService.login(this.data.email, this.data.temp_pass).subscribe( data => {
+      this.authenticationService.login(this.data.email, this.data.temp_pass).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
         if(data.token){
           this.Community_recommendation.delete_recommendations_cookies();
-          this.Community_recommendation.generate_recommendations().subscribe(r=>{
+          this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             
               location.reload();
           })
@@ -177,7 +178,7 @@ export class LoginComponent implements OnInit {
       }
       this.loading=true;
 
-      this.authenticationService.reset_password(this.g.mail_recuperation.value).subscribe(r=>{
+      this.authenticationService.reset_password(this.g.mail_recuperation.value).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(r[0].sent){
           this.password_reset_sent=true;
           this.password_reset_problem=false;
@@ -260,13 +261,13 @@ export class LoginComponent implements OnInit {
       
     // check email_checked
     
-    this.authenticationService.check_email_checked(this.f.username.value, this.f.password.value).subscribe( data => {
+    this.authenticationService.check_email_checked(this.f.username.value, this.f.password.value).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
         if(data.user  && (data.user.email_checked || data.pass )){
-            this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
+            this.authenticationService.login(this.f.username.value, this.f.password.value).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
               if(data.token){
                 this.display_email_not_checked=false;
                 this.Community_recommendation.delete_recommendations_cookies();
-                this.Community_recommendation.generate_recommendations().subscribe(r=>{
+                this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                     this.recommendation_done=true;
                     if(this.data.signup){
                       this.location.go('/account/' + data.user.nickname)
@@ -321,7 +322,7 @@ export class LoginComponent implements OnInit {
   account_deletion(i) {
     if(i==0){
       this.loading = true;
-      this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
+      this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
         this.loading=false
         if(data[0].found && data[0].user.id==this.data.id_user){
           this.step_deletion=1;
@@ -352,12 +353,12 @@ export class LoginComponent implements OnInit {
         return;
       }
 
-      this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
+      this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
 
         if(data[0].found && data[0].user.id==this.data.id_user){
-            this.Profile_Edition_Service.suspend_account(this.selected_motif).subscribe(r=>{
+            this.Profile_Edition_Service.suspend_account(this.selected_motif).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
               this.loading=false
-              this.authenticationService.logout().subscribe(r=>{
+              this.authenticationService.logout().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                 this.location.go('/')
                 location.reload();
               });
@@ -377,11 +378,11 @@ export class LoginComponent implements OnInit {
     }
     else if(i==3){
       this.loading = true;
-      this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
+      this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
             if(data[0].found && data[0].user.id==this.data.id_user){
-                this.Profile_Edition_Service.delete_account(this.selected_motif).subscribe(r=>{
+                this.Profile_Edition_Service.delete_account(this.selected_motif).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                   this.loading=false
-                  this.authenticationService.logout().subscribe(r=>{
+                  this.authenticationService.logout().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
                     this.location.go('/')
                     location.reload();
                   });;
@@ -409,10 +410,10 @@ export class LoginComponent implements OnInit {
         return
       }
       this.loading=true;
-      this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
+      this.authenticationService.login(this.f.username.value, this.f.password.value).pipe( takeUntil(this.ngUnsubscribe) ).subscribe( data => {
         if(data.token){
           this.Community_recommendation.delete_recommendations_cookies();
-          this.Community_recommendation.generate_recommendations().subscribe(r=>{
+          this.Community_recommendation.generate_recommendations().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             this.dialogRef.close(true);
           })
         }
@@ -426,5 +427,11 @@ export class LoginComponent implements OnInit {
         this.display_wrong_data=true;
         this.loading=false;
       });
+    }
+
+    protected ngUnsubscribe: Subject<void> = new Subject<void>();
+    ngOnDestroy(): void {
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
     }
   }

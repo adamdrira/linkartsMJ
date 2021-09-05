@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 declare var $:any;
 
@@ -26,7 +28,7 @@ export class MediaComicsComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     private navbar: NavbarService,) { 
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -251,6 +253,13 @@ export class MediaComicsComponent implements OnInit {
         scrollLeft: (n-1) * this.width / Math.floor(this.width/250)
       }, 300, 'swing');
     }
+  }
+  
+
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
   
 }

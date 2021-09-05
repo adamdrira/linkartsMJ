@@ -7,7 +7,8 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { NavbarService } from '../services/navbar.service';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 declare var Cropper;
 
@@ -44,7 +45,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     private navbar: NavbarService,
      ) { 
     this.image_uploaded = false;
-    navbar.visibility_observer_font.subscribe(font=>{
+    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -155,7 +156,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     canvas.toBlob(blob => {
       if(this.imageDestination=='' && !this.loading_thumbnail){
         this.loading_thumbnail=true;
-        this.Drawings_CoverService.send_cover_todata(blob).subscribe(res=>{
+        this.Drawings_CoverService.send_cover_todata(blob).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(res=>{
           this.confirmation = true;
           this.loading_thumbnail=false;
           this.imageDestination = canvas.toDataURL("image/png");
@@ -181,7 +182,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
       return;
     }
 
-    this.Drawings_CoverService.remove_cover_from_folder().subscribe(r=>{
+    this.Drawings_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.imageDestination='';
       this.confirmation = false;
     });
@@ -243,8 +244,8 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     }
     else {
       this.displayErrors = false;
-      this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).subscribe(res=>{
-        this.Drawings_Onepage_Service.send_drawing_height_one_shot(this.thumbnail_height,this.drawing_id).subscribe(r=>{
+      this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(res=>{
+        this.Drawings_Onepage_Service.send_drawing_height_one_shot(this.thumbnail_height,this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
           this.display_loading=false;
           this.upload=true;
           this.cd.detectChanges();
@@ -258,12 +259,17 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
   cancel_all() {
     if(!this.block_cancel){
-      this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(res=>{
-        this.Drawings_CoverService.remove_cover_from_folder().subscribe()
+      this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(res=>{
+        this.Drawings_CoverService.remove_cover_from_folder().pipe( takeUntil(this.ngUnsubscribe) ).subscribe()
       }); 
     }
      
   }
 
 
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

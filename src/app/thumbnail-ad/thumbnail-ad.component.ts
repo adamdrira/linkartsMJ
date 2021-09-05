@@ -20,7 +20,8 @@ import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.co
 import { DOCUMENT } from '@angular/common';
 import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-thumbnail-ad',
@@ -61,7 +62,7 @@ export class ThumbnailAdComponent implements OnInit {
     private cd:ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document,
     ) { 
-      navbar.visibility_observer_font.subscribe(font=>{
+      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -203,7 +204,7 @@ export class ThumbnailAdComponent implements OnInit {
     this.author_id=this.item.id_user;
     
     if(this.in_ad_page){
-      this.Profile_Edition_Service.get_current_user().subscribe(r => {
+      this.Profile_Edition_Service.get_current_user().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r => {
         this.id_user=r[0].id;
         if(r[0].id==this.item.id_user){
           this.visitor_mode=false;
@@ -214,7 +215,7 @@ export class ThumbnailAdComponent implements OnInit {
       });
     }
     else{
-      this.route.data.subscribe(resp => {
+      this.route.data.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(resp => {
         let r= resp.user;
         this.id_user=r[0].id;
         if(r[0].id==this.item.id_user){
@@ -227,14 +228,14 @@ export class ThumbnailAdComponent implements OnInit {
     }
   
 
-    this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = url;
       this.profile_picture_safe=SafeURL;
     });
 
-    this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       this.author_name = r[0].firstname;
       this.primary_description=r[0].primary_description;
       this.pseudo = r[0].nickname;
@@ -247,7 +248,7 @@ export class ThumbnailAdComponent implements OnInit {
 
     this.date_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,this.item.createdAt) );
 
-    this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).subscribe(r=> {
+    this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.thumbnail_picture = url;
@@ -351,7 +352,7 @@ export class ThumbnailAdComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.list_of_attachments[i]},
       panelClass: "popupDocumentClass",
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
@@ -372,10 +373,10 @@ export class ThumbnailAdComponent implements OnInit {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette annonce ?'},
       panelClass: "popupConfirmationClass",
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
       if(result){
-        this.Ads_service.delete_ad(this.item.id,this.item.id_user).subscribe(l=>{
-          this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+        this.Ads_service.delete_ad(this.item.id,this.item.id_user).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
             this.loading_option=false;
             location.reload()
           })
@@ -392,7 +393,7 @@ export class ThumbnailAdComponent implements OnInit {
       for(let i=0;i<item.number_of_attachments;i++){
         if(i==0){
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -406,7 +407,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -418,7 +419,7 @@ export class ThumbnailAdComponent implements OnInit {
         }
         if(i==1){
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -432,7 +433,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -444,7 +445,7 @@ export class ThumbnailAdComponent implements OnInit {
         }
         if(i==2){
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -458,7 +459,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -470,7 +471,7 @@ export class ThumbnailAdComponent implements OnInit {
         };
         if(i==3){
           if(re.exec(item.attachment_name_four)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -484,7 +485,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -496,7 +497,7 @@ export class ThumbnailAdComponent implements OnInit {
         };
         if(i==4){
           if(re.exec(item.attachment_name_five)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -510,7 +511,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_five;
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -587,7 +588,7 @@ export class ThumbnailAdComponent implements OnInit {
 
   
   check_archive(){
-    this.Subscribing_service.check_if_publication_archived("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+    this.Subscribing_service.check_if_publication_archived("ad",this.item.type_of_project,this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if(r[0].value){
         this.ad_archived=true;
       }
@@ -596,13 +597,13 @@ export class ThumbnailAdComponent implements OnInit {
   }
 
   archive(){
-    this.Subscribing_service.archive("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+    this.Subscribing_service.archive("ad",this.item.type_of_project,this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.ad_archived=true;
     });
   }
 
   unarchive(){
-    this.Subscribing_service.unarchive("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+    this.Subscribing_service.unarchive("ad",this.item.type_of_project,this.item.id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       this.ad_archived=false;
     });
   }
@@ -610,7 +611,7 @@ export class ThumbnailAdComponent implements OnInit {
 
   report(){
 
-      this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).subscribe(r=>{
+      this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -631,7 +632,7 @@ export class ThumbnailAdComponent implements OnInit {
   cancel_report(){
 
 
-    this.Reports_service.cancel_report("ad",this.item.id,this.item.type_of_project).subscribe(r=>{
+    this.Reports_service.cancel_report("ad",this.item.id,this.item.type_of_project).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
       if(this.list_of_reporters && this.list_of_reporters.indexOf(this.id_user)>=0){
         let i=this.list_of_reporters.indexOf(this.id_user)
         this.list_of_reporters.splice(i,1)
@@ -662,4 +663,10 @@ export class ThumbnailAdComponent implements OnInit {
     }
   }
 
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+  
 }
