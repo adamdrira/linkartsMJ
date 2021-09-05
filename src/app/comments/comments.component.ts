@@ -10,8 +10,7 @@ import { convert_timestamp_to_number } from '../helpers/dates';
 import { LoginComponent } from '../login/login.component';
 import { MatDialog } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 export interface comment {
   comment_id: number;
@@ -37,7 +36,7 @@ export class CommentsComponent implements OnInit {
     public dialog: MatDialog,
     private navbar: NavbarService,
   ) { 
-    navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+    navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -131,7 +130,7 @@ export class CommentsComponent implements OnInit {
     this.comment_container = new FormGroup({
       comment: this.comment,
     });
-    this.Profile_Edition_Service.check_if_user_blocked(this.authorid).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.Profile_Edition_Service.check_if_user_blocked(this.authorid).pipe( first()).subscribe(r=>{
       if(r[0].nothing){
         this.user_blocked=false;
       }
@@ -147,7 +146,7 @@ export class CommentsComponent implements OnInit {
       this.user_blocked_retrieved=true;
     })
 
-    this.Profile_Edition_Service.retrieve_my_profile_picture().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_my_profile_picture().pipe( first()).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
@@ -167,7 +166,7 @@ export class CommentsComponent implements OnInit {
     
     let my_comments_found=false;
     let other_comments_found=false;
-    this.NotationService.get_my_commentaries(this.category,this.format,this.publication_id,this.chapter_number).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+    this.NotationService.get_my_commentaries(this.category,this.format,this.publication_id,this.chapter_number).pipe( first()).subscribe(t=>{
         this.my_comments_list=t[0];
         if(this.my_comments_list.length>0){
             this.sort_comments(this.my_comments_list,'mine');
@@ -176,7 +175,7 @@ export class CommentsComponent implements OnInit {
         send_all(this)
     })
 
-    this.NotationService.get_commentaries(this.category,this.format,this.publication_id,this.chapter_number).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.NotationService.get_commentaries(this.category,this.format,this.publication_id,this.chapter_number).pipe( first()).subscribe(l=>{
 
       this.comments_list=l[0];
       if(this.comments_list.length>0){
@@ -270,10 +269,10 @@ export class CommentsComponent implements OnInit {
     if(this.comment_container.valid && this.comment_container.value.comment && this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
     //event.preventDefault();
 
-      this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment.replace(/\n\s*\n\s*\n/g, '\n\n')).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment.replace(/\n\s*\n\s*\n/g, '\n\n')).pipe( first()).subscribe(r=>{
 
         if(this.visitor_id!=this.authorid){
-          this.NotificationsService.add_notification('comment',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment_container.value.comment,false,r[0].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.NotificationsService.add_notification('comment',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment_container.value.comment,false,r[0].id).pipe( first()).subscribe(l=>{
            
             let message_to_send ={
               for_notifications:true,
@@ -332,9 +331,9 @@ export class CommentsComponent implements OnInit {
           if(this.comment_container.valid && this.comment_container.value.comment && this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
             event.preventDefault();
   
-            this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment.replace(/\n\s*\n\s*\n/g, '\n\n')).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment.replace(/\n\s*\n\s*\n/g, '\n\n')).pipe( first()).subscribe(r=>{
               if(this.visitor_id!=this.authorid){
-                this.NotificationsService.add_notification('comment',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment_container.value.comment,false,r[0].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+                this.NotificationsService.add_notification('comment',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment_container.value.comment,false,r[0].id).pipe( first()).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"comment",
@@ -384,7 +383,7 @@ export class CommentsComponent implements OnInit {
         return
       }
       this.loading_remove=true;
-      this.NotationService.remove_commentary(this.my_comments_list[i].publication_category,this.my_comments_list[i].format,this.my_comments_list[i].style,this.my_comments_list[i].publication_id,this.my_comments_list[i].chapter_number,this.my_comments_list[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+      this.NotationService.remove_commentary(this.my_comments_list[i].publication_category,this.my_comments_list[i].format,this.my_comments_list[i].style,this.my_comments_list[i].publication_id,this.my_comments_list[i].chapter_number,this.my_comments_list[i].id).pipe( first()).subscribe(l=>{
         let index=-1;
         for (let i=0;i<this.my_comments_list.length;i++){
           if(this.my_comments_list[i].id==l[0].id){
@@ -397,7 +396,7 @@ export class CommentsComponent implements OnInit {
         }
         this.loading_remove=false;
         if(this.visitor_id!=this.authorid){
-          this.NotificationsService.remove_notification('comment',this.category,this.format,this.publication_id,this.chapter_number,false,l[0].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+          this.NotificationsService.remove_notification('comment',this.category,this.format,this.publication_id,this.chapter_number,false,l[0].id).pipe( first()).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"comment",
@@ -434,7 +433,7 @@ export class CommentsComponent implements OnInit {
       return
     }
     this.loading_remove=true;
-    this.NotationService.remove_commentary(this.comments_list[i].publication_category,this.comments_list[i].format,this.comments_list[i].style,this.comments_list[i].publication_id,this.comments_list[i].chapter_number,this.comments_list[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.NotationService.remove_commentary(this.comments_list[i].publication_category,this.comments_list[i].format,this.comments_list[i].style,this.comments_list[i].publication_id,this.comments_list[i].chapter_number,this.comments_list[i].id).pipe( first()).subscribe(l=>{
       let index=-1;
       for (let i=0;i<this.comments_list.length;i++){
         if(this.comments_list[i].id==l[0].id){
@@ -483,10 +482,6 @@ export class CommentsComponent implements OnInit {
     this.click_on_user.emit(true)
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
 
 }

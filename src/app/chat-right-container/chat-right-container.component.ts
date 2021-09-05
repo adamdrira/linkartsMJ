@@ -12,7 +12,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil,first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chat-right-container',
@@ -80,7 +80,7 @@ export class ChatRightContainerComponent implements OnInit {
     public navbar: NavbarService, 
     private cd: ChangeDetectorRef
     ) { 
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -143,8 +143,6 @@ export class ChatRightContainerComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if(this.change_number>0){
       if(this.current_friend_id!=this.friend_id || this.friend_type!= this.current_friend_type){
-        this.ngUnsubscribe.next();
-        this.ngUnsubscribe.complete();
 
         this.current_friend_type=this.friend_type;
         this.current_friend_id=this.friend_id;
@@ -153,30 +151,30 @@ export class ChatRightContainerComponent implements OnInit {
         this.total_size_of_files=[];
         this.total_size_of_pictures=[];
        
-        this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(l=>{
           this.total_size_of_files[0]=Number(l[0][0].total);
          
         })
 
-        this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(r=>{
           this.total_size_of_pictures[0]=Number(r[0][0].total);
         })
         this.get_archives_folders();
         this.get_files_and_pictures(this.id_chat_section);
         this.change_number=0;
       }
-      
+
       if(this.current_id_chat_section!=this.id_chat_section){
         this.total_size_of_files=[];
         this.total_size_of_pictures=[];
         this.list_of_pictures_retrieved=false;
         this.list_of_files_retrieved=false;
         this.current_id_chat_section=this.id_chat_section;
-        this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(l=>{
           this.total_size_of_files[0]=Number(l[0][0].total);
          
         })
-        this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(r=>{
           this.total_size_of_pictures[0]=Number(r[0][0].total);
         })
         this.get_files_and_pictures(this.id_chat_section);
@@ -203,17 +201,17 @@ export class ChatRightContainerComponent implements OnInit {
     this.current_id_chat_section=this.id_chat_section;
     this.current_friend_id=this.friend_id;
     
-    this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(l=>{
       this.total_size_of_files[0]=Number(l[0][0].total);
       
     })
-    this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(r=>{
       this.total_size_of_pictures[0]=Number(r[0][0].total);
       
     })
     this.get_files_and_pictures(this.id_chat_section);
 
-    this.ChatComponent.reload_list_of_files.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+    this.ChatComponent.reload_list_of_files.pipe(takeUntil(this.ngUnsubscribe)).subscribe(m=>{
       if(m){
         this.list_of_files_retrieved=false;
         this.list_of_pictures_retrieved=false;
@@ -221,11 +219,11 @@ export class ChatRightContainerComponent implements OnInit {
         this.list_of_files_data=[];
         this.list_of_pictures_src=[];
         this.list_of_pictures_data=[];
-        this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+        this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(l=>{
           this.total_size_of_files[0]=Number(l[0][0].total);
           
         })
-        this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(r=>{
           this.total_size_of_pictures[0]=Number(r[0][0].total);
          
         })
@@ -234,10 +232,10 @@ export class ChatRightContainerComponent implements OnInit {
     })
 
 
-    this.ChatComponent.reload_list_of_archives.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(event=>{
+    this.ChatComponent.reload_list_of_archives.pipe(takeUntil(this.ngUnsubscribe)).subscribe(event=>{
       if(event.reload){
         this.list_of_folders_retrieved=false;
-        this.chatService.get_chat_folders(this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.get_chat_folders(this.chat_friend_id).pipe( first() ).subscribe(r=>{
           if(r[0] && r[0].length>0){
             this.list_of_folders=r[0];
           }
@@ -281,13 +279,13 @@ export class ChatRightContainerComponent implements OnInit {
       if(this.myScrollContainer.nativeElement.scrollTop>=(this.myScrollContainer.nativeElement.scrollHeight-this.myScrollContainer.nativeElement.getBoundingClientRect().height)*0.8 -100 ){
         if(this.panelOpenState_0 && this.can_get_other_files && !this.show_scroll_files){
           this.show_scroll_files=true;
-          this.chatService.get_all_files(this.date_of_last_file,this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.chatService.get_all_files(this.date_of_last_file,this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(r=>{
             if(r[0][0]){
               this.list_of_files=this.list_of_files.concat(r[0]);
               let length =this.list_of_files_src.length;
               let compt=0;
                 for(let i=0;i<r[0].length;i++){
-                  this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+                  this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(t=>{
                     let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                     const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                     this.list_of_files_src[length+i]=SafeURL;
@@ -314,7 +312,7 @@ export class ChatRightContainerComponent implements OnInit {
 
         if(this.panelOpenState_1 && this.can_get_other_pictures && !this.show_scroll_pictures){
           this.show_scroll_pictures=true;
-          this.chatService.get_all_pictures(this.date_of_last_picture,this.friend_id,this.id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.chatService.get_all_pictures(this.date_of_last_picture,this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(r=>{
 
             if(r[0][0]){
               this.list_of_pictures=this.list_of_pictures.concat(r[0]);
@@ -323,7 +321,7 @@ export class ChatRightContainerComponent implements OnInit {
               var re = /(?:\.([^.]+))?$/;
               for(let i=0;i<r[0].length;i++){
                 if(re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg"){
-                  this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{ 
+                  this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(r=>{ 
                     let THIS=this;
                     var reader = new FileReader()
                     reader.readAsText(r);
@@ -348,7 +346,7 @@ export class ChatRightContainerComponent implements OnInit {
                   })
                 }
                 else{
-                  this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+                  this.chatService.get_attachment_right(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(t=>{
                     let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                     const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                     this.list_of_pictures_src[length+i]=SafeURL;
@@ -384,7 +382,7 @@ export class ChatRightContainerComponent implements OnInit {
             this.offset_by_folder[index]+=15;
             let length =this.list_of_files_object_by_folder[index].length;
             var re = /(?:\.([^.]+))?$/;
-            this.chatService.get_files_by_folder(this.list_of_folders[index].id,this.offset_by_folder[index]).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+            this.chatService.get_files_by_folder(this.list_of_folders[index].id,this.offset_by_folder[index]).pipe( first() ).subscribe(m=>{
               let r=[]
               if(m[0].messages && m[0].messages.length>0){
                 r[0]=m[0].messages;
@@ -392,7 +390,7 @@ export class ChatRightContainerComponent implements OnInit {
                 for(let i=0;i<r[0].length;i++){
                   this.list_of_files_object_by_folder[index][i+length]=r[0][i];
                   if((re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg" && r[0][i].attachment_type=="picture_attachment") || r[0][i].attachment_type=="file_attachment" ){
-                    this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{ 
+                    this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(t=>{ 
                       let THIS=this;
                       if(re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg"){
                         var reader = new FileReader()
@@ -434,7 +432,7 @@ export class ChatRightContainerComponent implements OnInit {
                     })
                   }
                   else if(r[0][i].attachment_type=="picture_attachment" && re.exec(r[0][i].attachment_name)[1].toLowerCase()!="svg"){
-                    this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+                    this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(t=>{
                       let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                       this.list_of_files_by_folder[index][i+length]=SafeURL;
@@ -451,7 +449,7 @@ export class ChatRightContainerComponent implements OnInit {
                     })
                   }
                   else{
-                    this.chatService.get_picture_sent_by_msg(r[0][i].attachment_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+                    this.chatService.get_picture_sent_by_msg(r[0][i].attachment_name).pipe( first() ).subscribe(t=>{
                       let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                       this.list_of_files_by_folder[index][i+length]=SafeURL;
@@ -490,12 +488,12 @@ export class ChatRightContainerComponent implements OnInit {
   
 
   get_files_and_pictures(id_chat_section){
-    this.chatService.get_all_files("now",this.friend_id,id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.chatService.get_all_files("now",this.friend_id,id_chat_section,this.friend_type).pipe( first() ).subscribe(l=>{
       this.list_of_files=l[0];
       let compt=0;
       if(l[0].length>0){
         for(let i=0;i<l[0].length;i++){
-          this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_files_src[i]=SafeURL;
@@ -516,7 +514,7 @@ export class ChatRightContainerComponent implements OnInit {
       }
     })
 
-    this.chatService.get_all_pictures("now",this.friend_id,id_chat_section,this.friend_type).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(l=>{
+    this.chatService.get_all_pictures("now",this.friend_id,id_chat_section,this.friend_type).pipe( first() ).subscribe(l=>{
       this.list_of_pictures=l[0];
       let compt=0;
       var re = /(?:\.([^.]+))?$/;
@@ -524,7 +522,7 @@ export class ChatRightContainerComponent implements OnInit {
         for(let i=0;i<l[0].length;i++){
 
           if(re.exec(l[0][i].attachment_name)[1].toLowerCase()=="svg"){
-            this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(r=>{
               
               let THIS=this;
               var reader = new FileReader()
@@ -549,7 +547,7 @@ export class ChatRightContainerComponent implements OnInit {
             })
           }
           else{
-            this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+            this.chatService.get_attachment_popup(l[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(l[0][i].chat_friend_id)?l[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(r=>{
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures_src[i]=SafeURL;
@@ -750,7 +748,7 @@ export class ChatRightContainerComponent implements OnInit {
   }
 
   get_archives_folders(){
-    this.chatService.get_chat_folders(this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.chatService.get_chat_folders(this.chat_friend_id).pipe( first() ).subscribe(r=>{
       if(r[0] && r[0].length>0){
         this.list_of_folders=r[0];
       }
@@ -794,7 +792,7 @@ export class ChatRightContainerComponent implements OnInit {
       this.list_of_files_object_by_folder[index]=[];
       this.list_of_pictures_loaded_by_folder[index]=[];
       this.list_of_files_loading[index]=true;
-      this.chatService.get_files_by_folder(this.list_of_folders[index].id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(m=>{
+      this.chatService.get_files_by_folder(this.list_of_folders[index].id,0).pipe( first() ).subscribe(m=>{
         let r=[]
         if(m[0].messages && m[0].messages.length>0){
           r[0]=m[0].messages;
@@ -803,7 +801,7 @@ export class ChatRightContainerComponent implements OnInit {
           for(let i=0;i<r[0].length;i++){
             this.list_of_files_object_by_folder[index][i]=r[0][i];
             if((re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg" && r[0][i].attachment_type=="picture_attachment") || r[0][i].attachment_type=="file_attachment" ){
-              this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{ 
+              this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(t=>{ 
                 let THIS=this;
                 if(re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg"){
                   var reader = new FileReader()
@@ -849,7 +847,7 @@ export class ChatRightContainerComponent implements OnInit {
               })
             }
             else if(r[0][i].attachment_type=="picture_attachment" && re.exec(r[0][i].attachment_name)[1].toLowerCase()!="svg"){
-              this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+              this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_files_by_folder[index][i]=SafeURL;
@@ -868,7 +866,7 @@ export class ChatRightContainerComponent implements OnInit {
               })
             }
             else{
-              this.chatService.get_picture_sent_by_msg(r[0][i].attachment_name).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(t=>{
+              this.chatService.get_picture_sent_by_msg(r[0][i].attachment_name).pipe( first() ).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_files_by_folder[index][i]=SafeURL;
@@ -972,7 +970,7 @@ export class ChatRightContainerComponent implements OnInit {
 
   unarchive(i,j){
     let id_message = this.list_of_files_object_by_folder[i][j].id;
-    this.chatService.unarchive_chat_message(id_message,this.list_of_folders[i].id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.chatService.unarchive_chat_message(id_message,this.list_of_folders[i].id).pipe( first() ).subscribe(r=>{
       this.list_of_files_object_by_folder[i].splice(j,1)
       this.list_of_files_by_folder[i].splice(j,1)
       this.list_of_files_types_by_folder[i].splice(j,1)
@@ -997,10 +995,10 @@ export class ChatRightContainerComponent implements OnInit {
         data: {showChoice:true, text:"Voulez-vous vraiment supprimer ce dossier ? Tous les fichiers resteront disponibles dans les fichiers et images partagés."},
         panelClass: "popupConfirmationClass",
       });
-      dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+      dialogRef.afterClosed().pipe( first() ).subscribe(result => {
         if(result){
           this.list_of_folders_retrieved=false;
-          this.chatService.remove_folder(this.list_of_folders[index].id,this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+          this.chatService.remove_folder(this.list_of_folders[index].id,this.chat_friend_id).pipe( first() ).subscribe(r=>{
             this.list_of_folders_retrieved=true;
               this.list_of_folders_opened=[];
               this.show_files_of_folder=[];
@@ -1062,7 +1060,7 @@ export class ChatRightContainerComponent implements OnInit {
     else if(this.chat_section_group_archives.valid){
       if(this.chat_section_group_archives.value.chat_section_name_added_archives.replace(/\s/g, '').length>0 ){
         this.loading_chat_section_name_archives=true;
-        this.chatService.rename_chat_folder(this.list_of_folders[this.index_folder_to_rename].id,this.chat_section_group_archives.value.chat_section_name_added_archives.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.rename_chat_folder(this.list_of_folders[this.index_folder_to_rename].id,this.chat_section_group_archives.value.chat_section_name_added_archives.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,''),this.chat_friend_id).pipe( first() ).subscribe(r=>{
           if(r[0].error){
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
               data: {showChoice:false, text:"Ce titre est existe déjà."},          
@@ -1109,7 +1107,7 @@ export class ChatRightContainerComponent implements OnInit {
     else if(this.chat_section_group_archives.valid){
       if(this.chat_section_group_archives.value.chat_section_name_added_archives.replace(/\s/g, '').length>0 ){
         this.loading_chat_section_name_archives=true;
-        this.chatService.add_chat_folder(this.chat_friend_id ,this.chat_section_group_archives.value.chat_section_name_added_archives.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.add_chat_folder(this.chat_friend_id ,this.chat_section_group_archives.value.chat_section_name_added_archives.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/\s+$/,'')).pipe( first() ).subscribe(r=>{
           if(r[0].error){
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
               data: {showChoice:false, text:"Ce titre est déjà utilisé ailleurs."},          
@@ -1151,7 +1149,7 @@ export class ChatRightContainerComponent implements OnInit {
           data: {type:"for_archive",message:this.list_of_pictures_data[index],list_of_folders:this.list_of_folders},
           panelClass: 'popupUploadPictureClass',
         })
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe( first() ).subscribe(result => {
           if(result){
             
             this.reset_folders()
@@ -1160,7 +1158,7 @@ export class ChatRightContainerComponent implements OnInit {
         });
       }
       else{
-        this.chatService.unarchive_chat_message(this.list_of_pictures_data[index].id,this.list_of_pictures_data[index].id_folder).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.unarchive_chat_message(this.list_of_pictures_data[index].id,this.list_of_pictures_data[index].id_folder).pipe( first() ).subscribe(r=>{
           this.list_of_pictures_data[index].id_folder=0;
           this.archive_from_right_emit.emit({id_message:this.list_of_pictures_data[index].id,id_folder:0});
           this.reset_folders()
@@ -1173,7 +1171,7 @@ export class ChatRightContainerComponent implements OnInit {
           data: {type:"for_archive",message:this.list_of_files_data[index],list_of_folders:this.list_of_folders},
           panelClass: 'popupUploadPictureClass',
         })
-        dialogRef.afterClosed().pipe( takeUntil(this.ngUnsubscribe) ).subscribe(result => {
+        dialogRef.afterClosed().pipe( first() ).subscribe(result => {
           if(result){
             this.archive_from_right_emit.emit({id_message:this.list_of_files_data[index].id,id_folder:this.list_of_files_data[index].id_folder});
             this.reset_folders()
@@ -1182,7 +1180,7 @@ export class ChatRightContainerComponent implements OnInit {
         });
       }
       else{
-        this.chatService.unarchive_chat_message(this.list_of_files_data[index].id,this.list_of_files_data[index].id_folder).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+        this.chatService.unarchive_chat_message(this.list_of_files_data[index].id,this.list_of_files_data[index].id_folder).pipe( first() ).subscribe(r=>{
           this.list_of_pictures_data[index].id_folder=0;
           this.archive_from_right_emit.emit({id_message:this.list_of_files_data[index].id,id_folder:0});
           this.reset_folders()
@@ -1196,7 +1194,7 @@ export class ChatRightContainerComponent implements OnInit {
   reset_folders(){
     
     this.list_of_folders_retrieved=false;
-    this.chatService.get_chat_folders(this.chat_friend_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+    this.chatService.get_chat_folders(this.chat_friend_id).pipe( first() ).subscribe(r=>{
       if(r[0] && r[0].length>0){
         this.list_of_folders=r[0];
       }
@@ -1211,10 +1209,10 @@ export class ChatRightContainerComponent implements OnInit {
     this.get_archives_folders();
   }
   
-
   protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
+ 
 }

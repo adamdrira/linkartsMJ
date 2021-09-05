@@ -20,7 +20,8 @@ import { Router } from '@angular/router';
 import { ResizedEvent } from 'angular-resize-event';
 import { merge, fromEvent } from 'rxjs'
 import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
-import { first } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil,first } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -116,7 +117,7 @@ export class ChatComponent implements OnInit  {
       this.reload_list_of_archives = this.reload_list_of_archives_subject.asObservable();
 
       //message received
-      navbar.connexion.subscribe(r=>{
+      navbar.connexion.pipe(takeUntil(this.ngUnsubscribe)).subscribe(r=>{
         if(r!=this.connexion_status){
           this.connexion_status=r
          
@@ -4242,7 +4243,11 @@ onResized(event: ResizedEvent) {
     })
   }
 
-
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
   
 }
 

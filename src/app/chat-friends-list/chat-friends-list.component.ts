@@ -264,7 +264,7 @@ export class ChatFriendsListComponent implements OnInit {
     this.meta.updateTag({ name: 'description', content: "Une plateforme de discussion adaptée à vos besoins artistiques." });
     this.navbar.hide_help();
 
-    let THIS=this;
+
     this.active_section = this.route.snapshot.data['section'];
     if(this.active_section==2){
       let pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
