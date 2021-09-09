@@ -45,7 +45,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     private navbar: NavbarService,
      ) { 
     this.image_uploaded = false;
-    navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
+    navbar.visibility_observer_font.subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
