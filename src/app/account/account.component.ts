@@ -1855,8 +1855,8 @@ export class AccountComponent implements OnInit {
   put_category_visible:boolean[]=[];
   category_to_load:boolean[]=[];
   add_album_to_load=[];
-  open_category(i : number,first) {
-    if( !first && this.opened_category == i || (i==0 && this.number_of_comics==0) || (i==1 && this.number_of_drawings==0) || (i==2 && this.number_of_writings==0) ) {
+  open_category(i : number,first_time) {
+    if( !first_time && this.opened_category == i || (i==0 && this.number_of_comics==0) || (i==1 && this.number_of_drawings==0) || (i==2 && this.number_of_writings==0) ) {
       return;
     }
    
