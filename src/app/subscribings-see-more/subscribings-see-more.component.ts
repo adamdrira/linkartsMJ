@@ -79,7 +79,7 @@ export class SubscribingsSeeMoreComponent implements OnInit  {
       for (let i=1; i<list.length; i++){
         let time = this.convert_timestamp_to_number(list[i].createdAt);
         for (let j=0; j<i;j++){
-          if(time > this.convert_timestamp_to_number(list[j].createdAt)){
+          if(time > this.convert_timestamp_to_number(list[j].createdAt)  && time==this.convert_timestamp_to_number(list[i].createdAt)){
             list.splice(j, 0, list.splice(i, 1)[0]);
           }
         }

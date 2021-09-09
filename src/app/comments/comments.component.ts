@@ -213,7 +213,7 @@ export class CommentsComponent implements OnInit {
           if(list[j].author_id_who_comments==this.authorid){
             second_number_of_likes+=60*60*10000; // un commentarie du propriétaire vaut un commentaire à 10000 likes 
           }
-          if( (time + number_of_likes) > (convert_timestamp_to_number(list[j].createdAt) + second_number_of_likes)){
+          if( (time + number_of_likes) > (convert_timestamp_to_number(list[j].createdAt) + second_number_of_likes) && time == convert_timestamp_to_number(list[i].createdAt) ){
             list.splice(j, 0, list.splice(i, 1)[0]);
           }
           if(j==list.length-2){

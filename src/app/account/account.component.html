@@ -541,8 +541,8 @@
                             <div class="block">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">list</mat-icon>
-                                    <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Qui suis-je ?</h3>
-                                    <h3 *ngIf="type_of_account.includes('dit') || type_of_account.includes('es')">Qui sommes-nous ?</h3>
+                                    <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('tes') ">Qui suis-je ?</h3>
+                                    <h3 *ngIf="type_of_account.includes('dit') || type_of_account.includes('tes')">Qui sommes-nous ?</h3>
 
                                     <div class="right-button" *ngIf="!mode_visiteur" (click)="open_section(6,true,0);">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
@@ -583,7 +583,8 @@
                                         matTooltipClass='tooltip-account-profile' 
                                         [matTooltipPosition]="'below'"
                                         [matTooltipShowDelay]="200">description</mat-icon>
-                                        <span *ngIf="!type_of_account.includes('dit')" class="span-button">Ajouter une description afin de décrir vos objectifs éditoriaux ainsi que vos atouts.</span>
+                                        <span *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('tist')" class="span-button">Ajouter une description afin de décrir vos ambitions et vos objectifs.</span>
+                                        <span *ngIf="type_of_account.includes('tist')" class="span-button">Ajouter une description afin de décrir vos objectifs éditoriaux ainsi que vos atouts.</span>
                                         <span *ngIf="type_of_account.includes('dit')" class="span-button">Ajouter une description afin de décrir la maison d'édition que vous représentez.</span>
                                     </div>
 
@@ -658,8 +659,8 @@
                             <div class="block" *ngIf="(list_of_news && list_of_news.length>0 && mode_visiteur)  || !mode_visiteur">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">whatshot</mat-icon>
-                                    <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Mon actualité</h3>
-                                    <h3 *ngIf="type_of_account.includes('dit') || type_of_account.includes('es')">Notre actualité</h3>
+                                    <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('tes')">Mon actualité</h3>
+                                    <h3 *ngIf="type_of_account.includes('dit') || type_of_account.includes('tes')">Notre actualité</h3>
 
 
                                     <div class="right-button" *ngIf="!mode_visiteur && !add_news_input" (click)="add_news();">
@@ -909,7 +910,7 @@
                             </ng-container>
 
                             <!-- nouveauté -->
-                            <div class="block" *ngIf="!type_of_account.includes('Fan')">
+                            <div class="block" *ngIf="!type_of_account.includes('Fan') && !type_of_account.includes('Particulier') && !type_of_account.includes('Professionnel')">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
                                     <h3 *ngIf="!type_of_account.includes('dit') ">Mes nouveautés</h3>
@@ -1093,7 +1094,7 @@
                             </div>
 
 
-                            <div class="block-right" *ngIf="( list_of_skills.length || list_of_categories.length || cv_name || !mode_visiteur ) && !type_of_account.includes('dit') && !type_of_account.includes('es')">
+                            <div class="block-right" *ngIf="( list_of_skills.length || list_of_categories.length || cv_name || !mode_visiteur ) && !type_of_account.includes('dit') && !type_of_account.includes('tes')">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">color_lens</mat-icon>
                                     <h3>Ma palette</h3>
@@ -1141,7 +1142,7 @@
                             </div>
 
 
-                            <div class="block-right" *ngIf="( list_of_skills.length>0 || !mode_visiteur ) && (type_of_account.includes('dit') || type_of_account.includes('es'))">
+                            <div class="block-right" *ngIf="( list_of_skills.length>0 || !mode_visiteur ) && (type_of_account.includes('dit') || type_of_account.includes('tes'))">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
                                     <h3>Notre palette</h3>
@@ -1181,8 +1182,8 @@
                             <div class="block-right" *ngIf="!( mode_visiteur && !instagram && !facebook && !pinterest && !deviantart && !artstation && !website && !other_website )">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">share</mat-icon>
-                                    <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('es')">Mes réseaux</h3>
-                                    <h3 *ngIf="type_of_account.includes('dit') || type_of_account.includes('es')">Nos réseaux</h3>
+                                    <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('tes')">Mes réseaux</h3>
+                                    <h3 *ngIf="type_of_account.includes('dit') || type_of_account.includes('tes')">Nos réseaux</h3>
                                 </div>
                                 <div class="bottom">
                                         

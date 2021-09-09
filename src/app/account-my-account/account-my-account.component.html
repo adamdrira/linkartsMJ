@@ -4,7 +4,7 @@
             <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
             <span>Paramètres</span>
         </button>
-        <button class="logo" *ngIf="!type_of_account.includes('Fan')" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
+        <button class="logo" *ngIf="!type_of_account.includes('Fan') && !type_of_account.includes('Professionnel') && !type_of_account.includes('Particulier')" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
             <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
             <span>Rémunération</span>
         </button>

@@ -86,9 +86,14 @@ export class PopupStoriesComponent implements OnInit {
     this.cd.detectChanges();
     
     var ua = navigator.userAgent.toLowerCase(); 
+    console.log(ua)
+    console.log(ua.indexOf('safari') )
+    console.log(ua.indexOf('chrome') )
     if (ua.indexOf('safari') > -1) { 
+      console.log("safari plus")
       if (ua.indexOf('chrome') > -1) {
         // Chrome
+        console.log("in chrome")
         this.swiper = new Swiper( this.swiperContainerStories.nativeElement, {
           effect: 'cube',
           preloadImages: false,
@@ -121,6 +126,7 @@ export class PopupStoriesComponent implements OnInit {
       } 
       else {
         // Safari
+        console.log("in safari")
         this.swiper = new Swiper( this.swiperContainerStories.nativeElement, {
           speed: 500,
           pagination: {
@@ -138,6 +144,38 @@ export class PopupStoriesComponent implements OnInit {
           },
         });
       }
+    }
+    else{
+      console.log("else")
+      this.swiper = new Swiper( this.swiperContainerStories.nativeElement, {
+        effect: 'cube',
+        preloadImages: false,
+        lazy: {
+          loadOnTransitionStart: true,
+          checkInView:true,
+        },
+        watchSlidesVisibility:true,
+        cubeEffect: {
+          shadow: true,
+          slideShadows: true,
+          shadowOffset: 20,
+          shadowScale: 0.94,
+        },
+        speed: 500,
+        pagination: {
+          el: '.swiper-pagination',
+        },
+        on: {
+          slideChange: function () {
+            THIS.refresh_stories_status();
+            THIS.cd.detectChanges();
+          }
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+      });
     }
     
     
@@ -260,8 +298,10 @@ export class PopupStoriesComponent implements OnInit {
   }
 
   refresh_stories_status() {
-
+    console.log(this.componentRef)
+    console.log(this.swiper)
     for( let i = 0; i < this.componentRef.length; i ++ ) {
+      
       this.componentRef[ i ].instance.currently_readed = ( i == this.swiper.activeIndex );
     }
   }

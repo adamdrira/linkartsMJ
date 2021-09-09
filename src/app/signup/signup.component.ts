@@ -379,16 +379,20 @@ export class SignupComponent implements OnInit {
 
   
 
-  listOfAccounts=["Artiste","Éditeur","Fan"];
+  listOfAccounts=["Artiste","Éditeur","Fan","Particulier","Professionnel"];
   listOfAccountsDescriptions = [
     "Vous êtes un artiste du monde de la bande dessinée, de la littérature ou du dessin, et vous souhaitez collaborer avec des maisons d'édition ou d'autres artistes, mais aussi être rémunéré pour les œuvres que vous partagez dans votre quête de progression.",
     "Vous êtes un éditeur ou une éditrice, et vous souhaitez optimiser le tri de vos candidatures, et dénicher des artistes talentueux avec qui collaborer efficacement une fois que vous les avez trouvés.",
-    "Vous souhaitez soutenir un ou plusieurs artistes de cœur à gagner en visibilité et en pertinence, afin qu'ils puissent dénicher la collaboration éditoriale qui changera leur vie."
+    "Vous souhaitez soutenir un ou plusieurs artistes de cœur à gagner en visibilité et en pertinence, afin qu'ils puissent dénicher la collaboration éditoriale qui changera leur vie.",
+    "Vous êtes un particulier et vous êtes à la recherche d'un artiste avec lequel vous souhaitez réaliser une collaboration, ou dont vous souhaitez un service.",
+    "Vous êtes un professionel ou vous représentez une société hors du monde de l'édition, et vous êtes à la recherche d'un artiste avec lequel vous souhaitez réaliser une collaboration, ou dont vous souhaitez un service."
   ];
   listOfAccountsImages=[
     "../../assets/img/tuto-logos/tuto-palette.svg",
     "../../assets/img/tuto-logos/tuto-books.svg",
     "../../assets/img/tuto-logos/win.svg",
+    "../../assets/img/tuto-logos/particulier.svg",
+    "../../assets/img/tuto-logos/pro.svg",
   ];
 
   
@@ -461,7 +465,7 @@ export class SignupComponent implements OnInit {
         this.id_user=r[0].id_user;
         this.Profile_Edition_Service.send_email_for_account_creation(this.id_user).pipe( first()).subscribe(m=>{
           this.loading_signup=false;
-          if(this.user.type_of_account=="Fan"){
+          if(this.user.type_of_account=="Fan" || this.user.type_of_account=="Particulier"  || this.user.type_of_account=="Professionnel"){
             this.step=-1;
             this.show_sent_mail=true;
             window.scroll(0,0);

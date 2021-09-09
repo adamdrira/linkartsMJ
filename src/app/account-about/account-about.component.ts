@@ -152,16 +152,20 @@ export class AccountAboutComponent implements OnInit {
   @Input('author') author:any;
   @Input('opened_subcategory') opened_subcategory:any;
   
-  listOfAccounts=["Artiste","Éditeur","Fan"];
+  listOfAccounts=["Artiste","Éditeur","Fan","Particulier","Professionnel"];
   listOfAccountsDescriptions = [
     "Vous souhaitez devenir un artiste du monde de la bande dessinée, de la littérature ou du dessin, et vous souhaitez collaborer avec des maisons d'édition ou d'autres artistes, mais aussi être rémunéré pour les œuvres que vous partagez dans votre quête de progression.",
     "Vous êtes un éditeur ou une éditrice, et vous souhaitez optimiser le tri de vos candidatures, et dénicher des artistes talentueux avec qui collaborer efficacement une fois que vous les avez trouvés.",
-    "Vous souhaitez soutenir un ou plusieurs artistes de cœur à gagner en visibilité et en pertinence, afin qu'ils puissent dénicher la collaboration éditoriale qui changera leur vie."
+    "Vous souhaitez soutenir un ou plusieurs artistes de cœur à gagner en visibilité et en pertinence, afin qu'ils puissent dénicher la collaboration éditoriale qui changera leur vie.",
+    "Vous êtes un particulier et vous êtes à la recherche d'un artiste avec lequel vous souhaitez réaliser une collaboration, ou dont vous souhaitez un service.",
+    "Vous êtes un professionel ou vous représentez une société hors du monde de l'édition, et vous êtes à la recherche d'un artiste avec lequel vous souhaitez réaliser une collaboration, ou dont vous souhaitez un service."
   ];
   listOfAccountsImages=[
     "../../assets/img/tuto-logos/tuto-palette.svg",
     "../../assets/img/tuto-logos/tuto-books.svg",
     "../../assets/img/tuto-logos/win.svg",
+    "../../assets/img/tuto-logos/particulier.svg",
+    "../../assets/img/tuto-logos/pro.svg",
   ];
   opened_category:number=0;
 
@@ -346,7 +350,7 @@ export class AccountAboutComponent implements OnInit {
      
 
 
-      if(!this.author.type_of_account.includes("Fan")){
+      if(!this.author.type_of_account.includes("Fan") && !this.author.type_of_account.includes("Particulier")){
         this.get_projects_stats()
         this.get_ads_stats();
         this.get_comics_stats()
@@ -1512,7 +1516,7 @@ get_projects_stats(){
 
           let time = convert_timestamp_to_number(this.list_of_comics[i].createdAt);
           for (let j=0; j<i;j++){
-            if( time  > convert_timestamp_to_number(this.list_of_comics[j].createdAt)){
+            if( time  > convert_timestamp_to_number(this.list_of_comics[j].createdAt) && time==convert_timestamp_to_number(this.list_of_comics[i].createdAt)){
               this.list_of_comics.splice(j, 0, this.list_of_comics.splice(i, 1)[0]);
             }
             if(j==this.list_of_comics.length-2){
@@ -1889,7 +1893,7 @@ get_projects_stats(){
         for (let i=1; i<this.list_of_drawings.length; i++){
           let time = convert_timestamp_to_number(this.list_of_drawings[i].createdAt);
           for (let j=0; j<i;j++){
-            if( time  > convert_timestamp_to_number(this.list_of_drawings[j].createdAt)){
+            if( time  > convert_timestamp_to_number(this.list_of_drawings[j].createdAt) && time==convert_timestamp_to_number(this.list_of_drawings[i].createdAt)){
               this.list_of_drawings.splice(j, 0, this.list_of_drawings.splice(i, 1)[0]);
             }
             if(j==this.list_of_drawings.length-2){
@@ -2229,7 +2233,7 @@ get_projects_stats(){
         for (let i=1; i<this.list_of_writings.length; i++){
           let time = convert_timestamp_to_number(this.list_of_writings[i].createdAt);
           for (let j=0; j<i;j++){
-            if( time  > convert_timestamp_to_number(this.list_of_writings[j].createdAt)){
+            if( time  > convert_timestamp_to_number(this.list_of_writings[j].createdAt) && time==convert_timestamp_to_number(this.list_of_writings[i].createdAt)){
               this.list_of_writings.splice(j, 0, this.list_of_writings.splice(i, 1)[0]);
             }
             if(j==this.list_of_writings.length-2){

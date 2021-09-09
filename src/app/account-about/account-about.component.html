@@ -5,7 +5,7 @@
             <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
             <span>Profil</span>
         </button>
-        <button class="logo" *ngIf="type_of_account!='Fan' && !visitor_mode" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
+        <button class="logo" *ngIf="(type_of_account!='Fan' || type_of_account!='Particulier' || type_of_account!='Professionnel') && !visitor_mode" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
             <mat-icon [ngClass]="{'invisible': !show_icon }">bar_chart</mat-icon>
             <span>Statistiques</span>
         </button>
@@ -71,7 +71,7 @@
                             <input matInput readonly>
                         </mat-form-field>
                     </div>
-                    <div class="form-item" *ngIf="registerForm1_activated && type_of_account=='Fan'" [@enterAnimation]>
+                    <div class="form-item" *ngIf="registerForm1_activated && (type_of_account=='Fan' || type_of_account=='Particulier' || type_of_account=='Professionnel')" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
                             <mat-select  disableOptionCentering formControlName="type_of_account" panelClass="accountAboutSelectClass options-with-description">
                                 <mat-select-trigger>

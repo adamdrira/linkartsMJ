@@ -423,7 +423,7 @@ export class StoriesComponent implements OnInit {
             let total=list_of_number_of_views[i];
             for (let j=1; j<i;j++){
               let total2 =list_of_number_of_views[j];
-              if(total > total2){
+              if(total > total2 && total== list_of_number_of_views[i]){
                 final_list_of_users.splice(j, 0, final_list_of_users.splice(i, 1)[0]);
                 list_of_pp.splice(j, 0, list_of_pp.splice(i, 1)[0]);
                 list_of_cp.splice(j, 0, list_of_cp.splice(i, 1)[0]);
@@ -476,7 +476,7 @@ export class StoriesComponent implements OnInit {
            let total= list_of_number_of_views[i];
             for (let j=0; j<i;j++){
               let total2 =list_of_number_of_views[j];
-              if(total > total2){
+              if(total > total2 && total== list_of_number_of_views[i]){
                 final_list_of_users.splice(j, 0, final_list_of_users.splice(i, 1)[0]);
                 list_of_pp.splice(j, 0, list_of_pp.splice(i, 1)[0]);
                 list_of_cp.splice(j, 0, list_of_cp.splice(i, 1)[0]);
