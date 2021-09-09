@@ -96,7 +96,7 @@ export class ChatComponent implements OnInit  {
     private navbar :NavbarService,
     private Profile_Edition_Service:Profile_Edition_Service
     ){
-      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }

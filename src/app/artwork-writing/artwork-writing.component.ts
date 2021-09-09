@@ -104,7 +104,7 @@ export class ArtworkWritingComponent implements OnInit {
       this.fullscreen_mode = false;
       this.navbar.setActiveSection(-1);
       this.navbar.show();
-      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }

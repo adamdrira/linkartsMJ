@@ -113,7 +113,7 @@ export class AdPageComponent implements OnInit {
     private cd:ChangeDetectorRef,
     ) { 
       
-      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }

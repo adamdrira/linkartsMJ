@@ -109,7 +109,7 @@ export class AccountComponent implements OnInit {
     @Inject(DOCUMENT) private document: Document,
     ) {
 
-    navbar.visibility_observer_font.pipe( first() ).subscribe(font=>{
+    navbar.visibility_observer_font.subscribe(font=>{
       if(font){
         this.show_icon=true;
       }

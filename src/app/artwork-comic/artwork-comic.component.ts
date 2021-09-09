@@ -106,7 +106,7 @@ export class ArtworkComicComponent implements OnInit {
     private chatService:ChatService,
     
     ) { 
-      navbar.visibility_observer_font.pipe(first() ).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }

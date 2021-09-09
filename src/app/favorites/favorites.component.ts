@@ -42,7 +42,7 @@ export class FavoritesComponent implements OnInit {
     private Favorites_service:Favorites_service,
     private navbar:NavbarService,
     ) { 
-      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
