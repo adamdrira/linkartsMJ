@@ -52,7 +52,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private router:Router,
   ) { 
-    navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
+    navbar.visibility_observer_font.subscribe(font=>{
       if(font){
         this.show_icon=true;
       }

@@ -12,8 +12,8 @@ import { NavbarService } from '../services/navbar.service';
 import { PopupArtworkComponent } from '../popup-artwork/popup-artwork.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-thumbnail-drawing',
@@ -43,7 +43,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     private NotationService:NotationService,
     private navbar: NavbarService,
     ) {
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -135,7 +135,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     
 
 
-    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( first()).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = url;
@@ -143,13 +143,13 @@ export class ThumbnailDrawingComponent implements OnInit {
 
 
     if(this.format=="one-shot"){
-      this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).pipe( first()).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
       });  
 
-      this.NotationService.get_content_marks("drawing", 'one-shot', this.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.NotationService.get_content_marks("drawing", 'one-shot', this.drawing_id,0).pipe( first()).subscribe(r=>{
         //marks
         this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
         this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -159,13 +159,13 @@ export class ThumbnailDrawingComponent implements OnInit {
     };
 
     if(this.format=="artbook"){
-      this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).pipe( first()).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
       });  
 
-      this.NotationService.get_content_marks("drawing", 'artbook', this.drawing_id,0).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.NotationService.get_content_marks("drawing", 'artbook', this.drawing_id,0).pipe( first()).subscribe(r=>{
         //marks
         this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
         this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
@@ -174,7 +174,7 @@ export class ThumbnailDrawingComponent implements OnInit {
       }) 
     };
 
-    this.Profile_Edition_Service.retrieve_profile_data(Number(this.user_id)).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+    this.Profile_Edition_Service.retrieve_profile_data(Number(this.user_id)).pipe( first()).subscribe(r=> {
       this.author_name = r[0].firstname;
       this.pseudo=r[0].nickname;
       this.certified_account=r[0].certified_account;
@@ -292,10 +292,6 @@ export class ThumbnailDrawingComponent implements OnInit {
     });
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
   
 }

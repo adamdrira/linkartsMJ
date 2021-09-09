@@ -147,7 +147,7 @@ export class NavbarLinkartsComponent implements OnInit {
           this.navbar_visible=true;
           this.rd.setStyle(this.navbarMargin.nativeElement, "height", "54px");
           this.initialize_selectors();
-          navbar.check_using_chat.pipe( first()).subscribe(using_chat=>{
+          navbar.check_using_chat.subscribe(using_chat=>{
             this.using_chat=using_chat;
             this.using_chat_retrieved=true
             let chat_messages_interval = setInterval(() => {
@@ -196,7 +196,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   check_chat_service_func(){
-    this.chatService.messages.pipe( first()).subscribe(msg=>{
+    this.chatService.messages.subscribe(msg=>{
       if(msg[0].for_notifications){
         this.sort_notifications(msg);
       }
@@ -318,7 +318,7 @@ export class NavbarLinkartsComponent implements OnInit {
     
    
 
-    this.navbar.notification.pipe( first()).subscribe(msg=>{
+    this.navbar.notification.subscribe(msg=>{
       if(msg && msg[0].for_notifications){
         this.sort_notifications(msg);
       }

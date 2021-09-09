@@ -95,7 +95,7 @@ export class PopupNavbarComponent implements OnInit {
     public dialogRef: MatDialogRef<PopupNavbarComponent>,
    
     ) { 
-      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }

@@ -5,8 +5,8 @@ import {Subscribing_service} from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
 
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-thumbnail-user',
@@ -56,7 +56,7 @@ export class ThumbnailUserComponent implements OnInit {
     private navbar: NavbarService,
     private Subscribing_service:Subscribing_service,
     private cd:ChangeDetectorRef) { 
-      navbar.visibility_observer_font.pipe( takeUntil(this.ngUnsubscribe) ).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -108,23 +108,23 @@ export class ThumbnailUserComponent implements OnInit {
     if(this.item && this.item.id){
       this.user_id = this.item.id;
       
-      this.Profile_Edition_Service.get_emphasized_content(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Profile_Edition_Service.get_emphasized_content(this.user_id).pipe( first()).subscribe(r=>{
         if(r[0]){
           this.emphasized_artwork=r[0];
           this.show_arrow=true;
         }
       })
-      this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).pipe( first()).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         this.profile_picture = url;
       });
   
-      this.Profile_Edition_Service.retrieve_cover_picture_thumbnail( this.user_id ).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_cover_picture_thumbnail( this.user_id ).pipe( first()).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         this.cover_picture = url;
       });
   
-      this.Profile_Edition_Service.retrieve_profile_data(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=> {
+      this.Profile_Edition_Service.retrieve_profile_data(this.user_id).pipe( first()).subscribe(r=> {
         this.author_name = r[0].firstname;
         this.pseudo=r[0].nickname;
         this.occupation=r[0].job;
@@ -138,7 +138,7 @@ export class ThumbnailUserComponent implements OnInit {
        
       });
 
-      this.Subscribing_service.get_all_subscribed_users(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(information=>{
+      this.Subscribing_service.get_all_subscribed_users(this.user_id).pipe( first()).subscribe(information=>{
         this.subscribers_number= information[0].length;
         this.subscribtion_retrieved=true;
         if(this.date_retrieved && this.number_of_contents_retrieved && this.subscribtion_retrieved){
@@ -146,7 +146,7 @@ export class ThumbnailUserComponent implements OnInit {
         }
       });
   
-      this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).pipe( takeUntil(this.ngUnsubscribe) ).subscribe(r=>{
+      this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).pipe( first()).subscribe(r=>{
         this.number_of_comics=r[0].number_of_comics;
         this.number_of_drawings=r[0].number_of_drawings;
         this.number_of_writings=r[0].number_of_writings;
@@ -214,10 +214,6 @@ export class ThumbnailUserComponent implements OnInit {
     }
   }
 
-  protected ngUnsubscribe: Subject<void> = new Subject<void>();
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+
 
 }

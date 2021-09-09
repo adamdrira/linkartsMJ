@@ -27,7 +27,7 @@ export class MediaComicsComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     private navbar: NavbarService,) { 
-      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
