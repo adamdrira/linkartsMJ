@@ -9,7 +9,7 @@
         <div class="header author-container">
 
             <a [routerLink]=open_account() (click)="close_stories();">
-                <img *ngIf="is_start" (load)='loaded_pp()' [src]="profile_picture_safe" loading="lazy"  [ngClass]="{'really-invisible':!display_pp }">
+                <img *ngIf="is_start" (load)='loaded_pp()' [src]="profile_picture_safe" [ngClass]="{'really-invisible':!display_pp }">
                 <img *ngIf="!is_start"  (load)='loaded_pp()'   class="swiper-lazy" [attr.data-src]="profile_picture" [lazyLoad]="profile_picture"  loading="lazy"  [ngClass]="{'really-invisible':!display_pp }">
                 <div *ngIf="!display_pp" class="image-skeleton shiny"></div>
             </a>
@@ -66,7 +66,7 @@
     
             <div  *ngFor="let item of list_of_contents; let i=index" class="swiper-slide" [ngStyle]="{'overflow': show_list_of_viewers ? 'auto' : 'unset'}" (scroll)="onScroll(i)">
 
-                <img (load)='loaded_image(i)'  class="swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy"  loading="lazy" [ngClass]="{'invisible':!display_images[i],'really-invisible':show_list_of_viewers || loading_list_of_viewers}">
+                <img (load)='loaded_image(i)'  class="swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy"  [ngClass]="{'invisible':!display_images[i],'really-invisible':show_list_of_viewers || loading_list_of_viewers}">
                 
                 
                 <div class="loading-dots" *ngIf="loading_list_of_viewers">
@@ -91,7 +91,7 @@
                             <div class="user-container"  >
         
                                     <div class="left-container"  [ngClass]="{'shiny':!list_of_pp_loaded[k]}">
-                                        <img  class="swiper-lazy" [lazyLoad]="list_of_profile_pictures[i][k]"  [customObservable]="scroll? scroll : null" loading="lazy"  loading="lazy"  (load)="load_list_of_pp(k)"  [ngClass]="{ 'invisible':!list_of_pp_loaded[k]}">
+                                        <img  class="swiper-lazy" [lazyLoad]="list_of_profile_pictures[i][k]"  [customObservable]="scroll? scroll : null" loading="lazy"  (load)="load_list_of_pp(k)"  [ngClass]="{ 'invisible':!list_of_pp_loaded[k]}">
                                     </div>
         
                                     <div class="right-container">
