@@ -3581,6 +3581,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez désormais aller soutenir l'artiste que vous souhaitez. Donner de la visibilité à un artiste en s'abonnant à son compte, en commentant ou en aimant ses œuvres est, en effet, essentiel pour qu'il puisse être pertinent auprès des éditeurs. Votre soutien l'aidera fortement !</p> `
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">N'hésitez pas à revenir sur LinkArts si jamais vous souhaitez vous aussi vous lancer dans un projet de collaboration éditorial, ou que vous souhaitez profiter des critiques d'autres artistes pour progresser dans votre domaine, avant de vous lancer dans un tel projet. </p> `
                       }
+                      else if(user.type_of_account=="Particulier" || user.type_of_account=="Professionnel"){
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration éditoriale, en commençant par la recherche d'un partenaire de projet, jusqu'à la déposition de projet auprès d'une maison d'édition avec retour garantit, en passant par la prestation de services artistiques. N'hésitez donc pas à utilisez cette plateforme pour satisfaire vos besoin !</p> `
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">LinkArts vous permet aussi de recherchez des artistes en parcourant la galerie afin d'approfondir votre recherche en vous focalisation sur la qualité du contenu d'un artiste.</p> `
+                      }
                       else {
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous invitons aussi à prouver votre relation avec la société que vous représentée, en nous fourinissant les justificatifs nécessaires, qui vous sont demandée dans l'onglet "mon compte" de vote profil.</p>
                         <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
@@ -3645,8 +3649,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            //to: user.email, // my mail
-            to:"appaloosa-adam@hotmail.fr",
+            to: user.email, // my mail
+            //to:"appaloosa-adam@hotmail.fr",
             subject: `Bienvenue sur LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3773,8 +3777,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            //to: email, // my mail
-            to:"appaloosa-adam@hotmail.fr",
+            to: email, // my mail
+            //to:"appaloosa-adam@hotmail.fr",
             subject: `Invitation LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3914,8 +3918,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
                 var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
-                  //to: user_found.email, // my mail
-                  to:"appaloosa-adam@hotmail.fr",
+                  to: user_found.email, // my mail
+                  //to:"appaloosa-adam@hotmail.fr",
                   subject: `Adhésion à un groupe`, // Subject line
                   html: mail_to_send , // html body
                 };
@@ -4059,8 +4063,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
             var mailOptions = {
               from: 'Linkarts <services@linkarts.fr>', // sender address
-              //to: user_found.email, // my mail
-              to:"appaloosa-adam@hotmail.fr",
+              to: user_found.email, // my mail
+              //to:"appaloosa-adam@hotmail.fr",
               subject: `Création de groupe`, 
               html:  mail_to_send, 
             };
@@ -4830,11 +4834,28 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     }
 
     let nickname=req.params.nickname;
-    ig.scrapeUserPage(nickname).then((result) => {
+    console.log("retrieve_instagram_data")
+    const Insta = require('scraper-instagram');
+    const InstaClient = new Insta();
+    InstaClient.getProfile("nacimagazine")
+    .then(profile => {
+      console.log("in profile")
+    })
+    .catch(err => {
+      console.log("in error")
+      console.error(err);
+    })
+     
+    ig.scrapeUserPage("driraadam").then((result) => {
       res.status(200).send(([result]))
     }).catch(err=>{
+
+      console.log("err data")
+      console.log(err)
       res.status(200).send(([null]))
     });
+
+   
   });
 
  
