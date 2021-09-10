@@ -513,7 +513,7 @@ export class AccountComponent implements OnInit {
     }
     else{
       this.location.go(`account/${this.pseudo}`)
-      this.route.data.pipe( first() ).subscribe( resp => {
+      this.route.data.subscribe( resp => {
         let s = resp.user;
         let user=this.user_data;
         this.visitor_id=s[0].id
@@ -522,9 +522,8 @@ export class AccountComponent implements OnInit {
         this.visitor_description=s[0].primary_description;
         this.visitor_first_name=s[0].firstname;
         this.type_of_profile=s[0].status;
-        this.visitor_type_of_account=s[0].type_of_account;
+        this.visitor_type_of_account=s[0].type_of_account?s[0].type_of_account:"visitor";
         this.type_of_profile_retrieved=true;
-    
        
         if( user  && this.visitor_id==user.id){
           this.mode_visiteur = false;
@@ -636,7 +635,7 @@ export class AccountComponent implements OnInit {
       this.visitor_name=s[0].nickname;
       this.visitor_certified=s[0].certified_account;
       this.visitor_description=s[0].primary_description;
-      this.visitor_type_of_account=s[0].type_of_account;
+      this.visitor_type_of_account=s[0].type_of_account?s[0].type_of_account:"visitor";
       this.visitor_first_name=s[0].firstname;
       this.type_of_profile=s[0].status;
       this.type_of_profile_retrieved=true;

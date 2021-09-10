@@ -3423,6 +3423,8 @@
       display: flex;
       position: absolute;
       flex-direction: column;
+      visibility: hidden;
+      height: 0x;
     }
     .middle-container {
       display: none;
