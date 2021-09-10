@@ -2,21 +2,21 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
-/*const pool = new Pool({
+const pool = new Pool({
     port: 5432,
     database: 'linkarts',
     user: 'adamdrira',
     password: 'E273adamZ9Qvps',
     host: 'localhost',
-});*/
+});
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});
+});*/
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -67,13 +67,13 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         last_month.setDate(last_month.getDate() - 30);
 
         if(category=="All"){
-            pool.query('SELECT  publication_category,format,target_id,research_string, COUNT(*) occurrences FROM list_of_navbar_researches WHERE  "createdAt" ::date >= $1 AND  (status=$2 OR status=$3 )GROUP BY publication_category,format,target_id,research_string ORDER BY count(*) DESC LIMIT 10', [last_month,status1,status2], (error, results) => {
+            pool.query('SELECT research_string, COUNT(*) occurrences FROM list_of_navbar_researches WHERE  "createdAt" ::date >= $1 AND  (status=$2 OR status=$3 )GROUP BY research_string ORDER BY count(*) DESC LIMIT 10', [last_month,status1,status2], (error, results) => {
                 if (error) {
                   
                     res.status(500).send([{error:error}]);
                 }
                 else{
-                    let result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows))
                     res.status(200).send([result]);
                 }
             })
@@ -475,6 +475,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
           return res.status(401).json({msg: "error"});
         }
       }
+
         let id_user = get_current_user(req.cookies.currentUser);
         let category = req.body.category;
         let limit = parseInt(req.body.limit);
@@ -2753,7 +2754,6 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         let views=0;
         let views_after_research=0;
         let compteur=0;
-        console.log("get_number_of_account_viewers")
         list_of_users.findOne({
             where:{
                 id:id_user,
@@ -2838,6 +2838,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
         var last_week = new Date();
         last_week.setDate(last_week.getDate() - 30);
+
         if(category=="comic"){
             pool.query('SELECT publication_category,format,target_id,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND "createdAt" ::date >= $3 AND (number_of_comics>=number_of_drawings AND number_of_comics>=number_of_writings AND number_of_comics>=number_of_ads) AND (Lower(style) LIKE ' + text_to_search +' OR Lower(style) LIKE ' + text_to_search +')  GROUP BY publication_category,format,target_id ORDER BY count(*) DESC LIMIT 5 ', ["Account",status,last_week], (error, results) => {
                 if (error) {
