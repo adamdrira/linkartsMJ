@@ -244,6 +244,7 @@
             }
     
             .profile-text {
+                flex-wrap: nowrap;
                 margin-top:4px;
                 text-align:center;
                 padding-left: 10px;
@@ -266,7 +267,7 @@
                     font-size: 12px;
                     line-height: 16px;
                     color: #ffffff;
-                    white-space: nowrap;
+                    flex-wrap: nowrap;
                 }
     
                 .sub-category{
@@ -305,7 +306,14 @@
                         }
                     }
                 
+                  
                       
+                }
+
+                .profile-text-align{
+                    display: flex;
+                    align-items: center;
+                    margin: auto 4px;
                 }
             }
     

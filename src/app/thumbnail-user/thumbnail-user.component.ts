@@ -4,8 +4,6 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import {Subscribing_service} from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
-
-
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -162,7 +160,6 @@ export class ThumbnailUserComponent implements OnInit {
   }
 
 
-  
 
   load_pp(){
     this.pp_is_loaded=true;
