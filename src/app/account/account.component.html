@@ -1262,7 +1262,7 @@
 
                                     <ng-container *ngIf="!( mode_visiteur && !email_about && !phone_about )">
 
-                                        <div class="block-info-contact" *ngIf="email_about && !mode_visiteur">
+                                        <div class="block-info-contact" *ngIf="email_about ">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
                                             <span matTooltip="Visible uniquement par les éditeurs certifiés" 
                                             matTooltipClass='linkarts-tooltip' 
@@ -1277,7 +1277,7 @@
                                             [matTooltipShowDelay]="200">Aucun e-mail ajouté</span>
                                         </div>
 
-                                        <div class="block-info-contact" *ngIf="phone_about && !mode_visiteur" >
+                                        <div class="block-info-contact" *ngIf="phone_about" >
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">local_phone</mat-icon>
                                             <span
                                             matTooltip="Visible uniquement par les éditeurs certifiés" 
