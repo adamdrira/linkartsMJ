@@ -546,23 +546,24 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
         const name = req.body.name;
         const drawing_id = req.body.drawing_id;
         Liste_artbook.findOne({
-                where: {
-                  drawing_id: drawing_id,
-                  authorid: current_user,
-                }
-              })
-              .catch(err => {
-                  	
-                  res.status(500).json({msg: "error", details: err});		
-                }).then(drawing =>  {
+            where: {
+              drawing_id: drawing_id,
+              authorid: current_user,
+            }
+        }).catch(err => {
+                
+              res.status(500).json({msg: "error", details: err});		
+            }).then(drawing =>  {
+              if(drawing){
                 drawing.update({
                   "name_coverpage" :name
                 })
-                .catch(err => {
-                  	
-                  res.status(500).json({msg: "error", details: err});		
-                }).then(res.status(200).send([drawing]))
-              }); 
+                res.status(200).send([drawing]);
+              }
+              else{
+                res.status(200).send([{error:"restart"}]);
+              }
+          }); 
     
         });
 

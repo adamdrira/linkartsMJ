@@ -608,7 +608,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   destination: './data_and_routes/covers_drawings',
                   plugins: [
                     imageminPngquant({
-                      quality: [0.7, 0.8]
+                      quality: [0.85, 0.95]
                   })
                   ]
                 });
@@ -639,16 +639,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
     const name = req.body.name;
     const drawing_id = req.body.drawing_id;
-    (async () => {
-
-
-      if (Object.keys(req.body).length === 0 ) {
-        return res.send({
-          success: false
-        });
-        
-      } else { 
-         drawing = await drawings_one_page.findOne({
+    drawings_one_page.findOne({
             where: {
               drawing_id: drawing_id,
               authorid: current_user,
@@ -658,16 +649,18 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
             	
             res.status(500).json({msg: "error", details: err});		
           }).then(drawing =>  {
-            drawing.update({
-              "name_coverpage" :name
-            })
-            res.status(200).send([drawing]);
+            if(drawing){
+              drawing.update({
+                "name_coverpage" :name
+              })
+              res.status(200).send([drawing]);
+            }
+            else{
+              res.status(200).send([{error:"restart"}]);
+            }
+        
           }); 
-          }
-
-    })();
     });
-
 
       //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
       router.delete('/remove_cover_drawing_from_folder/:name', function (req, res) {
