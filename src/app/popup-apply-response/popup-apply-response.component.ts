@@ -1,12 +1,16 @@
 import { trigger, transition, style, animate } from '@angular/animations';
-import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+
+import { Component, Inject, OnInit,ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Edtior_Projects } from '../services/editor_projects.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
-import { NavbarService } from '../services/navbar.service';
+
+import { NotificationsService } from '../services/notifications.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { NavbarService } from '../services/navbar.service';
+import { ChatService } from '../services/chat.service';
+import {  first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-popup-apply-response',
@@ -39,6 +43,9 @@ export class PopupApplyResponseComponent implements OnInit {
     public navbar: NavbarService,
     public dialogRef: MatDialogRef<PopupApplyResponseComponent,any>,
     public dialog: MatDialog,
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
+    private cd:ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
 
     navbar.visibility_observer_font.subscribe(font=>{
@@ -119,9 +126,32 @@ export class PopupApplyResponseComponent implements OnInit {
         response:this.registerForm.value.comment,
         
       }
-      this.Edtior_Projects.submit_response_for_artist(data).subscribe(r=>{
-        this.loading_response=false;
-        this.dialogRef.close(data);
+      this.Edtior_Projects.submit_response_for_artist(data).pipe(first() ).subscribe(r=>{
+        this.NotificationsService.add_notification('apply-response',this.data.author.id,this.data.author_name,this.project.id_user,this.project.formula,'none','none',this.project.id,0,"add",false,0).pipe(first() ).subscribe(l=>{
+          let message_to_send ={
+            for_notifications:true,
+            type:"apply-response",
+            id_user_name:this.data.author_name,
+            id_user:this.data.author.id, 
+            id_receiver:this.project.id_user,
+            publication_category:this.project.formula,
+            publication_name:'none',
+            format:'none',
+            publication_id:this.project.id,
+            chapter_number:0,
+            information:"add",
+            status:"unchecked",
+            is_comment_answer:false,
+            comment_id:0,
+          }
+         
+          this.loading_response=false;
+          this.chatService.messages.next(message_to_send);
+          this.dialogRef.close(data);
+          this.cd.detectChanges();
+        })
+      
+       
       })
       
     }

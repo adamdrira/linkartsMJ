@@ -2,16 +2,15 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
-import { Router } from '@angular/router';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {NotificationsService}from '../services/notifications.service';
 import {ChatService}from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Subscribing_service } from '../services/subscribing.service';
 import { NavbarService } from '../services/navbar.service';
+import { first } from 'rxjs/operators';
 
-const url = 'http://localhost:4600/routes/upload_drawing_onepage';
+const url = 'https://www.linkarts.fr/routes/upload_drawing_onepage';
 @Component({
   selector: 'app-uploader-dessin-unique',
   templateUrl: './uploader-dessin-unique.component.html',
@@ -26,9 +25,7 @@ export class UploaderDessinUniqueComponent implements OnInit {
     private NotificationsService:NotificationsService,
     private sanitizer:DomSanitizer,  
     private Drawings_Onepage_Service: Drawings_Onepage_Service, 
-    private router: Router,
     private Subscribing_service:Subscribing_service,
-    private Profile_Edition_Service:Profile_Edition_Service,
     public dialog: MatDialog,
     private navbar: NavbarService,
     ){
@@ -126,17 +123,18 @@ export class UploaderDessinUniqueComponent implements OnInit {
           });
         }
         else{
-          if(Math.trunc(size)>=3){
+          if(Math.trunc(size)>=5){
             this.uploader.queue.pop();
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-              data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 3mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+              data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 5mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
               panelClass: "popupConfirmationClass",
             });
+            return 
           }
           else{
             file.withCredentials = true; 
             let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
-          this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
+            this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
             this.afficheruploader = false;
             this.afficherpreview = true;
           }
@@ -152,9 +150,9 @@ export class UploaderDessinUniqueComponent implements OnInit {
       };
 
       this.uploader.onCompleteItem = (file) => {
-        this.Drawings_Onepage_Service.validate_drawing(this.drawing_id).subscribe(r=>{
-        this.Subscribing_service.validate_content("drawing","one-shot",this.drawing_id,0).subscribe(l=>{
-          this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
+        this.Drawings_Onepage_Service.validate_drawing(this.drawing_id).pipe(first()).subscribe(r=>{
+        this.Subscribing_service.validate_content("drawing","one-shot",this.drawing_id,0).pipe(first()).subscribe(l=>{
+          this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).pipe(first()).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"add_publication",
@@ -207,9 +205,9 @@ remove_beforeupload(item:FileItem){
 
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
 remove_afterupload(item){
-    this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(information=>{
+    this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).pipe(first()).subscribe(information=>{
       const filename= information[0].drawing_name;
-      this.Drawings_Onepage_Service.remove_drawing_from_folder(filename).subscribe(r=>{
+      this.Drawings_Onepage_Service.remove_drawing_from_folder(filename).pipe(first()).subscribe(r=>{
         item.remove();
         this.uploaded.emit(false);
         this.afficheruploader = true;

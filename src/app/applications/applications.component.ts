@@ -12,6 +12,8 @@ import { DOCUMENT } from '@angular/common';
 import { merge, fromEvent } from 'rxjs';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { PopupApplyResponseComponent } from '../popup-apply-response/popup-apply-response.component';
+import { ChatService } from '../services/chat.service';
+import { NotificationsService } from '../services/notifications.service';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -48,6 +50,8 @@ export class ApplicationsComponent implements OnInit {
     private Edtior_Projects:Edtior_Projects,
     private navbar: NavbarService,
     public dialog: MatDialog,
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
     private fb: FormBuilder,
     @Inject(DOCUMENT) private document: Document,
     ) {
@@ -408,7 +412,29 @@ export class ApplicationsComponent implements OnInit {
   open_project(i){
     if(this.author.type_of_account.includes("dit")){
       this.Edtior_Projects.set_project_read(this.list_of_applications[i].id).pipe(first() ).subscribe(r=>{
-        this.list_of_projects[i]=r
+        this.list_of_projects[i]=r;
+        this.NotificationsService.add_notification('apply-read',this.author.id,this.author_name,this.list_of_applications[i].id_user,this.list_of_applications[i].formula,'none','none',this.list_of_applications[i].id,0,"add",false,0).pipe(first() ).subscribe(l=>{
+          let message_to_send ={
+            for_notifications:true,
+            type:"apply-read",
+            id_user_name:this.author_name,
+            id_user:this.author.id, 
+            id_receiver:this.list_of_applications[i].id_user,
+            publication_category:this.list_of_applications[i].formula,
+            publication_name:'none',
+            format:'none',
+            publication_id:this.list_of_applications[i].id,
+            chapter_number:0,
+            information:"add",
+            status:"unchecked",
+            is_comment_answer:false,
+            comment_id:0,
+          }
+
+          
+          this.chatService.messages.next(message_to_send);
+          this.cd.detectChanges();
+        })
       })
     }
     

@@ -744,7 +744,8 @@
 
                                     <div class="description-bottom">
                                         <span *ngIf="instructions">{{instructions}}</span>
-                                        <span *ngIf="!instructions">Vous n'avez ajouté aucune consigne</span>
+                                        <span *ngIf="!instructions && ! mode_visiteur">Vous n'avez ajouté aucune consigne.</span>
+                                        <span *ngIf="!instructions && mode_visiteur">Aucune consigne spécifique.</span>
                                     </div>
 
                                     <div class="title-bottom">
@@ -922,9 +923,9 @@
                                     </a>
                                 </div>
                                 <div class="bottom">
-                                    <div class="add-artwork-button" *ngIf="no_new_contents && mode_visiteur">
+                                    <div class="add-artwork-button" *ngIf="no_new_contents ">
                                         <span class="visitor" *ngIf="!type_of_account.includes('dit') ">Aucune œuvre disponible</span>
-                                        <span class="visitor" *ngIf="type_of_account.includes('dit') ">Aucune extrait d'œuvre disponible</span>
+                                        <span class="visitor" *ngIf="type_of_account.includes('dit') ">Aucun extrait d'œuvre disponible</span>
                                     </div>
                                     <div *ngIf="display_new_comic_contents" class="bd-container no-max-width" >
                                         <div class="artwork-type-title" (click)="open_from_news(0);scroll(target)" #target>
@@ -1261,7 +1262,7 @@
 
                                     <ng-container *ngIf="!( mode_visiteur && !email_about && !phone_about )">
 
-                                        <div class="block-info-contact" *ngIf="(email_about && !mode_visiteur) || (mode_visiteur && email_about && visitor_type_of_account.includes('dit') && visitor_certified)">
+                                        <div class="block-info-contact" *ngIf="email_about && !mode_visiteur">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
                                             <span matTooltip="Visible uniquement par les éditeurs certifiés" 
                                             matTooltipClass='linkarts-tooltip' 
@@ -1276,7 +1277,7 @@
                                             [matTooltipShowDelay]="200">Aucun e-mail ajouté</span>
                                         </div>
 
-                                        <div class="block-info-contact" *ngIf="(phone_about && !mode_visiteur) || (mode_visiteur && phone_about && visitor_type_of_account.includes('dit') && visitor_certified) " >
+                                        <div class="block-info-contact" *ngIf="phone_about && !mode_visiteur" >
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">local_phone</mat-icon>
                                             <span
                                             matTooltip="Visible uniquement par les éditeurs certifiés" 

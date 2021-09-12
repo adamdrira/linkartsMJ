@@ -59,10 +59,10 @@
                     
     
                     <div class="pages-controller-container title-option" >
-                        <span class="title-option-artwork" >{{title}}</span>
+                        <span class="title-option-artwork" [ngClass]="{'invisible': !show_icon }" >{{title}}</span>
                     </div>
 
-                    <div class="pages-controller-container"  [ngClass]="{'invisible': !writing_retrieved }">
+                    <div class="pages-controller-container"  [ngClass]="{'invisible': !writing_retrieved || !show_icon}">
                         <span>Page :</span>
                         <input #input  (keyup)="change_page($event)" type="text" aria-label="" role="navigation" size="5">
                         <div class="total-pages" >

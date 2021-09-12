@@ -1431,7 +1431,7 @@
                         <textarea matInput #input cdkTextareaAutosize formControlName="message" maxlength="3000"
                             (keydown)="on_keydown($event)" (keyup)="on_keyup($event)" (input)="check_message_for_phone()" (click)="activateFocus()" (blur)="desactivateFocus()"
                             (paste)="onPaste($event);" onblur="this.placeholder = 'Ecrivez un message...'" type="text"
-                            [placeholder]="'Ecrivez un message...'" autocomplete="off" autocorrect="off"
+                            [placeholder]="'Ecrivez un message...'" autocomplete="on" autocorrect="on"
                             autocapitalize="off" spellcheck="false"></textarea>
 
                         <div class="messages-options-container">

@@ -75,7 +75,7 @@ export class SwiperUploadArtbookComponent  {
   @Input() format: string;
   @Input() tags: string[];
 
-  
+  errorMsg : string = "Une erreur s'est produite, veuilliez réitérer le processus.";
   @ViewChild('swiperContainer', { static : false }) swiperContainer: ElementRef;
   @ViewChild('swiperController', { static : false }) swiperController: ElementRef;
 
@@ -446,6 +446,7 @@ export class SwiperUploadArtbookComponent  {
       if(this.imageDestination=='' && !this.loading_thumbnail){
         this.loading_thumbnail=true;
         this.Drawings_CoverService.send_cover_todata(blob).pipe( first()).subscribe(res=>{
+          if(res && res[0].filename && res[0].filename!=''){
             this.confirmation = true;
             this.imageDestination = canvas.toDataURL("image/png");
             this.loading_thumbnail=false;
@@ -454,6 +455,16 @@ export class SwiperUploadArtbookComponent  {
             var topOfElement = el.offsetTop - 200;
             window.scroll({top: topOfElement, behavior:"smooth"});
             this.cd.detectChanges();
+          }
+          else{
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:this.errorMsg},
+              panelClass: "popupConfirmationClass",
+            });
+            this.loading_thumbnail=false;
+          }
+
+            
          
         })
       }
@@ -511,7 +522,7 @@ export class SwiperUploadArtbookComponent  {
       this.display_loading=false;
     }
     else if( !this.confirmation ) {
-      errorMsg = "Merci d'éditer la vignette";
+      errorMsg = "Merci d'éditer la miniature";
       this.displayErrors = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg},
@@ -522,18 +533,29 @@ export class SwiperUploadArtbookComponent  {
     else {
       this.displayErrors = false;
       this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).pipe( first()).subscribe(r=>{
-        this.Drawings_Artbook_Service.send_drawing_height_artbook(this.thumbnail_height,this.drawing_id).pipe( first()).subscribe(sr=>{
-          for (let step = 0; step < this.componentRef.length; step++) {
-            this.componentRef[ step ].instance.upload = true;
-            this.componentRef[ step ].instance.total_pages = this.componentRef.length;
-            this.componentRef[ step ].instance.sendValidated.pipe( first()).subscribe( v => {
-              this.block_cancel=true;
-              this.display_loading=false
-              this.Drawings_CoverService.remove_covername();
-              this.router.navigate([`/account/${this.pseudo}`]);
-            });
-          }
-        })
+        if(!r[0].error){
+          this.Drawings_Artbook_Service.send_drawing_height_artbook(this.thumbnail_height,this.drawing_id).pipe( first()).subscribe(sr=>{
+            for (let step = 0; step < this.componentRef.length; step++) {
+              this.componentRef[ step ].instance.upload = true;
+              this.componentRef[ step ].instance.total_pages = this.componentRef.length;
+              this.componentRef[ step ].instance.sendValidated.pipe( first()).subscribe( v => {
+                this.block_cancel=true;
+                this.Drawings_CoverService.remove_covername();
+                this.router.navigate([`/account/${this.pseudo}`]);
+              });
+            }
+          })
+        }
+        else{
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:this.errorMsg},
+            panelClass: "popupConfirmationClass",
+          });
+          this.display_loading=false;
+          this.displayErrors = true;
+        }
+
+        
         
       });
      

@@ -18,7 +18,7 @@ import { PopupContractComponent } from '../popup-contract/popup-contract.compone
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { ResizedEvent } from 'angular-resize-event';
-import { merge, fromEvent } from 'rxjs'
+import { merge, fromEvent } from 'rxjs';
 import { PopupEditPictureComponent } from '../popup-edit-picture/popup-edit-picture.component';
 import { Subject } from 'rxjs';
 import { takeUntil,first } from 'rxjs/operators';
@@ -1881,6 +1881,9 @@ emojis_size_list=[30,30,30,30,30,30,30,30,30];
 list_show_reactions:any[]=[];
 handleClick($event) {
   let data = this.message_group.get('message');
+  console.log(data)
+  console.log(data.value)
+  console.log($event.emoji.native)
   if(data.value){
     data.patchValue(data.value + $event.emoji.native);
     

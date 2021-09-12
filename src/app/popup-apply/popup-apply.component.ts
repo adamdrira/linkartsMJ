@@ -12,10 +12,13 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent  } from '@angular/material/autocomplete';
-import { map, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
+import {  first } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { ChatService } from '../services/chat.service';
+import { NotificationsService } from '../services/notifications.service';
 
 //ajouter une url pour upload de dossier
 declare var Stripe: any;
@@ -54,6 +57,8 @@ export class PopupApplyComponent implements OnInit {
     private Edtior_Projects:Edtior_Projects,
     private ConstantsService:ConstantsService,
     private StripeService:StripeService,
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
     public dialog: MatDialog,
     @Inject(DOCUMENT) private document: Document,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
@@ -70,7 +75,6 @@ export class PopupApplyComponent implements OnInit {
       }
     })
     this.filteredGenres = this.genresCtrl.valueChanges.pipe(
-      startWith(null),
       map((genre: string | null) => genre ? this._filter_genre(genre) : this.list_of_genres.slice()));
   }
 
@@ -120,9 +124,9 @@ export class PopupApplyComponent implements OnInit {
       this.step=2;
       this.id_project=this.data.id_project;
       let password=this.data.password;
-      this.Edtior_Projects.check_if_payement_done(this.id_project,password).subscribe(r=>{
+      this.Edtior_Projects.check_if_payement_done(this.id_project,password).pipe(first() ).subscribe(r=>{
         if(r[0]){
-          this.Edtior_Projects.set_payement_done_for_project(this.id_project).subscribe(r=>{
+          this.Edtior_Projects.set_payement_done_for_project(this.id_project).pipe(first() ).subscribe(r=>{
             this.loading_check=false;
             this.step=2;
           })
@@ -317,12 +321,37 @@ export class PopupApplyComponent implements OnInit {
   }
 
   stripe:any;
+
   submit_single_project(data){
     this.Edtior_Projects.submit_project_for_editor(data).subscribe(r=>{
-      this.id_project=r[0].id
-      let URL = url + `${r[0].id}/${this.file_name}`;
-      this.uploader.setOptions({ url: URL});
-      this.uploader.queue[0].upload();
+      this.NotificationsService.add_notification('apply',this.visitor_id,this.user_name,this.list_of_editors_ids[0],data.formula,'none','none',r[0].id,0,"add",false,0).pipe(first() ).subscribe(l=>{
+        let message_to_send ={
+          for_notifications:true,
+          type:"apply",
+          id_user_name:this.user_name,
+          id_user:this.visitor_id, 
+          id_receiver:this.list_of_editors_ids[0],
+          publication_category:data.formula,
+          publication_name:'none',
+          format:'none',
+          publication_id:r[0].id,
+          chapter_number:0,
+          information:"add",
+          status:"unchecked",
+          is_comment_answer:false,
+          comment_id:0,
+        }
+       
+        this.id_project=r[0].id
+        let URL = url + `${r[0].id}/${this.file_name}`;
+        this.uploader.setOptions({ url: URL});
+        this.uploader.queue[0].upload();
+
+        
+        this.chatService.messages.next(message_to_send);
+        this.cd.detectChanges();
+      })
+     
     })
   }
   check_payement_after_project_submited(){
@@ -332,13 +361,13 @@ export class PopupApplyComponent implements OnInit {
     else{
       if(this.total_price==0){
         //cas gratuit
-        this.Edtior_Projects.set_payement_done_for_project(this.id_project).subscribe(r=>{
+        this.Edtior_Projects.set_payement_done_for_project(this.id_project).pipe(first() ).subscribe(r=>{
           this.step=2;
           this.loading_project=false;
         })
       }
       else{
-        this.StripeService.create_checkout_project_submission(this.total_price*100,this.user_nickname,this.id_project,this.registerForm.value.title).subscribe(r=>{
+        this.StripeService.create_checkout_project_submission(this.total_price*100,this.user_nickname,this.id_project,this.registerForm.value.title).pipe(first() ).subscribe(r=>{
           this.stripe=Stripe(r[0].key)
           return this.stripe.redirectToCheckout({ sessionId: r[0].id });
         })

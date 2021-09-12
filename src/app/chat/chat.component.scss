@@ -1501,6 +1501,11 @@ button.show-more {
     img {
         max-width: 300px;
         max-height: 300px;
+
+        @media(max-width:500px){
+            max-width: 200px !important; 
+            max-height: 200px !important; 
+        }
     }
 }
 

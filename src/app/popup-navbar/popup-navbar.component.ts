@@ -408,6 +408,10 @@ get_my_favorite() {
     return "/home/favorites"
 }
 
+open_my_projects(){
+  return "/account/" + this.pseudo + '/projects'
+}
+
 get_account_for_notification(notif:any) {
   return "/account/" + notif.id_user_name ;
 }

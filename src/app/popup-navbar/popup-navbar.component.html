@@ -215,6 +215,62 @@
     
     
                         <div class="author-container" *ngIf="notif">
+
+
+                          <!-- --------------------------- apply read----------------------------------->
+                          <!-- --------------------------- apply read----------------------------------->
+                          <ng-container *ngIf="notif.type=='apply-read'">
+    
+                            <a (click)="close_notifications();not_using_chat();close_dialog()" [routerLink]="open_my_projects()">
+                              <div class="left-container">
+                                <img [lazyLoad]="list_of_notifications_profile_pictures[i]" alt="miniature"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
+                                  [ngClass]="{'invisible':!notification_loaded[i]}">
+                                <div class="notification-icon apply">
+                                  <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
+                                </div>
+                              </div>
+                              <div class="right-container">
+                                <span><b>{{notif.id_user_name}}</b> a ouvert votre dossier. Consultez vos projets pour suivre leur avancement. </span>
+                                <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                              </div>
+                            </a>
+                          </ng-container>
+                          <!-- --------------------------- apply----------------------------------->
+                          <!-- --------------------------- apply----------------------------------->
+                          <ng-container *ngIf="notif.type=='apply'">
+    
+                            <a (click)="close_notifications();not_using_chat();close_dialog()" [routerLink]="open_my_projects()">
+                              <div class="left-container">
+                                <img [lazyLoad]="list_of_notifications_profile_pictures[i]" alt="miniature"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
+                                  [ngClass]="{'invisible':!notification_loaded[i]}">
+                                <div class="notification-icon apply">
+                                  <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
+                                </div>
+                              </div>
+                              <div class="right-container">
+                                <span><b>{{notif.id_user_name}}</b> vous a soumis un projet {{notif.publication_category}}.</span>
+                                <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                              </div>
+                            </a>
+                          </ng-container>
+                          <!-- --------------------------- apply-response----------------------------------->
+                          <!-- --------------------------- apply-response----------------------------------->
+                          <ng-container *ngIf="notif.type=='apply-response'">
+    
+                            <a (click)="close_notifications();not_using_chat();close_dialog()" [routerLink]="open_my_projects()">
+                              <div class="left-container">
+                                <img [lazyLoad]="list_of_notifications_profile_pictures[i]" alt="miniature"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
+                                  [ngClass]="{'invisible':!notification_loaded[i]}">
+                                <div class="notification-icon apply">
+                                  <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
+                                </div>
+                              </div>
+                              <div class="right-container">
+                                <span><b>{{notif.id_user_name}}</b> vous a répondu au sujet de votre projet ! Découvrez la réponse. </span>
+                                <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                              </div>
+                            </a>
+                          </ng-container>
                           <!-- ---------------------------subscribtion----------------------------------->
                           <!-- ---------------------------subscribtion----------------------------------->
                           <ng-container *ngIf="notif.type=='subscribtion'">
@@ -234,20 +290,20 @@
                             </a>
                           </ng-container>
                           <!-- ---------------------------welcome----------------------------------->
-                        <!-- ---------------------------welcome----------------------------------->
-                        <ng-container *ngIf="notif.type=='welcome'">
+                          <!-- ---------------------------welcome----------------------------------->
+                          <ng-container *ngIf="notif.type=='welcome'">
 
-                          <a (click)="close_notifications();not_using_chat();" [routerLink]="get_my_account()">
-                            <div class="left-container">
-                              <img src="../../assets/img/svg/Logo-LA3.svg"  alt="logo Linkarts" >
-                            </div>
-                            <div class="right-container">
-                              <span><b>Bienvenue sur Linkarts !</b> Vous pouvez dès à présent personnaliser votre page de profil et compléter vos informations de compte.</span>
-                            
-                              <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
-                            </div>
-                          </a>
-                        </ng-container>
+                            <a (click)="close_notifications();not_using_chat();" [routerLink]="get_my_account()">
+                              <div class="left-container">
+                                <img src="../../assets/img/svg/Logo-LA3.svg"  alt="logo Linkarts" >
+                              </div>
+                              <div class="right-container">
+                                <span><b>Bienvenue sur Linkarts !</b> Vous pouvez dès à présent personnaliser votre page de profil et compléter vos informations de compte.</span>
+                              
+                                <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                              </div>
+                            </a>
+                          </ng-container>
                           <!-- ---------------------------favorites----------------------------------->
                           <!-- ---------------------------favorites----------------------------------->
                           <ng-container *ngIf="notif.type=='favorites'">

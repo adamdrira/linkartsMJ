@@ -2,16 +2,14 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-import { Router } from '@angular/router';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {NotificationsService}from '../services/notifications.service';
 import {ChatService}from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Subscribing_service } from '../services/subscribing.service';
 import { NavbarService } from '../services/navbar.service';
-
-const url = 'http://localhost:4600/routes/upload_drawing_artbook/';
+import { first } from 'rxjs/operators';
+const url = 'https://www.linkarts.fr/routes/upload_drawing_artbook/';
 
 @Component({
   selector: 'app-uploader-artbook',
@@ -28,8 +26,6 @@ export class UploaderArtbookComponent implements OnInit {
     private NotificationsService:NotificationsService,
     private sanitizer:DomSanitizer, 
     private Drawings_Artbook_Service:Drawings_Artbook_Service, 
-    private router: Router,
-    private Profile_Edition_Service:Profile_Edition_Service,
     public dialog: MatDialog,
     private navbar: NavbarService,
     ){
@@ -135,12 +131,13 @@ export class UploaderArtbookComponent implements OnInit {
         });
       }
       else{
-        if(Math.trunc(size)>=3){
+        if(Math.trunc(size)>=5){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 3mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 5mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
             panelClass: "popupConfirmationClass",
           });
+          return
         }
         else{
           file.withCredentials = true; 
@@ -158,9 +155,9 @@ export class UploaderArtbookComponent implements OnInit {
     this.uploader.onCompleteItem = (file) => {
 
       if( (this._page + 1) == this.total_pages ) {
-        this.Drawings_Artbook_Service.validate_drawing(this.total_pages,this.drawing_id).subscribe(r=>{
-          this.Subscribing_service.validate_content("drawing","artbook",this.drawing_id,0).subscribe(l=>{
-            this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
+        this.Drawings_Artbook_Service.validate_drawing(this.total_pages,this.drawing_id).pipe(first()).subscribe(r=>{
+          this.Subscribing_service.validate_content("drawing","artbook",this.drawing_id,0).pipe(first()).subscribe(l=>{
+            this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).pipe(first()).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
                 type:"add_publication",
@@ -223,9 +220,9 @@ export class UploaderArtbookComponent implements OnInit {
   //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
   remove_afterupload(item){
    
-    this.Drawings_Artbook_Service.remove_page_from_sql(this._page,this.drawing_id).subscribe(information=>{
+    this.Drawings_Artbook_Service.remove_page_from_sql(this._page,this.drawing_id).pipe(first()).subscribe(information=>{
       const filename= information[0].drawing_name;
-      this.Drawings_Artbook_Service.remove_page_from_folder(filename).subscribe(r=>{
+      this.Drawings_Artbook_Service.remove_page_from_folder(filename).pipe(first()).subscribe(r=>{
         this.sendPicture.emit( {page: this._page, changePage: false, removing: true } );
         item.remove();
         this.afficheruploader = true;

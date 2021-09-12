@@ -11,7 +11,7 @@
                 </button>
                 <button class="logo" [ngClass]="{'opened': opened_category == 1 }"
                     (click)="open_category(1);scroll(target);" #target>
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">border_color</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">unarchive</mat-icon>
                     <span *ngIf="!small_screen">Projets traitées</span>
                     <span *ngIf="small_screen">Traités</span>
                 </button>
@@ -29,7 +29,7 @@
                 </button>
                 <button class="logo" [ngClass]="{'opened': opened_category == 1 }"
                     (click)="open_category(1);scroll(target);" #target>
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">border_color</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
                     <span *ngIf="!small_screen">Projets traités</span>
                     <span *ngIf="small_screen">Traités</span>
                 </button>

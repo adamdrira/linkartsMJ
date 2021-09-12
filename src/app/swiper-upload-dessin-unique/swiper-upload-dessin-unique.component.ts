@@ -56,7 +56,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   display_loading=false;
 
   thumbnail_height:string;
-
+  errorMsg : string = "Une erreur s'est produite, veuilliez réitérer le processus.";
   @Input('drawing_id') drawing_id:number;
   @Input('profile_picture') profile_picture:SafeUrl;
   @Input('author_name') author_name:string;
@@ -157,14 +157,24 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
       if(this.imageDestination=='' && !this.loading_thumbnail){
         this.loading_thumbnail=true;
         this.Drawings_CoverService.send_cover_todata(blob).pipe( first()).subscribe(res=>{
-          this.confirmation = true;
-          this.loading_thumbnail=false;
-          this.imageDestination = canvas.toDataURL("image/png");
-          this.cd.detectChanges();
-          let el = document.getElementById("target3");
-          var topOfElement = el.offsetTop - 200;
-          window.scroll({top: topOfElement, behavior:"smooth"});
-          this.cd.detectChanges();
+          if(res && res[0].filename && res[0].filename!=''){
+            this.confirmation = true;
+            this.loading_thumbnail=false;
+            this.imageDestination = canvas.toDataURL("image/png");
+            this.cd.detectChanges();
+            let el = document.getElementById("target3");
+            var topOfElement = el.offsetTop - 200;
+            window.scroll({top: topOfElement, behavior:"smooth"});
+            this.cd.detectChanges();
+          }
+          else{
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:this.errorMsg},
+              panelClass: "popupConfirmationClass",
+            });
+            this.loading_thumbnail=false;
+          }
+          
         })
       }
      
@@ -211,9 +221,9 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   }
 
   sendValidated(event){
-      this.block_cancel=true;
-      this.Drawings_CoverService.remove_covername();
-      this.router.navigate([`/account/${this.pseudo}`]);
+    this.block_cancel=true;
+    this.Drawings_CoverService.remove_covername();
+    this.router.navigate([`/account/${this.pseudo}`]);
   }
 
   block_cancel=false;
@@ -224,7 +234,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     }
     this.display_loading=true;
     let errorMsg1 : string = "Le dessin n'a pas été téléchargé";
-    let errorMsg2 : string = "La vignette n'a pas été éditée";
+    let errorMsg2 : string = "La miniature n'a pas été éditée";
 
     if( !this.image_uploaded ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -245,11 +255,21 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     else {
       this.displayErrors = false;
       this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).pipe( first()).subscribe(res=>{
-        this.Drawings_Onepage_Service.send_drawing_height_one_shot(this.thumbnail_height,this.drawing_id).pipe( first()).subscribe(r=>{
+        if(!res[0].error){
+          this.Drawings_Onepage_Service.send_drawing_height_one_shot(this.thumbnail_height,this.drawing_id).pipe( first()).subscribe(r=>{
+            this.upload=true;
+            this.cd.detectChanges();
+          })
+        }
+        else{
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:this.errorMsg},
+            panelClass: "popupConfirmationClass",
+          });
           this.display_loading=false;
-          this.upload=true;
-          this.cd.detectChanges();
-        })
+          this.displayErrors = true;
+        }
+        
         
       });
     }

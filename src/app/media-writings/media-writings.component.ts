@@ -169,7 +169,7 @@ export class MediaWritingsComponent implements OnInit {
   can_show_more_history=true;
   number_of_writings_for_history=6;
   reset_number_of_writings_for_history(){
-    if(this.last_consulted_writings.length>0){
+    if(this.last_consulted_writings && this.last_consulted_writings.length>0){
       let multiple= Math.floor(this.number_of_writings_for_history/this.number_of_writings_to_show)
       this.number_of_writings_for_history=(multiple>0)?multiple*this.number_of_writings_to_show:this.number_of_writings_to_show;
   

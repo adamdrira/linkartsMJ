@@ -70,11 +70,11 @@
                         <mat-icon [ngClass]="{'invisible': !show_icon }">zoom_in</mat-icon>
                     </div>
     
-                    <div class="pages-controller-container" [ngClass]="{'invisible': !display_pages}">
+                    <div class="pages-controller-container" [ngClass]="{'invisible': !show_icon }">
                         <span class="title-option" [ngClass]="{'title-option-artwork': type=='artbook'}">{{title}}</span>
                     </div>
 
-                    <div class="pages-controller-container" *ngIf="type=='artbook'" [ngClass]="{'invisible': !display_pages}">
+                    <div class="pages-controller-container" *ngIf="type=='artbook'" [ngClass]="{'invisible': !display_pages  || !show_icon}">
                         <span>Page :</span>
                         <input type="text" aria-label="" role="navigation" size="5">
                         <div class="total-pages" *ngIf="swiper && swiper.slides">

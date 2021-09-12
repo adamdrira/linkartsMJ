@@ -368,7 +368,7 @@ export class MediaDrawingsComponent implements OnInit {
   number_of_drawings_to_show2=6;
   number_of_drawings_for_history=6;
   reset_number_of_drawings_for_history(){
-    if(this.last_consulted_drawings.length>0){
+    if(this.last_consulted_drawings && this.last_consulted_drawings.length>0){
       let multiple= Math.floor(this.number_of_drawings_for_history/this.number_of_drawings_to_show2)
       this.number_of_drawings_for_history=(multiple>0)?multiple*this.number_of_drawings_to_show2:this.number_of_drawings_to_show2;
   
