@@ -7,6 +7,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const authentification = require('../../authentication/db.config');
 const favorites_seq= require('../../favorites/model/sequelize');
 var nodemailer = require('nodemailer');
+const Op = Sequelize.Op;
 const Pool = require('pg').Pool;
 const pool = new Pool({
   port: 5432,
@@ -16,16 +17,16 @@ const pool = new Pool({
   host: 'localhost',
 });
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
-});
+});*/
 
-/*pool.connect((err, client, release) => {
+pool.connect((err, client, release) => {
     if (err) {
       return console.error('Error acquiring client', err.stack)
     }
@@ -35,7 +36,7 @@ const pool = new Pool({
         return console.error('Error executing query', err.stack)
       }
     })
-})*/
+})
 
 
 function get_current_user(token){
@@ -76,7 +77,7 @@ function get_current_user(token){
       order: [
           ['rank', 'ASC']
         ],
-      limit: 30,
+      limit: 50,
     }).catch(err => {
 			response.status(500).json({msg: "error", details: err});		
 		}).then(resu=>{
@@ -102,19 +103,26 @@ function get_current_user(token){
             order: [
                 ['rank', 'ASC']
               ],
-            limit: 30,
+            limit: 50,
           }).catch(err => {
             response.status(500).json({msg: "error", details: err});	
           }).then(resu=>{
             if(resu[0]){
               response.status(200).send([{favorites:resu}]);
             }
+            else{
+              console.log("generate_favorites")
+              generate_favorites();
+            }
             
           })
         }
         else{
-          generate_favorites();
+          //generate_favorites();
         }
+       
+        
+        
           
         
         
@@ -139,8 +147,8 @@ function get_current_user(token){
             })
             .on("finish", function() {
                 //pour ubuntu  
-                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
-                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
+                 //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
+                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
                 pythonProcess.stderr.pipe(process.stderr);
                 pythonProcess.stdout.on('data', (data) => {
                   //console.log("python res")
@@ -359,10 +367,10 @@ function get_current_user(token){
             if(list_of_users[i] && list_of_users[i].email_authorization!="false"){
               
       
-                if(parseInt(list_of_rankings[i])>30){
+                if(parseInt(list_of_rankings[i])>50){
                   return
                 }
-                const Op = Sequelize.Op;
+              
                 var byesterday = new Date();
                 byesterday.setDate(byesterday.getDate() - 2);
                 authentification.users_connexions.findOne({
@@ -374,12 +382,34 @@ function get_current_user(token){
                 }).then(r=>{
   
                   if(!r){
-                    send_email()
+                    check_if_email_sent(); // test
+                    //send_email()  // àremettre
                   }
                 })
+
+                
+              function check_if_email_sent(){
+                var today = new Date();
+                today.setDate(today.getDate() - 7);
+                var last_week = new Date();
+                last_week.setDate(last_week.getDate() - 14);
+                favorites_seq.favorites.findOne({
+                    where: {
+                      id_user:list_of_users[i].id,
+                      createdAt:{[Op.and]:[{[Op.lt]: today},{[Op.gt]: last_week} ]},
+                    },
+                    order: [
+                        ['createdAt', 'DESC']
+                      ],
+                  }).then(user=>{
+                    if(!user){
+                      send_email()
+                    }
+                  })
+              }
   
                function send_email(){
-                  let text=`Vous avez atteint le top 30 des <b>Coups de cœur</b> du jour.`;
+                  let text=`Vous avez atteint le top 50 des <b>Coups de cœur</b> du jour.`;
                   /*if(day==1 && parseInt(list_of_rankings[i])<=15){
                     text+=`Vous avez atteint le top 30 des <b>Coups de cœur</b> du jour. Et puisque nous sommes lundi vous allez être rémunéré ! Le montant de cette rémunération est disponible dans la section "rémunération" de votre compte.`
                   }
@@ -465,8 +495,8 @@ function get_current_user(token){
           
                 var mailOptions = {
                     from: 'Linkarts <services@linkarts.fr>', // sender address
-                    to:  list_of_users[i].email, // my mail
-                    //to: "appaloosa-adam@hotmail.fr",
+                    //to:  list_of_users[i].email, // my mail
+                    to: "appaloosa-adam@hotmail.fr",
                     subject: `Top Coups de cœur !`, // Subject line
                     html: mail_to_send, // html body
                 };
