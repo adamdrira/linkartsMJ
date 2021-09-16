@@ -65,7 +65,6 @@ export class Writing_Upload_Service {
   get_writing_name(){
     return this.httpClient.post('routes/get_writing_name', {withCredentials:true}).pipe(map(information=>{
           this.name_writing = information[0].name_writing;
-          console.log(this.name_writing)
           return this.name_writing
     }));
  };

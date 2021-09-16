@@ -27,7 +27,6 @@ export class Bd_CoverService {
   get_cover_name(){
    return this.httpClient.post('routes/get_covername_comic',{}, {withCredentials:true}).pipe(map(information=>{
       this.covername = information[0].covername;
-      console.log(this.covername) 
       return information 
   }));
  };
