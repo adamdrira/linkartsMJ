@@ -24,7 +24,7 @@
                 </div>
 
 
-                <div #chat class="icon-container" *ngIf=" !using_chat">
+                <div #chat class="icon-container" *ngIf=" !using_chat" [ngClass]="{ 'shiny':!data_retrieved}">
                     <div class="icon icon-messenger" (click)="open_messages()"
                       [ngClass]="{ 'invisible':  !data_retrieved}"
                       matTooltip="Messagerie" 
@@ -53,7 +53,7 @@
                 </div>
 
 
-                <div #notifications class="icon-container">
+                <div #notifications class="icon-container" [ngClass]="{ 'shiny': !data_retrieved}">
                     <div class="icon icon-bell" (click)="open_notifications() "
                       [ngClass]="{ 'invisible': !data_retrieved}"
                       matTooltip="Notifications" 
@@ -219,6 +219,24 @@
 
                           <!-- --------------------------- apply read----------------------------------->
                           <!-- --------------------------- apply read----------------------------------->
+                          <ng-container *ngIf="notif.type=='custom'">
+    
+                            <a (click)="close_notifications();not_using_chat();close_dialog()" [routerLink]="notif.publication_name">
+                              <div class="left-container">
+                                <img [lazyLoad]="list_of_notifications_profile_pictures[i]" alt="miniature"  [customObservable]="scroll_notifs? scroll_notifs : null" loading="lazy" (load)="load_notification_pp(i)"
+                                  [ngClass]="{'invisible':!notification_loaded[i]}">
+                                <div class="notification-icon custom">
+                                  <mat-icon [ngClass]="{'invisible': !show_icon }">lightbulb</mat-icon>
+                                </div>
+                              </div>
+                              <div class="right-container">
+                                <span><b>Hey !</b> {{notif.information}}</span>
+                                <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                              </div>
+                            </a>
+                          </ng-container>
+                          <!-- --------------------------- apply read----------------------------------->
+                          <!-- --------------------------- apply read----------------------------------->
                           <ng-container *ngIf="notif.type=='apply-read'">
     
                             <a (click)="close_notifications();not_using_chat();close_dialog()" [routerLink]="open_my_projects()">
@@ -316,7 +334,7 @@
                                 </div>
                               </div>
                               <div class="right-container">
-                                <span><b>Bravo !</b> Vous avez atteint le top <b>{{notif.chapter_number}}</b> des coups de coeur du jour</span>
+                                <span><b>Bravo !</b> Vous avez atteint le top <b>{{notif.chapter_number}}</b> des coups de cœur du jour</span>
                               
                                 <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
                               </div>

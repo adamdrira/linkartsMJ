@@ -148,13 +148,13 @@
                 [matTooltipShowDelay]="200">edit</mat-icon>
             </button>
 
-            <button *ngIf="!profile_not_found && !mode_visiteur && !for_reset_password" class="change-profile-picture"   (click)="change_profile_picture();" [ngClass]="{'invisible': !show_icon || !pp_is_loaded}">
+            <div *ngIf="!profile_not_found && !mode_visiteur && !for_reset_password" class="change-profile-picture"   (click)="change_profile_picture();" [ngClass]="{'invisible': !show_icon || !pp_is_loaded}">
                 <mat-icon 
                 matTooltip="Changer ma photo de profil" 
                 matTooltipClass='linkarts-tooltip' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">camera_alt</mat-icon>
-            </button>
+            </div>
 
             <div class="profile-picture" [ngClass]="{'visiteur': mode_visiteur && (!story_retrieved || !story_found),'new-story': story_state }">
                 
@@ -1264,33 +1264,20 @@
 
                                         <div class="block-info-contact" *ngIf="email_about ">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
-                                            <span matTooltip="Visible uniquement par les éditeurs certifiés" 
-                                            matTooltipClass='linkarts-tooltip' 
-                                            [matTooltipPosition]="'below'"
-                                            [matTooltipShowDelay]="200">{{email_about}}</span>
+                                            <span >{{email_about}}</span>
                                         </div>
                                         <div class="block-info-contact" *ngIf="!email_about && !mode_visiteur">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
-                                            <span matTooltip="Visible uniquement par les éditeurs certifiés" 
-                                            matTooltipClass='linkarts-tooltip' 
-                                            [matTooltipPosition]="'below'"
-                                            [matTooltipShowDelay]="200">Aucun e-mail ajouté</span>
+                                            <span>Aucun e-mail ajouté</span>
                                         </div>
 
                                         <div class="block-info-contact" *ngIf="phone_about" >
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">local_phone</mat-icon>
-                                            <span
-                                            matTooltip="Visible uniquement par les éditeurs certifiés" 
-                                            matTooltipClass='linkarts-tooltip' 
-                                            [matTooltipPosition]="'below'"
-                                            [matTooltipShowDelay]="200">{{phone_about}}</span>
+                                            <span>{{phone_about}}</span>
                                         </div>
                                         <div class="block-info-contact" *ngIf="!phone_about && !mode_visiteur">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">local_phone</mat-icon>
-                                            <span matTooltip="Visible uniquement par les éditeurs certifiés" 
-                                            matTooltipClass='linkarts-tooltip' 
-                                            [matTooltipPosition]="'below'"
-                                            [matTooltipShowDelay]="200">Aucun numéro ajouté</span>
+                                            <span >Aucun numéro ajouté</span>
                                         </div>
 
                                         <div class="add-skills" *ngIf="!mode_visiteur" (click)="open_section(6,true,6);">

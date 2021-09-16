@@ -174,6 +174,7 @@ export class ArtworkComicComponent implements OnInit {
   @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
   @ViewChild('swiperContainer') swiperContainerRef:ElementRef;
   @ViewChildren('swiperSlide') swiperSlide:QueryList<ElementRef>;
+  @ViewChildren('Webtoons') webtoons:QueryList<ElementRef>;
   @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;
 
  
@@ -730,7 +731,10 @@ export class ArtworkComicComponent implements OnInit {
   }
 
 
-  get_comic_oneshot_pages(bd_id,total_pages) {
+  get_comic_oneshot_pages(bd_id,total_pages:number) {
+    /*if(total_pages>10){
+      total_pages=10
+    }*/
     for( var i=0; i< total_pages; i++ ) {
       this.BdOneShotService.retrieve_bd_page(bd_id,i,window.innerWidth).pipe(first() ).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
@@ -746,6 +750,13 @@ export class ArtworkComicComponent implements OnInit {
     };
 
   }
+
+  /*get_more_comic_oneshot_pages(bd_id,total_pages:number){
+    if(total_pages> this.list_bd_pages.length){
+
+    }
+
+  }*/
 
   check_likes_after_current_one_shot(){
     if(this.current_user_retrieved && this.likes_retrieved_but_not_checked){
@@ -1165,6 +1176,7 @@ export class ArtworkComicComponent implements OnInit {
       },
       watchSlidesVisibility:true,
       simulateTouch: true,
+      direction:(this.style=="Webtoon")?'vertical':'horizontal',
       initialSlide:(this.style=="Manga")?this.pagesnumber-1:0,
       scrollbar: {
         el: '.swiper-scrollbar',
@@ -2613,7 +2625,16 @@ export class ArtworkComicComponent implements OnInit {
     this.navbar.add_page_visited_to_history(`/artwork-comic-share/${this.type}/${this.title}/${this.bd_id}/${this.current_chapter + 1}/${category}`,this.device_info).pipe(first() ).subscribe();
   }
 
-  
+  scroll_value:number=0;
+  onScrollImage(event){
+    if(this.webtoons && this.webtoons.toArray()[this.swiper.activeIndex].nativeElement.scrollTop + this.webtoons.toArray()[this.swiper.activeIndex].nativeElement.offsetHeight >= this.webtoons.toArray()[this.swiper.activeIndex].nativeElement.scrollHeight){
+      this.swiper.slideTo(this.swiper.activeIndex +1,500,false);
+    }
+    else if(this.webtoons && (this.webtoons.toArray()[this.swiper.activeIndex].nativeElement.scrollTop + this.webtoons.toArray()[this.swiper.activeIndex].nativeElement.offsetHeight)==this.webtoons.toArray()[this.swiper.activeIndex].nativeElement.offsetHeight){
+      this.swiper.slideTo(this.swiper.activeIndex -1,500,false);
+     
+    }
+  }
 }
 
 

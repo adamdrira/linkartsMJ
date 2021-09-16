@@ -408,7 +408,7 @@ export class SignupComponent implements OnInit {
   index_check=0
   check_pseudo(){
     this.index_check++;
-    this.Profile_Edition_Service.check_pseudo(this.registerForm1.value.nickname, this.index_check).pipe( first()).subscribe(r=>{
+    this.Profile_Edition_Service.check_pseudo(this.registerForm1.value.nickname.replace(/\n\s*\n\s*\n/g, '\n\n').trim(), this.index_check).pipe( first()).subscribe(r=>{
       if(r[0][0].msg=="found"){
         this.display_pseudo_found_1=true;
         this.cd.detectChanges()
@@ -453,7 +453,7 @@ export class SignupComponent implements OnInit {
       return
     }
     this.loading_signup=true;
-    this.user.nickname = this.registerForm1.value.nickname;
+    this.user.nickname = this.registerForm1.value.nickname.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
     this.user.email = this.registerForm1.value.email.toLowerCase();
     this.user.password = this.registerForm1.value.password;
     this.user.gender = "user";

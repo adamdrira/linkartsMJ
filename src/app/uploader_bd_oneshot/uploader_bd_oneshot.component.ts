@@ -12,8 +12,8 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import {NotificationsService}from '../services/notifications.service';
 import {ChatService} from '../services/chat.service';
 import { NavbarService } from '../services/navbar.service';
-
-const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
+import { first } from 'rxjs/operators';
+const url = 'https://www.linkarts.fr/routes/upload_page_bd_oneshot/';
 
 @Component({
   selector: 'app-uploader_bd_oneshot',
@@ -89,11 +89,8 @@ get upload(): boolean {
  return this._upload;
 
 }
-   @Input() bdtitle: string;
-
- 
-
-
+  @Input() bdtitle: string;
+  @Input() style: string;
 
   public fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
@@ -111,7 +108,7 @@ get upload(): boolean {
 
   show_icon=false;
   ngOnInit() {
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+    this.Profile_Edition_Service.get_current_user().pipe(first()).subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
       this.visitor_name=r[0].nickname;
@@ -132,10 +129,10 @@ get upload(): boolean {
         });
       }
       else{
-        if(Math.trunc(size)>=3){
+        if(Math.trunc(size)>=5){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 3mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 5mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
             panelClass: "popupConfirmationClass",
           });
         }
@@ -152,9 +149,9 @@ get upload(): boolean {
 
     this.uploader.onCompleteItem = (file) => {
     if( (this._page + 1) == this.total_pages ) {
-      this.bdOneShotService.validate_bd(this.bd_id,this.total_pages).subscribe(r=>{
-        this.Subscribing_service.validate_content("comic","one-shot",this.bd_id,0).subscribe(l=>{
-          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'one-shot',this.bd_id,0,"add",false,0).subscribe(l=>{
+      this.bdOneShotService.validate_bd(this.bd_id,this.total_pages).pipe(first()).subscribe(r=>{
+        this.Subscribing_service.validate_content("comic","one-shot",this.bd_id,0).pipe(first()).subscribe(l=>{
+          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'one-shot',this.bd_id,0,"add",false,0).pipe(first()).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"add_publication",
@@ -200,9 +197,9 @@ remove_beforeupload(item:FileItem){
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
 remove_afterupload(item){
     //On supprime le fichier en base de donnée
-    this.bdOneShotService.remove_page_from_sql(this.bd_id,this.page).subscribe(information=>{
+    this.bdOneShotService.remove_page_from_sql(this.bd_id,this.page).pipe(first()).subscribe(information=>{
       const filename= information[0].file_name;
-      this.bdOneShotService.remove_page_from_folder(filename).subscribe()
+      this.bdOneShotService.remove_page_from_folder(filename).pipe(first()).subscribe()
     });
     item.remove();
     this.afficheruploader = true;

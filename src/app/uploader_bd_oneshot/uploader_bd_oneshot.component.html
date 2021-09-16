@@ -29,8 +29,8 @@
     <ng-container  *ngIf="afficherpreview">
 
 
-        <div class="element-container">
-            <div class="img-container">
+        <div class="element-container"   [ngClass]="{'webtoon':style=='Webtoon'}">
+            <div class="img-container"  [ngClass]="{'webtoon-container':style=='Webtoon'}">
                 <img [src]="image_to_show" alt="{{ uploader.queue[0]?.file?.name }}">
             </div>
             <div class="name-container">

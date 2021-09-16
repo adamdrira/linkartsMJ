@@ -54,6 +54,7 @@ export class SwiperUploadSerieComponent implements OnInit {
   @Input() chapter: number;
   @Input() name: string;
   @Input() bdtitle: string;
+  @Input() style:string;
   @Output() validated = new EventEmitter<any>();
   validated_chapter: boolean = false;
   @Input() bd_id:number;
@@ -310,7 +311,7 @@ export class SwiperUploadSerieComponent implements OnInit {
     this.componentRef[ this.componentRef.length - 1 ].instance.bd_id = this.bd_id;
     this.componentRef[ this.componentRef.length - 1 ].instance.page = this.swiper.slides.length - 1;
     this.componentRef[ this.componentRef.length - 1 ].instance.chapter = this.chapter;
-  
+    this.componentRef[ this.componentRef.length - 1 ].instance.style = this.style;
     this.cd.detectChanges();
   }
 
@@ -369,7 +370,6 @@ export class SwiperUploadSerieComponent implements OnInit {
           this.componentRef[ step ].instance.total_pages = this.componentRef.length;
           this.componentRef[ step ].instance.upload = true;
           this.componentRef[ step ].instance.sendValidated.pipe( first()).subscribe( v => {
-              console.log("received validated")
               this.display_loading=false
               this.validated.emit();
               this.validated_chapter=true;
@@ -388,7 +388,6 @@ export class SwiperUploadSerieComponent implements OnInit {
     if (this.chapter==0) {
       this.BdSerieService.RemoveBdSerie(this.bd_id).pipe( first()).subscribe(res=>{
         this.Bd_CoverService.remove_cover_from_folder().pipe( first()).subscribe(r=>{
-          console.log(r)
         })
       }); 
     }

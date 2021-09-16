@@ -18,6 +18,9 @@ import { UploaderWrittingComponent } from '../uploader-writting/uploader-writtin
 import { Uploader_bd_oneshot } from '../uploader_bd_oneshot/uploader_bd_oneshot.component';
 import { UploaderAttachmentsAdComponent } from '../uploader-attachments-ad/uploader-attachments-ad.component';
 import { AddComicsChapterComponent } from '../add-comics-chapter/add-comics-chapter.component';
+import { EditDrawingThumbnailComponent } from '../edit-drawing-thumbnail/edit-drawing-thumbnail.component';
+
+
 import { FormSerieComponent } from '../form-serie/form-serie.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -70,6 +73,7 @@ import { ConstantsService } from '../services/constants.service';
     AddWritingComponent,
     AddAdComponent,
     AddComicsChapterComponent,
+    EditDrawingThumbnailComponent,
     SwiperUploadOneshotComponent,
     SwiperUploadSerieComponent,
     SwiperUploadDessinUniqueComponent,

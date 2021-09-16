@@ -1,6 +1,6 @@
 
 <div *ngIf="page_not_found">
-  page not found
+    <app-page-not-found></app-page-not-found>
 </div>
 
 <div class="container-fluid add-artwork" *ngIf="data_retrieved">
@@ -34,6 +34,7 @@
         [pseudo]="pseudo"
         [bdtitle]="comics_data.title"
         [bd_id_add_comics]="bd_id"
+        [style]="comics_data.category"
         [list_of_chapters]="list_of_chapters"
         ></app-form-serie>
 

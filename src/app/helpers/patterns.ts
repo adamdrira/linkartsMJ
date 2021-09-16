@@ -24,7 +24,7 @@ export function pattern(type: string) {
     }
     //alpha numérique + accents + pas plus de deux tirets ou underscore à la suite
     if( type == "nickname" ) {
-        return "^(?=.*[a-zA-Z0-9"+accents+"_-])(?!.*[_-]{3})[a-zA-Z0-9"+accents+special_characters2+"_-]+([a-zA-Z0-9"+accents+special_characters2+"])$";
+        return "^(?=.*[a-zA-Z0-9"+accents+"_-])(?!.*[_-]{3})[a-zA-Z0-9"+accents+special_characters2+"_-]+([a-zA-Z0-9 "+accents+special_characters2+"])$";
     }
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace
     if( type == "text" ) {

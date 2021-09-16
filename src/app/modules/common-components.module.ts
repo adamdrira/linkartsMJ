@@ -26,6 +26,8 @@ import { ThumbnailDrawingComponent } from '../thumbnail-drawing/thumbnail-drawin
 import { ThumbnailSkeletonComponent } from '../thumbnail-skeleton/thumbnail-skeleton.component';
 import { ThumbnailUserComponent } from '../thumbnail-user/thumbnail-user.component';
 
+
+
 import { UploaderBdCoverComponent } from '../uploader-bd-cover/uploader-bd-cover.component';
 import { UploaderCoverWritingComponent } from '../uploader-cover-writing/uploader-cover-writing.component';
 import { UploaderThumbnailAdComponent } from '../uploader-thumbnail-ad/uploader-thumbnail-ad.component';

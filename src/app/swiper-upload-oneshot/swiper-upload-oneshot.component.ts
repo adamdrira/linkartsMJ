@@ -50,6 +50,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
   @Input() bd_id: number;
   @Input() type: string;
   @Input() bdtitle: string;
+  @Input() style:string;
   @ViewChild('swiperContainer', { static : false }) swiperContainer: ElementRef;
   @ViewChild('swiperController', { static : false }) swiperController: ElementRef;
 
@@ -289,6 +290,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
     this.componentRef[ this.componentRef.length - 1 ].instance.bd_id = this.bd_id;
     this.componentRef[ this.componentRef.length - 1 ].instance.page = this.swiper.slides.length - 1;
     this.componentRef[ this.componentRef.length - 1 ].instance.bdtitle = this.bdtitle;
+    this.componentRef[ this.componentRef.length - 1 ].instance.style = this.style;
   }
 
   event_removed_page() {

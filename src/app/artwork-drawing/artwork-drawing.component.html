@@ -417,6 +417,11 @@
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                                 <span>Éditer les informations</span>
                             </button>
+                            <a class="artwork-button-menu-item" (click)="edit_thumbnail()" [href]="get_edit_thumbnail()" target="_blank">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">view_carousel</mat-icon>
+                                <span>Éditer la miniature</span>
+                            </a>
+                            
                             <button *ngIf="!content_emphasized && status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="emphasize()">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">trending_up</mat-icon>
                                 <span>Mettre l'oeuvre en avant</span>

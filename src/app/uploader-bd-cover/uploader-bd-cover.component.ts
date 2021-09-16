@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, ViewChild, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, ViewChild, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { Bd_CoverService } from '../services/comics_cover.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-
+import { first } from 'rxjs/operators';
 declare var Swiper:any;
 
 const url = 'https://www.linkarts.fr/routes/upload_cover_bd_oneshot';
@@ -174,7 +174,6 @@ export class UploaderBdCoverComponent implements OnInit {
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
@@ -202,17 +201,16 @@ export class UploaderBdCoverComponent implements OnInit {
 
     this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
-      console.log(file._file.name)
       if(this.for_edition){
-        this.Bd_CoverService.get_cover_name().subscribe(r=>{
+        this.Bd_CoverService.get_cover_name().pipe(first()).subscribe(r=>{
 
           if(r[0].error){
             this.remove_afterupload(this.uploader.queue[0])
           }
           else{
             if ( this.format == "one-shot" ) {
-              this.Bd_CoverService.add_covername_to_sql2("One-shot",this.bd_id).subscribe(r=>{
-                this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+              this.Bd_CoverService.add_covername_to_sql2("One-shot",this.bd_id).pipe(first()).subscribe(r=>{
+                this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).pipe(first()).subscribe(info=>{
                   this.cover_loading=false;
                  location.reload();
                 });
@@ -220,8 +218,8 @@ export class UploaderBdCoverComponent implements OnInit {
             }
         
             else if (this.format == "serie" ) {
-              this.Bd_CoverService.add_covername_to_sql2("Série",this.bd_id).subscribe(r=>{
-                this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+              this.Bd_CoverService.add_covername_to_sql2("Série",this.bd_id).pipe(first()).subscribe(r=>{
+                this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).pipe(first()).subscribe(info=>{
                   this.cover_loading=false;
                   location.reload();
                 });
@@ -233,7 +231,7 @@ export class UploaderBdCoverComponent implements OnInit {
       }
       else{
        
-        this.Bd_CoverService.get_cover_name().subscribe(r=>{
+        this.Bd_CoverService.get_cover_name().pipe(first()).subscribe(r=>{
           if(r[0].error){
             this.remove_afterupload(this.uploader.queue[0])
           }
@@ -284,7 +282,7 @@ export class UploaderBdCoverComponent implements OnInit {
       //On supprime le fichier en base de donnée
       this.confirmation = false;
       this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation);
-      this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+      this.Bd_CoverService.remove_cover_from_folder().pipe(first()).subscribe(r=>{
         item.remove();
         this.afficheruploader = true;
         this.afficherpreview = false;

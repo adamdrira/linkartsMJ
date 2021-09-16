@@ -90,8 +90,9 @@
                                     
                                 </div>
                             </mat-select>
-                            <mat-error *ngIf="f00.controls['f00Category'].invalid">Veuillez sélectionner un style</mat-error>
-                            <mat-hint *ngIf="f00Category.value == 'Manga'">La lecture se fera de droite à gauche</mat-hint>
+                            <mat-error *ngIf="f00.controls['f00Category'].invalid">Veuillez sélectionner un style.</mat-error>
+                            <mat-hint *ngIf="f00Category.value == 'Manga'">La lecture se fera de droite à gauche.</mat-hint>
+                            <mat-hint *ngIf="f00Category.value == 'Webtoon'">La lecture se fera de haut en bas, en scrollant.</mat-hint>
                         </mat-form-field>
                     </div>
 
@@ -268,6 +269,7 @@
             <app-swiper-upload-oneshot 
             [bdtitle]="f00.value.f00Title" 
             [bd_id]=bd_id 
+            [style]="f00.value.f00Category"
             [type]="f00.value.f00Format"></app-swiper-upload-oneshot>
 
 
@@ -306,6 +308,7 @@
             [user_id]="user_id"
             [pseudo]="pseudo"
             [bd_id]=bd_id
+            [style]="f00.value.f00Category"
             [bdtitle]="f00.value.f00Title"
             [chapter]=f00.value.f00SerieFirstChapter></app-form-serie>
 

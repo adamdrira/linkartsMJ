@@ -205,7 +205,15 @@
                                     <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
                                             [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] || !display_comics_pages[list_bd_pages.length-1]}" [alt]="'page '+(i+1)+' de '+title">
                                 </ng-container>
-                                <ng-container *ngIf="style!='Manga'">
+                                 <div  #Webtoons *ngIf="style=='Webtoon'"  class='webtoon'  (scroll)="onScrollImage($event)">
+                                    <div class="loading-page">
+                                        <mat-spinner diameter="50" *ngIf=" (!display_comics_pages[i] )">
+                                        </mat-spinner>
+                                    </div>
+                                    <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
+                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] }" [alt]="'page '+(i+1)+' de '+title">
+                                </div>
+                                <ng-container *ngIf="style!='Manga' && style!='Webtoon'">
                                     <div class="loading-page">
                                         <mat-spinner diameter="50" *ngIf=" (!display_comics_pages[i] )">
                                         </mat-spinner>
@@ -225,7 +233,7 @@
                                 class="swiper-slide">
 
                                 <div class="slide-container" [ngClass]="{'slide-container-ZM': zoom_mode}">
-                                    <ng-container *ngIf="style=='Manga'">
+                                    <ng-container *ngIf="style=='Manga'" class='webtoon'  (scroll)="onScrollImage($event)">
                                         <div class="loading-page">
                                             <mat-spinner diameter="50" *ngIf=" (!display_comics_pages[i] || !display_comics_pages[list_of_pages_by_chapter[current_chapter].length-1])">
                                             </mat-spinner>
@@ -233,7 +241,15 @@
                                         <img  (load)="a_drawing_is_loaded(i)"class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy"  (contextmenu)="onRightClick()"
                                             [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] || !display_comics_pages[list_of_pages_by_chapter[current_chapter].length-1]}" [alt]="'page '+(i+1)+' de '+title">
                                     </ng-container>
-                                    <ng-container *ngIf="style!='Manga'">
+                                    <div  #Webtoons *ngIf="style=='Webtoon'"  class='webtoon'  (scroll)="onScrollImage($event)">
+                                        <div class="loading-page">
+                                            <mat-spinner diameter="50" *ngIf=" (!display_comics_pages[i] )">
+                                            </mat-spinner>
+                                        </div>
+                                        <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
+                                                [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] }" [alt]="'page '+(i+1)+' de '+title">
+                                    </div>
+                                    <ng-container *ngIf="style!='Manga' && style!='Webtoon'">
                                         <div class="loading-page">
                                             <mat-spinner diameter="50" *ngIf="!display_comics_pages[i]">
                                             </mat-spinner>
@@ -252,8 +268,8 @@
                 <!-- Add Scrollbar -->
                 <div class="swiper-scrollbar"></div>
                 <!-- Add Arrows -->
-                <div [ngClass]="{'invisible': !swiper || 1>=swiper.slides.length}" class="swiper-button-prev"></div>
-                <div [ngClass]="{'invisible': !swiper || 1>=swiper.slides.length}" class="swiper-button-next"></div>
+                <div [ngClass]="{'invisible': !swiper || 1>=swiper.slides.length || style=='Webtoon'}" class="swiper-button-prev"></div>
+                <div [ngClass]="{'invisible': !swiper || 1>=swiper.slides.length || style=='Webtoon'}" class="swiper-button-next"></div>
             </div>
         </div>
 

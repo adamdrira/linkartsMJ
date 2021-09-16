@@ -130,7 +130,7 @@ export class ChatFriendsListComponent implements OnInit {
 
   //chat_friends and groups
   list_of_chat_friends_ids:number[]=[]; // id de la liste list_of_chat_friends
-  number_of_friends_to_show:number=10;
+  number_of_friends_to_show:number=15;
   list_of_friends_types:any[]=[];
   list_of_friends_certifications=[];
   list_of_friends_profile_pictures:any[]=[];
@@ -183,7 +183,7 @@ export class ChatFriendsListComponent implements OnInit {
   list_of_propositions_groups_pictures:any[]=[];
   list_of_propositions_groups_names:any[]=[];
   list_of_propositions_groups_ids:any[]=[];
-  number_of_groups_to_show=10;
+  number_of_groups_to_show=15;
   display_propositions_groups=false;
 
   // for chat component spam
@@ -1635,7 +1635,7 @@ get_name_of_someone_who_exit_group(id,l,item){
   }
   
   get_first_propositions_for_add_friend(){
-    this.number_of_new_friends_to_show=10;
+    this.number_of_new_friends_to_show=15;
     this.display_other_contacts=false;
     this.list_of_new_friends_ids=[];
     this.list_of_new_friends_names=[];
@@ -1681,7 +1681,7 @@ get_name_of_someone_who_exit_group(id,l,item){
 
   research_friends_add(){
     this.display_first_propositions=false;
-    this.number_of_new_friends_to_show=10;
+    this.number_of_new_friends_to_show=15;
     this.new_friends_loaded=[];
     if(this.fd.value.fdSearchbar==''){
       this.display_other_contacts=false;
@@ -2023,7 +2023,7 @@ get_name_of_someone_who_exit_group(id,l,item){
       this.all_contacts_loaded=[];
       this.propositions_groups_loaded=[];
       if(this.opened_category_for_research==1){
-        this.number_of_groups_to_show=10;
+        this.number_of_groups_to_show=15;
         if(this.fd.value.fdSearchbar==''){
           this.loading_other_propositions=false;
           if(!this.display_first_propositions_group){
@@ -3012,21 +3012,21 @@ get_connections_status(){
       else if(this.list_of_friends_retrieved && this.get_friends && !this.get_propositions && this.can_show_more_friends){
         this.can_show_more_friends=false;
         this.sort_more_friends_list()
-        this.number_of_friends_to_show+=10;
+        this.number_of_friends_to_show+=15;
         this.cd.detectChanges();
       }
       else if(this.list_of_spams_retrieved && this.get_spams && !this.get_propositions && this.number_of_spams_to_show<this.list_of_spams_ids.length){
-        this.number_of_spams_to_show+=10;
+        this.number_of_spams_to_show+=15;
         this.cd.detectChanges();
       }
       else if(this.opened_category_for_research==1 && this.get_propositions && this.loading_other_propositions && this.display_propositions_groups && this.number_of_groups_to_show<this.list_of_propositions_groups_ids.length){
-        this.number_of_groups_to_show+=10;
+        this.number_of_groups_to_show+=15;
       }
       else if(this.display_add_a_friend_to_a_group &&  this.number_of_new_friends_to_show<this.list_of_new_friends_ids.length){
-        this.number_of_new_friends_to_show+=10;
+        this.number_of_new_friends_to_show+=15;
       }
       else if((this.opened_category_for_research==0 || this.select_group_chat_contacts) && this.loading_other_propositions && this.display_other_contacts &&  this.number_of_new_friends_to_show<(this.list_of_related_contacts_names.length + this.list_of_other_contacts_names.length)){
-        this.number_of_new_friends_to_show+=10;
+        this.number_of_new_friends_to_show+=15;
       }
     }
 

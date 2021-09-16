@@ -1,6 +1,17 @@
 
 $default-color: rgb(218,220,225);
+.shiny {
+  background-color: rgb(220, 220, 220) !important;
+  background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%) !important;
+  background-size: 300% 100%;
+  animation: shine 2s infinite;
+}
 
+@keyframes shine {
+  0% {
+    background-position: right;
+  }
+}
 
 .main-menu{
     font-size: 16px !important;
@@ -275,6 +286,7 @@ $default-color: rgb(218,220,225);
 .navbar-component {
 
     .connected-user .icon-container {
+        border-radius: 50%;
         position: relative;
         margin-right: 10px !important;
     }
@@ -633,7 +645,10 @@ $default-color: rgb(218,220,225);
   }
 
 
- 
+  
+  .notification-icon.custom{
+    background-image: linear-gradient( 45deg, #071445 0, #2c73a6 100%) !important;
+  }
   .notification-icon.apply{
     background-image: linear-gradient(90deg, #fa5a95 0, #8a42a3 100%) !important;
   }
@@ -724,7 +739,7 @@ $default-color: rgb(218,220,225);
     align-items: center;
 
     &.notifications-block {
-      margin: auto 10px auto auto;
+      //margin: auto 10px auto auto;
     }
     .icon {
       cursor: pointer;

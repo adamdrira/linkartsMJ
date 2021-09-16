@@ -1881,9 +1881,6 @@ emojis_size_list=[30,30,30,30,30,30,30,30,30];
 list_show_reactions:any[]=[];
 handleClick($event) {
   let data = this.message_group.get('message');
-  console.log(data)
-  console.log(data.value)
-  console.log($event.emoji.native)
   if(data.value){
     data.patchValue(data.value + $event.emoji.native);
     

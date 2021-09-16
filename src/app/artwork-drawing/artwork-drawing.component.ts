@@ -1968,28 +1968,7 @@ export class ArtworkDrawingComponent implements OnInit {
     })
   }
 
-  edit_thumbnail() {
-    this.in_other_popup=true;
-    const dialogRef = this.dialog.open(PopupEditCoverComponent, {
-        data: {
-        format:this.type,
-        drawing_id: this.drawing_id, 
-        title: this.title,
-        style:this.style, 
-        firsttag:this.firsttag,
-        secondtag:this.secondtag,
-        thirdtag:this.thirdtag,
-        author_name: this.user_name,
-        primary_description: this.primary_description, 
-        profile_picture: this.profile_picture,
-        category:"drawing",
-      },
-      panelClass: 'popupEditCoverClass',
-    });     
-    dialogRef.afterClosed().pipe(first() ).subscribe(result => {
-      this.in_other_popup=false;
-    })
-  }
+
 
   archive_loading=false;
   set_private() {
@@ -2170,6 +2149,15 @@ export class ArtworkDrawingComponent implements OnInit {
   }
   add_share_history(category){
     this.navbar.add_page_visited_to_history(`/artwork-drawing-share/${this.type}/${this.title}/${this.drawing_id}/${category}`,this.device_info).pipe(first() ).subscribe();
+  }
+
+
+  get_edit_thumbnail(){
+    return 'add-artwork/edit-drawing-thumbnail/' + this.drawing_id + '/' + this.type;
+  }
+
+  edit_thumbnail() {
+    this.navbar.add_page_visited_to_history(`add-artwork/edit-drawing-thumbnail/${this.drawing_id}/${this.type}`,this.device_info).pipe(first() ).subscribe();
   }
 }
 

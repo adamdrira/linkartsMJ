@@ -130,14 +130,14 @@
 <div class="pages-controller" *ngIf="form_number==0">
 
     <ng-container *ngFor="let element of componentRef; let i = index" >
-        <app-swiper-upload-serie *ngIf="element.swiperInitialized" type="Série" [disabled]=!display_swiper [bd_id]="bd_id" [chapter]="i" (validated)="validated_chapter(i);" [hidden]="current_chapter!=i"></app-swiper-upload-serie>
+        <app-swiper-upload-serie *ngIf="element.swiperInitialized" type="Série" [style]="style" [disabled]=!display_swiper [bd_id]="bd_id" [chapter]="i" (validated)="validated_chapter(i);" [hidden]="current_chapter!=i"></app-swiper-upload-serie>
     </ng-container>
 
 </div>
 
 <div class="pages-controller" *ngIf="form_number==1 && chapter_creation_in_progress">
     <ng-container *ngIf="display_swiper">
-        <app-swiper-upload-serie type="Série" [disabled]="!display_swiper" [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
+        <app-swiper-upload-serie type="Série" [disabled]="!display_swiper" [style]="style" [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
     </ng-container>
     
 

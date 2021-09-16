@@ -6,8 +6,8 @@ import { BdSerieService} from '../services/comics_serie.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NavbarService } from '../services/navbar.service';
-
-const url = 'http://localhost:4600/routes/upload_page_bd_serie/';
+import { first } from 'rxjs/operators';
+const url = 'https://www.linkarts.fr/routes/upload_page_bd_serie/';
 @Component({
   selector: 'app-uploader-bd-serie',
   templateUrl: './uploader-bd-serie.component.html',
@@ -28,9 +28,6 @@ export class UploaderBdSerieComponent implements OnInit{
         }
       })
     this.uploader = new FileUploader({
-      //itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
-      
-
     });
 
     this.hasBaseDropZoneOver = false;
@@ -52,7 +49,7 @@ export class UploaderBdSerieComponent implements OnInit{
   afficherpreview :boolean;
   afficheruploader:boolean;
   @Input()  bd_id:number;
-  
+  @Input() style: string;
   _page: number;
   _chapter:number;
   _upload:boolean;
@@ -134,10 +131,10 @@ export class UploaderBdSerieComponent implements OnInit{
         });
       }
       else{
-        if(Math.trunc(size)>=3){
+        if(Math.trunc(size)>=5){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 3mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 5mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
             panelClass: "popupConfirmationClass",
           });
         }
@@ -154,7 +151,7 @@ export class UploaderBdSerieComponent implements OnInit{
     this.uploader.onCompleteItem = (file) => {
 
       if( (this._page + 1) == this.total_pages ) {
-        this.BdSerieService.validate_bd_chapter(this.bd_id,this.total_pages, this.chapter).subscribe(r=>{
+        this.BdSerieService.validate_bd_chapter(this.bd_id,this.total_pages, this.chapter).pipe(first()).subscribe(r=>{
           this.sendValidated.emit(true);
         })
       }
@@ -181,10 +178,9 @@ remove_beforeupload(item:FileItem){
 
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
 remove_afterupload(item){
-    console.log("remooooooooooooooooooooooving after uploaaaaaaad " + this.bd_id + ' ' + this.chapter)
-    this.BdSerieService.remove_page_from_sql(this.bd_id,this.page, this.chapter).subscribe(information=>{
+    this.BdSerieService.remove_page_from_sql(this.bd_id,this.page, this.chapter).pipe(first()).subscribe(information=>{
       const filename= information[0].file_name;
-      this.BdSerieService.remove_page_from_folder(filename).subscribe(r=>{
+      this.BdSerieService.remove_page_from_folder(filename).pipe(first()).subscribe(r=>{
         item.remove();
         this.afficheruploader = true;
         this.afficherpreview = false;

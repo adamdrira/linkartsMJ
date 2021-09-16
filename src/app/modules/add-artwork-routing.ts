@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { UserMyPicResolverService } from '../services/resolver-my-pp.service';
 import { ComicSerieDataResolverService } from '../services/resolver-comic-serie-data.service';
 import { ComicSerieChaptersResolverService } from '../services/resolver-comic-chapters.service';
+import { EditDrawingThumbnailComponent } from '../edit-drawing-thumbnail/edit-drawing-thumbnail.component';
+import { EditDrawingThumbnailResolver } from '../services/resolver-edit-drawing-thumbnail';
 
 
 const routes: Routes = [
@@ -18,6 +20,7 @@ const routes: Routes = [
   {path:'writing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 2}, resolve: { user: UserResolverService,my_pp:UserMyPicResolverService}  },
   {path:'ad', component:AddArtworkComponent,canActivate: [AuthGuard],  data: {section: 3}, resolve: { user: UserResolverService,my_pp:UserMyPicResolverService}  },
   {path:'handle-comics-chapter/:id', component:AddComicsChapterComponent,canActivate: [AuthGuard],  data: {section: 4}, resolve: { user: UserResolverService,my_pp:UserMyPicResolverService,comic_serie_data:ComicSerieDataResolverService,comic_chapters_data:ComicSerieChaptersResolverService}  },
+  {path:'edit-drawing-thumbnail/:id/:format', component:EditDrawingThumbnailComponent,canActivate: [AuthGuard],  data: {section: 5}, resolve: { user: UserResolverService,my_pp:UserMyPicResolverService,drawing_data:EditDrawingThumbnailResolver}  },
 ];
 
 

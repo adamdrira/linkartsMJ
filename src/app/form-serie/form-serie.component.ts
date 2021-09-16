@@ -57,7 +57,7 @@ value:string="add";
       this.edit_name = -1;
       this.current_chapter = 0;
       this.initialized = false;
-      navbar.visibility_observer_font.pipe( first()).subscribe(font=>{
+      navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
@@ -73,6 +73,7 @@ value:string="add";
   @Input() user_id:number;
   @Input() pseudo:string ;
   @Input() bd_id: number;
+  @Input() style: string;
   @Input() chapter: string;
   @Input() form_number: number;
   @Input() list_of_chapters: any;
