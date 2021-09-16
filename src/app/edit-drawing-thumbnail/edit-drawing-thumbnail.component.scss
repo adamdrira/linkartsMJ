@@ -1,0 +1,145 @@
+@import '../../thumbnail-drawing-styles.scss';
+@import '../swiper-styles.scss';
+
+@import '../add-artwork/add-artwork.component.scss';
+
+
+
+.add-artwork .form-container .form-container-name {
+    margin-top:15px;
+    span {
+        word-break: break-word;
+    }
+}
+
+.dessin-unique-upload-container {
+    margin-top:30px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+
+
+.form-container-data {
+  padding-bottom:0px !important;
+}
+
+
+.form-container-data .image-container {
+  display:flex;
+  width: calc( 100% - 340px );
+  margin-top:30px;
+  margin-bottom:30px;
+}
+
+.form-container-data .image-container span {
+  margin:auto 
+  auto;
+}
+
+
+.form-container-data .crop-container {
+  width:100%;
+  display:flex;
+  margin-bottom: 30px;
+}
+
+.form-container-data .crop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  height: fit-content;
+  margin: auto auto;
+  text-align: center;
+}
+
+
+.form-container-data .img-container {
+  width:100%;
+  display:flex;
+  flex-direction: column;
+  margin:auto auto auto auto;
+}
+
+.form-container-data .img-container .full-crop {
+  width:100%;
+  max-height:600px;
+  border-radius:30px;
+  margin:auto auto;
+  position:relative;
+  overflow:hidden;
+}
+
+
+
+::ng-deep .add-artwork-swiper-styles .cropper-canvas {
+  overflow:hidden !important;
+}
+
+
+.for_news{
+  height:200px !important;
+  overflow: hidden;
+}
+
+.min-height-news{
+  min-height: 200px !important;
+}
+
+.title-container .title{
+  font-weight: bold !important;
+  line-height: 17px !important;
+  font-size: 14px !important;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  white-space: normal;
+  width: 90%;
+}
+
+.sub-title{
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 13px;
+  width: 200px;
+  border: 1px solid rgb(214 218 226);
+  border-radius: 30px;
+  padding: 3px 2px;
+  background: #fbfbfb;
+  span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #203864;
+  }
+}
+
+.form-container-data .img-preview {
+  display: flex;
+  flex-direction: column;
+  width: 200px !important;
+  position: relative;
+  margin: 0px 20px 30px 20px;
+  border-radius: 12px;
+  color: black;
+}
+
+.form-container-data .img-preview > span {
+  margin:auto auto;
+}
+
+.img-preview .final-thumbnail {
+  position:relative;
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 100%;
+  border-radius:12px;
+}
+.img-preview .final-thumbnail > img {
+  width:100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  border-radius: 12px;
+}
+

@@ -1,0 +1,204 @@
+
+<div *ngIf="page_not_found">
+    <app-page-not-found></app-page-not-found>
+</div>
+  
+<div class="container-fluid add-artwork" *ngIf="data_retrieved">
+
+    <div class="fake-navbar">
+        <div class="navbar-container category1 step0">
+            <a href="/" class="logo-container"  >
+                <img class="logo" (load)="load_logo()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
+            </a>
+            <span>Édition de la miniature</span>
+            <a class="profile-picture-container" href="/account/{{author.nickname}}"  >
+                <img class="profile-picture" (load)="load_pp()" [src]="profile_picture"  [ngClass]="{'invisible':!pp_is_loaded}">
+            </a> 
+        </div>
+    </div>
+    
+
+    <div class="form" >
+
+        
+        <div class="form-container">
+            <div class="form-container-name">
+                <span> {{drawing_data.title}}</span>
+            </div>
+        </div>
+
+
+                
+        <div class="dessin-unique-upload-container add-artwork-swiper-styles">                
+
+
+            <div class="form-container" *ngIf="drawing_image" style="margin-top:40px;" id="target2">
+                <div class="form-container-data">
+
+                    <div class="crop-container">
+                        <div class="img-container">
+                            <div class="full-crop">
+                                <img #image [src]="drawing_image" crossorigin>
+                            </div>
+                            <div class="buttons-container" style=" margin-top: 20px;">
+                                <button class="validate-button style0" *ngIf="imageDestination != ''" [@enterAnimation] (click)="cancel_crop();">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">refresh</mat-icon>
+                                    <span>Recommencer</span>
+                                </button>
+                                <button class="validate-button style0" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_thumbnail" >crop_free</mat-icon>
+                                    <span *ngIf="!loading_thumbnail" >Rogner la miniature</span>
+                                    <mat-spinner *ngIf="loading_thumbnail" diameter="25"  style="margin:auto;"></mat-spinner>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="crop" *ngIf="imageDestination != ''" id="target3">
+
+                        <div class="img-preview">
+
+                            <div class="sub-title">
+                                <span>
+                                    Miniature usuelle 
+                                </span>
+                            </div>
+
+                            <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
+
+                                <img [src]="imageDestination">
+                                <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}" style="cursor:default;">
+                                    
+                                
+                                    <div class="title-container">
+                                        <span class="title" style="color:white">{{drawing_data.title}}</span>
+                                    </div>
+
+
+
+                                    <div class="author-container">
+                                        <div class="left-container">
+                                            <img [src]="profile_picture">
+                                        </div>
+                                        <div class="right-container">
+                                            <span class="author-name" style="color:white">{{author.firstname}}</span>
+                                            <span class="author-description" *ngIf="author.nickname" style="color:white">@{{author.nickname}}</span>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="stats-container">
+                                        <div class="figure-container views">
+                                            <div>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
+                                                <span>&nbsp;</span>
+                                            </div>
+                                        </div>
+                                        <div class="figure-container likes">
+                                            <div>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
+                                                <span>&nbsp;</span>
+                                            </div>
+                                        </div>
+                                        <div class="figure-container loves">
+                                            <div>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
+                                                <span>&nbsp;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="img-preview">
+
+                            <div class="sub-title">
+                                <span>
+                                    Nouveautés et historique 
+                                </span>
+                            </div>
+                            
+                            <div class="final-thumbnail for_news" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
+
+                                <img  class="min-height-news" [src]="imageDestination">
+                                <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}" style="cursor:default;">
+                                    
+                            
+                                    
+                                    <div class="title-container">
+                                        <span class="title" style="color:white">{{drawing_data.title}}</span>
+                                    </div>
+                                
+
+
+                                    <div class="author-container">
+                                        <div class="left-container">
+                                            <img [src]="profile_picture">
+                                        </div>
+                                        <div class="right-container">
+                                            <span class="author-name" style="color:white">{{author.firstname}}</span>
+                                            <span class="author-description" *ngIf="author.nickname" style="color:white">@{{author.nickname}}</span>
+                                        </div>
+                                    </div>
+                                
+
+
+                                    <div class="stats-container">
+                                        <div class="figure-container views">
+                                            <div>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
+                                                <span>&nbsp;</span>
+                                            </div>
+                                        </div>
+                                        <div class="figure-container likes">
+                                            <div>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
+                                                <span>&nbsp;</span>
+                                            </div>
+                                        </div>
+                                        <div class="figure-container loves">
+                                            <div>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
+                                                <span>&nbsp;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        
+
+                    </div>
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <button #validateButton *ngIf="imageDestination != ''" class="submit-button-with-done-all style1" (click)="validateAll();">
+            <ng-container *ngIf="!display_loading">
+                <mat-icon [ngClass]="{'invisible': !show_icon }" style="color:white">done_all</mat-icon>
+                <span style="color:white">Valider </span>
+            </ng-container>
+            <ng-container *ngIf="display_loading">
+                <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
+            </ng-container>
+        </button>
+
+
+    </div>
+
+</div>
