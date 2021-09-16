@@ -67,9 +67,41 @@ module.exports = (router,
             })
             .catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(notifications=>{res.status(200).send([notifications])})     
-    });
+          res.status(500).json({msg: "error", details: err});		
+        }).then(notifications=>{
+          var last_month = new Date();
+          last_month.setDate(last_month.getDate() - 30);
+
+          list_of_notifications.findOne({
+            where:{
+              [Op.or]:[ {
+                id_user:1,
+                publication_category:"addAd",
+                id_receiver:current_user,
+                createdAt: {[Op.gte]: last_month}
+              },{
+                id_user:current_user,
+                publication_category:"add_publication",
+                publication_category:'ad',
+              }],
+              
+            }
+          }).then(notif=>{
+            if(!notif){
+              list_of_notifications.create({
+                "type":"custom",
+                "id_user":1,
+                "publication_category":"addAd",
+                "publication_name":'/add-artwork/ad',
+                "id_receiver":current_user,
+                "information":"Vous êtes à la recherche de collaborateurs ? N'hésitez donc pas à publiez une annonce pour optimiser votre recherche !",
+                "status":"unchecked"
+              })
+            }
+          })
+          res.status(200).send([notifications])
+        })     
+        });
 
     
     router.post('/get_notifications_information', function (req, res) {
@@ -111,8 +143,8 @@ module.exports = (router,
             })
             .catch(err => {
 				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(notifications=>{res.status(200).send([notifications])})     
+            res.status(500).json({msg: "error", details: err});		
+          }).then(notifications=>{res.status(200).send([notifications])})     
     });
 
 
@@ -206,6 +238,56 @@ module.exports = (router,
             }).then(user=>{
                 let subscribers=user.subscribers;
                 let compt=0;
+                var last_month = new Date();
+                last_month.setDate(last_month.getDate() - 30);
+
+                if(user.type_of_account=='Particulier'){
+                  list_of_notifications.findOne({
+                    where:{
+                      id_user:1,
+                      publication_category:"becomeArtist",
+                      id_receiver:user.id,
+                      createdAt: {[Op.gte]: last_month}
+                    }
+                  }).then(notif=>{
+                    if(!notif){
+                      list_of_notifications.create({
+                        "type":"custom",
+                        "id_user":1,
+                        "publication_category":"becomeArtist",
+                        "publication_name":'account/' + user.nickname + '/about/0',
+                        "id_receiver":user.id,
+                        "information":"Vous venez de publier une œuvre ? Vous pouvez décider à tout moment de changer votre type de compte en Artiste !",
+                        "status":"unchecked"
+                      })
+                    }
+                  })
+                 
+                }
+              
+                else if(user.type_of_account=='Artiste' && publication_category=='drawing' && format!='artbook'){
+                  list_of_notifications.findOne({
+                    where:{
+                      id_user:1,
+                      publication_category:"addArtbook",
+                      id_receiver:user.id,
+                      createdAt: {[Op.gte]: last_month}
+                    }
+                  }).then(notif=>{
+                    if(!notif){
+                      list_of_notifications.create({
+                        "type":"custom",
+                        "id_user":1,
+                        "publication_category":"addArtbook",
+                        "publication_name":'/add-artwork/drawing',
+                        "id_receiver":user.id,
+                        "information":"Vous venez de publier un dessin ? N'hésitez donc pas à publier un artbook pour apparaitre en Tendances !",
+                        "status":"unchecked"
+                      })
+                    }
+                  })
+                }
+
                 if(subscribers.length>0){
                     for(let i=0;i<subscribers.length;i++){
                         list_of_notifications.findOne({
@@ -222,9 +304,7 @@ module.exports = (router,
                                 status:"unchecked"
                             }
                          
-                        }).catch(err => {
-                            ;		
-                        }).then(notification_found=>{
+                          }).then(notification_found=>{
                             if(notification_found){
                                 compt++;
                                 if(compt==subscribers.length){
@@ -245,9 +325,7 @@ module.exports = (router,
                                     "chapter_number":chapter_number,
                                     "status":"unchecked"
                                 })
-                                .catch(err => {
-                                    ;		
-                                }).then(notification=>{
+                               .then(notification=>{
                                     compt++;
                                     if(compt==subscribers.length){
                                         res.status(200).send([notification])

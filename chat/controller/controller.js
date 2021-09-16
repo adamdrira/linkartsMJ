@@ -738,9 +738,6 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let id_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       var list_of_users_to_send=[];
-      /*attributes: [
-        [Sequelize.fn('DISTINCT', Sequelize.col('id_user'),Sequelize.col('id_receiver')), 'users'],'id_user','id_receiver'
-      ],*/
       list_of_chat_friends.findAll({
         where: {
             [Op.or]:[{id_user: id_user},{id_receiver:id_user}],
@@ -749,7 +746,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         order: [
             ['date', 'DESC']
           ],
-        limit:10,
+        limit:15,
       }).catch(err => {
         
         res.status(500).json({msg: "error", details: err});		
@@ -840,7 +837,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       order: [
         ['date', 'DESC']
       ],
-      limit:10,
+      limit:15,
     }).catch(err => {
 			
 			res.status(500).json({msg: "error", details: err});		
@@ -3678,7 +3675,7 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
             order: [
                 ['date', 'DESC']
               ],
-           limit:10,
+           limit:15,
            offset:offset,
           })
           .catch(err => {
@@ -4246,7 +4243,7 @@ router.post('/get_messages_from_research/:message/:id_chat_section/:id_friend/:f
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
       list_of_receivers_ids=group.list_of_receivers_ids;
-      if(list_of_receivers_ids.length+list_of_friends.length>10){
+      if(list_of_receivers_ids.length+list_of_friends.length>15){
         res.status(200).send([{"warning":"too_much_friends"}])
       }
       else{
@@ -4338,7 +4335,7 @@ router.post('/get_chat_first_propositions_group', function (req, res) {
   })
 
   function get_other_propositions(){
-      let limit=10-list_of_history.length;
+      let limit=15-list_of_history.length;
       list_of_chat_groups.findAll({
         where: {
           list_of_receivers_ids: { [Op.contains]: [id_user] },
