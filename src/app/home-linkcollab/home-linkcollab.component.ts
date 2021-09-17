@@ -115,6 +115,7 @@ export class HomeLinkcollabComponent implements OnInit {
     private meta: Meta,
     private route: ActivatedRoute, 
     private location: Location,
+    private ConstantsService:ConstantsService,
     
     ) {
       navbar.visibility_observer_font.subscribe(font=>{
@@ -160,6 +161,12 @@ export class HomeLinkcollabComponent implements OnInit {
 
 
 
+  list_of_categories =["Tout"].concat(this.ConstantsService.list_of_categories);
+  list_of_genres=this.ConstantsService.list_of_genres;
+  list_of_times= ["Date de réception ASC","Date de réception DESC","Date de retour attendu ASC","Date de retour attendu DESC"];
+  list_of_pertinences =["Tout","Nombre de visites du profil","Nombre d'abonnés","Nombre d'œuvres","Nombre de bandes dessinées","Nombre de dessins","Nombre d'écrits","Nombre d'annonces","Mentions vues","Mentions j'aime","Mentions j'adore"]
+  list_of_formulas=["Tout","Express","Standard"];
+
 
   ads_targets=this.constants.ads_targets;
 
@@ -180,6 +187,16 @@ export class HomeLinkcollabComponent implements OnInit {
   ngOnInit() {
 
 
+    this.f1 = this.fb.group({
+      type_of_project: [this.type_of_project],
+      author: [this.author],
+      target: [this.target],
+      type_of_service: [this.type_of_service],
+      offer_or_demand: [this.offer_or_demand],
+      type_of_remuneration: [this.type_of_remuneration],
+      sorting: [this.sorting],
+    })
+    
     this.navbar.add_page_visited_to_history(`/linkcollab/home_depot`,this.device_info ).pipe( first() ).subscribe();
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     window.scroll(0,0);
@@ -193,15 +210,6 @@ export class HomeLinkcollabComponent implements OnInit {
     this.open_category(this.category_index, false);
     this.update_meta_data(this.category_index);
 
-    this.f1 = this.fb.group({
-      type_of_project: [this.type_of_project],
-      author: [this.author],
-      target: [this.target],
-      type_of_service: [this.type_of_service],
-      offer_or_demand: [this.offer_or_demand],
-      type_of_remuneration: [this.type_of_remuneration],
-      sorting: [this.sorting],
-    })
   }
 
   /*********************************************************************** */
@@ -376,10 +384,6 @@ export class HomeLinkcollabComponent implements OnInit {
   @ViewChild("swiperCategories2") swiperCategories2:ElementRef;
   initialize_swiper2() {
 
-    if( this.swiper2 ) {
-      this.swiper2.destroy();
-      this.swiper2=void 0;
-    }
     if( !this.swiper2 && this.swiperCategories2 ) {
       this.swiper2 = new Swiper( this.swiperCategories2.nativeElement, {
         speed: 300,
@@ -705,6 +709,14 @@ export class HomeLinkcollabComponent implements OnInit {
         sorting:this.sorting,
         service:this.service,
         remuneration:this.remuneration,
+
+        
+        filter0:this.list_of_categories,
+        filter1:this.list_of_genres,
+        filter2:this.list_of_pertinences,
+        filter3:this.list_of_times,
+        filter4:this.list_of_formulas,
+
       },
       panelClass: "popupFiltersComponentClass",
     }).afterClosed().pipe( first() ).subscribe(
