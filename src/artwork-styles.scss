@@ -534,7 +534,7 @@ $default-color: #f9f9f9;
                                 width: 100%;
                                 overflow-y: auto;
                                 scrollbar-width:thin;
-                                scrollbar-color: #152646 #091731;
+                                scrollbar-color: #bfc8d570 #091731;
 
                                 &::-webkit-scrollbar-track {
                                     background-color: #091731;
@@ -561,6 +561,7 @@ $default-color: #f9f9f9;
                                 pointer-events: none;
                                 max-width: 100%;
                                 max-height: 100% !important;
+                                min-height: calc(100vh - 125px) !important;
 
                                 &.slide-container-img-ZM {
                                     max-height: unset !important;
