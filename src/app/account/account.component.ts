@@ -451,7 +451,7 @@ export class AccountComponent implements OnInit {
   /******************************************* START ON INIT ********************************************/
 
   device_info='';
-  insta_link=`https://api.instagram.com/oauth/authorize?client_id=2949440818629576&redirect_uri=https://www.linkarts.fr/&scope=user_profile,user_media&response_type=code`;
+  //insta_link=`https://api.instagram.com/oauth/authorize?client_id=2949440818629576&redirect_uri=https://www.linkarts.fr/&scope=user_profile,user_media&response_type=code`;
   ngOnInit()  {
 
     
@@ -787,7 +787,7 @@ export class AccountComponent implements OnInit {
           this.deviantart=this.links.deviantart;
           this.other_website=this.links.other_website;
 
-          if(this.instagram){
+          /*if(this.instagram){
             let insta=this.instagram.replace("://","/");
             let list_of_insta=insta.split("/");
             if(list_of_insta && list_of_insta[2]){
@@ -798,7 +798,7 @@ export class AccountComponent implements OnInit {
               })
             }
            
-          }
+          }*/
         }
 
 

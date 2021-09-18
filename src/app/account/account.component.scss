@@ -2084,6 +2084,18 @@
               color:white;
             }
           }
+          &.personal{
+            background: linear-gradient(45deg,#020637, #1a4676,#2a6ea0);
+            ::ng-deep fa-icon svg {
+              color:white;
+            }
+          }
+          &.other-website{
+            background: linear-gradient(45deg,#390d3e, #ae1370,#c170b1,#eecceb);
+            ::ng-deep fa-icon svg {
+              color:white;
+            }
+          }
           &.twitter {
             background: linear-gradient(45deg,#008CFF,#00A3FF 25%,#00B8FF 50%,#00CBFF 75%,#00DEFF);
             ::ng-deep fa-icon svg {

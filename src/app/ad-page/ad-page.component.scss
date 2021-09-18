@@ -130,7 +130,6 @@ div.data-container {
         margin-bottom: 30px;
         height: 1px;
         border-bottom: 1px solid #0f1e3a;
-        //box-shadow: 0px 2px 4px 1px #12264c;
     }
 
     .project-title {
@@ -161,19 +160,9 @@ div.data-container {
             top: 0;
             left: 0;
             height:0px ;
+            z-index: -1;
         }
         button {
-            /*margin: auto 10px auto auto;
-            outline: none !important;
-            border: unset;
-            display: flex;
-            padding: 8px 24px;
-            font-weight: bold;
-            color: rgb(32, 56, 100);
-            border-radius: 25px !important;
-            background: #2a4575 !important;
-            box-shadow: 0 2px 4px 0 #525cd8a3;
-            min-width: fit-content;*/
             margin: auto 10px auto auto;
             outline: none !important;
             border: unset;
@@ -186,8 +175,6 @@ div.data-container {
             background-color: #152646;
             box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.36);
 
-            /* background: #2a4575 !important; */
-            /* box-shadow: 0 2px 4px 0 #525cd8a3; */
             min-width: -webkit-fit-content;
             min-width: -moz-fit-content;
             min-width: fit-content;
@@ -637,15 +624,20 @@ div.data-container {
     }
     @media (max-width: 600px) {
         .project-title {
+            display: block !important;
             > span {
                 font-size:14px;
+                display: flex !important;
+                justify-content: center !important;
+                text-align: center !important;
             }
             button {
                 padding:8px 8px;
+                margin : 10px auto 0px auto !important;
                 mat-icon {
                     font-size: 20px;
                     max-width:20px;
-                overflow: hidden;
+                    overflow: hidden;
                 }
                 span {
                     font-size:12px;
@@ -680,6 +672,8 @@ div.data-container {
             }
         }
     }
+
+    
 
     .response-title {
         display: flex;

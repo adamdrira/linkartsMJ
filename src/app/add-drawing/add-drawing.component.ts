@@ -217,6 +217,9 @@ export class AddDrawingComponent implements OnInit {
       this.fd.controls['fdDescription'].setValue("");
     }
 
+    if(this.type_of_account.includes('Artist')){
+      this.monetised=true;
+    }
     if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
       if( this.CURRENT_step < (this.REAL_step) ) {

@@ -264,6 +264,11 @@ export class AddComicComponent implements OnInit {
     }
 
 
+    if(this.type_of_account.includes('Artist')){
+      this.monetised=true;
+    }
+
+
     if ( this.f00.valid && (this.f00.value.f00Format == "One-shot") && this.Bd_CoverService.get_confirmation() ) {
         this.started.emit();
         //If MODIFICATION

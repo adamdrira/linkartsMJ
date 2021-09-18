@@ -240,13 +240,18 @@ export class AddWritingComponent implements OnInit {
     let list =this.Writing_Upload_Service.get_confirmation()
     this.confirmation_writing_uploaded =list[0];
     let total_pages=list[1];
-    if(total_pages>=50){
+    if(total_pages>=100){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Votre écrit ne peut faire plus de 50 pages'},
+        data: {showChoice:false, text:'Votre écrit ne peut faire plus de 100 pages'},
         panelClass: 'dialogRefClassText'
       });
       this.validateButton.nativeElement.disabled = false;
     }
+
+    if(this.type_of_account.includes('Artist')){
+      this.monetised=true;
+    }
+
     else if ( this.fw.valid  && [0] && this.confirmation_writing_uploaded ) {
        this.display_loading=true;
        this.Writing_Upload_Service.CreateWriting(
