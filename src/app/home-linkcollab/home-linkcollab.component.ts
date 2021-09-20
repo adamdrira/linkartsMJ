@@ -147,7 +147,7 @@ export class HomeLinkcollabComponent implements OnInit {
   type_of_project:string="none";
   author:string="none";
   target:string="none";
-  sorting:string="pertinence";
+  sorting:string="récent";
   list_of_ads:any[]=[];
   list_of_ads_received=false;
   skeleton_array = Array(5);
@@ -288,7 +288,7 @@ export class HomeLinkcollabComponent implements OnInit {
     this.type_of_service='none';
     this.offer_or_demand='none';
     this.type_of_remuneration="none";
-    this.sorting="pertinence";
+    this.sorting="récent";
 
     if(i==1){
       this.navbar.add_page_visited_to_history(`/home/benev`,this.device_info ).pipe( first() ).subscribe();
@@ -560,10 +560,10 @@ export class HomeLinkcollabComponent implements OnInit {
       this.sorting="décroissant";
     }
     else {
-      if( this.sorting == "pertinence" ) {
+      if( this.sorting == "récent" ) {
         return;
       }
-      this.sorting="pertinence";
+      this.sorting="récent";
     }
     this.get_sorted_ads();
   }
@@ -589,10 +589,10 @@ export class HomeLinkcollabComponent implements OnInit {
       this.sorting="ancient";
     }
     else {
-      if( this.sorting == "pertinence" ) {
+      if( this.sorting == "récent" ) {
         return;
       }
-      this.sorting="pertinence";
+      this.sorting="récent";
     }
     this.get_sorted_ads();
   }

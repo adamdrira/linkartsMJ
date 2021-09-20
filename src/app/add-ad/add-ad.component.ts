@@ -429,7 +429,7 @@ export class AddAdComponent implements OnInit {
             this.display_loading=false;
             this.validateButton.nativeElement.disabled = false;
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-              data: {showChoice:false, text:"Une annonce similaire publiée il y a moins d'une semaine est déjà disponible, veuillez la supprimer afin de pouvoir publier une annonce similaire"},
+              data: {showChoice:false, text:"3 annonces similaires ont déjà été publiées en moins d'une semaine. Nous vous conseillons d'en supprimer quelques unes afin de ne pas saturer la liste des annonces."},
               panelClass: "popupConfirmationClass",
             });
           }
