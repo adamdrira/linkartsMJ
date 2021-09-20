@@ -40,7 +40,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
       const my_description = req.body.my_description;
       const targets = req.body.targets;
 
-      list_of_ads.findOne({
+      list_of_ads.findAll({
         where:{
           id_user:current_user,
           status:"public",
@@ -53,7 +53,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         	
         res.status(500).json({msg: "error", details: err});		
       }).then(ad=>{
-        if(ad){
+        if(ad.length>3){
           res.status(200).send([{result:ad}])
         }
         else{
@@ -998,10 +998,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     if(remuneration){
       //collab rémunérés
       ads_to_look_for={
-        type_of_project: (type_of_project != "none") ? type_of_project: {[Op.ne]:"none"},
-        my_description: (author != "none") ? author: {[Op.ne]:"none"},
+        type_of_project: (type_of_project != "none") ? {[Op.in]:[type_of_project,"Tout"]}: {[Op.ne]:"none"},
+        my_description: (author != "none") ? {[Op.in]:[author,"Tout"]}: {[Op.ne]:"none"},
         price_type: (type_of_remuneration != "none") ? type_of_remuneration: {[Op.ne]:"none"},
-        [Op.or]: [{ target_one: (target != "none") ? target: {[Op.ne]:"none"} }, { target_two: (target != "none") ? target: {[Op.ne]:"none"},}],
+        [Op.or]: [{ target_one: (target != "none") ? {[Op.in]:[target,"Tout"]}: {[Op.ne]:"none"} }, { target_two: (target != "none") ? {[Op.in]:[target,"Tout"]}: {[Op.ne]:"none"},}],
         status:"public",
         remuneration: true,
         service: {[Op.not]:true}
@@ -1040,8 +1040,8 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     else if(service){
       // produits ou services
       ads_to_look_for={
-        type_of_project: (type_of_project != "none") ? type_of_project: {[Op.ne]:"none"},
-        my_description: (author != "none") ? author: {[Op.ne]:"none"},
+        type_of_project: (type_of_project != "none") ? {[Op.in]:[type_of_project,"Tout"]}: {[Op.ne]:"none"},
+        my_description: (author != "none") ? {[Op.in]:[author,"Tout"]}: {[Op.ne]:"none"},
         price_type_service: (type_of_service != "none") ? type_of_service: {[Op.ne]:"none"},
         offer_or_demand: (offer_or_demand != "none") ? offer_or_demand: {[Op.ne]:"none"},
         [Op.or]: [{ target_one: (target != "none") ? target: {[Op.ne]:"none"} }, { target_two: (target != "none") ? target: {[Op.ne]:"none"},}],
@@ -1081,9 +1081,9 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     else{
       //benevoles
       ads_to_look_for={
-        type_of_project: (type_of_project != "none") ? type_of_project: {[Op.ne]:"none"},
-        my_description: (author != "none") ? author: {[Op.ne]:"none"},
-        [Op.or]: [{ target_one: (target != "none") ? target: {[Op.ne]:"none"} }, { target_two: (target != "none") ? target: {[Op.ne]:"none"},}],
+        type_of_project: (type_of_project != "none") ? {[Op.in]:[type_of_project,"Tout"]}: {[Op.ne]:"none"},
+        my_description: (author != "none") ? {[Op.in]:[author,"Tout"]}: {[Op.ne]:"none"},
+        [Op.or]: [{ target_one: (target != "none") ? {[Op.in]:[target,"Tout"]}: {[Op.ne]:"none"} }, { target_two: (target != "none") ? {[Op.in]:[target,"Tout"]}: {[Op.ne]:"none"},}],
         status:"public",
         remuneration: {[Op.not]:true},
         service: {[Op.not]:true}
@@ -1776,7 +1776,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
         var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', // sender address
             to: user.email, // my mail
-            //to: "appaloosa-adam@hotmail.fr",
+            bcc: "appaloosa-adam@hotmail.fr",
             subject: `Réponse à une annonce`, // Subject line
             //text: 'plain text', // plain text body
             html:  mail_to_send, // html body
