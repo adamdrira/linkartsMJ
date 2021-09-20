@@ -241,7 +241,7 @@
 
                             <div class="form-item swiper-slide" [ngStyle]="{'width' : '220px'}" [ngClass]="{'really-invisible':!remuneration && !service}" *ngIf="innerWidth>=1000">
                                 <mat-form-field floatLabel='never' class="select-class">
-                                    <mat-label>Tri par pertinence</mat-label>
+                                    <mat-label>Tri par le plus récent</mat-label>
                                     <mat-select #matSelect7 (selectionChange)="change_select7($event)" formControlName="sorting" disableOptionCentering panelClass="homelinkcollabSelectClass">
                                         <mat-option value="Tri par pertinence">
                                             Tri par pertinence
@@ -264,7 +264,7 @@
 
                             <div class="form-item swiper-slide" [ngStyle]="{'width' : '165px'}" [ngClass]="{'really-invisible':remuneration || service}" *ngIf="innerWidth>=1000">
                                 <mat-form-field floatLabel='never' class="select-class">
-                                    <mat-label>Tri par pertinence</mat-label>
+                                    <mat-label>Tri par le plus récent</mat-label>
                                     <mat-select #matSelect8 (selectionChange)="change_select8($event)" formControlName="sorting" disableOptionCentering panelClass="homelinkcollabSelectClass">
                                         <mat-option value="Tri par pertinence">
                                             Tri par pertinence
