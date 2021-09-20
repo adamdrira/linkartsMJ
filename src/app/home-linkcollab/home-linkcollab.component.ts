@@ -274,6 +274,7 @@ export class HomeLinkcollabComponent implements OnInit {
     }
   };
 
+
   open_category(i, check_no_same_change) {
     if( this.category_index==i && check_no_same_change ) {
       return;
@@ -318,8 +319,11 @@ export class HomeLinkcollabComponent implements OnInit {
     this.cd.detectChanges();
     
     this.initialize_swiper2();
+    
 
     window.dispatchEvent(new Event('resize'));
+    this.cd.detectChanges();
+
     return;
   }
 
@@ -384,7 +388,14 @@ export class HomeLinkcollabComponent implements OnInit {
   @ViewChild("swiperCategories2") swiperCategories2:ElementRef;
   initialize_swiper2() {
 
-    if( !this.swiper2 && this.swiperCategories2 ) {
+    this.cd.detectChanges();
+
+    if( this.swiper2 ) {
+      this.swiper2.destroy();
+    }
+    
+    if( this.swiperCategories2 ) {
+
       this.swiper2 = new Swiper( this.swiperCategories2.nativeElement, {
         speed: 300,
         initialSlide:0,
@@ -415,7 +426,12 @@ export class HomeLinkcollabComponent implements OnInit {
           prevEl: '.swiper-button-prev.second',
         },
         observer:'true',
+        observeParents:'true',
+        observeSlideChildren:'true',
+        watchSlidesProgress:'true',
+        
       })
+
     }
   }
   
