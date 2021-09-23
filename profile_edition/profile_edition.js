@@ -550,6 +550,13 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
     })
    .then(User =>  {
       if(User && User.cover_pic_file_name  ){
+        let transform = sharp()
+        transform = transform.resize({height:600})
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+        });
         let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
         fs.access(filename, fs.F_OK, (err) => {
           if(err){
@@ -559,7 +566,7 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
           }  
           else{
             var pp = fs.createReadStream( path.join(process.cwd(),filename))
-            pp.pipe(res);
+            pp.pipe(transform);
           }     
         })
       }
@@ -707,6 +714,13 @@ users.findOne({
   res.status(500).json({msg: "error", details: err});		
 }).then(User =>  {
   if(User && User.cover_pic_file_name  ){
+    let transform = sharp()
+    transform = transform.resize({height:600})
+    .toBuffer((err, buffer, info) => {
+        if (buffer) {
+            res.status(200).send(buffer);
+        }
+    });
     let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
     fs.access(filename, fs.F_OK, (err) => {
       if(err){
@@ -716,7 +730,7 @@ users.findOne({
       }  
       else{
         var pp = fs.createReadStream( path.join(process.cwd(),filename))
-        pp.pipe(res);
+        pp.pipe(transform);
       }     
     })
   }
@@ -1002,7 +1016,6 @@ router.post('/retrieve_number_of_contents', function (req, res) {
                   status:"public"
                 }
               }).catch(err => {
-                console.log(err)
                 res.status(500).json({msg: "error", details: err});		
               }).then(drawings_at=>{
                 number_of_drawings+=drawings_at?drawings_at.length:0;
@@ -1012,7 +1025,6 @@ router.post('/retrieve_number_of_contents', function (req, res) {
                     status:"public"
                   }
                 }).catch(err => {
-                  console.log(err)
                   res.status(500).json({msg: "error", details: err});		
                 }).then(writings=>{
                   number_of_writings+=writings?writings.length:0;
@@ -1022,7 +1034,6 @@ router.post('/retrieve_number_of_contents', function (req, res) {
                       status:"public"
                     }
                   }).catch(err => {
-                    console.log(err)
                     res.status(500).json({msg: "error", details: err});		
                   }).then(ads=>{
                     number_of_ads+=ads?ads.length:0;
@@ -1528,7 +1539,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           id: current_user,
         }
       }).catch(err => {
-        console.log(err)
         res.status(500).json({msg: "error", details: err});		
       }).then(usr=>{
         res.status(200).send([User])
@@ -1754,7 +1764,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         "device_info":device_info,
          "url_page":page,
       }).catch(err => {
-        console.log(err)
         res.status(500).json({msg: "error", details: err});		
       }).then(created=>{
         res.status(200).send([created]);
@@ -3649,8 +3658,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            to: user.email, // my mail
-            //to:"appaloosa-adam@hotmail.fr",
+            //to: user.email, // my mail
+            to:"appaloosa-adam@hotmail.fr",
             subject: `Bienvenue sur LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3777,8 +3786,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            to: email, // my mail
-            //to:"appaloosa-adam@hotmail.fr",
+            //to: email, // my mail
+            to:"appaloosa-adam@hotmail.fr",
             subject: `Invitation LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3918,8 +3927,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
                 var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
-                  to: user_found.email, // my mail
-                  //to:"appaloosa-adam@hotmail.fr",
+                  //to: user_found.email, // my mail
+                  to:"appaloosa-adam@hotmail.fr",
                   subject: `Adhésion à un groupe`, // Subject line
                   html: mail_to_send , // html body
                 };
@@ -4063,8 +4072,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
             var mailOptions = {
               from: 'Linkarts <services@linkarts.fr>', // sender address
-              to: user_found.email, // my mail
-              //to:"appaloosa-adam@hotmail.fr",
+              //to: user_found.email, // my mail
+              to:"appaloosa-adam@hotmail.fr",
               subject: `Création de groupe`, 
               html:  mail_to_send, 
             };
@@ -4850,8 +4859,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       res.status(200).send(([result]))
     }).catch(err=>{
 
-      console.log("err data")
-      console.log(err)
+
       res.status(200).send(([null]))
     });
 
