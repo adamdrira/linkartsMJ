@@ -11,10 +11,17 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
+            console.log("in error handler")
+            console.log(request)
+            console.log(err.status)
             if (err.status === 401) {
                 // auto logout if 401 response returned from api
                 //this.authenticationService.logout();
                 //location.reload(true);
+            }
+            if(request.urlWithParams.includes("by_pseudo")){
+                console.log("in if error")
+                console.log(err)
             }
             return throwError(err);
         }))

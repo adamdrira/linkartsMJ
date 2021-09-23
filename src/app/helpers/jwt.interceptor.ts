@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 import { AuthenticationService } from '../services/authentication.service';
-import { shareReplay, first, filter } from 'rxjs/operators';
+import { shareReplay, first, filter, retry, retryWhen, concatMap, delay } from 'rxjs/operators';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
+    retryCount=5;
     constructor(private authenticationService: AuthenticationService) {}
     public readonly store: Record<string, Observable<HttpEvent<any>>> = {};
 
@@ -31,7 +32,6 @@ export class JwtInterceptor implements HttpInterceptor {
             });
         }
 
-        
         if ( request.method !== 'GET' || request.urlWithParams.includes("by_pseudo")) {
             if(request.urlWithParams.includes("change_content_status")){
       
@@ -72,7 +72,20 @@ export class JwtInterceptor implements HttpInterceptor {
                 this.store[`routes/get_ads_by_user_id/${request.body.id_user}`]=null;
                 this.store[`routes/retrieve_ad_by_id/${request.body.id}`]=null;
             }
-            return next.handle(request);
+            return next.handle(request).pipe(
+                retryWhen(error => 
+                  error.pipe(
+                    concatMap((error, count) => {
+                        if (count <= this.retryCount && (error.status == 0  || error.status ==503 || error.status ==504 ) ) {
+
+                            return of(error);
+                        }
+                      return throwError(error);
+                    }),
+                    delay(500)
+                  )
+                )
+              )
         }
 
         
@@ -89,7 +102,20 @@ export class JwtInterceptor implements HttpInterceptor {
         // pipe first() to cause the observable to complete after it emits the response
         // This mimics the behaviour of Observables returned by Angular's httpClient.get() 
         // And also makes toPromise work since toPromise will wait until the observable completes.
-        return cachedObservable.pipe(first());
+        return cachedObservable.pipe(first()).pipe(
+            retryWhen(error => 
+              error.pipe(
+                concatMap((error, count) => {
+                    if (count <= this.retryCount && (error.status == 0  || error.status ==503 || error.status ==504 ) ) {
+
+                        return of(error);
+                    }
+                  return throwError(error);
+                }),
+                delay(500)
+              )
+            )
+          );
 
     }
 }
