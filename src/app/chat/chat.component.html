@@ -335,6 +335,12 @@
                                             </mat-icon>
                                             <span>Supprimer</span>
                                         </button>
+
+                                        <div class="chat-menu-item date-menu" mat-menu-item>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">history
+                                            </mat-icon>
+                                            <span>{{list_of_messages_date[list_of_messages.length -1 - i]}}</span>
+                                        </div>
                                     </mat-menu>
                                 </div>
 
@@ -347,7 +353,7 @@
                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
                                     class="content"
 
-                                    [matTooltip]="list_of_messages_date[list_of_messages.length -1 - i]"
+                                    [matTooltip]="!can_show_send_icon?list_of_messages_date[list_of_messages.length -1 - i]:null"
                                     matTooltipClass='linkarts-tooltip'
                                     [matTooltipPosition]="'below'"
                                     [matTooltipShowDelay]="100"
@@ -506,7 +512,7 @@
                                 <div class="content"
                                     *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
 
-                                    [matTooltip]="list_of_messages_date[list_of_messages.length -1 - i]"
+                                    [matTooltip]="!can_show_send_icon?list_of_messages_date[list_of_messages.length -1 - i]:null"
                                     matTooltipClass='linkarts-tooltip'
                                     [matTooltipPosition]="'below'"
                                     [matTooltipShowDelay]="100"
@@ -616,6 +622,7 @@
                                 <div class="options margin-right" [ngClass]="{ 'opacity1': friendMessageOpenedOptions==i }">
                                     
 
+                                    
                                     <button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);" (click)="show_reactions(i,$event)" [matMenuTriggerFor]="reactions"
                                         *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
@@ -866,6 +873,13 @@
                                             </mat-icon>
                                             <span>Supprimer</span>
                                         </button>
+
+                            
+                                        <div class="chat-menu-item date-menu" mat-menu-item>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">history
+                                            </mat-icon>
+                                            <span>{{list_of_messages_date[list_of_messages.length -1 - i]}}</span>
+                                        </div>
                                     </mat-menu>
                                 </div>
 
@@ -878,7 +892,7 @@
                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
                                     class="content"
 
-                                    [matTooltip]="list_of_messages_date[list_of_messages.length -1 - i]"
+                                    [matTooltip]="!can_show_send_icon?list_of_messages_date[list_of_messages.length -1 - i]:null"
                                     matTooltipClass='linkarts-tooltip'
                                     [matTooltipPosition]="'below'"
                                     [matTooltipShowDelay]="100"
@@ -1064,7 +1078,7 @@
                                 <div class="content"
                                     *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
 
-                                    [matTooltip]="list_of_messages_date[list_of_messages.length -1 - i]"
+                                    [matTooltip]="!can_show_send_icon?list_of_messages_date[list_of_messages.length -1 - i]:null"
                                     matTooltipClass='linkarts-tooltip'
                                     [matTooltipPosition]="'below'"
                                     [matTooltipShowDelay]="100"
@@ -1357,7 +1371,7 @@
 
             <div *ngIf="load_emoji" #emojis class="emojis-main-container" [@enterAnimation]>
                 <div class="emojis-container">
-                    <emoji-mart [set]="set" [isNative]="native" [hideRecent]="false"
+                    <emoji-mart [set]="set" [sheetSize]="16" [enableSearch]="false" [isNative]="native" [hideRecent]="false"
                         (emojiSelect)="handleClick($event)">
                     </emoji-mart>
                 </div>
@@ -1370,10 +1384,12 @@
                         <span *ngIf="id_user_message_responding_to!=current_user_id">Réponse à <b>{{friend_name}}</b></span>
                         <span *ngIf="id_user_message_responding_to==current_user_id">Réponse à <b>{{current_user_name}}</b></span>
                         <span>{{message_responding_to}}</span>
+                        <span  style="font-style: italic">envoyé le : {{date_of_message_responsing_to}}</span>
                     </div>
                     <div class="left-container"  *ngIf="friend_type!='user'" [@enterFromBottomAnimation]>
                         <span>Réponse à <b>{{list_of_users_names[id_user_message_responding_to]}}</b></span>
                         <span>{{message_responding_to}}</span>
+                        <span style="font-style: italic">envoyé le : {{date_of_message_responsing_to}}</span>
                     </div>
                     <button (click)="cancel_response()" [@enterFromBottomAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>

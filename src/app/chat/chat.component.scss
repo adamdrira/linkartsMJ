@@ -33,6 +33,10 @@
 
 
         .top-container {
+
+            @media(max-width:850px){
+                position:fixed !important;
+            }
             position: relative;
             width: 100%;
             background: #f7f8f9;
@@ -343,9 +347,16 @@
             }
         }
         .middle-container {
+
+            @media(max-width:850px){
+                margin-top:65px !important;
+            }
+            @media(max-width:500px){
+                margin-top:55px !important;
+            }
             position: relative;
             height: 5000px;
-            overflow-y: auto;
+            overflow-y: hidden;
             width: 100%;
 
             .loading-dots-container {
@@ -450,11 +461,12 @@
                 top: -356px;
                 right: 0px;
                 visibility: hidden;
+                @media(max-width:600px){
+                    display: none !important;
+                }
                 .emojis-container {
                     background-color: white;
                     border-radius: 10px;
-                    //padding: 2px 2px 0px 2px;
-                    //width: 369px;
                     display: flex;
                     justify-content: center;
 
@@ -766,6 +778,10 @@
                             display:block;
                             max-height:  67px;
                             button {
+
+                                @media(max-width:600px){
+                                    display:none !important;
+                                }
                                 display: flex;
                                 outline: none;
                                 padding: 5px;
@@ -936,6 +952,20 @@
             }
             &:active {
                 background: #aabed4;
+            }
+        }
+
+        .date-menu{
+            cursor: default !important;
+            span{
+                font-size: 11px !important;
+                font-weight: 500  !important;
+            }
+            &:hover {
+                background: unset !important;
+            }
+            &:active {
+                background: unset !important;
             }
         }
     }

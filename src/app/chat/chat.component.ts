@@ -1827,6 +1827,7 @@ export class ChatComponent implements OnInit  {
   message_responding_to='';
   id_message_responding_to=-1;
   id_user_message_responding_to=-1;
+  date_of_message_responsing_to:string="";
   respond_to_message(i){
     if(this.list_of_messages[i].is_an_attachment){
       this.message_responding_to="pièce jointe : " + this.list_of_messages[i].attachment_name;
@@ -1835,7 +1836,8 @@ export class ChatComponent implements OnInit  {
       this.message_responding_to=this.list_of_messages[i].message;
     }
     this.id_user_message_responding_to=this.list_of_messages[i].id_user;
-    this.id_message_responding_to=this.list_of_messages[i].id
+    this.id_message_responding_to=this.list_of_messages[i].id;
+    this.date_of_message_responsing_to=this.list_of_messages_date[this.list_of_messages.length -1 - i];
     this.respond_to_a_message=true;
   }
 
