@@ -359,6 +359,7 @@
                                     [matTooltipShowDelay]="100"
 
                                     [ngClass]="{
+                                        'detect-scroll':can_show_send_icon,
                                         'only-message':
                                         (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] 
                                             && (
@@ -518,6 +519,7 @@
                                     [matTooltipShowDelay]="100"
 
                                     [ngClass]="{
+                                        'detect-scroll':can_show_send_icon,
                                         'friend-top-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user && list_of_messages[list_of_messages.length- i-2].id_user==list_of_messages[list_of_messages.length- i-1].id_user)
                                         || (!list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i-2].id_user),
                                         'friend-middle-message':list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && current_user_id!=list_of_messages[list_of_messages.length- i-2].id_user  && current_user_id!=list_of_messages[list_of_messages.length- i].id_user,
@@ -898,6 +900,7 @@
                                     [matTooltipShowDelay]="100"
 
                                     [ngClass]="{
+                                        'detect-scroll':can_show_send_icon,
                                         'only-message':
                                         (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] 
                                             && (
@@ -1084,6 +1087,7 @@
                                     [matTooltipShowDelay]="100"
 
                                     [ngClass]="{
+                                        'detect-scroll':can_show_send_icon,
                                         'only-message':
                                         (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] 
                                             && (
@@ -1383,13 +1387,13 @@
                     <div class="left-container" *ngIf="friend_type=='user'" [@enterFromBottomAnimation]>
                         <span *ngIf="id_user_message_responding_to!=current_user_id">Réponse à <b>{{friend_name}}</b></span>
                         <span *ngIf="id_user_message_responding_to==current_user_id">Réponse à <b>{{current_user_name}}</b></span>
-                        <span>{{message_responding_to}}</span>
-                        <span  style="font-style: italic">envoyé le : {{date_of_message_responsing_to}}</span>
+                        <span style="line-height: 14px">{{message_responding_to}}</span>
+                        <span  ><b>Envoyé le</b> : {{date_of_message_responsing_to}}</span>
                     </div>
                     <div class="left-container"  *ngIf="friend_type!='user'" [@enterFromBottomAnimation]>
                         <span>Réponse à <b>{{list_of_users_names[id_user_message_responding_to]}}</b></span>
-                        <span>{{message_responding_to}}</span>
-                        <span style="font-style: italic">envoyé le : {{date_of_message_responsing_to}}</span>
+                        <span style="line-height: 14px">{{message_responding_to}}</span>
+                        <span><b>Envoyé le</b> : {{date_of_message_responsing_to}}</span>
                     </div>
                     <button (click)="cancel_response()" [@enterFromBottomAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>

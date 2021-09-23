@@ -15,7 +15,7 @@
     }
 
    
-  
+    
 
     .main-left-container {
         height: 100%;
@@ -350,6 +350,7 @@
 
             @media(max-width:850px){
                 margin-top:65px !important;
+                position:fixed !important;
             }
             @media(max-width:500px){
                 margin-top:55px !important;
@@ -393,6 +394,10 @@
                         }
                     }
                 }
+            }
+
+            .detect-scroll{
+                touch-action: unset !important;
             }
         }
 
