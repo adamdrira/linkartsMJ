@@ -943,6 +943,11 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
           if (buffer) {
               res.status(200).send(buffer);
           }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
+          }
       });
       let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
       fs.access(filename, fs.F_OK, (err) => {
@@ -978,6 +983,11 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
           if (buffer) {
               res.status(200).send(buffer);
           }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
+          }
       });
     let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
     fs.access(filename, fs.F_OK, (err) => {
@@ -1011,6 +1021,11 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
+          }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
           }
       });
     let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
@@ -1046,6 +1061,11 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
+            }
+            else{
+              filename = "./data_and_routes/not-found-image.jpg";
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              res.status(200).send(not_found);
             }
         });
         fs.access(filename, fs.F_OK, (err) => {
@@ -1092,6 +1112,11 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
+          }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
           }
       });
       fs.access(filename, fs.F_OK, (err) => {

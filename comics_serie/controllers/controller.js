@@ -1230,6 +1230,11 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             if (buffer) {
                 res.status(200).send(buffer);
             }
+            else{
+              filename = "./data_and_routes/not-found-image.jpg";
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              res.status(200).send(not_found);
+            }
         });
         if(page && page.file_name){
           
@@ -1308,6 +1313,11 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
+          }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
           }
       });
       if(page && page.file_name){

@@ -873,6 +873,11 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
             if (buffer) {
                 res.status(200).send(buffer);
             }
+            else{
+              filename = "./data_and_routes/not-found-image.jpg";
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              res.status(200).send(not_found);
+            }
         });
         if(page && page.file_name){
           let filename = "./data_and_routes/drawings_pages_artbook/" + page.file_name;
@@ -942,6 +947,11 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
+          }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
           }
       });
       if(page && page.file_name){

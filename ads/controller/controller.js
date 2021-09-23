@@ -854,6 +854,11 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             if (buffer) {
                 res.status(200).send(buffer);
             }
+            else{
+              filename = "./data_and_routes/not-found-image.jpg";
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              res.status(200).send(not_found);
+            }
         });
         fs.access(filename, fs.F_OK, (err) => {
           if(err){

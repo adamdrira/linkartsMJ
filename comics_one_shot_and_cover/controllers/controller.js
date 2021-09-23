@@ -966,6 +966,11 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
           if (buffer) {
               res.status(200).send(buffer);
           }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
+          }
       });
       fs.access(filename, fs.F_OK, (err) => {
         if(err){
@@ -998,6 +1003,11 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     .toBuffer((err, buffer, info) => {
         if (buffer) {
             res.status(200).send(buffer);
+        }
+        else{
+          filename = "./data_and_routes/not-found-image.jpg";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          res.status(200).send(not_found);
         }
     });
     const file_name = req.params.file_name;
@@ -1033,6 +1043,11 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
   .toBuffer((err, buffer, info) => {
       if (buffer) {
           res.status(200).send(buffer);
+      }
+      else{
+        filename = "./data_and_routes/not-found-image.jpg";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        res.status(200).send(not_found);
       }
   });
   const file_name = req.params.file_name;
@@ -1081,6 +1096,11 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
+            }
+            else{
+              filename = "./data_and_routes/not-found-image.jpg";
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              res.status(200).send(not_found);
             }
         });
         if(page && page.file_name){
@@ -1153,6 +1173,11 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
+          }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
           }
       });
       if(page && page.file_name){
