@@ -18,7 +18,6 @@ import { UserSubscribersResolverService } from '../services/resolver-get-subscri
 import { UserSubscribingsResolverService } from '../services/resolver-get-subscribings.service';
 import { UserDataPseudoResolverService } from '../services/resolver-data-by-pseudo.service';
 import { UserPseudoProfilePicResolverService } from '../services/resolver-user-pp-pseudo.service';
-import { UserPseudoCoverPicResolverService } from '../services/resolver-user-cp-pseudo.service';
 import { UserAdsResponsesResolverService } from '../services/resolver-user-ads-responses.service';
 import { UserNewsResolverService } from '../services/resolver-user-news.service';
 import { UserStatsResolverService } from '../services/resolver-user-stats.service';
@@ -27,7 +26,6 @@ let accountResolvers={
   user_data_by_pseudo:UserDataPseudoResolverService,
   user: UserResolverService,
   user_pp_pseudo:UserPseudoProfilePicResolverService,
-  user_cp_pseudo:UserPseudoCoverPicResolverService, 
   user_news:UserNewsResolverService, 
   subscribers:UserSubscribersResolverService,
   subscribings:UserSubscribingsResolverService,

@@ -496,7 +496,11 @@ export class AccountComponent implements OnInit {
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
 
-      let cp=resp.user_cp_pseudo;
+   
+      
+    })
+
+    this.Profile_Edition_Service.retrieve_cover_picture_by_pseudo(this.pseudo).pipe(first()).subscribe(cp=>{
       let url2 = (window.URL) ? window.URL.createObjectURL(cp) : (window as any).webkitURL.createObjectURL(cp);
       const SafeURL2 = this.sanitizer.bypassSecurityTrustUrl(url2);
       this.cover_picture = SafeURL2;
