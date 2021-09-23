@@ -1616,7 +1616,7 @@
               }
               .absolute-hover-data {
                 opacity:0;
-                background:rgba(32, 56, 100, 0.768);
+                background-image: linear-gradient( 0turn,rgba(2,18,54,.9),rgba(19,51,100,.9),rgba(44,114,164,.9));
                 transition:opacity 200ms ease-in-out;
                 position:absolute;
                 top:0;

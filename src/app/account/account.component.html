@@ -621,7 +621,7 @@
                                             <div class="img">
 
                                                 <div class="absolute-hover-data d-flex flex-column">
-                                                    <span class="description" [ngStyle]="{'margin':!(item.link && item.link!='')? 'auto 5px auto 5px' : 'auto 5px 10px 5px'}">{{item.description}}</span>
+                                                    <span class="description" [ngStyle]="{'margin':!(item.link && item.link!='')? 'auto 10px auto' : 'auto 10px 10px'}">{{item.description}}</span>
                                                     <a  *ngIf="item.link && item.link!=''" [href]="item.link" target="_blank" class="link" (click)="add_flagship_click()">Découvrir</a>
                                                 </div>
                                                 <img [lazyLoad]="editor_pictures_by_name[item.picture_name]"   [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_editor_picture(item.picture_name)"  [ngClass]="{'invisible':!editor_pictures_loaded[item.picture_name]}">

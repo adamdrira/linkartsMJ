@@ -627,6 +627,7 @@ div.data-container {
             display: block !important;
             > span {
                 font-size:14px;
+                padding-right: unset !important;
                 display: flex !important;
                 justify-content: center !important;
                 text-align: center !important;
