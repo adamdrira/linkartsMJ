@@ -911,7 +911,7 @@
                             </ng-container>
 
                             <!-- nouveauté -->
-                            <div class="block" *ngIf="!type_of_account.includes('Fan') && !type_of_account.includes('Particulier') && !type_of_account.includes('Professionnel') && (type_of_account.includes('dit') && (!mode_visiteur || (mode_visiteur && !no_new_contents)))">
+                            <div class="block" *ngIf="type_of_account.includes('Artist') || (type_of_account.includes('dit') && (!mode_visiteur || (mode_visiteur && !no_new_contents)))">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
                                     <h3 *ngIf="!type_of_account.includes('dit') ">Mes nouveautés</h3>
