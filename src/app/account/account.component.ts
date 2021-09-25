@@ -790,6 +790,7 @@ export class AccountComponent implements OnInit {
           this.youtube=this.links.youtube;
           this.deviantart=this.links.deviantart;
           this.other_website=this.links.other_website;
+          this.shopping=this.links.shopping;
 
           /*if(this.instagram){
             let insta=this.instagram.replace("://","/");
@@ -3141,7 +3142,7 @@ report(){
   artstation: string;
   website: string;
   other_website: string;
-
+  shopping:string;
   email_about:string;
   phone_about:string;
 

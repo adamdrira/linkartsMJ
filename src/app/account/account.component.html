@@ -1180,7 +1180,7 @@
 
 
 
-                            <div class="block-right" *ngIf="!( mode_visiteur && !instagram && !facebook && !pinterest && !deviantart && !artstation && !website && !other_website )">
+                            <div class="block-right" *ngIf="!( mode_visiteur && !instagram && !facebook && !pinterest && !deviantart && !artstation && !website && !other_website && !shopping )">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">share</mat-icon>
                                     <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('tes')">Mes réseaux</h3>
@@ -1227,10 +1227,15 @@
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Artstation</span>
                                         </a>
+                                        <a [href]="shopping" target="_blank" class="network shopping" *ngIf="shopping">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Boutique en ligne</span>
+                                        </a>
                                         <a [href]="website" target="_blank" class="network personal" *ngIf="website">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Site perso</span>
                                         </a>
+                                        
                                         <a [href]="other_website" target="_blank" class="network other-website" *ngIf="other_website">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Autre site</span>

@@ -2090,6 +2090,13 @@
               color:white;
             }
           }
+          &.shopping{
+            background:  linear-gradient(45deg, #614e12, #b19332,#f2d05c);
+            ::ng-deep fa-icon svg {
+              color:white;
+            }
+          }
+         
           &.other-website{
             background: linear-gradient(45deg,#390d3e, #ae1370,#c170b1,#eecceb);
             ::ng-deep fa-icon svg {

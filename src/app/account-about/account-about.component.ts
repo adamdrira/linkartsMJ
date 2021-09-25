@@ -213,7 +213,7 @@ export class AccountAboutComponent implements OnInit {
   artstation: String;
   website: String;
   other_website: String;
-  
+  shopping: String;
   
   type_of_profile:String;
   birthday:String;
@@ -297,6 +297,7 @@ export class AccountAboutComponent implements OnInit {
         this.youtube=this.links.youtube;
         this.deviantart=this.links.deviantart;
         this.other_website=this.links.other_website;
+        this.shopping=this.links.shopping;
       }
 
       this.cv_name=this.author.cv;
@@ -2934,6 +2935,11 @@ get_projects_stats(){
           Validators.pattern(pattern("link")),
         ]),
       ],
+      shopping: [this.shopping, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ]
       
 
 
@@ -2976,7 +2982,7 @@ get_projects_stats(){
     "artstation":this.registerForm2.value.artstation,"website":this.registerForm2.value.website,
     "deviantart":this.registerForm2.value.deviantart,"pinterest":this.registerForm2.value.pinterest,
     "other_website":this.registerForm2.value.other_website,"twitter":this.registerForm2.value.twitter,
-    "youtube":this.registerForm2.value.youtube,
+    "youtube":this.registerForm2.value.youtube,"shopping":this.registerForm2.value.shopping
     }]
 
     this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).pipe(first() ).subscribe(l=>{
@@ -2992,6 +2998,7 @@ get_projects_stats(){
       this.youtube=links[0].youtube;
       this.deviantart=links[0].deviantart;
       this.other_website=links[0].other_website;
+      this.shopping=links[0].shopping;
       this.loading_validation_form_2=false;
       this.registerForm2_activated=false;
     });

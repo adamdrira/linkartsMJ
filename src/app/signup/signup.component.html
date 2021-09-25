@@ -862,6 +862,18 @@
                     </div>
 
                     <div class="link-title">
+                        <span>Boutique</span>
+                    </div>
+                    <div class="form-item" style="margin-bottom: 5px;">
+                        <mat-form-field floatLabel='never'>
+                            <mat-label>https://www.maBoutiqueEnLigne.com/</mat-label>
+                            <input matInput formControlName="shopping" (input)="normalize_input(registerForm5, 'shopping')" autocomplete="off" maxLength="100" >
+                            <mat-error *ngIf="registerForm5.controls['shopping'].invalid ">Veuillez saisir un lien valide
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="link-title">
                         <span>Autre site</span>
                     </div>
                     <div class="form-item" style="margin-bottom: 5px;">

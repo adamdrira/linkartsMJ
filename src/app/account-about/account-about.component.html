@@ -689,6 +689,35 @@
         
                     </ng-container>
 
+                    <ng-container *ngIf="(visitor_mode && !(shopping==undefined || shopping=='')) || !visitor_mode">
+                        <div class="form-title">
+                            <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien boutique en ligne</span>
+                            <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien boutique en ligne</span>
+        
+                        </div>
+                        
+                        <div class="form-item" *ngIf="!registerForm2_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'
+                            [matTooltip]="( shopping==undefined || shopping=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="100">
+                                <mat-label *ngIf="!( shopping==undefined || shopping=='' )">{{shopping}}</mat-label>
+                                <mat-label *ngIf=" ( shopping==undefined || shopping=='' )"><i>Non renseigné</i></mat-label>
+                                <input matInput readonly>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label class="label-to-set">https://www.maBoutiqueEnLigne.com</mat-label>
+                                <input matInput formControlName="shopping" autocomplete="off" (input)="normalize_input(registerForm2, 'shopping');">
+                                <mat-error *ngIf="registerForm2.controls['shopping'].invalid ">Veuillez saisir un lien valide
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+        
+                    </ng-container>
+
                     <ng-container *ngIf="(visitor_mode && !(website==undefined || website=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Site perso</span>
@@ -718,7 +747,8 @@
         
                     </ng-container>
 
-                    
+                   
+
                     <ng-container *ngIf="(visitor_mode && !(other_website==undefined || other_website=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Autre site</span>
