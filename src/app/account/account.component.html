@@ -911,11 +911,11 @@
                             </ng-container>
 
                             <!-- nouveauté -->
-                            <div class="block" *ngIf="!type_of_account.includes('Fan') && !type_of_account.includes('Particulier') && !type_of_account.includes('Professionnel')">
+                            <div class="block" *ngIf="!type_of_account.includes('Fan') && !type_of_account.includes('Particulier') && !type_of_account.includes('Professionnel') && (type_of_account.includes('dit') && (!mode_visiteur || (mode_visiteur && !no_new_contents)))">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">alarm_add</mat-icon>
                                     <h3 *ngIf="!type_of_account.includes('dit') ">Mes nouveautés</h3>
-                                    <h3 *ngIf="type_of_account.includes('dit')">Nos nouveautés</h3>
+                                    <h3 *ngIf="type_of_account.includes('dit')">Nos extraits</h3>
 
                                     <a [routerLink]=get_add_artwork_link() class="right-button" *ngIf="!mode_visiteur" >
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
@@ -1087,9 +1087,9 @@
                                         <span><span class="emphasize">{{number_of_flagship_clicks}}</span> œuvres phares consultées</span>
                                     </div>
                                     
-                                    <div class="block-info" *ngIf="number_of_forms && type_of_account.includes('dit')">
+                                    <div class="block-info" *ngIf="number_of_projects_received && type_of_account.includes('dit')">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">archive</mat-icon>
-                                        <span><span class="emphasize">{{number_of_forms}}</span>  projets reçus</span>
+                                        <span><span class="emphasize">{{number_of_projects}}</span>  projets reçus</span>
                                     </div>
                                 </div>
                             </div>
@@ -1180,7 +1180,7 @@
 
 
 
-                            <div class="block-right" *ngIf="!( mode_visiteur && !instagram && !facebook && !pinterest && !deviantart && !artstation && !website && !other_website && !shopping )">
+                            <div class="block-right" *ngIf="!( mode_visiteur && !instagram && !facebook && !pinterest && !deviantart && !artstation && !website && !other_website && !shopping && !mangadraft && !webtoon )">
                                 <div class="top">
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">share</mat-icon>
                                     <h3 *ngIf="!type_of_account.includes('dit') && !type_of_account.includes('tes')">Mes réseaux</h3>
@@ -1226,6 +1226,14 @@
                                         <a [href]="artstation" target="_blank" class="network artstation" *ngIf="artstation">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
                                             <span>Artstation</span>
+                                        </a>
+                                        <a [href]="webtoon" target="_blank" class="network webtoon" *ngIf="webtoon">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Webtoon</span>
+                                        </a>
+                                        <a [href]="mangadraft" target="_blank" class="network mangadraft" *ngIf="mangadraft">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>
+                                            <span>Mangadraft</span>
                                         </a>
                                         <a [href]="shopping" target="_blank" class="network shopping" *ngIf="shopping">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_forward_ios</mat-icon>

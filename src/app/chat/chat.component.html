@@ -1375,7 +1375,7 @@
 
             <div *ngIf="load_emoji" #emojis class="emojis-main-container" [@enterAnimation]>
                 <div class="emojis-container">
-                    <emoji-mart [set]="set" [sheetSize]="16" [enableSearch]="false" [isNative]="native" [hideRecent]="false"
+                    <emoji-mart [set]="set" [useButton]="true" [sheetSize]="'16'" [showPreview]="true" [enableSearch]="false" [isNative]="native" [hideRecent]="false"
                         (emojiSelect)="handleClick($event)">
                     </emoji-mart>
                 </div>
@@ -1452,7 +1452,7 @@
                             (keydown)="on_keydown($event)" (keyup)="on_keyup($event)" (input)="check_message_for_phone()" (click)="activateFocus()" (blur)="desactivateFocus()"
                             (paste)="onPaste($event);" onblur="this.placeholder = 'Ecrivez un message...'" type="text"
                             [placeholder]="'Ecrivez un message...'" autocomplete="on" autocorrect="on"
-                            autocapitalize="off" spellcheck="false"></textarea>
+                            autocapitalize="on" spellcheck="true"></textarea>
 
                         <div class="messages-options-container">
 

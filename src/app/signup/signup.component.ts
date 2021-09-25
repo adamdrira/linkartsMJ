@@ -330,6 +330,16 @@ export class SignupComponent implements OnInit {
           Validators.pattern(pattern("link")),
         ]),
       ],
+      mangadraft: ['', 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
+      webtoon: ['', 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
     });
   }
 
@@ -1047,7 +1057,8 @@ export class SignupComponent implements OnInit {
         "artstation":this.registerForm5.value.artstation,"website":this.registerForm5.value.website,
         "deviantart":this.registerForm5.value.deviantart,"pinterest":this.registerForm5.value.pinterest,
         "other_website":this.registerForm5.value.other_website,"twitter":this.registerForm5.value.twitter,
-        "youtube":this.registerForm5.value.youtube,"shopping":this.registerForm5.value.shopping
+        "youtube":this.registerForm5.value.youtube,"shopping":this.registerForm5.value.shopping,
+        "webtoon":this.registerForm5.value.webtoon,"mangadraft":this.registerForm5.value.mangadraft
         }]
         if(this.loading_signup){
           return

@@ -2090,6 +2090,20 @@
               color:white;
             }
           }
+         
+          &.webtoon{
+            background: linear-gradient(45deg,#009b40, #00dc64);
+            ::ng-deep fa-icon svg {
+              color:white;
+            }
+          }
+
+          &.mangadraft{
+            background: linear-gradient( 45deg, #2a3038, #ed6942);
+            ::ng-deep fa-icon svg {
+              color:white;
+            }
+          }
           &.shopping{
             background:  linear-gradient(45deg, #614e12, #b19332,#f2d05c);
             ::ng-deep fa-icon svg {

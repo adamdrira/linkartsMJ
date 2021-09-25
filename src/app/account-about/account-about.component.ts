@@ -116,7 +116,7 @@ export class AccountAboutComponent implements OnInit {
     private ConstantsService:ConstantsService,
     @Inject(DOCUMENT) private document: Document,
   ) { 
-    NavbarService.visibility_observer_font.pipe(first() ).subscribe(font=>{
+    NavbarService.visibility_observer_font.subscribe(font=>{
       if(font){
         this.show_icon=true;
       }
@@ -214,6 +214,8 @@ export class AccountAboutComponent implements OnInit {
   website: String;
   other_website: String;
   shopping: String;
+  mangadraft: String;
+  webtoon: String;
   
   type_of_profile:String;
   birthday:String;
@@ -298,6 +300,8 @@ export class AccountAboutComponent implements OnInit {
         this.deviantart=this.links.deviantart;
         this.other_website=this.links.other_website;
         this.shopping=this.links.shopping;
+        this.mangadraft=this.links.mangadraft;
+        this.webtoon=this.links.webtoon;
       }
 
       this.cv_name=this.author.cv;
@@ -408,7 +412,7 @@ export class AccountAboutComponent implements OnInit {
   }
 
   load_emoji=false;
-  show_icon=false;
+  show_icon=true;
  
   
   open_category(i){
@@ -2939,6 +2943,16 @@ get_projects_stats(){
         Validators.compose([
           Validators.pattern(pattern("link")),
         ]),
+      ],
+      webtoon: [this.webtoon, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
+      ],
+      mangadraft: [this.mangadraft, 
+        Validators.compose([
+          Validators.pattern(pattern("link")),
+        ]),
       ]
       
 
@@ -2982,7 +2996,8 @@ get_projects_stats(){
     "artstation":this.registerForm2.value.artstation,"website":this.registerForm2.value.website,
     "deviantart":this.registerForm2.value.deviantart,"pinterest":this.registerForm2.value.pinterest,
     "other_website":this.registerForm2.value.other_website,"twitter":this.registerForm2.value.twitter,
-    "youtube":this.registerForm2.value.youtube,"shopping":this.registerForm2.value.shopping
+    "youtube":this.registerForm2.value.youtube,"shopping":this.registerForm2.value.shopping,
+    "webtoon":this.registerForm2.value.webtoon,"mangadraft":this.registerForm2.value.mangadraft
     }]
 
     this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about,form.phone_about,links).pipe(first() ).subscribe(l=>{
@@ -2999,6 +3014,8 @@ get_projects_stats(){
       this.deviantart=links[0].deviantart;
       this.other_website=links[0].other_website;
       this.shopping=links[0].shopping;
+      this.mangadraft=links[0].mangadraft;
+      this.webtoon=links[0].mangadraft;
       this.loading_validation_form_2=false;
       this.registerForm2_activated=false;
     });

@@ -10,7 +10,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { FileUploader } from 'ng2-file-upload';
 import { DomSanitizer } from '@angular/platform-browser';
 
-const url = 'http://localhost:4600/routes/upload_artwork_for_editor/';
+const url = 'https://www.linkarts.fr/routes/upload_artwork_for_editor/';
 
 @Component({
   selector: 'app-popup-editor-artwork',
@@ -117,6 +117,10 @@ export class PopupEditorArtworkComponent implements OnInit {
       }
     };
 
+
+    this.uploader.onCompleteItem = (file) => {
+      this.dialogRef.close(this.file);
+    }
   }
 
 
@@ -189,13 +193,16 @@ export class PopupEditorArtworkComponent implements OnInit {
       }
       else {
 
-        let URL = url + `${this.file_name}`;
-        this.uploader.setOptions({ url: URL});
-        this.uploader.queue[0].upload();
-
         this.Profile_Edition_Service.add_editor_artwork(this.registerForm.value.title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.authors.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.link?this.registerForm.value.link:'',this.file_name).subscribe(r=>{
-          this.dialogRef.close(r[0]);
+         
+          this.file=r[0]
+          let URL = url + `${this.file_name}`;
+          this.uploader.setOptions({ url: URL});
+          this.uploader.queue[0].upload();
         })
+    
+
+       
 
 
       }
@@ -206,6 +213,7 @@ export class PopupEditorArtworkComponent implements OnInit {
 
   image_to_show:any;
   uploader:FileUploader;
+  file:any;
   image_uploaded: boolean = false;
   hasBaseDropZoneOver:boolean;
   hasAnotherDropZoneOver:boolean;

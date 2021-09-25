@@ -791,6 +791,8 @@ export class AccountComponent implements OnInit {
           this.deviantart=this.links.deviantart;
           this.other_website=this.links.other_website;
           this.shopping=this.links.shopping;
+          this.webtoon=this.links.webtoon;
+          this.mangadraft=this.links.mangadraft;
 
           /*if(this.instagram){
             let insta=this.instagram.replace("://","/");
@@ -849,6 +851,12 @@ export class AccountComponent implements OnInit {
           this.navbar.get_number_of_flagship_clicks(this.user_id).pipe( first() ).subscribe(r=>{
             this.number_of_flagship_clicks=number_in_k_or_m(r[0].number);
             this.number_of_flagship_clicks_retrieved=true;
+            this.cd.detectChanges()
+          });
+
+          this.Edtior_Projects.get_number_of_projects_submited(this.user_id).pipe( first() ).subscribe(r=>{
+            this.number_of_projects=number_in_k_or_m(r[0].number);
+            this.number_of_projects_received=true;
             this.cd.detectChanges()
           });
           this.user_blocked=false;
@@ -3143,6 +3151,8 @@ report(){
   website: string;
   other_website: string;
   shopping:string;
+  mangadraft:string;
+  webtoon:string;
   email_about:string;
   phone_about:string;
 
@@ -3168,7 +3178,8 @@ report(){
 
   /* VARIABLES EDITEURS */
   //chiffres clés pour un éditeur
-  number_of_forms=number_in_k_or_m(0);
+  number_of_projects=number_in_k_or_m(0);
+  number_of_projects_received=false;
   //catégories pour un éditeur
   instructions:any;
   //oeuvres phares pour un éditeur

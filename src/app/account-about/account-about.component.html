@@ -689,6 +689,62 @@
         
                     </ng-container>
 
+                    <ng-container *ngIf="(visitor_mode && !(webtoon==undefined || webtoon=='')) || !visitor_mode">
+                        <div class="form-title">
+                            <span class="no-margin-right" [@enterAnimation]>Lien Webtoon</span>
+        
+                        </div>
+                        
+                        <div class="form-item" *ngIf="!registerForm2_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'
+                            [matTooltip]="( webtoon==undefined || webtoon=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="100">
+                                <mat-label *ngIf="!( webtoon==undefined || webtoon=='' )">{{webtoon}}</mat-label>
+                                <mat-label *ngIf=" ( webtoon==undefined || webtoon=='' )"><i>Non renseigné</i></mat-label>
+                                <input matInput readonly>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label class="label-to-set">https://www.webtoon.com/MonPseudo</mat-label>
+                                <input matInput formControlName="webtoon" autocomplete="off" (input)="normalize_input(registerForm2, 'webtoon');">
+                                <mat-error *ngIf="registerForm2.controls['webtoon'].invalid ">Veuillez saisir un lien valide
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+        
+                    </ng-container>
+
+                    <ng-container *ngIf="(visitor_mode && !(mangadraft==undefined || mangadraft=='')) || !visitor_mode">
+                        <div class="form-title">
+                            <span class="no-margin-right" [@enterAnimation]>Lien Mangadraft</span>
+        
+                        </div>
+                        
+                        <div class="form-item" *ngIf="!registerForm2_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'
+                            [matTooltip]="( mangadraft==undefined || mangadraft=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="100">
+                                <mat-label *ngIf="!( mangadraft==undefined || mangadraft=='' )">{{mangadraft}}</mat-label>
+                                <mat-label *ngIf=" ( mangadraft==undefined || mangadraft=='' )"><i>Non renseigné</i></mat-label>
+                                <input matInput readonly>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
+                            <mat-form-field floatLabel='never'>
+                                <mat-label class="label-to-set">https://www.mangadraft.com/MonPseudo</mat-label>
+                                <input matInput formControlName="mangadraft" autocomplete="off" (input)="normalize_input(registerForm2, 'mangadraft');">
+                                <mat-error *ngIf="registerForm2.controls['mangadraft'].invalid ">Veuillez saisir un lien valide
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+        
+                    </ng-container>
+
                     <ng-container *ngIf="(visitor_mode && !(shopping==undefined || shopping=='')) || !visitor_mode">
                         <div class="form-title">
                             <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Lien boutique en ligne</span>

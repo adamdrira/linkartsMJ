@@ -33,8 +33,9 @@
 
             <div class="no-results-container" *ngIf="display_no_results" [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">find_in_page</mat-icon>
-                <span>Aucun résultat pour la recherche demandée </span>
-            </div>
+                <span *ngIf="category=='All'">Tout : aucun résultat pour la recherche demandée</span>
+                <span *ngIf="list_of_real_categories.indexOf(category)>=0 && category!='All'">{{list_of_categories[list_of_real_categories.indexOf(category)]}} : aucun résultat pour la recherche demandée</span>
+            </div> 
 
 
             <div *ngIf="!display_results && !display_no_results" class="categories-container"  [@enterAnimation]>
