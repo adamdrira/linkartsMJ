@@ -1555,12 +1555,16 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let friend_type=req.params.friend_type;
       let friend_id=parseInt(req.params.friend_id);
       let filename = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
-
       let transform = sharp()
       transform = transform.resize({fit:sharp.fit.contain,height:300})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
+          }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
           }
       });
       fs.access( path.join(process.cwd(),filename), fs.F_OK, (err) => {
@@ -1657,15 +1661,23 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let friend_type=req.params.friend_type;
       let friend_id=parseInt(req.params.friend_id);
       let filename = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
+      console.log("fileeeeeeeeeeeeee right")
+      console.log(filename)
       let transform = sharp()
       transform = transform.resize({fit:sharp.fit.contain,height:75})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
           }
+          else{
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            res.status(200).send(not_found);
+          }
       });
       fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
         if(err){
+          
           filename = "./data_and_routes/not-found-image.jpg";
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
           not_found.pipe(transform);
