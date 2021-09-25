@@ -92,4 +92,10 @@ export class Edtior_Projects {
     }));
   }
 
+  get_number_of_projects_submited(id_user){
+    return this.http.get(`routes/get_number_of_projects_submited/${id_user}`).pipe(map(information=>{
+      return information;   
+    }));
+  }
+
 }
