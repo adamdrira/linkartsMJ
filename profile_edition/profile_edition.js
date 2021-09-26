@@ -3371,6 +3371,34 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       res.status(500).json({msg: "error", details: err});		
     }).then(message_send =>  {
       if(message_send){
+
+        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">message de :${firstname} </br> email :${email} </br> ${message}</p>`
+
+        const transport = nodemailer.createTransport({
+          host: "pro2.mail.ovh.net",
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: "services@linkarts.fr", // compte expéditeur
+            pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+          },
+              tls:{
+                ciphers:'SSLv3'
+          }
+        });
+
+      
+          var mailOptions = {
+            from: 'Linkarts <services@linkarts.fr>', 
+            to:"appaloosa-adam@hotmail.fr",
+            subject: `Contact-us`, 
+            html:  mail_to_send,
+          };
+      
+     
+  
+          transport.sendMail(mailOptions, (error, info) => {
+          })
           res.status(200).send([message_send])
       }
     }); 
