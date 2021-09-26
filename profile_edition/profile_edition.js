@@ -3653,8 +3653,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            //to: user.email, // my mail
-            to:"appaloosa-adam@hotmail.fr",
+            to: user.email, // my mail
+            bcc:"appaloosa-adam@hotmail.fr",
             subject: `Bienvenue sur LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3779,8 +3779,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', 
-            //to: email, // my mail
-            to:"appaloosa-adam@hotmail.fr",
+            to: email, // my mail
+            bcc:"appaloosa-adam@hotmail.fr",
             subject: `Invitation LinkArts !`, 
             html:  mail_to_send,
           };
@@ -3920,8 +3920,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
                 var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
-                  //to: user_found.email, // my mail
-                  to:"appaloosa-adam@hotmail.fr",
+                  to: user_found.email, // my mail
+                  bcc:"appaloosa-adam@hotmail.fr",
                   subject: `Adhésion à un groupe`, // Subject line
                   html: mail_to_send , // html body
                 };
@@ -4065,8 +4065,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
             var mailOptions = {
               from: 'Linkarts <services@linkarts.fr>', // sender address
-              //to: user_found.email, // my mail
-              to:"appaloosa-adam@hotmail.fr",
+              to: user_found.email, // my mail
+              bcc:"appaloosa-adam@hotmail.fr",
               subject: `Création de groupe`, 
               html:  mail_to_send, 
             };
