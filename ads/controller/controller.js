@@ -1727,9 +1727,9 @@ router.post('/send_email_for_ad_answer', function (req, res) {
         let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
           mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
             mail_to_send+=`
-            <table style="width:100%;margin-bottom:20px">
+            <table style="width:100%">
                 <tr id="tr2" >
-                    <td  align="center" style="background: rgb(2, 18, 54)">
+                    <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
                         <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
                         <div style="height:1px;width:20px;background:white;"></div>
                         <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Réponse à une annonce</p>
@@ -1742,7 +1742,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
             
 
             mail_to_send+=`
-            <table style="width:100%;margin:25px auto;">
+            <table style="width:100%;margin:0px auto;">
               <tr id="tr3">
 
                   <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">

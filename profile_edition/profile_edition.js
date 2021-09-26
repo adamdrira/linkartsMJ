@@ -3546,10 +3546,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
           mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
             mail_to_send+=`
-            <table style="width:100%;margin-bottom:20px">
+            <table style="width:100%">
 
                 <tr id="tr2" >
-                    <td  align="center" style="background: rgb(2, 18, 54)">
+                    <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
                         <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
                         <div style="height:1px;width:20px;background:white;"></div>
                         <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Bienvenue</p>
@@ -3562,7 +3562,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             start=`${name},`
 
             mail_to_send+=`
-            <table style="width:100%;margin:25px auto;">
+            <table style="width:100%;margin:0px auto;">
               <tr id="tr3">
 
                   <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
@@ -3672,8 +3672,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             } else {
                 res.status(200).send([{sent:'Message sent ' + info.messageId}])
             }
-            
-
         })
 
       }
@@ -3703,10 +3701,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
           mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
             mail_to_send+=`
-            <table style="width:100%;margin-bottom:20px">
+            <table style="width:100%">
 
                 <tr id="tr2" >
-                    <td  align="center" style="background: rgb(2, 18, 54)">
+                    <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
                         <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
                         <div style="height:1px;width:20px;background:white;"></div>
                         <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Invitation</p>
@@ -3720,7 +3718,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             let emitter=name;
 
             mail_to_send+=`
-            <table style="width:100%;margin:25px auto;">
+            <table style="width:100%;margin:0px auto;">
               <tr id="tr3">
 
                   <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
@@ -3866,10 +3864,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
                 mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
                   mail_to_send+=`
-                  <table style="width:100%;margin-bottom:20px">
+                  <table style="width:100%">
   
                       <tr id="tr2" >
-                          <td  align="center" style="background: rgb(2, 18, 54)">
+                          <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
                               <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
                               <div style="height:1px;width:20px;background:white;"></div>
                               <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Adhésion à un groupe</p>
@@ -3882,7 +3880,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                    start=`Hey ${name},`
   
                   mail_to_send+=`
-                  <table style="width:100%;margin:25px auto;">
+                  <table style="width:100%;margin:0px auto;">
                     <tr id="tr3">
   
                         <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
@@ -4010,10 +4008,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
               mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
                 mail_to_send+=`
-                <table style="width:100%;margin-bottom:20px">
+                <table style="width:100%">
 
                     <tr id="tr2" >
-                        <td  align="center" style="background: rgb(2, 18, 54)">
+                        <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
                             <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
                             <div style="height:1px;width:20px;background:white;"></div>
                             <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Création de groupe</p>
@@ -4027,7 +4025,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 start=`Hey ${name},`
 
                 mail_to_send+=`
-                <table style="width:100%;margin:25px auto;">
+                <table style="width:100%;margin:0px auto;">
                   <tr id="tr3">
 
                       <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
@@ -4107,9 +4105,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
                 mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
                   mail_to_send+=`
-                  <table style="width:100%;margin-bottom:20px">
+                  <table style="width:100%">
                       <tr id="tr2" >
-                          <td  align="center" style="background: rgb(2, 18, 54)">
+                          <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
                               <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
                               <div style="height:1px;width:20px;background:white;"></div>
                               <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Adhésion à un groupe</p>
@@ -4121,7 +4119,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                   start=`Hey ${name},`
 
                   mail_to_send+=`
-                  <table style="width:100%;margin:25px auto;">
+                  <table style="width:100%;margin:0px auto;">
                     <tr id="tr3">
 
                         <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
@@ -4614,7 +4612,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       }
     })
     .catch(err => {
-      
+      console.log(err)
       res.status(500).json({msg: "error", details: err});		
     }).then(piece =>  {
       if(piece){
@@ -4866,6 +4864,146 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
    
   });
 
+
+  router.post('/send_custom_email', function (req, res) {
+    if( req.body.client_id!='LinkArts-email' || req.body.client_secret!='le-Site-De-Mokhtar-Le-Pdg-@LinkArts') {
+        return res.status(401).json({msg: "error"});
+    }
+
+
+    let title=req.body.title;
+    let start=req.body.start;
+    let texts=req.body.texts;
+    let emitter=req.body.emitter;
+
+    let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+    mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+      mail_to_send+=`
+      <table style="width:100%">
+
+          <tr id="tr2" >
+              <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
+                  <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                  <div style="height:1px;width:20px;background:white;"></div>
+                  <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">${title}</p>
+              </td>
+          </tr>
+      </table>`;
+
+      
+
+      mail_to_send+=`
+      <table style="width:100%;margin:0px auto;">
+        <tr id="tr3">
+
+            <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>`
+
+                for(let i=0;i<texts.length;i++){
+                  if(texts[i].type=="p"){
+                    mail_to_send+=`<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${texts[i].value}</p>`
+                  }
+                  if(texts[i].type=="p-href"){
+                    mail_to_send+=`<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;"><a href="${texts[i].href}">${texts[i].value}</a></p>`
+                  }
+                  else if(texts[i].type=="p-space"){
+                    mail_to_send+=`<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 25px;">${texts[i].value}</p>`
+                  }
+                  else if(texts[i].type=="button"){
+                    mail_to_send+=
+                    `<div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                        <a href="${texts[i].href}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                            ${texts[i].value}
+                        </a>
+                    </div>`
+                  }
+                  else if(texts[i].type=="ul-li"){
+                    mail_to_send+=` 
+                    <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">`
+                        for(let j=0;j<texts[i].list.length;j++){
+                          mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>${texts[i].list[j].title}</b> : ${texts[i].list[j].value}</li> `
+                        }
+                    mail_to_send+=` </ul>`
+                  }
+                  else if(texts[i].type=="ol-li"){
+                    mail_to_send+=` 
+                    <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">`
+                        for(let j=0;j<texts[i].list.length;j++){
+                          mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>${texts[i].list[j].title}</b> : ${texts[i].list[j].value}</li> `
+                        }
+                    mail_to_send+=` </ol>`
+                  }
+                }
+               
+
+                
+
+      mail_to_send+=`
+      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                    <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
+            </td>
+
+        </tr>
+      </table>`
+
+      mail_to_send+=`
+      <table style="width:100%;margin:25px auto;">
+          <tr id="tr4">
+              <td align="center">
+                  <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                  <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                  
+              </td>
+
+          </tr>
+      </table>`
+
+    mail_to_send+='</div>'
+    mail_to_send+='</div>'
+
+
+
+  
+      
+
+    const transport = nodemailer.createTransport({
+      host: "pro2.mail.ovh.net",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: "services@linkarts.fr", // compte expéditeur
+        pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+      },
+          tls:{
+            ciphers:'SSLv3'
+      }
+    });
+
+  
+    var mailOptions = {
+      from: 'Linkarts <services@linkarts.fr>', 
+      to: emitter, // my mail
+      bcc:"appaloosa-adam@hotmail.fr",
+      subject: `${title}`, 
+      html:  mail_to_send,
+    };
+
+  
+
+      transport.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              res.status(200).send([{error:error}])
+          } else {
+              res.status(200).send(mail_to_send)
+          }
+      })
+
+     
+
+    
+   
+  });
  
 
 }
