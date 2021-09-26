@@ -743,7 +743,7 @@
                                     </div>
 
                                     <div class="description-bottom">
-                                        <span *ngIf="instructions">{{instructions}}</span>
+                                        <span *ngIf="instructions" style=" white-space: pre-line">{{instructions}}</span>
                                         <span *ngIf="!instructions && ! mode_visiteur">Vous n'avez ajouté aucune consigne.</span>
                                         <span *ngIf="!instructions && mode_visiteur">Aucune consigne spécifique.</span>
                                     </div>

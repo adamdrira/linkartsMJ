@@ -3374,14 +3374,14 @@ get_projects_stats(){
       ],
       instructions: [this.instructions, 
         Validators.compose([
-          Validators.maxLength(400),
+          Validators.maxLength(600),
           Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ],
       editor_default_response: [this.editor_default_response, 
         Validators.compose([
           Validators.minLength(3),
-          Validators.maxLength(400),
+          Validators.maxLength(600),
           Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ],

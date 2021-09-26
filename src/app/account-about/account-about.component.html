@@ -1160,10 +1160,10 @@
                     <div class="form-item" *ngIf="registerForm6_activated" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
                             <mat-label class="label-to-set">Consignes</mat-label>
-                            <textarea matInput cdkTextareaAutosize formControlName="instructions" maxLength="400" autocomplete="off" (input)="normalize_input(registerForm6, 'instructions');"></textarea>
+                            <textarea matInput cdkTextareaAutosize formControlName="instructions" maxLength="600" autocomplete="off" (input)="normalize_input(registerForm6, 'instructions');"></textarea>
                             <mat-error *ngIf="registerForm6.controls['instructions'].invalid">Saisie invalide : certains caractères spéciaux ne sont pas autorisés
                             </mat-error>
-                            <div class="length-indicator">{{registerForm6.controls['instructions'].value?.length || 0}}/400</div>
+                            <div class="length-indicator">{{registerForm6.controls['instructions'].value?.length || 0}}/600</div>
                         </mat-form-field>
                     </div>
                     <div class="form-item" *ngIf="!registerForm6_activated">
