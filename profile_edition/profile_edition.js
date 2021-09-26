@@ -3552,7 +3552,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                     <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
                         <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
                         <div style="height:1px;width:20px;background:white;"></div>
-                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Bienvenue</p>
+                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Bienvenue sur LinkArts !</p>
                     </td>
                 </tr>
             </table>`;
@@ -3567,7 +3567,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
                   <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
-                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous souhaitons la bienvenue sur LinkArts !</p>
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Au nom de toute l'équipe de LinkArts, nous vous souhaitons la bienvenue !</p>
                       <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez dès à présent cliquer sur le bouton ci-dessous pour confirmer votre inscription et compléter votre profil : </p>
                       <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
                           <a href="https://www.linkarts.fr/home/registration/${user.id}/${password}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
@@ -3578,13 +3578,13 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous avez jusqu'à une semaine pour confirmer votre inscription. Une fois ce délais passé, votre compte ne sera plus accessible tant que vous n'aurez pas confirmé votre inscription.</p>`
                       if(user.type_of_account=="Artiste"){
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous en profitons aussi pour vous faire un rappel des avantages que LinkArts peut vous apporter en tant qu'artiste : </p>
-                        <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                        <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
                             <li style="margin-top: 5px;margin-bottom: 15px;"><b>Collaboration</b> : LinkArts met à votre disposition la section Collaboration, une section entièrement adaptée à la collaboration éditoriale, en commençant par la recherche d'un partenaire de projet, jusqu'à la déposition de projet auprès d'une maison d'édition avec retour garantit, en passant par la prestation de services artistiques.</li>        
                             <li style="margin-top: 5px;margin-bottom: 15px;"><b>Visibilité</b> : LinkArts met aussi à votre disposition la section galerie. C'est ici que les éditeurs et les autres artistes pourront voir les œuvres que vous décidez de partager. C'est ici que vous pourrez faire valoir votre talent auprès des éditeurs et c'est aussi ici que vous pouvez découvrir d’autres artistes avec qui collaborer, échanger ou de qui vous inspirer.</li>
                             <li style="margin-top: 5px;margin-bottom: 15px;"><b>Rémunération</b> : afin de vous aider et de vous motiver dans votre quête de collaboration éditoriale, nous vous attribuerons une rémunération proportionnelle à votre nombre d'abonnés, à chaque fois que vous atteindrez le top du classement des Tendances ou des Coups de cœur. Nous vous rappelons que le classement phare pour les éditeurs, le classement des Coups de cœur, est aussi proportionnel à votre activité au sein du site. Alors n'hésitez pas à publier régulièrement et à commenter les œuvres des autres artistes.</li>
                             <li style="margin-top: 5px;margin-bottom: 15px;"><b>Plateforme de discussion collaborative</b> : LinkArts met aussi à votre disposition une plateforme de discussion adaptée aux échanges liés à la collaboration éditoriale. Vous pourrez notamment créer des sous-discussions avec vous collaborateur afin de vous focaliser sur différentes tâches de travails. Vous pourrez aussi éditer les images envoyées par vos collaborateurs afin de détailler vos demandes de corrections, et vous pourrez même créer des discussions de groupe pour travailler avec plusieurs collaborateurs sur le même projet.</li>
                             <li style="margin-top: 5px;margin-bottom: 15px;"><b>Communauté</b> : votre nombre d'abonnés est essentiel pour vous faire valoir auprès des éditeurs et pour accroître votre rémunération. N'hésitez donc pas à inviter vos amis pour vous soutenir, en s'inscrivant en tant que Fan et en s'abonnant à votre compte.</li>
-                        </ol>`
+                        </ul>`
                       }
                       else if(user.type_of_account=="Fan"){
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez désormais aller soutenir l'artiste que vous souhaitez. Donner de la visibilité à un artiste en s'abonnant à son compte, en commentant ou en aimant ses œuvres est, en effet, essentiel pour qu'il puisse être pertinent auprès des éditeurs. Votre soutien l'aidera fortement !</p> `
@@ -3595,21 +3595,16 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">LinkArts vous permet aussi de recherchez des artistes en parcourant la galerie afin d'approfondir votre recherche en vous focalisation sur la qualité du contenu d'un artiste.</p> `
                       }
                       else {
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous vous invitons aussi à prouver votre relation avec la société que vous représentée, en nous fourinissant les justificatifs nécessaires, qui vous sont demandée dans l'onglet "mon compte" de vote profil.</p>
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez dès à présent cliquer sur le bouton ci-dessous pour confirmer votre inscription et compléter votre profil : </p>
                         <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                        <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                          <a href="https://www.linkarts.fr/account/${user.nickname}/my_account/connexion" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
-                              Accéder à mon compte
-                          </a>
-                      </div>
+                          <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                            <a href="https://www.linkarts.fr/account/${user.nickname}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                Accéder à mon profil
+                            </a>
+                          </div>
                         </div>`
                         
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Nous en profitons aussi pour vous faire un rappel des avantages que LinkArts peut vous apporter en tant qu'éditeur / éditrice : </p>
-                        <ol>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Dépôts de projets payants</b> : les artistes devront désormais payer pour déposer leur projet destiné à votre maison d'édition ! En échange, vous devrez leur fournir un feed-back dans un délai défini selon leurs tarifs et selon vos préférences.</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Tri des candidatures optimisé </b> : afin de faciliter vos tris de candidatures, nous vous proposons de nombreuses statistiques gratuites. Vous pourrez ainsi hiérarchiser vos candidatures selon le nombre d'abonnés des artistes (chiffre représentatif de la communauté active de l'artiste issues de ses différents réseaux sociaux), ainsi que leur nombre d'apparitions dans le top Tendances et dans le top Coups de cœur.</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Plateforme de discussion collaborative</b> : LinkArts met aussi à votre disposition une plateforme de discussion adaptée aux échanges éditoriaux. Vous pourrez notamment créer des sous-discussions avec vos collaborateurs afin de vous focaliser sur différentes tâches de travails. Vous pourrez aussi éditer les images envoyées par vos collaborateurs afin de demander des corrections, et même créer des discussions de groupe pour travailler avec de nombreux collaborateurs sur le même projet.</li>
-                        </ol>`
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Des artistes peuvent désormais vous soumettre leurs projets : n'hésitez pas à personnaliser vos offres de dépôt de projet Standard et Express, et à remplir le champ 'Nos consignes' si vous souhaitez donner de plus amples informations à vos candidats. Vous recevrez par ailleurs, un mail à chaque projet reçu et vous pourrez trier et comparer ceux-ci depuis la section 'Mes projets' de votre page de profil.</p>`
                       }
 
             mail_to_send+=`
@@ -3733,12 +3728,12 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
                       
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Selon votre profil, Linkarts met à votre disposition différents outils permettant de répondre à vos besoins : </p>
-                        <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                        <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Artiste</b> : En tant qu'artiste vous pouvez partager vos œuvres, gagner en visibilité, profiter des rémunérations et collaborer avec des maisons d'édition ou d'autres artistes.</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Maison d'édition</b> : En tant que maison d'édition ou professionel de l'édition, vous pouvez faire gagner en visibilité votre maison d'édition, faire la promotion de vos produits, et dénicher des artistes talentueux avec qui collaborer en toute simplicité.</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Professionnel hors édition</b> : En tant que professionel vous pouvez faire la promotion de vos produits, et collaborer avec des artistes talentueux et populaires afin de promouvoir votre marque.</li>
                                 <li style="margin-top: 5px;margin-bottom: 15px;"><b>Passionné</b> : En tant que passionné, vous pouvez faire la découverte d'œuvres et d'artistes de talents afin de fructifier votre créativité et votre futur réseau. Vous pouvez aussi soutenir vos artistes préférés afin de les aider à réaliser leur rêve de succès éditorial.</li>
-                         </ol>`
+                         </ul>`
                       
                      
                      
@@ -3895,11 +3890,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                             </div>
   
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Informations utilises à savoir : </p>
-                            <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                            <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
                                     <li style="margin-top: 5px;margin-bottom: 15px;">Tous les gains générés avec ce compte seront répartis de la façon désirée par l'administrateur</li>
                                     <li style="margin-top: 5px;margin-bottom: 15px;">Il vous est possible de récupérer vos gains personnels en vous connectant depuis votre compte personnel d'artiste</li>
                                     <li style="margin-top: 5px;margin-bottom: 15px;">Tous les membres du groupes seront notifiés à chaque fois que l'administrateur modifie la répartition des gains</li>
-                            </ol>
+                            </ul>
 
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
@@ -4040,11 +4035,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                           </div>
 
                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Informations utilises à savoir : </p>
-                          <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                          <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
                                   <li style="margin-top: 5px;margin-bottom: 15px;">En tant qu'administrateur, tous les gains générés avec ce compte seront répartis de la façon dont vous désirez</li>
                                   <li style="margin-top: 5px;margin-bottom: 15px;">Il vous est possible de récupérer vos gains personnels en vous connectant depuis votre compte personnel d'artiste</li>
                                   <li style="margin-top: 5px;margin-bottom: 15px;">Tous les membres du groupes seront notifiés à chaque fois que vous modifierez la répartition des gains</li>
-                          </ol>
+                          </ul>
 
                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
@@ -4134,11 +4129,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                             </div>
 
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Informations utilises à savoir : </p>
-                            <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                            <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
                                     <li style="margin-top: 5px;margin-bottom: 15px;">Tous les gains générés avec ce compte seront répartis de la façon désirée par l'administrateur</li>
                                     <li style="margin-top: 5px;margin-bottom: 15px;">Il vous est possible de récupérer vos gains personnels en vous connectant depuis votre compte personnel d'artiste</li>
                                     <li style="margin-top: 5px;margin-bottom: 15px;">Tous les membres du groupes seront notifiés à chaque fois que l'administrateur modifie la répartition des gains</li>
-                            </ol>
+                            </ul>
 
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
                             <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
