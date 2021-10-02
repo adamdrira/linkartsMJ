@@ -29,20 +29,26 @@ export class Edtior_Projects {
     }));
   }
 
-  set_payement_done_for_project(id_project){
-    return this.http.post('routes/set_payement_done_for_project',{id_project:id_project},{withCredentials:true} ).pipe(map((information)=>{
+  set_payement_done_for_project(id_project,multiple){
+    return this.http.post('routes/set_payement_done_for_project',{id_project:id_project,multiple:multiple},{withCredentials:true} ).pipe(map((information)=>{
         return information;
       }));
   }
 
-  check_if_payement_done(id_project,password){
-    return this.http.post('routes/check_if_payement_done',{id_project:id_project,password:password},{withCredentials:true} ).pipe(map((information)=>{
+  check_if_payement_done(id_project,password,is_multiple){
+    return this.http.post('routes/check_if_payement_done',{id_project:id_project,password:password,is_multiple:is_multiple},{withCredentials:true} ).pipe(map((information)=>{
         return information;
       }));
   }
 
   get_last_emitted_project(visitor_id,user_id){
     return this.http.get(`routes/get_last_emitted_project/${visitor_id}/${user_id}`, {withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+  }
+
+  get_all_last_emitted_project(visitor_id){
+    return this.http.get(`routes/get_all_last_emitted_project/${visitor_id}`, {withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
   }

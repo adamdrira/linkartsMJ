@@ -22,8 +22,8 @@ export class StripeService {
   }
 
   
-  create_checkout_project_submission(value,pseudo,id_project,title){
-    return this.httpClient.post('routes/create_checkout_project_submission', {value:value,pseudo:pseudo,id_project:id_project,title:title}, {withCredentials:true}).pipe(map((information)=>{
+  create_checkout_project_submission(value,pseudo,id_project,title,is_multiple){
+    return this.httpClient.post('routes/create_checkout_project_submission', {value:value,pseudo:pseudo,id_project:id_project,title:title,is_multiple:is_multiple}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
   }
