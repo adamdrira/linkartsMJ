@@ -51,7 +51,7 @@ const authentification = require('../../authentication/db.config');
 
 // Cors
 const corsOptions = {
-   origin: ['https://www.linkarts.fr'],
+   origin: ['http://localhost:4200'],
    optionsSuccessStatus: 200
  };
  router.use(cors(corsOptions));
@@ -72,8 +72,13 @@ router.get('/', (request, response) => {
 })
 
 //fonctions pour les recommendations et les trendings
+
+
+router.post('/test_generate_favorites',favorites.test_generate_favorites)
 router.post('/generate_recommendations',recommendations.generate_recommendations)
+router.post('/get_recommendations_comics2',recommendations.get_recommendations_comics2)
 router.post('/get_recommendations_comics',recommendations.get_recommendations_comics)
+router.post('/get_recommendations_drawings2',recommendations.get_recommendations_drawings2)
 router.post('/get_recommendations_writings',recommendations.get_recommendations_writings)
 router.post('/get_recommendations_drawings',recommendations.get_recommendations_drawings)
 router.post('/get_first_recommendation_bd_os_for_user',recommendations.get_first_recommendation_bd_os_for_user)

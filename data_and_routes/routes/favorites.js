@@ -69,7 +69,7 @@ function get_current_user(token){
     const date = yyyy.toString() + '-' +  mm  + '-' + dd;
     
     var six_months = new Date();
-    six_months.setDate(six_months.getDate() - 180);
+    six_months.setDate(six_months.getDate() - 90);
     favorites_seq.favorites.findAll({
       where:{
         date: date
@@ -130,6 +130,7 @@ function get_current_user(token){
     })
 
    
+  
 
     function generate_favorites(){
       pool.query(' SELECT * FROM users WHERE type_of_account=$1 AND "updatedAt" ::date >= $2 ORDER BY subscribings_number DESC',["Artiste",six_months], (error, results) => {
@@ -396,7 +397,7 @@ function get_current_user(token){
                 favorites_seq.favorites.findOne({
                     where: {
                       id_user:list_of_users[i].id,
-                      createdAt:{[Op.and]:[{[Op.lt]: today},{[Op.gt]: last_week} ]},
+                      createdAt:{[Op.gt]: last_week} ,
                     },
                     order: [
                         ['createdAt', 'DESC']
@@ -519,9 +520,74 @@ function get_current_user(token){
     }
 }
 
+const test_generate_favorites = (request, response) => {
 
+  console.log("test")
+  console.log(request.body)
+  if( request.body.client_id!='LinkArts-email' || request.body.client_secret!='le-Site-De-Mokhtar-Le-Pdg-@LinkArts') {
+    return response.status(401).json({msg: "error"});
+  }
+  console.log("pass")
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth()+1).padStart(2, '0'); 
+  var yyyy = today.getFullYear();
+  const date = yyyy.toString() + '-' +  mm  + '-' + dd;
+  var six_months = new Date();
+  six_months.setDate(six_months.getDate() - 90);
+
+  list_of_ids=[
+    31,198,389,391,392,394,
+    2521,2529,
+    2611,2615,2624,2625,2630,2638,2641,2643,2658,2662,
+    2713,2719,2720,2721,2742,2743,2779,2780,2781,2789,2790,
+    2812,2813,2814,2817,2818,2857,2858,2859,2893,2894,
+    2900,2901,2912,2913,
+    3010,3011,3015,3158,
+    3901,]
+  //suppression de 713 (artiste écrivan)  2529 (fan avec des dessins)
+  //pour demain suppression valentin 390 (artiste dessin)
+  let text='SELECT * FROM users WHERE type_of_account=$1 AND "updatedAt" ::date >= $2 AND id not in ('
+  for(let i=0;i<list_of_ids.length;i++){
+    if(i<list_of_ids.length-1){
+      text+=list_of_ids[i] +','
+    }
+    else{
+      text+=list_of_ids[i]
+    }
+  }
+  text+=') ORDER BY subscribings_number DESC';
+  pool.query(text,["Artiste",six_months], (error, results) => {
+    if (error) {
+    }
+    else{
+        let fastcsv = require("fast-csv");
+
+            let Path1=`/csvfiles_for_python/favorites_ranking-${date}.csv`;
+            let ws = fs.createWriteStream('./data_and_routes/routes' + Path1);
+            let json_view = JSON.parse(JSON.stringify(results.rows));
+            fastcsv.write(json_view, { headers: true })
+            .pipe(ws)
+            .on('error', function(e){
+                console.log(e)
+            })
+            .on("finish", function() {
+                //pour ubuntu  
+                const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
+                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
+                pythonProcess.stderr.pipe(process.stderr);
+                pythonProcess.stdout.on("end", (data) => {
+                  let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/favorites_ranking-${date}.json`));
+                  console.log("end")
+                  return response.status(200).json({msg: "done", data:json,json:json_view});
+                });
+            })
+    }
+  })
+}
 
 
 module.exports = {
-  generate_or_get_favorites
+  generate_or_get_favorites,
+  test_generate_favorites
   }
