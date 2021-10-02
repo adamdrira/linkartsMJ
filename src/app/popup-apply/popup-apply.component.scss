@@ -248,15 +248,17 @@
         }
 
         .editor {
+            position:relative;
             display: flex;
             padding-bottom: 4px;
             margin-bottom: 22px;
-            border-bottom: 3px solid rgb(213 223 241);
+            border-bottom: 2px solid #dadada;
 
             .image-container {
                 width: 140px;
                 height: 140px;
                 border-radius: 6px;
+                margin-top: 5px;
                 overflow: hidden;
                 box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%),
                     0px 1px 5px 0px rgb(0 0 0 / 12%);
@@ -276,7 +278,6 @@
                 img {
                     width: 100%;
                     height: 100%;
-                    object-fit: cover;
                 }
             }
             .right-container {
@@ -314,16 +315,20 @@
                     transition: background-color 200ms, color 200ms;
 
                     .title {
-                        font-size: 11px;
+                        font-size: 10px;
                         font-weight: 600;
+                        margin-bottom: 5px;
                     }
                     .formula-info-flex {
+                        position: relative;
                         display: flex;
+                        width: calc(100% - 40px);
                         > div {
-                            border-left: 5px solid #d5dff1;
+                            border-left: 5px solid #203864;
                             border-radius: 5px 0px 0px 5px;
                             height: fit-content;
-                            margin-right: 10px;
+                            margin-right: 15px;
+
                             .type {
                                 span {
                                     font-size: 13px;
@@ -352,6 +357,28 @@
                                     }
                                 }
                             }
+                        }
+
+                        ::ng-deep {
+                            .mat-checkbox-frame {
+                              border-color: rgb(32 56 100);
+                            
+                            }
+            
+                            .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+                              background-color: #4bc7ff;
+                            }
+                            .mat-checkbox-checked:not(.mat-checkbox-disabled).mat-accent .mat-ripple-element, .mat-checkbox:active:not(.mat-checkbox-disabled).mat-accent .mat-ripple-element {
+                              background: #4bc9ff;
+                           }
+                        }
+                        .check-box{
+                            position:absolute;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            right: -25px;
+                            z-index: 10;
                         }
                     }
 
@@ -455,7 +482,7 @@
 
                     &.opened {
                         color: white;
-                        background: linear-gradient(0turn, #020536, #133364);
+                        background: #020536;
                         .formula-info-flex {
                             > div {
                                 border-left: 5px solid white;
@@ -491,18 +518,22 @@
                         }
                         span {
                             font-size: 12px;
+                            font-weight: 500;
                         }
                     }
                 }
             }
+
         }
 
         .total-price {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
             span {
-                color: rgb(32, 56, 100);
+                color: #1b294a;
                 font-weight: 600;
-                font-size: 17px;
+                font-size: 14px;
             }
         }
     }

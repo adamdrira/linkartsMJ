@@ -6,9 +6,13 @@ import { HomeLinkcollabComponent } from '../home-linkcollab/home-linkcollab.comp
 import { UserResolverService } from '../services/resolver-current-user';
 
 const routes: Routes = [
-    {path:'', component:HomeLinkcollabComponent, resolve: { user: UserResolverService }},
-   
+  {path:'', component:HomeLinkcollabComponent,  data: {category: 0}, resolve: { user: UserResolverService}},
+  {path:'voluntary-collaborations', component:HomeLinkcollabComponent,  data: {category: 1}, resolve: { user: UserResolverService}},
+  {path:'remunerated-collaborations', component:HomeLinkcollabComponent,  data: {category: 2}, resolve: { user: UserResolverService}},
+
+  {path:'**', redirectTo:''}
 ];
+
 
 
 @NgModule({

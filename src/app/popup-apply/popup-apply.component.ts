@@ -12,7 +12,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent  } from '@angular/material/autocomplete';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 
 import {  first } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';
@@ -20,7 +20,6 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { ChatService } from '../services/chat.service';
 import { NotificationsService } from '../services/notifications.service';
 
-//ajouter une url pour upload de dossier
 declare var Stripe: any;
 const url = 'https://www.linkarts.fr/routes/upload_project_for_editor/'
 
@@ -75,13 +74,14 @@ export class PopupApplyComponent implements OnInit {
       }
     })
     this.filteredGenres = this.genresCtrl.valueChanges.pipe(
+      startWith(null),
       map((genre: string | null) => genre ? this._filter_genre(genre) : this.list_of_genres.slice()));
   }
 
   show_icon=false;
 
 
-  multiple_submission:boolean;
+  multiple_submission:boolean=false;
 
 
   list_of_editors_ids=[];
@@ -92,7 +92,6 @@ export class PopupApplyComponent implements OnInit {
   prices={};
   delays={};
   total_price=0;
-  //visitor
   visitor_id:number;
   visitor_certified:boolean;
   visitor_description:string;
@@ -116,6 +115,13 @@ export class PopupApplyComponent implements OnInit {
   loading_check=false;
   step=0;
   loading_project=false;
+
+  standard_prices:any={};
+  standard_delays:any={};
+  express_prices:any={};
+  express_delays:any={};
+
+  id_multiple:string;
   ngOnInit() {
 
     this.after_payement=this.data.after_payement;
@@ -124,9 +130,10 @@ export class PopupApplyComponent implements OnInit {
       this.step=2;
       this.id_project=this.data.id_project;
       let password=this.data.password;
-      this.Edtior_Projects.check_if_payement_done(this.id_project,password).pipe(first() ).subscribe(r=>{
+      let multiple =this.data.is_multiple
+      this.Edtior_Projects.check_if_payement_done(this.id_project,password,multiple).pipe(first() ).subscribe(r=>{
         if(r[0]){
-          this.Edtior_Projects.set_payement_done_for_project(this.id_project).pipe(first() ).subscribe(r=>{
+          this.Edtior_Projects.set_payement_done_for_project(this.id_project,multiple).pipe(first() ).subscribe(r=>{
             this.loading_check=false;
             this.step=2;
           })
@@ -168,10 +175,27 @@ export class PopupApplyComponent implements OnInit {
     this.number_of_ads=this.data.visitor_number_of_ads;
     this.number_of_artpieces=this.data.visitor_number_of_artpieces;
    
+    this.standard_prices=this.data.standard_prices;
+    this.standard_delays=this.data.standard_delays;
+    this.express_prices=this.data.express_prices;
+    this.express_delays=this.data.express_delays;
 
-    for(let i=0;i<this.list_of_editors_ids.length;i++){
-      this.total_price+=this.prices[this.list_of_editors_ids[i]]
+    if(!this.multiple_submission){
+      for(let i=0;i<this.list_of_editors_ids.length;i++){
+        this.total_price+=this.prices[this.list_of_editors_ids[i]]
+      }
     }
+    else{
+      var today = new Date();
+      var ss = String(today.getSeconds()).padStart(2, '0');
+      var mi = String(today.getMinutes()).padStart(2, '0');
+      var hh = String(today.getHours()).padStart(2, '0');
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+      var yyyy = today.getFullYear();
+      this.id_multiple = this.visitor_id + yyyy + mm + dd + hh+ mi + ss;
+    }
+    
 
     this.build_form();
 
@@ -264,8 +288,6 @@ export class PopupApplyComponent implements OnInit {
           this.step++;
         }
         else{
-          //Cas dépôt de projet depuis account
-          
           this.loading_project=true;
           
           let data={
@@ -308,9 +330,33 @@ export class PopupApplyComponent implements OnInit {
           panelClass: "popupConfirmationClass",
         });
       }
+      else if( !this.registerForm.valid) {
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Veuillez correctement remplir le formulaire"},
+          panelClass: "popupConfirmationClass",
+        });
+      }
     }
     else if(i==1) {
+      let pass=true
+      for(let k=0;k<this.list_of_editors_ids.length;k++){
+        if(!this.list_of_selected_formulas[this.list_of_editors_ids[k]]){
+          pass=false;
+        }
+      }
 
+      if(!pass){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Veuillez sélectionner une formule pour chaque éditeur."},
+          panelClass: "popupConfirmationClass",
+        });
+        return
+      }
+      else{
+        
+        this.loading_project=true;
+        this.submit_multiple_project()
+      }
     }
   }
 
@@ -343,7 +389,7 @@ export class PopupApplyComponent implements OnInit {
         }
        
         this.id_project=r[0].id
-        let URL = url + `${r[0].id}/${this.file_name}`;
+        let URL = url + `${r[0].id}/${this.file_name}/false`;
         this.uploader.setOptions({ url: URL});
         this.uploader.queue[0].upload();
 
@@ -354,20 +400,109 @@ export class PopupApplyComponent implements OnInit {
      
     })
   }
+
+
+  submit_multiple_project(){
+    let compteur=0
+    for(let i=0;i<this.list_of_editors_ids.length;i++){
+
+      let data={
+          
+        is_multiple:true,
+        id_multiple:this.id_multiple,
+
+        id_user: this.visitor_id,
+        user_name:this.user_name,
+        user_nickname:this.user_nickname,
+        user_verified:this.visitor_certified,
+        user_description:this.visitor_description,
+        title:this.registerForm.value.title,
+        category:this.registerForm.value.category,
+        genres:this.genres,
+
+        target_id:this.list_of_editors_ids[i],
+        editor_name:this.editor_names[this.list_of_editors_ids[i]],
+        editor_nickname:this.editor_nicknames[this.list_of_editors_ids[i]],
+        formula:this.list_of_selected_formulas[this.list_of_editors_ids[i]],
+        price:this.total_price,
+        delay:(this.list_of_selected_formulas[this.list_of_editors_ids[i]]=="standard")?this.list_of_delays_in_days[this.standard_delays[this.list_of_editors_ids[i]]]:this.list_of_delays_in_days[this.express_delays[this.list_of_editors_ids[i]]],
+
+        likes: this.likes,
+        loves: this.loves,
+        views: this.views,
+        subscribers_number:this.subscribers_number,
+        number_of_visits: this.number_of_visits,
+        number_of_comics: this.number_of_comics,
+        number_of_drawings: this.number_of_drawings,
+        number_of_writings: this.number_of_writings,
+        number_of_ads: this.number_of_ads,
+        number_of_artpieces: this.number_of_artpieces,
+        payement_status:"not_done",
+        file_name:this.file_name,
+        
+      }
+
+      this.Edtior_Projects.submit_project_for_editor(data).subscribe(r=>{
+        this.NotificationsService.add_notification('apply',this.visitor_id,this.user_name,this.list_of_editors_ids[0],data.formula,'none','none',r[0].id,0,"add",false,0).pipe(first() ).subscribe(l=>{
+          let message_to_send ={
+            for_notifications:true,
+            type:"apply",
+            id_user_name:this.user_name,
+            id_user:this.visitor_id, 
+            id_receiver:this.list_of_editors_ids[0],
+            publication_category:data.formula,
+            publication_name:'none',
+            format:'none',
+            publication_id:r[0].id,
+            chapter_number:0,
+            information:"add",
+            status:"unchecked",
+            is_comment_answer:false,
+            comment_id:0,
+          }
+          
+          this.chatService.messages.next(message_to_send);
+          compteur+=1;
+          if(compteur==this.list_of_editors_ids.length){
+            let URL = url + `${this.id_multiple}/${this.file_name}/true`;
+            this.uploader.setOptions({ url: URL});
+            this.uploader.queue[0].upload();
+  
+          }
+        })
+       
+      })
+    }
+    
+  }
+
   check_payement_after_project_submited(){
     if(this.multiple_submission){
 
-    }
-    else{
       if(this.total_price==0){
-        //cas gratuit
-        this.Edtior_Projects.set_payement_done_for_project(this.id_project).pipe(first() ).subscribe(r=>{
+        this.Edtior_Projects.set_payement_done_for_project(this.id_multiple,true).pipe(first() ).subscribe(r=>{
           this.step=2;
           this.loading_project=false;
         })
       }
       else{
-        this.StripeService.create_checkout_project_submission(this.total_price*100,this.user_nickname,this.id_project,this.registerForm.value.title).pipe(first() ).subscribe(r=>{
+        this.StripeService.create_checkout_project_submission(this.total_price*100,this.user_nickname,this.id_multiple,this.registerForm.value.title,this.multiple_submission).pipe(first() ).subscribe(r=>{
+          this.stripe=Stripe(r[0].key)
+          return this.stripe.redirectToCheckout({ sessionId: r[0].id });
+        })
+      }
+
+     
+    }
+    else{
+      if(this.total_price==0){
+        this.Edtior_Projects.set_payement_done_for_project(this.id_project,false).pipe(first() ).subscribe(r=>{
+          this.step=2;
+          this.loading_project=false;
+        })
+      }
+      else{
+        this.StripeService.create_checkout_project_submission(this.total_price*100,this.user_nickname,this.id_project,this.registerForm.value.title,this.multiple_submission).pipe(first() ).subscribe(r=>{
           this.stripe=Stripe(r[0].key)
           return this.stripe.redirectToCheckout({ sessionId: r[0].id });
         })
@@ -422,7 +557,6 @@ export class PopupApplyComponent implements OnInit {
     let do_not_add:boolean = true;
     let index:number;
 
-    // Add our genre
     if ((value || '').trim()) {
 
       for( let i=0; i<this.list_of_genres.length; i++ ) {
@@ -441,7 +575,6 @@ export class PopupApplyComponent implements OnInit {
         this.genres.push(this.list_of_genres[index].trim());
       }
     }
-    // Reset the input value
     if (input) {
       input.value = '';
     }
@@ -508,62 +641,40 @@ export class PopupApplyComponent implements OnInit {
   list_of_delays_in_days={"1s":7,"2s":14,"3s":21,
   "1m":30,"6s":42,"7s":49,"2m":60,
   "3m":90,"4m":120,"5m":150,"6m":180}
-  list_of_editors=[
-    {
-      "picture": 'pp safeurl',
-      "name": 'editeur 1',
-      'standard_price':0,
-      'standard_delay':"4m",
-      'express_price':6,
-      'express_delay':"1m",
-      'selected_option':'standard',//'standard' ou 'express'
-    },
-    {
-      "picture": 'pp safeurl',
-      "name": 'editeur 2',
-      'standard_price':2,
-      'standard_delay':"4m",
-      'express_price':6,
-      'express_delay':"1m",
-      'selected_option':'standard',//'standard' ou 'express'
-    },
-    {
-      "picture": 'pp safeurl',
-      "name": 'editeur 3',
-      'standard_price':4,
-      'standard_delay':"4m",
-      'express_price':6,
-      'express_delay':"1m",
-      'selected_option':'standard',//'standard' ou 'express'
-    }
-  ]
-  
+
+ 
   update_total_price() {
     this.total_price=0;
-    for(let i=0;i<this.list_of_editors.length;i++) {
-      if(this.list_of_editors[i].selected_option=='standard') {
-        this.total_price+=this.list_of_editors[i].standard_price;
+    for(let i=0;i<this.list_of_editors_ids.length;i++) {
+      if(this.list_of_selected_formulas[this.list_of_editors_ids[i]]=='standard') {
+        this.total_price+=this.standard_prices[this.list_of_editors_ids[i]]
       }
-      else {
-        this.total_price+=this.list_of_editors[i].express_price;
+      else if(this.list_of_selected_formulas[this.list_of_editors_ids[i]]=='express'){
+        this.total_price+=this.express_prices[this.list_of_editors_ids[i]]
       }
     }
     this.cd.detectChanges();
   }
 
-  set_formula(i:number, s:string) {
-    this.list_of_editors[i].selected_option=s;
+  list_of_selected_formulas={}
+  set_formula(id:number, s:string) {
+    if(this.list_of_selected_formulas[id]==s){
+      this.list_of_selected_formulas[id]=null;
+      this.update_total_price();
+      return
+    }
+    this.list_of_selected_formulas[id]=s;
     this.update_total_price();
   }
   delete(i:number) {
-    if(this.list_of_editors.length==1) {
+    if(this.list_of_editors_ids.length==1) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:"Vous devez conserver au moins un éditeur"},
         panelClass: "popupConfirmationClass",
       });
       return;
     }
-    this.list_of_editors.splice(i,1);
+    this.list_of_editors_ids.splice(i,1);
     this.update_total_price();
   }
 
@@ -578,6 +689,5 @@ export class PopupApplyComponent implements OnInit {
   }
 
 
- 
 
 }

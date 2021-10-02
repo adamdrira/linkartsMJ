@@ -5,16 +5,22 @@ import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupLinkcollabFiltersComponent } from '../popup-linkcollab-filters/popup-linkcollab-filters.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup,FormControl } from '@angular/forms';
 import { ConstantsService } from '../services/constants.service';
+import { Edtior_Projects } from '../services/editor_projects.service';
+import { Profile_Edition_Service } from '../services/profile_edition.service';
+import { NotationService } from '../services/notation.service';
+import { Subscribing_service } from '../services/subscribing.service';
+import {date_in_seconds} from '../helpers/dates';
 import { merge, fromEvent } from 'rxjs';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Meta, Title } from '@angular/platform-browser';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupApplyComponent } from '../popup-apply/popup-apply.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { first } from 'rxjs/operators';
+import { LoginComponent } from '../login/login.component';
 
 declare var Swiper: any
 
@@ -108,6 +114,11 @@ export class HomeLinkcollabComponent implements OnInit {
     private deviceService: DeviceDetectorService,
     private cd: ChangeDetectorRef,
     private Ads_service:Ads_service,
+    private Edtior_Projects:Edtior_Projects,
+    private NotationService:NotationService,
+    private Subscribing_service:Subscribing_service,
+    private Profile_Edition_Service:Profile_Edition_Service,
+    private router: Router,
     public dialog: MatDialog,
     private constants:ConstantsService,
     private fb: FormBuilder,
@@ -125,6 +136,11 @@ export class HomeLinkcollabComponent implements OnInit {
       })
     this.navbar.setActiveSection(1);
     this.navbar.show();
+
+    route.data.pipe( first() ).subscribe(resp => {
+      this.user=resp.user[0];
+      
+    })
   }
 
 
@@ -140,7 +156,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
   @ViewChildren('thumbnails') thumbnails: QueryList<any>;
 
-
+  user:any;
   category_index:number = -1;
 
   category:string="none";
@@ -186,7 +202,6 @@ export class HomeLinkcollabComponent implements OnInit {
   device_info='';
   ngOnInit() {
 
-
     this.f1 = this.fb.group({
       type_of_project: [this.type_of_project],
       author: [this.author],
@@ -210,6 +225,7 @@ export class HomeLinkcollabComponent implements OnInit {
     this.open_category(this.category_index, false);
     this.update_meta_data(this.category_index);
 
+    this.get_user_stats()
   }
 
   /*********************************************************************** */
@@ -784,7 +800,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
  
   open_website(i){
-    if(this.list_of_editors[i].id==0){
+    if(this.list_of_editors[i].id>3000){
       return this.list_of_editors[i].page;
     }
     else{
@@ -799,7 +815,8 @@ export class HomeLinkcollabComponent implements OnInit {
   list_of_editors = [
 
     {
-      title:"Éditions Tartamundo",
+      title:"Éditions Tartamudo",
+      nickname:"Tartamudo",
       categories:["BD","Mangas"],
       website:"https://tartamudobd.wordpress.com/",
       page:"https://www.linkarts.fr/account/Tartamudo",
@@ -807,9 +824,77 @@ export class HomeLinkcollabComponent implements OnInit {
       pp:"../../assets/img/editors/pp-tartamundo.jpeg",
       cover:"../../assets/img/editors/cover-tartamundo.jpg",
       location:"Toulon, France",
-      phone:"04 94 41 01 18",
-      id:0,
+      description:"Tartamudo est une maison d'édition BD indépendante depuis 1999.",
+      phone:"+33 4 94 41 01 18",
+      id:3769,
+      associate:true,
+      standard_delay:"4m",
+      express_delay:"1m",
+      standard_price:0,
+      express_price:6,
     },
+    {
+      title:"Éditions Yume",
+      nickname:"Yume",
+      categories:["Mangas","BD","Livres"],
+      website:"https://www.yume-edition.fr/",
+      page:"https://www.linkarts.fr/account/Yume",
+      email:"contact@yume-edition.fr",
+      pp:"../../assets/img/editors/pp-tartamundo.jpeg",
+      cover:"../../assets/img/editors/cover-tartamundo.jpg",
+      description:"YUME ÉDITION est un éditeur indépendant de mangas et de romans qui édite et anime",
+      /*pp:"../../assets/img/editors/pp-yume.png",
+      cover:"../../assets/img/editors/cover-pp.png",*/
+      location:"Noisy-le-grand, France",
+      id:5498,
+      associate:true,
+      standard_delay:"4m",
+      express_delay:"1m",
+      standard_price:0,
+      express_price:6,
+    },
+    {
+      title:"Éditions Swikie",
+      nickname:"swikie",
+      categories:["BD","Comics"],
+      website:"https://www.swikie.com/",
+      page:"https://www.linkarts.fr/account/swikie",
+      email:"contact@swikie.com",
+      pp:"../../assets/img/editors/pp-tartamundo.jpeg",
+      cover:"../../assets/img/editors/cover-tartamundo.jpg",
+      description:"Maison d'édition française spécialisée dans la publication et la diffusion de BD et Comics.",
+      /*pp:"../../assets/img/editors/pp-swikie.png",
+      cover:"../../assets/img/editors/cover-swikie.png",*/
+      location:"Paris, France",
+      phone:"+33 9 70 75 52 23",
+      id:5794,
+      associate:true,
+      standard_delay:"4m",
+      express_delay:"1m",
+      standard_price:0,
+      express_price:6,
+    },
+    {
+      title:"Mon autre France",
+      nickname:"EMAF",
+      categories:["BD","Comics","Mangas","Livres","Livres jeunesse"],
+      website:"https://www.monautrefrance.com/",
+      page:"https://www.linkarts.fr/account/EMAF",
+      email:"contact@monautrefrance.com",
+      pp:"../../assets/img/editors/pp-tartamundo.jpeg",
+      cover:"../../assets/img/editors/cover-tartamundo.jpg",
+      description:"La maison d’édition Mon autre France est née en janvier 2020 à Saint-Pierre et Miquelon.",
+      /*pp:"../../assets/img/editors/pp-emaf.png",
+      cover:"../../assets/img/editors/cover-emaf.png",*/
+      location:"Saint-pierre-et-miquelon, France",
+      id:6005,
+      associate:true,
+      standard_delay:"1m",
+      express_delay:"1m",
+      standard_price:0,
+      express_price:6,
+    },
+    
     
     {
       title:"Éditions Glénat",
@@ -1159,17 +1244,51 @@ export class HomeLinkcollabComponent implements OnInit {
     
   ];
 
+
+  myForm = this.fb.group({
+    checked: [false],
+  })
+
   list_of_editors_selected=[];
   show_editors=false;
-  indexes_selected={};
   box_checked={};
   selectBox(checked,i){
-    if(checked){
+    if(!this.visitor_stats_retrieved){
+      this.box_checked[i]=false;
+      return
+    }
+    
+    let index=this.last_emitted_projects.findIndex(item=>item.target_id==this.list_of_editors[i].id);
+    if(index>=0){
+      this.box_checked[i]=false;
+      this.cd.detectChanges();
+      let s=date_in_seconds(this.now_in_seconds,this.last_emitted_projects[index].createdAt);
+      let time_left;
+      if( Math.trunc(s/86400)<=1 ) {
+        time_left= "1 mois";
+      }
+      else {
+        time_left= 30-Math.trunc(s/86400) + " jours";
+      }
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, 
+          text:`Vous avez déjà soumis un projet auprès de cet éditeur, il y a moins de 30 jours. Vous pourrez à nouveau soumettre un projet dans ${time_left}.`},
+          panelClass: "popupConfirmationClass",
+      });
+      dialogRef.afterClosed().pipe( first() ).subscribe(result => {
+        this.box_checked[i]=false;
+        this.myForm.controls['checked'].setValue(false);
+        this.myForm.controls['checked'].updateValueAndValidity();
+        this.cd.detectChanges();
+      })
+   
+      
+    }
+    else if(checked){
       this.navbar.add_page_visited_to_history(`/linkcollab/select_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).pipe( first() ).subscribe();
-      this.indexes_selected[i]=true;
       this.box_checked[i]=true;
-       //this.list_of_editors_selected.splice(0,0,this.list_of_editors[i]); quand on aura des collaborateurs
-      //this.show_editors=true;
+      this.list_of_editors_selected.push(this.list_of_editors[i]);
+      this.show_editors=true;
     }
     else{
       this.navbar.add_page_visited_to_history(`/linkcollab/unselect_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).pipe( first() ).subscribe();
@@ -1182,11 +1301,22 @@ export class HomeLinkcollabComponent implements OnInit {
 
   remove_editor(i){
     this.box_checked[i]=false;
-    this.indexes_selected[i]=false;
-    /*this.list_of_editors_selected.splice(i,1)  quand on aura des collaborateurs
+    let index=this.list_of_editors_selected.findIndex(item=>item.title==this.list_of_editors[i].title)
+    this.list_of_editors_selected.splice(index,1)
     if(this.list_of_editors_selected.length==0){
       this.show_editors=false;
-    }*/
+    }
+    this.cd.detectChanges();
+  }
+
+  remove_editor_2(i){
+    
+    let index=this.list_of_editors.findIndex(item=>item.title==this.list_of_editors_selected[i].title)
+    this.box_checked[index]=false;
+    this.list_of_editors_selected.splice(i,1)
+    if(this.list_of_editors_selected.length==0){
+      this.show_editors=false;
+    }
     this.cd.detectChanges();
   }
 
@@ -1222,16 +1352,170 @@ export class HomeLinkcollabComponent implements OnInit {
     this.pictures_loaded[name]=true;
   }
 
-  submite_project(){
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Cette option n'est pas encore disponible ! Vous pouvez néanmoins soumettre vos projets directement depuis la page de profil de nos éditeurs partenaires."},
-      panelClass: "popupConfirmationClass",
+  visitor_likes:number;
+  visitor_loves:number;
+  visitor_views:number;
+  visitor_number_of_visits:number;
+  visitor_subscribers_number:number;
+  visitor_number_of_comics:number;
+  visitor_number_of_drawings:number;
+  visitor_number_of_writings:number;
+  visitor_number_of_ads:number;
+  visitor_number_of_artpieces:number;
+  last_emitted_projects:any[]=[];
+
+  visitor_stats_retrieved=false;
+  get_user_stats(){
+    let compteur_visitor_stats=0;
+    this.NotationService.get_user_public_stats(this.user.nickname).pipe( first() ).subscribe(r=>{
+      this.visitor_likes=r[0].likes;
+      this.visitor_loves=r[0].loves;
+      this.visitor_views=r[0].views;
+      compteur_visitor_stats++;
+      check_visitor_stats(this);
+    })
+
+    this.Subscribing_service.get_all_subscribers_by_pseudo(this.user.nickname).pipe( first() ).subscribe(r=>{
+      this.visitor_subscribers_number=r[0].length;
+      compteur_visitor_stats++;
+      check_visitor_stats(this);
+    })
+    this.navbar.get_number_of_account_viewers(this.user.id).pipe( first() ).subscribe(r=>{
+      this.visitor_number_of_visits=r[0].views;
+      compteur_visitor_stats++;
+      check_visitor_stats(this);
     });
+
+    this.Edtior_Projects.get_all_last_emitted_project(this.user.id).pipe( first() ).subscribe(r=>{
+      if(r[0]){
+        this.last_emitted_projects=r[0]
+      }
+      compteur_visitor_stats++;
+      check_visitor_stats(this);
+    });
+
+    this.Profile_Edition_Service.retrieve_number_of_contents_by_pseudo(this.user.nickname).pipe( first() ).subscribe(r=>{
+      this.visitor_number_of_comics=r[0].number_of_comics;
+      this.visitor_number_of_drawings=r[0].number_of_drawings;
+      this.visitor_number_of_writings=r[0].number_of_writings;
+      this.visitor_number_of_ads=r[0].number_of_ads;
+      this.visitor_number_of_artpieces=this.visitor_number_of_comics+ this.visitor_number_of_drawings +  this.visitor_number_of_writings;
+      compteur_visitor_stats++;
+      check_visitor_stats(this);
+    })
+
+    function check_visitor_stats(THIS){
+      
+      if(compteur_visitor_stats==5){
+        THIS.visitor_stats_retrieved=true
+      }
+   
+    }
+  }
+
+
+  submit_project(){
+
+    if(this.list_of_editors_selected.length==0){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, 
+          text:`Veuillez sélectionner au moins un éditeur.`},
+          panelClass: "popupConfirmationClass",
+      });
+      return
+    }
+    if(this.user.status=='visitor'){
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
+      });
+      return
+    }
     
-    /*const dialogRef = this.dialog.open(PopupApplyComponent, {
-      data: {},
-      panelClass: "popupLinkcollabApplyClass",
-    });*/
+    let list_of_editors_ids=[];
+    let editor_pictures={};
+    let editor_nicknames={};
+    let editor_names={};
+
+
+    let standard_prices={};
+    let standard_delays={};
+    let express_prices={};
+    let express_delays={};
+
+
+      for(let i=0;i<this.list_of_editors_selected.length;i++){
+
+        list_of_editors_ids.push(this.list_of_editors_selected[i].id);
+        editor_pictures[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].pp;
+        editor_nicknames[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].nickname;
+        editor_names[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].title;
+
+        standard_prices[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].standard_price;
+        standard_delays[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].standard_delay;
+        express_delays[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].express_delay;
+        express_prices[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].express_price;
+
+
+        
+
+      }
+
+      // number of trendings,
+      const dialogRef = this.dialog.open(PopupApplyComponent, {
+        data: {
+          multiple_submission:true,
+          //editor
+          list_of_editors_ids:list_of_editors_ids,
+          editor_pictures:editor_pictures,
+          editor_names:editor_names,
+          editor_nicknames:editor_nicknames,
+          standard_prices:standard_prices,
+          standard_delays:standard_delays,
+          express_prices:express_prices,
+          express_delays:express_delays,
+  
+          //visitor
+  
+          visitor_id:this.user.id,
+          visitor_certified:this.user.certified_account,
+          visitor_name: this.user.firstname,
+          visitor_nickname:this.user.nickname,
+          visitor_description:this.user.primary_description,
+          visitor_likes:this.visitor_likes,
+          visitor_loves:this.visitor_loves,
+          visitor_views:this.visitor_views,
+          visitor_subscribers_number:this.visitor_subscribers_number,
+          visitor_number_of_visits:this.visitor_number_of_visits,
+          visitor_number_of_comics:this.visitor_number_of_comics,
+          visitor_number_of_drawings:this.visitor_number_of_drawings,
+          visitor_number_of_writings:this.visitor_number_of_writings,
+          visitor_number_of_ads:this.visitor_number_of_ads,
+          visitor_number_of_artpieces:this.visitor_number_of_artpieces,
+        },
+        panelClass: "popupLinkcollabApplyClass",
+      })
+      dialogRef.afterClosed().pipe( first() ).subscribe(result => {
+        if(result){
+          this.router.navigateByUrl('/account/' + this.user.nickname + "/projects" );
+        }
+        else{
+          this.visitor_stats_retrieved=false;
+          this.list_of_editors_selected=[];
+          this.show_editors=false;
+          this.box_checked={};
+          this.Edtior_Projects.get_all_last_emitted_project(this.user.id).pipe( first() ).subscribe(r=>{
+            if(r[0]){
+              this.last_emitted_projects=r[0];
+            }
+
+            this.visitor_stats_retrieved=true;
+           
+          });
+
+          
+        }
+      })
 
   }
 
@@ -1241,11 +1525,17 @@ export class HomeLinkcollabComponent implements OnInit {
     this.filters_opened=!this.filters_opened;
   }
 
+  thumbnail_category_index=[]
+  open_thumbnail_category(value,i){
+    this.thumbnail_category_index[i]=value;
+  }
+
 
   ngOnDestroy() {
     this.title.setTitle('LinkArts – Collaboration éditoriale');
     this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
   }
+
 
 
 }

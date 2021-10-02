@@ -7,7 +7,7 @@ import { shareReplay, first, filter, retry, retryWhen, concatMap, delay } from '
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-    retryCount=5;
+    retryCount=10;
     constructor(private authenticationService: AuthenticationService) {}
     public readonly store: Record<string, Observable<HttpEvent<any>>> = {};
 
@@ -82,7 +82,7 @@ export class JwtInterceptor implements HttpInterceptor {
                         }
                       return throwError(error);
                     }),
-                    delay(500)
+                    delay(1000)
                   )
                 )
               )
@@ -112,7 +112,7 @@ export class JwtInterceptor implements HttpInterceptor {
                     }
                   return throwError(error);
                 }),
-                delay(500)
+                delay(1000)
               )
             )
           );

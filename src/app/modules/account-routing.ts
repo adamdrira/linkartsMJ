@@ -67,6 +67,7 @@ const routes: Routes = [
   {path:':pseudo/my_account/email/management', component:AccountComponent,  data: {section: 11}, resolve: accountResolvers},
   {path:':pseudo/my_account/connexion', component:AccountComponent,  data: {section: 11}, resolve: accountResolvers},
   {path:':pseudo/project_submitted/:id_project/:password', component:AccountComponent,  data: {section: 12}, resolve: accountResolvers},
+  {path:':pseudo/project_submitted/:id_project/:password/multiple', component:AccountComponent,  data: {section: 13}, resolve: accountResolvers},
  ];
 
 

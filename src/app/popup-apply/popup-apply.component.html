@@ -21,7 +21,7 @@
             <span>Soumettez votre projet</span>
         </div>
 
-        <div class="step-name-b">
+        <div class="step-name-b" *ngIf="!multiple_submission">
             <span><b>Éditeur</b> : {{editor_names[list_of_editors_ids[0]]}}</span>
         </div>
         
@@ -116,39 +116,40 @@
 
         <button class="submit-button" (click)="validate_step(0);">
             <mat-spinner *ngIf="loading_project" diameter="25"  style="margin:auto;"></mat-spinner>
-            <span *ngIf="!loading_project">Finaliser</span>
+            <span *ngIf="!loading_project && !multiple_submission">Finaliser</span>
+            <span *ngIf="!loading_project && multiple_submission">Suivant</span>
         </button>
 
     </div>
 
 
-    <div class="step-form" [formGroup]="registerForm" *ngIf="step==1 && !loading_check">
+    <div class="step-form"  *ngIf="step==1 && !loading_check">
 
         <div class="step-name">
             <span>Choisissez vos formules</span>
         </div>
 
 
-        <div class="editor" *ngFor="let item of list_of_editors; let i = index">
+        <div class="editor" *ngFor="let item of list_of_editors_ids; let i = index">
             <div class="image-container">
-                <img src="https://www.sne.fr/app/uploads/2017/12/GLENAT_logoNoir.jpg" alt="logo linkarts">
+                <img [src]="editor_pictures[item]" alt="logo linkarts">
             </div>
             <div class="right-container">
                 <div class="name">
-                    <span>{{item.name}}</span>
+                    <span>{{editor_names[item]}}</span>
                 </div>
-                <div class="formula-info" [ngClass]="{'opened': item.selected_option=='standard' }" (click)="set_formula(i,'standard')">
-                    <div class="title">OFFRE STANDARD</div>
+                <div class="formula-info" [ngClass]="{'opened': list_of_selected_formulas[item]=='standard' }" >
+                    <div class="title" >STANDARD</div>
                     <div class="formula-info-flex">
                         <div>
                             <div class="type">
                                 <span>Tarif</span>
                             </div>
                             <div class="value">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
-                                <span *ngIf="item.standard_price==0">Gratuit</span>
-                                <span *ngIf="item.standard_price==1">{{item.standard_price}} euro</span>
-                                <span *ngIf="item.standard_price>1">{{item.standard_price}} euros</span>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="standard_prices[item]>0">euro_symbol</mat-icon>
+                                <span *ngIf="standard_prices[item]==0">Gratuit</span>
+                                <span *ngIf="standard_prices[item]==1">{{standard_prices[item]}} euro</span>
+                                <span *ngIf="standard_prices[item]>1">{{standard_prices[item]}} euros</span>
                             </div>
                         </div>
                         <div>
@@ -157,32 +158,26 @@
                             </div>
                             <div class="value">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
-                                <span>{{list_of_real_delays[item.standard_delay]}}</span>
+                                <span>{{list_of_real_delays[standard_delays[item]]}}</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="see-more-button">
-                        ?
-                        <div class="information" >
-                            <div class="first-text">
-                                <span> <img  src='../../assets/img/tuto-logos/light.svg' alt="logo linkarts">La formule Standard est votre formule par défaut. Sélectionnez le temps de réponse maximal que vous pouvez garantir ainsi que le tarif que vous voulez imposer (il peut être gratuit). Une fois le délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste ayant déposé son projet, mais vous ne pourrez plus tirer profit de cette réponse.
-                                </span>
-                            </div>
-                        </div>
+
+                        <mat-checkbox class="check-box" [checked]="list_of_selected_formulas[item]=='standard'" (change)="set_formula(item,'standard')"></mat-checkbox>
                     </div>
                 </div>
-                <div class="formula-info" [ngClass]="{'opened': item.selected_option=='express' }" (click)="set_formula(i,'express')">
-                    <div class="title">OFFRE EXPRESS</div>
+                <div class="formula-info" [ngClass]="{'opened': list_of_selected_formulas[item]=='express' }" >
+                    <div class="title">EXPRESS</div>
                     <div class="formula-info-flex">
                         <div>
                             <div class="type">
                                 <span>Tarif</span>
                             </div>
                             <div class="value">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
-                                <span *ngIf="item.express_price==0">Gratuit</span>
-                                <span *ngIf="item.express_price==1">{{item.express_price}} euro</span>
-                                <span *ngIf="item.express_price>1">{{item.express_price}} euros</span>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="express_prices[item]>0">euro_symbol</mat-icon>
+                                <span *ngIf="express_prices[item]==0">Gratuit</span>
+                                <span *ngIf="express_prices[item]==1">{{express_prices[item]}} euro</span>
+                                <span *ngIf="express_prices[item]>1">{{express_prices[item]}} euros</span>
+                               
                             </div>
                         </div>
                         <div>
@@ -191,36 +186,22 @@
                             </div>
                             <div class="value">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">timer</mat-icon>
-                                <span>{{list_of_real_delays[item.express_delay]}}</span>
+                                <span>{{list_of_real_delays[express_delays[item]]}}</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="see-more-button">
-                        ?
-                        <div class="information" >
-                            <div class="first-text">
-                                <span> <img  src='../../assets/img/tuto-logos/light.svg' alt="logo linkarts">La formule Express est votre formule premium. Sélectionnez le temps de réponse maximal que vous pouvez garantir en un minimum de temps (par exemple : 3 semaines), ainsi que le tarif que vous voulez imposer. Une fois ce délai passé, une réponse automatique, modifiable ultérieurement, sera envoyée à l'artiste ayant déposé son projet, mais vous ne pourrez pas tirer profit de cette réponse.
-                                </span>
-                            </div>
-                        </div>
+
+                        <mat-checkbox class="check-box" [checked]="list_of_selected_formulas[item]=='express'" (change)="set_formula(item,'express')"></mat-checkbox>
                     </div>
                 </div>
 
                 <div class="subtotal">
-                    <span *ngIf="item.selected_option=='standard' && item.standard_price==0">Sous-total : <b>Gratuit</b></span>
-                    <span *ngIf="item.selected_option=='standard' && item.standard_price==1">Sous-total : <b>{{item.standard_price}} euro</b></span>
-                    <span *ngIf="item.selected_option=='standard' && item.standard_price>1">Sous-total : <b>{{item.standard_price}} euros</b></span>
-
-                    <span *ngIf="item.selected_option=='express' && item.express_price==0">Sous-total : <b>Gratuit</b></span>
-                    <span *ngIf="item.selected_option=='express' && item.express_price==1">Sous-total : <b>{{item.express_price}} euro</b></span>
-                    <span *ngIf="item.selected_option=='express' && item.express_price>1">Sous-total : <b>{{item.express_price}} euros</b></span>
-
                     <div class="delete" (click)="delete(i);">
                         <span>Supprimer</span>
                     </div>
                 </div>
             </div>
 
+           
         </div>
 
         <div class="total-price">
@@ -230,7 +211,8 @@
 
 
         <button class="submit-button" (click)="validate_step(1);">
-            <span>Finaliser</span>
+            <mat-spinner *ngIf="loading_project" diameter="25"  style="margin:auto;"></mat-spinner>
+            <span *ngIf="!loading_project">Finaliser</span>
         </button>
 
     </div>

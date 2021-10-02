@@ -164,6 +164,8 @@
         cursor: pointer;
 
         mat-icon {
+          display: flex;
+          align-items: center;
           color: #203864;     
           font-size: 20px;
           max-width: 20px;

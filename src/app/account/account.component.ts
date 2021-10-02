@@ -109,6 +109,7 @@ export class AccountComponent implements OnInit {
     @Inject(DOCUMENT) private document: Document,
     ) {
 
+
     navbar.visibility_observer_font.subscribe(font=>{
       if(font){
         this.show_icon=true;
@@ -454,6 +455,9 @@ export class AccountComponent implements OnInit {
   //insta_link=`https://api.instagram.com/oauth/authorize?client_id=2949440818629576&redirect_uri=https://www.linkarts.fr/&scope=user_profile,user_media&response_type=code`;
   ngOnInit()  {
 
+    if(this.page_not_found){
+      return
+    }
     
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
    
@@ -506,7 +510,6 @@ export class AccountComponent implements OnInit {
       this.cover_picture = SafeURL2;
     })
    
-
 
     if(!this.for_reset_password){
       this.initialize_page_for_visitor()
@@ -645,7 +648,6 @@ export class AccountComponent implements OnInit {
       this.type_of_profile_retrieved=true;
       this.cd.detectChanges();
 
-      
 
      
       if(user.type_of_account.includes('dit')){
@@ -964,11 +966,12 @@ export class AccountComponent implements OnInit {
                 }
               })
             }
-            else if(this.route.snapshot.data['section']==12){
+            else if(this.route.snapshot.data['section']==12 || this.route.snapshot.data['section']==13){
               this.open_section( 0,true,0 );
               this.cd.detectChanges();
               this.update_background_position(this.opened_section);
               let id_project= parseInt(this.route.snapshot.paramMap.get('id_project'));
+              let multiple=this.route.snapshot.data['section']==13?true:false;
               let password =this.route.snapshot.paramMap.get('password')
               const dialogRef = this.dialog.open(LoginComponent, {
                 data: {usage:"for_chat"},
@@ -978,7 +981,7 @@ export class AccountComponent implements OnInit {
                 if(result){
                   const dialogRef = this.dialog.open(PopupApplyComponent, {
                     data: {
-                      multiple_submission:false,
+                      is_multiple:multiple,
                       after_payement:true,
                       id_project:id_project,
                       password:password,
@@ -1020,19 +1023,19 @@ export class AccountComponent implements OnInit {
               this.cd.detectChanges();
               this.update_background_position(this.opened_section)
             }
-            else if(this.route.snapshot.data['section']==12){
+            else if(this.route.snapshot.data['section']==12 || this.route.snapshot.data['section']==13){
               let section =0;
               this.open_section( section,true,0 );
               this.cd.detectChanges();
               this.update_background_position(this.opened_section)
-
+              let multiple=this.route.snapshot.data['section']==13?true:false;
               let id_project= parseInt(this.route.snapshot.paramMap.get('id_project'));
               let password =this.route.snapshot.paramMap.get('password')
               
               
               const dialogRef = this.dialog.open(PopupApplyComponent, {
                 data: {
-                  multiple_submission:false,
+                  is_multiple:multiple,
                   after_payement:true,
                   id_project:id_project,
                   password:password,
