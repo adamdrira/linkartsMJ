@@ -45,6 +45,8 @@ exports.list_of_editor_projects = (sequelize, DataTypes) => {
         read:DataTypes.BOOLEAN,
         responded:DataTypes.BOOLEAN,
 
+        is_multiple:DataTypes.BOOLEAN,
+        id_multiple:DataTypes.STRING,
         
       },
       {
@@ -72,6 +74,9 @@ exports.list_of_editor_projects = (sequelize, DataTypes) => {
       formula:DataTypes.STRING,
       response_on_time:DataTypes.BOOLEAN,
       response:DataTypes.STRING,
+
+      is_multiple:DataTypes.BOOLEAN,
+      id_multiple:DataTypes.STRING,
     },
     {
       freezeTableName: true // Model tableName will be the same as the model name

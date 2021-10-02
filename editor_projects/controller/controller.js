@@ -57,6 +57,7 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
      
       let date=new Date()
       date.setDate(date.getDate() + delay);
+
       list_of_projects.create({
         "id_user": current_user,
         "user_verified":user_verified,
@@ -86,6 +87,8 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
         "payement_status":"not_done",
         "responded":false,
         "project_name":file_name,
+        "is_multiple":req.body.is_multiple?req.body.is_multiple:null,
+        "id_multiple":req.body.id_multiple?req.body.id_multiple:null,
       }).catch(err => {
           console.log(err)
         res.status(500).json({msg: "error", details: err});		
@@ -384,12 +387,13 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
 
     
 
-    router.post('/upload_project_for_editor/:id_project/:file_name', function (req, res) {
+    router.post('/upload_project_for_editor/:id_project/:file_name/:multiple', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
       if(!current_user){
         return res.status(401).json({msg: "error"});
       }
       const file_name=req.params.file_name;
+      const multiple=req.params.multiple;
       const id_project=parseInt(req.params.id_project);
       const PATH1= './data_and_routes/projects_for_editors';
       
@@ -415,15 +419,29 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
           });
       
         } else { 
-          list_of_projects.update({
-            "project_name":file_name  
-          },{
-          where:{
-            id:id_project,
-            }
-          }).then(r=>{
-            return res.status(200).send([{file_name:file_name}])
-          })
+          if(multiple=="false"){
+            list_of_projects.update({
+              "project_name":file_name  
+            },{
+            where:{
+              id:id_project,
+              }
+            }).then(r=>{
+              return res.status(200).send([{file_name:file_name}])
+            })
+          }
+          else{
+            list_of_projects.update({
+              "project_name":file_name  
+            },{
+            where:{
+              id_multiple:id_project,
+              }
+            }).then(r=>{
+              return res.status(200).send([{file_name:file_name}])
+            })
+          }
+          
         }
       })
     });
@@ -445,20 +463,40 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
       }
         let current_user = get_current_user(req.cookies.currentUser);
         const id_project = req.body.id_project;
-        list_of_projects.update({
-          "payement_status":"done",
-          "password_payement":null,
-        },
-          {
-            where:{
-              id:id_project,
-              id_user:current_user,
-            }
-            })
-            .catch(err => {
-				
-            res.status(500).json({msg: "error", details: err});		
-          }).then(project=>{res.status(200).send([project])})     
+        const multiple = req.body.multiple;
+        if(multiple){
+          list_of_projects.update({
+            "payement_status":"done",
+            "password_payement":null,
+          },
+            {
+              where:{
+                id_multiple:id_project,
+                id_user:current_user,
+              }
+              })
+              .catch(err => {
+          
+              res.status(500).json({msg: "error", details: err});		
+            }).then(project=>{res.status(200).send([project])})   
+        }
+        else{
+          list_of_projects.update({
+            "payement_status":"done",
+            "password_payement":null,
+          },
+            {
+              where:{
+                id:id_project,
+                id_user:current_user,
+              }
+              })
+              .catch(err => {
+          
+              res.status(500).json({msg: "error", details: err});		
+            }).then(project=>{res.status(200).send([project])})   
+        }
+          
     });
 
 
@@ -479,18 +517,37 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
         let current_user = get_current_user(req.cookies.currentUser);
         const id_project = req.body.id_project;
         const password= req.body.password;
-        list_of_projects.findOne(
-          {
-            where:{
-              id:id_project,
-              id_user:current_user,
-              password_payement:password
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          res.status(500).json({msg: "error", details: err});		
-        }).then(project=>{res.status(200).send([project])})     
+        const multiple=req.body.is_multiple;
+        if(multiple){
+          list_of_projects.findOne(
+            {
+              where:{
+                id_user:current_user,
+                password_payement:password,
+                is_multiple:true,
+                id_multiple:`${id_project}`,
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            res.status(500).json({msg: "error", details: err});		
+          }).then(project=>{res.status(200).send([project])})   
+        }
+        else{
+          list_of_projects.findOne(
+            {
+              where:{
+                id:id_project,
+                id_user:current_user,
+                password_payement:password
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            res.status(500).json({msg: "error", details: err});		
+          }).then(project=>{res.status(200).send([project])})   
+        }
+         
     });
 
 
@@ -692,7 +749,37 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
    
       
   });
+  router.get('/get_all_last_emitted_project/:visitor_id/', function (req, res) {
 
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+      let visitor_id = req.params.visitor_id;
+      const Op = Sequelize.Op;
+      var last_month = new Date();
+      last_month.setDate(last_month.getDate() - 30);
+      list_of_projects.findAll({
+          where:{
+              id_user:visitor_id,
+              payement_status:"done",
+              createdAt:{[Op.gt]:last_month}
+          },
+          order: [
+              ['createdAt', 'DESC']
+            ],
+      })
+      .catch(err => {
+          
+        res.status(500).json({msg: "error", details: err});		
+      }).then(project=>{res.status(200).send([project])})     
+  });
   
   router.get('/get_last_emitted_project/:visitor_id/:target_id', function (req, res) {
 
@@ -715,6 +802,7 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
           where:{
               id_user:visitor_id,
               target_id:target_id, 
+              payement_status:"done",
               createdAt:{[Op.gt]:last_month}
           },
           order: [

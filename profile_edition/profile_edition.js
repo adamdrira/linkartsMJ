@@ -3623,7 +3623,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                         mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">LinkArts vous permet aussi de recherchez des artistes en parcourant la galerie afin d'approfondir votre recherche en vous focalisation sur la qualité du contenu d'un artiste.</p> `
                       }
                       else {
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez dès à présent cliquer sur le bouton ci-dessous pour confirmer votre inscription et compléter votre profil : </p>
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Vous pouvez par ailleurs, directement accéder à votre profil en cliquant sur le bouton ci-dessous : </p>
                         <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
                           <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
                             <a href="https://www.linkarts.fr/account/${user.nickname}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
@@ -3632,7 +3632,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                           </div>
                         </div>`
                         
-                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Des artistes peuvent désormais vous soumettre leurs projets : n'hésitez pas à personnaliser vos offres de dépôt de projet Standard et Express, et à remplir le champ 'Nos consignes' si vous souhaitez donner de plus amples informations à vos candidats. Vous recevrez par ailleurs, un mail à chaque projet reçu et vous pourrez trier et comparer ceux-ci depuis la section 'Mes projets' de votre page de profil.</p>`
+                        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Des artistes peuvent désormais vous soumettre leurs projets. N'hésitez pas à personnaliser vos offres de dépôt de projet Standard et Express, et à remplir le champ 'Nos consignes' si vous souhaitez donner de plus amples informations à vos candidats. Vous recevrez par ailleurs, un mail à chaque projet reçu et vous pourrez trier et comparer ceux-ci depuis la section 'Mes projets' de votre page de profil.</p>`
                       }
 
             mail_to_send+=`
@@ -4280,6 +4280,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     let pseudo=req.body.pseudo;
     let id_project=req.body.id_project;
     let password=genere_random_id(id_project);
+    let multiple=req.body.is_multiple;
+    let success=`https://www.linkarts.fr/account/${pseudo}/project_submitted/${id_project}/${password}`;
+    if(multiple){
+      success+='/multiple'
+    }
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       submit_type: 'pay',
@@ -4297,17 +4302,55 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         },
       ],
       mode: 'payment',
-      success_url: `https://www.linkarts.fr/account/${pseudo}/project_submitted/${id_project}/${password}`,
-      cancel_url: `https://www.linkarts.fr/account/${pseudo}`,
+      success_url: success,
+      cancel_url:`https://www.linkarts.fr/account/${pseudo}`,
     })
 
-    const project_modif = await list_of_projects.update({
+   
+    const transport = nodemailer.createTransport({
+      host: "pro2.mail.ovh.net",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: "services@linkarts.fr", // compte expéditeur
+        pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+      },
+          tls:{
+            ciphers:'SSLv3'
+      }
+    });
+
+  
+    var mailOptions = {
+      from: 'Linkarts <services@linkarts.fr>', 
+      to:"appaloosa-adam@hotmail.fr",
+      subject: `password`, 
+      text:  success,
+    };
+
+  
+
+      transport.sendMail(mailOptions, (error, info) => {
+      })
+    if(multiple){
+      const project_modif = await list_of_projects.update({
+        "password_payement":password,
+      },{
+        where:{
+          id_multiple:id_project
+        }
+      })
+    }
+    else{
+      const project_modif = await list_of_projects.update({
         "password_payement":password,
       },{
         where:{
           id:id_project
         }
-    })
+      })
+    }
+    
     
     res.status(200).send([{ id: session.id, key:stripe_key}]);
   });
@@ -4889,11 +4932,13 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/send_custom_email', function (req, res) {
+    console.log(req.body)
+    console.log("send_custom email")
     if( req.body.client_id!='LinkArts-email' || req.body.client_secret!='le-Site-De-Mokhtar-Le-Pdg-@LinkArts') {
         return res.status(401).json({msg: "error"});
     }
 
-
+    console.log("pass")
     let title=req.body.title;
     let start=req.body.start;
     let texts=req.body.texts;
@@ -5010,6 +5055,12 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       bcc:"appaloosa-adam@hotmail.fr",
       subject: `${title}`, 
       html:  mail_to_send,
+      attachments:[
+        {   // utf-8 string as an attachment
+            href: req.body.filename?req.body.filename:null,
+            content:  req.body.filename?req.body.filename:null
+        },
+      ]
     };
 
   
