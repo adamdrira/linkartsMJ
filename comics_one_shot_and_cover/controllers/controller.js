@@ -974,7 +974,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               if (err){
                 res.status(404).send({err:"error"});
               }
-              lenna
+              else{
+                lenna
                 .resize(200,268) 
                 .quality(90) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -986,6 +987,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                   }
                   
                 });
+              }
+              
             });
           }
       });
@@ -1032,7 +1035,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
             if (err){
               res.status(404).send({err:"error"});
             }
-            lenna
+            else{
+              lenna
               .resize(320,430) 
               .quality(90) 
               .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1044,6 +1048,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                 }
                 
               });
+            }
+            
           });
         }
     });
@@ -1089,7 +1095,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
           if (err){
             res.status(404).send({err:"error"});
           }
-          lenna
+          else{
+            lenna
             .resize(35,35) 
             .quality(90) 
             .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1101,6 +1108,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
               }
               
             });
+          }
+          
         });
       }
   });
@@ -1159,7 +1168,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                 if (err){
                   res.status(404).send({err:"error"});
                 }
-                lenna
+                else{
+                  lenna
                   .resize(width,Jimp.AUTO) 
                   .quality(90) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1171,6 +1181,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                     }
                     
                   });
+                }
+                
               });
             }
         });
@@ -1191,7 +1203,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                   if (err){
                     res.status(404).send({err:"error"});
                   }
-                  lenna
+                  else{
+                    lenna
                     .resize(width,Jimp.AUTO) 
                     .quality(90) 
                     .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1203,6 +1216,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                       }
                       
                     });
+                  }
+                  
                 });
               }
           });
@@ -1270,7 +1285,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
               if (err){
                 res.status(404).send({err:"error"});
               }
-              lenna
+              else{
+                lenna
                 .resize(266,Jimp.AUTO) 
                 .quality(90) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1282,6 +1298,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                   }
                   
                 });
+              }
+              
             });
           }
       });
@@ -1301,7 +1319,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                 if (err){
                   res.status(404).send({err:"error"});
                 }
-                lenna
+                else{
+                  lenna
                   .resize(266,Jimp.AUTO) 
                   .quality(90) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1313,6 +1332,8 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                     }
                     
                   });
+                }
+               
               });
             }
         });

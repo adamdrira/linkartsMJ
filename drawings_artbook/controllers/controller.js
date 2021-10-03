@@ -885,7 +885,8 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
               if (err){
                 res.status(404).send({err:"error"});
               }
-              lenna
+              else{
+                lenna
                 .resize(width,Jimp.AUTO) 
                 .quality(90) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -897,6 +898,8 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
                   }
                   
                 });
+              }
+              
             });
           }
       });
@@ -918,7 +921,8 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
                   if (err){
                     res.status(404).send({err:"error"});
                   }
-                  lenna
+                  else{
+                    lenna
                     .resize(width,Jimp.AUTO) 
                     .quality(90) 
                     .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -930,6 +934,8 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
                       }
                       
                     });
+                  }
+                  
                 });
               }
           });

@@ -954,7 +954,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               if (err){
                 res.status(404).send({err:"error"});
               }
-              lenna
+              else{
+                lenna
                 .resize(200,Jimp.AUTO) 
                 .quality(90) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -966,6 +967,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   }
                   
                 });
+              }
             });
           }
       });
@@ -1011,7 +1013,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               if (err){
                 res.status(404).send({err:err});
               }
-              lenna
+              else{
+                lenna
                 .resize(320,Jimp.AUTO) 
                 .quality(90) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1023,6 +1026,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   }
                   
                 });
+              }
+             
             });
           }
       });
@@ -1067,7 +1072,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               if (err){
                 res.status(404).send({err:err});
               }
-              lenna
+              else{
+                lenna
                 .resize(35,Jimp.AUTO) 
                 .quality(90) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1079,6 +1085,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   }
                   
                 });
+              }
             });
           }
       });
@@ -1124,7 +1131,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                 if (err){
                   res.status(404).send({err:err});
                 }
-                lenna
+                else{
+                  lenna
                   .resize(width,Jimp.AUTO) 
                   .quality(90) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1136,6 +1144,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                     }
                     
                   });
+                }
+               
               });
             }
         });
@@ -1171,7 +1181,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     }
 
       let filename = "./data_and_routes/drawings_one_page/" + req.params.file_name;
-      
+
       let transform = sharp()
       transform = transform.resize({fit:sharp.fit.inside,width:266})
       .toFormat('jpeg')
@@ -1185,7 +1195,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               if (err){
                 res.status(404).send({err:err});
               }
-              lenna
+              else{
+                lenna
                 .resize(266,Jimp.AUTO) 
                 .quality(90) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
@@ -1197,6 +1208,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   }
                   
                 });
+              }
             });
           }
       });
