@@ -225,7 +225,9 @@ export class HomeLinkcollabComponent implements OnInit {
     this.open_category(this.category_index, false);
     this.update_meta_data(this.category_index);
 
-    this.get_user_stats()
+    this.get_user_stats();
+
+    this.ini_form();
   }
 
   /*********************************************************************** */
@@ -814,6 +816,7 @@ export class HomeLinkcollabComponent implements OnInit {
   is_a_special_cover={"Kana":true,"les Éditions 100 bulles":true,"Les Avrils":true,"Éditions Soleil":true,"Les Éditions La croisée":true,"Drakoo":true}
   list_of_editors = [
 
+     /******************************  ATTENTION PP ET COVER SUR VRAI SITE *************************/
     {
       title:"Éditions Tartamudo",
       nickname:"Tartamudo",
@@ -1245,14 +1248,36 @@ export class HomeLinkcollabComponent implements OnInit {
   ];
 
 
-  myForm = this.fb.group({
-    checked: [false],
-  })
+  
+
+  myForms:any[]=[];
+  form_ini=false;
+  ini_form(){
+    for(let i=0;i<this.list_of_editors.length;i++){
+      this.myForms[i]=this.fb.group({
+        checked: false
+      })
+    }
+    this.form_ini=true;
+  }
 
   list_of_editors_selected=[];
   show_editors=false;
   box_checked={};
+
+  selectBox2(i){
+    if(this.box_checked[i]){
+      this.selectBox(false,i)
+    }
+    else{
+      this.selectBox(true,i)
+    }
+  }
+
   selectBox(checked,i){
+    console.log(checked)
+    console.log(i)
+    console.log(this.myForms)
     if(!this.visitor_stats_retrieved){
       this.box_checked[i]=false;
       return
@@ -1260,6 +1285,7 @@ export class HomeLinkcollabComponent implements OnInit {
     
     let index=this.last_emitted_projects.findIndex(item=>item.target_id==this.list_of_editors[i].id);
     if(index>=0){
+      console.log("index sup")
       this.box_checked[i]=false;
       this.cd.detectChanges();
       let s=date_in_seconds(this.now_in_seconds,this.last_emitted_projects[index].createdAt);
@@ -1277,22 +1303,28 @@ export class HomeLinkcollabComponent implements OnInit {
       });
       dialogRef.afterClosed().pipe( first() ).subscribe(result => {
         this.box_checked[i]=false;
-        this.myForm.controls['checked'].setValue(false);
-        this.myForm.controls['checked'].updateValueAndValidity();
+        this.myForms[i].controls['checked'].setValue(false);
+        this.myForms[i].controls['checked'].updateValueAndValidity();
         this.cd.detectChanges();
       })
    
       
     }
     else if(checked){
+      console.log("in checked")
       this.navbar.add_page_visited_to_history(`/linkcollab/select_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).pipe( first() ).subscribe();
       this.box_checked[i]=true;
+      this.myForms[i].controls['checked'].setValue(true);
+        this.myForms[i].controls['checked'].updateValueAndValidity();
       this.list_of_editors_selected.push(this.list_of_editors[i]);
       this.show_editors=true;
     }
     else{
+      console.log("in false")
       this.navbar.add_page_visited_to_history(`/linkcollab/unselect_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).pipe( first() ).subscribe();
       this.box_checked[i]=false;
+      this.myForms[i].controls['checked'].setValue(false);
+      this.myForms[i].controls['checked'].updateValueAndValidity();
       this.remove_editor(i)
     }
     

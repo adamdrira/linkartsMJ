@@ -561,9 +561,9 @@
                                     </div>
                                 </div>
 
-                                <div class="apply-button"  [@enterFromLeftAnimation] *ngIf="item.associate">
-                                    <div class="right-side" [formGroup]="myForm">
-                                        <span (click)="selectBox(true,i)">Sélectionner</span>
+                                <div class="apply-button"   [@enterFromLeftAnimation] *ngIf="item.associate && form_ini">
+                                    <div class="right-side" [formGroup]="myForms[i]">
+                                        <span (click)="selectBox2(i)">Sélectionner</span>
                                         <mat-checkbox class="check-box"  formControlName="checked" (change)="selectBox($event.checked,i)"></mat-checkbox>
                                     </div>
                                 </div>
