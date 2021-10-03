@@ -1570,17 +1570,25 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
               res.status(200).send(buffer);
           }
           else{
-            lenna
-            .resize(Jimp.AUTO,300) 
-            .quality(90) 
-            .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
-              if(err){
-                res.status(200).send({err:err});
+            Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+              if (err){
+                res.status(404).send({err:"error"});
               }
               else{
-                res.status(200).send(buffer);
+                lenna
+                .resize(Jimp.AUTO,300) 
+                .quality(90) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(404).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
               }
-              
+             
             });
           }
          
@@ -1690,17 +1698,25 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
               res.status(200).send(buffer);
           }
           else{
-            lenna
-            .resize(Jimp.AUTO,75) 
-            .quality(90) 
-            .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
-              if(err){
-                res.status(200).send({err:err});
+            Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+              if (err){
+                res.status(404).send({err:"error"});
               }
               else{
-                res.status(200).send(buffer);
+                lenna
+                .resize(Jimp.AUTO,75) 
+                .quality(90) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(404).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
               }
-              
+             
             });
           }
          
@@ -1920,17 +1936,25 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                   res.status(200).send(buffer);
               }
               else{
-                lenna
-                .resize(Jimp.AUTO,300) 
-                .quality(90) 
-                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
-                  if(err){
-                    res.status(200).send({err:err});
+                Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                  if (err){
+                    res.status(404).send({err:"error"});
                   }
                   else{
-                    res.status(200).send(buffer);
+                    lenna
+                    .resize(Jimp.AUTO,300) 
+                    .quality(90) 
+                    .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                      if(err){
+                        res.status(404).send({err:err});
+                      }
+                      else{
+                        res.status(200).send(buffer);
+                      }
+                      
+                    });
                   }
-                  
+                 
                 });
               }
              
