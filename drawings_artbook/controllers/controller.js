@@ -9,6 +9,7 @@ const Sequelize = require('sequelize');
 const Navbar = require('../../navbar/model/sequelize');
 const Notations = require('../../publications_notation/model/sequelize');
 const sharp = require('sharp');
+var Jimp = require('jimp');
 
 module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_contents) => {
 
@@ -839,6 +840,9 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
   
     });
 
+ 
+
+
   router.get('/retrieve_drawing_page_ofartbook/:drawing_id/:drawing_page/:width', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
@@ -868,38 +872,77 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 			res.status(500).json({msg: "error", details: err});		
 		}).then(page =>  {
       let transform = sharp()
-        transform = transform.resize({fit:sharp.fit.inside,width:1000})
-        .toBuffer((err, buffer, info) => {
-            if (buffer) {
-                res.status(200).send(buffer);
-            }
-            else{
-              filename = "./data_and_routes/not-found-image.jpg";
-              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-              res.status(200).send(not_found);
-            }
-        });
+      transform = transform.resize({fit:sharp.fit.inside,width:width}) 
+      .toFormat('jpeg')
+      .jpeg({ quality: 90})
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
+          else{
+            let filename = "./data_and_routes/not-found-image.jpg";
+            Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+              if (err){
+                res.status(404).send({err:"error"});
+              }
+              lenna
+                .resize(width,Jimp.AUTO) 
+                .quality(90) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(404).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
+            });
+          }
+      });
+
+      
         if(page && page.file_name){
           let filename = "./data_and_routes/drawings_pages_artbook/" + page.file_name;
+          let transform2 = sharp()
+          transform2 = transform2
+          .resize({fit:sharp.fit.inside,width:width})
+          .toFormat('jpeg')
+          .jpeg({ quality: 90})
+          .toBuffer((err, buffer, info) => {
+              if (buffer) {
+                res.status(200).send(buffer);
+              }
+              else{
+                Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                  if (err){
+                    res.status(404).send({err:"error"});
+                  }
+                  lenna
+                    .resize(width,Jimp.AUTO) 
+                    .quality(90) 
+                    .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                      if(err){
+                        res.status(200).send({err:err});
+                      }
+                      else{
+                        res.status(200).send(buffer);
+                      }
+                      
+                    });
+                });
+              }
+          });
+
           fs.access(filename, fs.F_OK, (err) => {
             if(err){
               filename = "./data_and_routes/not-found-image.jpg";
               var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-              if(width<700){
-                not_found.pipe(transform);
-              }
-              else{
-                not_found.pipe(res);
-              }
+              not_found.pipe(transform);
             }  
             else{
               var pp = fs.createReadStream( path.join(process.cwd(),filename))
-              if(width<700){
-                pp.pipe(transform);
-              }
-              else{
-                pp.pipe(res);
-              }
+              pp.pipe(transform2)
             }     
           })
         }

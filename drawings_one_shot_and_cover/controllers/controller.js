@@ -9,6 +9,8 @@ const imageminPngquant = require("imagemin-pngquant");
 const Navbar = require('../../navbar/model/sequelize');
 const Notations = require('../../publications_notation/model/sequelize');
 const sharp = require('sharp');
+var Jimp = require('jimp');
+
 module.exports = (router, drawings_one_page,list_of_users,trendings_contents) => {
   
   function get_current_user(token){
@@ -937,19 +939,37 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
         }
       }
 
+      let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
+
       let transform = sharp()
       transform = transform.resize({width:200})
+      .toFormat('jpeg')
+      .jpeg({ quality: 90})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
           }
           else{
-            filename = "./data_and_routes/not-found-image.jpg";
-            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            res.status(200).send(not_found);
+            Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+              if (err){
+                res.status(404).send({err:"error"});
+              }
+              lenna
+                .resize(200,Jimp.AUTO) 
+                .quality(90) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(404).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
+            });
           }
       });
-      let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
+      
       fs.access(filename, fs.F_OK, (err) => {
         if(err){
           filename = "./data_and_routes/not-found-image.jpg";
@@ -976,20 +996,37 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
         return res.status(401).json({msg: "error"});
       }
     }
+    let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
 
     let transform = sharp()
       transform = transform.resize({width:320})
+      .toFormat('jpeg')
+      .jpeg({ quality: 90})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
           }
           else{
-            filename = "./data_and_routes/not-found-image.jpg";
-            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            res.status(200).send(not_found);
+            Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+              if (err){
+                res.status(404).send({err:err});
+              }
+              lenna
+                .resize(320,Jimp.AUTO) 
+                .quality(90) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(404).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
+            });
           }
       });
-    let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
+    
     fs.access(filename, fs.F_OK, (err) => {
       if(err){
         filename = "./data_and_routes/not-found-image.jpg";
@@ -1015,20 +1052,37 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
         return res.status(401).json({msg: "error"});
       }
     }
+    let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
 
     let transform = sharp()
       transform = transform.resize(35,35)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
           }
           else{
-            filename = "./data_and_routes/not-found-image.jpg";
-            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            res.status(200).send(not_found);
+            Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+              if (err){
+                res.status(404).send({err:err});
+              }
+              lenna
+                .resize(35,Jimp.AUTO) 
+                .quality(90) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(404).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
+            });
           }
       });
-    let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
+   
     fs.access(filename, fs.F_OK, (err) => {
       if(err){
         filename = "./data_and_routes/not-found-image.jpg";
@@ -1056,37 +1110,47 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       }
         const width = parseInt(req.params.width)-20;
         let filename = "./data_and_routes/drawings_one_page/" + req.params.file_name;
+
         let transform = sharp()
         transform = transform.resize({fit:sharp.fit.inside,width:width})
+        .toFormat('jpeg')
+        .jpeg({ quality: 90})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
             }
             else{
-              filename = "./data_and_routes/not-found-image.jpg";
-              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-              res.status(200).send(not_found);
+              Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                if (err){
+                  res.status(404).send({err:err});
+                }
+                lenna
+                  .resize(width,Jimp.AUTO) 
+                  .quality(90) 
+                  .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                    if(err){
+                      res.status(404).send({err:err});
+                    }
+                    else{
+                      res.status(200).send(buffer);
+                    }
+                    
+                  });
+              });
             }
         });
+
         fs.access(filename, fs.F_OK, (err) => {
           if(err){
             filename = "./data_and_routes/not-found-image.jpg";
             var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            if(width<700){
-              not_found.pipe(transform);
-            }
-            else{
-              not_found.pipe(res);
-            }
+            not_found.pipe(transform);
+            
           }  
           else{
             var pp = fs.createReadStream( path.join(process.cwd(),filename))
-            if(width<700){
-              pp.pipe(transform);
-            }
-            else{
-              pp.pipe(res);
-            }
+            pp.pipe(transform);
+            
           }     
         })
 
@@ -1107,16 +1171,33 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     }
 
       let filename = "./data_and_routes/drawings_one_page/" + req.params.file_name;
+      
       let transform = sharp()
-      transform = transform.resize({fit:sharp.fit.inside,height:266,width:266})
+      transform = transform.resize({fit:sharp.fit.inside,width:266})
+      .toFormat('jpeg')
+      .jpeg({ quality: 90})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
           }
           else{
-            filename = "./data_and_routes/not-found-image.jpg";
-            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            res.status(200).send(not_found);
+            Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+              if (err){
+                res.status(404).send({err:err});
+              }
+              lenna
+                .resize(266,Jimp.AUTO) 
+                .quality(90) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(404).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
+            });
           }
       });
       fs.access(filename, fs.F_OK, (err) => {
