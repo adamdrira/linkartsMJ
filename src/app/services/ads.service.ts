@@ -150,8 +150,8 @@ export class Ads_service {
       }));
     }
 
-    retrieve_attachment(file_name,index) {
-      return this.httpClient.get(`routes/retrieve_ad_attachment/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+    retrieve_attachment(file_name,index,width) {
+      return this.httpClient.get(`routes/retrieve_ad_attachment/${file_name}/${width}`,{responseType:'blob'}).pipe(map(information=>{
         return [information,index];   
       }));
     }
