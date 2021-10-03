@@ -674,6 +674,7 @@ export class AdPageComponent implements OnInit {
 
 
   get_ad_contents(item){
+    let width = window.innerWidth;
     let u=0;
     var re = /(?:\.([^.]+))?$/;
     if(item.number_of_attachments>0){
@@ -681,7 +682,7 @@ export class AdPageComponent implements OnInit {
         if(i==0){
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -694,7 +695,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -707,7 +708,7 @@ export class AdPageComponent implements OnInit {
         if(i==1){
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -720,7 +721,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -733,7 +734,7 @@ export class AdPageComponent implements OnInit {
         if(i==2){
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -746,7 +747,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -759,7 +760,7 @@ export class AdPageComponent implements OnInit {
         if(i==3){
           if(re.exec(item.attachment_name_four)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -772,7 +773,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -785,7 +786,7 @@ export class AdPageComponent implements OnInit {
         if(i==4){
           if(re.exec(item.attachment_name_five)[1]!="pdf"){
             this.list_of_pictures_name[i] = item.attachment_real_name_five;
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -798,7 +799,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_five;
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -1194,7 +1195,7 @@ export class AdPageComponent implements OnInit {
         if(i==0){
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1207,7 +1208,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.response_list_of_attachments_name[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -1220,7 +1221,7 @@ export class AdPageComponent implements OnInit {
         if(i==1){
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1233,7 +1234,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.response_list_of_attachments_name[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -1246,7 +1247,7 @@ export class AdPageComponent implements OnInit {
         if(i==2){
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1259,7 +1260,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.response_list_of_attachments_name[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -1272,7 +1273,7 @@ export class AdPageComponent implements OnInit {
         if(i==3){
           if(re.exec(item.attachment_real_name_four)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -1285,7 +1286,7 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.response_list_of_attachments_name[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               this.response_list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -1298,7 +1299,7 @@ export class AdPageComponent implements OnInit {
         if(i==4){
           if(re.exec(item.attachment_real_name_five)[1]!="pdf"){
             this.response_list_of_pictures_names[i] = item.attachment_real_name_five;
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe(first() ).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i,window.innerWidth).pipe(first() ).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);

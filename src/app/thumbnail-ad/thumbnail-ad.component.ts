@@ -75,6 +75,8 @@ export class ThumbnailAdComponent implements OnInit {
   @ViewChild('image') image:ElementRef;
   @ViewChild('targets') targets:ElementRef;
   @ViewChild('before') before:ElementRef;
+  @ViewChild('thumbnail') thumbnail:ElementRef;
+  
   not_phone=true;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -392,7 +394,7 @@ export class ThumbnailAdComponent implements OnInit {
       for(let i=0;i<item.number_of_attachments;i++){
         if(i==0){
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i,100).pipe( first()).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -406,7 +408,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_one;
-            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i,100).pipe( first()).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -418,7 +420,7 @@ export class ThumbnailAdComponent implements OnInit {
         }
         if(i==1){
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i,100).pipe( first()).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -432,7 +434,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_two;
-            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i,100).pipe( first()).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -444,7 +446,7 @@ export class ThumbnailAdComponent implements OnInit {
         }
         if(i==2){
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i,100).pipe( first()).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -458,7 +460,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_three;
-            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i,100).pipe( first()).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -470,7 +472,7 @@ export class ThumbnailAdComponent implements OnInit {
         };
         if(i==3){
           if(re.exec(item.attachment_name_four)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i,100).pipe( first()).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -484,7 +486,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_four;
-            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i,100).pipe( first()).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
@@ -496,7 +498,7 @@ export class ThumbnailAdComponent implements OnInit {
         };
         if(i==4){
           if(re.exec(item.attachment_name_five)[1]!="pdf"){
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i,100).pipe( first()).subscribe(l=>{
               let blob = new Blob([l[0]], {type: 'image/png'});
               let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -510,7 +512,7 @@ export class ThumbnailAdComponent implements OnInit {
           }
           else{
             this.list_of_attachments_name[i] = item.attachment_real_name_five;
-            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).pipe( first()).subscribe(l=>{
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i,100).pipe( first()).subscribe(l=>{
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
