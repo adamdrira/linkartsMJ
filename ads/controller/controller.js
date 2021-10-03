@@ -8,6 +8,7 @@ const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 var nodemailer = require('nodemailer');
 const sharp = require('sharp');
+var Jimp = require('jimp');
 var list_covers_by_id={};
 module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
@@ -850,6 +851,8 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         let filename = "./data_and_routes/thumbnails_ads/" + file_name ;
         let transform = sharp()
         transform = transform.resize(200,268)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -889,6 +892,39 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/pictures_ads/" + file_name ;
+
+        let transform = sharp()
+        transform = transform.resize(200,268)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90})
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+            else{
+              Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                if (err){
+                  res.status(404).send({err:"error"});
+                }
+                else{
+                  lenna
+                  .resize(200,268) 
+                  .quality(90) 
+                  .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                    if(err){
+                      res.status(404).send({err:err});
+                    }
+                    else{
+                      res.status(200).send(buffer);
+                    }
+                    
+                  });
+                }
+                
+              });
+            }
+        });
+
         fs.access(filename, fs.F_OK, (err) => {
           if(err){
             filename = "./data_and_routes/not-found-image.jpg";
@@ -902,7 +938,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         })
     });
 
-    router.get('/retrieve_ad_attachment/:file_name', function (req, res) {
+    router.get('/retrieve_ad_attachment/:file_name/:width', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -915,17 +951,65 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         }
       }
 
+        let width=parseInt(req.params.width);
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/attachments_ads/" + file_name ;
+        let transform = sharp()
+        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        .toFormat('jpeg')
+        .jpeg({ quality: 90})
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+                res.status(200).send(buffer);
+            }
+            else{
+              Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                if (err){
+                  res.status(404).send({err:"error"});
+                }
+                else{
+                  lenna
+                  .resize(width,Jimp.AUTO) 
+                  .quality(90) 
+                  .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                    if(err){
+                      res.status(404).send({err:err});
+                    }
+                    else{
+                      res.status(200).send(buffer);
+                    }
+                    
+                  });
+                }
+               
+              });
+            }
+        });
         fs.access(filename, fs.F_OK, (err) => {
           if(err){
-            filename = "./data_and_routes/not-found-image.jpg";
-            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            not_found.pipe(res);
+            if(filename.includes(".pdf")){
+              filename = "./data_and_routes/file-not-found.pdf";
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              not_found.pipe(res);
+            }
+            else{
+              filename = "./data_and_routes/not-found-image.jpg";
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              not_found.pipe(res);
+            }
+           
           }  
           else{
             var pp = fs.createReadStream( path.join(process.cwd(),filename))
-            pp.pipe(res);
+            if(filename.includes(".pdf")){
+              pp.pipe(res);
+            }
+            else{
+              filename = "./data_and_routes/not-found-image.jpg";
+              var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+              pp.pipe(transform);
+            }
+           
           }     
         })
     });
@@ -1783,9 +1867,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
             to: user.email, // my mail
             bcc: "appaloosa-adam@hotmail.fr",
             subject: `Réponse à une annonce`, // Subject line
-            //text: 'plain text', // plain text body
             html:  mail_to_send, // html body
-            // attachments: params.attachments
         };
     
         transport.sendMail(mailOptions, (error, info) => {

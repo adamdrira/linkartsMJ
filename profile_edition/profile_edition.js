@@ -14,6 +14,7 @@ const stripe_pv_key="sk_live_51IXGypFGsFyjiwAlo9N9LDeJUoZfVUZEo3HqnrCunBOaFgGRnR
 const stripe_key="pk_live_51IXGypFGsFyjiwAl8D492zOHpbG8GeS42sjQ9nsl9oSmb8jELhvoUlMBhvLSbfnvf00DPS2Zq7Aq8n5CChdlAV3s00KuTQLvL5";
 const stripe = require('stripe')(stripe_pv_key);
 const sharp = require('sharp');
+var Jimp = require('jimp');
 var ig = require('instagram-scraping');
 
      
@@ -369,25 +370,55 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
  
 
     const user_id = parseInt(req.params.user_id);
+    
     users.findOne({
       where: {
         id: user_id,
       }
     }).then(User =>  {
+
+      let filename =  "./data_and_routes/profile_pics/default_profile_picture.png";
+      if(User){
+        filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
+      }
+
       let transform = sharp()
         transform = transform.resize(78,78)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
             }
+            else{
+              Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                if (err){
+                  res.status(404).send({err:"error"});
+                }
+                else{
+                  lenna
+                  .resize(78,78) 
+                  .quality(90) 
+                  .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                    if(err){
+                      res.status(404).send({err:err});
+                    }
+                    else{
+                      res.status(200).send(buffer);
+                    }
+                    
+                  });
+                }
+               
+              });
+                
+            }
         });
+
       if(User && User.profile_pic_file_name){
         
-
-        let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
         fs.access(filename, fs.F_OK, (err) => {
           if(err){
-            filename = "./data_and_routes/profile_pics/default_profile_picture.png";
             var not_found = fs.createReadStream( path.join(process.cwd(),filename))
             not_found.pipe(transform)
           }  
@@ -435,18 +466,48 @@ router.get('/retrieve_profile_picture_by_pseudo/:pseudo', function (req, res) {
     
     res.status(500).json({msg: "error", details: err});		
   }).then(User =>  {
+
+    let filename = "./data_and_routes/profile_pics/default_profile_picture.png";
+    if(User){
+      filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
+    }
+
     let transform = sharp()
         transform = transform.resize(130 ,130)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
             }
+            else{
+              Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                if (err){
+                  res.status(404).send({err:"error"});
+                }
+                else{
+                  lenna
+                  .resize(130 ,130) 
+                  .quality(90) 
+                  .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                    if(err){
+                      res.status(404).send({err:err});
+                    }
+                    else{
+                      res.status(200).send(buffer);
+                    }
+                    
+                  });
+                }
+              });
+                
+            }
         });
     if(User && User.profile_pic_file_name){
-      let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
+      
       fs.access(filename, fs.F_OK, (err) => {
         if(err){
-          filename = "./data_and_routes/profile_pics/default_profile_picture.png";
+          
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
           not_found.pipe(transform);
         }  
@@ -494,15 +555,44 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
     
     res.status(500).json({msg: "error", details: err});		
   }).then(User =>  {
+    let  filename = "./data_and_routes/profile_pics/default_profile_picture.png";
+    if(User){
+      filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
+    }
+
     let transform = sharp()
         transform = transform.resize(60,60)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
             }
+            else{
+              Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                if (err){
+                  res.status(404).send({err:"error"});
+                }
+                else{
+                  lenna
+                  .resize(60 ,60) 
+                  .quality(90) 
+                  .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                    if(err){
+                      res.status(404).send({err:err});
+                    }
+                    else{
+                      res.status(200).send(buffer);
+                    }
+                    
+                  });
+                }
+                
+              });
+            }
         });
     if(User && User.profile_pic_file_name){
-      let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
+     
       fs.access(filename, fs.F_OK, (err) => {
         if(err){
           filename = "./data_and_routes/profile_pics/default_profile_picture.png";
@@ -516,7 +606,7 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
       })
     }
     else{
-      filename = "./data_and_routes/profile_pics/default_profile_picture.png";
+     
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
           not_found.pipe(transform);
     }
@@ -549,20 +639,52 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
       }
     })
    .then(User =>  {
-      if(User && User.cover_pic_file_name  ){
+
+      let  filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+      if(User){
+         filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+      }
+
         let transform = sharp()
-        transform = transform.resize({height:600})
+        transform = transform.resize({fit:sharp.fit.contain,height:600})
+        .toFormat('jpeg')
+        .jpeg({ quality: 90})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
             }
+            else{
+              Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                if (err){
+                  res.status(404).send({err:"error"});
+                }
+                else{
+                  lenna
+                  .resize(Jimp.AUTO ,600) 
+                  .quality(90) 
+                  .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                    if(err){
+                      res.status(404).send({err:err});
+                    }
+                    else{
+                      res.status(200).send(buffer);
+                    }
+                    
+                  });
+                }
+                
+              });
+            }
         });
-        let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+        
+      if(User && User.cover_pic_file_name  ){
+        
+        
         fs.access(filename, fs.F_OK, (err) => {
           if(err){
             filename = "./data_and_routes/cover_pics/default_cover_picture.png";
             var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            not_found.pipe(res);
+            not_found.pipe(transform);
           }  
           else{
             var pp = fs.createReadStream( path.join(process.cwd(),filename))
@@ -571,9 +693,9 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
         })
       }
       else{
-        filename = "./data_and_routes/cover_pics/default_cover_picture.png";
-            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            not_found.pipe(res);
+       
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
       }
      
     }); 
@@ -603,15 +725,45 @@ router.get('/retrieve_cover_picture_thumbnail/:user_id', function (req, res) {
     }
   })
   .then(User =>  {
+
+    let   filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+    if(User){
+       filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+    }
     let transform = sharp()
     transform = transform.resize({fit:sharp.fit.contain,width:900})
+    .toFormat('jpeg')
+    .jpeg({ quality: 90})
     .toBuffer((err, buffer, info) => {
         if (buffer) {
             res.status(200).send(buffer);
         }
+        else{
+          Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+            if (err){
+              res.status(404).send({err:"error"});
+            }
+            else{
+              lenna
+              .resize(900,Jimp.AUTO) 
+              .quality(90) 
+              .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                if(err){
+                  res.status(404).send({err:err});
+                }
+                else{
+                  res.status(200).send(buffer);
+                }
+                
+              });
+            }
+            
+          });
+        }
     });
+
     if(User && User.cover_pic_file_name  ){
-      let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+      
       fs.access(filename, fs.F_OK, (err) => {
         if(err){
           filename = "./data_and_routes/cover_pics/default_cover_picture.png";
@@ -625,7 +777,7 @@ router.get('/retrieve_cover_picture_thumbnail/:user_id', function (req, res) {
       })
     }
     else{
-      filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+    
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
           not_found.pipe(transform);
     }
@@ -656,15 +808,42 @@ router.get('/retrieve_cover_picture_stories/:user_id', function (req, res) {
     }
   })
   .then(User =>  {
+    let  filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+    if(User){
+       filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+    }
     let transform = sharp()
     transform = transform.resize(200,86)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90})
     .toBuffer((err, buffer, info) => {
         if (buffer) {
             res.status(200).send(buffer);
         }
+        else{
+          Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+            if (err){
+              res.status(404).send({err:"error"});
+            }
+            else{
+              lenna
+              .resize(200,86) 
+              .quality(90) 
+              .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                if(err){
+                  res.status(404).send({err:err});
+                }
+                else{
+                  res.status(200).send(buffer);
+                }
+                
+              });
+            }
+          });
+        }
     });
     if(User && User.cover_pic_file_name  ){
-      let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+    
       fs.access(filename, fs.F_OK, (err) => {
         if(err){
           filename = "./data_and_routes/cover_pics/default_cover_picture.png";
@@ -678,7 +857,7 @@ router.get('/retrieve_cover_picture_stories/:user_id', function (req, res) {
       })
     }
     else{
-      filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+     
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
           not_found.pipe(transform);
     }
@@ -713,20 +892,52 @@ users.findOne({
   
   res.status(500).json({msg: "error", details: err});		
 }).then(User =>  {
-  if(User && User.cover_pic_file_name  ){
+
+  let filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+    if(User){
+       filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+    }
+
     let transform = sharp()
-    transform = transform.resize({height:600})
+    transform = transform.resize({fit:sharp.fit.contain,height:600})
+    .toFormat('jpeg')
+    .jpeg({ quality: 90})
     .toBuffer((err, buffer, info) => {
         if (buffer) {
             res.status(200).send(buffer);
         }
+        else{
+          Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+            if (err){
+              res.status(404).send({err:"error"});
+            }
+            else{
+              lenna
+              .resize(Jimp.AUTO,600) 
+              .quality(90) 
+              .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                if(err){
+                  res.status(404).send({err:err});
+                }
+                else{
+                  res.status(200).send(buffer);
+                }
+                
+              });
+            }
+          });
+        }
     });
-    let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+
+  if(User && User.cover_pic_file_name  ){
+
+    
+    
     fs.access(filename, fs.F_OK, (err) => {
       if(err){
-        filename = "./data_and_routes/cover_pics/default_cover_picture.png";
+        
         var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-        not_found.pipe(res);
+        not_found.pipe(transform);
       }  
       else{
         var pp = fs.createReadStream( path.join(process.cwd(),filename))
@@ -737,7 +948,7 @@ users.findOne({
   else{
     filename = "./data_and_routes/cover_pics/default_cover_picture.png";
     var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-    not_found.pipe(res);
+    not_found.pipe(transform);
   }
  
 }); 
@@ -4868,15 +5079,39 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
     const picture_name =req.params.picture_name;
-    
-      let transform = sharp()
-        transform = transform.resize({fit:sharp.fit.contain,height:275})
-        .toBuffer((err, buffer, info) => {
-            if (buffer) {
-                res.status(200).send(buffer);
-            }
-        });
-        let filename = "./data_and_routes/editor_artworks/" + picture_name;
+    let filename = "./data_and_routes/editor_artworks/" + picture_name;
+
+    let transform = sharp()
+      transform = transform.resize({fit:sharp.fit.contain,height:275})
+      .toFormat('jpeg')
+      .jpeg({ quality: 90})
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
+          else{
+            Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+              if (err){
+                res.status(404).send({err:"error"});
+              }
+              else{
+                lenna
+                .resize(Jimp.AUTO,275) 
+                .quality(90) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(404).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
+              }
+            });
+          }
+      });
+        
         fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
           if(err){
             filename = "./data_and_routes/not-found-image.jpg";

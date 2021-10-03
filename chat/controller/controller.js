@@ -9,6 +9,8 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 const sharp = require('sharp');
+var Jimp = require('jimp');
+
 module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spams,list_of_chat_search,list_of_chat_sections,list_of_subscribings, list_of_users,list_of_chat_groups,list_of_chat_groups_reactions,list_of_chat_folders,list_of_chat_contracts) => {
 
     function get_current_user(token){
@@ -85,6 +87,8 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                         }
                         
                       }).catch(err => {
+                        console.log("error chat 2")
+                                console.log(err)
                           res.status(500).json({msg: "error", details: err});		
                         }).then(r=>{
                         if(r){
@@ -109,8 +113,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                                 ],
                                 
                               }).catch(err => {
-			res.status(500).json({msg: "error", details: err});		
-		}).then(r=>{
+                                console.log("error chat 1")
+                                console.log(err)
+                                res.status(500).json({msg: "error", details: err});		
+                              }).then(r=>{
                                   if(r.length>0){
                                     number_of_unseen_messages+=1;
                                   }
@@ -1557,15 +1563,27 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let filename = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
       let transform = sharp()
       transform = transform.resize({fit:sharp.fit.contain,height:300})
+      .toFormat('jpeg')
+      .jpeg({ quality: 90})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
           }
           else{
-            filename = "./data_and_routes/not-found-image.jpg";
-            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            res.status(200).send(not_found);
+            lenna
+            .resize(Jimp.AUTO,300) 
+            .quality(90) 
+            .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+              if(err){
+                res.status(200).send({err:err});
+              }
+              else{
+                res.status(200).send(buffer);
+              }
+              
+            });
           }
+         
       });
       fs.access( path.join(process.cwd(),filename), fs.F_OK, (err) => {
         if(err){
@@ -1665,15 +1683,27 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       console.log(filename)
       let transform = sharp()
       transform = transform.resize({fit:sharp.fit.contain,height:75})
+      .toFormat('jpeg')
+      .jpeg({ quality: 90})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
           }
           else{
-            filename = "./data_and_routes/not-found-image.jpg";
-            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
-            res.status(200).send(not_found);
+            lenna
+            .resize(Jimp.AUTO,75) 
+            .quality(90) 
+            .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+              if(err){
+                res.status(200).send({err:err});
+              }
+              else{
+                res.status(200).send(buffer);
+              }
+              
+            });
           }
+         
       });
       fs.access(path.join(process.cwd(),filename), fs.F_OK, (err) => {
         if(err){
@@ -1883,10 +1913,27 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           });
           let transform = sharp()
           transform = transform.resize({fit:sharp.fit.contain,height:300})
+          .toFormat('jpeg')
+          .jpeg({ quality: 90})
           .toBuffer((err, buffer, info) => {
               if (buffer) {
                   res.status(200).send(buffer);
               }
+              else{
+                lenna
+                .resize(Jimp.AUTO,300) 
+                .quality(90) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(200).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
+              }
+             
           });
           let filename2 = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
           var pp = fs.createReadStream( path.join(process.cwd(),filename2))
