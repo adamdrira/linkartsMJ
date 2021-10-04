@@ -92,7 +92,6 @@ export class UploaderCoverWritingComponent implements OnInit {
       this.cd.detectChanges();
     }
     if( changes.category && this.category  && !this.for_edition) {
-      console.log(this.category )
       this.cd.detectChanges();
 
       if( this.category == "Roman illustré" || this.category == "Illustrated novel" ) {
@@ -166,6 +165,7 @@ export class UploaderCoverWritingComponent implements OnInit {
   
   cover_loading=false;
   show_icon=false;
+  number_of_reload=0;
   ngOnInit() {
 
     if(this.description){
@@ -183,7 +183,6 @@ export class UploaderCoverWritingComponent implements OnInit {
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
@@ -191,10 +190,10 @@ export class UploaderCoverWritingComponent implements OnInit {
         });
       }
       else{
-        if(Math.trunc(size)>=1){
+        if(Math.trunc(size)>=5){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 1mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 5mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
             panelClass: "popupConfirmationClass",
           });
         }
@@ -210,49 +209,64 @@ export class UploaderCoverWritingComponent implements OnInit {
     };
 
     this.uploader.onCompleteItem = (file) => {
-      this.confirmation = true; 
-      if(this.for_edition){
-        this.Writing_CoverService.get_cover_name().subscribe(r=>{
 
-          if(r[0].error){
-            this.remove_afterupload(this.uploader.queue[0])
-          }
-          else{
-            this.Writing_CoverService.add_covername_to_sql(this.writing_id).subscribe(r=>{
-              this.Writing_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
-                
-                location.reload();
-                
-              });
-            });
-          }
-          
+      if(this.number_of_reload>10){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+          panelClass: "popupConfirmationClass",
         });
-          
+        this.cover_loading=false;
+        return
+      }
+
+      if(file.isSuccess){
+        this.confirmation = true; 
+        if(this.for_edition){
+          this.Writing_CoverService.get_cover_name().pipe(first() ).subscribe(r=>{
+  
+            if(r[0].error){
+              this.remove_afterupload(this.uploader.queue[0])
+            }
+            else{
+              this.Writing_CoverService.add_covername_to_sql(this.writing_id).pipe(first() ).subscribe(r=>{
+                this.Writing_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).pipe(first() ).subscribe(info=>{
+                  
+                  location.reload();
+                  
+                });
+              });
+            }
+            
+          });
+            
+        }
+        else{
+          this.Writing_CoverService.get_cover_name().pipe(first() ).subscribe(r=>{
+            if(r[0].error){
+              this.remove_afterupload(this.uploader.queue[0])
+            }
+            else{
+              this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
+              this.cover_loading=false;
+            }
+           
+          });
+        }
       }
       else{
-        this.Writing_CoverService.get_cover_name().subscribe(r=>{
-          if(r[0].error){
-            this.remove_afterupload(this.uploader.queue[0])
-          }
-          else{
-            this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
-            this.cover_loading=false;
-          }
-         
-        });
+        let reload_interval = setInterval(() => {
+          this.uploader.queue[0].upload()
+          this.cd.detectChanges();
+          this.number_of_reload+=1;
+          clearInterval(reload_interval)
+        }, 500);
       }
+      
       
      
     }
 
-    this.uploader.onErrorItem = (item, response, status, headers) => {
-      this.cover_loading=false;
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
-        panelClass: "popupConfirmationClass",
-      });
-    };
+  
 
 
   };
@@ -316,6 +330,7 @@ export class UploaderCoverWritingComponent implements OnInit {
 
 
   validate(){
+    this.number_of_reload=0;
     this.cover_loading=true;
     this.uploader.queue[0].upload()
   }
