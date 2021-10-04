@@ -13,7 +13,7 @@ import {NotificationsService}from '../services/notifications.service';
 import {ChatService} from '../services/chat.service';
 import { NavbarService } from '../services/navbar.service';
 import { first } from 'rxjs/operators';
-const url = 'https://www.linkarts.fr/routes/upload_page_bd_oneshot/';
+const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
 
 @Component({
   selector: 'app-uploader_bd_oneshot',
@@ -95,7 +95,6 @@ _validate_all:boolean=false;
 @Input() set validate_all(value: boolean) {
   this._validate_all=value;
   if(value){
-    console.log("validate all")
     this.bdOneShotService.validate_bd(this.bd_id,this.total_pages).pipe(first()).subscribe(r=>{
       this.Subscribing_service.validate_content("comic","one-shot",this.bd_id,0).pipe(first()).subscribe(l=>{
         this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'one-shot',this.bd_id,0,"add",false,0).pipe(first()).subscribe(l=>{
