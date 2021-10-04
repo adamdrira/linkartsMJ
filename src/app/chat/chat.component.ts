@@ -553,7 +553,7 @@ export class ChatComponent implements OnInit  {
       }
     }
   }
-
+  number_of_reload_uploader=0;
   ngOnInit() {
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
     if(this.friend_type=='group'){
@@ -671,66 +671,86 @@ export class ChatComponent implements OnInit  {
   
 
     this.uploader.onCompleteItem = (file) => {
-      this.k++;
-      if(this.k<this.uploader.queue.length){
-        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.uploader.queue[this.k]._file.name,0).pipe(first() ).subscribe(r=>{
-          let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
-          this.uploader.setOptions({ url: URL});
-          this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
-          this.uploader.queue[this.k].upload();
-        })
+
+      if(this.number_of_reload_uploader>10){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+          panelClass: "popupConfirmationClass",
+        });
+        return
       }
+
+      if(file.isSuccess){
+        
+        this.k++;
+        if(this.k<this.uploader.queue.length){
+          this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.uploader.queue[this.k]._file.name,0).pipe(first() ).subscribe(r=>{
+            let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
+            this.uploader.setOptions({ url: URL});
+            this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
+            this.uploader.queue[this.k].upload();
+          })
+        }
+        
+        var type='';
+        var re = /(?:\.([^.]+))?$/;
+        if( re.exec(file._file.name)[1].toLowerCase()=="jpeg" || re.exec(file._file.name)[1].toLowerCase()=="png" || re.exec(file._file.name)[1].toLowerCase()=="jpg" || re.exec(file._file.name)[1].toLowerCase()=="gif"){
+          type='picture_attachment'
+        }
+        else{
+          type='file_attachment';
+        }
+        this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,file._file.name,1).pipe(first() ).subscribe(r=>{
+          let message ={
+            id_user_name:this.current_user_pseudo,
+            id_user:this.current_user_id,   
+            id_receiver:this.friend_id,  
+            message:null,
+            attachment_name:r[0].value,
+            list_of_users_who_saw:[this.current_user_id],
+            attachment_type:type,
+            is_an_attachment:true,
+            list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
+            is_from_server:false,
+            id_chat_section:this.id_chat_section,
+            size:file._file.size/1024/1024,
+            
+            is_a_response:this.respond_to_a_message,
+            id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
+            message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
+            status:"sent",
+            temporary_id:this.temporary_id,
+            is_a_group_chat:(this.friend_type=='user')?false:true,
+            chat_friend_id:this.chat_friend_id,
+          };
+          this.temporary_id+=1;
+          this.chatService.messages.next(message);
+        })
+        if(this.k==this.uploader.queue.length){
+          if(this.an_image_is_pasted && this.end_of_past_images){
+            this.an_image_is_pasted=false;
+            this.end_of_past_images=false;
+          }
+          this.attachments_safe=[];
+          this.attachments_type=[];
+          this.attachments_name=[];
+          this.attachments_for_sql=[];
+          this.attachments=[];
+          this.compt_at=0;
+          this.display_attachments=false;
+          this.uploader.queue=[];  
+          this.k=0;  
+        }
       
-      var type='';
-      var re = /(?:\.([^.]+))?$/;
-      if( re.exec(file._file.name)[1].toLowerCase()=="jpeg" || re.exec(file._file.name)[1].toLowerCase()=="png" || re.exec(file._file.name)[1].toLowerCase()=="jpg" || re.exec(file._file.name)[1].toLowerCase()=="gif"){
-        type='picture_attachment'
       }
       else{
-        type='file_attachment';
+        let reload_interval = setInterval(() => {
+          this.uploader.queue[this.k].upload();
+          this.number_of_reload_uploader+=1;
+          clearInterval(reload_interval)
+        }, 500);
       }
-      this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,file._file.name,1).pipe(first() ).subscribe(r=>{
-        let message ={
-          id_user_name:this.current_user_pseudo,
-          id_user:this.current_user_id,   
-          id_receiver:this.friend_id,  
-          message:null,
-          attachment_name:r[0].value,
-          list_of_users_who_saw:[this.current_user_id],
-          attachment_type:type,
-          is_an_attachment:true,
-          list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
-          is_from_server:false,
-          id_chat_section:this.id_chat_section,
-          size:file._file.size/1024/1024,
-          
-          is_a_response:this.respond_to_a_message,
-          id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
-          message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
-          status:"sent",
-          temporary_id:this.temporary_id,
-          is_a_group_chat:(this.friend_type=='user')?false:true,
-          chat_friend_id:this.chat_friend_id,
-        };
-        this.temporary_id+=1;
-        this.chatService.messages.next(message);
-      })
-      if(this.k==this.uploader.queue.length){
-        if(this.an_image_is_pasted && this.end_of_past_images){
-          this.an_image_is_pasted=false;
-          this.end_of_past_images=false;
-        }
-        this.attachments_safe=[];
-        this.attachments_type=[];
-        this.attachments_name=[];
-        this.attachments_for_sql=[];
-        this.attachments=[];
-        this.compt_at=0;
-        this.display_attachments=false;
-        this.uploader.queue=[];  
-        this.k=0;  
-      }
-      
+
     }
     
   };
@@ -1311,6 +1331,7 @@ export class ChatComponent implements OnInit  {
 
  
   send_attachment_or_picture(i){
+    this.number_of_reload_uploader=0;
     this.respond_to_a_message=false;
     if(this.attachments_type[i]=="picture_message"){
       this.send_picture(i);
@@ -1837,7 +1858,7 @@ export class ChatComponent implements OnInit  {
     }
     this.id_user_message_responding_to=this.list_of_messages[i].id_user;
     this.id_message_responding_to=this.list_of_messages[i].id;
-    this.date_of_message_responsing_to=this.list_of_messages_date[this.list_of_messages.length -1 - i];
+    this.date_of_message_responsing_to=this.list_of_messages_date[i];
     this.respond_to_a_message=true;
   }
 

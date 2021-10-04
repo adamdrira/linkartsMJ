@@ -167,7 +167,7 @@ export class UploaderAdResponseAttachmentsComponent implements OnInit {
       }
       else{
         let reload_interval = setInterval(() => {
-          this.uploader.queue[0].upload();
+          this.uploader.queue[this.k].upload();
           this.number_of_reload+=1;
           clearInterval(reload_interval)
         }, 500);
