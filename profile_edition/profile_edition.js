@@ -378,7 +378,7 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
     }).then(User =>  {
 
       let filename =  "./data_and_routes/profile_pics/default_profile_picture.png";
-      if(User){
+      if(User && User.profile_pic_file_name){
         filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
       }
 
@@ -430,7 +430,6 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
 
       }
       else{
-        filename = "./data_and_routes/profile_pics/default_profile_picture.png";
         var not_found = fs.createReadStream( path.join(process.cwd(),filename))
         not_found.pipe(transform);
       }
@@ -468,7 +467,7 @@ router.get('/retrieve_profile_picture_by_pseudo/:pseudo', function (req, res) {
   }).then(User =>  {
 
     let filename = "./data_and_routes/profile_pics/default_profile_picture.png";
-    if(User){
+    if(User && User.profile_pic_file_name){
       filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
     }
 
@@ -518,7 +517,6 @@ router.get('/retrieve_profile_picture_by_pseudo/:pseudo', function (req, res) {
       })
     }
     else{
-      filename = "./data_and_routes/profile_pics/default_profile_picture.png";
       var not_found = fs.createReadStream( path.join(process.cwd(),filename))
       not_found.pipe(transform);
     }
@@ -556,7 +554,7 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
     res.status(500).json({msg: "error", details: err});		
   }).then(User =>  {
     let  filename = "./data_and_routes/profile_pics/default_profile_picture.png";
-    if(User){
+    if(User && User.profile_pic_file_name){
       filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
     }
 
@@ -595,7 +593,6 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
      
       fs.access(filename, fs.F_OK, (err) => {
         if(err){
-          filename = "./data_and_routes/profile_pics/default_profile_picture.png";
           var not_found = fs.createReadStream( path.join(process.cwd(),filename))
           not_found.pipe(transform);
         }  
