@@ -11,9 +11,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
 
-declare var $:any;
 
-const url = 'https://www.linkarts.fr/routes/upload_thumbnail_ad';
+const url = 'http://localhost:4600/routes/upload_thumbnail_ad';
 
 @Component({
   selector: 'app-uploader-thumbnail-ad',
@@ -95,7 +94,7 @@ export class UploaderThumbnailAdComponent implements OnInit {
   covername:any;
   id_user:number;
 
-
+  number_of_reload=0;
 
   public fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
@@ -130,7 +129,6 @@ export class UploaderThumbnailAdComponent implements OnInit {
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
       if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
-        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
@@ -138,10 +136,10 @@ export class UploaderThumbnailAdComponent implements OnInit {
         });
       }
       else{
-        if(Math.trunc(size)>=1){
+        if(Math.trunc(size)>=5){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 1mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 5mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
             panelClass: "popupConfirmationClass",
           });
         }
@@ -156,59 +154,70 @@ export class UploaderThumbnailAdComponent implements OnInit {
     };
 
     this.uploader.onCompleteItem = (file) => {
-      this.confirmation = true; 
-      
-      if(!this.for_edition){
-        
-        this.Ads_service.get_thumbnail_name().subscribe(r=>{
-          if(r[0].error){
-            this.remove_afterupload(this.uploader.queue[0])
-          }
-          else{
-            this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
-            this.cover_loading=false;
-          }
-          
+
+      if(this.number_of_reload>10){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+          panelClass: "popupConfirmationClass",
         });
+        this.cover_loading=false;
+        return
+      }
+
+      if(file.isSuccess){
+        this.confirmation = true; 
+      
+        if(!this.for_edition){
+          
+          this.Ads_service.get_thumbnail_name().pipe(first()).subscribe(r=>{
+            if(r[0].error){
+              this.remove_afterupload(this.uploader.queue[0])
+            }
+            else{
+              this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
+              this.cover_loading=false;
+            }
+            
+          });
+        }
+        else{
+          this.Ads_service.get_thumbnail_name().pipe(first()).subscribe(s=>{
+            if(s[0].error){
+              this.remove_afterupload(this.uploader.queue[0])
+            }
+            else{
+              this.Ads_service.add_thumbnail_ad_to_database(this.item.id).pipe(first()).subscribe(l=>{
+                if(this.item.thumbnail_name && this.item.thumbnail_name!=''){
+                  this.Ads_service.remove_thumbnail_ad_from_folder2(this.item.thumbnail_name).pipe(first()).subscribe(r=>{
+                    this.cover_loading=false;
+                     location.reload();
+                   });
+                }
+                else{
+                  location.reload();
+                }
+               
+              })
+            }
+  
+          })
+           
+        }
       }
       else{
-        this.Ads_service.get_thumbnail_name().subscribe(s=>{
-          console.log(s)
-          if(s[0].error){
-            this.remove_afterupload(this.uploader.queue[0])
-          }
-          else{
-            this.Ads_service.add_thumbnail_ad_to_database(this.item.id).subscribe(l=>{
-              console.log(l)
-              console.log(this.item.thumbnail_name)
-              if(this.item.thumbnail_name && this.item.thumbnail_name!=''){
-                this.Ads_service.remove_thumbnail_ad_from_folder2(this.item.thumbnail_name).subscribe(r=>{
-                  console.log(r)
-                  this.cover_loading=false;
-                   location.reload();
-                 });
-              }
-              else{
-                location.reload();
-              }
-             
-            })
-          }
-
-        })
-         
+        let reload_interval = setInterval(() => {
+          this.uploader.queue[0].upload()
+          this.cd.detectChanges();
+          this.number_of_reload+=1;
+          clearInterval(reload_interval)
+        }, 500);
       }
+     
     
     }
 
 
-    this.uploader.onErrorItem = (item, response, status, headers) => {
-      this.cover_loading=false;
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
-        panelClass: "popupConfirmationClass",
-      });
-    };
+
 
   };
 
@@ -262,6 +271,7 @@ export class UploaderThumbnailAdComponent implements OnInit {
   }
 
   validate(){
+    this.number_of_reload=0;
     this.cover_loading=true;
     this.uploader.queue[0].upload()
   }

@@ -7,9 +7,9 @@ import {  SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { NavbarService } from '../services/navbar.service';
+import { first } from 'rxjs/operators';
 
-
-const URL ='http://localhost:4600/routes/upload_writing';
+const URL ='https://www.linkarts.fr/routes/upload_writing';
 
 @Component({
   selector: 'app-uploader-writting',
@@ -67,6 +67,7 @@ export class UploaderWrittingComponent implements OnInit {
   total_pages:number;
 
   show_icon=false;
+  number_of_reload=0;
   ngOnInit() {
 
     this.Writing_Upload_Service.send_confirmation_for_addwriting(false,0); 
@@ -107,9 +108,28 @@ export class UploaderWrittingComponent implements OnInit {
     };
 
      this.uploader.onCompleteItem = (file) => {
-      this.confirmation = true; 
-      this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation,this.total_pages);
-      this.Writing_Upload_Service.get_writing_name().subscribe();
+
+      if(this.number_of_reload>10){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+          panelClass: "popupConfirmationClass",
+        });
+        return
+      }
+      if(file.isSuccess){
+        this.confirmation = true; 
+        this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation,this.total_pages);
+        this.Writing_Upload_Service.get_writing_name().pipe(first() ).subscribe();
+      }
+      else{
+        let reload_interval = setInterval(() => {
+          this.uploader.queue[0].upload()
+          this.cd.detectChanges();
+          this.number_of_reload+=1;
+          clearInterval(reload_interval)
+        }, 500);
+      }
+   
 
     }
 
@@ -130,7 +150,7 @@ export class UploaderWrittingComponent implements OnInit {
       //On supprime le fichier en base de donnée
       this.confirmation = false;
       this.Writing_Upload_Service.send_confirmation_for_addwriting(false,0);
-      this.Writing_Upload_Service.remove_writing_from_folder().subscribe();
+      this.Writing_Upload_Service.remove_writing_from_folder().pipe(first() ).subscribe();
       item.remove();
       this.afficherpreview = false;
       this.can_operate=false;
@@ -159,6 +179,7 @@ export class UploaderWrittingComponent implements OnInit {
 
 
   validate_pdf(){
+    this.number_of_reload=0;
     this.uploader.queue[0].upload();
   }
 

@@ -8,7 +8,8 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NavbarService } from '../services/navbar.service';
-import { first } from 'rxjs/operators';
+import { takeUntil,first } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 declare var Swiper: any;
 declare var $: any;
@@ -338,9 +339,11 @@ export class SwiperUploadSerieComponent implements OnInit {
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
   display_loading=false;
 
-
+  number_of_page_uploaded=0;
+  number_of_reload=[0];
+  popup_error_oppened=false;
   validateAll() {
-    
+    this.number_of_reload=[0];
     this.validateButton.nativeElement.disabled = true;
 
     if( !this.validated_chapter ) {
@@ -369,11 +372,49 @@ export class SwiperUploadSerieComponent implements OnInit {
         for (let step = 0; step < this.componentRef.length; step++) {
           this.componentRef[ step ].instance.total_pages = this.componentRef.length;
           this.componentRef[ step ].instance.upload = true;
-          this.componentRef[ step ].instance.sendValidated.pipe( first()).subscribe( v => {
-              this.display_loading=false
-              this.validated.emit();
+          this.number_of_reload[step+1]=0
+          this.componentRef[ step ].instance.sendImageUploaded.pipe(takeUntil(this.ngUnsubscribe)).subscribe( v => {
+  
+            if(v.file.isSuccess){
+              this.number_of_page_uploaded+=1;
+              this.cd.detectChanges();
+            }
+            else{
+              let index = this.number_of_reload.findIndex(item=>item>10);
+              if( index>=0){
+                if( this.popup_error_oppened){
+                  return
+                }
+                this.popup_error_oppened=true;
+                const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                  data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+                  panelClass: "popupConfirmationClass",
+                });
+                this.display_loading=false;
+              }
+              else{
+                let reload_interval = setInterval(() => {
+                  this.componentRef[ step ].instance.upload = true;
+                  this.cd.detectChanges();
+                  this.number_of_reload[v.page]+=1;
+                  clearInterval(reload_interval)
+                }, 500);
+              }
+             
+              
+            }
+          
+            if(this.number_of_page_uploaded==this.componentRef.length){
+              this.display_loading=false;
               this.validated_chapter=true;
+              this.BdSerieService.validate_bd_chapter(this.bd_id,this.componentRef.length, this.chapter).pipe(first()).subscribe(r=>{
+                this.validated.emit();
+              })
+            }
+  
           });
+          
+         
         }
         
        
@@ -393,5 +434,11 @@ export class SwiperUploadSerieComponent implements OnInit {
     }
   }
 
+
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
 }

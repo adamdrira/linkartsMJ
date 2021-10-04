@@ -42,6 +42,7 @@ export class UploaderBdSerieComponent implements OnInit{
   response:string;
 
   total_pages:number;
+  @Output() sendImageUploaded = new EventEmitter<object>();
   @Output() sendValidated = new EventEmitter<boolean>();
   
 
@@ -131,10 +132,10 @@ export class UploaderBdSerieComponent implements OnInit{
         });
       }
       else{
-        if(Math.trunc(size)>=5){
+        if(Math.trunc(size)>=10){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 5mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
             panelClass: "popupConfirmationClass",
           });
         }
@@ -149,13 +150,7 @@ export class UploaderBdSerieComponent implements OnInit{
     };
     
     this.uploader.onCompleteItem = (file) => {
-
-      if( (this._page + 1) == this.total_pages ) {
-        this.BdSerieService.validate_bd_chapter(this.bd_id,this.total_pages, this.chapter).pipe(first()).subscribe(r=>{
-          this.sendValidated.emit(true);
-        })
-      }
-  
+      this.sendImageUploaded.emit({page:this._page +1,file:file});
     }
 
 

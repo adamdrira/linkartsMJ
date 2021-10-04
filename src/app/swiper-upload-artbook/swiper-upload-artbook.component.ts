@@ -7,10 +7,10 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { Router } from '@angular/router';
-import { NavbarService } from '../services/navbar.service';
 
-import { first } from 'rxjs/operators';
+import { NavbarService } from '../services/navbar.service';
+import { takeUntil,first } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 
 declare var $:any;
@@ -47,7 +47,6 @@ export class SwiperUploadArtbookComponent  {
     private Drawings_CoverService:Drawings_CoverService,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
-    private router:Router,
     private navbar: NavbarService,
     ) {
       navbar.visibility_observer_font.subscribe(font=>{
@@ -76,6 +75,7 @@ export class SwiperUploadArtbookComponent  {
   @Input() tags: string[];
 
   errorMsg : string = "Une erreur s'est produite, veuilliez réitérer le processus.";
+  errorMsgCo : string = "Erreur de connexion internet, veuilliez réitérer le processus.";
   @ViewChild('swiperContainer', { static : false }) swiperContainer: ElementRef;
   @ViewChild('swiperController', { static : false }) swiperController: ElementRef;
 
@@ -103,6 +103,7 @@ export class SwiperUploadArtbookComponent  {
 
   
   displayErrors: boolean = false;
+  popup_error_oppened:boolean = false;
   image_uploaded: boolean = false;
   imageSource: SafeUrl = "";
   imageDestination: string = '';
@@ -487,7 +488,8 @@ export class SwiperUploadArtbookComponent  {
 
 
 
-
+  number_of_page_uploaded=0;
+  number_of_reload=[0];
   validateAll() {
     if(this.display_loading){
       return
@@ -500,8 +502,9 @@ export class SwiperUploadArtbookComponent  {
       });
       return
     }
-
+    this.number_of_reload=[0];
     this.display_loading=true;
+    this.popup_error_oppened=false;
     let errorMsg : string = "La ou les pages suivantes n'ont pas été téléchargées : "
     let valid : boolean = true;
 
@@ -538,11 +541,48 @@ export class SwiperUploadArtbookComponent  {
             for (let step = 0; step < this.componentRef.length; step++) {
               this.componentRef[ step ].instance.upload = true;
               this.componentRef[ step ].instance.total_pages = this.componentRef.length;
-              this.componentRef[ step ].instance.sendValidated.pipe( first()).subscribe( v => {
-                this.block_cancel=true;
-                this.Drawings_CoverService.remove_covername();
-                this.router.navigate([`/account/${this.pseudo}`]);
+              this.number_of_reload[step+1]=0
+              this.componentRef[ step ].instance.sendImageUploaded.pipe(takeUntil(this.ngUnsubscribe)).subscribe( v => {
+
+                if(v.file.isSuccess){
+                  this.number_of_page_uploaded+=1;
+                  this.cd.detectChanges();
+                }
+                else{
+                  let index = this.number_of_reload.findIndex(item=>item>10);
+                  if( index>=0){
+                    if( this.popup_error_oppened){
+                      return
+                    }
+                    this.popup_error_oppened=true;
+                    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                      data: {showChoice:false, text:this.errorMsgCo},
+                      panelClass: "popupConfirmationClass",
+                    });
+                    this.display_loading=false;
+                    this.displayErrors = true;
+                  }
+                  else{
+                    let reload_interval = setInterval(() => {
+                      this.componentRef[ step ].instance.upload = true;
+                      this.cd.detectChanges();
+                      this.number_of_reload[v.page]+=1;
+                      clearInterval(reload_interval)
+                    }, 500);
+                  }
+                 
+                  
+                }
+              
+                if(this.number_of_page_uploaded==this.componentRef.length){
+                  this.block_cancel=true;
+                  this.Drawings_CoverService.remove_covername();
+                  this.componentRef[this.componentRef.length-1].instance.validate_all=true;
+                }
+
               });
+
+             
             }
           })
         }
@@ -554,8 +594,6 @@ export class SwiperUploadArtbookComponent  {
           this.display_loading=false;
           this.displayErrors = true;
         }
-
-        
         
       });
      
@@ -588,6 +626,10 @@ export class SwiperUploadArtbookComponent  {
   }
 
 
-
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
 }

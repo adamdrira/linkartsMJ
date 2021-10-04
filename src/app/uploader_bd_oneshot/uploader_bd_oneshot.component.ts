@@ -5,7 +5,7 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
 import { BdOneShotService} from '../services/comics_one_shot.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-
+import { Router } from '@angular/router';
 import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -30,6 +30,7 @@ export class Uploader_bd_oneshot implements OnInit{
      private sanitizer:DomSanitizer,  
      private bdOneShotService: BdOneShotService, 
      private navbar: NavbarService,
+     private router:Router,
      private Profile_Edition_Service:Profile_Edition_Service,
      public dialog: MatDialog,
      ){
@@ -47,8 +48,8 @@ export class Uploader_bd_oneshot implements OnInit{
     this.hasAnotherDropZoneOver = false;
 
   }
-  @Output() sendValidated = new EventEmitter<object>();
-
+ 
+  @Output() sendImageUploaded = new EventEmitter<object>();
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
   hasAnotherDropZoneOver:boolean;
@@ -87,6 +88,44 @@ export class Uploader_bd_oneshot implements OnInit{
 get upload(): boolean {
 
  return this._upload;
+
+}
+
+_validate_all:boolean=false;
+@Input() set validate_all(value: boolean) {
+  this._validate_all=value;
+  if(value){
+    console.log("validate all")
+    this.bdOneShotService.validate_bd(this.bd_id,this.total_pages).pipe(first()).subscribe(r=>{
+      this.Subscribing_service.validate_content("comic","one-shot",this.bd_id,0).pipe(first()).subscribe(l=>{
+        this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'one-shot',this.bd_id,0,"add",false,0).pipe(first()).subscribe(l=>{
+          let message_to_send ={
+            for_notifications:true,
+            type:"add_publication",
+            id_user_name:this.visitor_name,
+            id_user:this.user_id, 
+            publication_category:'comic',
+            publication_name:this.bdtitle,
+            format:'one-shot',
+            publication_id:this.bd_id,
+            chapter_number:0,
+            information:"add",
+            status:"unchecked",
+            is_comment_answer:false,
+            comment_id:0,
+          }
+          this.chatService.messages.next(message_to_send);
+          this.router.navigate([`/account/${this.pseudo}`]);
+        }) 
+      })
+      
+    })
+  }
+}
+
+get validate_all(): boolean {
+
+  return this._validate_all;
 
 }
   @Input() bdtitle: string;
@@ -129,10 +168,10 @@ get upload(): boolean {
         });
       }
       else{
-        if(Math.trunc(size)>=5){
+        if(Math.trunc(size)>=10){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 5mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
             panelClass: "popupConfirmationClass",
           });
         }
@@ -148,34 +187,7 @@ get upload(): boolean {
 
 
     this.uploader.onCompleteItem = (file) => {
-    if( (this._page + 1) == this.total_pages ) {
-      this.bdOneShotService.validate_bd(this.bd_id,this.total_pages).pipe(first()).subscribe(r=>{
-        this.Subscribing_service.validate_content("comic","one-shot",this.bd_id,0).pipe(first()).subscribe(l=>{
-          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'one-shot',this.bd_id,0,"add",false,0).pipe(first()).subscribe(l=>{
-            let message_to_send ={
-              for_notifications:true,
-              type:"add_publication",
-              id_user_name:this.visitor_name,
-              id_user:this.user_id, 
-              publication_category:'comic',
-              publication_name:this.bdtitle,
-              format:'one-shot',
-              publication_id:this.bd_id,
-              chapter_number:0,
-              information:"add",
-              status:"unchecked",
-              is_comment_answer:false,
-              comment_id:0,
-            }
-            this.chatService.messages.next(message_to_send);
-            this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
-           
-          }) 
-        })
-        
-      })
-    }
-  
+      this.sendImageUploaded.emit({page:this._page +1,file:file});
     }
   };
 

@@ -157,6 +157,7 @@ export class UploaderBdCoverComponent implements OnInit {
   cover_loading=false;
   image_to_show:any;
   show_icon=false;
+  number_of_reload=0;
   ngOnInit() {
     if(this.description){
       this.description = this.description.slice(0,290);
@@ -181,10 +182,10 @@ export class UploaderBdCoverComponent implements OnInit {
         });
       }
       else{
-        if(Math.trunc(size)>=1){
+        if(Math.trunc(size)>=5){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 1mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 5mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
             panelClass: "popupConfirmationClass",
           });
         }
@@ -200,58 +201,80 @@ export class UploaderBdCoverComponent implements OnInit {
     };
 
     this.uploader.onCompleteItem = (file) => {
-      this.confirmation = true; 
-      if(this.for_edition){
-        this.Bd_CoverService.get_cover_name().pipe(first()).subscribe(r=>{
 
-          if(r[0].error){
-            this.remove_afterupload(this.uploader.queue[0])
-          }
-          else{
-            if ( this.format == "one-shot" ) {
-              this.Bd_CoverService.add_covername_to_sql2("One-shot",this.bd_id).pipe(first()).subscribe(r=>{
-                this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).pipe(first()).subscribe(info=>{
-                  this.cover_loading=false;
-                 location.reload();
-                });
-              });
-            }
-        
-            else if (this.format == "serie" ) {
-              this.Bd_CoverService.add_covername_to_sql2("Série",this.bd_id).pipe(first()).subscribe(r=>{
-                this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).pipe(first()).subscribe(info=>{
-                  this.cover_loading=false;
-                  location.reload();
-                });
-              });
-            }
-          }
+      if(this.number_of_reload>10){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+          panelClass: "popupConfirmationClass",
         });
-       
+        this.cover_loading=false;
+        return
+      }
+
+
+      if(file.isSuccess){
+        this.confirmation = true; 
+        if(this.for_edition){
+          this.Bd_CoverService.get_cover_name().pipe(first()).subscribe(r=>{
+  
+            if(r[0].error){
+              this.remove_afterupload(this.uploader.queue[0])
+            }
+            else{
+              if ( this.format == "one-shot" ) {
+                this.Bd_CoverService.add_covername_to_sql2("One-shot",this.bd_id).pipe(first()).subscribe(r=>{
+                  this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).pipe(first()).subscribe(info=>{
+                    this.cover_loading=false;
+                   location.reload();
+                  });
+                });
+              }
+          
+              else if (this.format == "serie" ) {
+                this.Bd_CoverService.add_covername_to_sql2("Série",this.bd_id).pipe(first()).subscribe(r=>{
+                  this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).pipe(first()).subscribe(info=>{
+                    this.cover_loading=false;
+                    location.reload();
+                  });
+                });
+              }
+            }
+          });
+         
+        }
+        else{
+         
+          this.Bd_CoverService.get_cover_name().pipe(first()).subscribe(r=>{
+            if(r[0].error){
+              this.remove_afterupload(this.uploader.queue[0])
+            }
+            else{
+              this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation);
+              this.cover_loading=false;
+            }
+           
+          });
+        }
       }
       else{
-       
-        this.Bd_CoverService.get_cover_name().pipe(first()).subscribe(r=>{
-          if(r[0].error){
-            this.remove_afterupload(this.uploader.queue[0])
-          }
-          else{
-            this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation);
-            this.cover_loading=false;
-          }
-         
-        });
+        let reload_interval = setInterval(() => {
+          this.uploader.queue[0].upload()
+          this.cd.detectChanges();
+          this.number_of_reload+=1;
+          clearInterval(reload_interval)
+        }, 500);
       }
+      
      
     }
 
-    this.uploader.onErrorItem = (item, response, status, headers) => {
+    /*this.uploader.onErrorItem = (item, response, status, headers) => {
       this.cover_loading=false;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
         panelClass: "popupConfirmationClass",
       });
-    };
+    };*/
 
 
 
@@ -320,6 +343,7 @@ export class UploaderBdCoverComponent implements OnInit {
   }
 
   validate(){
+    this.number_of_reload=0;
     this.cover_loading=true;
     this.uploader.queue[0].upload()
   }

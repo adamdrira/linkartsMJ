@@ -240,6 +240,11 @@ export class AddWritingComponent implements OnInit {
     let list =this.Writing_Upload_Service.get_confirmation()
     this.confirmation_writing_uploaded =list[0];
     let total_pages=list[1];
+    if(this.type_of_account.includes('Artist')){
+      this.monetised=true;
+    }
+
+
     if(total_pages>=100){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Votre écrit ne peut faire plus de 100 pages'},
@@ -247,12 +252,7 @@ export class AddWritingComponent implements OnInit {
       });
       this.validateButton.nativeElement.disabled = false;
     }
-
-    if(this.type_of_account.includes('Artist')){
-      this.monetised=true;
-    }
-
-    else if ( this.fw.valid  && [0] && this.confirmation_writing_uploaded ) {
+    else if ( this.fw.valid  && this.confirmation_writing_uploaded ) {
        this.display_loading=true;
        this.Writing_Upload_Service.CreateWriting(
           this.fw.value.fwTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),
@@ -266,14 +266,14 @@ export class AddWritingComponent implements OnInit {
           this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).pipe(first() ).subscribe(s=>{
             this.Writing_Upload_Service.validate_writing(this.writing_id).pipe(first() ).subscribe(r=>{
               this.Subscribing_service.validate_content("writing","unknown",r[0].writing_id,0).pipe(first() ).subscribe(l=>{
-                this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'writing',this.title,'unknown',v[0].writing_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
+                this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'writing',this.fw.value.fwTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),'unknown',v[0].writing_id,0,"add",false,0).pipe(first() ).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,
                     type:"add_publication",
                     id_user_name:this.pseudo,
                     id_user:this.user_id, 
                     publication_category:'writing',
-                    publication_name:this.title,
+                    publication_name:this.fw.value.fwTitle.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),
                     format:'unknown',
                     publication_id:v[0].writing_id,
                     chapter_number:0,

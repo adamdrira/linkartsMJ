@@ -99,7 +99,7 @@ export class UploaderDessinUniqueComponent implements OnInit {
   }
 
  
-  
+  number_of_reload=0;
   image_to_show:any;
   show_icon=false;
   ngOnInit() {
@@ -150,30 +150,50 @@ export class UploaderDessinUniqueComponent implements OnInit {
       };
 
       this.uploader.onCompleteItem = (file) => {
-        this.Drawings_Onepage_Service.validate_drawing(this.drawing_id).pipe(first()).subscribe(r=>{
-        this.Subscribing_service.validate_content("drawing","one-shot",this.drawing_id,0).pipe(first()).subscribe(l=>{
-          this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).pipe(first()).subscribe(l=>{
-            let message_to_send ={
-              for_notifications:true,
-              type:"add_publication",
-              id_user_name:this.pseudo,
-              id_user:this.user_id, 
-              publication_category:'drawing',
-              publication_name:this.title,
-              format:'one-shot',
-              publication_id:this.drawing_id,
-              chapter_number:0,
-              information:"add",
-              status:"unchecked",
-              is_comment_answer:false,
-              comment_id:0,
-            }
-            this.chatService.messages.next(message_to_send);
-            this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
+
+        if(this.number_of_reload>10){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+            panelClass: "popupConfirmationClass",
+          });
+          return
+        }
+
+        if(file.isSuccess){
+          this.Drawings_Onepage_Service.validate_drawing(this.drawing_id).pipe(first()).subscribe(r=>{
+            this.Subscribing_service.validate_content("drawing","one-shot",this.drawing_id,0).pipe(first()).subscribe(l=>{
+              this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).pipe(first()).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"add_publication",
+                  id_user_name:this.pseudo,
+                  id_user:this.user_id, 
+                  publication_category:'drawing',
+                  publication_name:this.title,
+                  format:'one-shot',
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"add",
+                  status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
+                }
+                this.chatService.messages.next(message_to_send);
+                this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
+              })
+            }); 
           })
-        }); 
+        }
+        else{
+          let reload_interval = setInterval(() => {
+            this.uploader.queue[0].upload();
+            this.number_of_reload+=1;
+            clearInterval(reload_interval)
+          }, 500);
+        }
+        
            
-        })
+        
         
       }
 
@@ -218,6 +238,7 @@ remove_afterupload(item){
 }
 
 upload_image(){
+  this.number_of_reload=0;
   this.uploader.queue[0].upload();
 }
 

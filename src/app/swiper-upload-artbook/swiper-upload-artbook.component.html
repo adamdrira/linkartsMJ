@@ -239,12 +239,13 @@
 </div>
 
 
-<button #validateButton *ngIf="imageDestination != ''" class="submit-button-with-done-all style1" (click)="validateAll();">
+<button #validateButton *ngIf="imageDestination != ''" class="submit-button-with-done-all style1 submit" (click)="validateAll();">
     <ng-container *ngIf="!display_loading">
         <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
         <span>Valider </span>
     </ng-container>
     <ng-container *ngIf="display_loading">
         <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
+        <div class="info-loading">{{number_of_page_uploaded}} / {{componentRef.length}}</div>
     </ng-container>
 </button>

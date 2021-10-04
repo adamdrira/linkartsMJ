@@ -4,10 +4,10 @@ import { Bd_CoverService } from '../services/comics_cover.service';
 import { Uploader_bd_oneshot } from '../uploader_bd_oneshot/uploader_bd_oneshot.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-import { Router } from '@angular/router';
-import { NavbarService } from '../services/navbar.service';
 
-import { first } from 'rxjs/operators';
+import { NavbarService } from '../services/navbar.service';
+import { takeUntil,first } from 'rxjs/operators';
+import { Subject } from 'rxjs';;
 
 declare var Swiper: any;
 declare var $: any;
@@ -29,7 +29,6 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
   constructor(private rd: Renderer2, 
     private resolver: ComponentFactoryResolver, 
-    private router:Router,
     private cd: ChangeDetectorRef,
     private bdOneShotService: BdOneShotService,
     private Bd_CoverService:Bd_CoverService,
@@ -299,10 +298,12 @@ export class SwiperUploadOneshotComponent implements OnInit {
     }
   }
 
-  
+  number_of_page_uploaded=0;
+  number_of_reload=[0];
+  popup_error_oppened=false;
   validateAll() {
 
-
+    this.number_of_reload=[0];
     
     this.validateButton.nativeElement.disabled = true;
 
@@ -330,17 +331,53 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
     }
     else {
-      
+      this.popup_error_oppened=false;
       this.display_loading=true;
       
       for (let step = 0; step < this.componentRef.length; step++) {
         this.componentRef[ step ].instance.upload = true;
         this.componentRef[ step ].instance.total_pages = this.componentRef.length;
-        this.componentRef[ step ].instance.sendValidated.pipe( first()).subscribe( v => {
-          this.block_cancel=true;
-          this.Bd_CoverService.remove_covername();
-          this.router.navigate([`/account/${v.pseudo}`]);
+        this.number_of_reload[step+1]=0
+        this.componentRef[ step ].instance.sendImageUploaded.pipe(takeUntil(this.ngUnsubscribe)).subscribe( v => {
+
+          if(v.file.isSuccess){
+            this.number_of_page_uploaded+=1;
+            this.cd.detectChanges();
+          }
+          else{
+            let index = this.number_of_reload.findIndex(item=>item>10);
+            if( index>=0){
+              if( this.popup_error_oppened){
+                return
+              }
+              this.popup_error_oppened=true;
+              const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+                panelClass: "popupConfirmationClass",
+              });
+              this.display_loading=false;
+            }
+            else{
+              let reload_interval = setInterval(() => {
+                this.componentRef[ step ].instance.upload = true;
+                this.cd.detectChanges();
+                this.number_of_reload[v.page]+=1;
+                clearInterval(reload_interval)
+              }, 500);
+            }
+           
+            
+          }
+        
+          if(this.number_of_page_uploaded==this.componentRef.length){
+            this.block_cancel=true;
+            this.Bd_CoverService.remove_covername();
+            this.componentRef[this.componentRef.length-1].instance.validate_all=true;
+          }
+
         });
+
+    
       }
 
       
@@ -361,4 +398,9 @@ export class SwiperUploadOneshotComponent implements OnInit {
   }
 
 
+  protected ngUnsubscribe: Subject<void> = new Subject<void>();
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

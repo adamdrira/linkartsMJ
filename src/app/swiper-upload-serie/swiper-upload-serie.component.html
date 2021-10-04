@@ -58,7 +58,7 @@
                 Chapitre {{chapter+1}} &nbsp; &nbsp; | &nbsp; &nbsp;
                 Aller à la page :
                 <input type="text" aria-label="" role="navigation" size="5">
-                <!--<span>3</span>-->
+              
                 <div class="total-pages">
                     <span (click)="initialize_swiper();">/ 37</span>
                 </div>
@@ -73,13 +73,14 @@
         </div>
 
                 
-        <button #validateButton class="validate-button style0" *ngIf="!validated_chapter && !disabled" (click)="validateAll();">
+        <button #validateButton class="validate-button style0 submit" *ngIf="!validated_chapter && !disabled" (click)="validateAll();">
             <ng-container *ngIf="!display_loading">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                 <span>Valider ce chapitre</span>
             </ng-container>
             <ng-container *ngIf="display_loading">
                 <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
+                <div class="info-loading">{{number_of_page_uploaded}} / {{componentRef.length}}</div>
             </ng-container>
         </button>
         

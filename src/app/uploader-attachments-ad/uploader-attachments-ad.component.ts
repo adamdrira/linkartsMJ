@@ -89,6 +89,7 @@ export class UploaderAttachmentsAdComponent implements OnInit {
   
 
   show_icon=false;
+  number_of_reload=0;
   ngOnInit() {
     this.Ads_service.send_confirmation_for_add_ad(this.confirmation); 
 
@@ -137,20 +138,38 @@ export class UploaderAttachmentsAdComponent implements OnInit {
     };
 
     this.uploader.onCompleteItem = (file) => {
-      this.k++;
-      if(this.k==this.uploader.queue.length){
-        this.uploaded1.emit( true );
+      if(this.number_of_reload>10){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+          panelClass: "popupConfirmationClass",
+        });
+        return
+      }
+
+      if(file.isSuccess){
+        this.k++;
+        if(this.k==this.uploader.queue.length){
+          this.uploaded1.emit( true );
+        }
+        else{
+          let URL = url + `${this.k}/${this.id_ad}/${this.uploader.queue[this.k]._file.name}/${this.uploader.queue.length}`;
+          this.uploader.setOptions({ url: URL});
+          this.uploader.setOptions({ headers: [{name:'attachment_number',value:`${this.k}`},
+          {name:'id_ad',value:`${this.id_ad}`},
+          {name:'file_name',value:this.uploader.queue[this.k]._file.name},
+          {name:'number_of_attachments',value:`${this.uploader.queue.length}`},
+          ]});
+          this.uploader.queue[this.k].upload();
+        }
       }
       else{
-        let URL = url + `${this.k}/${this.id_ad}/${this.uploader.queue[this.k]._file.name}/${this.uploader.queue.length}`;
-        this.uploader.setOptions({ url: URL});
-        this.uploader.setOptions({ headers: [{name:'attachment_number',value:`${this.k}`},
-        {name:'id_ad',value:`${this.id_ad}`},
-        {name:'file_name',value:this.uploader.queue[this.k]._file.name},
-        {name:'number_of_attachments',value:`${this.uploader.queue.length}`},
-        ]});
-        this.uploader.queue[this.k].upload();
+        let reload_interval = setInterval(() => {
+          this.uploader.queue[0].upload();
+          this.number_of_reload+=1;
+          clearInterval(reload_interval)
+        }, 500);
       }
+   
     }
 
 
@@ -177,6 +196,7 @@ remove_beforeupload(item:FileItem,index){
 
 
  validate_all(){
+  this.number_of_reload=0;
   let URL = url + `0/${this.id_ad}/${this.uploader.queue[0]._file.name}/${this.uploader.queue.length}`;
   this.uploader.setOptions({ url: URL});
   this.uploader.setOptions({ headers: [{name:'attachment_number',value:`${0}`},
