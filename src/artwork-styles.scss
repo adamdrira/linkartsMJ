@@ -639,6 +639,12 @@ $default-color: #f9f9f9;
                 }
             }
         }
+
+        ::ng-deep{
+            .mat-spinner circle {
+                stroke: #f9f9f9;
+              }
+        }
     }
 
     /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
