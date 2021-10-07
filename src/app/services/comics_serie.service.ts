@@ -129,6 +129,12 @@ export class BdSerieService {
      }));
   }
 
+  update_chapter_pages_number(bd_id,number_of_pages, chapter_number){
+    return this.httpClient.post('routes/update_chapter_pages_number/',{bd_id:bd_id, number_of_pages:number_of_pages, chapter_number:chapter_number}, {withCredentials:true}).pipe(map(information=>{
+       return information;   
+     }));
+  }
+
   validate_bd_serie(bd_id,number_of_chapters){
     return this.httpClient.post('routes/validation_bd_upload_bd_serie/',{bd_id:bd_id, number_of_chapters:number_of_chapters}, {withCredentials:true}).pipe(map(information=>{
       return [bd_id,number_of_chapters]   

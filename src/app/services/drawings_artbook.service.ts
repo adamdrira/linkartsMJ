@@ -139,6 +139,11 @@ export class Drawings_Artbook_Service {
    }));
   }
 
+  update_pages_drawing_artbook(drawing_id,number_of_pages){
+    return this.httpClient.post('routes/update_pages_drawing_artbook/',{drawing_id:drawing_id, number_of_pages:number_of_pages}, {withCredentials:true}).pipe(map(information=>{
+       return information;   
+     }));
+  }
 
   
 }

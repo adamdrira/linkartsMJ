@@ -146,4 +146,11 @@ export class BdOneShotService {
       return [information,compteur]
      }));
     }
+
+    update_pages_bd_oneshot(bd_id,number_of_pages){
+      return this.httpClient.post('routes/update_pages_bd_oneshot/',{bd_id:bd_id, number_of_pages:number_of_pages}, {withCredentials:true}).pipe(map(information=>{
+         return information;   
+       }));
+    }
+  
 }
