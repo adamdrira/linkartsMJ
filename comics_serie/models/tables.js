@@ -45,7 +45,6 @@ exports.Bd_serie_Tables = (sequelize, DataTypes) => {
       bd_id: DataTypes.INTEGER,
       author_id:DataTypes.INTEGER,
       title:DataTypes.STRING,
-      pagesnumber: DataTypes.INTEGER,
       chapter_number: DataTypes.INTEGER,
       average_lecture_time:DataTypes.INTEGER,
       status: DataTypes.STRING,

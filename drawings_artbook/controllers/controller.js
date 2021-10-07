@@ -346,7 +346,40 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
       });
 
 
-        router.post('/change_artbook_drawing_status', function (req, res) {
+      router.post('/update_pages_drawing_artbook', function (req, res) {
+
+        if( ! req.headers['authorization'] ) {
+          return res.status(401).json({msg: "error"});
+        }
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
+        }
+        let current_user = get_current_user(req.cookies.currentUser);
+          const number_of_pages=req.body.number_of_pages;
+          const drawing_id= req.body.drawing_id; 
+          Liste_artbook.update({
+            "pagesnumber":number_of_pages,
+          },
+            {
+            where: {
+              drawing_id: drawing_id,
+              authorid: current_user,
+            }
+          })
+          .catch(err => {
+            console.log(err)
+            res.status(500).json({msg: "error", details: err});		
+          }).then(drawing =>  {
+              res.status(200).send([drawing]);
+        }); 
+          
+    });
+
+  router.post('/change_artbook_drawing_status', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -453,7 +486,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
               destination: './data_and_routes/drawings_pages_artbook',
               plugins: [
                 imageminPngquant({
-                  quality:  [0.85, 0.95]
+                  quality:  [0.9, 1]
               })
               ]
             });
@@ -465,11 +498,21 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
                 "page_number": page
             })
             .catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(r =>  {
-            res.send(r.get({plain:true}));
-            }); 
+			
+              res.status(500).json({msg: "error", details: err});		
+              }).then(r =>  {
+                  const Op = Sequelize.Op;
+                  pages_artbook.destroy({
+                    where: {
+                      page_id:{[Op.lt]: r.page_id},
+                      page_number:page,
+                      drawing_id: drawing_id,
+                      },
+                    truncate: false
+                  }).catch(err=>{
+                  })
+                      res.send(r.get({plain:true}));
+              }); 
             
 
           })();
@@ -860,7 +903,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 
       const drawing_id = parseInt(req.params.drawing_id);
       const drawing_page = parseInt(req.params.drawing_page);
-      const width = parseInt(req.params.width)-20;
+      const width = parseInt(req.params.width);
       pages_artbook.findOne({
         where: {
           drawing_id: drawing_id,
@@ -874,7 +917,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
       let transform = sharp()
       transform = transform.resize({fit:sharp.fit.inside,width:width}) 
       .toFormat('jpeg')
-      .jpeg({ quality: 90})
+      .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
@@ -888,7 +931,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
               else{
                 lenna
                 .resize(width,Jimp.AUTO) 
-                .quality(90) 
+                .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
                     res.status(404).send({err:err});
@@ -911,7 +954,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
           transform2 = transform2
           .resize({fit:sharp.fit.inside,width:width})
           .toFormat('jpeg')
-          .jpeg({ quality: 90})
+          .jpeg({ quality: 100})
           .toBuffer((err, buffer, info) => {
               if (buffer) {
                 res.status(200).send(buffer);
@@ -924,7 +967,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
                   else{
                     lenna
                     .resize(width,Jimp.AUTO) 
-                    .quality(90) 
+                    .quality(100) 
                     .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                       if(err){
                         res.status(200).send({err:err});

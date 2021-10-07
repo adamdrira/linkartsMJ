@@ -383,6 +383,38 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       });   
   });
 
+      router.post('/update_pages_bd_oneshot', function (req, res) {
+
+        if( ! req.headers['authorization'] ) {
+          return res.status(401).json({msg: "error"});
+        }
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
+        }
+        let current_user = get_current_user(req.cookies.currentUser);
+          const number_of_pages=req.body.number_of_pages;
+          const bd_id= req.body.bd_id; 
+          Liste_bd_os.update({
+            "pagesnumber":number_of_pages,
+          },
+            {
+            where: {
+              bd_id: bd_id,
+              authorid: current_user,
+            }
+          })
+          .catch(err => {
+        
+            res.status(500).json({msg: "error", details: err});		
+          }).then(bd =>  {
+              res.status(200).send([bd]);
+        }); 
+          
+    });
 
     router.post('/upload_page_bd_oneshot/:page/:bd_id', function (req, res) {
 
@@ -418,30 +450,48 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
           });
       
         } else { 
-          pages_bd_os.create({
-            "bd_id": bd_id,
-            "author_id": current_user,
-            "file_name":file_name,
-            "page_number": page
-        })
-        .catch(err => {
-				
-			res.status(500).json({msg: "error", details: err});		
-		}).then(r =>  {
+         
           (async () => {
             let filename = "./data_and_routes/pages_bd_oneshot/" + file_name ;
               const files = await imagemin([filename], {
                 destination: './data_and_routes/pages_bd_oneshot',
                 plugins: [
                   imageminPngquant({
-                    quality:  [0.85, 0.95]
+                    quality:  [0.9, 1]
                 })
                 ]
               });
-            res.send(r.get({plain:true}));
-        })();
+
+              pages_bd_os.create({
+                "bd_id": bd_id,
+                "author_id": current_user,
+                "file_name":file_name,
+                "page_number": page
+              })
+              .catch(err => {
+          
+              res.status(500).json({msg: "error", details: err});		
+              }).then(r =>  {
+                  const Op = Sequelize.Op;
+                  pages_bd_os.destroy({
+                    where: {
+                      page_id:{[Op.lt]: r.page_id},
+                      page_number:page,
+                      bd_id: bd_id,
+                      },
+                    truncate: false
+                  }).catch(err=>{
+                    console.log("err")
+                    console.log(err)
+                  })
+                    res.send(r.get({plain:true}));
+              }); 
+
+          })();
+
+
+         
         
-        }); 
         }
 
       })();
@@ -507,7 +557,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
           destination: './data_and_routes/covers_bd',
           plugins: [
             imageminPngquant({
-              quality: [0.7, 0.8]
+              quality:[0.9, 1]
           })
           ]
         });
@@ -558,7 +608,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               destination: './data_and_routes/covers_bd',
               plugins: [
                 imageminPngquant({
-                  quality: [0.7, 0.8]
+                  quality:[0.9, 1]
               })
               ]
             });
@@ -964,7 +1014,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       let transform = sharp()
       transform = transform.resize(200,268)
       .toFormat('jpeg')
-      .jpeg({ quality: 90})
+      .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
@@ -977,7 +1027,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               else{
                 lenna
                 .resize(200,268) 
-                .quality(90) 
+                .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
                     res.status(404).send({err:err});
@@ -1025,7 +1075,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     let transform = sharp()
     transform = transform.resize(320,430)
     .toFormat('jpeg')
-    .jpeg({ quality: 90})
+    .jpeg({ quality: 100})
     .toBuffer((err, buffer, info) => {
         if (buffer) {
             res.status(200).send(buffer);
@@ -1038,7 +1088,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
             else{
               lenna
               .resize(320,430) 
-              .quality(90) 
+              .quality(100) 
               .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                 if(err){
                   res.status(404).send({err:err});
@@ -1085,7 +1135,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
   let transform = sharp()
   transform = transform.resize(35,35)
   .toFormat('jpeg')
-  .jpeg({ quality: 90})
+  .jpeg({ quality: 100})
   .toBuffer((err, buffer, info) => {
       if (buffer) {
           res.status(200).send(buffer);
@@ -1098,7 +1148,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
           else{
             lenna
             .resize(35,35) 
-            .quality(90) 
+            .quality(100) 
             .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
               if(err){
                 res.status(404).send({err:err});
@@ -1157,7 +1207,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
         let transform = sharp()
         transform = transform.resize({fit:sharp.fit.inside,width:width})
         .toFormat('jpeg')
-        .jpeg({ quality: 90})
+        .jpeg({ quality: 100})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -1171,7 +1221,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                 else{
                   lenna
                   .resize(width,Jimp.AUTO) 
-                  .quality(90) 
+                  .quality(100) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                     if(err){
                       res.status(404).send({err:err});
@@ -1193,7 +1243,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
           let transform2 = sharp()
           transform2 = transform2.resize({fit:sharp.fit.inside,width:width})
           .toFormat('jpeg')
-          .jpeg({ quality: 90})
+          .jpeg({ quality: 100})
           .toBuffer((err, buffer, info) => {
               if (buffer) {
                   res.status(200).send(buffer);
@@ -1206,7 +1256,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                   else{
                     lenna
                     .resize(width,Jimp.AUTO) 
-                    .quality(90) 
+                    .quality(100) 
                     .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                       if(err){
                         res.status(404).send({err:err});
@@ -1274,7 +1324,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
       let transform = sharp()
       transform = transform.resize({fit:sharp.fit.inside,width:266})
       .toFormat('jpeg')
-      .jpeg({ quality: 90})
+      .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
@@ -1288,7 +1338,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
               else{
                 lenna
                 .resize(266,Jimp.AUTO) 
-                .quality(90) 
+                .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
                     res.status(200).send({err:err});
@@ -1309,7 +1359,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
         let transform2 = sharp()
         transform2 = transform2.resize({fit:sharp.fit.inside,width:266})
         .toFormat('jpeg')
-        .jpeg({ quality: 90})
+        .jpeg({ quality: 100})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -1322,7 +1372,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                 else{
                   lenna
                   .resize(266,Jimp.AUTO) 
-                  .quality(90) 
+                  .quality(100) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                     if(err){
                       res.status(404).send({err:err});

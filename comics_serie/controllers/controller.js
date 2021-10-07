@@ -546,7 +546,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       }).any();
       //upload.single('image')
         upload(req, res, function(err){
-            const chapter_number= (parseInt(req.params.chapter)+1);
+            const chapter_number= (parseInt(req.params.chapter)+1).toString();
             const bd_id = parseInt(req.params.bd_id);
             const page= req.params.page;
             (async () => {
@@ -555,7 +555,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 destination: './data_and_routes/pages_bd_serie',
                 plugins: [
                   imageminPngquant({
-                    quality:  [0.85, 0.95]
+                    quality:  [0.9, 1]
                 })
                 ]
               });
@@ -573,8 +573,9 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             }
           }).catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(chapter_bd => {
+            res.status(500).json({msg: "error", details: err});		
+          }).then(chapter_bd => {
+
           pages_bd_serie.create({
             "bd_id": bd_id,
             "chapter_id":chapter_bd.chapter_id,
@@ -585,9 +586,21 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           })
           .catch(err => {
 			
-			res.status(500).json({msg: "error", details: err});		
-		}).then(r =>  {
-          res.send(r.get({plain:true}));
+              res.status(500).json({msg: "error", details: err});		
+          }).then(r =>  {
+              const Op = Sequelize.Op;
+              pages_bd_serie.destroy({
+                where: {
+                  page_id:{[Op.lt]: r.page_id},
+                  page_number:page,
+                  chapter_id:chapter_bd.chapter_id,
+                  chapter_number: chapter_number,
+                  bd_id: bd_id,
+                  },
+                truncate: false
+              }).catch(err=>{
+              })
+                  res.send(r.get({plain:true}));
           }); 
           });
           }
@@ -630,21 +643,56 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           return res.status(401).json({msg: "error"});
         }
       }
+
+      const bd_id =parseInt(req.params.bd_id)
+      const page  = parseInt(req.params.page);
+      const chapter  = req.params.chapter;
+      
+      chapters_bd_serie.findOne({
+        where: {
+          bd_id: bd_id,
+          chapter: chapter,
+        }
+      }).catch(err => {
+  
+        res.status(500).json({msg: "error", details: err});		
+      }).then(chapter_bd => {
+            chapter.update({
+              "pagesnumber": chapter_bd.pagesnumber-1,
+            })
+
+            pages_bd_serie.findOne({
+              where:{
+                page_number:page,
+                chapter_number: chapter,
+                bd_id: bd_id
+              }
+            }).then(page=>{
+              pages_bd_serie.destroy({
+                where: {
+                  page_number:page,
+                  chapter_number: chapter,
+                  bd_id: bd_id
+                  },
+                truncate: false
+              }).then(r=>{
+                res.status(200).send([{file_name:page.file_name}])
+              })
+            })
+            
+
+          
+  
+
+      })
  
-          const page  = parseInt(req.params.page);
-          pages_bd_serie.destroy({
-            where: {
-              page_number:page,
-              chapter_number: req.params.chapter,
-              bd_id: parseInt(req.params.bd_id)
-              },
-            truncate: false
-          })
-          res.status(200).send([{done:"done"}])
+         
+       
+         
       });
 
       //on supprime le fichier du dossier date/pages_bd_onshot
-      router.delete('/remove_page_bdserie_from_folder/:name', function (req, res) {
+    router.delete('/remove_page_bdserie_from_folder/:name', function (req, res) {
 
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
@@ -917,6 +965,42 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
         
       });
 
+
+  router.post('/update_chapter_pages_number', function (req, res) {
+
+        if( ! req.headers['authorization'] ) {
+          return res.status(401).json({msg: "error"});
+        }
+        else {
+          let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+          let user= get_current_user(val)
+          if(!user){
+            return res.status(401).json({msg: "error"});
+          }
+        }
+        let current_user = get_current_user(req.cookies.currentUser);
+          const chapter_number=req.body.chapter_number + 1;
+          const number_of_pages=req.body.number_of_pages;
+          const bd_id= req.body.bd_id; 
+           chapters_bd_serie.update({
+            "pagesnumber":number_of_pages,
+           },
+            {
+            where: {
+              bd_id: bd_id,
+              chapter_number:chapter_number,
+              author_id: current_user,
+            }
+          })
+          .catch(err => {
+        
+        res.status(500).json({msg: "error", details: err});		
+      }).then(bd_chapter =>  {
+            res.status(200).send([bd_chapter]);
+        }); 
+          
+    });
+  
 
   router.get('/retrieve_bd_serie_by_pseudo/:pseudo', function (req, res) {
 
@@ -1227,7 +1311,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
         let transform = sharp()
         transform = transform.resize({fit:sharp.fit.inside,width:width})
         .toFormat('jpeg')
-        .jpeg({ quality: 90})
+        .jpeg({ quality: 100})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -1241,7 +1325,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 else{
                   lenna
                   .resize(width,Jimp.AUTO) 
-                  .quality(90) 
+                  .quality(100) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                     if(err){
                       res.status(200).send({err:err});
@@ -1263,7 +1347,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           let transform2 = sharp()
           transform2 = transform2.resize({fit:sharp.fit.inside,width:width})
           .toFormat('jpeg')
-          .jpeg({ quality: 90})
+          .jpeg({ quality: 100})
           .toBuffer((err, buffer, info) => {
               if (buffer) {
                   res.status(200).send(buffer);
@@ -1276,7 +1360,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                   else{
                     lenna
                     .resize(width,Jimp.AUTO) 
-                    .quality(90) 
+                    .quality(100) 
                     .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                       if(err){
                         res.status(200).send({err:err});
@@ -1351,7 +1435,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       let transform = sharp()
       transform = transform.resize({fit:sharp.fit.inside,width:266})
       .toFormat('jpeg')
-      .jpeg({ quality: 90})
+      .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
@@ -1365,7 +1449,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               else{
                 lenna
                 .resize(266,Jimp.AUTO) 
-                .quality(90) 
+                .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
                     res.status(200).send({err:err});
@@ -1387,7 +1471,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
         let transform2 = sharp()
         transform2 = transform2.resize({fit:sharp.fit.inside,width:266})
         .toFormat('jpeg')
-        .jpeg({ quality: 90})
+        .jpeg({ quality: 100})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -1400,7 +1484,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 else{
                   lenna
                   .resize(266,Jimp.AUTO) 
-                  .quality(90) 
+                  .quality(100) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                     if(err){
                       res.status(200).send({err:err});
