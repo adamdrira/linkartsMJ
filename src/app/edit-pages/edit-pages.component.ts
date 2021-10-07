@@ -5,11 +5,11 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { first } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-add-comics-chapter',
-  templateUrl: './add-comics-chapter.component.html',
-  styleUrls: ['./add-comics-chapter.component.scss']
+  selector: 'app-edit-pages',
+  templateUrl: './edit-pages.component.html',
+  styleUrls: ['./edit-pages.component.scss']
 })
-export class AddComicsChapterComponent implements OnInit {
+export class EditPagesComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute, 
@@ -22,48 +22,53 @@ export class AddComicsChapterComponent implements OnInit {
     this.navbar.hide();
     navbar.hide_help();
 
+    this.section = this.route.snapshot.data['section'];
 
     route.data.pipe(first() ).subscribe(resp => {
       let l=resp.user;
+      this.user=l[0]
       this.pseudo=l[0].nickname;
       this.visitor_id=l[0].id;
       this.profile_retrieved=true;
+      
 
-      let m=resp.user;
-      this.pseudo=m[0].nickname;
-      this.visitor_id=m[0].id;
-      this.profile_retrieved=true;
 
-      let r=resp.comic_serie_data;
-      this.comics_data=r[0];
-      this.comics_data_retrieved=true;
-      this.user_id=r[0].authorid;
-      this.bd_retrieved=true;
-
-      let s=resp.my_pp;
-      let url = (window.URL) ? window.URL.createObjectURL(s) : (window as any).webkitURL.createObjectURL(s);
+      let r=resp.my_pp;
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
 
+      if(this.section==1){
+        let s=resp.my_comic
+        this.comic=s[0];
+        this.user_id=s[0].authorid;
+      }
+      else{
+        let t=resp.my_drawing
+        this.drawing=t[0];
+        this.user_id=t[0].authorid;
+      }
 
-      let t=resp.comic_chapters_data;
-      this.list_of_chapters=t[0];
-
-      this.check_all();
-
-
+      this.check_all()
     });
+
   }
 
+  section:number;
   visitor_id:number;
+
+
+  comic:any;
   bd_id:number;
-  list_of_chapters:any[];
-  list_of_chapters_retrieved=false;
-  comics_data:any;
-  comics_data_retrieved=false;
+
+  drawing:any;
+  drawing_id:number;
+
+
   user_id:number;
   profile_picture:SafeUrl;
   pseudo:string;
+  user:any;
   data_retrieved=false;
 
 
@@ -77,24 +82,29 @@ export class AddComicsChapterComponent implements OnInit {
   page_not_found=false;
 
   ngOnInit(): void {
-
-    
     window.scroll(0,0);
-    this.bd_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-
-    if(this.bd_id!=this.comics_data.bd_id){
-      this.page_not_found=true;
-    }
-    
   }
 
   check_all(){
-      if(this.user_id!=this.visitor_id){
-        this.router.navigate([`/`]);
+    if(this.user_id!=this.visitor_id){
+      this.router.navigate([`/`]);
+    }
+    else{
+      this.data_retrieved=true;
+    }
+
+    if(this.section==1){
+      this.bd_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+      if(this.comic.bd_id!=this.bd_id){
+        this.page_not_found=true;
       }
-      else{
-        this.data_retrieved=true;
+    }
+    else{
+      this.drawing_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+      if(this.drawing.drawing_id!=this.drawing_id){
+        this.page_not_found=true;
       }
+    }
   }
 
   logo_is_loaded=false;

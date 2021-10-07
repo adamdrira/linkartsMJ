@@ -4,10 +4,11 @@ import { Bd_CoverService } from '../services/comics_cover.service';
 import { Uploader_bd_oneshot } from '../uploader_bd_oneshot/uploader_bd_oneshot.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
+import { DomSanitizer } from '@angular/platform-browser';
 import { NavbarService } from '../services/navbar.service';
 import { takeUntil,first } from 'rxjs/operators';
-import { Subject } from 'rxjs';;
+import { Subject } from 'rxjs';import { Router } from '@angular/router';
+;
 
 declare var Swiper: any;
 declare var $: any;
@@ -30,6 +31,8 @@ export class SwiperUploadOneshotComponent implements OnInit {
   constructor(private rd: Renderer2, 
     private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
+    private router:Router,
+    private sanitizer:DomSanitizer,
     private bdOneShotService: BdOneShotService,
     private Bd_CoverService:Bd_CoverService,
     public dialog: MatDialog,
@@ -45,6 +48,9 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
   display_loading=false;
+
+  @Input() user: any;
+  @Input() comic: any;
 
   @Input() bd_id: number;
   @Input() type: string;
@@ -67,19 +73,41 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
   show_icon=false;
   ngOnInit() {
-    
+
+    if(this.comic){
+      this.bd_id=this.comic.bd_id;
+      this.bdtitle=this.comic.title;
+      this.style=this.comic.category
+    }
   }
 
+  list_of_pages_one_shot=[];
   ngAfterViewInit(){
 
     this.initialize_swiper();
     this.initialize_swiper_controller();
+
+    if(this.comic){
+      for( let k=0; k< this.comic.pagesnumber; k++ ) {
+        this.createComponentWithoutImage(k,"add");
+        this.bdOneShotService.retrieve_bd_page(this.comic.bd_id,k,window.innerWidth).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+         
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_pages_one_shot[k]=SafeURL;
+          this.createComponentWithImage(k,SafeURL);
+          this.refresh_swiper_pagination();
+          this.cd.detectChanges();
+        });
+      };
+    }
+
   }
 
 
   initialize_swiper_controller() {
 
-
+    let THIS=this;
     this.swiperThumbnails = new Swiper( this.swiperController.nativeElement , {
       scrollbar: {
         el: '.swiper-scrollbar',
@@ -89,6 +117,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
       },
+      speed: 500,
       breakpoints: {
         0: {
           slidesPerView: 1,
@@ -118,6 +147,16 @@ export class SwiperUploadOneshotComponent implements OnInit {
             slidesPerView: 4,
             spaceBetween:100,
         }
+      },
+      observer:true,
+      on:{
+        observerUpdate: function () {
+          window.dispatchEvent(new Event("resize"));
+        },
+        slideChange: function () {
+          THIS.cd.detectChanges();
+          THIS.swiper.slideTo(THIS.swiperThumbnails.activeIndex)
+        },
       }
     });
 
@@ -135,11 +174,16 @@ export class SwiperUploadOneshotComponent implements OnInit {
       keyboard: {
         enabled: true,
       },
-      speed: 1000,
+      speed: 500,
       allowTouchMove:false,
       on: {
+        observerUpdate: function () {
+          window.dispatchEvent(new Event("resize"));
+        },
         slideChange: function () {
           THIS.refresh_swiper_pagination();
+          THIS.cd.detectChanges();
+          THIS.swiperThumbnails.slideTo(THIS.swiper.activeIndex)
         },
       }
     });
@@ -156,7 +200,10 @@ export class SwiperUploadOneshotComponent implements OnInit {
     });
     
     this.cd.detectChanges();
-    this.add_page();
+
+    if(!this.comic) {
+      this.add_page();
+    }
     this.cd.detectChanges();
   }
 
@@ -231,6 +278,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
     this.cd.detectChanges();
     this.event_removed_page();
     this.cd.detectChanges();
+    this.old_page_in_edition=false;
     this.component_remove_in_progress=false;
   }
 
@@ -238,6 +286,13 @@ export class SwiperUploadOneshotComponent implements OnInit {
   add_page() {
     (async () => { 
 
+      if(this.old_page_in_edition){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Veuillez finaliser ou annuler l'édition de la page ajoutée."},
+          panelClass: "popupConfirmationClass",
+        });
+        return
+      }
       if( this.component_creation_in_progress ) {
           return;
       }
@@ -250,7 +305,13 @@ export class SwiperUploadOneshotComponent implements OnInit {
       else {
         this.component_creation_in_progress=true;
 
-        this.createComponent( );
+        if(this.comic){
+          this.createComponentWithoutImage(this.swiper.slides.length,"edit")
+        }
+        else{
+          this.createComponent( );
+        }
+
 
         this.refresh_swiper_pagination();
         this.swiper.update();
@@ -277,6 +338,52 @@ export class SwiperUploadOneshotComponent implements OnInit {
     }
 
   }
+
+  old_page_in_edition=false;
+  list_of_pages_not_to_remove=[];
+  createComponentWithoutImage(page,mode) {
+    const factory = this.resolver.resolveComponentFactory(Uploader_bd_oneshot);
+    this.componentRef[page]= this.entry.createComponent(factory) ;
+    this.list_of_pages_not_to_remove[page]=true;
+    this.rd.addClass( this.componentRef[page].location.nativeElement, "swiper-slide" );
+    this.swiper.update();
+   
+    this.componentRef[ page ].instance.bd_id = this.bd_id;
+    this.componentRef[ page ].instance.page = page;
+    this.componentRef[ page ].instance.style = this.style;
+    this.componentRef[ page ].instance.bdtitle = this.bdtitle;
+    this.componentRef[ page ].instance.old_one_shot= true;
+
+    
+
+    this.componentRef[ page ].instance.editImageOldOneShot.pipe(takeUntil(this.ngUnsubscribe)).subscribe( v => {
+
+      if(v.type=="edit"){
+        this.bdOneShotService.update_pages_bd_oneshot(this.bd_id,this.componentRef.length).pipe(first()).subscribe(r=>{
+          this.list_of_pages_one_shot[page]=v.image;
+          this.list_of_pages_not_to_remove[page]=true;
+          this.old_page_in_edition=false;
+        })
+        
+      }
+    })
+
+    if(mode=="edit"){
+      this.old_page_in_edition=true;
+      this.list_of_pages_not_to_remove[page]=false;
+      this.componentRef[ page ].instance.edition_mode_from_swiper=true;
+
+      this.swiper.slideTo(this.swiper.slides.length-1,false,false)
+    }
+    this.cd.detectChanges();
+  }
+
+  createComponentWithImage(page,image) {
+    this.componentRef[ page].instance.set_image_to_show = image;
+    this.cd.detectChanges();
+    this.swiper.slideTo(0,false,false)
+  }
+
 
   createComponent() {
 
@@ -388,13 +495,18 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
   block_cancel=false;
   cancel_all() {
-    if(!this.block_cancel){
+    if(!this.block_cancel && !this.comic){
       this.bdOneShotService.RemoveBdOneshot(this.bd_id).pipe( first()).subscribe(res=>{
         this.Bd_CoverService.remove_cover_from_folder().pipe( first()).subscribe(r=>{
         })
       });
     }
       
+  }
+
+
+  endOldOneShot(){
+    this.router.navigate([`/account/${this.user.nickname}`]);
   }
 
 

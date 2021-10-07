@@ -12,27 +12,33 @@
         <div #swiperController class="swiper-container-thumbnails">
             <div class="swiper-wrapper">
 
-
+                
                 <div class="swiper-slide" *ngFor="let item of componentRef; let i = index" 
                 (click)="setSwiperSlide(i+1);setSwiperThumbnailsSlide(i+1);"
                 [ngClass]="{ 'selected' : swiper.activeIndex == i }">
 
                     <div class="slide">
-                        <div class="page-number">
-                            Page {{ item.instance.page + 1 }}
+                        <div class="page-number">Page <ng-container *ngIf="item">{{ item.instance.page + 1 }}</ng-container> 
                         </div>
 
-                        <div class="img-container">
-                            <ng-container *ngIf="!item.instance.uploader.queue[0]">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" >error</mat-icon>
-                                <span>Aucune image téléchargée</span>
-                            </ng-container>
-                            <ng-container *ngIf="item.instance.uploader.queue[0]">
-                                <img [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
-                            </ng-container>
+                        <div class="img-container" >
+                            <ng-container *ngIf="!item">
+                                <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
+                            </ng-container> 
+                            <ng-container *ngIf="item">
+                                <ng-container *ngIf="!item.instance.uploader.queue[0] && !list_of_pages_by_chapter[i]">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" >error</mat-icon>
+                                    <span>Aucune image téléchargée</span>
+                                </ng-container>
+                                <ng-container *ngIf="item.instance.uploader.queue[0] || list_of_pages_by_chapter[i]">
+                                    <img *ngIf="!list_of_pages_by_chapter[i]" [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
+                                    <img *ngIf="list_of_pages_by_chapter[i]" [src]="list_of_pages_by_chapter[i]">
+                                </ng-container>
+                            </ng-container> 
+                          
                         </div>
 
-                        <button mat-button class="remove_page_button" [disabled]="validated_chapter" (click)="remove_page(i);">
+                        <button mat-button class="remove_page_button" [disabled]="validated_chapter" (click)="remove_page(i);"  [ngClass]="{'invisible':list_of_pages_not_to_remove[i]}">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">remove_circle_outline</mat-icon>
                             Retirer
                         </button>
@@ -73,7 +79,7 @@
         </div>
 
                 
-        <button #validateButton class="validate-button style0 submit" *ngIf="!validated_chapter && !disabled" (click)="validateAll();">
+        <button #validateButton class="validate-button style0 submit" *ngIf="!validated_chapter && !disabled && !old_chapter" (click)="validateAll();">
             <ng-container *ngIf="!display_loading">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                 <span>Valider ce chapitre</span>
@@ -81,6 +87,13 @@
             <ng-container *ngIf="display_loading">
                 <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
                 <div class="info-loading">{{number_of_page_uploaded}} / {{componentRef.length}}</div>
+            </ng-container>
+        </button>
+
+        <button #validateButton class="validate-button style0 submit" *ngIf="old_chapter" (click)="endOldChapter();">
+            <ng-container *ngIf="!display_loading">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
+                <span>Terminer</span>
             </ng-container>
         </button>
         

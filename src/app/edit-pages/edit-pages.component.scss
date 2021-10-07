@@ -1,0 +1,10 @@
+
+@import '../add-artwork/add-artwork.component.scss';
+
+
+.add-artwork .form-container .form-container-name {
+    margin-top:15px;
+    span {
+        word-break: break-word;
+    }
+}

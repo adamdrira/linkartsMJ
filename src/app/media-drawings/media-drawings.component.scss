@@ -251,6 +251,9 @@
 
     .see-more {
       &.with-span {
+        mat-icon {
+          margin: auto !important;
+        }
         span {
           display:none;
         }

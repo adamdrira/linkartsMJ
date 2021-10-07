@@ -154,6 +154,9 @@ value:string="add";
 
 
 
+  cencel_edit_name(i){
+    this.edit_name=-1;
+  }
 
   set_edit_name(i: number, value:string) {
     this.value=value;
@@ -253,7 +256,7 @@ value:string="add";
     }
     else if( this.chapter_creation_in_progress ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:"Veuillez valider le chapitre en cours avant d'en ajouter un nouveau"},
+        data: {showChoice:false, text:"Veuillez finaliser l'édition du chapitre sélectionné."},
         panelClass: "popupConfirmationClass",
       });
     }
@@ -410,14 +413,26 @@ value:string="add";
       this.current_chapter = i;
     }
     else{
+      if(this.current_chapter ==i){
+        return
+      }
+      if( this.chapter_creation_in_progress ) {
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Veuillez finaliser l'édition du chapitre sélectionné."},
+          panelClass: "popupConfirmationClass",
+        });
+        return
+      }
+
       if(this.list_of_new_chapters[i]){
         this.current_chapter = i;
       }
       else{
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        this.edit_chapter(i)
+        /*const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Vous ne pouvez pas modifier le contenu des chapitres validés"},
           panelClass: "popupConfirmationClass",
-        });
+        });*/
       }
     }
     
@@ -430,13 +445,17 @@ value:string="add";
     }
     else{
       this.chapter_creation_in_progress=false;
-      if(this.new_chapter_added){
-        this.number_of_new_chapters-=1;
-        if(this.number_of_new_chapters==0){
-          this.new_chapter_added=false;
+      if(!this.list_of_chapters_validated[i]){
+        if(this.new_chapter_added){
+          this.number_of_new_chapters-=1;
+          if(this.number_of_new_chapters==0){
+            this.new_chapter_added=false;
+          }
         }
+        this.list_of_chapters_validated[i]=true;
       }
-      this.list_of_chapters_validated[i]=true;
+
+     
     }
     
   }
@@ -608,6 +627,25 @@ value:string="add";
     
   }
 
+
+  old_chapter:any;
+  edit_chapter(i){
+    if(this.chapter_creation_in_progress){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Veuillez finaliser l'édition du chapitre sélectionné."},
+        panelClass: "popupConfirmationClass",
+      });
+      return
+    }
+
+
+    this.chapter_creation_in_progress=true;
+    this.old_chapter=this.list_of_chapters[i];
+  }
+
+  update_old_chapter_pages(event:number){
+    this.old_chapter.pagesnumber=event;
+  }
 
   
   stop(e: Event) {

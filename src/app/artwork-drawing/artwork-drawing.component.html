@@ -417,6 +417,12 @@
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                                 <span>Éditer les informations</span>
                             </button>
+                            <a *ngIf="type=='artbook' && 50>list_drawing_pages.length" class="artwork-button-menu-item" mat-menu-item (click)="add_time_of_view()" [href]="add_pages_artbook()" target="_blank">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">extension</mat-icon>
+                                <span>Éditer les pages</span>
+                            </a>
+            
+                              
                             <a class="artwork-button-menu-item" (click)="edit_thumbnail()" [href]="get_edit_thumbnail()" target="_blank">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">view_carousel</mat-icon>
                                 <span>Éditer la miniature</span>

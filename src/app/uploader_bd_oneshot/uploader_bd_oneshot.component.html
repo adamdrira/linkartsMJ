@@ -24,6 +24,15 @@
             </div>
         </div>
 
+        <div class="absolute-cancel" *ngIf="edition_mode">
+
+            <button mat-raised-button class="cancel" (click)="cancel_edition();" >
+                <mat-icon [ngClass]="{'invisible': !show_icon }" >cancel</mat-icon>
+                <span >Annuler</span>
+            </button>
+
+        </div>
+
     </div>
 
     <ng-container  *ngIf="afficherpreview">
@@ -40,18 +49,45 @@
 
 
         <div class="buttons-container">
-            <ng-container *ngIf="!uploader.queue[0].isSuccess">
-                <button  type="button" class="btn btn-danger btn-xs"
-                        (click)="remove_beforeupload(uploader.queue[0]);" >
-                    <span class="glyphicon glyphicon-trash">Supprimer</span> 
+
+            <ng-container *ngIf="old_one_shot && !can_upload_new_image">
+                <button mat-raised-button class="edit" (click)="edit_new_image()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                    <span>Éditer</span>
                 </button>
+
             </ng-container>
-            <ng-container *ngIf="uploader.queue[0].isSuccess">
-                <button type="button" class="btn btn-danger btn-xs"
-                        (click)="remove_afterupload(uploader.queue[0]);" >
-                    <span class="glyphicon glyphicon-trash">Supprimer</span> 
+          
+        
+            <ng-container *ngIf="uploader.queue[0] && !uploader.queue[0].isSuccess">
+                
+                <button mat-raised-button class="cancel" (click)="remove_beforeupload(uploader.queue[0]);" >
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" >cancel</mat-icon>
+                    <span >Annuler</span>
                 </button>
+
             </ng-container>
+
+
+            <!--<ng-container *ngIf="(uploader.queue[0] && uploader.queue[0].isSuccess && !old_one_shot)">
+
+                <button mat-raised-button class="cancel" (click)="remove_afterupload(uploader.queue[0]);" >
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" >delete</mat-icon>
+                    <span >Supprimer</span>
+                </button>
+
+            </ng-container>-->
+
+            <ng-container *ngIf="old_one_shot && can_upload_new_image">
+
+                <button mat-raised-button class="validate" (click)="validate_new_image()" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="!uploader.queue[0].isUploading">done</mat-icon>
+                    <span  *ngIf="!uploader.queue[0].isUploading">Valider</span>
+                    <mat-spinner diameter="25" style="margin:auto;" *ngIf="uploader.queue[0].isUploading"></mat-spinner>
+                </button>
+
+            </ng-container>
+
         </div>          
             
     </ng-container>

@@ -10,7 +10,8 @@
             <a href="/" class="logo-container"  >
                 <img class="logo" (load)="load_logo()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
             </a>
-            <span>Gestion des chapitres</span>
+            <span *ngIf="drawing">Édition d'un artbook</span>
+            <span *ngIf="comic">Édition d'une bande dessinée</span>
             <a class="profile-picture-container" href="/account/{{pseudo}}"  >
                 <img class="profile-picture" (load)="load_pp()" [src]="profile_picture"  [ngClass]="{'invisible':!pp_is_loaded}">
             </a>
@@ -22,21 +23,23 @@
 
         
         <div class="form-container">
-            <div class="form-container-name">
-                <span>{{comics_data.title}}</span>
+            <div class="form-container-name" >
+                <span *ngIf="drawing">{{drawing.title}}</span>
+                <span *ngIf="comic">{{comic.title}}</span>
             </div>
         </div>
 
 
-        <app-form-serie 
-        form_number=1
-        [user_id]="visitor_id"
-        [pseudo]="pseudo"
-        [bdtitle]="comics_data.title"
-        [bd_id_add_comics]="bd_id"
-        [style]="comics_data.category"
-        [list_of_chapters]="list_of_chapters"
-        ></app-form-serie>
+        <app-swiper-upload-artbook *ngIf="drawing"
+        [drawing]="drawing" 
+        [user]="user">
+
+        </app-swiper-upload-artbook>
+
+        <app-swiper-upload-oneshot  *ngIf="comic"
+            [comic]="comic" 
+            [user]="user" 
+        ></app-swiper-upload-oneshot>
 
     </div>
 

@@ -49,7 +49,19 @@ export class UploaderArtbookComponent implements OnInit {
 
   }
 
+  @Output() editImageOldArtbook = new EventEmitter<object>();
+
+  number_of_reload=0;
+  old_artbook:any;
+  edition_mode_from_swiper:boolean;
+  original_image:any;
   
+  @Input() set set_image_to_show(image:any){
+    this.SafeURL=image;
+    this.original_image=image;
+  }
+
+
   @Output() sendImageUploaded = new EventEmitter<object>();
 
   @Output() sendPicture = new EventEmitter<object>();
@@ -151,8 +163,15 @@ export class UploaderArtbookComponent implements OnInit {
   
 
   ngAfterContentInit() {
-    this.afficherpreview = false;
-    this.afficheruploader = true;
+    if(!this.old_artbook || this.edition_mode_from_swiper){
+      this.afficherpreview = false;
+      this.afficheruploader = true;
+    }
+    else{
+      this.afficherpreview = true;
+      this.afficheruploader = false;
+    }
+
   }
   
   
@@ -183,6 +202,9 @@ export class UploaderArtbookComponent implements OnInit {
           return
         }
         else{
+          if(this.old_artbook){
+            this.can_upload_new_image=true;
+          }
           file.withCredentials = true; 
           this.afficheruploader = false;
           this.afficherpreview = true;
@@ -196,8 +218,34 @@ export class UploaderArtbookComponent implements OnInit {
     };
 
     this.uploader.onCompleteItem = (file) => {
-      this.sendImageUploaded.emit({page:this._page +1,file:file});
-
+      
+      if(!this.old_artbook){
+        this.sendImageUploaded.emit({page:this._page +1,file:file});
+      }
+      else{
+        if(this.number_of_reload>10){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+            panelClass: "popupConfirmationClass",
+          });
+          return
+        }
+  
+        if(file.isSuccess){
+          this.editImageOldArtbook.emit({type:"edit",page:this.page,image:this.SafeURL});
+         
+          this.original_image=this.SafeURL;
+          this.can_upload_new_image=false;
+          this.uploader.queue.pop();
+        }
+        else{
+          let reload_interval = setInterval(() => {
+            this.uploader.queue[0].upload();
+            this.number_of_reload+=1;
+            clearInterval(reload_interval)
+          }, 500);
+        }
+      }
   
     }
 
@@ -223,14 +271,16 @@ export class UploaderArtbookComponent implements OnInit {
 
   //lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder
   remove_beforeupload(item:FileItem){
-
-    
     this.sendPicture.emit( {page: this._page, changePage: false, removing: true } );
-
-    
     item.remove();
     this.afficheruploader = true;
     this.afficherpreview = false;
+
+    if(this.edition_mode){
+      this.cancel_edition();
+      this.SafeURL=this.original_image;
+    }
+
   }
 
   //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
@@ -258,7 +308,25 @@ export class UploaderArtbookComponent implements OnInit {
     this.uploader.queue[0].upload();
   }
 
-
+  can_upload_new_image=false;
+  validate_new_image(){
+    this.uploader.queue[0].upload();
+  }
+  
+  edition_mode=false;
+  edit_new_image(){
+    this.afficherpreview=false;
+    this.afficheruploader=true;
+    this.edition_mode=true;
+  }
+  
+  cancel_edition(){
+    this.afficherpreview=true;
+    this.afficheruploader=false;
+    this.edition_mode=false;
+    this.can_upload_new_image=false;
+    
+  }
 
 
 }

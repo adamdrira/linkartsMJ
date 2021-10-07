@@ -1,2 +1,11 @@
 
 @import '../swiper-styles.scss';
+
+.img-container{
+    ::ng-deep{
+        mat-spinner circle {
+            stroke: #133364 !important;
+          }
+    }
+
+}

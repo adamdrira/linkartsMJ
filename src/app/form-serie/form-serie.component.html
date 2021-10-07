@@ -71,6 +71,7 @@
     </div>
 
 
+    <!--- EDITION -->
     <div class="chapters-list" formArrayName="chapters" *ngIf="form_number==1 && display_chapters">
         <ng-container *ngFor="let element of list_of_chapters; let i = index" class="test">
             <div class="chapter" (click)="open_chapter(i);">
@@ -106,14 +107,38 @@
 
                 <div class="chapter-icons">
                     
-                                                
-                    <button mat-icon-button *ngIf="edit_name==i" (click)="validate_name(i);$event.stopPropagation();">
+                     
+                    <button mat-icon-button *ngIf="list_of_chapters_validated[i]" (click)="edit_chapter(i);$event.stopPropagation();"
+                    matTooltip="Éditer le chapitre" 
+                    matTooltipClass='linkarts-tooltip' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200"
+                    >
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">replay</mat-icon>
+                    </button> 
+
+                    <button mat-icon-button *ngIf="edit_name==i" (click)="validate_name(i);$event.stopPropagation();"
+                    matTooltip="Valider le nom" 
+                    matTooltipClass='linkarts-tooltip' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200"
+                    >
                         <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                     </button> 
-                    <button mat-icon-button *ngIf="edit_name==-1 && list_of_new_chapters[i]" (click)="set_edit_name(i,'modify');$event.stopPropagation();">
+                    <button mat-icon-button *ngIf="edit_name==-1 && list_of_new_chapters[i]" (click)="set_edit_name(i,'modify');$event.stopPropagation();"
+                        matTooltip="Éditer le nom" 
+                        matTooltipClass='linkarts-tooltip' 
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="200"
+                        >
                         <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
-                    </button>         
-                    <button mat-icon-button *ngIf="edit_name==-1 && i==list_of_chapters.length-1 && i>0" (click)="openDeleteDialog(i);$event.stopPropagation();">
+                    </button>      
+                   
+                    <button mat-icon-button *ngIf="edit_name==-1 && i==list_of_chapters.length-1 && i>0" (click)="openDeleteDialog(i);$event.stopPropagation();"
+                        matTooltip="Supprimer ce chapitre" 
+                    matTooltipClass='linkarts-tooltip' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline</mat-icon>
                     </button>
                 </div>
@@ -137,7 +162,7 @@
 
 <div class="pages-controller" *ngIf="form_number==1 && chapter_creation_in_progress">
     <ng-container *ngIf="display_swiper">
-        <app-swiper-upload-serie type="Série" [disabled]="!display_swiper" [style]="style" [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
+        <app-swiper-upload-serie type="Série" [disabled]="!display_swiper"  [old_chapter]="old_chapter" [style]="style" [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"  (update_old_chapter_pages)="update_old_chapter_pages($event)"></app-swiper-upload-serie>
     </ng-container>
     
 
@@ -145,7 +170,7 @@
 
 
 
-<button #validateButton mat-raised-button class="submit-button style1" (click)="validateAll();">
+<button #validateButton mat-raised-button class="submit-button style1" (click)="validateAll();"  *ngIf="(form_number==1 && chapter_creation_in_progress) || form_number==0">
     <ng-container *ngIf="!display_loading">
         <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
         <span>Valider la série</span>

@@ -13,7 +13,7 @@ import {NotificationsService}from '../services/notifications.service';
 import {ChatService} from '../services/chat.service';
 import { NavbarService } from '../services/navbar.service';
 import { first } from 'rxjs/operators';
-const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
+const url = 'https://www.linkarts.fr/routes/upload_page_bd_oneshot/';
 
 @Component({
   selector: 'app-uploader_bd_oneshot',
@@ -49,6 +49,19 @@ export class Uploader_bd_oneshot implements OnInit{
 
   }
  
+  @Output() editImageOldOneShot = new EventEmitter<object>();
+
+  number_of_reload=0;
+  old_one_shot:any;
+  edition_mode_from_swiper:boolean;
+  original_image:any;
+  
+  @Input() set set_image_to_show(image:any){
+    this.image_to_show=image;
+    this.original_image=image;
+  }
+
+
   @Output() sendImageUploaded = new EventEmitter<object>();
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
@@ -140,8 +153,17 @@ get validate_all(): boolean {
 
 
   ngAfterContentInit() {
-    this.afficherpreview = false;
-    this.afficheruploader = true;
+
+    if(!this.old_one_shot || this.edition_mode_from_swiper){
+      this.afficherpreview = false;
+      this.afficheruploader = true;
+    }
+    else{
+      this.afficherpreview = true;
+      this.afficheruploader = false;
+    }
+
+
   }
 
   show_icon=false;
@@ -175,6 +197,9 @@ get validate_all(): boolean {
           });
         }
         else{
+          if(this.old_one_shot){
+            this.can_upload_new_image=true;
+          }
           file.withCredentials = true; 
           this.afficheruploader = false;
           let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
@@ -186,7 +211,35 @@ get validate_all(): boolean {
 
 
     this.uploader.onCompleteItem = (file) => {
-      this.sendImageUploaded.emit({page:this._page +1,file:file});
+      
+
+      if(!this.old_one_shot){
+        this.sendImageUploaded.emit({page:this._page +1,file:file});
+      }
+      else{
+        if(this.number_of_reload>10){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+            panelClass: "popupConfirmationClass",
+          });
+          return
+        }
+  
+        if(file.isSuccess){
+          this.editImageOldOneShot.emit({type:"edit",page:this.page,image:this.image_to_show});
+         
+          this.original_image=this.image_to_show;
+          this.can_upload_new_image=false;
+          this.uploader.queue.pop();
+        }
+        else{
+          let reload_interval = setInterval(() => {
+            this.uploader.queue[0].upload();
+            this.number_of_reload+=1;
+            clearInterval(reload_interval)
+          }, 500);
+        }
+      }
     }
   };
 
@@ -203,6 +256,11 @@ remove_beforeupload(item:FileItem){
    item.remove();
    this.afficheruploader = true;
    this.afficherpreview = false;
+
+   if(this.edition_mode){
+    this.cancel_edition();
+    this.image_to_show=this.original_image;
+   }
  }
 
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
@@ -226,6 +284,26 @@ onFileClick(event) {
   event.target.value = '';
 }
 
+
+can_upload_new_image=false;
+validate_new_image(){
+  this.uploader.queue[0].upload();
+}
+
+edition_mode=false;
+edit_new_image(){
+  this.afficherpreview=false;
+  this.afficheruploader=true;
+  this.edition_mode=true;
+}
+
+cancel_edition(){
+  this.afficherpreview=true;
+  this.afficheruploader=false;
+  this.edition_mode=false;
+  this.can_upload_new_image=false;
+  
+}
 
 
 }

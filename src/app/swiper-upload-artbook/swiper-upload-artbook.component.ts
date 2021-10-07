@@ -1,16 +1,17 @@
 import { Component, Input, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, ViewChild, HostListener, SimpleChanges } from '@angular/core';
 
-import { SafeUrl } from '@angular/platform-browser';
+
 import { UploaderArtbookComponent } from '../uploader-artbook/uploader-artbook.component';
 import { Drawings_CoverService } from '../services/drawings_cover.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
-
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { NavbarService } from '../services/navbar.service';
 import { takeUntil,first } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 declare var $:any;
@@ -44,6 +45,8 @@ export class SwiperUploadArtbookComponent  {
   constructor(private rd: Renderer2, 
     private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
+    private router:Router,
+    private sanitizer:DomSanitizer,
     private Drawings_CoverService:Drawings_CoverService,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
@@ -113,13 +116,41 @@ export class SwiperUploadArtbookComponent  {
   
   
   show_icon=false;
+
+  @Input() user: any;
+  @Input() drawing: any;
  
- 
+  list_of_pages_artbook=[];
+
+  ngOnInit(){
+    if(this.drawing){
+      this.drawing_id=this.drawing.drawing_id;
+     
+    }
+  }
+
   ngAfterViewInit(){
    
     this.cd.detectChanges;
     this.initialize_swiper();
     this.initialize_swiper_controller();
+
+    if(this.drawing){
+      for( let k=0; k< this.drawing.pagesnumber; k++ ) {
+        this.createComponentWithoutImage(k,"add");
+        this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(this.drawing.drawing_id,k,window.innerWidth).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+         
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_pages_artbook[k]=SafeURL;
+       
+          this.createComponentWithImage(k,SafeURL);
+          this.refresh_swiper_pagination();
+          this.cd.detectChanges();
+        });
+      };
+
+    }
   }
   
 
@@ -134,7 +165,7 @@ export class SwiperUploadArtbookComponent  {
 
   initialize_swiper_controller() {
 
-
+    let THIS=this;
     this.swiperThumbnails = new Swiper( this.swiperController.nativeElement , {
       scrollbar: {
         el: '.swiper-scrollbar',
@@ -144,6 +175,7 @@ export class SwiperUploadArtbookComponent  {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
       },
+      speed: 500,
       breakpoints: {
         0: {
           slidesPerView: 1,
@@ -173,6 +205,13 @@ export class SwiperUploadArtbookComponent  {
             slidesPerView: 4,
             spaceBetween:100,
         }
+      },
+      observer:true,
+      on:{
+        slideChange: function () {
+          THIS.cd.detectChanges();
+          THIS.swiper.slideTo(THIS.swiperThumbnails.activeIndex)
+        },
       }
     });
 
@@ -190,11 +229,16 @@ export class SwiperUploadArtbookComponent  {
       keyboard: {
         enabled: true,
       },
-      speed: 1000,
+      speed: 500,
       allowTouchMove:false,
       on: {
+        observerUpdate: function () {
+          window.dispatchEvent(new Event("resize"));
+        },
         slideChange: function () {
           THIS.refresh_swiper_pagination();
+          THIS.cd.detectChanges();
+          THIS.swiperThumbnails.slideTo(THIS.swiper.activeIndex)
         },
       }
     });
@@ -211,7 +255,10 @@ export class SwiperUploadArtbookComponent  {
     });
     
     this.cd.detectChanges();
-    this.add_page();
+
+    if(!this.drawing) {
+      this.add_page();
+    }
     this.cd.detectChanges();
   }
   
@@ -247,14 +294,7 @@ export class SwiperUploadArtbookComponent  {
   }
   
 
-  empty_swiper() {
-    const c = this.swiper.slides.length;
-    for( let i = 0; i < c; i ++ ) {
-      this.swiper.removeSlide(0);
-    }
-    this.componentRef.splice(0, this.componentRef.length);
-    this.add_page();
-  }
+
 
 
   refresh_swiper_pagination() {
@@ -289,13 +329,20 @@ export class SwiperUploadArtbookComponent  {
     this.cd.detectChanges();
     this.event_removed_page();
     this.cd.detectChanges();
+    this.old_page_in_edition=false;
     this.component_remove_in_progress=false;
   }
 
 
   add_page() {
     (async () => { 
-
+      if(this.old_page_in_edition){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Veuillez finaliser ou annuler l'édition de la page ajoutée."},
+          panelClass: "popupConfirmationClass",
+        });
+        return
+      }
       if( this.component_creation_in_progress ) {
           return;
       }
@@ -308,7 +355,13 @@ export class SwiperUploadArtbookComponent  {
       else {
         this.component_creation_in_progress=true;
 
-        this.createComponent( );
+    
+        if(this.drawing){
+          this.createComponentWithoutImage(this.swiper.slides.length,"edit")
+        }
+        else{
+          this.createComponent( );
+        }
 
         this.refresh_swiper_pagination();
         this.swiper.update();
@@ -340,6 +393,54 @@ export class SwiperUploadArtbookComponent  {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
 
+  old_page_in_edition=false;
+  list_of_pages_not_to_remove=[];
+  createComponentWithoutImage(page,mode) {
+    const factory = this.resolver.resolveComponentFactory(UploaderArtbookComponent);
+    this.componentRef[page]= this.entry.createComponent(factory) ;
+    this.list_of_pages_not_to_remove[page]=true;
+    this.rd.addClass( this.componentRef[page].location.nativeElement, "swiper-slide" );
+    this.swiper.update();
+    this.componentRef[ this.componentRef.length - 1 ].instance.drawing_id = this.drawing_id;
+    this.componentRef[ this.componentRef.length - 1 ].instance.title = this.name;
+
+    
+    this.componentRef[ page ].instance.drawing_id = this.drawing_id;
+    this.componentRef[ page ].instance.page = page;
+    this.componentRef[ page ].instance.old_artbook= true;
+
+    
+
+    this.componentRef[ page ].instance.editImageOldArtbook.pipe(takeUntil(this.ngUnsubscribe)).subscribe( v => {
+      if(v.type=="edit"){
+        this.Drawings_Artbook_Service.update_pages_drawing_artbook(this.drawing_id,this.componentRef.length).pipe(first()).subscribe(r=>{
+          this.list_of_pages_artbook[page]=v.image;
+          this.list_of_pages_not_to_remove[page]=true;
+          this.old_page_in_edition=false;
+        })
+        
+      }
+    })
+
+    if(mode=="edit"){
+      this.old_page_in_edition=true;
+      this.list_of_pages_not_to_remove[page]=false;
+      this.componentRef[ page ].instance.edition_mode_from_swiper=true;
+
+      this.swiper.slideTo(this.swiper.slides.length-1,false,false)
+    }
+
+    this.cd.detectChanges();
+  }
+
+  createComponentWithImage(page,image) {
+    this.componentRef[ page].instance.set_image_to_show = image;
+    this.image_uploaded = true;
+    
+    this.cd.detectChanges();
+    this.swiper.slideTo(0,false,false)
+  
+  }
 
   createComponent() {
 
@@ -407,7 +508,7 @@ export class SwiperUploadArtbookComponent  {
 
   initialize_cropper(content: ElementRef) {
     
-    if( !this.cropperInitialized ) {
+    if( !this.cropperInitialized && !this.drawing) {
       this.cropper = new Cropper(content.nativeElement, {
         guides: true,
         viewMode:2,
@@ -604,7 +705,7 @@ export class SwiperUploadArtbookComponent  {
 
   block_cancel=false;
   cancel_all() {
-    if(!this.block_cancel){
+    if(!this.block_cancel && !this.drawing){
       this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).pipe( first()).subscribe(res=>{
         this.Drawings_CoverService.remove_cover_from_folder().pipe( first()).subscribe()
       });
@@ -625,6 +726,9 @@ export class SwiperUploadArtbookComponent  {
     this.imageSource = event2;
   }
 
+  endOldArtbook(){
+    this.router.navigate([`/account/${this.user.nickname}`]);
+  }
 
   protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {

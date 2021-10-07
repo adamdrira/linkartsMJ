@@ -18,18 +18,19 @@
                     </div>
 
                     <div class="img-container">
-                        <ng-container *ngIf="!item.instance.uploader.queue[0]">
+                        <ng-container *ngIf="!item.instance.uploader.queue[0]  && !list_of_pages_artbook[i] &&  (!drawing || (drawing &&  i>=drawing.pagesnumber))">
                             <mat-icon [ngClass]="{'invisible': !show_icon }" >error</mat-icon>
-                            <span>
+                            <span >
                                 Aucune image téléchargée
                             </span>
                         </ng-container>
-                        <ng-container *ngIf="item.instance.uploader.queue[0]">
-                            <img [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
+                        <ng-container *ngIf="item.instance.uploader.queue[0] || list_of_pages_artbook[i]">
+                            <img *ngIf="!list_of_pages_artbook[i]" [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
+                            <img *ngIf="list_of_pages_artbook[i]" [src]="list_of_pages_artbook[i]">
                         </ng-container>
                     </div>
 
-                    <button mat-button class="remove_page_button" (click)="remove_page(i);">
+                    <button mat-button class="remove_page_button" (click)="remove_page(i);"  [ngClass]="{'invisible':list_of_pages_not_to_remove[i]}">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">remove_circle_outline</mat-icon>
                         Retirer
                     </button>
@@ -71,7 +72,7 @@
 
 </div>
 
-<div class="form-container add-artwork-swiper-styles" *ngIf="image_uploaded" style="margin-top:40px;" >
+<div class="form-container add-artwork-swiper-styles" *ngIf="image_uploaded && !drawing" style="margin-top:40px;" >
     <div class="form-container-name">
         <span>Édition de la miniature</span>
     </div>
@@ -239,7 +240,7 @@
 </div>
 
 
-<button #validateButton *ngIf="imageDestination != ''" class="submit-button-with-done-all style1 submit" (click)="validateAll();">
+<button #validateButton *ngIf="imageDestination != '' && !drawing" class="submit-button-with-done-all style1 submit" (click)="validateAll();" >
     <ng-container *ngIf="!display_loading">
         <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
         <span>Valider </span>
@@ -249,3 +250,12 @@
         <div class="info-loading">{{number_of_page_uploaded}} / {{componentRef.length}}</div>
     </ng-container>
 </button>
+
+<div class="add-artwork-swiper-styles">
+    <button #validateButton class="validate-button style0 submit" *ngIf="drawing" (click)="endOldArtbook();">
+        <ng-container *ngIf="!display_loading">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
+            <span>Terminer</span>
+        </ng-container>
+    </button>
+</div>

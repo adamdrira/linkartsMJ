@@ -5,6 +5,26 @@
     background: #040b19;
 }
 
+.absolute-cancel{
+    position: absolute;
+    bottom: 12px;
+    left: 0px;
+    right: 0px;
+    margin:auto;
+    display: flex;
+    justify-content: center;
+
+    button{
+        outline: none !important;
+        background: linear-gradient(0, #810000, #d30000);
+        color: white;
+    }
+
+    mat-icon{
+        margin-right: 5px;
+    }
+}
+
 .invisible {
     visibility: hidden;
     pointer-events: none;
@@ -208,6 +228,33 @@
     margin-bottom:auto;
     margin-left:10px;
     margin-right:10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none !important;
+    mat-icon{
+        font-size:18px;
+        margin-right:5px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+    &.edit{
+        background:#f7f8f9;
+        height: 36px;
+    }
+
+    &.cancel{
+        background: linear-gradient(0, #810000, #d30000);
+        color: white;
+        height: 36px;
+    }
+
+    &.validate{
+        background: linear-gradient(0, #3d7002, #7cc725);
+        color: white;
+        height: 36px;
+    }
 }
 
 

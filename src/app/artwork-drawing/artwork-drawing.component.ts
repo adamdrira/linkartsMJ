@@ -671,6 +671,12 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
 
+  get_better_quality_drawing(drawing_id,page){
+    this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,page,window.innerWidth).pipe(first() ).subscribe(r=>{
+      let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+      this.list_drawing_pages[page]=url;
+    });
+  }
 
 
   get_drawing_artbook_pages(drawing_id,total_pages) {
@@ -1057,6 +1063,9 @@ export class ArtworkDrawingComponent implements OnInit {
         },
         slideChange: function () {
           THIS.refresh_swiper_pagination();
+          console.log("swiper");
+          THIS.cd.detectChanges();
+          console.log(THIS.swiper.activeIndex)
         }
       },
     });
@@ -2158,6 +2167,11 @@ export class ArtworkDrawingComponent implements OnInit {
 
   edit_thumbnail() {
     this.navbar.add_page_visited_to_history(`add-artwork/edit-drawing-thumbnail/${this.drawing_id}/${this.type}`,this.device_info).pipe(first() ).subscribe();
+  }
+
+
+  add_pages_artbook(){
+    return `/add-artwork/add-content/drawing/artbook/${this.drawing_id}`
   }
 }
 

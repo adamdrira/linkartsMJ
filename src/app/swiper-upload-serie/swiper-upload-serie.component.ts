@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild, ViewChildren, QueryList, ViewContainerRef, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, Output, EventEmitter, Input, HostListener } from '@angular/core';
-import { UploadService } from '../services/upload.service';
+import { Component, OnInit, ViewChild,  ViewContainerRef, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, Output, EventEmitter, Input, HostListener } from '@angular/core';
+
 import { BdSerieService } from '../services/comics_serie.service';
 import { Bd_CoverService } from '../services/comics_cover.service';
 import { UploaderBdSerieComponent } from '../uploader-bd-serie/uploader-bd-serie.component';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NavbarService } from '../services/navbar.service';
@@ -32,11 +32,10 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   constructor(private rd: Renderer2, 
     
-    private el: ElementRef,
-    private _upload: UploadService,
+
     private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
-    private viewref: ViewContainerRef,
+    private sanitizer:DomSanitizer,
     private BdSerieService:BdSerieService,
     private Bd_CoverService:Bd_CoverService,
     public dialog: MatDialog,
@@ -51,11 +50,15 @@ export class SwiperUploadSerieComponent implements OnInit {
   }
 
   @Input() disabled: boolean;
+  @Input() old_chapter:any;
   @Input() type: string;
   @Input() chapter: number;
   @Input() name: string;
   @Input() bdtitle: string;
   @Input() style:string;
+
+  
+  @Output() update_old_chapter_pages = new EventEmitter<number>();
   @Output() validated = new EventEmitter<any>();
   validated_chapter: boolean = false;
   @Input() bd_id:number;
@@ -91,10 +94,27 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   }
 
+  list_of_pages_by_chapter=[];
   ngAfterViewInit(){
-    this.cd.detectChanges;
     this.initialize_swiper();
     this.initialize_swiper_controller();
+    this.cd.detectChanges;
+    if(this.old_chapter){
+      for( let k=0; k< this.old_chapter.pagesnumber; k++ ) {
+        this.createComponentWithoutImage(k,"add");
+        this.BdSerieService.retrieve_bd_page(this.old_chapter.bd_id,this.old_chapter.chapter_number,k,window.innerWidth).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+         
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_pages_by_chapter[k]=SafeURL;
+          this.createComponentWithImage(k,SafeURL);
+          this.refresh_swiper_pagination();
+          this.cd.detectChanges();
+        });
+      };
+    }
+
+   
 
   }
 
@@ -102,7 +122,7 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   initialize_swiper_controller() {
 
-
+    let THIS=this;
     this.swiperThumbnails = new Swiper( this.swiperController.nativeElement , {
       scrollbar: {
         el: '.swiper-scrollbar',
@@ -112,6 +132,7 @@ export class SwiperUploadSerieComponent implements OnInit {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
       },
+      speed: 500,
       breakpoints: {
         0: {
           slidesPerView: 1,
@@ -141,6 +162,14 @@ export class SwiperUploadSerieComponent implements OnInit {
             slidesPerView: 4,
             spaceBetween:100,
         }
+      },
+      observer:true,
+      on:{
+        
+        slideChange: function () {
+          THIS.cd.detectChanges();
+          THIS.swiper.slideTo(THIS.swiperThumbnails.activeIndex)
+        },
       }
     });
 
@@ -158,11 +187,17 @@ export class SwiperUploadSerieComponent implements OnInit {
       keyboard: {
         enabled: true,
       },
-      speed: 1000,
+      speed: 500,
       allowTouchMove:false,
+      observer: true,
       on: {
+        observerUpdate: function () {
+          window.dispatchEvent(new Event("resize"));
+        },
         slideChange: function () {
           THIS.refresh_swiper_pagination();
+          THIS.cd.detectChanges();
+          THIS.swiperThumbnails.slideTo(THIS.swiper.activeIndex)
         },
       }
     });
@@ -179,10 +214,15 @@ export class SwiperUploadSerieComponent implements OnInit {
     });
     
     this.cd.detectChanges();
-    this.add_page();
+
+    if(!this.old_chapter) {
+      this.add_page();
+    }
+    
     this.cd.detectChanges();
   }
 
+ 
   
   setSwiperSlide(i : any) {
     if( isNaN(i) ) {
@@ -214,14 +254,6 @@ export class SwiperUploadSerieComponent implements OnInit {
   }
   
 
-  empty_swiper() {
-    const c = this.swiper.slides.length;
-    for( let i = 0; i < c; i ++ ) {
-      this.swiper.removeSlide(0);
-    }
-    this.componentRef.splice(0, this.componentRef.length);
-    this.add_page();
-  }
 
 
   refresh_swiper_pagination() {
@@ -254,6 +286,7 @@ export class SwiperUploadSerieComponent implements OnInit {
     this.cd.detectChanges();
     this.event_removed_page();
     this.cd.detectChanges();
+    this.old_page_in_edition=false;
     this.component_remove_in_progress=false;
   }
 
@@ -261,6 +294,13 @@ export class SwiperUploadSerieComponent implements OnInit {
   add_page() {
     (async () => { 
 
+      if(this.old_page_in_edition){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Veuillez finaliser ou annuler l'édition de la page ajoutée."},
+          panelClass: "popupConfirmationClass",
+        });
+        return
+      }
       if( this.component_creation_in_progress ) {
           return;
       }
@@ -272,8 +312,13 @@ export class SwiperUploadSerieComponent implements OnInit {
       }
       else {
         this.component_creation_in_progress=true;
-
-        this.createComponent( );
+        if(this.old_chapter){
+          this.createComponentWithoutImage(this.swiper.slides.length,"edit")
+        }
+        else{
+          this.createComponent( );
+        }
+       
 
         this.refresh_swiper_pagination();
         this.swiper.update();
@@ -301,9 +346,52 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   }
 
-  createComponent() {
+  old_page_in_edition=false;
+  list_of_pages_not_to_remove=[];
+  createComponentWithoutImage(page,mode) {
+    const factory = this.resolver.resolveComponentFactory(UploaderBdSerieComponent);
+    this.componentRef[page]= this.entry.createComponent(factory) ;
+    this.list_of_pages_not_to_remove[page]=true;
+    this.rd.addClass( this.componentRef[page].location.nativeElement, "swiper-slide" );
+    this.swiper.update();
+  
+    this.componentRef[ page ].instance.bd_id = this.bd_id;
+    this.componentRef[ page ].instance.page = page;
+    this.componentRef[ page ].instance.chapter = this.chapter;
+    this.componentRef[ page ].instance.style = this.style;
+    this.componentRef[ page ].instance.old_chapter = true;
+    this.componentRef[ page ].instance.editImageOldChapter.pipe(takeUntil(this.ngUnsubscribe)).subscribe( v => {
 
-    //Creating new component
+      if(v.type=="edit"){
+        this.BdSerieService.update_chapter_pages_number(this.bd_id,this.componentRef.length, this.chapter).pipe(first()).subscribe(r=>{
+          this.update_old_chapter_pages.emit(this.componentRef.length);
+          this.list_of_pages_by_chapter[page]=v.image;
+          this.list_of_pages_not_to_remove[page]=true;
+          this.old_page_in_edition=false;
+        })
+       
+      }
+    })
+
+    if(mode=="edit"){
+      this.old_page_in_edition=true;
+      this.list_of_pages_not_to_remove[page]=false;
+      this.componentRef[ page ].instance.edition_mode_from_swiper=true;
+
+      this.swiper.slideTo(this.swiper.slides.length-1,false,false)
+    }
+
+    
+    this.cd.detectChanges();
+  }
+
+  createComponentWithImage(page,image) {
+    this.componentRef[ page].instance.set_image_to_show = image;
+    this.cd.detectChanges();
+    this.swiper.slideTo(0,false,false)
+  }
+
+  createComponent() {
     const factory = this.resolver.resolveComponentFactory(UploaderBdSerieComponent);
     this.componentRef.push( this.entry.createComponent(factory) );
 
@@ -342,7 +430,14 @@ export class SwiperUploadSerieComponent implements OnInit {
   number_of_page_uploaded=0;
   number_of_reload=[0];
   popup_error_oppened=false;
+
+  endOldChapter(){
+    this.validated.emit();
+  }
+
   validateAll() {
+
+   
     this.number_of_reload=[0];
     this.validateButton.nativeElement.disabled = true;
 
@@ -373,6 +468,8 @@ export class SwiperUploadSerieComponent implements OnInit {
           this.componentRef[ step ].instance.total_pages = this.componentRef.length;
           this.componentRef[ step ].instance.upload = true;
           this.number_of_reload[step+1]=0
+          
+          
           this.componentRef[ step ].instance.sendImageUploaded.pipe(takeUntil(this.ngUnsubscribe)).subscribe( v => {
   
             if(v.file.isSuccess){
@@ -387,7 +484,7 @@ export class SwiperUploadSerieComponent implements OnInit {
                 }
                 this.popup_error_oppened=true;
                 const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-                  data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+                  data: {showChoice:false, text:"Erreur de connexion internet, veuillez réitérer le processus."},
                   panelClass: "popupConfirmationClass",
                 });
                 this.display_loading=false;
@@ -426,7 +523,7 @@ export class SwiperUploadSerieComponent implements OnInit {
   
 
   cancel_all() {
-    if (this.chapter==0) {
+    if (this.chapter==0 && !this.old_chapter) {
       this.BdSerieService.RemoveBdSerie(this.bd_id).pipe( first()).subscribe(res=>{
         this.Bd_CoverService.remove_cover_from_folder().pipe( first()).subscribe(r=>{
         })

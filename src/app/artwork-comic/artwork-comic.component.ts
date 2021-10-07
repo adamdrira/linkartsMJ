@@ -2438,6 +2438,14 @@ export class ArtworkComicComponent implements OnInit {
     location.reload()
     return;
   }
+
+  edit_chapters_url(){
+    return `/add-artwork/handle-comics-chapter/${this.bd_id}`
+  }
+
+  add_pages_one_shot(){
+    return `/add-artwork/add-content/comic/one-shot/${this.bd_id}`
+  }
   
   archive_loading=false;
   set_private() {
@@ -2635,6 +2643,8 @@ export class ArtworkComicComponent implements OnInit {
      
     }
   }
+
+  
 }
 
 

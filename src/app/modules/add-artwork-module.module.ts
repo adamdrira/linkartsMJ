@@ -20,7 +20,7 @@ import { UploaderAttachmentsAdComponent } from '../uploader-attachments-ad/uploa
 import { AddComicsChapterComponent } from '../add-comics-chapter/add-comics-chapter.component';
 import { EditDrawingThumbnailComponent } from '../edit-drawing-thumbnail/edit-drawing-thumbnail.component';
 
-
+import { EditPagesComponent } from '../edit-pages/edit-pages.component';
 import { FormSerieComponent } from '../form-serie/form-serie.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -85,6 +85,7 @@ import { ConstantsService } from '../services/constants.service';
     UploaderWrittingComponent,
     UploaderAttachmentsAdComponent,
     FormSerieComponent,
+    EditPagesComponent,
   ],
   imports: [
     CommonModule,
