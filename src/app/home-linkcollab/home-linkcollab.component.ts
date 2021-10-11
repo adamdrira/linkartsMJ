@@ -867,7 +867,7 @@ export class HomeLinkcollabComponent implements OnInit {
       email:"contact@yume-edition.fr",
       description:"YUME ÉDITION est un éditeur indépendant de mangas et de romans qui édite et anime",
       pp_name:"pp-yume.png",
-      cover_name:"cover-pp.png",
+      cover_name:"cover-yume.png",
       location:"Noisy-le-grand, France",
       id:5498,
       associate:true,
