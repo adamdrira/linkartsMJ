@@ -8,6 +8,7 @@ export class NavbarService {
    
     active_section: number=-1;
     height: number;//in px
+    list_of_urls=[];
     public visible: boolean=false;
 
     public visible_help: boolean=true;
@@ -109,8 +110,16 @@ export class NavbarService {
       
     }
 
-    
-    
+    setPreviousUrls(list_of_urls){
+      this.list_of_urls=list_of_urls
+    }
+
+    get listOfUrls() {
+
+      return this.list_of_urls;
+   
+    }
+   
     /********************************************* NOTIFICATIONS **************************************/
     /********************************************* NOTIFICATIONS **************************************/
     /********************************************* NOTIFICATIONS **************************************/

@@ -72,6 +72,17 @@ export class Edtior_Projects {
     }));
   }
   
+  get_editor_cover(file_name){
+    return this.http.get(`routes/get_editor_cover/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+      return information;   
+    }));
+  }
+
+  get_editor_pp(file_name){
+    return this.http.get(`routes/get_editor_pp/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+      return information;   
+    }));
+  }
 
   retrieve_project_by_name(file_name){
     return this.http.get(`routes/retrieve_project_by_name/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
