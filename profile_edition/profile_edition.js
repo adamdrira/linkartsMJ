@@ -5347,7 +5347,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 9%; max-width: 52.2px;" title="Logo" src="https://www.linkarts.fr/assets/img/editors/images/image-7.png" alt="Logo" width="52.2" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 9%; max-width: 52.2px;" title="Logo" src="https://www.linkarts.fr/assets/img/editors_email_images/image-7.png" alt="Logo" width="52.2" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -5444,7 +5444,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 280px;" title="Illustration" src="https://www.linkarts.fr/assets/img/editors/images/image-11.png" alt="Illustration" width="280" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 280px;" title="Illustration" src="https://www.linkarts.fr/assets/img/editors_email_images/image-11.png" alt="Illustration" width="280" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -5472,7 +5472,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <tbody>
     <tr>
     <td style="padding-right: 0px; padding-left: 0px;" align="center">
-      <img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none;  background: #20267f;  width: 100%; max-width: 600px;" title="Image" src="https://www.linkarts.fr/assets/img/editors/images/image-12.png" alt="Image" width="600" align="center" border="0" /></td>
+      <img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none;  background: #20267f;  width: 100%; max-width: 600px;" title="Image" src="https://www.linkarts.fr/assets/img/editors_email_images/image-12.png" alt="Image" width="600" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -5669,7 +5669,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 48px;" title="Icon" src="https://www.linkarts.fr/assets/img/editors/images/image-14.png" alt="Icon" width="48" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 48px;" title="Icon" src="https://www.linkarts.fr/assets/img/editors_email_images/image-14.png" alt="Icon" width="48" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -5711,7 +5711,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 48px;" title="Icon" src="https://www.linkarts.fr/assets/img/editors/images/image-10.png" alt="Icon" width="48" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 48px;" title="Icon" src="https://www.linkarts.fr/assets/img/editors_email_images/image-10.png" alt="Icon" width="48" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -5753,7 +5753,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 48px;" title="Icon" src="https://www.linkarts.fr/assets/img/editors/images/image-13.png" alt="Icon" width="48" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 48px;" title="Icon" src="https://www.linkarts.fr/assets/img/editors_email_images/image-13.png" alt="Icon" width="48" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -5793,7 +5793,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 48px;" title="Icon" src="https://www.linkarts.fr/assets/img/editors/images/image-9.png" alt="Icon" width="48" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 48px;" title="Icon" src="https://www.linkarts.fr/assets/img/editors_email_images/image-9.png" alt="Icon" width="48" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -5885,7 +5885,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 300px;" title="Illustration" src="https://www.linkarts.fr/assets/img/editors/images/image-15.png" alt="Illustration" width="300" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 300px;" title="Illustration" src="https://www.linkarts.fr/assets/img/editors_email_images/image-15.png" alt="Illustration" width="300" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -6053,7 +6053,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 63%; max-width: 113.4px;" title="User" src="https://www.linkarts.fr/assets/img/editors/images/image-4.jpeg" alt="User" width="113.4" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 63%; max-width: 113.4px;" title="User" src="https://www.linkarts.fr/assets/img/editors_email_images/image-4.jpeg" alt="User" width="113.4" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -6095,7 +6095,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 95%; max-width: 171px;" title="User" src="https://www.linkarts.fr/assets/img/editors/images/image-5.jpeg" alt="User" width="171" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 95%; max-width: 171px;" title="User" src="https://www.linkarts.fr/assets/img/editors_email_images/image-5.jpeg" alt="User" width="171" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -6130,7 +6130,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 71%; max-width: 127.8px;" title="User" src="https://www.linkarts.fr/assets/img/editors/images/image-6.jpeg" alt="User" width="127.8" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 71%; max-width: 127.8px;" title="User" src="https://www.linkarts.fr/assets/img/editors_email_images/image-6.jpeg" alt="User" width="127.8" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -6172,7 +6172,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 180px;" title="User" src="https://www.linkarts.fr/assets/img/editors/images/image-8.png" alt="User" width="180" align="center" border="0" /></td>
+    <td style="padding-right: 0px; padding-left: 0px;" align="center"><img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 180px;" title="User" src="https://www.linkarts.fr/assets/img/editors_email_images/image-8.png" alt="User" width="180" align="center" border="0" /></td>
     </tr>
     </tbody>
     </table>
@@ -6277,7 +6277,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table style="border-collapse: collapse; table-layout: fixed; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt; vertical-align: top; margin-right: 10px;" border="0" width="32" cellspacing="0" cellpadding="0" align="left">
     <tbody>
     <tr style="vertical-align: top;">
-    <td style="word-break: break-word; border-collapse: collapse !important; vertical-align: top;" align="left" valign="middle"><a title="Instagram" href="https://www.instagram.com/linkarts.fr/" target="_blank"> <img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: block !important; border: none; height: auto; float: none; max-width: 32px !important;" title="Instagram" src="https://www.linkarts.fr/assets/img/editors/images/image-3.png" alt="Instagram" width="32" /> </a></td>
+    <td style="word-break: break-word; border-collapse: collapse !important; vertical-align: top;" align="left" valign="middle"><a title="Instagram" href="https://www.instagram.com/linkarts.fr/" target="_blank"> <img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: block !important; border: none; height: auto; float: none; max-width: 32px !important;" title="Instagram" src="https://www.linkarts.fr/assets/img/editors_email_images/image-3.png" alt="Instagram" width="32" /> </a></td>
     </tr>
     </tbody>
     </table>
@@ -6285,7 +6285,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table style="border-collapse: collapse; table-layout: fixed; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt; vertical-align: top; margin-right: 10px;" border="0" width="32" cellspacing="0" cellpadding="0" align="left">
     <tbody>
     <tr style="vertical-align: top;">
-    <td style="word-break: break-word; border-collapse: collapse !important; vertical-align: top;" align="left" valign="middle"><a title="Facebook" href="https://www.facebook.com/linkarts.fr" target="_blank"> <img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: block !important; border: none; height: auto; float: none; max-width: 32px !important;" title="Facebook" src="https://www.linkarts.fr/assets/img/editors/images/image-2.png" alt="Facebook" width="32" /> </a></td>
+    <td style="word-break: break-word; border-collapse: collapse !important; vertical-align: top;" align="left" valign="middle"><a title="Facebook" href="https://www.facebook.com/linkarts.fr" target="_blank"> <img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: block !important; border: none; height: auto; float: none; max-width: 32px !important;" title="Facebook" src="https://www.linkarts.fr/assets/img/editors_email_images/image-2.png" alt="Facebook" width="32" /> </a></td>
     </tr>
     </tbody>
     </table>
@@ -6293,7 +6293,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <table style="border-collapse: collapse; table-layout: fixed; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt; vertical-align: top; margin-right: 0px;" border="0" width="32" cellspacing="0" cellpadding="0" align="left">
     <tbody>
     <tr style="vertical-align: top;">
-    <td style="word-break: break-word; border-collapse: collapse !important; vertical-align: top;" align="left" valign="middle"><a title="LinkedIn" href="https://www.linkedin.com/company/linkarts/" target="_blank"> <img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: block !important; border: none; height: auto; float: none; max-width: 32px !important;" title="LinkedIn" src="https://www.linkarts.fr/assets/img/editors/images/image-1.png" alt="LinkedIn" width="32" /> </a></td>
+    <td style="word-break: break-word; border-collapse: collapse !important; vertical-align: top;" align="left" valign="middle"><a title="LinkedIn" href="https://www.linkedin.com/company/linkarts/" target="_blank"> <img style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: block !important; border: none; height: auto; float: none; max-width: 32px !important;" title="LinkedIn" src="https://www.linkarts.fr/assets/img/editors_email_images/image-1.png" alt="LinkedIn" width="32" /> </a></td>
     </tr>
     </tbody>
     </table>

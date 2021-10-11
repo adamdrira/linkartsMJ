@@ -5,6 +5,7 @@ var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 var nodemailer = require('nodemailer');
+const sharp = require('sharp');
 module.exports = (router,list_of_projects, list_of_projects_responses,list_of_users) => {
 
     function get_current_user(token){
@@ -1226,5 +1227,124 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
           }).then(number=>{res.status(200).send([{number:number}])})     
     });
 
+
+    router.get('/get_editor_pp/:file_name', function (req, res) {
+
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+      const file_name = req.params.file_name;
+      let filename = "./data_and_routes/editors_images/" + file_name ;
+      let transform = sharp()
+      transform = transform.resize(100,100)
+      .toFormat('jpeg')
+      .jpeg({ quality: 100})
+      .toBuffer((err, buffer, info) => {
+          if (buffer) {
+              res.status(200).send(buffer);
+          }
+          else{
+            Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+              if (err){
+                res.status(404).send({err:"error"});
+              }
+              else{
+                lenna
+                .resize(100,100) 
+                .quality(100) 
+                .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                  if(err){
+                    res.status(404).send({err:err});
+                  }
+                  else{
+                    res.status(200).send(buffer);
+                  }
+                  
+                });
+              }
+              
+            });
+          }
+      });
+      fs.access(filename, fs.F_OK, (err) => {
+        if(err){
+          filename = "./data_and_routes/not-found-image.jpg";
+          var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+          not_found.pipe(transform);
+        }  
+        else{
+          var pp = fs.createReadStream( path.join(process.cwd(),filename))
+          pp.pipe(transform);
+        }     
+      })
+   
+  });
+
+
+  router.get('/get_editor_cover/:file_name', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    const file_name = req.params.file_name;
+    let filename = "./data_and_routes/editors_images/" + file_name ;
+    let transform = sharp()
+    transform = transform.resize({fit:sharp.fit.inside,width:500})
+    .toFormat('jpeg')
+    .jpeg({ quality: 100})
+    .toBuffer((err, buffer, info) => {
+        if (buffer) {
+            res.status(200).send(buffer);
+        }
+        else{
+          Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+            if (err){
+              res.status(404).send({err:"error"});
+            }
+            else{
+              lenna
+              .resize(500,Jimp.AUTO) 
+              .quality(100) 
+              .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                if(err){
+                  res.status(404).send({err:err});
+                }
+                else{
+                  res.status(200).send(buffer);
+                }
+                
+              });
+            }
+            
+          });
+        }
+    });
+    fs.access(filename, fs.F_OK, (err) => {
+      if(err){
+        filename = "./data_and_routes/not-found-image.jpg";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
+      }  
+      else{
+        var pp = fs.createReadStream( path.join(process.cwd(),filename))
+        pp.pipe(transform);
+      }     
+    })
+ 
+});
 
 }
