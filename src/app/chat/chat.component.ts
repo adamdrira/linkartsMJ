@@ -1727,10 +1727,10 @@ export class ChatComponent implements OnInit  {
       if(day=="Fri"){
         return"Vendredi";
       }
-      if(day=='Thu'){
+      if(day=='Sat'){
         return"Samedi";
       }
-      if(day=='Thu'){
+      if(day=='Sun'){
         return"Dimanche";
       }
       else{
@@ -1747,49 +1747,58 @@ export class ChatComponent implements OnInit  {
    
   }
 
+  compteur=0;
+
   date_of_message(timestamp,index){
     
     if(index==0){
       let today=new Date(timestamp);
+     
       let hour =String(today.getHours()).padStart(2, '0');
       let min =String(today.getMinutes()).padStart(2, '0');
       let day=String(today.getDate()).padStart(2, '0')
+  
       let month=String(today.getMonth() + 1).padStart(2, '0');
+     
       let year = today.getFullYear();
-      if(timestamp.substring(5,7)=='01'){
+
+      if(this.compteur<10){
+        this.compteur++;
+      }
+      if(month=='01'){
         month="Janvier"
       }
-      if(timestamp.substring(5,7)=='02'){
+      if(month=='02'){
         month="Février"
       }
-      if(timestamp.substring(5,7)=='03'){
+      if(month=='03'){
         month="Mars"
       }
-      if(timestamp.substring(5,7)=='04'){
+      if(month=='04'){
         month="Avril"
       }
-      if(timestamp.substring(5,7)=='05'){
+      if(month=='05'){
         month="Mai"
       }
-      if(timestamp.substring(5,7)=='06'){
+      if(month=='06'){
         month="Juin"
       }
-      if(timestamp.substring(5,7)=='07'){
+      if(month=='07'){
         month="Juillet"
       }
-      if(timestamp.substring(5,7)=='08'){
+      if(month=='08'){
         month="Aout"
       }
-      if(timestamp.substring(5,7)=='09'){
+      if(month=='09'){
         month="Septembre"
       }
-      if(timestamp.substring(5,7)=='10'){
+      if(month=='10'){
         month="Octobre"
       }
-      if(timestamp.substring(5,7)=='11'){
+      if(month=='11'){
         month="Novembre"
       }
-      if(timestamp.substring(5,7)=='12'){
+      if(month=='12'){
         month="Décembre"
       }
       let date=day + ' ' + month + ' ' + year + ' à ' + hour + ":" +min;
@@ -3082,7 +3091,6 @@ chat_service_managment_function(msg){
   else{
     //a person sends a message
     if(msg[0].id_user!="server" && !msg[0].is_from_server){
-     
       if(msg[0].is_a_group_chat){
         //currently in the group talking to my friends
         if(msg[0].id_user==this.friend_id && msg[0].status!='seen' && this.friend_type=='group'){

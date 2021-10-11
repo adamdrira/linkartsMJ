@@ -91,6 +91,7 @@ export class NavbarLinkartsComponent implements OnInit {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl.push(event.url);
+        this.navbar.setPreviousUrls(this.previousUrl)
         if(event.url.includes("chat") || event.url.includes("signup")){
           this.show_menu_phone=false;
         }
@@ -1548,6 +1549,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.navbar.delete_click_after_ressearch_from_history(category,format,target_id).pipe( first()).subscribe(r=>{
       this.list_of_first_propositions_history.splice(i,1);
       this.list_of_last_propositions_history.splice(i,1);
+      this.list_of_thumbnails_history.splice(i,1)
     })
   }
 /***************************************login  **********************************/

@@ -2662,7 +2662,7 @@ get_name_of_someone_who_exit_group(id,l,item){
       if(day=='Sat'){
         return"Sam";
       }
-      if(day=='Thu'){
+      if(day=='Sun'){
         return"Dim";
       }
       else{

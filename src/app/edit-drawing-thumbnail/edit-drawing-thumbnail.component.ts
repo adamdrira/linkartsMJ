@@ -324,10 +324,20 @@ export class EditDrawingThumbnailComponent implements OnInit {
       let format=this.format=="artbook"?"Artbook":"Œuvre unique";
       this.Drawings_CoverService.add_covername_to_sql(format,this.drawing_id).pipe( first()).subscribe(res=>{
         if(!res[0].error){
-          this.Drawings_Onepage_Service.send_drawing_height_one_shot(this.thumbnail_height,this.drawing_id).pipe( first()).subscribe(r=>{
-            this.router.navigate([`/account/` + this.author.nickname]);
-            this.cd.detectChanges();
-          })
+
+          if(format=="Artbook"){
+            this.Drawings_Artbook_Service.send_drawing_height_artbook(this.thumbnail_height,this.drawing_id).pipe( first()).subscribe(r=>{
+              this.router.navigate([`/account/` + this.author.nickname]);
+              this.cd.detectChanges();
+            })
+          }
+          else{
+            this.Drawings_Onepage_Service.send_drawing_height_one_shot(this.thumbnail_height,this.drawing_id).pipe( first()).subscribe(r=>{
+              this.router.navigate([`/account/` + this.author.nickname]);
+              this.cd.detectChanges();
+            })
+          }
+          
         }
         else{
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
