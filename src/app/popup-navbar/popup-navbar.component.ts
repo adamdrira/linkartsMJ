@@ -681,6 +681,7 @@ get_date(created){
       this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt);
     }
     this.show_notifications=true;
+    this.cd.detectChanges();
     if(this.myScrollContainer){
       this.scroll_notifs = merge(
         fromEvent(window, 'scroll'),
