@@ -12,7 +12,7 @@ import { NavbarService } from '../services/navbar.service';
 
 
 
-const url = 'http://localhost:4600/routes/upload_thumbnail_ad';
+const url = 'https://www.linkarts.fr/routes/upload_thumbnail_ad';
 
 @Component({
   selector: 'app-uploader-thumbnail-ad',
@@ -154,7 +154,7 @@ export class UploaderThumbnailAdComponent implements OnInit {
     };
 
     this.uploader.onCompleteItem = (file) => {
-
+      this.navbar.add_page_visited_to_history(`/onComplete_thumbnail_ad`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
       if(this.number_of_reload>10){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
@@ -164,9 +164,9 @@ export class UploaderThumbnailAdComponent implements OnInit {
         return
       }
 
-      if(file.isSuccess){
+      if(file.isSuccess  && file._file && file._file.size/1024/1024!=0){
         this.confirmation = true; 
-      
+        this.number_of_reload=0;
         if(!this.for_edition){
           
           this.Ads_service.get_thumbnail_name().pipe(first()).subscribe(r=>{

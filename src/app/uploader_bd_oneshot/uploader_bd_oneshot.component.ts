@@ -212,7 +212,7 @@ get validate_all(): boolean {
 
     this.uploader.onCompleteItem = (file) => {
       
-
+      this.navbar.add_page_visited_to_history(`/onComplete_bd_one_shot`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
       if(!this.old_one_shot){
         this.sendImageUploaded.emit({page:this._page +1,file:file});
       }
@@ -225,7 +225,8 @@ get validate_all(): boolean {
           return
         }
   
-        if(file.isSuccess){
+        if(file.isSuccess  && file._file && file._file.size/1024/1024!=0){
+          this.number_of_reload=0;
           this.editImageOldOneShot.emit({type:"edit",page:this.page,image:this.image_to_show});
          
           this.original_image=this.image_to_show;

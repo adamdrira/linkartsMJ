@@ -10,7 +10,7 @@ import { Subscribing_service } from '../services/subscribing.service';
 import { NavbarService } from '../services/navbar.service';
 import { first } from 'rxjs/operators';
 
-const url = 'http://localhost:4600/routes/upload_drawing_onepage';
+const url = 'https://www.linkarts.fr/routes/upload_drawing_onepage';
 @Component({
   selector: 'app-uploader-dessin-unique',
   templateUrl: './uploader-dessin-unique.component.html',
@@ -150,7 +150,7 @@ export class UploaderDessinUniqueComponent implements OnInit {
       };
 
       this.uploader.onCompleteItem = (file) => {
-
+        this.navbar.add_page_visited_to_history(`/onComplete_dessin_unique`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
         if(this.number_of_reload>10){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
@@ -159,7 +159,8 @@ export class UploaderDessinUniqueComponent implements OnInit {
           return
         }
 
-        if(file.isSuccess){
+        if(file.isSuccess  && file._file && file._file.size/1024/1024!=0){
+          this.number_of_reload=0;
           this.Drawings_Onepage_Service.validate_drawing(this.drawing_id).pipe(first()).subscribe(r=>{
             this.Subscribing_service.validate_content("drawing","one-shot",this.drawing_id,0).pipe(first()).subscribe(l=>{
               this.NotificationsService.add_notification('add_publication',this.user_id,this.pseudo,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).pipe(first()).subscribe(l=>{

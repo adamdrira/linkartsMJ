@@ -471,8 +471,9 @@ export class SwiperUploadSerieComponent implements OnInit {
           
           
           this.componentRef[ step ].instance.sendImageUploaded.pipe(takeUntil(this.ngUnsubscribe)).subscribe( v => {
-  
-            if(v.file.isSuccess){
+            this.navbar.add_page_visited_to_history(`/onComplete_swiper_bd_serie`,(v.file._file.size/1024/1024).toString).pipe( first() ).subscribe();
+            if(v.file.isSuccess  && v.file._file && v.file._file.size/1024/1024!=0){
+              this.number_of_reload[step+1]=0;
               this.number_of_page_uploaded+=1;
               this.cd.detectChanges();
             }

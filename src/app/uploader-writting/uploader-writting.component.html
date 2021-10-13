@@ -56,12 +56,14 @@
 
                 
             </ng-container>
+
             <ng-container *ngIf="uploader.queue[0].isSuccess">
                 <button type="button" class="btn btn-danger btn-xs"
                         (click)="remove_afterupload(uploader.queue[0]);" >
-                    <span class="glyphicon glyphicon-trash">Recommencer</span> 
+                    <span class="glyphicon glyphicon-trash">Supprimer</span> 
                 </button>
             </ng-container>
+            
         </div>
     </ng-container>
     

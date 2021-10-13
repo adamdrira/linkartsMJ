@@ -209,7 +209,7 @@ export class UploaderCoverWritingComponent implements OnInit {
     };
 
     this.uploader.onCompleteItem = (file) => {
-
+      this.navbar.add_page_visited_to_history(`/onComplete_cover_writing`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
       if(this.number_of_reload>10){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
@@ -219,8 +219,9 @@ export class UploaderCoverWritingComponent implements OnInit {
         return
       }
 
-      if(file.isSuccess){
+      if(file.isSuccess  && file._file && file._file.size/1024/1024!=0){
         this.confirmation = true; 
+        this.number_of_reload=0;
         if(this.for_edition){
           this.Writing_CoverService.get_cover_name().pipe(first() ).subscribe(r=>{
   

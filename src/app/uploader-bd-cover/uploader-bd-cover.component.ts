@@ -202,6 +202,7 @@ export class UploaderBdCoverComponent implements OnInit {
 
     this.uploader.onCompleteItem = (file) => {
 
+      this.navbar.add_page_visited_to_history(`/onComplete_bd_cover`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
       if(this.number_of_reload>10){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
@@ -212,7 +213,8 @@ export class UploaderBdCoverComponent implements OnInit {
       }
 
 
-      if(file.isSuccess){
+      if(file.isSuccess && file._file && file._file.size/1024/1024!=0){
+        this.number_of_reload=0;
         this.confirmation = true; 
         if(this.for_edition){
           this.Bd_CoverService.get_cover_name().pipe(first()).subscribe(r=>{
@@ -268,6 +270,7 @@ export class UploaderBdCoverComponent implements OnInit {
      
     }
 
+   
     /*this.uploader.onErrorItem = (item, response, status, headers) => {
       this.cover_loading=false;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {

@@ -176,6 +176,7 @@ export class UploaderBdSerieComponent implements OnInit{
     };
     
     this.uploader.onCompleteItem = (file) => {
+      this.navbar.add_page_visited_to_history(`/onComplete_bd_serie`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
       if(!this.old_chapter){
         this.sendImageUploaded.emit({page:this.page +1,file:file});
       }
@@ -188,9 +189,9 @@ export class UploaderBdSerieComponent implements OnInit{
           return
         }
   
-        if(file.isSuccess){
+        if(file.isSuccess  && file._file && file._file.size/1024/1024!=0){
           this.editImageOldChapter.emit({type:"edit",page:this.page,image:this.image_to_show});
-         
+          this.number_of_reload=0;
           this.original_image=this.image_to_show;
           this.can_upload_new_image=false;
           this.uploader.queue.pop();

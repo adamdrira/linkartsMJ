@@ -671,7 +671,7 @@ export class ChatComponent implements OnInit  {
   
 
     this.uploader.onCompleteItem = (file) => {
-
+      this.navbar.add_page_visited_to_history(`/onComplete_chat_attachment`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
       if(this.number_of_reload_uploader>10){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
@@ -680,8 +680,8 @@ export class ChatComponent implements OnInit  {
         return
       }
 
-      if(file.isSuccess){
-        
+      if(file.isSuccess  && file._file && file._file.size/1024/1024!=0){
+        this.number_of_reload_uploader=0;
         this.k++;
         if(this.k<this.uploader.queue.length){
           this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.uploader.queue[this.k]._file.name,0).pipe(first() ).subscribe(r=>{

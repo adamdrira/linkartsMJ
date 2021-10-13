@@ -9,6 +9,7 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { FileUploader } from 'ng2-file-upload';
 import { DomSanitizer } from '@angular/platform-browser';
+import { first } from 'rxjs/operators';
 
 const url = 'https://www.linkarts.fr/routes/upload_artwork_for_editor/';
 
@@ -119,11 +120,31 @@ export class PopupEditorArtworkComponent implements OnInit {
 
 
     this.uploader.onCompleteItem = (file) => {
-      this.dialogRef.close(this.file);
+      
+      this.navbar.add_page_visited_to_history(`/onComplete_popup_editor_artwork`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
+        if(this.number_of_reload>10){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
+            panelClass: "popupConfirmationClass",
+          });
+          return
+        }
+
+        if(file.isSuccess  && file._file && file._file.size/1024/1024!=0){
+          this.number_of_reload=0;
+          this.dialogRef.close(this.file);
+        }
+        else{
+          let reload_interval = setInterval(() => {
+            this.uploader.queue[0].upload();
+            this.number_of_reload+=1;
+            clearInterval(reload_interval)
+          }, 500);
+        }
     }
   }
 
-
+  number_of_reload=0;
   registerForm: FormGroup;
   build_form() {
     this.registerForm = this.formBuilder.group({
@@ -193,7 +214,7 @@ export class PopupEditorArtworkComponent implements OnInit {
       }
       else {
 
-        this.Profile_Edition_Service.add_editor_artwork(this.registerForm.value.title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.authors.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.link?this.registerForm.value.link:'',this.file_name).subscribe(r=>{
+        this.Profile_Edition_Service.add_editor_artwork(this.registerForm.value.title.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.description.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.authors.replace(/\n\s*\n\s*\n/g, '\n\n').trim(),this.registerForm.value.link?this.registerForm.value.link:'',this.file_name).pipe( first() ).subscribe(r=>{
          
           this.file=r[0]
           let URL = url + `${this.file_name}`;

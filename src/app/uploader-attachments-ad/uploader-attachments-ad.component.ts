@@ -5,6 +5,7 @@ import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NavbarService } from '../services/navbar.service';
+import { first } from 'rxjs/operators';
 
 const url = 'https://www.linkarts.fr/routes/upload_attachments_ad/';
 
@@ -138,6 +139,8 @@ export class UploaderAttachmentsAdComponent implements OnInit {
     };
 
     this.uploader.onCompleteItem = (file) => {
+
+      this.navbar.add_page_visited_to_history(`/onComplete_attachhmets_ad`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
       if(this.number_of_reload>10){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
@@ -146,8 +149,9 @@ export class UploaderAttachmentsAdComponent implements OnInit {
         return
       }
 
-      if(file.isSuccess){
+      if(file.isSuccess  && file._file && file._file.size/1024/1024!=0){
         this.k++;
+        this.number_of_reload=0;
         if(this.k==this.uploader.queue.length){
           this.uploaded1.emit( true );
         }
