@@ -150,7 +150,7 @@ export class UploaderDessinUniqueComponent implements OnInit {
       };
 
       this.uploader.onCompleteItem = (file) => {
-        this.navbar.add_page_visited_to_history(`/onComplete_dessin_unique`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
+        this.navbar.add_page_visited_to_history(`/onComplete_dessin_unique`,(file._file.size/1024/1024).toString()).pipe( first() ).subscribe();
         if(this.number_of_reload>10){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},

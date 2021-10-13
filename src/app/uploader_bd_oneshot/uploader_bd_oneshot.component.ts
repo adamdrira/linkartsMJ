@@ -212,7 +212,7 @@ get validate_all(): boolean {
 
     this.uploader.onCompleteItem = (file) => {
       
-      this.navbar.add_page_visited_to_history(`/onComplete_bd_one_shot`,(file._file.size/1024/1024).toString).pipe( first() ).subscribe();
+      this.navbar.add_page_visited_to_history(`/onComplete_bd_one_shot`,(file._file.size/1024/1024).toString()).pipe( first() ).subscribe();
       if(!this.old_one_shot){
         this.sendImageUploaded.emit({page:this._page +1,file:file});
       }
