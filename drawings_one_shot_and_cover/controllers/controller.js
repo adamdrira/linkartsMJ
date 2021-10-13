@@ -375,7 +375,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       
       let upload = multer({
         storage: storage
-      }).any();
+      }).single();
 
       upload(req, res, function(err){
           (async () => {
@@ -387,7 +387,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               destination: './data_and_routes/covers_drawings',
               plugins: [
                 imageminPngquant({
-                  quality:  [0.85, 0.95]
+                  quality:  [0.95, 1]
               })
               ]
             });
@@ -598,7 +598,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     });
     var upload = multer({
         storage: storage
-    }).any();
+    }).single();
 
     upload(req, res, function(err) {
         if (err) {
@@ -610,7 +610,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   destination: './data_and_routes/covers_drawings',
                   plugins: [
                     imageminPngquant({
-                      quality: [0.85, 0.95]
+                      quality: [0.95, 1]
                   })
                   ]
                 });
@@ -944,7 +944,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       let transform = sharp()
       transform = transform.resize({width:200})
       .toFormat('jpeg')
-      .jpeg({ quality: 90})
+      .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
@@ -957,7 +957,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               else{
                 lenna
                 .resize(200,Jimp.AUTO) 
-                .quality(90) 
+                .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
                     res.status(404).send({err:err});
@@ -1003,7 +1003,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     let transform = sharp()
       transform = transform.resize({width:320})
       .toFormat('jpeg')
-      .jpeg({ quality: 90})
+      .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
@@ -1016,7 +1016,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               else{
                 lenna
                 .resize(320,Jimp.AUTO) 
-                .quality(90) 
+                .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
                     res.status(404).send({err:err});
@@ -1062,7 +1062,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     let transform = sharp()
       transform = transform.resize(35,35)
       .toFormat('jpeg')
-      .jpeg({ quality: 90})
+      .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
@@ -1075,7 +1075,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               else{
                 lenna
                 .resize(35,Jimp.AUTO) 
-                .quality(90) 
+                .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
                     res.status(404).send({err:err});
@@ -1119,9 +1119,9 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
         let filename = "./data_and_routes/drawings_one_page/" + req.params.file_name;
 
         let transform = sharp()
-        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        transform = transform.resize({fit:sharp.fit.inside,width:(width<600)?600:width})
         .toFormat('jpeg')
-        .jpeg({ quality: 90})
+        .jpeg({ quality: 100})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -1133,8 +1133,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                 }
                 else{
                   lenna
-                  .resize(width,Jimp.AUTO) 
-                  .quality(90) 
+                  .resize((width<600)?600:width,Jimp.AUTO) 
+                  .quality(100) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                     if(err){
                       res.status(404).send({err:err});
@@ -1185,7 +1185,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       let transform = sharp()
       transform = transform.resize({fit:sharp.fit.inside,width:266})
       .toFormat('jpeg')
-      .jpeg({ quality: 90})
+      .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
           if (buffer) {
               res.status(200).send(buffer);
@@ -1198,7 +1198,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               else{
                 lenna
                 .resize(266,Jimp.AUTO) 
-                .quality(90) 
+                .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
                     res.status(404).send({err:err});

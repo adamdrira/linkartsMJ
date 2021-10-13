@@ -915,7 +915,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 			res.status(500).json({msg: "error", details: err});		
 		}).then(page =>  {
       let transform = sharp()
-      transform = transform.resize({fit:sharp.fit.inside,width:width}) 
+      transform = transform.resize({fit:sharp.fit.inside,width:(width<600)?600:width}) 
       .toFormat('jpeg')
       .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
@@ -930,7 +930,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
               }
               else{
                 lenna
-                .resize(width,Jimp.AUTO) 
+                .resize((width<600)?600:width,Jimp.AUTO) 
                 .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
@@ -952,7 +952,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
           let filename = "./data_and_routes/drawings_pages_artbook/" + page.file_name;
           let transform2 = sharp()
           transform2 = transform2
-          .resize({fit:sharp.fit.inside,width:width})
+          .resize({fit:sharp.fit.inside,width:(width<600)?600:width})
           .toFormat('jpeg')
           .jpeg({ quality: 100})
           .toBuffer((err, buffer, info) => {
@@ -966,7 +966,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
                   }
                   else{
                     lenna
-                    .resize(width,Jimp.AUTO) 
+                    .resize((width<600)?600:width,Jimp.AUTO) 
                     .quality(100) 
                     .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                       if(err){

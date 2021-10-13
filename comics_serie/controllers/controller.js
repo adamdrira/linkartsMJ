@@ -1309,7 +1309,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 		}).then(page =>  {
   
         let transform = sharp()
-        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        transform = transform.resize({fit:sharp.fit.inside,width:(width<600)?600:width})
         .toFormat('jpeg')
         .jpeg({ quality: 100})
         .toBuffer((err, buffer, info) => {
@@ -1324,7 +1324,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 }
                 else{
                   lenna
-                  .resize(width,Jimp.AUTO) 
+                  .resize((width<600)?600:width,Jimp.AUTO) 
                   .quality(100) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                     if(err){
@@ -1345,7 +1345,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           
           let filename = "./data_and_routes/pages_bd_serie/" + page.file_name;
           let transform2 = sharp()
-          transform2 = transform2.resize({fit:sharp.fit.inside,width:width})
+          transform2 = transform2.resize({fit:sharp.fit.inside,width:(width<600)?600:width})
           .toFormat('jpeg')
           .jpeg({ quality: 100})
           .toBuffer((err, buffer, info) => {
@@ -1359,7 +1359,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                   }
                   else{
                     lenna
-                    .resize(width,Jimp.AUTO) 
+                    .resize((width<600)?600:width,Jimp.AUTO) 
                     .quality(100) 
                     .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                       if(err){

@@ -1205,7 +1205,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
       }).then(page =>  {
 
         let transform = sharp()
-        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        transform = transform.resize({fit:sharp.fit.inside,width:(width<600)?600:width})
         .toFormat('jpeg')
         .jpeg({ quality: 100})
         .toBuffer((err, buffer, info) => {
@@ -1220,7 +1220,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                 }
                 else{
                   lenna
-                  .resize(width,Jimp.AUTO) 
+                  .resize((width<600)?600:width,Jimp.AUTO) 
                   .quality(100) 
                   .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                     if(err){
@@ -1241,7 +1241,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
           let filename = "./data_and_routes/pages_bd_oneshot/" + page.file_name;
 
           let transform2 = sharp()
-          transform2 = transform2.resize({fit:sharp.fit.inside,width:width})
+          transform2 = transform2.resize({fit:sharp.fit.inside,width:(width<600)?600:width})
           .toFormat('jpeg')
           .jpeg({ quality: 100})
           .toBuffer((err, buffer, info) => {
@@ -1255,7 +1255,7 @@ router.get('/retrieve_thumbnail_bd_picture_navbar/:file_name', function (req, re
                   }
                   else{
                     lenna
-                    .resize(width,Jimp.AUTO) 
+                    .resize((width<600)?600:width,Jimp.AUTO) 
                     .quality(100) 
                     .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                       if(err){
