@@ -385,7 +385,7 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
       let transform = sharp()
         transform = transform.resize(78,78)
         .toFormat('jpeg')
-        .jpeg({ quality: 90})
+        .jpeg({ quality: 100})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
@@ -1443,7 +1443,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   (async () => {
 
     const user_id = parseInt(req.params.user_id);
-    User = await users.findOne({
+    let User = await users.findOne({
       where: {
         id: user_id,
       }
@@ -2802,6 +2802,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           "nickname":"Utilisateur_introuvable_" +user.id,
           "firstname":"Utilisateur introuvable",
           "lastname":"",
+          "type_of_account":"old-account",
           "profile_pic_file_name":"default_profile_picture.png",
 					"cover_pic_file_name":"default_cover_picture.png",
         }).catch(err => {
@@ -5147,8 +5148,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       console.log("in profile")
     })
     .catch(err => {
-      console.log("in error")
-      console.error(err);
     })
      
     ig.scrapeUserPage("driraadam").then((result) => {
@@ -5309,6 +5308,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
  
 
   router.post('/send_collaboration_email', function (req, res) {
+    console.log("send_collaboration_email")
     if( req.body.client_id!='LinkArts-email' || req.body.client_secret!='le-Site-De-Mokhtar-Le-Pdg-@LinkArts') {
         return res.status(401).json({msg: "error"});
     }
@@ -5316,7 +5316,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     let emitter=req.body.emitter;
     let editor_name=req.body.editor_name;
     
-  
+    console.log("pass")
     
     let mail_to_send=`<p>&nbsp;</p>
     <!-- [if gte mso 9]>
@@ -6117,7 +6117,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     <tr>
     <td class="v-container-padding-padding" style="overflow-wrap: break-word; word-break: break-word; padding: 10px; font-family: arial,helvetica,sans-serif;" align="left">
     <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 140%;">"Nous sommes continuellement en qu&ecirc;te de nouveaux talents, c'est pour cela que nous pensons que linkarts pourrait &ecirc;te un bon fit pour nous."</p>
+    <p style="font-size: 14px; line-height: 140%;">"Nous sommes continuellement en qu&ecirc;te de nouveaux talents, c'est pour cela que nous pensons que LinkArts pourrait &ecirc;te un bon fit pour nous."</p>
     </div>
     </td>
     </tr>
@@ -6343,9 +6343,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
     var mailOptions = {
-      from: 'Linkarts <adam.drira@linkarts.fr>', 
+      from: 'LinkArts <adam.drira@linkarts.fr>', 
       to: emitter, // my mail
-      bcc:"appaloosa-adam@hotmail.fr",
+      bcc:["appaloosa-adam@hotmail.fr","zribi.oussama97@gmail.com","mmeghaichi@gmail.com"],
       subject: `Proposition de partenariat`, 
       html:  mail_to_send,
     };
@@ -6356,6 +6356,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           if (error) {
               res.status(200).send([{error:error}])
           } else {
+            console.log("sent")
               res.status(200).send(mail_to_send)
           }
       })

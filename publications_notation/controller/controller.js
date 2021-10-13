@@ -51,8 +51,24 @@ module.exports = (router,
           return res.status(401).json({msg: "error"});
         }
       }
+
+
+      
+
+
     let current_user = get_current_user(req.cookies.currentUser);
-    
+    (async () => {
+        let user_found = await User.findOne({
+            where: {
+                id:current_user,
+            },
+        })
+        
+        if(!user_found || (user_found && user_found.status=='visitor')){
+            return res.status(401).json({msg: "error"});	
+        }
+     })(); 
+
             const category = req.params.category;
             const format = req.params.format;
             const style = req.params.style;
@@ -488,7 +504,21 @@ module.exports = (router,
             }
         }
         let current_user = get_current_user(req.cookies.currentUser);
-        
+        (async () => {
+            let user_found = await User.findOne({
+                where: {
+                    id:current_user,
+                }
+            })
+            .catch(err => {
+                    
+                res.status(500).json({msg: "error", details: err});		
+            })
+            
+            if(!user_found || (user_found && user_found.status=='visitor')){
+                return res.status(401).json({msg: "error"});	
+            }
+         })(); 
             const category = req.params.category;
             const format = req.params.format;
             const style = req.params.style;
@@ -1586,6 +1616,21 @@ module.exports = (router,
       }
         let current_user = get_current_user(req.cookies.currentUser);
         
+        (async () => {
+            let user_found = await User.findOne({
+                where: {
+                    id:current_user,
+                }
+            })
+            .catch(err => {
+                    
+                res.status(500).json({msg: "error", details: err});		
+            })
+            
+            if(!user_found || (user_found && user_found.status=='visitor')){
+                return res.status(401).json({msg: "error"});	
+            }
+         })(); 
         const category = req.body.category;
         const format = req.body.format;
         const style = req.body.style;
@@ -2134,7 +2179,21 @@ module.exports = (router,
         }
       }
         let current_user = get_current_user(req.cookies.currentUser);
-        
+        (async () => {
+            let user_found = await User.findOne({
+                where: {
+                    id:current_user,
+                }
+            })
+            .catch(err => {
+                    
+                res.status(500).json({msg: "error", details: err});		
+            })
+            
+            if(!user_found || (user_found && user_found.status=='visitor')){
+                return res.status(401).json({msg: "error"});	
+            }
+         })(); 
             const category = req.body.category;
             const format = req.body.format;
             const style = req.body.style;
@@ -2665,7 +2724,6 @@ module.exports = (router,
                         id:comment_anwser_id,
                         }
                 }).catch(err => {
-                    console.log(err)
                     res.status(500).json({msg: "error", details: err});		
                 }).then(comment_answer=>{
                     if(comment_answer){
@@ -2677,7 +2735,6 @@ module.exports = (router,
                                 status:"ok"
                             }
                         }).catch(err => {
-                            console.log(err)
                             res.status(500).json({msg: "error", details: err});		
                         }).then(content=>{
                             if(content){
@@ -2886,7 +2943,6 @@ module.exports = (router,
                 },
             })
             .catch(err => {
-			console.log(err)
 			res.status(500).json({msg: "error", details: err});		
 		}).then(views =>  {
                 number_of_views+=views.length
