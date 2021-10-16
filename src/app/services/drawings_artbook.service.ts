@@ -120,6 +120,12 @@ export class Drawings_Artbook_Service {
     }));
   }
 
+  retrieve_drawing_page_ofartbook_miniature(drawing_id,drawing_page){
+    return this.httpClient.get(`routes/retrieve_drawing_page_ofartbook_miniature/${drawing_id}/${drawing_page}`,{responseType:'blob'}).pipe(map(information=>{
+      return [information,drawing_page];   
+    }));
+  }
+
   retrieve_drawing_page_ofartbook_artwork(drawing_id,drawing_page){
     return this.httpClient.get(`routes/retrieve_drawing_page_ofartbook_artwork/${drawing_id}/${drawing_page}`,{responseType:'blob'}).pipe(map(information=>{
       return [information,drawing_page];   
