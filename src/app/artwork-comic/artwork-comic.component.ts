@@ -1194,7 +1194,7 @@ export class ArtworkComicComponent implements OnInit {
           window.dispatchEvent(new Event("resize"));
         },
         slideChange: function () {
-          //THIS.get_new_page(THIS.swiper.activeIndex)
+          THIS.load_more_pages()
           THIS.refresh_swiper_pagination();
         }
       },
@@ -2410,40 +2410,42 @@ export class ArtworkComicComponent implements OnInit {
   a_drawing_is_loaded(i){
     this.display_comics_pages[i]=true;
     this.initialize_swiper();
-
-    if(this.style=="Manga"){
-      if(i==this.pagesnumber-1){
-        this.get_new_page(this.swiper.activeIndex)
-        this.pre_load_other_pages("Manga")
-      }
-    }
-    else{
+    if(this.style!="Manga"){
       if(i==0){
         this.get_new_page(this.swiper.activeIndex);
-
-        this.pre_load_other_pages("other")
+        this.pre_load_other_pages()
       }
     }
    
   }
 
-  pre_load_other_pages(style){
+  pre_load_other_pages(){
     if(this.pagesnumber>1){
-      let interval = setInterval(() => {
-        if(style=="Manga"){
-          for(let i=0;i<this.pagesnumber-1;i++){
-            this.get_new_page(i)
-          }
-        }
-        else{
-          for(let i=1;i<this.pagesnumber;i++){
-            this.get_new_page(i)
-          }
-        }
-        clearInterval(interval)
-      },1000)
+      let length=this.pagesnumber>5?5:this.pagesnumber;
+      for(let i=0;i<length;i++){
+        this.get_new_page(i)
+      }
     }
-   
+  }
+
+  load_more_pages(){  
+    if(this.swiper.activeIndex>=0 && !this.list_of_real_pages_retrieved[this.swiper.activeIndex] && this.swiper.activeIndex<this.pagesnumber){
+ 
+      if(this.style=="Manga"){
+        let length=this.swiper.activeIndex>4?(this.swiper.activeIndex-5):0;
+        for(let i=this.swiper.activeIndex;i>=length;i--){
+          this.get_new_page(i)
+        }
+      }
+      else{
+        let length=this.pagesnumber>this.swiper.activeIndex+4?(this.swiper.activeIndex+5):this.pagesnumber;
+        for(let i=this.swiper.activeIndex;i<length;i++){
+          this.get_new_page(i)
+        }
+      }
+      
+    }
+
   }
 
 

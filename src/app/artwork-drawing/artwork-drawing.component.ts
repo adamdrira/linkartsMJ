@@ -1063,6 +1063,7 @@ export class ArtworkDrawingComponent implements OnInit {
           window.dispatchEvent(new Event("resize"));
         },
         slideChange: function () {
+          THIS.load_more_pages()
           THIS.refresh_swiper_pagination();
           THIS.cd.detectChanges();
         }
@@ -1955,13 +1956,21 @@ export class ArtworkDrawingComponent implements OnInit {
 
   pre_load_other_pages(){
     if(this.pagesnumber>1){
-      let interval = setInterval(() => {
-        for(let i=1;i<this.pagesnumber;i++){
-          this.get_new_page(i)
-        }
-        clearInterval(interval)
-      },1500)
+      for(let i=1;i<this.pagesnumber;i++){
+        this.get_new_page(i)
+      }
     }
+  }
+
+  load_more_pages(){  
+    if(this.swiper.activeIndex>=0 && !this.list_of_real_pages_retrieved[this.swiper.activeIndex] && this.swiper.activeIndex<this.pagesnumber){
+
+      let length=this.pagesnumber>this.swiper.activeIndex+4?(this.swiper.activeIndex+5):this.pagesnumber;
+      for(let i=this.swiper.activeIndex;i<length;i++){
+        this.get_new_page(i)
+      }
+    }
+
   }
 
   list_of_real_pages_retrieved=[];
