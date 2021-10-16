@@ -1957,18 +1957,11 @@ export class ArtworkDrawingComponent implements OnInit {
     if(this.pagesnumber>1){
       let interval = setInterval(() => {
         for(let i=1;i<this.pagesnumber;i++){
-          //this.get_new_page(i)
-          let interval2 = setInterval(() => {
-            this.get_new_page(i)
-            clearInterval(interval2)
-          },100)
+          this.get_new_page(i)
         }
         clearInterval(interval)
-      },2000)
+      },1500)
     }
-    
-    
-   
   }
 
   list_of_real_pages_retrieved=[];

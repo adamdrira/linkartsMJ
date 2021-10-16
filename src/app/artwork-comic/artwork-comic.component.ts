@@ -2428,28 +2428,21 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   pre_load_other_pages(style){
-    let interval = setInterval(() => {
-      if(style=="Manga" && this.pagesnumber>1){
-        for(let i=0;i<this.pagesnumber-1;i++){
-          //this.get_new_page(i)
-          let interval2 = setInterval(() => {
+    if(this.pagesnumber>1){
+      let interval = setInterval(() => {
+        if(style=="Manga"){
+          for(let i=0;i<this.pagesnumber-1;i++){
             this.get_new_page(i)
-            clearInterval(interval2)
-          },100)
+          }
         }
-      }
-      else{
-        for(let i=1;i<this.pagesnumber;i++){
-          //this.get_new_page(i)
-          let interval2 = setInterval(() => {
+        else{
+          for(let i=1;i<this.pagesnumber;i++){
             this.get_new_page(i)
-            clearInterval(interval2)
-          },100)
+          }
         }
-      }
-      clearInterval(interval)
-    },2000)
-    
+        clearInterval(interval)
+      },1000)
+    }
    
   }
 
