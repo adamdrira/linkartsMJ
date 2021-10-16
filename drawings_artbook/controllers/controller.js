@@ -1005,6 +1005,123 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
      
   });
 
+  router.get('/retrieve_drawing_page_ofartbook_miniature/:drawing_id/:drawing_page', function (req, res) {
+
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+
+
+    const drawing_id = parseInt(req.params.drawing_id);
+    const drawing_page = parseInt(req.params.drawing_page);
+    pages_artbook.findOne({
+      where: {
+        drawing_id: drawing_id,
+        page_number:drawing_page,
+      }
+    })
+    .catch(err => {
+      
+    res.status(500).json({msg: "error", details: err});		
+  }).then(page =>  {
+    let transform = sharp()
+    transform = transform.resize({fit:sharp.fit.inside,width:110}) 
+    .toFormat('jpeg')
+    .jpeg({ quality: 90})
+    .toBuffer((err, buffer, info) => {
+        if (buffer) {
+            res.status(200).send(buffer);
+        }
+        else{
+          let filename = "./data_and_routes/not-found-image.jpg";
+          Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+            if (err){
+              res.status(404).send({err:"error"});
+            }
+            else{
+              lenna
+              .resize(110,Jimp.AUTO) 
+              .quality(90) 
+              .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                if(err){
+                  res.status(404).send({err:err});
+                }
+                else{
+                  res.status(200).send(buffer);
+                }
+                
+              });
+            }
+            
+          });
+        }
+    });
+
+    
+      if(page && page.file_name){
+        let filename = "./data_and_routes/drawings_pages_artbook/" + page.file_name;
+        let transform2 = sharp()
+        transform2 = transform2
+        .resize({fit:sharp.fit.inside,width:110})
+        .toFormat('jpeg')
+        .jpeg({ quality: 90})
+        .toBuffer((err, buffer, info) => {
+            if (buffer) {
+              res.status(200).send(buffer);
+            }
+            else{
+              Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                if (err){
+                  res.status(404).send({err:"error"});
+                }
+                else{
+                  lenna
+                  .resize(110,Jimp.AUTO) 
+                  .quality(90) 
+                  .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                    if(err){
+                      res.status(200).send({err:err});
+                    }
+                    else{
+                      res.status(200).send(buffer);
+                    }
+                    
+                  });
+                }
+                
+              });
+            }
+        });
+
+        fs.access(filename, fs.F_OK, (err) => {
+          if(err){
+            filename = "./data_and_routes/not-found-image.jpg";
+            var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+            not_found.pipe(transform);
+          }  
+          else{
+            var pp = fs.createReadStream( path.join(process.cwd(),filename))
+            pp.pipe(transform2)
+          }     
+        })
+      }
+      else{
+        filename = "./data_and_routes/not-found-image.jpg";
+        var not_found = fs.createReadStream( path.join(process.cwd(),filename))
+        not_found.pipe(transform);
+      }
+     
+    });
+   
+  });
        
   router.get('/retrieve_drawing_page_ofartbook_artwork/:drawing_id/:drawing_page', function (req, res) {
 
