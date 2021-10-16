@@ -166,8 +166,10 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-    this.add_time_of_view();
-    this.emit_close.emit(true);
+    if(this.drawing_id_input){
+      this.add_time_of_view();
+      this.emit_close.emit(true);
+    }
   }
 
   @ViewChild('leftContainer') leftContainer:ElementRef;
@@ -682,9 +684,8 @@ export class ArtworkDrawingComponent implements OnInit {
   get_drawing_artbook_pages(drawing_id,total_pages) {
     
     for( var i=0; i< total_pages; i++ ) {
-      this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i,window.innerWidth).pipe(first() ).subscribe(r=>{
+      this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook_miniature(drawing_id,i).pipe(first() ).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
-        let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.list_drawing_pages[r[1]]=url;
       });
     };
@@ -1063,9 +1064,7 @@ export class ArtworkDrawingComponent implements OnInit {
         },
         slideChange: function () {
           THIS.refresh_swiper_pagination();
-          console.log("swiper");
           THIS.cd.detectChanges();
-          console.log(THIS.swiper.activeIndex)
         }
       },
     });
@@ -1945,9 +1944,43 @@ export class ArtworkDrawingComponent implements OnInit {
   a_drawing_is_loaded(i){
     this.display_drawings[i]=true;
     this.initialize_swiper();
+    if(i==0){
+      this.get_new_page(this.swiper.activeIndex);
+      if(this.type!="one-shot"){
+        this.pre_load_other_pages()
+      }
+     
+    }
+  }
+
+  pre_load_other_pages(){
+    if(this.pagesnumber>1){
+      let interval = setInterval(() => {
+        for(let i=1;i<this.pagesnumber;i++){
+          //this.get_new_page(i)
+          let interval2 = setInterval(() => {
+            this.get_new_page(i)
+            clearInterval(interval2)
+          },100)
+        }
+        clearInterval(interval)
+      },2000)
+    }
+    
+    
    
   }
 
+  list_of_real_pages_retrieved=[];
+  get_new_page(swiper_page){
+      if(!this.list_of_real_pages_retrieved[swiper_page] && swiper_page>=0 ){
+        this.list_of_real_pages_retrieved[swiper_page]=true;
+        this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(this.drawing_id,swiper_page,window.innerWidth).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+          this.list_drawing_pages[swiper_page]=url;
+        });
+      }
+  }
 
     /******************************************************************** */
   /****VARIABLES ET FONCTIONS D'EDITION******************************** */

@@ -113,7 +113,7 @@
 
                                 <mat-select #chapterselect panelClass="ChaptersSelectClass" [(value)]="current_chapter" disableOptionCentering (selectionChange)="select_change_chapter($event)">
                                     
-                                    <mat-select-trigger>
+                                    <mat-select-trigger >
                                             <span>{{chapter_name_to_show}}</span>
                                     </mat-select-trigger>
                                     
@@ -175,7 +175,7 @@
                     <ng-container *ngFor="let element of thumbnails_links; let i = index">
                         <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
                             [ngClass]="{'opened': i==swiper.activeIndex}"  [ngClass]="{'shiny':!thumbnails_loaded[i]}">
-                            <img [lazyLoad]="element"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnails(i)" [ngClass]="{'invisible':!thumbnails_loaded[i]}" [alt]="'photo miniature de '+title">
+                            <img [lazyLoad]="element"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnails(i)" [ngClass]="{'invisible':!thumbnails_loaded[i]}">
                         </div>
                         <span>Page {{i+1}}</span>
                     </ng-container>
@@ -185,7 +185,7 @@
                     <ng-container *ngFor="let element of thumbnails_links.slice().reverse(); let i = index">
                         <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
                             [ngClass]="{'opened': (thumbnails_links.length-i-1)==swiper.activeIndex}" [ngClass]="{'shiny':!thumbnails_loaded[i]}">
-                            <img  [lazyLoad]="element"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnails(i)" [ngClass]="{'invisible':!thumbnails_loaded[i]}" [alt]="'photo miniature de '+title">
+                            <img  [lazyLoad]="element"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnails(i)" [ngClass]="{'invisible':!thumbnails_loaded[i]}">
                         </div>
                         <span>Page {{i+1}}</span>
                     </ng-container>
@@ -203,7 +203,7 @@
                                         </mat-spinner>
                                     </div>
                                     <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
-                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] || !display_comics_pages[list_bd_pages.length-1]}" [alt]="'page '+(i+1)+' de '+title">
+                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] || !display_comics_pages[list_bd_pages.length-1]}" >
                                 </ng-container>
                                  <div  #Webtoons *ngIf="style=='Webtoon'"  class='webtoon'  (scroll)="onScrollImage($event)">
                                     <div class="loading-page">
@@ -211,7 +211,7 @@
                                         </mat-spinner>
                                     </div>
                                     <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
-                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] }" [alt]="'page '+(i+1)+' de '+title">
+                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] }" >
                                 </div>
                                 <ng-container *ngIf="style!='Manga' && style!='Webtoon'">
                                     <div class="loading-page">
@@ -219,7 +219,7 @@
                                         </mat-spinner>
                                     </div>
                                     <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
-                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] }" [alt]="'page '+(i+1)+' de '+title">
+                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] }" >
                                 </ng-container>
 
                                
@@ -239,7 +239,7 @@
                                             </mat-spinner>
                                         </div>
                                         <img  (load)="a_drawing_is_loaded(i)"class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy"  (contextmenu)="onRightClick()"
-                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] || !display_comics_pages[list_of_pages_by_chapter[current_chapter].length-1]}" [alt]="'page '+(i+1)+' de '+title">
+                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] || !display_comics_pages[list_of_pages_by_chapter[current_chapter].length-1]}">
                                     </ng-container>
                                     <div  #Webtoons *ngIf="style=='Webtoon'"  class='webtoon'  (scroll)="onScrollImage($event)">
                                         <div class="loading-page">
@@ -247,7 +247,7 @@
                                             </mat-spinner>
                                         </div>
                                         <img  (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
-                                                [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] }" [alt]="'page '+(i+1)+' de '+title">
+                                                [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i] }">
                                     </div>
                                     <ng-container *ngIf="style!='Manga' && style!='Webtoon'">
                                         <div class="loading-page">
@@ -255,7 +255,7 @@
                                             </mat-spinner>
                                         </div>
                                         <img (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy"  (contextmenu)="onRightClick()"
-                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i]}" [alt]="'page '+(i+1)+' de '+title">
+                                            [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_comics_pages[i]}" >
                                     </ng-container>
                                     
                                 </div>
@@ -661,7 +661,7 @@
             matTooltipClass='linkarts-tooltip' 
             [matTooltipPosition]="'below'"
             [matTooltipShowDelay]="200">
-                <img [src]="profile_picture" (load)="profile_picture_loaded()" [ngClass]="{'invisible':!pp_loaded}" [alt]="'photo de profil de '+user_name">
+                <img [src]="profile_picture" (load)="profile_picture_loaded()" [ngClass]="{'invisible':!pp_loaded}" >
             </a>
             <div class="right-container">
                 <span class="author-name" *ngIf="user_name!=''">
@@ -748,7 +748,7 @@
             
             <div class="first-comment-container" *ngIf="commentariesnumber && first_comment_retrieved">
                 <div class="profile-picture " [ngClass]="{'dark-shiny': !first_comment_pp_loaded }">
-                    <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }" [alt]="'photo de profil'">
+                    <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }">
                 </div>
                 <div class="comment" >
                     {{first_comment}}

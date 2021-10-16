@@ -32,6 +32,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { Meta, Title } from '@angular/platform-browser';
 
 import { first } from 'rxjs/operators';
+import { MatSelect } from '@angular/material/select';
 
 declare var Swiper: any;
 declare var $: any;
@@ -166,8 +167,11 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-    this.add_time_of_view();
-    this.emit_close.emit(true);
+    if(this.bd_id_input){
+      this.add_time_of_view();
+      this.emit_close.emit(true);
+    }
+ 
   }
   
   @ViewChild('leftContainer') leftContainer:ElementRef;
@@ -732,31 +736,21 @@ export class ArtworkComicComponent implements OnInit {
 
 
   get_comic_oneshot_pages(bd_id,total_pages:number) {
-    /*if(total_pages>10){
-      total_pages=10
-    }*/
-    for( var i=0; i< total_pages; i++ ) {
-      this.BdOneShotService.retrieve_bd_page(bd_id,i,window.innerWidth).pipe(first() ).subscribe(r=>{
-        let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
-        
-        if(this.style=="Manga"){
-          this.list_bd_pages[total_pages-1-r[1]]=url;
-        }
-        else{
-          this.list_bd_pages[r[1]]=url;
-        }
-        
-      });
-    };
-
+      
+      for( var i=0; i< total_pages; i++ ) {
+        this.BdOneShotService.retrieve_bd_page_miniature(bd_id,i,window.innerWidth).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+            if(this.style=="Manga"){
+              this.list_bd_pages[total_pages-1-r[1]]=url;
+            }
+            else{
+              this.list_bd_pages[r[1]]=url;
+            }
+        });
+      };
   }
 
-  /*get_more_comic_oneshot_pages(bd_id,total_pages:number){
-    if(total_pages> this.list_bd_pages.length){
-
-    }
-
-  }*/
+ 
 
   check_likes_after_current_one_shot(){
     if(this.current_user_retrieved && this.likes_retrieved_but_not_checked){
@@ -867,7 +861,7 @@ export class ArtworkComicComponent implements OnInit {
       for( var i=1; i< this.chapterList.length; i++ ) {
         this.list_of_pages_by_chapter.push(['']);
       };
-      this.get_comic_serie_chapter_pages(this.bd_id,this.current_chapter+1,r[0][this.current_chapter].pagesnumber);
+      this.get_comic_serie_chapter_pages(this.bd_id,this.current_chapter+1,this.chapterList[this.current_chapter].pagesnumber);
       this.item_retrieved=true;
       this.cd.detectChanges();
       this.initialize_swiper();
@@ -915,7 +909,7 @@ export class ArtworkComicComponent implements OnInit {
 
     let compteur=0;
     for( let k=0; k< total_pages; k++ ) {
-      this.BdSerieService.retrieve_bd_page(bd_id,chapter_number,k,window.innerWidth).pipe(first() ).subscribe(r=>{
+      this.BdSerieService.retrieve_bd_chapter_page_miniature(bd_id,chapter_number,k).pipe(first() ).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         
         if(this.style=="Manga"){
@@ -1200,6 +1194,7 @@ export class ArtworkComicComponent implements OnInit {
           window.dispatchEvent(new Event("resize"));
         },
         slideChange: function () {
+          //THIS.get_new_page(THIS.swiper.activeIndex)
           THIS.refresh_swiper_pagination();
         }
       },
@@ -1221,6 +1216,44 @@ export class ArtworkComicComponent implements OnInit {
         this.swiper.slideTo(0,false,false);
       }
 
+  }
+
+  list_of_real_pages_retrieved=[]
+  get_new_page(swiper_page){
+    if(this.type=="serie"){
+      let chapter=this.current_chapter+1;
+      let total_pages=this.chapterList[this.current_chapter].pagesnumber;
+      let page=(this.style=="Manga")?total_pages-1-swiper_page:swiper_page;
+      if(!this.list_of_real_pages_retrieved[swiper_page] && page>=0){
+        this.list_of_real_pages_retrieved[swiper_page]=true;
+        this.BdSerieService.retrieve_bd_page(this.bd_id,chapter,swiper_page,window.innerWidth).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+          
+          if(this.style=="Manga"){
+            this.list_of_pages_by_chapter[chapter-1][total_pages-r[1]-1]=url;
+          }
+          else{
+            this.list_of_pages_by_chapter[chapter-1][r[1]]=url;
+          }
+          
+        });
+      }
+      
+    }
+
+    else{
+      
+      let page=(this.style=="Manga")?this.pagesnumber-1-swiper_page:swiper_page;
+      if(!this.list_of_real_pages_retrieved[swiper_page] && page>=0 ){
+        this.list_of_real_pages_retrieved[swiper_page]=true;
+        this.BdOneShotService.retrieve_bd_page(this.bd_id,page,window.innerWidth).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+          this.list_bd_pages[swiper_page]=url;
+        });
+      }
+    }
+   
+    
   }
 
   slide_to_initial(){
@@ -1396,8 +1429,10 @@ export class ArtworkComicComponent implements OnInit {
     /******************************************************* */
   /******************** OPTION CONTAINER SELECTOR PART ****************** */
   /******************************************************* */
-
+  @ViewChild('chapterselect') chapterselect:MatSelect;
   select_change_chapter(event){
+    this.chapterselect.close()
+    this.list_of_real_pages_retrieved=[]
     this.display_comics_pages=[];
       this.display_pages=false;
       this.thumbnails_loaded=[];
@@ -2375,8 +2410,48 @@ export class ArtworkComicComponent implements OnInit {
   a_drawing_is_loaded(i){
     this.display_comics_pages[i]=true;
     this.initialize_swiper();
+
+    if(this.style=="Manga"){
+      if(i==this.pagesnumber-1){
+        this.get_new_page(this.swiper.activeIndex)
+        this.pre_load_other_pages("Manga")
+      }
+    }
+    else{
+      if(i==0){
+        this.get_new_page(this.swiper.activeIndex);
+
+        this.pre_load_other_pages("other")
+      }
+    }
+   
   }
 
+  pre_load_other_pages(style){
+    let interval = setInterval(() => {
+      if(style=="Manga" && this.pagesnumber>1){
+        for(let i=0;i<this.pagesnumber-1;i++){
+          //this.get_new_page(i)
+          let interval2 = setInterval(() => {
+            this.get_new_page(i)
+            clearInterval(interval2)
+          },100)
+        }
+      }
+      else{
+        for(let i=1;i<this.pagesnumber;i++){
+          //this.get_new_page(i)
+          let interval2 = setInterval(() => {
+            this.get_new_page(i)
+            clearInterval(interval2)
+          },100)
+        }
+      }
+      clearInterval(interval)
+    },2000)
+    
+   
+  }
 
 
    /******************************************************************** */

@@ -103,7 +103,7 @@
                     <ng-container *ngFor="let element of thumbnails_links; let i = index">
                         <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
                             [ngClass]="{'opened': i==swiper.activeIndex}"  [ngClass]="{'shiny':!thumbnails_loaded[i]}">
-                            <img [lazyLoad]="element"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnails(i)" [alt]="'photo miniature de '+title">
+                            <img [lazyLoad]="element"  [customObservable]="scroll? scroll : null" loading="lazy" (load)="load_thumbnails(i)" >
                         </div>
                         <span>Page {{i+1}}</span>
                     </ng-container>
@@ -120,7 +120,7 @@
                                     <mat-spinner diameter="50" *ngIf="!display_drawings[0]"></mat-spinner>
                                 </div>
                                 <img (load)="a_drawing_is_loaded(0)" class="slide-container-img" [src]="drawing_one_shot" (contextmenu)="onRightClick()"
-                                    [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_drawings[0]}" [alt]="title">
+                                    [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_drawings[0]}" >
                             </div>
                         </div>
                     </ng-container>
@@ -135,7 +135,7 @@
                                     </mat-spinner>
                                 </div>
                                 <img (load)="a_drawing_is_loaded(i)" class="slide-container-img swiper-lazy" [attr.data-src]="item" [lazyLoad]="item"  loading="lazy" (contextmenu)="onRightClick()"
-                                    [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_drawings[i]}" [alt]="'page '+(i+1)+' de '+title">
+                                    [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_drawings[i]}" >
                             </div>
 
                         </div>
@@ -499,7 +499,7 @@
             matTooltipClass='linkarts-tooltip' 
             [matTooltipPosition]="'below'"
             [matTooltipShowDelay]="200">
-                <img [src]="profile_picture" (load)="profile_picture_loaded()" [ngClass]="{'really-invisible':!pp_loaded}" [alt]="'photo de profil de '+user_name">
+                <img [src]="profile_picture" (load)="profile_picture_loaded()" [ngClass]="{'really-invisible':!pp_loaded}">
                 <div *ngIf="!pp_loaded" class="dark-shiny"></div>
             </a>
             <div class="right-container">
@@ -583,7 +583,7 @@
             
             <div class="first-comment-container" *ngIf="commentariesnumber && first_comment_retrieved">
                 <div class="profile-picture " [ngClass]="{'dark-shiny': !first_comment_pp_loaded }">
-                    <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }" [alt]="'photo de profil'">
+                    <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }">
                 </div>
                 <div class="comment" >
                     {{first_comment}}

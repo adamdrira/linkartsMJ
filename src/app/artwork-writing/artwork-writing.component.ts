@@ -161,8 +161,10 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-    this.add_time_of_view();
-    this.emit_close.emit(true);
+    if(this.writing_id_input){
+      this.add_time_of_view();
+      this.emit_close.emit(true);
+    }
   }
   
   @ViewChild('leftContainer') leftContainer:ElementRef;

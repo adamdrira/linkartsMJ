@@ -70,6 +70,11 @@ export class UploaderBdSerieComponent implements OnInit{
 
   @Input() set page(page: number) {
     this._page=page;
+    if(this._chapter>=0){
+      let URL = url + page.toString() + '/' + this._chapter + '/' + this.bd_id;
+      this.uploader.setOptions({ url: URL});
+    }
+   
   }
 
  get page(): number {
