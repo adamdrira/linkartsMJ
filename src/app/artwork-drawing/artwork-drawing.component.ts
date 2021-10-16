@@ -1966,7 +1966,8 @@ export class ArtworkDrawingComponent implements OnInit {
     if(this.swiper.activeIndex>=0 && !this.list_of_real_pages_retrieved[this.swiper.activeIndex] && this.swiper.activeIndex<this.pagesnumber){
 
       let length=this.pagesnumber>this.swiper.activeIndex+4?(this.swiper.activeIndex+5):this.pagesnumber;
-      for(let i=this.swiper.activeIndex;i<length;i++){
+      let start= (this.swiper.activeIndex>3)?this.swiper.activeIndex-4:0;
+      for(let i=start;i<length;i++){
         this.get_new_page(i)
       }
     }

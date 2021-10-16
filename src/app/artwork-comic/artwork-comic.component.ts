@@ -1220,6 +1220,7 @@ export class ArtworkComicComponent implements OnInit {
 
   list_of_real_pages_retrieved=[]
   get_new_page(swiper_page){
+   
     if(this.type=="serie"){
       let chapter=this.current_chapter+1;
       let total_pages=this.chapterList[this.current_chapter].pagesnumber;
@@ -1228,7 +1229,7 @@ export class ArtworkComicComponent implements OnInit {
         this.list_of_real_pages_retrieved[swiper_page]=true;
         this.BdSerieService.retrieve_bd_page(this.bd_id,chapter,swiper_page,window.innerWidth).pipe(first() ).subscribe(r=>{
           let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
-          
+          console.log("get new page",swiper_page)
           if(this.style=="Manga"){
             this.list_of_pages_by_chapter[chapter-1][total_pages-r[1]-1]=url;
           }
@@ -1245,6 +1246,7 @@ export class ArtworkComicComponent implements OnInit {
       
       let page=(this.style=="Manga")?this.pagesnumber-1-swiper_page:swiper_page;
       if(!this.list_of_real_pages_retrieved[swiper_page] && page>=0 ){
+        console.log("get new page",swiper_page)
         this.list_of_real_pages_retrieved[swiper_page]=true;
         this.BdOneShotService.retrieve_bd_page(this.bd_id,page,window.innerWidth).pipe(first() ).subscribe(r=>{
           let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
@@ -2433,13 +2435,15 @@ export class ArtworkComicComponent implements OnInit {
  
       if(this.style=="Manga"){
         let length=this.swiper.activeIndex>4?(this.swiper.activeIndex-5):0;
-        for(let i=this.swiper.activeIndex;i>=length;i--){
+        let start= (this.pagesnumber>this.swiper.activeIndex+4)?this.swiper.activeIndex+3:this.pagesnumber-1;
+        for(let i=start;i>=length;i--){
           this.get_new_page(i)
         }
       }
       else{
         let length=this.pagesnumber>this.swiper.activeIndex+4?(this.swiper.activeIndex+5):this.pagesnumber;
-        for(let i=this.swiper.activeIndex;i<length;i++){
+        let start= (this.swiper.activeIndex>3)?this.swiper.activeIndex-4:0;
+        for(let i=start;i<length;i++){
           this.get_new_page(i)
         }
       }
