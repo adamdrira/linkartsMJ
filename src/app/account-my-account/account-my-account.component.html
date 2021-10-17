@@ -18,7 +18,6 @@
     <div *ngIf="!password_retrieved" >
 
         <div class="account-title-container">
-            <!--TITRE + BOUTON EDITER/CACHER-->
             <div class="category">
                 <div class="category-title shiny">
                 </div>
@@ -98,7 +97,7 @@
 
             <button class="validate-form-button" *ngIf="!registerForm1_activated" (click)="edit_password();" [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">lock</mat-icon>
-                <span>Changer mon mot de passe</span>
+                <span>Éditer mon mot de passe</span>
             </button>
 
             <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
@@ -251,7 +250,7 @@
 
             <button class="validate-form-button" *ngIf="!registerForm1_activated && !visitor_mode" (click)="edit_password();" [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">lock</mat-icon>
-                <span>Changer mon mot de passe</span>
+                <span>Éditer mon mot de passe</span>
             </button>
 
             <div class="form-item" *ngIf="registerForm1_activated && !visitor_mode" [@enterAnimation]>
@@ -350,7 +349,7 @@
 
             <button class="validate-form-button" *ngIf="!registerForm_activated" (click)="edit_email();" [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
-                <span>Changer mon adresse e-mail</span>
+                <span>Éditer mon adresse e-mail</span>
             </button>
 
             <div class="form-item" *ngIf="registerForm_activated" [@enterAnimation]>
@@ -400,6 +399,58 @@
                
             </div>
         </div>
+
+        <div class="account-title-container">
+            <div class="title">
+                <span>Gestion des coordonnées bancaires</span>
+            </div>
+        </div>
+
+
+        <div class="account-form-container" [formGroup]="registerForm4">
+            
+
+            <button class="validate-form-button" *ngIf="!registerForm4_activated" (click)="edit_bank_data();" [@enterAnimation]>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">account_balance</mat-icon>
+                <span>Éditer mes coordonnées</span>
+            </button>
+
+            <div class="form-item" *ngIf="registerForm4_activated" [@enterAnimation]>
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Nom du bénéficiaire</mat-label>
+                    <input matInput formControlName="account_owner" maxLength="100" type="search" autocomplete="off">
+                    <mat-error *ngIf="registerForm4.controls['account_owner'].invalid">Saisie invalide
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field floatLabel='never'>
+                    <mat-label>IBAN</mat-label>
+                    <input matInput formControlName="account_iban" type="search" autocomplete="off">
+                    <mat-error *ngIf="registerForm4.controls['account_iban'].invalid">Saisie invalide : veuillez enregistrer un IBAN référencé en France.
+                    </mat-error>
+                </mat-form-field>
+
+                    
+                <button class="validate-form-button" (click)="validate_bank_data();" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_bank_data">done</mat-icon>
+                    <span  *ngIf="!loading_bank_data">Valider</span>
+                    <mat-spinner diameter="25" style="margin:auto;" *ngIf="loading_bank_data"></mat-spinner>
+                </button>
+                <button class="validate-form-button" (click)="cancel_bank_data();" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+                    <span>Annuler</span>
+                </button>
+                
+                <div class="account-horizontal-divider"></div>
+
+            </div>
+
+
+        </div>
+
+        <!-- gestion de la rémunération
+        
+        ajouter un rib-->
 
         <!--<div *ngIf="show_group_managment && gender!='Groupe'">
             <div class="account-title-container">
@@ -711,9 +762,8 @@
                         <option label="Depuis 1 an">Depuis 1 an</option>
                     </select>
                 </div>
-                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
-                <!--CHANGER LES NGIF-->
-                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
+              
+
                 <div class="no-data-container" *ngIf="!editors_found">
                     <ng-container *ngIf="editors_loaded">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
@@ -727,9 +777,7 @@
                 </div>
 
 
-                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
-                <!--CHANGER LES NGIF-->
-                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
+            
                 <div class="stats-number-container" *ngIf="editors_found && editors_loaded">
                     <div>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
@@ -748,11 +796,7 @@
                 </div>
 
 
-                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
-                <!--CHANGER LES NGIF-->
-                <!--!!!!!!!!!!!!!!!!!!!!!!!-->
                 <div class="chart-container" #chartContainer *ngIf="editors_found && editors_loaded">
-                    <!--paramétrer graphiques-->
                     <ngx-charts-line-chart
                    
                     [scheme]="colorScheme"
@@ -1090,14 +1134,25 @@
 
                 <div class="stats-number-container" *ngIf="display_all_gains">
                     <div class="center-gains"> 
-                        <span>Total des gains : <b>{{total_gains.toFixed(2)}} &euro; </b></span>
+                        <span>Total des gains perçus : <b>{{total_gains.toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div class="center-gains"> 
+                        <span>Total des gains disponibles : <b>{{(total_gains - total_gains_withdrew - total_gains_waiting).toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div class="center-gains"> 
+                        <span>Total des gains retirés : <b>{{total_gains_withdrew.toFixed(2)}} &euro; </b></span>
+                    </div>
+                    <div class="center-gains" *ngIf="total_gains_waiting>0"> 
+                        <span>En cours de transaction : <b>{{total_gains_waiting.toFixed(2)}} &euro; </b></span>
                     </div>
                 </div>
 
                 <button class="validate-form-button" *ngIf="display_all_gains" (click)="get_my_gains();" [@enterAnimation]>
                     
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">monetization_on</mat-icon>
-                    <span>Me rémunérer</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="money_withdrawal_info_retrieved">monetization_on</mat-icon>
+                    <span *ngIf="money_withdrawal_info_retrieved && money_withdrawal_info=='done'">Retirer mes gains</span>
+                    <span *ngIf="money_withdrawal_info_retrieved && money_withdrawal_info=='waiting'">En cours de transaction</span>
+                    <mat-spinner diameter="25" *ngIf="!money_withdrawal_info_retrieved" style="margin:auto;"></mat-spinner>
                 </button>
                
                 <!--<div class="no-data-container" *ngIf="type_of_account.includes('Artiste')">

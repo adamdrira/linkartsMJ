@@ -118,6 +118,8 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
 
+  bank_account_iban:string;
+  bank_account_owner:string;
 
   device_info='';
   ngOnInit(): void {
@@ -128,6 +130,8 @@ export class AccountMyAccountComponent implements OnInit {
     this.type_of_account=this.author.type_of_account;
     this.list_of_members=this.author.list_of_members;
     this.email=this.author.email;
+    this.bank_account_owner=this.author.bank_account_owner;
+    this.bank_account_iban=this.author.bank_account_iban;
     if(this.author.email_authorization=="false"){
       this.email_agreement=false
     }
@@ -237,6 +241,11 @@ export class AccountMyAccountComponent implements OnInit {
   registerForm3_activated=false;
   display_error_validator3=false;
 
+
+  registerForm4: FormGroup;
+  registerForm4_activated=false;
+  display_error_validator4=false; //bank account owner
+
   /********************************  INITIALIZE VIEW AND FORM (mail, password) **************************************/
 
   password_retrieved=false;
@@ -246,7 +255,6 @@ export class AccountMyAccountComponent implements OnInit {
   list_of_visitors_type=["Maison d'édition/Editeur/Editrice","Artiste vérifié(e)","Professionnel(le) vérifié(e)"];
   special_visitor_type:string;
   initialize_forms(){
-
     
     this.registerForm = this.formBuilder.group({
       email: ['', 
@@ -275,7 +283,6 @@ export class AccountMyAccountComponent implements OnInit {
       password: ['',
         Validators.compose([
           Validators.required,
-          //Au moins 1 majuscule, 1 minuscule, 1 caractère spécial et un nombre.
           Validators.pattern(pattern("password")),
           Validators.maxLength(50),
         ]),
@@ -319,8 +326,48 @@ export class AccountMyAccountComponent implements OnInit {
     })
 
   
+    //bank account
+    this.registerForm4 = this.formBuilder.group({
+      account_owner: ['', 
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(pattern("name")),
+          Validators.maxLength(100),
+        ]),
+      ],
+      account_iban: ['', 
+      Validators.compose([
+        Validators.required,
+        Validators.pattern(pattern("account_iban")),
+        Validators.maxLength(34),
+      ]),
+    ]
+    });
     
+    this.registerForm4.controls['account_owner'].setValue(this.bank_account_owner)
+    this.registerForm4.controls['account_iban'].setValue(this.bank_account_iban)
+
+    this.Profile_Edition_Service.get_withdraw_money_information(this.pseudo).subscribe(r=>{
+      if(r[0][0]){
+        for(let i=0;i<r[0].length;i++){
+          if(r[0][i].status=="done"){
+            this.total_gains_withdrew+=Number(r[0][i].remuneration_asked)
+          }
+          else{
+            this.total_gains_waiting+=Number(r[0][i].remuneration_asked)
+          }
+        }
+        this.money_withdrawal_info=r[0][0].status;
+      
+      }
+      else{
+        this.money_withdrawal_info="done";
+      }
+      this.money_withdrawal_info_retrieved=true;
+   
+    })
   }
+
 
 
   /********************************************** PASSWORDS **************************************/
@@ -519,6 +566,56 @@ export class AccountMyAccountComponent implements OnInit {
 
 
   
+  /********************************************** BANK ACCOUNT **************************************/
+  /********************************************** BANK ACCOUNT **************************************/
+  /********************************************** BANK ACCOUNT **************************************/
+  /********************************************** BANK ACCOUNT **************************************/
+ 
+  
+
+  edit_bank_data(){
+    this.registerForm4_activated=true;
+  }
+
+  loading_bank_data=false;
+  validate_bank_data(){
+    if(this.loading_bank_data){
+      return
+    }
+    this.loading_bank_data=true;
+
+    if(this.registerForm4.invalid){
+      if(this.registerForm4.controls['account_iban'].status=="INVALID"){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez saisir un IBAN correctement référencé en France.'},
+          panelClass: "popupConfirmationClass",
+        });
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez saisir des informations de compte valide.'},
+          panelClass: "popupConfirmationClass",
+        });
+      }
+     
+      this.loading_bank_data=false;
+    }
+    else{
+      this.Profile_Edition_Service.edit_bank_account_user(this.registerForm4.value.account_owner.trim(),this.registerForm4.value.account_iban.trim(),this.pseudo).subscribe(r=>{
+        this.bank_account_owner=this.registerForm4.value.account_owner.trim();
+        this.bank_account_iban=this.registerForm4.value.account_iban.trim();
+        this.loading_bank_data=false;
+        this.registerForm4_activated=false;
+      })
+     
+    }
+  }
+
+  cancel_bank_data(){
+    this.registerForm4_activated=false;
+  }
+
+
 
   /********************************************** GROUPS **************************************/
   /********************************************** GROUPS **************************************/
@@ -589,6 +686,10 @@ export class AccountMyAccountComponent implements OnInit {
     else if(this.type_of_account.includes("dit")){
       this.get_editors_remuneration();
       this.get_total_gains();
+      this.show_group_managment=false;
+      this.groups_owned_found=true;
+    }
+    else{
       this.show_group_managment=false;
       this.groups_owned_found=true;
     }
@@ -2109,6 +2210,11 @@ export class AccountMyAccountComponent implements OnInit {
   favorites_group_gains_retrieved=false;
   editors_gains_retrieved=false;
   total_gains=0;
+  total_gains_withdrew=0;
+  total_gains_waiting=0;
+  money_withdrawal_info_retrieved=false;
+  money_withdrawal_info="waiting";
+
   display_all_gains=false;
   get_total_gains(){
     if(this.type_of_account.includes('Artiste')){
@@ -2180,13 +2286,42 @@ export class AccountMyAccountComponent implements OnInit {
   }
   
 
-  loading_remuneration=false;
+
   get_my_gains(){
-    if(this.loading_remuneration){
+    if(!this.money_withdrawal_info_retrieved){
       return
     }
-    this.loading_remuneration=true;
-    this.Profile_Edition_Service.get_my_remuneration(this.total_gains).pipe(first() ).subscribe(r=>{
+   
+    let total_gains=this.total_gains - this.total_gains_withdrew - this.total_gains_waiting;
+    if(this.money_withdrawal_info=="waiting"){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Vous avez déjà une transaction en cours."},
+        panelClass: "popupConfirmationClass",
+      });
+    }
+    else if(total_gains<10){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Le total de vos gains disponibles doit être supérieur ou égale à 10 euros."},
+        panelClass: "popupConfirmationClass",
+      });
+    }
+    else if(!this.bank_account_owner || !this.bank_account_iban){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Vous devez enregistrer vos coordonnées bancaires pour pouvoir retirer vos gains."},
+        panelClass: "popupConfirmationClass",
+      });
+    }
+    else{
+      this.money_withdrawal_info_retrieved=false;
+      this.Profile_Edition_Service.withdraw_money(total_gains,this.bank_account_owner,this.bank_account_iban,this.pseudo).subscribe(r=>{
+        this.money_withdrawal_info_retrieved=true;
+        this.money_withdrawal_info="waiting";
+        this.total_gains_waiting=total_gains;
+        this.total_gains_withdrew+=total_gains;
+      })
+     
+    }
+    /*this.Profile_Edition_Service.get_my_remuneration(this.total_gains).pipe(first() ).subscribe(r=>{
       if(r[0].is_ok){
 
       }
@@ -2219,7 +2354,7 @@ export class AccountMyAccountComponent implements OnInit {
         this.loading_remuneration=false;
       }
       
-    })
+    })*/
     
   }
 

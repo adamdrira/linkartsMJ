@@ -56,6 +56,9 @@ export function pattern(type: string) {
     if(type=="classic"){
         return "[a-zA-Z0-9"+"\,\.\_-"+"]\{1,}[a-zA-Z0-9 "+"\,\.\_-"+"]\{0,15}"
     }
+    if(type=="account_iban"){
+        return "^[F][R]([0-9]{2})([ ]*[A-Z0-9]{4}){5}([ ]*[A-Z0-9]{3})$" //(?:[ ]?[0-9]{4}){4}(?:[ ]?[0-9]{1,2})?$
+    }
     //localisation
     //Commence par lettre ou accent
     // Au milieu ", -" sont autorisés

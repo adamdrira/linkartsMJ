@@ -76,8 +76,10 @@ export class JwtInterceptor implements HttpInterceptor {
                 retryWhen(error => 
                   error.pipe(
                     concatMap((error, count) => {
+                        console.log(error)
+                        console.log(error.status)
                         if (count <= this.retryCount && (error.status == 0  || error.status ==503 || error.status ==504 ) ) {
-
+                            console.log("reload")
                             return of(error);
                         }
                       return throwError(error);
