@@ -1060,7 +1060,7 @@ users.findOne({
       }
     const user_id = get_current_user(req.cookies.currentUser);
     const total_gains = req.body.total_gains;
-    if(Number(total_gains)<70){
+    if(Number(total_gains)<50){
       res.status(200).send([{is_ok:false,reason:"money"}]) 
     }
     else{
@@ -1956,6 +1956,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     }
   let current_user = get_current_user(req.cookies.currentUser);
   let device_info=req.body.device_info;
+
+
   const page=req.body.page;
   users.findOne({
     where:{
@@ -3581,7 +3583,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     }).then(message_send =>  {
       if(message_send){
 
-        mail_to_send+= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">message de :${firstname} </br> email :${email} </br> ${message}</p>`
+        const mail_to_send= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">message de :${firstname} </br> email :${email} </br> ${message}</p>`
 
         const transport = nodemailer.createTransport({
           host: "pro2.mail.ovh.net",
@@ -5140,7 +5142,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     }
 
     let nickname=req.params.nickname;
-    console.log("retrieve_instagram_data")
     const Insta = require('scraper-instagram');
     const InstaClient = new Insta();
     InstaClient.getProfile("nacimagazine")
@@ -5161,6 +5162,178 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
    
   });
 
+
+  router.post('/edit_bank_account_user/:pseudo', function (req, res) {
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+    const pseudo = req.params.pseudo;
+    const current_user = get_current_user(req.cookies.currentUser);
+    const bank_account_owner =req.body.bank_account_owner ;
+    const bank_account_iban  =req.body.bank_account_iban  ;
+    console.log(bank_account_owner)
+    console.log(bank_account_iban)
+ 
+    users.update(
+      {
+      "bank_account_owner": bank_account_owner,
+      "bank_account_iban":bank_account_iban,
+    },{
+      where:{
+        id: current_user,
+      }
+    })
+    .catch(err => {
+      console.log("error",err)
+      res.status(500).json({msg: "error", details: err});		
+    }).then(user =>  {
+      if(user){
+        const mail_to_send= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">id user :${current_user} </br> pseudo : ${pseudo} </br> bank_account_owner : ${bank_account_owner}</p>`
+
+        const transport = nodemailer.createTransport({
+          host: "pro2.mail.ovh.net",
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: "services@linkarts.fr", // compte expéditeur
+            pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+          },
+              tls:{
+                ciphers:'SSLv3'
+          }
+        });
+
+      
+          var mailOptions = {
+            from: 'Linkarts <services@linkarts.fr>', 
+            to:"appaloosa-adam@hotmail.fr",
+            subject: `Edit-account-bank-account`, 
+            html:  mail_to_send,
+          };
+      
+     
+  
+          transport.sendMail(mailOptions, (error, info) => {
+          })
+          res.status(200).send([user])
+      }
+    }); 
+
+   
+  });
+
+  router.post('/withdraw_money/:pseudo', function (req, res) {
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    const pseudo = req.params.pseudo;
+    const current_user = get_current_user(req.cookies.currentUser);
+    const bank_account_owner =req.body.bank_account_owner ;
+    const bank_account_iban  =req.body.bank_account_iban  ;
+    const remuneration_asked  =req.body.remuneration_asked  ;
+
+ 
+    users_remuneration.create(
+      {
+      "id_user":current_user,
+      "remuneration_asked":remuneration_asked.toString(),
+      "status":"waiting",
+      "bank_account_owner": bank_account_owner,
+      "bank_account_iban":bank_account_iban,
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json({msg: "error", details: err});		
+    }).then(user =>  {
+      if(user){
+        console.log("in send mail after retrieve monney")
+        const mail_to_send= `<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">id user :${current_user} </br> pseudo : ${pseudo} </br> remuneration_asked :  ${remuneration_asked} </br> bank_account_owner : ${bank_account_owner}</p>`
+
+
+        const transport = nodemailer.createTransport({
+          host: "pro2.mail.ovh.net",
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: "services@linkarts.fr", // compte expéditeur
+            pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+          },
+              tls:{
+                ciphers:'SSLv3'
+          }
+        });
+
+      
+          var mailOptions = {
+            from: 'Linkarts <services@linkarts.fr>', 
+            to:"appaloosa-adam@hotmail.fr",
+            subject: `Withdraw-monney-bank-account`, 
+            html:  mail_to_send,
+          };
+      
+     
+  
+          transport.sendMail(mailOptions, (error, info) => {
+          })
+          res.status(200).send([user])
+          
+      }
+    }); 
+
+   
+  });
+
+  router.get('/get_withdraw_money_information/:pseudo', function (req, res) {
+    if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+
+    const current_user = get_current_user(req.cookies.currentUser);
+
+ 
+    users_remuneration.findAll(
+      {
+        where:{
+          id_user:current_user,
+        },
+        order: [
+          ['createdAt', 'DESC']
+        ],
+      
+    })
+    .catch(err => {
+      
+      res.status(500).json({msg: "error", details: err});		
+    }).then(data =>  {
+      if(data){
+          res.status(200).send([data])
+      }
+    }); 
+
+   
+  });
 
   router.post('/send_custom_email', function (req, res) {
     if( req.body.client_id!='LinkArts-email' || req.body.client_secret!='le-Site-De-Mokhtar-Le-Pdg-@LinkArts') {
