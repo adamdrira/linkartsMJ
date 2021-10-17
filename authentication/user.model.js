@@ -48,8 +48,8 @@ module.exports = (sequelize, Sequelize) => {
 
 		editor_categories:Sequelize.ARRAY(Sequelize.STRING),
 		editor_genres:Sequelize.ARRAY(Sequelize.STRING),
-		editor_instructions:{type: Sequelize.STRING(500)},
-		editor_default_response :{type: Sequelize.STRING(500)},
+		editor_instructions:{type: Sequelize.STRING(1000)},
+		editor_default_response :{type: Sequelize.STRING(1000)},
 		express_delay:{type: Sequelize.STRING},
 		express_price:{type: Sequelize.INTEGER},
 		standard_delay:{type: Sequelize.STRING},
@@ -60,6 +60,10 @@ module.exports = (sequelize, Sequelize) => {
 		links:{type:Sequelize.JSON},
 
 		cv:{type: Sequelize.STRING},
+
+		bank_account_owner:{type: Sequelize.STRING},
+		bank_account_iban:{type: Sequelize.STRING},
+
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,
@@ -127,6 +131,8 @@ module.exports = (sequelize, Sequelize) => {
 	const users_remuneration = sequelize.define('users_remuneration', {
 		id_user:{type: Sequelize.INTEGER},
 		remuneration_asked:{type: Sequelize.STRING},
+		bank_account_owner:{type: Sequelize.STRING},
+		bank_account_iban:{type: Sequelize.STRING},
 		status:{type: Sequelize.STRING},
 	},
 	{
