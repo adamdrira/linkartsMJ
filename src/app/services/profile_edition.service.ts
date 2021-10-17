@@ -183,13 +183,13 @@ export class Profile_Edition_Service {
   
   agree_on_cookies(){
     return this.httpClient.post('routes/agree_on_cookies',{},{withCredentials:true} ).pipe(map((information)=>{
-      this.CookieService.set('a_cookies', JSON.stringify([{agreement:"ok"}]), 365*10, '/','localhost',undefined,'Lax');
+      this.CookieService.set('a_cookies', JSON.stringify([{agreement:"ok"}]), 365*10, '/','www.linkarts.fr',true,'Lax');
       return information;
     }));
   }
   
   agree_on_tuto(){
-    this.CookieService.set('a_tuto', JSON.stringify([{agreement:"ok"}]), 365*10, '/','localhost',undefined,'Lax');
+    this.CookieService.set('a_tuto', JSON.stringify([{agreement:"ok"}]), 365*10, '/','www.linkarts.fr',true,'Lax');
   }
 
   get_user_id_by_pseudo(pseudo){
@@ -325,6 +325,24 @@ export class Profile_Edition_Service {
   edit_account_about_3(firstname,birthday,siret,society) {
     return this.httpClient.post('routes/edit_account_about_3',{firstname:firstname,birthday:birthday,siret:siret,society:society},{withCredentials:true} ).pipe(map((information)=>{
       return information;
+    }));
+  }
+
+  edit_bank_account_user(bank_account_owner,bank_account_iban,pseudo) {
+    return this.httpClient.post(`routes/edit_bank_account_user/${pseudo}`,{bank_account_owner:bank_account_owner,bank_account_iban:bank_account_iban},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  withdraw_money(remuneration_asked,bank_account_owner,bank_account_iban,pseudo) {
+    return this.httpClient.post(`routes/withdraw_money/${pseudo}`,{remuneration_asked:remuneration_asked,bank_account_owner:bank_account_owner,bank_account_iban:bank_account_iban},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  get_withdraw_money_information(pseudo){
+    return this.httpClient.get(`routes/get_withdraw_money_information/${pseudo}`, {withCredentials:true}).pipe(map(information=>{
+      return information;   
     }));
   }
 
