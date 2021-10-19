@@ -683,7 +683,12 @@ export class ArtworkDrawingComponent implements OnInit {
 
   get_drawing_artbook_pages(drawing_id,total_pages) {
     
-    for( var i=0; i< total_pages; i++ ) {
+    let total=(total_pages>3)?3:total_pages;
+    for(let i=0;i<total_pages;i++){
+        this.list_drawing_pages[i]=null;
+    }
+
+    for( var i=0; i< total; i++ ) {
       this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook_miniature(drawing_id,i).pipe(first() ).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         this.list_drawing_pages[r[1]]=url;
@@ -1170,6 +1175,29 @@ export class ArtworkDrawingComponent implements OnInit {
       }
     },1000)
 
+  }
+
+  thumbnailScroll(){
+    let slide=Math.floor(this.ThumbnailContainer.nativeElement.scrollTop/110)+3
+    this.get_new_miniature(slide)
+  }
+
+  new_miniature_searched=[]
+  get_new_miniature(slide){
+    if(slide>this.pagesnumber-1 || this.new_miniature_searched[slide]){
+      return
+    }
+    else{
+      this.new_miniature_searched[slide]=true
+    }
+
+    if( !this.list_drawing_pages[slide]){
+      this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook_miniature(this.drawing_id,slide).pipe(first() ).subscribe(r=>{
+        let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+          this.list_drawing_pages[slide]=url;
+          this.thumbnails_links[slide]=url;
+      });
+    }
   }
 
   thumbnails_loaded=[];
@@ -1956,17 +1984,18 @@ export class ArtworkDrawingComponent implements OnInit {
 
   pre_load_other_pages(){
     if(this.pagesnumber>1){
-      for(let i=1;i<this.pagesnumber;i++){
+      let length=this.pagesnumber>2?2:this.pagesnumber;
+      for(let i=1;i<length;i++){
         this.get_new_page(i)
       }
     }
   }
 
   load_more_pages(){  
-    if(this.swiper.activeIndex>=0 && !this.list_of_real_pages_retrieved[this.swiper.activeIndex] && this.swiper.activeIndex<this.pagesnumber){
+    if(this.swiper.activeIndex>=0 && this.swiper.activeIndex<this.pagesnumber){
 
-      let length=this.pagesnumber>this.swiper.activeIndex+4?(this.swiper.activeIndex+5):this.pagesnumber;
-      let start= (this.swiper.activeIndex>3)?this.swiper.activeIndex-4:0;
+      let length=this.pagesnumber>this.swiper.activeIndex+1?(this.swiper.activeIndex+2):this.pagesnumber;
+      let start= (this.swiper.activeIndex>0)?this.swiper.activeIndex-1:0;
       for(let i=start;i<length;i++){
         this.get_new_page(i)
       }

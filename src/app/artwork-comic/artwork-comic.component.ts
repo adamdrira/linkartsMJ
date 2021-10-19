@@ -736,8 +736,12 @@ export class ArtworkComicComponent implements OnInit {
 
 
   get_comic_oneshot_pages(bd_id,total_pages:number) {
-      
-      for( var i=0; i< total_pages; i++ ) {
+      let total=(total_pages>3)?3:total_pages;
+      for(let i=0;i<total_pages;i++){
+          this.list_bd_pages[i]=null;
+      }
+
+      for( let i=0; i< total; i++ ) {
         this.BdOneShotService.retrieve_bd_page_miniature(bd_id,i,window.innerWidth).pipe(first() ).subscribe(r=>{
           let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
             if(this.style=="Manga"){
@@ -746,10 +750,63 @@ export class ArtworkComicComponent implements OnInit {
             else{
               this.list_bd_pages[r[1]]=url;
             }
+           
         });
-      };
+      }
+
+
+     
   }
 
+  thumbnailScroll(){
+    let slide=Math.floor(this.ThumbnailContainer.nativeElement.scrollTop/110)+3
+    this.get_new_miniature(slide)
+  }
+
+  new_miniature_searched=[]
+  get_new_miniature(slide){
+    if(slide>this.pagesnumber-1 || this.new_miniature_searched[slide]){
+      return
+    }
+    else{
+      this.new_miniature_searched[slide]=true
+    }
+
+    if(this.type=="one-shot"){
+      if(this.style=="Manga" && !this.list_bd_pages[this.pagesnumber-1-slide]){
+        this.BdOneShotService.retrieve_bd_page_miniature(this.bd_id,slide,window.innerWidth).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+            this.list_bd_pages[this.pagesnumber-1-slide]=url;
+            this.thumbnails_links[this.pagesnumber-slide-1]=url;
+        });
+      }
+      else if(this.style!="Manga" && !this.list_bd_pages[slide]){
+        this.BdOneShotService.retrieve_bd_page_miniature(this.bd_id,slide,window.innerWidth).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+            this.list_bd_pages[slide]=url;
+            this.thumbnails_links[slide]=url;
+        });
+      }
+    }
+    else{
+      if(this.style=="Manga" && !this.list_of_pages_by_chapter[this.current_chapter][this.pagesnumber-1-slide]){
+        this.BdSerieService.retrieve_bd_chapter_page_miniature(this.bd_id,this.current_chapter+1,slide).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+          this.list_of_pages_by_chapter[this.current_chapter][this.pagesnumber-slide-1]=url;
+          this.thumbnails_links[this.pagesnumber-slide-1]=url;
+        });
+      }
+      else if(this.style!="Manga" && !this.list_of_pages_by_chapter[this.current_chapter][slide]){
+        this.BdSerieService.retrieve_bd_chapter_page_miniature(this.bd_id,this.current_chapter+1,slide).pipe(first() ).subscribe(r=>{
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
+          this.list_of_pages_by_chapter[this.current_chapter][slide]=url;
+          this.thumbnails_links[slide]=url;
+        });
+      }
+    }
+
+   
+  }
  
 
   check_likes_after_current_one_shot(){
@@ -908,7 +965,11 @@ export class ArtworkComicComponent implements OnInit {
     })
 
     let compteur=0;
-    for( let k=0; k< total_pages; k++ ) {
+    let total=(total_pages>3)?3:total_pages;
+    for(let i=total;i<total_pages;i++){
+      this.list_of_pages_by_chapter[chapter_number-1][i]=null;
+    }
+    for( let k=0; k< total; k++ ) {
       this.BdSerieService.retrieve_bd_chapter_page_miniature(bd_id,chapter_number,k).pipe(first() ).subscribe(r=>{
         let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
         
@@ -918,13 +979,9 @@ export class ArtworkComicComponent implements OnInit {
         else{
           this.list_of_pages_by_chapter[chapter_number-1][r[1]]=url;
         }
-       
-        compteur++;
-        if(compteur==total_pages){
-          this.initialize_thumbnails();
-          this.show_pages[chapter_number-1]=true;
-          this.cd.detectChanges();
-        }
+
+        this.show_pages[chapter_number-1]=true;
+        this.initialize_thumbnails();
       });
     };
 
@@ -1190,7 +1247,7 @@ export class ArtworkComicComponent implements OnInit {
       on: {
         observerUpdate: function () {
           THIS.refresh_swiper_pagination();
-          THIS.slide_to_initial();
+          //THIS.slide_to_initial();
           window.dispatchEvent(new Event("resize"));
         },
         slideChange: function () {
@@ -1210,11 +1267,12 @@ export class ArtworkComicComponent implements OnInit {
 
    
       if(this.style=="Manga"){
-        this.swiper.slideTo(this.pagesnumber,false,false);
+        this.swiper.slideTo(this.pagesnumber-1,false,false);
       }
       else{
         this.swiper.slideTo(0,false,false);
       }
+      this.cd.detectChanges()
 
   }
 
@@ -1227,16 +1285,14 @@ export class ArtworkComicComponent implements OnInit {
       let page=(this.style=="Manga")?total_pages-1-swiper_page:swiper_page;
       if(!this.list_of_real_pages_retrieved[swiper_page] && page>=0){
         this.list_of_real_pages_retrieved[swiper_page]=true;
-        this.BdSerieService.retrieve_bd_page(this.bd_id,chapter,swiper_page,window.innerWidth).pipe(first() ).subscribe(r=>{
+        this.BdSerieService.retrieve_bd_page(this.bd_id,chapter,page,window.innerWidth).pipe(first() ).subscribe(r=>{
           let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
-          console.log("get new page",swiper_page)
           if(this.style=="Manga"){
             this.list_of_pages_by_chapter[chapter-1][total_pages-r[1]-1]=url;
           }
           else{
             this.list_of_pages_by_chapter[chapter-1][r[1]]=url;
           }
-          
         });
       }
       
@@ -1246,7 +1302,6 @@ export class ArtworkComicComponent implements OnInit {
       
       let page=(this.style=="Manga")?this.pagesnumber-1-swiper_page:swiper_page;
       if(!this.list_of_real_pages_retrieved[swiper_page] && page>=0 ){
-        console.log("get new page",swiper_page)
         this.list_of_real_pages_retrieved[swiper_page]=true;
         this.BdOneShotService.retrieve_bd_page(this.bd_id,page,window.innerWidth).pipe(first() ).subscribe(r=>{
           let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
@@ -1259,8 +1314,8 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   slide_to_initial(){
-    if(this.style=="Manga" &&  !this.display_comics_pages[this.pagesnumber-1]){
-      this.swiper.slideTo(this.pagesnumber,false,false);
+    if(this.style=="Manga"){
+      //this.swiper.slideTo(this.pagesnumber-1,false,false);
     }
   }
 
@@ -1321,11 +1376,9 @@ export class ArtworkComicComponent implements OnInit {
     else if( this.type=='serie' ) {
       for( var i=0; i< this.list_of_pages_by_chapter[this.current_chapter].length; i++ ) {
         this.thumbnails_links[i]=( this.list_of_pages_by_chapter[this.current_chapter][i] );
-        if(i==this.list_of_pages_by_chapter[this.current_chapter].length-1){
-          this.cd.detectChanges();
-        }
       }
     }
+    this.cd.detectChanges();
 
   }
 
@@ -1433,7 +1486,8 @@ export class ArtworkComicComponent implements OnInit {
   /******************************************************* */
   @ViewChild('chapterselect') chapterselect:MatSelect;
   select_change_chapter(event){
-    this.chapterselect.close()
+    this.chapterselect.close();
+    this.new_miniature_searched=[];
     this.list_of_real_pages_retrieved=[]
     this.display_comics_pages=[];
       this.display_pages=false;
@@ -1505,7 +1559,7 @@ export class ArtworkComicComponent implements OnInit {
       this.cd.detectChanges;
       this.initialize_swiper();
       if(this.style=="Manga"){
-        this.swiper.slideTo(this.chapterList[chapter_number].pagesnumber,false,false);
+        this.swiper.slideTo(this.chapterList[chapter_number].pagesnumber -1,false,false);
       }
       else{
         this.swiper.slideTo(0,false,false);
@@ -1599,7 +1653,7 @@ export class ArtworkComicComponent implements OnInit {
     }
     THIS.pagesnumber=THIS.chapterList[chapter_number].pagesnumber;
     if(THIS.style=="Manga"){
-      THIS.swiper.slideTo(THIS.chapterList[chapter_number].pagesnumber,false,false);
+      THIS.swiper.slideTo(THIS.chapterList[chapter_number].pagesnumber-1,false,false);
     }
     else{
       THIS.swiper.slideTo(0,false,false);
@@ -1689,7 +1743,7 @@ export class ArtworkComicComponent implements OnInit {
     }
     THIS.pagesnumber=THIS.chapterList[chapter_number].pagesnumber;
     if(THIS.style=="Manga"){
-      THIS.swiper.slideTo(THIS.chapterList[chapter_number].pagesnumber,false,false);
+      THIS.swiper.slideTo(THIS.chapterList[chapter_number].pagesnumber-1,false,false);
     }
     else{
       THIS.swiper.slideTo(0,false,false);
@@ -2414,6 +2468,13 @@ export class ArtworkComicComponent implements OnInit {
     this.initialize_swiper();
     if(this.style!="Manga"){
       if(i==0){
+        
+        this.get_new_page(this.swiper.activeIndex);
+        this.pre_load_other_pages()
+      }
+    }
+    else{
+      if(i==this.pagesnumber-1){
         this.get_new_page(this.swiper.activeIndex);
         this.pre_load_other_pages()
       }
@@ -2423,26 +2484,35 @@ export class ArtworkComicComponent implements OnInit {
 
   pre_load_other_pages(){
     if(this.pagesnumber>1){
-      let length=this.pagesnumber>5?5:this.pagesnumber;
-      for(let i=0;i<length;i++){
-        this.get_new_page(i)
+      if(this.style=="Manga"){
+        let end=this.pagesnumber>2?this.pagesnumber-3:0;
+        for(let i=this.pagesnumber-1;i>=end;i--){
+          this.get_new_page(i)
+        }
       }
+      else{
+        let length=this.pagesnumber>2?2:this.pagesnumber;
+        for(let i=0;i<length;i++){
+          this.get_new_page(i)
+        }
+      }
+      
     }
   }
 
   load_more_pages(){  
-    if(this.swiper.activeIndex>=0 && !this.list_of_real_pages_retrieved[this.swiper.activeIndex] && this.swiper.activeIndex<this.pagesnumber){
+    if(this.swiper.activeIndex>=0 && this.swiper.activeIndex<this.pagesnumber){
  
       if(this.style=="Manga"){
-        let length=this.swiper.activeIndex>4?(this.swiper.activeIndex-5):0;
-        let start= (this.pagesnumber>this.swiper.activeIndex+4)?this.swiper.activeIndex+3:this.pagesnumber-1;
+        let length=this.swiper.activeIndex>0?(this.swiper.activeIndex-1):0;
+        let start= (this.pagesnumber>this.swiper.activeIndex+1)?this.swiper.activeIndex+1:this.pagesnumber-1;
         for(let i=start;i>=length;i--){
           this.get_new_page(i)
         }
       }
       else{
-        let length=this.pagesnumber>this.swiper.activeIndex+4?(this.swiper.activeIndex+5):this.pagesnumber;
-        let start= (this.swiper.activeIndex>3)?this.swiper.activeIndex-4:0;
+        let length=this.pagesnumber>this.swiper.activeIndex+1?(this.swiper.activeIndex+2):this.pagesnumber;
+        let start= (this.swiper.activeIndex>0)?this.swiper.activeIndex-1:0;
         for(let i=start;i<length;i++){
           this.get_new_page(i)
         }

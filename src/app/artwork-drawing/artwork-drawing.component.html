@@ -42,7 +42,7 @@
                         video_settings
                     </mat-icon>
 
-                    <div class="button" (click)="click_thumbnails();" *ngIf="type=='artbook'"
+                    <div class="button" (click)="click_thumbnails();" *ngIf="type=='artbook'" 
                     matTooltip="Vignettes"
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
@@ -99,7 +99,7 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="close-icon" (click)="click_thumbnails();">close</mat-icon>
                 </div>
                 
-                <div class="thumbnails-contents" *ngIf="swiper">
+                <div #ThumbnailContainer class="thumbnails-contents" *ngIf="swiper" (scroll)="thumbnailScroll()">
                     <ng-container *ngFor="let element of thumbnails_links; let i = index">
                         <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
                             [ngClass]="{'opened': i==swiper.activeIndex}"  [ngClass]="{'shiny':!thumbnails_loaded[i]}">

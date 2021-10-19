@@ -171,7 +171,7 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="close-icon" (click)="click_thumbnails();">close</mat-icon>
                 </div>
                 
-                <div #ThumbnailContainer class="thumbnails-contents" *ngIf="swiper && style!='Manga'">
+                <div #ThumbnailContainer class="thumbnails-contents" *ngIf="swiper && style!='Manga'" (scroll)="thumbnailScroll()">
                     <ng-container *ngFor="let element of thumbnails_links; let i = index">
                         <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
                             [ngClass]="{'opened': i==swiper.activeIndex}"  [ngClass]="{'shiny':!thumbnails_loaded[i]}">
@@ -181,7 +181,7 @@
                     </ng-container>
                 </div>
 
-                <div #ThumbnailContainer class="thumbnails-contents" *ngIf="swiper && style=='Manga'">
+                <div #ThumbnailContainer class="thumbnails-contents" *ngIf="swiper && style=='Manga'" (scroll)="thumbnailScroll()">
                     <ng-container *ngFor="let element of thumbnails_links.slice().reverse(); let i = index">
                         <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
                             [ngClass]="{'opened': (thumbnails_links.length-i-1)==swiper.activeIndex}" [ngClass]="{'shiny':!thumbnails_loaded[i]}">
