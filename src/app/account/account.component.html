@@ -1277,7 +1277,7 @@
 
                                         <div class="block-info-contact" *ngIf="email_about ">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
-                                            <span >{{email_about}}</span>
+                                            <span style="overflow-wrap: break-word;max-width: calc(100% - 20px); ">{{email_about}}</span>
                                         </div>
                                         <div class="block-info-contact" *ngIf="!email_about && !mode_visiteur">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
