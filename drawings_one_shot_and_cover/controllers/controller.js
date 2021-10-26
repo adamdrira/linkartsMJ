@@ -375,7 +375,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       
       let upload = multer({
         storage: storage
-      }).single();
+      }).any();
 
       upload(req, res, function(err){
           (async () => {
@@ -383,14 +383,14 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
             
             let file_name = "./data_and_routes/covers_drawings/" + drawing_name ;
             
-            const files = await imagemin([file_name], {
+            /*const files = await imagemin([file_name], {
               destination: './data_and_routes/covers_drawings',
               plugins: [
                 imageminPngquant({
                   quality:  [0.95, 1]
               })
               ]
-            });
+            });*/
            
             
             const drawing = await drawings_one_page.findOne({
@@ -407,7 +407,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   	
                   res.status(500).json({msg: "error", details: err});		
                 }).then(r =>  {
-                 res.send(r.get({plain:true}));
+                  res.status(200).send([{file_name:file_name,files:req.files}]);
                 }); 
               }
               else {
@@ -571,7 +571,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       
 
     //on ajoute la cover uploadée dans le dossier et on créer un cookie
-    router.post('/add_cover_drawing_onepage_tofolder', function (req, res) {
+  router.post('/add_cover_drawing_onepage_tofolder', function (req, res) {
 
     let current_user = get_current_user(req.cookies.currentUser);
     if(!current_user){
@@ -598,14 +598,14 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     });
     var upload = multer({
         storage: storage
-    }).single();
+    }).any();
 
     upload(req, res, function(err) {
         if (err) {
             res.status(500).json({msg: "error", details: err});	
         } else {   
             let file_name = "./data_and_routes/covers_drawings/" + filename ;
-            (async () => {
+            /*(async () => {
                 const files = await imagemin([file_name], {
                   destination: './data_and_routes/covers_drawings',
                   plugins: [
@@ -614,8 +614,10 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   })
                   ]
                 });
-              res.status(200).send([{filename:filename}]);
-            })();
+            
+            })();*/
+
+            res.status(200).send([{file_name:file_name,files:req.files}]);
         }
     });
     

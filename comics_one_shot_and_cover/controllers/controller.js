@@ -453,14 +453,14 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
          
           (async () => {
             let filename = "./data_and_routes/pages_bd_oneshot/" + file_name ;
-              const files = await imagemin([filename], {
+              /*const files = await imagemin([filename], {
                 destination: './data_and_routes/pages_bd_oneshot',
                 plugins: [
                   imageminPngquant({
                     quality:  [0.9, 1]
                 })
                 ]
-              });
+              });*/
 
               pages_bd_os.create({
                 "bd_id": bd_id,
@@ -484,7 +484,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                     console.log("err")
                     console.log(err)
                   })
-                    res.send(r.get({plain:true}));
+                  res.status(200).send([{file_name:file_name,files:req.files}]);
               }); 
 
           })();
@@ -603,7 +603,9 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
 
       upload_cover(req, res, function(err){
         let filename = "./data_and_routes/covers_bd/" + file_name ;
-         (async () => {
+        list_covers_by_id[current_user]=file_name;
+        res.status(200).send([{file_name:file_name,files:req.files}]);
+        /* (async () => {
             const files = await imagemin([filename], {
               destination: './data_and_routes/covers_bd',
               plugins: [
@@ -612,9 +614,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               })
               ]
             });
-            list_covers_by_id[current_user]=file_name;
-            res.status(200).send([{file_name:file_name}]);
-        })();
+            
+        })();*/
          
         });
       });

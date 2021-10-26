@@ -364,20 +364,22 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
       upload_cover(req, res, function(err){
         let filename = "./data_and_routes/covers_writings/" + file_name ;
-        (async () => {
+        console.log("upload",req.files);
+        list_of_covers[current_user]=file_name
+        res.status(200).send([{file_name:file_name,files:req.files}]);
+        /*(async () => {
             const files = await imagemin([filename], {
               destination: './data_and_routes/covers_writings',
               plugins: [
                 imageminPngquant({
-                  quality: [0.7, 0.8]
+                  quality: [0.95, 1]
               })
               ]
             });
-            list_of_covers[current_user]=file_name
-            res.status(200).send([{file_name:file_name}]);
+         
 
             
-        })();
+        })();*/
          
         });
     });
@@ -786,6 +788,9 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
               if(writing){
                 res.status(200).send([writing]);
               }
+              else{
+                res.status(200).send([{status:"deleted"}]);
+              }
             }); 
       
       });
@@ -818,6 +823,9 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
              if(writing){
               res.status(200).send([{current_user:current_user,data:[writing]}]);
              }
+             else{
+              res.status(200).send([{current_user:current_user,data:[{status:"deleted"}]}]);
+            }
            }); 
      
      });
@@ -907,6 +915,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     //5 précisions pour la monetization
     let index= parseInt(req.params.index)
     let filename = "./data_and_routes/conditions/" ;
+    
     if(index==0){
       filename += 'only_conditions.pdf'
     }

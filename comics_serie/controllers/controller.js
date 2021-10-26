@@ -549,7 +549,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             const chapter_number= (parseInt(req.params.chapter)+1).toString();
             const bd_id = parseInt(req.params.bd_id);
             const page= req.params.page;
-            (async () => {
+            /*(async () => {
               let filename = "./data_and_routes/pages_bd_serie/" + file_name ;
               const files = await imagemin([filename], {
                 destination: './data_and_routes/pages_bd_serie',
@@ -559,7 +559,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 })
                 ]
               });
-            })();
+            })();*/
           if (err) {
             return res.send({
               success: false
@@ -598,10 +598,9 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                   bd_id: bd_id,
                   },
                 truncate: false
-              }).catch(err=>{
               })
-                  res.send(r.get({plain:true}));
-          }); 
+              res.status(200).send([{file_name:file_name,files:req.files}]);
+            }); 
           });
           }
       });

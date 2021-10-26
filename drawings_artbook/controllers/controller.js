@@ -482,14 +482,14 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
             const page= req.params.page;
             const drawing_id = req.params.drawing_id;
             let filename = "./data_and_routes/drawings_pages_artbook/" + file_name ;
-            const files = await imagemin([filename], {
+            /*const files = await imagemin([filename], {
               destination: './data_and_routes/drawings_pages_artbook',
               plugins: [
                 imageminPngquant({
                   quality:  [0.9, 1]
               })
               ]
-            });
+            });*/
 
               pages_artbook.create({
                 "drawing_id": drawing_id,
@@ -509,9 +509,8 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
                       drawing_id: drawing_id,
                       },
                     truncate: false
-                  }).catch(err=>{
                   })
-                      res.send(r.get({plain:true}));
+                  res.status(200).send([{file_name:file_name,files:req.files}]);
               }); 
             
 
