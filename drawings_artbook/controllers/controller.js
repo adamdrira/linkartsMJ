@@ -510,7 +510,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
                       },
                     truncate: false
                   })
-                  res.status(200).send([{file_name:file_name,files:req.files}]);
+                  res.status(200).send([{filename:file_name,files:req.files}]);
               }); 
             
 

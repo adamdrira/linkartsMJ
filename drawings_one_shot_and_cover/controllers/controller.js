@@ -407,7 +407,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   	
                   res.status(500).json({msg: "error", details: err});		
                 }).then(r =>  {
-                  res.status(200).send([{file_name:file_name,files:req.files}]);
+                  console.log("response")
+                  res.status(200).send([{filename:file_name,files:req.files}]);
                 }); 
               }
               else {
@@ -616,8 +617,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                 });
             
             })();*/
-
-            res.status(200).send([{file_name:file_name,files:req.files}]);
+            res.status(200).send([{filename:filename,files:req.files}]);
         }
     });
     
