@@ -216,7 +216,6 @@
             <div class="date-container">
                 <div>@{{pseudo}} </div>
                 <span>&nbsp;• {{date_to_show}} 
-                    <ng-container *ngIf="item.number_of_responses==0">• Aucun retour</ng-container>
                     <ng-container *ngIf="item.number_of_responses==1">• {{item.number_of_responses}} retour</ng-container>
                     <ng-container *ngIf="item.number_of_responses>1">• {{item.number_of_responses}} retours</ng-container>
                 </span>

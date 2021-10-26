@@ -201,6 +201,7 @@ export class ThumbnailAdComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.item)
     this.list_of_reporters=this.item.list_of_reporters;
     this.author_id=this.item.id_user;
     
