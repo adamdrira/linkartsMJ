@@ -446,8 +446,8 @@ export class SwiperUploadOneshotComponent implements OnInit {
         this.componentRef[ step ].instance.total_pages = this.componentRef.length;
         this.number_of_reload[step+1]=0
         this.componentRef[ step ].instance.sendImageUploaded.pipe(takeUntil(this.ngUnsubscribe)).subscribe( v => {
-          this.navbar.add_page_visited_to_history(`/onComplete_swiper_one_shot`,(v.file._file.size/1024/1024).toString()).pipe( first() ).subscribe();
-          if(v.file.isSuccess && v.file._file && v.file._file.size/1024/1024!=0){
+          this.navbar.add_page_visited_to_history(`/onComplete_swiper_one_shot`,(v.file._file.size/1024/1024).toString() + " et " +v.sizeResponse.toString()).pipe( first() ).subscribe();
+          if(v.file.isSuccess && v.file._file && v.file._file.size/1024/1024!=0  && v.sizeResponse>0){
             this.number_of_reload[step+1]=0;
             this.number_of_page_uploaded+=1;
             this.cd.detectChanges();

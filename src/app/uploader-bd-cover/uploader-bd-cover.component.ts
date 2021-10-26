@@ -200,9 +200,13 @@ export class UploaderBdCoverComponent implements OnInit {
       }
     };
 
-    this.uploader.onCompleteItem = (file) => {
+    this.uploader.onCompleteItem = (file,response) => {
 
-      this.navbar.add_page_visited_to_history(`/onComplete_bd_cover`,(file._file.size/1024/1024).toString()).pipe( first() ).subscribe();
+      let sizeResponse=0;
+      if(JSON.parse(response)[0] && JSON.parse(response)[0].files[0] && JSON.parse(response)[0].files[0].size){
+        sizeResponse=JSON.parse(response)[0].files[0].size;
+      }
+      this.navbar.add_page_visited_to_history(`/onComplete_bd_cover`,(file._file.size/1024/1024).toString() + " et " + sizeResponse.toString()).pipe( first() ).subscribe();
       if(this.number_of_reload>10){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Erreur de connexion internet, veuilliez réitérer le processus."},
@@ -213,7 +217,7 @@ export class UploaderBdCoverComponent implements OnInit {
       }
 
 
-      if(file.isSuccess && file._file && file._file.size/1024/1024!=0){
+      if(file.isSuccess && file._file && file._file.size/1024/1024!=0 && sizeResponse>0){
         this.number_of_reload=0;
         this.confirmation = true; 
         if(this.for_edition){

@@ -217,10 +217,15 @@ export class UploaderArtbookComponent implements OnInit {
         
     };
 
-    this.uploader.onCompleteItem = (file) => {
-      this.navbar.add_page_visited_to_history(`/onComplete_artbook`,(file._file.size/1024/1024).toString()).pipe( first() ).subscribe();
+    this.uploader.onCompleteItem = (file,response) => {
+
+      let sizeResponse=0;
+      if(JSON.parse(response)[0] && JSON.parse(response)[0].files[0] && JSON.parse(response)[0].files[0].size){
+        sizeResponse=JSON.parse(response)[0].files[0].size;
+      }
+      this.navbar.add_page_visited_to_history(`/onComplete_artbook`,(file._file.size/1024/1024).toString() + " et " + sizeResponse.toString()).pipe( first() ).subscribe();
       if(!this.old_artbook){
-        this.sendImageUploaded.emit({page:this._page +1,file:file});
+        this.sendImageUploaded.emit({page:this._page +1,file:file,sizeResponse:sizeResponse});
       }
       else{
         if(this.number_of_reload>10){
@@ -231,7 +236,7 @@ export class UploaderArtbookComponent implements OnInit {
           return
         }
   
-        if(file.isSuccess  && file._file && file._file.size/1024/1024!=0){
+        if(file.isSuccess  && file._file && file._file.size/1024/1024!=0 && sizeResponse>0){
           this.editImageOldArtbook.emit({type:"edit",page:this.page,image:this.SafeURL});
           this.number_of_reload=0;
           this.original_image=this.SafeURL;
