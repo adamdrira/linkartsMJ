@@ -274,14 +274,14 @@ export class ChatRightContainerComponent implements OnInit {
 
 
   OnScroll(){
-    
     if(this.panelOpenState_0||this.panelOpenState_1 || this.panelOpenState_2){
+      
       if(this.myScrollContainer.nativeElement.scrollTop>=(this.myScrollContainer.nativeElement.scrollHeight-this.myScrollContainer.nativeElement.getBoundingClientRect().height)*0.8 -100 ){
         if(this.panelOpenState_0 && this.can_get_other_files && !this.show_scroll_files){
           this.show_scroll_files=true;
           this.chatService.get_all_files(this.date_of_last_file,this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(r=>{
             if(r[0][0]){
-              this.list_of_files=this.list_of_files.concat(r[0]);
+             
               let length =this.list_of_files_src.length;
               let compt=0;
                 for(let i=0;i<r[0].length;i++){
@@ -294,6 +294,7 @@ export class ChatRightContainerComponent implements OnInit {
                     if(compt==r[0].length){
                       this.date_of_last_file=r[0][r[0].length-1].createdAt;
                       this.show_scroll_files=false;
+                      this.list_of_files=this.list_of_files.concat(r[0]);
                       if(compt<15){
                         this.can_get_other_files=false;
                       }
@@ -313,13 +314,12 @@ export class ChatRightContainerComponent implements OnInit {
         if(this.panelOpenState_1 && this.can_get_other_pictures && !this.show_scroll_pictures){
           this.show_scroll_pictures=true;
           this.chatService.get_all_pictures(this.date_of_last_picture,this.friend_id,this.id_chat_section,this.friend_type).pipe( first() ).subscribe(r=>{
-
             if(r[0][0]){
-              this.list_of_pictures=this.list_of_pictures.concat(r[0]);
               let length =this.list_of_pictures_src.length;
               let compt=0;
               var re = /(?:\.([^.]+))?$/;
               for(let i=0;i<r[0].length;i++){
+                
                 if(re.exec(r[0][i].attachment_name)[1].toLowerCase()=="svg"){
                   this.chatService.get_attachment_popup(r[0][i].attachment_name,(this.friend_type=='user')?'user':'group',(r[0][i].chat_friend_id)?r[0][i].chat_friend_id:this.chat_friend_id).pipe( first() ).subscribe(r=>{ 
                     let THIS=this;
@@ -330,12 +330,14 @@ export class ChatRightContainerComponent implements OnInit {
                         let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
                         let SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
                         THIS.list_of_pictures_src[length+i]=SafeURL;
+                       
                         THIS.list_of_pictures_data[length+i]=r[0][i];
-                        THIS.list_of_pictures_names[length+i]=r[0][i].attachment_name
+                        THIS.list_of_pictures_names[length+i]=r[0][i].attachment_name;
                         compt++;
                         if(compt==r[0].length){
                           THIS.date_of_last_picture=r[0][r[0].length-1].createdAt;
                           THIS.show_scroll_pictures=false;
+                          THIS.list_of_pictures=THIS.list_of_pictures.concat(r[0]);
                           if(compt<15){
                             THIS.can_get_other_pictures=false;
                           }
@@ -351,11 +353,12 @@ export class ChatRightContainerComponent implements OnInit {
                     const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                     this.list_of_pictures_src[length+i]=SafeURL;
                     this.list_of_pictures_data[length+i]=r[0][i];
-                    this.list_of_pictures_names[length+i]=r[0][i].attachment_name
+                    this.list_of_pictures_names[length+i]=r[0][i].attachment_name;
                     compt++;
                     if(compt==r[0].length){
                       this.date_of_last_picture=r[0][r[0].length-1].createdAt;
                       this.show_scroll_pictures=false;
+                      this.list_of_pictures=this.list_of_pictures.concat(r[0]);
                       if(compt<15){
                         this.can_get_other_pictures=false;
                       }
@@ -553,7 +556,6 @@ export class ChatRightContainerComponent implements OnInit {
               this.list_of_pictures_src[i]=SafeURL;
               this.list_of_pictures_data[i]=l[0][i];
               this.list_of_pictures_names[i]=l[0][i].attachment_name;
-              
              
               compt++;
               if(compt==l[0].length){

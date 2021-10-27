@@ -1173,6 +1173,11 @@ export class ChatComponent implements OnInit  {
     
   }
 
+  index_of_selected_input=-1;
+  blur(event) {
+    this.index_of_selected_input=this.input.nativeElement.selectionStart;
+  }
+  
   on_keyup(event) {
     if(event.key=="Shift"){
       this.SHIFT_CLICKED=false;
@@ -1913,9 +1918,9 @@ emojis_size_list=[30,30,30,30,30,30,30,30,30];
 list_show_reactions:any[]=[];
 handleClick($event) {
   let data = this.message_group.get('message');
+
   if(data.value){
-    data.patchValue(data.value + $event.emoji.native);
-    
+    data.patchValue(data.value.substring(0,this.index_of_selected_input)+ $event.emoji.native + data.value.substring(this.index_of_selected_input,data.value.length));
   }
   else{
     data.patchValue($event.emoji.native);

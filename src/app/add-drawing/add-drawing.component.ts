@@ -465,11 +465,19 @@ export class AddDrawingComponent implements OnInit {
       this.emojis_button_clicked = false;
     }
   }
+
+  @ViewChild('input') input:ElementRef;
+  index_of_selected_input=-1;
+  blur(event) {
+    this.index_of_selected_input=this.input.nativeElement.selectionStart;
+  }
+
   handleClick($event) {
     //this.selectedEmoji = $event.emoji;
     let data = this.fd.controls['fdDescription'].value;
+  
     if(data){
-      this.fd.controls['fdDescription'].setValue( this.fd.controls['fdDescription'].value + $event.emoji.native );
+      this.fd.controls['fdDescription'].setValue( data.substring(0,this.index_of_selected_input) + $event.emoji.native + data.substring(this.index_of_selected_input,data.length));
     }
     else{
       this.fd.controls['fdDescription'].setValue( $event.emoji.native )

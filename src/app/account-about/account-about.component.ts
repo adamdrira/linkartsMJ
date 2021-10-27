@@ -3802,11 +3802,17 @@ get_projects_stats(){
       this.cd.detectChanges();
     }
   }
+
+  @ViewChild('input') input:ElementRef;
+  index_of_selected_input=-1;
+  blur(event) {
+    this.index_of_selected_input=this.input.nativeElement.selectionStart;
+  }
   handleClick($event) {
     //this.selectedEmoji = $event.emoji;
     let data = this.registerForm1.controls['primary_description_extended'].value;
     if(data){
-      this.registerForm1.controls['primary_description_extended'].setValue( this.registerForm1.controls['primary_description_extended'].value + $event.emoji.native );
+      this.registerForm1.controls['primary_description_extended'].setValue(data.substring(0,this.index_of_selected_input) + $event.emoji.native + data.substring(this.index_of_selected_input,data.length));
     }
     else{
       this.registerForm1.controls['primary_description_extended'].setValue( $event.emoji.native )

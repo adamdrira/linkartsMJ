@@ -71,7 +71,7 @@ export class AddComicComponent implements OnInit {
     navbar.hide_help();
     this.filteredGenres = this.genreCtrl.valueChanges.pipe(
       startWith(null),
-      map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
+      map((genre: string | null) => genre ? this._filter(genre) : this.allGenres));
 
   }
 
@@ -465,7 +465,6 @@ export class AddComicComponent implements OnInit {
   selected(event: MatAutocompleteSelectedEvent): void {
     
     
-
     if( this.genres.length >= 3 ) {
       this.genreInput.nativeElement.value = '';
       this.genreCtrl.setValue(null);  
@@ -483,10 +482,9 @@ export class AddComicComponent implements OnInit {
     this.genreCtrl.setValue(null);
     this.f00Tags.updateValueAndValidity();
 
-    if( this.genres.length < 3) {
-      
-    }
   }
+  
+
   _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
@@ -558,11 +556,19 @@ export class AddComicComponent implements OnInit {
       this.emojis_button_clicked = false;
     }
   }
+
+  @ViewChild('input') input:ElementRef;
+  index_of_selected_input=-1;
+  blur(event) {
+    this.index_of_selected_input=this.input.nativeElement.selectionStart;
+  }
   handleClick($event) {
     //this.selectedEmoji = $event.emoji;
     let data = this.f00.controls['f00Description'].value;
+
+   
     if(data){
-      this.f00.controls['f00Description'].setValue( this.f00.controls['f00Description'].value + $event.emoji.native );
+      this.f00.controls['f00Description'].setValue( data.substring(0,this.index_of_selected_input) + $event.emoji.native + data.substring(this.index_of_selected_input,data.length) );
     }
     else{
       this.f00.controls['f00Description'].setValue( $event.emoji.native )
@@ -584,4 +590,5 @@ export class AddComicComponent implements OnInit {
   }
 
 
+ 
 }

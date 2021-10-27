@@ -145,8 +145,8 @@
               </div>
               <div mat-line> {{file.createdAt | date}}</div>
               <div mat-line>{{file.size | number:'.2' }} MB</div>
-                <div *ngIf="!list_of_files_data[i].id_folder || (list_of_files_data[i].id_folder && list_of_files_data[i].id_folder==0 )" mat-line class="archive" (click)="manage_archive(i,true,'file')" >Archiver</div>
-                <div *ngIf="list_of_files_data[i].id_folder && list_of_files_data[i].id_folder>0" mat-line class="unarchive" (click)="manage_archive(i,false,'file')" >Désarchiver</div>
+                <div *ngIf="!list_of_files_data[i].id_folder || (list_of_files_data[i] && list_of_files_data[i].id_folder && list_of_files_data[i].id_folder==0 )" mat-line class="archive" (click)="manage_archive(i,true,'file')" >Archiver</div>
+                <div *ngIf="list_of_files_data[i] && list_of_files_data[i].id_folder && list_of_files_data[i].id_folder>0" mat-line class="unarchive" (click)="manage_archive(i,false,'file')" >Désarchiver</div>
               
               <mat-divider></mat-divider>
             </mat-list-item>
@@ -183,8 +183,8 @@
               </div>
               <div mat-line> {{file.createdAt | date}}</div>
               <div mat-line>{{file.size | number:'.2' }} MB</div>
-                <div *ngIf="!list_of_pictures_data[i].id_folder || (list_of_pictures_data[i].id_folder && list_of_pictures_data[i].id_folder==0) " mat-line class="archive" (click)="manage_archive(i,true,'picture')" >Archiver</div>
-                <div *ngIf="list_of_pictures_data[i].id_folder && list_of_pictures_data[i].id_folder>0" mat-line class="unarchive" (click)="manage_archive(i,false,'picture')" >Désarchiver</div>  
+                <div *ngIf="!list_of_pictures_data[i].id_folder || (list_of_pictures_data[i] && list_of_pictures_data[i].id_folder && list_of_pictures_data[i].id_folder==0) " mat-line class="archive" (click)="manage_archive(i,true,'picture')" >Archiver</div>
+                <div *ngIf="list_of_pictures_data[i] && list_of_pictures_data[i].id_folder && list_of_pictures_data[i].id_folder>0" mat-line class="unarchive" (click)="manage_archive(i,false,'picture')" >Désarchiver</div>  
               
               <mat-divider></mat-divider>
             </mat-list-item>

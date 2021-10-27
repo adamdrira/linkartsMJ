@@ -123,7 +123,8 @@
                         <mat-form-field floatLabel='never'>
                             <mat-label>Description</mat-label>
                         
-                            <textarea matInput cdkTextareaAutosize formControlName="fdDescription" maxLength="2000" autocomplete="off" (input)="normalize_input(fd, 'fdDescription');"></textarea>
+                            <textarea #input matInput cdkTextareaAutosize formControlName="fdDescription"
+                            (blur)="blur($event)" maxLength="2000" autocomplete="off" (input)="normalize_input(fd, 'fdDescription');"></textarea>
                             <mat-error *ngIf="fd.controls['fdDescription'].invalid">Saisie invalide : certains caractères spéciaux ne sont pas autorisés
                             </mat-error>
                             <div class="length-indicator">{{fd.controls['fdDescription'].value?.length || 0}}/2000</div>

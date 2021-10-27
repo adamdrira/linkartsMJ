@@ -495,11 +495,19 @@ export class AddWritingComponent implements OnInit {
       this.emojis_button_clicked = false;
     }
   }
+
+  @ViewChild('input') input:ElementRef;
+  index_of_selected_input=-1;
+  blur(event) {
+    this.index_of_selected_input=this.input.nativeElement.selectionStart;
+  }
+
   handleClick($event) {
     //this.selectedEmoji = $event.emoji;
     let data = this.fw.controls['fwDescription'].value;
+    
     if(data){
-      this.fw.controls['fwDescription'].setValue( this.fw.controls['fwDescription'].value + $event.emoji.native );
+      this.fw.controls['fwDescription'].setValue( data.substring(0,this.index_of_selected_input) + $event.emoji.native +  data.substring(this.index_of_selected_input,data.length) );
     }
     else{
       this.fw.controls['fwDescription'].setValue( $event.emoji.native )

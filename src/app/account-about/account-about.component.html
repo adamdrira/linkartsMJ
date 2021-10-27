@@ -131,7 +131,8 @@
                         <div class="form-item input-multiple-lines" *ngIf="registerForm1_activated" [@enterAnimation]>
                             <mat-form-field floatLabel='never'>
                                 <mat-label class="label-to-set">Description principale</mat-label>
-                                <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
+                                <textarea #input matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off" 
+                                (blur)="blur($event)" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
                                 <mat-error *ngIf="registerForm1.controls['primary_description_extended'].invalid">Saisie invalide : les espaces en début de saisie ainsi que certains caractères spéciaux ne sont pas autorisés
                                 </mat-error>
                                 <div class="length-indicator">{{registerForm1.controls['primary_description_extended'].value?.length || 0}}/1000</div>
