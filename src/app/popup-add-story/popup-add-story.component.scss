@@ -43,8 +43,19 @@
     .edition-container {
         width:100%;
         height:100%;
+        background: #1e1e1e;
 
-        
+        .top-controller {
+            height:60px;
+        }
+        .canvas-container {
+            height:calc(100% - 60px - 66px);
+        }
+
+        #my-image {
+            display:none;
+        }
+
         .image-container {
             display: flex;
             width: 100%;
@@ -146,9 +157,9 @@
 
         .edition {
             width:100%;
-            height:calc(100% - 66px);
+            height:calc(100% - 54px);
             position:relative;
-            overflow:hidden;
+            overflow:visible;
             display: flex;
 
         }
@@ -156,7 +167,8 @@
 
         
         .buttons-container {
-            justify-content: center;
+            max-height:54px;
+            justify-content: right;
             display:flex;
             
             .add-objects-options {
@@ -201,10 +213,11 @@
             .next-button {
                 display: flex;
                 width: 175px;
-                margin: 14px 10px 14px 10px;
-                padding: 7px 22px 7px 32px;
-                background: #0e1f40;
-                border-radius: 30px;
+                margin: 2px 15px 10px 0px;
+                box-shadow: 0px 0px 0px 2px #637ab1;
+                padding: 9px 22px 9px 32px;
+                background: #0b152c;
+                border-radius: 12px;
                 transition: background-color 200ms;
                 cursor: pointer;
                 user-select: none;
@@ -221,6 +234,11 @@
                     margin:auto auto auto 5px;
                 }
 
+                &.close-component {
+                    width: 150px;
+                    background: #501616;
+                    box-shadow: 0px 0px 0px 2px #b16363;
+                }
                 ::ng-deep {
                     .mat-progress-spinner circle, .mat-spinner circle {
                         stroke: #ffffff;
@@ -230,71 +248,20 @@
                 &:active {
                     transform: scale(0.96);
                 }
-
-                @media (max-width: 800px) {
-                    width:120px;
-                    margin: 14px 5px 14px 6px;
-                    padding: 7px 22px 7px 24px;
-                    span {
-                        font-size: 14px;
+                
+                @media (max-width: 550px) {
+                    width:78px;
+                    padding: 9px 22px 9px 24px;
+                    
+                    &.close-component {
+                        width:78px;
                     }
-                    mat-icon {
-                        font-size: 20px;
-                    }
-                }
-            }
-
-            .prev-button {
-                display: flex;
-                width: 175px;
-                margin: 14px 10px 14px 10px;
-                justify-content: center;
-                background: #0e1f40;
-                border-radius: 30px;
-                transition: background-color 200ms;
-                cursor: pointer;
-                user-select: none;
-    
-                span {
-                    margin:auto auto auto 5px;
-                    font-weight: 600;
-                    color: white;
-                }
-                mat-icon { 
-                    color:white;
-                    height: unset;
-                    width: unset;
-                    margin: auto 5px auto auto;
-                }
-    
-               
-                &:active {
-                    transform: scale(0.96);
-                }
-
-                @media (max-width: 800px) {
-                    width:95px;
-                    margin: 14px 6px 14px 5px;
-                    span {
-                        font-size: 14px;
-                    }
-                    mat-icon {
-                        font-size: 20px;
-                    }
-                }
-
-                @media (max-width: 430px) {
-                    width: unset;
                     span {
                         display:none;
                     }
-                    mat-icon {
-                        padding: 0px 8px;
-                        margin: auto;
-                    }
                 }
-
             }
+
         }
     }
 
@@ -340,13 +307,12 @@
                 height:97%;
                 max-width:unset;
                 max-height:unset;
-
-                .tui-image-editor-help-menu {
-                    display:none;
-                }
             }
         }
 
+        .tui-image-editor-header-logo {
+            display:none !important;
+        }
         .tui-image-editor-header-buttons {
             display:none !important;
         }

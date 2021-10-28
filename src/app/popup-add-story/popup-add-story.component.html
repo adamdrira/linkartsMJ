@@ -9,7 +9,7 @@
     </div>
     
 
-    <div class="edition-container">
+    <div class="edition-container" #editionContainer>
 
 
         <div *ngIf="!imageDestination" class="image-container">
@@ -46,12 +46,10 @@
 
         <div class="buttons-container">
 
-
-            <div class="prev-button" (click)="step_back();" *ngIf="imageDestination">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
-                <span>Retour</span>
+            <div class="next-button close-component" (click)="close_dialog();" *ngIf="imageDestination">
+                <span>Annuler</span>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
             </div>
-
 
             <div class="next-button" (click)="send_picture();" *ngIf="imageDestination">
 

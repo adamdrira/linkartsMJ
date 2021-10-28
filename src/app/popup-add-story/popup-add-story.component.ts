@@ -12,9 +12,10 @@ import { FileItem, FileUploader } from 'ng2-file-upload';
 
 
 import ImageEditor from "tui-image-editor";
+declare var $:any;
 
 
-const url = 'https://www.linkarts.fr/routes/upload_story';
+const url = 'http://localhost:4600/routes/upload_story';
 
 @Component({
   selector: 'app-popup-add-story',
@@ -119,26 +120,7 @@ export class PopupAddStoryComponent implements OnInit {
   }
 
   
-  
-  @ViewChild("image")  image : ElementRef;
-  
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    
-  }
 
-
-
-
-
-  step_back() {
-    
-    if( this.imageDestination ) {
-      this.remove_beforeupload(this.uploader.queue[0]);
-      this.imageDestination=null;
-    }
-    
-  }
 
   //lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder
   remove_beforeupload(item: FileItem) {
@@ -150,12 +132,7 @@ export class PopupAddStoryComponent implements OnInit {
   }
 
 
-
-
-
-  filter (node) {
-    return (node.tagName !== 'i');
-  }
+  
   loading=false;
 
   send_picture() {
@@ -234,33 +211,55 @@ export class PopupAddStoryComponent implements OnInit {
 
 
   @ViewChild("imageEditorContainer")  imageEditorContainer : ElementRef;
+  @ViewChild("editionContainer")  editionContainer : ElementRef;
   image_editor:any;
 
 
 
   initialize_image_editor() {
+    
     this.image_editor = new ImageEditor( this.imageEditorContainer.nativeElement, {
       
       usageStatistics: false,
       
       includeUI: {
-        menuBarPosition: 'bottom'
+        menuBarPosition: 'top'
       },
 
-      cssMaxWidth: document.documentElement.clientWidth,
-      cssMaxHeight: document.documentElement.clientHeight,
 
-      selectionStyle: {
-        cornerSize: 50,
-        rotatingPointOffset: 100,
-      },
+      cssMaxWidth: this.editionContainer.nativeElement.offsetWidth,
+      cssMaxHeight: this.editionContainer.nativeElement.offsetHeight - 56 - 70 - 54 - 5,
+
+      selectionStyle: { cornerStyle: "circle", cornerSize: 25, cornerColor: "#ffffff", cornerStrokeColor: "#000000", transparentCorners: false, lineWidth: 1, borderColor: "#ffffff", }
       
     });
     
     this.image_editor.ui.activeMenuEvent();
+
+    $('.tie-text-color').on( "click", function() {
+      $('.color-picker-control').css('top', $('.tie-text-color').offset().top + 38);
+      $('.color-picker-control').css('left', $('.tie-text-color').offset().left - 75);
+    });
+    $('.tie-draw-color').on( "click", function() {
+      $('.color-picker-control').css('top', $('.tie-draw-color').offset().top + 38);
+      $('.color-picker-control').css('left', $('.tie-draw-color').offset().left - 75);
+    });
+    $('.tie-color-fill').on( "click", function() {
+      $('.color-picker-control').css('top', $('.tie-color-fill').offset().top + 38);
+      $('.color-picker-control').css('left', $('.tie-color-fill').offset().left - 75);
+    });
+    $('.tie-color-stroke').on( "click", function() {
+      $('.color-picker-control').css('top', $('.tie-color-stroke').offset().top + 38);
+      $('.color-picker-control').css('left', $('.tie-color-stroke').offset().left - 75);
+    });
+    $('.tie-icon-color').on( "click", function() {
+      $('.color-picker-control').css('top', $('.tie-icon-color').offset().top + 38);
+      $('.color-picker-control').css('left', $('.tie-icon-color').offset().left - 75 - 86);
+    });
+
+
   }
-
-
+  
 
   ngAfterViewInit() {
         
