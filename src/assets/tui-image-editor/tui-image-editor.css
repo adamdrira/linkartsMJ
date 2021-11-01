@@ -1211,6 +1211,16 @@ body > textarea {
 .tie-crop-preset-button .tui-image-editor-button.apply.active svg > use.active {
   display: block;
 }
+.tie-crop-preset-button .tui-image-editor-button {
+  display:none !important;
+}
+.tie-crop-button .tui-image-editor-button label {
+  display:none !important;
+}
+.tie-crop-button .tui-image-editor-button svg {
+  width: 30px;
+  height: 30px;
+}
 .tie-resize-button .tui-image-editor-button.apply,
 .tie-resize-preset-button .tui-image-editor-button.apply {
   margin-right: 24px;
@@ -1281,6 +1291,15 @@ body > textarea {
   height: 44px;
   width: 60px;
   border: 1px solid #101010;
+}
+
+@media (max-width: 550px) {
+  .tui-image-editor-help-menu.bottom > li.tui-image-editor-item.tie-btn-undo,
+  .tui-image-editor-help-menu.bottom > li.tui-image-editor-item.tie-btn-redo {
+    height: 36px;
+    width: 50px;
+    padding:6px 10px 9px 10px;
+  }
 }
 
 .tui-image-editor-help-menu.bottom > li.tui-image-editor-item:before,
