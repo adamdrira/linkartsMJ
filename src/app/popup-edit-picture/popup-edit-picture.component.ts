@@ -5,9 +5,8 @@ import { NavbarService } from '../services/navbar.service';
 import { ChatService } from '../services/chat.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
-import html2canvas from 'html2canvas';
-
-declare var Cropper;
+import ImageEditor from "tui-image-editor";
+declare var $:any;
 
 @Component({
   selector: 'app-popup-edit-picture',
@@ -50,17 +49,10 @@ export class PopupEditPictureComponent implements OnInit {
     }
 
     show_icon=false;
-    picture_blob:SafeUrl;
+    picture_blob:Blob;
     step=0;
     imageSource: SafeUrl = "";
-    imageDestination: string = "";
-    image_width:number;
-    image_height:number;
-    image_initial_width:number;
-    image_initial_height:number;
-    scale:number;
-    cropper: any;
-    cropperInitialized: boolean = false;
+    
 
 
     @ViewChild("image")  image : ElementRef;
@@ -69,534 +61,231 @@ export class PopupEditPictureComponent implements OnInit {
       if(this.data.modify_chat_after){
         var re = /(?:\.([^.]+))?$/;
 
+        alert("0");
+        console.log("##############################################");
+        
         if(this.data.type=="attachment"){
           this.ChatService.get_attachment_popup(this.data.attachment_name,this.data.friend_type,this.data.chat_friend_id).subscribe(r=>{
           
-            if(re.exec(this.data.attachment_name)[1].toLowerCase()=="svg"){
-              let THIS=this;
-              var reader = new FileReader()
-              reader.readAsText(r);
-              reader.onload = function(this) {
-                  let blob = new Blob([reader.result], {type: 'image/svg+xml'});
-                  let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
-                  const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
-                  THIS.picture_blob= SafeURL;
-                  THIS.cd.detectChanges();
-                  THIS.initialize_cropper(THIS.image)
-              }
-            }
-            else{
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.picture_blob= SafeURL;
-              this.cd.detectChanges();
-              this.initialize_cropper(this.image)
-            }
-            
+            alert("1");
+            console.log("##############################################");
+            console.log(r);
+              
+            this.initialize_image_editor();
+            this.image_editor.loadImageFromFile(r).then(result => {
+            });
+            /*let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            this.picture_blob= SafeURL;*/
+            this.cd.detectChanges();
   
           }) ;
         }
+        
         else{
           this.ChatService.get_picture_sent_by_msg(this.data.attachment_name).subscribe(r=>{
-          
-            if(re.exec(this.data.attachment_name)[1].toLowerCase()=="svg"){
-              let THIS=this;
-              var reader = new FileReader()
-              reader.readAsText(r);
-              reader.onload = function(this) {
-                  let blob = new Blob([reader.result], {type: 'image/svg+xml'});
-                  let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
-                  const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
-                  THIS.picture_blob= SafeURL;
-                  THIS.cd.detectChanges();
-                  THIS.initialize_cropper(THIS.image)
-              }
-            }
-            else{
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.picture_blob= SafeURL;
-              this.cd.detectChanges();
-              this.initialize_cropper(this.image)
-            }
-            
+            alert("2");
+            console.log("##############################################");
+            console.log(r);
+
+            this.initialize_image_editor();
+            this.image_editor.loadImageFromFile(r).then(result => {
+            });
+            /*let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            this.picture_blob= SafeURL;*/
+            this.cd.detectChanges();
   
           }) ;
         }
         
       }
       else if(this.data.modify_chat_before){
-        this.picture_blob=this.data.picture_blob;
+
+        
+        /*this.picture_blob=this.data.picture_blob;
+        var reader = new FileReader();
+        let THIS=this;
+
+        reader.readAsText(this.picture_blob);
+        reader.onload = function(this) {
+            let blob = new Blob([reader.result], {type: 'image/png'});
+            let file = new File([blob], "khamzat.png", {type:"image/png"});
+            THIS.image_editor.loadImageFromFile( file ).then(result => {
+            });
+        }*/
+
+        /*this.picture_blob=this.data.picture_blob;
+        
         this.cd.detectChanges();
-        this.initialize_cropper(this.image)
+        this.initialize_image_editor();
+        this.cd.detectChanges();
+
+
+        let file = new File([this.picture_blob], "khamzat.png", {type:"image/png"});
+
+
+        console.log(this.picture_blob);
+        console.log(file);
+
+        this.image_editor.loadImageFromFile( file ).then(result => {
+        });*/
+        
+        /*this.image_editor.loadImageFromURL( URL.createObjectURL(this.picture_blob) ).then(result => {
+        });*/
+        
       }
       
     }
 
-    initialize_cropper(content: ElementRef) {
-    
-      if( !this.cropperInitialized ) {
-        this.cropper = new Cropper(content.nativeElement, {
-          guides: true,
-          viewMode:2,
-          center:true,
-          restore:false,
-          zoomOnWheel:false,
-          fillColor: 'rgb(32,56,100)'
-  
-        });
-        this.cropperInitialized = true;
-      }
-  
-      this.cd.detectChanges();
-    }
     
 
-    set_crop() {
-    
 
-      const canvas = this.cropper.getCroppedCanvas();
-
-      canvas.toBlob(blob => {
-        if(this.imageDestination==''){
-          this.imageDestination = canvas.toDataURL("image/png");
-
-          this.image_width = canvas.width;
-          this.image_height = canvas.height;
-          this.image_initial_width = canvas.width;
-          this.image_initial_height = canvas.height;
-          this.scale= this.image_height / this.image_width;
-
-
-          if( canvas.height > ((window.innerHeight) - 51 - 63) ) {
-            this.image_height = Math.trunc(((window.innerHeight) - 51 - 63));
-          }
-          else {
-            this.image_height = Math.trunc(canvas.height);
-          }
-          
-  
-          if( canvas.width > 0.8 * window.innerWidth ) {
-            this.image_width = Math.trunc(0.8 * window.innerWidth);
-          }
-          else {
-            this.image_width = Math.trunc(canvas.width);
-          }
-          
-
-          this.cd.detectChanges();
-          this.update_image_container_size();
-        }
-      }, "image/png");
-      
-    }
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
-      this.update_image_container_size();
-    }
-    
-
-
-    //width: 1080
-    //height: 1349
-    update_image_container_size() {
-      if(this.imageDestination) {
-        
-        if( this.image_initial_height < this.get_height_available() && this.image_initial_width < this.get_width_available() ) {
-          this.image_height = Math.trunc(this.image_initial_height);
-          this.image_width = Math.trunc(this.image_initial_width);
-        }
-
-        if( this.image_initial_height > this.get_height_available() && this.image_initial_width < this.get_width_available() ) {
-          this.image_height = Math.trunc(this.get_height_available());
-          this.image_width = Math.trunc(this.image_height / this.scale);
-          return;
-        }
-
-        if( this.image_initial_height < this.get_height_available() && this.image_initial_width > this.get_width_available() ) {
-          this.image_width = Math.trunc(this.get_width_available());
-          this.image_height = Math.trunc(this.scale * this.image_width);
-          return;
-        }
-
-
-        if( this.image_initial_height > this.get_height_available() && this.image_initial_width > this.get_width_available() ) {
-          
-          
-          if( this.scale * this.get_width_available() > this.get_height_available() ) {
-            this.image_height = Math.trunc(this.get_height_available());
-            this.image_width = Math.trunc(this.image_height / this.scale);
-          }
-          else {
-            this.image_width = Math.trunc(this.get_width_available());
-            this.image_height = Math.trunc(this.scale * this.image_width);
-          }
-
-        }
-      }
       
     }
-
-
-    get_height_available() {
-      if( window.innerWidth > 650 ) {
-        return ((window.innerHeight) - 51 - 63);
-      }
-      else {
-        return ((window.innerHeight) - 51 - 63);
-      }
-    }
-
-    get_width_available() {
-      if( window.innerWidth > 650 ) {
-        return 0.8 * window.innerWidth;
-      }
-      else {
-        return window.innerWidth;
-      }
-    }
-
-
-    rectangles: any[] = [];
-    add_rectangle() {
-      this.rectangles.push( {
-        stroke_color:'black',
-        background_color:'transparent',
-        height:50,
-        width:50,
-        stroke_width:6,
-        z_index:this.get_max_index()+1,
-      });
-      this.set_no_activated_objects();
-      this.activated_rectangle = this.rectangles.length - 1;
-    }
-
-
     
-    larger_rectangle(i: number) {
-      this.rectangles[i].width = this.rectangles[i].width + 10;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    thiner_rectangle(i: number) {
-      this.rectangles[i].width = this.rectangles[i].width - 10;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    higher_rectangle(i: number) {
-      this.rectangles[i].height = this.rectangles[i].height + 10;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    less_higher_rectangle(i: number) {
-      this.rectangles[i].height = this.rectangles[i].height - 10;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    bigger_rectangle_stroke(i: number) {
-      this.rectangles[i].stroke_width++;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    smaller_rectangle_stroke(i: number) {
-      this.rectangles[i].stroke_width--;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-
-    set_rectangle_font_color(s: string) {
-      this.rectangles[ this.activated_rectangle ].stroke_color = s;
-    }
-    set_rectangle_background_color(s: string) {
-      this.rectangles[ this.activated_rectangle ].background_color = s;
-    }
-
-    put_rectangle_to_front(i:number) {
-      this.rectangles[ this.activated_rectangle ].z_index = this.get_max_index()+1;
-    }
-
-    set_activated_rectangle(i:number) {
-      this.set_no_activated_objects();
-      this.activated_rectangle = i;
-    }
-    remove_rectangle(i:number) {
-      this.rectangles.splice(i,1);
-      this.activated_rectangle = -1;
-    }
-    activated_rectangle=-1;
-
-
-
-
-
-    circles: any[] = [];
-    add_circle() {
-      this.circles.push( {
-        stroke_color:'black',
-        background_color:'transparent',
-        rayon:15,
-        stroke_width:4,
-        z_index:this.get_max_index()+1,
-      });
-      this.set_no_activated_objects();
-      this.activated_circle = this.circles.length - 1;
-    }
-    bigger_circle_size(i: number) {
-      this.circles[i].rayon = this.circles[i].rayon + 3;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    smaller_circle_size(i: number) {
-      this.circles[i].rayon = this.circles[i].rayon - 3;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-
-    bigger_circle_stroke(i: number) {
-      this.circles[i].stroke_width++;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    smaller_circle_stroke(i: number) {
-      this.circles[i].stroke_width--;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-
-    set_circle_font_color(s: string) {
-      this.circles[ this.activated_circle ].stroke_color = s;
-    }
-    set_circle_background_color(s: string) {
-      this.circles[ this.activated_circle ].background_color = s;
-    }
-
-    put_circle_to_front(i:number) {
-      this.circles[ this.activated_circle ].z_index = this.get_max_index()+1;
-    }
-
-    set_activated_circle(i:number) {
-      this.set_no_activated_objects();
-      this.activated_circle = i;
-    }
-    remove_circle(i:number) {
-      this.circles.splice(i,1);
-      this.activated_circle = -1;
-    }
-    activated_circle=-1;
-
-
-
-
-
-    texts: any[] = [];
-      
-    add_text() {
-      this.texts.push( {
-        text:'Ajouter un texte',
-        background:'white',
-        font_family:'system-ui',
-        font_size:14,
-        font_bold:false,//600 or bold
-        font_italic:false,
-        font_color:'black',
-        text_align:'center',//left,right,center,justified
-        background_color:'white',
-        z_index:this.get_max_index()+1,
-        textareaHeight:0,
-        textareaWidth:0,
-
-      });
-      this.set_no_activated_objects();
-      this.activated_popup = this.texts.length - 1;
-    }
-    
-    bigger_size(i: number) {
-      this.texts[i].font_size++;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    smaller_size(i: number) {
-      this.texts[i].font_size--;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    click_bold(i: number) {
-      this.texts[i].font_bold = !this.texts[i].font_bold;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    click_italic(i: number) {
-      this.texts[i].font_italic = !this.texts[i].font_italic;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    click_align_left(i: number) {
-      this.texts[i].text_align = 'left';
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    click_align_right(i: number) {
-      this.texts[i].text_align = 'right';
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    click_align_center(i: number) {
-      this.texts[i].text_align = 'center';
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    click_align_justify(i: number) {
-      this.texts[i].text_align = 'justify';
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-    
-    colors: any[] = ["no-background","white","silver","gray","black","red","maroon","yellow","olive","lime","green","aqua","teal","blue","navy","fuchsia","purple"];
-    set_font_color(s: string) {
-      this.texts[ this.activated_popup ].font_color = s;
-    }
-    set_background_color(s: string) {
-      this.texts[ this.activated_popup ].background_color = s;
-    }
-
-    fonts:any[] = ["System-ui","Arial","Arial Black","Verdana","Tahoma","Trebuchet MS","Impact","Times New Roman","Didot","Georgia","American Typewriter","Andalé Mono","Courier","Lucida Console","Monaco","Bradley Hand","Brush Script MT","Luminari","Comic Sans MS"];
-    set_font_family(s: string) {
-      this.texts[ this.activated_popup ].font_family = s;
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-    }
-
-    put_text_to_front(i:number) {
-      this.texts[ this.activated_popup ].z_index = this.get_max_index()+1;
-    }
-
-    set_activated_popup(i:number) {
-      this.set_no_activated_objects();
-      this.activated_popup = i;
-    }
-    remove_text(i:number) {
-      this.texts.splice(i,1);
-      if( this.texts.length ) {
-        this.activated_popup = 0;
-      }
-      else {
-        this.activated_popup = -1;
-      }
-    }
-    activated_popup=-1;
-
-
-    step_back() {
-      this.texts=[];
-      this.activated_popup = -1;
-      
-      if( !this.imageDestination ) {
-        return;
-      }
-      
-      this.cropperInitialized=false;
-      this.imageDestination='';
-
-      this.cd.detectChanges();
-      this.initialize_cropper(this.image);
-    }
-
-    set_no_activated_objects() {
-      this.activated_circle=-1;
-      this.activated_popup=-1;
-      this.activated_rectangle=-1;
-    }
-
-    get_max_index() {
-      let max_of_texts:number = 1010;
-      let max_of_circles:number = 1010;
-      let max_of_rectangles:number = 1010;
-
-      if(this.texts) {
-        for(let i=0; i<this.texts.length; i++) {
-          if(this.texts[i].z_index>max_of_texts) {
-            max_of_texts = this.texts[i].z_index;
-          }
-        }
-      }
-
-      if(this.circles) {
-        for(let i=0; i<this.circles.length; i++) {
-          if(this.circles[i].z_index>max_of_circles) {
-            max_of_circles = this.circles[i].z_index;
-          }
-        }
-      }
-
-      if(this.rectangles) {
-        for(let i=0; i<this.rectangles.length; i++) {
-          if(this.rectangles[i].z_index>max_of_rectangles) {
-            max_of_rectangles = this.rectangles[i].z_index;
-          }
-        }
-      }
-
-      if(max_of_texts>=max_of_circles && max_of_texts>=max_of_rectangles) {
-        return max_of_texts;
-      }
-      else if(max_of_circles>=max_of_texts && max_of_circles>=max_of_rectangles) {
-        return max_of_circles;
-      }
-      else {
-        return max_of_rectangles;
-      }
-    }
-
-
-
-    filter (node) {
-      return (node.tagName !== 'i');
-    }
-    @ViewChild ('image_container') image_container:ElementRef;
     loading=false;
 
-    @ViewChildren('textarea') textareas: QueryList<any>;
-    
+
     send_picture() {
       if(this.loading){
         return;
       }
-      this.set_no_activated_objects();
-
-      for(let i=0;i<this.textareas.toArray().length;i++) {
-        this.texts[i].textareaHeight = this.textareas.toArray()[i].nativeElement.offsetHeight;
-        this.texts[i].textareaWidth = this.textareas.toArray()[i].nativeElement.offsetWidth;
-      }
-
-      this.loading=true;
       
-      this.set_no_activated_objects();
-      this.cd.detectChanges();
-
-      var THIS = this;
-      document.documentElement.classList.add("edit-picture-hide-scrollbar");
-      html2canvas( this.image_container.nativeElement, {
-        scrollX: 0,
-        scrollY: -window.scrollY,
-        windowWidth: document.documentElement.offsetWidth,
-        windowHeight: document.documentElement.offsetHeight,
-      }).then(canvas => {
-              canvas.toBlob(
-                blob => {
-                  THIS.set_no_activated_objects();
-                  THIS.dialogRef.close(blob);
-                },
-                'image/png',
-                1,
-              );
-
-              THIS.loading=false;
-      });
-      document.documentElement.classList.remove("edit-picture-hide-scrollbar");
+      let blob = this.dataURItoBlob( this.image_editor.toDataURL() );
+      this.dialogRef.close(blob);
     }
     
+    dataURItoBlob(dataURI) {
+      // convert base64/URLEncoded data component to raw binary data held in a string
+      var byteString;
+      if (dataURI.split(',')[0].indexOf('base64') >= 0)
+          byteString = atob(dataURI.split(',')[1]);
+      else
+          byteString = unescape(dataURI.split(',')[1]);
 
+      // separate out the mime component
+      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+      // write the bytes of the string to a typed array
+      var ia = new Uint8Array(byteString.length);
+      for (var i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+      }
+
+      return new Blob([ia], {type:mimeString});
+    }
+
+    
+    @ViewChild("imageEditorContainer")  imageEditorContainer : ElementRef;
+    @ViewChild("editionContainer")  editionContainer : ElementRef;
+    image_editor:any;
+
+
+    set_brush_opacity() {
+      if(this.image_editor) {
+        this.image_editor.setBrush({
+          color: this.hexToRgbA(this.image_editor.ui.draw.color),
+        });
+      }
+    }
+    hexToRgbA(hex){
+      var c;
+      if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+          c= hex.substring(1).split('');
+          if(c.length== 3){
+              c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+          }
+          c= '0x'+c.join('');
+          return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',1)';
+      }
+      throw new Error('Bad Hex');
+    }
+
+    initialize_image_editor() {
+    
+      this.image_editor = new ImageEditor( this.imageEditorContainer.nativeElement, {
+        
+        usageStatistics: false,
+        
+        includeUI: {
+          menuBarPosition: 'top'
+        },
+  
+  
+        cssMaxWidth: this.editionContainer.nativeElement.offsetWidth,
+        cssMaxHeight: this.editionContainer.nativeElement.offsetHeight - 56 - 70 - 54 - 5,
+  
+        selectionStyle: { cornerStyle: "circle", cornerSize: 25, cornerColor: "#ffffff", cornerStrokeColor: "#000000", transparentCorners: false, lineWidth: 1, borderColor: "#ffffff", }
+        
+      });
+      
+      this.image_editor.ui.activeMenuEvent();
+  
+      let THIS = this;
+      $('.tie-text-color').on( "click", function() {
+        $('.color-picker-control').css('top', $('.tie-text-color').offset().top + 38);
+        $('.color-picker-control').css('left', $('.tie-text-color').offset().left - 75);
+      });
+      
+      $('.tui-image-editor').mousedown(
+        {param1 : THIS},
+        function(event) {
+          THIS.set_brush_opacity();
+        }
+      );
+      $('.tie-btn-draw').click(
+        {param1 : THIS},
+        function(event) {
+          THIS.set_brush_opacity();
+        }
+      );
+      $('.tui-image-editor-submenu-item').click(
+        {param1 : THIS},
+        function(event) {
+          THIS.set_brush_opacity();
+        }
+      );
+  
+      $('.tie-draw-color').click(
+        {param1 : THIS},
+        function(event) {
+          $('.color-picker-control').css('top', $('.tie-draw-color').offset().top + 38);
+          $('.color-picker-control').css('left', $('.tie-draw-color').offset().left - 75);
+          THIS.set_brush_opacity();
+        }
+      );
+  
+      
+      
+      $('.tie-color-fill').on( "click", function() {
+        $('.color-picker-control').css('top', $('.tie-color-fill').offset().top + 38);
+        $('.color-picker-control').css('left', $('.tie-color-fill').offset().left - 75);
+      });
+      $('.tie-color-stroke').on( "click", function() {
+        $('.color-picker-control').css('top', $('.tie-color-stroke').offset().top + 38);
+        $('.color-picker-control').css('left', $('.tie-color-stroke').offset().left - 75);
+      });
+      $('.tie-icon-color').on( "click", function() {
+        $('.color-picker-control').css('top', $('.tie-icon-color').offset().top + 38);
+        $('.color-picker-control').css('left', $('.tie-icon-color').offset().left - 75 - 86);
+      });
+  
+    }
+
+    @HostListener('window:mouseup', ['$event'])
+    mouseUp(event){
+      this.set_brush_opacity();
+    }
+    @HostListener('window:mousedown', ['$event'])
+    mouseDown(event){
+      this.set_brush_opacity();
+    }
+
+    
     close_dialog(){
       this.dialogRef.close();
     }

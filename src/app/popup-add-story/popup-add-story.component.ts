@@ -12,6 +12,7 @@ import { FileItem, FileUploader } from 'ng2-file-upload';
 
 
 import ImageEditor from "tui-image-editor";
+
 declare var $:any;
 
 
@@ -132,10 +133,10 @@ export class PopupAddStoryComponent implements OnInit {
   }
 
 
-  
   loading=false;
 
   send_picture() {
+
     if(this.loading){
       return;
     }
@@ -146,7 +147,7 @@ export class PopupAddStoryComponent implements OnInit {
     var THIS = this;
     
     
-    let blob = this.dataURItoBlob( this.image_editor.toDataURL() );
+    let blob = this.dataURItoBlob( this.image_editor.toDataURL({format: 'png', quality: 0.5}) );
 
     THIS.Story_service.upload_story( blob ).subscribe(res => {
       if(!res[0].num && !res[0].error && !res[0].msg){
@@ -215,6 +216,26 @@ export class PopupAddStoryComponent implements OnInit {
   image_editor:any;
 
 
+  set_brush_opacity() {
+    if(this.image_editor) {
+      this.image_editor.setBrush({
+        color: this.hexToRgbA(this.image_editor.ui.draw.color),
+      });
+    }
+  }
+  hexToRgbA(hex){
+    var c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',1)';
+    }
+    throw new Error('Bad Hex');
+  }
+
 
   initialize_image_editor() {
     
@@ -223,9 +244,8 @@ export class PopupAddStoryComponent implements OnInit {
       usageStatistics: false,
       
       includeUI: {
-        menuBarPosition: 'top'
+        menuBarPosition: 'top',
       },
-
 
       cssMaxWidth: this.editionContainer.nativeElement.offsetWidth,
       cssMaxHeight: this.editionContainer.nativeElement.offsetHeight - 56 - 70 - 54 - 5,
@@ -234,16 +254,45 @@ export class PopupAddStoryComponent implements OnInit {
       
     });
     
-    this.image_editor.ui.activeMenuEvent();
 
+    this.image_editor.ui.activeMenuEvent();
+    
+    let THIS = this;
     $('.tie-text-color').on( "click", function() {
       $('.color-picker-control').css('top', $('.tie-text-color').offset().top + 38);
       $('.color-picker-control').css('left', $('.tie-text-color').offset().left - 75);
     });
-    $('.tie-draw-color').on( "click", function() {
-      $('.color-picker-control').css('top', $('.tie-draw-color').offset().top + 38);
-      $('.color-picker-control').css('left', $('.tie-draw-color').offset().left - 75);
-    });
+    
+    $('.tui-image-editor').mousedown(
+      {param1 : THIS},
+      function(event) {
+        THIS.set_brush_opacity();
+      }
+    );
+    $('.tie-btn-draw').click(
+      {param1 : THIS},
+      function(event) {
+        THIS.set_brush_opacity();
+      }
+    );
+    $('.tui-image-editor-submenu-item').click(
+      {param1 : THIS},
+      function(event) {
+        THIS.set_brush_opacity();
+      }
+    );
+
+    $('.tie-draw-color').click(
+      {param1 : THIS},
+      function(event) {
+        $('.color-picker-control').css('top', $('.tie-draw-color').offset().top + 38);
+        $('.color-picker-control').css('left', $('.tie-draw-color').offset().left - 75);
+        THIS.set_brush_opacity();
+      }
+    );
+
+    
+    
     $('.tie-color-fill').on( "click", function() {
       $('.color-picker-control').css('top', $('.tie-color-fill').offset().top + 38);
       $('.color-picker-control').css('left', $('.tie-color-fill').offset().left - 75);
@@ -259,7 +308,16 @@ export class PopupAddStoryComponent implements OnInit {
 
 
   }
-  
+
+
+  @HostListener('window:mouseup', ['$event'])
+  mouseUp(event){
+    this.set_brush_opacity();
+  }
+  @HostListener('window:mousedown', ['$event'])
+  mouseDown(event){
+    this.set_brush_opacity();
+  }
 
   ngAfterViewInit() {
         

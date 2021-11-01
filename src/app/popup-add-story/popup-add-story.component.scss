@@ -250,11 +250,12 @@
                 }
                 
                 @media (max-width: 550px) {
-                    width:78px;
-                    padding: 9px 22px 9px 24px;
+                    width:60px;
+                    padding:4px 15px 5px 14px;
+                    margin:10px 15px 0px 0px;
                     
                     &.close-component {
-                        width:78px;
+                        width:60px;
                     }
                     span {
                         display:none;
