@@ -1367,9 +1367,6 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
   selectBox(checked,i){
-    console.log(checked)
-    console.log(i)
-    console.log(this.myForms)
     if(!this.visitor_stats_retrieved){
       this.box_checked[i]=false;
       return
@@ -1377,7 +1374,6 @@ export class HomeLinkcollabComponent implements OnInit {
     
     let index=this.last_emitted_projects.findIndex(item=>item.target_id==this.list_of_editors[i].id);
     if(index>=0){
-      console.log("index sup")
       this.box_checked[i]=false;
       this.cd.detectChanges();
       let s=date_in_seconds(this.now_in_seconds,this.last_emitted_projects[index].createdAt);
@@ -1403,7 +1399,6 @@ export class HomeLinkcollabComponent implements OnInit {
       
     }
     else if(checked){
-      console.log("in checked")
       this.navbar.add_page_visited_to_history(`/linkcollab/select_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).pipe( first() ).subscribe();
       this.box_checked[i]=true;
       this.myForms[i].controls['checked'].setValue(true);
@@ -1412,7 +1407,6 @@ export class HomeLinkcollabComponent implements OnInit {
       this.show_editors=true;
     }
     else{
-      console.log("in false")
       this.navbar.add_page_visited_to_history(`/linkcollab/unselect_editor/${i}/${this.list_of_editors[i].title}`,this.device_info ).pipe( first() ).subscribe();
       this.box_checked[i]=false;
       this.myForms[i].controls['checked'].setValue(false);
@@ -1624,6 +1618,13 @@ export class HomeLinkcollabComponent implements OnInit {
           this.router.navigateByUrl('/account/' + this.user.nickname + "/projects" );
         }
         else{
+
+          for(let i=0;i<this.myForms.length;i++) {
+            this.myForms[i].controls['checked'].setValue(false);
+            this.myForms[i].controls['checked'].updateValueAndValidity();
+            this.cd.detectChanges();
+          }
+
           this.visitor_stats_retrieved=false;
           this.list_of_editors_selected=[];
           this.show_editors=false;

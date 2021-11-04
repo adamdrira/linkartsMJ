@@ -620,9 +620,6 @@ export class ChatRightContainerComponent implements OnInit {
       }
     }
 
-
-    
-    
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {
         list_of_pictures:list_of_pics,
@@ -908,12 +905,14 @@ export class ChatRightContainerComponent implements OnInit {
   show_images_of_folder(i,j){
     let list_of_pics=[];
     let new_list_types=[];
+    let list_of_chat_friend_ids=[];
     let indice=0;
     if(j<15){
       if(this.list_of_files_object_by_folder[i].length<30){
         for(let k=0;k<this.list_of_files_object_by_folder[i].length;k++){
           if(this.list_of_files_object_by_folder[i][k].attachment_type=="picture_attachment" ||this.list_of_files_object_by_folder[i][k].attachment_type=="picture_message" ){
             list_of_pics.push(this.list_of_files_object_by_folder[i][k].attachment_name);
+            list_of_chat_friend_ids.push(this.list_of_files_object_by_folder[i][k].chat_friend_id)
             new_list_types.push(this.list_of_files_object_by_folder[i][k].attachment_type);
             if(this.list_of_files_object_by_folder[i][k].id==this.list_of_files_object_by_folder[i][j].id){
               indice=k;
@@ -926,6 +925,7 @@ export class ChatRightContainerComponent implements OnInit {
           if(this.list_of_files_object_by_folder[i][k].attachment_type=="picture_attachment" ||this.list_of_files_object_by_folder[i][k].attachment_type=="picture_message" ){
             list_of_pics.push(this.list_of_files_object_by_folder[i][k].attachment_name);
             new_list_types.push(this.list_of_files_object_by_folder[i][k].attachment_type);
+            list_of_chat_friend_ids.push(this.list_of_files_object_by_folder[i][k].chat_friend_id)
             if(this.list_of_files_object_by_folder[i][k].id==this.list_of_files_object_by_folder[i][j].id){
               indice=k;
             }
@@ -939,6 +939,7 @@ export class ChatRightContainerComponent implements OnInit {
         if(this.list_of_files_object_by_folder[i][k].attachment_type=="picture_attachment" ||this.list_of_files_object_by_folder[i][k].attachment_type=="picture_message" ){
           list_of_pics.push(this.list_of_files_object_by_folder[i][k].attachment_name);
           new_list_types.push(this.list_of_files_object_by_folder[i][k].attachment_type);
+          list_of_chat_friend_ids.push(this.list_of_files_object_by_folder[i][k].chat_friend_id)
           if(this.list_of_files_object_by_folder[i][k].id==this.list_of_files_object_by_folder[i][j].id){
             indice=k;
           }
@@ -953,7 +954,8 @@ export class ChatRightContainerComponent implements OnInit {
         index_of_picture:indice,
         for_chat:true,
         friend_type:(this.friend_type=='user')?'user':'group',
-        chat_friend_id:this.chat_friend_id
+        chat_friend_id:this.chat_friend_id,
+        list_of_chat_friend_ids:list_of_chat_friend_ids,
       },      
       panelClass:"popupDocumentClass",
     });
