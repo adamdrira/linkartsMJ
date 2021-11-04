@@ -256,6 +256,7 @@ export class ChatComponent implements OnInit  {
   display_attachments=false;
   attachments:any[]=[];
   attachments_safe:any[]=[];
+  attachment_file:any;
   attachments_for_sql:any[]=[];
   attachments_type:any[]=[];
   end_of_past_images=false;
@@ -621,6 +622,7 @@ export class ChatComponent implements OnInit  {
     
     //uploader_managment
     this.uploader.onAfterAddingFile = async (file) => {
+      
       this.input.nativeElement.focus();
       if(this.chat_friend_id==0){
         this.chatService.get_chat_friend(this.friend_id,(this.friend_type=='group')?true:false).pipe(first() ).subscribe(r=>{
@@ -647,6 +649,7 @@ export class ChatComponent implements OnInit  {
         });
       }
       else{
+        this.attachment_file=file._file;
         let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.attachments_size.push(size);
@@ -1555,11 +1558,13 @@ export class ChatComponent implements OnInit  {
       });
     }
     else{
-      let picture_blob=this.attachments_safe[0];
+      //let picture_blob=this.attachments_safe[0];
+      let picture_file=this.attachment_file;
       const dialogRef = this.dialog.open(PopupEditPictureComponent, {
         data: {
           modify_chat_before:true,
-          picture_blob:picture_blob,
+          //picture_blob:picture_blob,
+          picture_file:picture_file,
           friend_type:(this.friend_type=='user')?'user':'group',
           chat_friend_id:this.chat_friend_id
         },

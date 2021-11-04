@@ -53,30 +53,23 @@ export class PopupEditPictureComponent implements OnInit {
     step=0;
     imageSource: SafeUrl = "";
     
-
+    imageDestination:any;
 
     @ViewChild("image")  image : ElementRef;
     
     ngOnInit(): void {
-      if(this.data.modify_chat_after){
-        var re = /(?:\.([^.]+))?$/;
+      
+      
+    }
 
-        alert("0");
-        console.log("##############################################");
-        
+    
+    ngAfterViewInit(){
+      if(this.data.modify_chat_after){
         if(this.data.type=="attachment"){
           this.ChatService.get_attachment_popup(this.data.attachment_name,this.data.friend_type,this.data.chat_friend_id).subscribe(r=>{
-          
-            alert("1");
-            console.log("##############################################");
-            console.log(r);
-              
+            var file = new File([r], "name");
             this.initialize_image_editor();
-            this.image_editor.loadImageFromFile(r).then(result => {
-            });
-            /*let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.picture_blob= SafeURL;*/
+            this.image_editor.loadImageFromFile(file)
             this.cd.detectChanges();
   
           }) ;
@@ -84,62 +77,22 @@ export class PopupEditPictureComponent implements OnInit {
         
         else{
           this.ChatService.get_picture_sent_by_msg(this.data.attachment_name).subscribe(r=>{
-            alert("2");
-            console.log("##############################################");
-            console.log(r);
-
             this.initialize_image_editor();
-            this.image_editor.loadImageFromFile(r).then(result => {
-            });
-            /*let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.picture_blob= SafeURL;*/
+            this.image_editor.loadImageFromFile(r)
             this.cd.detectChanges();
-  
-          }) ;
+          })
         }
         
       }
       else if(this.data.modify_chat_before){
 
-        
-        /*this.picture_blob=this.data.picture_blob;
-        var reader = new FileReader();
-        let THIS=this;
-
-        reader.readAsText(this.picture_blob);
-        reader.onload = function(this) {
-            let blob = new Blob([reader.result], {type: 'image/png'});
-            let file = new File([blob], "khamzat.png", {type:"image/png"});
-            THIS.image_editor.loadImageFromFile( file ).then(result => {
-            });
-        }*/
-
-        /*this.picture_blob=this.data.picture_blob;
-        
-        this.cd.detectChanges();
         this.initialize_image_editor();
+        this.image_editor.loadImageFromFile(this.data.picture_file)
         this.cd.detectChanges();
-
-
-        let file = new File([this.picture_blob], "khamzat.png", {type:"image/png"});
-
-
-        console.log(this.picture_blob);
-        console.log(file);
-
-        this.image_editor.loadImageFromFile( file ).then(result => {
-        });*/
         
-        /*this.image_editor.loadImageFromURL( URL.createObjectURL(this.picture_blob) ).then(result => {
-        });*/
         
       }
-      
     }
-
-    
-
 
 
     @HostListener('window:resize', ['$event'])
@@ -206,7 +159,7 @@ export class PopupEditPictureComponent implements OnInit {
     }
 
     initialize_image_editor() {
-    
+      console.log("initialize",this.imageEditorContainer)
       this.image_editor = new ImageEditor( this.imageEditorContainer.nativeElement, {
         
         usageStatistics: false,
