@@ -2,14 +2,14 @@ const Sequelize = require('sequelize');
 const tables = require('./tables');
 
 
-/*const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
-    host : 'localhost',
-    dialect: 'postgres'
-});*/
-const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
+const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
   host : 'localhost',
   dialect: 'postgres'
 });
+/*const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
+host : 'localhost',
+dialect: 'postgres'
+});*/
 const list_of_stories = tables.list_of_stories(sequelize, Sequelize).stories;
 const list_of_views = tables.list_of_stories(sequelize, Sequelize).views;
 

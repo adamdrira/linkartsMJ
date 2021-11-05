@@ -5,9 +5,7 @@ const multer = require('multer');
 const fs = require('fs');
 var path = require('path');
 const sharp = require('sharp');
-const imagemin = require("imagemin");
-const imageminPngquant = require("imagemin-pngquant");
-
+var Jimp = require('jimp');
 
 module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribings) => {
 
@@ -82,29 +80,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                     res.status(500).send([{error:err}])
                 }
                 else{
-                    (async () => {
-                        let filename = "./data_and_routes/stories/" + file_name ;
-                        const files = await imagemin([filename], {
-                        destination: './data_and_routes/stories',
-                        plugins: [
-                            imageminPngquant({
-                                quality: [0.7, 0.8]
-                            })
-                        ]
-                        });
-                        list_of_stories.create({
-                            "id_user": current_user,
-                            "status":"public",
-                            "file_name": file_name,
-                            "views_number": 0,
-                        }).catch(err => {
-                            ;	
-                            res.status(500).json({msg: "error", details: err});		
-                        }).then(stories=>{
-                            res.status(200).send([stories]);
-                        });
-                    })();
-                    
+                    list_of_stories.create({
+                        "id_user": current_user,
+                        "status":"public",
+                        "file_name": file_name,
+                        "views_number": 0,
+                    }).catch(err => {
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(stories=>{
+                        res.status(200).send([stories]);
+                    });
+                
     
                     
                 }
@@ -624,10 +610,31 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         let filename = "./data_and_routes/stories/" + req.params.file_name ;
         const width = parseInt(req.params.width)
         let transform = sharp()
-        transform = transform.resize({fit:sharp.fit.inside,width:width})
+        transform = transform.resize({fit:sharp.fit.inside,width:200})
         .toBuffer((err, buffer, info) => {
             if (buffer) {
                 res.status(200).send(buffer);
+            }
+            else{
+              Jimp.read(path.join(process.cwd(),filename), (err, lenna) => {
+                if (err){
+                  res.status(404).send({err:"error"});
+                }
+                else{
+                  lenna
+                  .resize(width,Jimp.AUTO) 
+                  .quality(100) 
+                  .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+                    if(err){
+                      res.status(404).send({err:err});
+                    }
+                    else{
+                      res.status(200).send(buffer);
+                    }
+                    
+                  });
+                }
+              });
             }
         });
         fs.access(filename, fs.F_OK, (err) => {
