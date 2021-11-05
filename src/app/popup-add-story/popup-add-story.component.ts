@@ -108,8 +108,13 @@ export class PopupAddStoryComponent implements OnInit {
           this.initialize_image_editor();
                 
           this.image_editor.loadImageFromFile(file._file).then(result => {
+            
+            this.cd.detectChanges();
+            this.image_editor.clearUndoStack();
+            this.image_editor.clearRedoStack();
           });
-
+          
+          
         }
       }
 
@@ -147,7 +152,8 @@ export class PopupAddStoryComponent implements OnInit {
     var THIS = this;
     
     
-    let blob = this.dataURItoBlob( this.image_editor.toDataURL({format: 'png', quality: 0.5}) );
+    let blob = this.dataURItoBlob( this.image_editor.toDataURL({format: 'png'}) );
+    
 
     THIS.Story_service.upload_story( blob ).subscribe(res => {
       if(!res[0].num && !res[0].error && !res[0].msg){
@@ -180,25 +186,32 @@ export class PopupAddStoryComponent implements OnInit {
 
   }
   
+  
   dataURItoBlob(dataURI) {
-    // convert base64/URLEncoded data component to raw binary data held in a string
-    var byteString;
-    if (dataURI.split(',')[0].indexOf('base64') >= 0)
-        byteString = atob(dataURI.split(',')[1]);
-    else
-        byteString = unescape(dataURI.split(',')[1]);
-
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    var byteString = atob(dataURI.split(',')[1]);
+  
     // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    // write the bytes of the string to a typed array
-    var ia = new Uint8Array(byteString.length);
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+  
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length);
+  
+    // create a view into the buffer
+    var ia = new Uint8Array(ab);
+  
+    // set the bytes of the buffer to the correct values
     for (var i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
     }
-
-    return new Blob([ia], {type:mimeString});
+  
+    // write the ArrayBuffer to a blob, and you're done
+    var blob = new Blob([ab], {type: mimeString});
+    return blob;
+  
   }
+
 
   close_dialog(){
     this.dialogRef.close();

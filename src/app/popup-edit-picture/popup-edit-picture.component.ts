@@ -53,8 +53,7 @@ export class PopupEditPictureComponent implements OnInit {
     step=0;
     imageSource: SafeUrl = "";
     
-    imageDestination:any;
-
+    
     @ViewChild("image")  image : ElementRef;
     
     ngOnInit(): void {
@@ -69,7 +68,12 @@ export class PopupEditPictureComponent implements OnInit {
           this.ChatService.get_attachment_popup(this.data.attachment_name,this.data.friend_type,this.data.chat_friend_id).subscribe(r=>{
             var file = new File([r], "name");
             this.initialize_image_editor();
-            this.image_editor.loadImageFromFile(file)
+            this.image_editor.loadImageFromFile(file).then(result => {
+            
+              this.cd.detectChanges();
+              this.image_editor.clearUndoStack();
+              this.image_editor.clearRedoStack();
+            });
             this.cd.detectChanges();
   
           }) ;
@@ -78,7 +82,12 @@ export class PopupEditPictureComponent implements OnInit {
         else{
           this.ChatService.get_picture_sent_by_msg(this.data.attachment_name).subscribe(r=>{
             this.initialize_image_editor();
-            this.image_editor.loadImageFromFile(r)
+            this.image_editor.loadImageFromFile(r).then(result => {
+            
+              this.cd.detectChanges();
+              this.image_editor.clearUndoStack();
+              this.image_editor.clearRedoStack();
+            });
             this.cd.detectChanges();
           })
         }
@@ -87,7 +96,12 @@ export class PopupEditPictureComponent implements OnInit {
       else if(this.data.modify_chat_before){
 
         this.initialize_image_editor();
-        this.image_editor.loadImageFromFile(this.data.picture_file)
+        this.image_editor.loadImageFromFile(this.data.picture_file).then(result => {
+            
+          this.cd.detectChanges();
+          this.image_editor.clearUndoStack();
+          this.image_editor.clearRedoStack();
+        });
         this.cd.detectChanges();
         
         

@@ -23,12 +23,12 @@
 
         <div class="buttons-container">
 
-            <div class="next-button close-component" (click)="close_dialog();" *ngIf="imageDestination">
+            <div class="next-button close-component" (click)="close_dialog();">
                 <span>Annuler</span>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
             </div>
 
-            <div class="next-button" (click)="send_picture();" *ngIf="imageDestination">
+            <div class="next-button" (click)="send_picture();">
 
                 <ng-container *ngIf="!loading">
                     <span>Envoyer</span>
