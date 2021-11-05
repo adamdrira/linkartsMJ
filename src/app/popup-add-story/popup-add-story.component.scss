@@ -18,6 +18,26 @@
         display: none !important;
     }
 
+    
+    @media(max-width:450px){
+
+        ::ng-deep{
+            .tui-image-editor-container .tui-image-editor-menu > .tui-image-editor-item, .tui-image-editor-container .tui-image-editor-help-menu > .tui-image-editor-item {
+                padding: 9px 5px 9px 5px;
+        }
+
+        .tui-image-editor-container .tui-image-editor-submenu > div > ul{
+            overflow-x: auto;
+        }
+        }
+        
+    }
+
+    ::ng-deep{
+        .tui-image-editor-container .tui-image-editor-main.tui-image-editor-menu-text .tui-image-editor-submenu > div.tui-image-editor-menu-text{
+            overflow:hidden !important;
+        }
+    }
 
     .close-button {
         background: #ffffffeb;
