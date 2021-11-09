@@ -422,8 +422,8 @@
                                         </div>
                                         <span style="color: darkgrey;padding: 0px 5px 0px 5px;">2</span>
                                     </div>
-                                    <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="text-with-line-break">
-                                        {{list_of_messages[list_of_messages.length -1 - i].message}}
+                                    <div [innerHTML]="convert(list_of_messages.length -1 - i)"*ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="text-with-line-break">
+                                        
                                     </div>
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
@@ -587,8 +587,8 @@
                                     </div>
 
 
-                                    <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="text-with-line-break">
-                                        {{list_of_messages[list_of_messages.length -1 - i].message}}
+                                    <div [innerHTML]="convert(list_of_messages.length -1 - i)" *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="text-with-line-break">
+                                        
                                     </div>
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
@@ -973,8 +973,8 @@
 
                                     </div>
 
-                                    <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
-                                        {{list_of_messages[list_of_messages.length -1 - i].message}}
+                                    <div [innerHTML]="convert(list_of_messages.length -1 - i)" *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="text-with-line-break">
+                                        
                                     </div>
 
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
@@ -1158,9 +1158,10 @@
 
                                     </div>
 
-                                    <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
-                                        {{list_of_messages[list_of_messages.length -1 - i].message}}
+                                    <div [innerHTML]="convert(list_of_messages.length -1 - i)" *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="text-with-line-break">
+                                        
                                     </div>
+
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"
                                             (click)="show_images(list_of_messages.length -1 - i)"

@@ -1888,6 +1888,7 @@ export class ChatComponent implements OnInit  {
 
   searched_message:number=-1;
   @ViewChildren('message_children') message_children: QueryList<ElementRef>;
+  @ViewChildren('Messages') messages: QueryList<ElementRef>;
   show_response(i){
     let id=this.list_of_messages[i].id_message_responding;
     for(let j=0;j<this.list_of_messages.length;j++){
@@ -4284,6 +4285,27 @@ onResized(event: ResizedEvent) {
     })
   }
 
+  compteur_m=0;
+  convert(index){
+    let text = this.list_of_messages[index].message;
+    let list=text.split(" ");
+    let final_text="";
+    for( let j=0;j<list.length;j++){
+      if(list[j].includes("http://") || list[j].includes("https://")){
+        list[j]=`<a class="message-link" href="${list[j]}">${list[j]}</a>`
+      }
+
+      if(j>0){
+        list[j]=" " + list[j]
+      }
+      final_text+=list[j];
+    }
+    if(this.compteur_m<50 && this.list_of_messages[index].message){
+      this.compteur_m++;  
+    }
+    
+    return  final_text;
+  }
   protected ngUnsubscribe: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();

@@ -12,9 +12,17 @@
 
     .text-with-line-break{
         white-space: pre-line;
+
+        ::ng-deep {
+
+            a{
+                color:unset !important;
+                text-decoration: underline;
+            }
+           
+        }
     }
 
-   
     
 
     .main-left-container {
