@@ -4285,24 +4285,50 @@ onResized(event: ResizedEvent) {
     })
   }
 
-  compteur_m=0;
+  compteur_message={};
   convert(index){
     let text = this.list_of_messages[index].message;
-    let list=text.split(" ");
+    let list=text.split(/[' ']+/);
     let final_text="";
     for( let j=0;j<list.length;j++){
       if(list[j].includes("http://") || list[j].includes("https://")){
-        list[j]=`<a class="message-link" href="${list[j]}">${list[j]}</a>`
+        let list2=list[j].split(/[\n]+/);
+        let indexUrl=list2.findIndex(elem=>elem.includes("http"))
+       
+        if(list2.length>0){
+          list[j]="";
+          for(let k=0;k<list2.length;k++){
+            if(list2[k].includes("http")){
+              list[j]+=`<a class="message-link" href="${list2[k]}">${list2[k]}</a>`
+            }
+            else{
+              list[j]+=list2[k]
+            }
+
+            if(k<list2.length-1){
+              list[j]+="<br>"
+            }
+          }
+          
+        }
+        else{
+          list[j]=`<a class="message-link" href="${list[j]}">${list[j]}</a>`
+        }
+
+        if(!this.compteur_message[index]){
+          this.compteur_message[index]=true;
+        }
+       
       }
 
       if(j>0){
         list[j]=" " + list[j]
       }
+
+      
       final_text+=list[j];
     }
-    if(this.compteur_m<50 && this.list_of_messages[index].message){
-      this.compteur_m++;  
-    }
+  
     
     return  final_text;
   }
