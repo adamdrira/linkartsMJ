@@ -349,7 +349,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
   update_meta_data(i : number) {
     if( i==0 ) {
-      this.title.setTitle('LinkCollab – Recherche de collaborateurs pour projets éditoriaux');
+      this.title.setTitle("LinkCollab – Recherche d'éditeurs et d'artistes");
       this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour soumettre votre projet auprès des éditeurs ou chercher le partenaire idéal. Recherchez un dessinateur, scénariste, illustrateur, ou auteur." });
     }
     if( i==1 ) {
