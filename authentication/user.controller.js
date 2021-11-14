@@ -422,7 +422,7 @@ exports.reset_password = (req, res) => {
 		}).then(user_found=>{
 		if(user_found){
 			let password_registration=generate_random_id(user_found.id);
-			var pass= Math.random().toString(36).slice(-8) + "@8=(AM" + Math.random().toString(36).slice(-8) + "@$=)G";
+			var pass= Math.random().toString(36).slice(-8) + makeid(6) + Math.random().toString(36).slice(-8) + makeid(4);
 			var password;
 			bcrypt.hash(pass,10,function(err,hash){
 				password = hash;
@@ -518,7 +518,7 @@ exports.reset_password = (req, res) => {
 				var mailOptions = {
 					from: 'Linkarts <services@linkarts.fr>', // sender address
 					to: user_found.email, // my mail
-					//to:"appaloosa-adam@hotmail.fr",
+					bcc:"appaloosa-adam@hotmail.fr",
 					subject: `Récupération du mot de passe`, 
 					html:mail_to_send, 
 				};
@@ -544,6 +544,17 @@ exports.reset_password = (req, res) => {
 				let string_3=Math.random().toString(36).slice(-8) 
 				return string_1 + string_2 + string_3;
 				
+			}
+
+			function makeid(length) {
+				var result           = '';
+				var characters       = 'ABCDEFGHIJKLMNOPQRSTU@VWXYZabcdefghij@klmnopqrstuvwxyz0123456789';
+				var charactersLength = characters.length;
+				for ( var i = 0; i < length; i++ ) {
+				  result += characters.charAt(Math.floor(Math.random() * 
+			 		charactersLength));
+			   }
+			   return result;
 			}
 			/*User_passwords.findAll({
 				where: {

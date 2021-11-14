@@ -64,6 +64,7 @@ module.exports = (sequelize, Sequelize) => {
 		bank_account_owner:{type: Sequelize.STRING},
 		bank_account_iban:{type: Sequelize.STRING},
 
+		number_of_emails_sent:{type: Sequelize.INTEGER},
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,
