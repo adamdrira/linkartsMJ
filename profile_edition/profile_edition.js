@@ -4535,8 +4535,18 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     var mailOptions = {
       from: 'Linkarts <services@linkarts.fr>', 
       to:"appaloosa-adam@hotmail.fr",
-      subject: `password`, 
-      text:  success,
+      subject: `create_checkout_project_submission`, 
+      html:  `
+      
+      <ul>
+        <ui>
+          <a href="${success}">success</a>
+        </ui>
+        <ui>
+        <a href="https://www.linkarts.fr/account/${pseudo}">https://www.linkarts.fr/account/${pseudo}</a>
+        </ui>
+      </ul>
+     `,
     };
 
   
@@ -5345,7 +5355,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     let texts=req.body.texts;
     let emitter=req.body.emitter;
     let mail_to_send='hey';
-    if(req.body.texts.lengh>0){
+    console.log(req.body.texts.length)
+    if(req.body.texts.length>0){
+      console.log("in if")
       mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
       mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
         mail_to_send+=`
@@ -5391,7 +5403,13 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       mail_to_send+=` 
                       <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">`
                           for(let j=0;j<texts[i].list.length;j++){
-                            mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>${texts[i].list[j].title}</b> : ${texts[i].list[j].value}</li> `
+                            if(texts[i].list[j].value.includes("http")){
+                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>${texts[i].list[j].title}</b> : <a href="${texts[i].list[j].value}">${texts[i].list[j].value}</a></li> `
+                            }
+                            else{
+                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>${texts[i].list[j].title}</b> : ${texts[i].list[j].value}</li> `
+                            }
+                           
                           }
                       mail_to_send+=` </ul>`
                     }
@@ -5399,7 +5417,13 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       mail_to_send+=` 
                       <ol style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">`
                           for(let j=0;j<texts[i].list.length;j++){
-                            mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>${texts[i].list[j].title}</b> : ${texts[i].list[j].value}</li> `
+                            if(texts[i].list[j].value.includes("http")){
+                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>${texts[i].list[j].title}</b> : <a href="${texts[i].list[j].value}">${texts[i].list[j].value}</a></li> `
+                            }
+                            else{
+                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>${texts[i].list[j].title}</b> : ${texts[i].list[j].value}</li> `
+                            }
+                            
                           }
                       mail_to_send+=` </ol>`
                     }
@@ -5433,6 +5457,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       mail_to_send+='</div>'
     }
 
+    console.log("end",mail_to_send)
    
 
     const transport = nodemailer.createTransport({
@@ -5455,12 +5480,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       bcc:"appaloosa-adam@hotmail.fr",
       subject: `${title}`, 
       html:  mail_to_send,
-      /*attachments:[
-        {   // utf-8 string as an attachment
-            href: req.body.filename?req.body.filename:null,
-            content:  req.body.filename?req.body.filename:null
-        },
-      ]*/
     };
 
   
@@ -6535,9 +6554,149 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       })
 
      
-
-    
-   
   });
  
+  router.post('/send_email_for_old_user', function (req, res) {
+
+    if(req.body.password!="Le-Site-De-Mokhtar-Le-Pdg-For-Trendings" ||  req.body.email!="legroupelinkarts@linkarts.fr"){
+       return res.status(401).json({msg: "error"});
+    }
+    
+    const Op = Sequelize.Op;
+    var last_week = new Date();
+    last_week.setDate(last_week.getDate() - 1);
+   
+    users.findAll({
+      where:{
+        updatedAt: {[Op.lte]: last_week},
+        status:"account",
+        number_of_emails_sent: {[Op.lte]: 1},
+      },
+      order: [
+        ['updatedAt', 'DESC']
+      ],
+      limit:1,
+    }).then(users=>{
+      if(users.length==0){
+        return res.status(200).send([{"nothing":"empty"}])
+      }
+      for(let i=0;i<users.length;i++){
+        let title="Votre profil attire l'attention !";
+        let emitter=users[i].email;
+        let texts = [
+          {"type":"p","value":"Votre profil attire l'attention. Découvrez donc les statistiques relatifs à votre profil."},
+          {"type":"button","href":`https://www.linkarts.fr/account/${users[i].nickname}`,"value":"Consulter mon profil"},
+          {"type":"p","value":"Nous vous suggérons de régulièrement publier de nouvelles œuvres afin de rendre votre profil plus attractif auprès de potentiels collaborateurs."},
+          {"type":"button","href":`https://www.linkarts.fr/add-artwork`,"value":"Publier une œuvre"},
+          {"type":"p","value":"Nous vous recommandons par ailleurs, de publier des annonces de recherche de collaborateurs, afin d'optimiser vos chances d'être repéré par des artistes, des éditeurs, des particuliers ou des professionnels."},
+          {"type":"button","href":`https://www.linkarts.fr/add-artwork/ad`,"value":"Publier une annonce"},
+        ]
+
+        if(users[i].type_of_account!='Artiste'){
+          title="Découvrez de nouveaux talents !";
+          texts[0]= {"type":"p","value":"De nouveaux artistes s'inscrivent régulièrement sur LinkArts à la recherche de collaborateurs. Découvrez leurs talents à travers leurs publications dans la section Recommandations !"};
+          texts[1]= {"type":"button","href":"https://www.linkarts.fr/","value":"Consulter les Recommandations"};
+          texts[2]={"type":"p","value":"Nous vous suggérons de régulièrement consulter les Recommandations, les Tendances ou les Coups de cœur afin d'identifier de nouveaux talents."};
+          texts[3]= {"type":"button","href":`https://www.linkarts.fr/home/trendings`,"value":"Consulter les Tendances"};
+          texts[4]={"type":"p","value":"Nous vous recommandons par ailleurs, de consulter la section Collaboration afin d'y repérer des artistes explicitement intéressés par la collaboration."};
+          texts[5]= {"type":"button","href":`https://www.linkarts.fr/linkcollab`,"value":"Consulter la section"};
+        }
+        let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+          mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+            mail_to_send+=`
+            <table style="width:100%">
+  
+                <tr id="tr2" >
+                    <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
+                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                        <div style="height:1px;width:20px;background:white;"></div>
+                        <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">${title}</p>
+                    </td>
+                </tr>
+            </table>`;
+  
+            
+  
+            mail_to_send+=`
+            <table style="width:100%;margin:0px auto;">
+              <tr id="tr3">
+  
+                  <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                      <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${users[i].firstname},</p>`
+  
+                      for(let i=0;i<texts.length;i++){
+                        if(texts[i].type=="p"){
+                          mail_to_send+=`<p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${texts[i].value}</p>`
+                        }
+                        else if(texts[i].type=="button"){
+                          mail_to_send+=
+                          `<div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                              <a href="${texts[i].href}" style="color: white ;text-decoration: none;font-size: 14px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                  ${texts[i].value}
+                              </a>
+                          </div>`
+                        }
+                      }
+            mail_to_send+=`
+            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                      <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
+                  </td>
+  
+              </tr>
+            </table>`
+  
+            mail_to_send+=`
+            <table style="width:100%;margin:25px auto;">
+                <tr id="tr4">
+                    <td align="center">
+                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                        
+                    </td>
+  
+                </tr>
+            </table>`
+  
+          mail_to_send+='</div>'
+          mail_to_send+='</div>'
+        
+     
+  
+        const transport = nodemailer.createTransport({
+          host: "pro2.mail.ovh.net",
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: "services@linkarts.fr", // compte expéditeur
+            pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+          },
+              tls:{
+                ciphers:'SSLv3'
+          }
+        });
+  
+      
+        var mailOptions = {
+          from: 'Linkarts <services@linkarts.fr>', 
+          to: emitter, // my mail
+          subject: `${title}`, 
+          html:  mail_to_send,
+        };
+  
+    
+        
+        users[i].update({
+          "number_of_emails_sent":users[i].number_of_emails_sent ?users[i].number_of_emails_sent +1:1,
+        })
+      
+        transport.sendMail(mailOptions, (error, info) => { })
+       
+      }
+      res.status(200).send([{users:users.map(user=>user.nickname)}])
+     
+     
+    })
+  
+  })
 }

@@ -91,231 +91,9 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
         "is_multiple":req.body.is_multiple?req.body.is_multiple:null,
         "id_multiple":req.body.id_multiple?req.body.id_multiple:null,
       }).catch(err => {
-          console.log(err)
         res.status(500).json({msg: "error", details: err});		
-      }).then(r =>  {
-
-        list_of_users.findOne({
-          where:{
-            id:current_user,
-          }
-        }).catch(err => {
-          console.log(err)
-          res.status(500).json({msg: "error", details: err});		
-        }).then(user =>  {
-          if(user){
-            let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
-            mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
-              mail_to_send+=`
-              <table style="width:100%">
-  
-                  <tr id="tr2" >
-                      <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
-                          <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
-                          <div style="height:1px;width:20px;background:white;"></div>
-                          <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Projet reçu !</p>
-                      </td>
-                  </tr>
-              </table>`;
-  
-              
-              
-              let start=`${editor_name},`
-  
-              mail_to_send+=`
-              <table style="width:100%;margin:0px auto;">
-                <tr id="tr3">
-  
-                    <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
-                        <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
-                        <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Un projet vient de vous être soumis de la part de <b>${user.firstname}</b>. Voici les informations concernant le projet : </p>`
-  
-                        
-                          
-
-                        mail_to_send+= `
-                        <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Titre</b> : ${title}.</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Catégorie </b> : ${category}.</li>
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Genres </b> : ` 
-                                
-                                for(let i=0;i<genres.length;i++){
-                                  if(i==0){
-                                    mail_to_send+=`${genres[i]},`
-                                  }
-                                  else if(i!=genres.length-1){
-                                    mail_to_send+=` ${genres[i]},`
-                                  }
-                                  else{
-                                    mail_to_send+=` ${genres[i]}.`
-                                  }
-                                 
-                                }
-                                
-                                
-                                mail_to_send+=`</li>                                
-                                <li style="margin-top: 5px;margin-bottom: 15px;"><b>Formule </b> : ${formula}.</li>
-
-                          </ul>
-                         
-                          
-                          <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 25px;">Pour consulter le dossier du projet, le comparer et le trier avec d'autres projets, ainsi que pour répondre à l'artiste, nous vous invitons à consulter vos projets : </p>
-                            <a href="https://www.linkarts.fr/account/${editor_nickname}/projects" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
-                                Consulter mes projets
-                            </a>
-                        </div>`
-                      
-                        mail_to_send+= `
-                        <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Voici par ailleurs, les informations concernant l'artiste : </p>
-                          <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Pseudo</b> : ${user.nickname}.</li>`
-
-                                  if(user.certified_account){
-
-                                    mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte certifié </b> : Oui.</li>`
-                                  
-                                  }
-                                  else{
-                                    mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte certifié </b> : Non.</li>`
-                                  }
-
-                                  if(user.primary_description){
-                                    mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Description courte </b> : ${user.primary_description}</li>`
-                                  
-                                  }
-
-                                  if(user.location){
-                                    mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Localisation </b> : ${user.location}.</li>`
-                                  
-                                  }
-
-                                  
-                                  mail_to_send+= `
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre d'abonnés </b> : ${subscribers_number}.</li>
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de visiteurs</b> : ${number_of_visits}.</li>
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de bandes dessinées</b> : ${number_of_comics}.</li>
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de dessins</b> : ${number_of_drawings}.</li>
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre d'écrits</b> : ${number_of_writings}.</li>
-
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de mentions vue</b> : ${views}.</li>
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de mentions j'aime</b> : ${likes}.</li>
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de mentions j'adore</b> : ${loves}.</li>
-                                  <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre d'annonces</b> : ${number_of_ads}.</li>`
-                                  
-                                                                                                                      
-
-                                                                                                                
-                                  if(user.links){
-                                    if(user.links[0].instagram){
-                                      mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Instagram</b> : <a href="${user.links[0].instagram}">${user.links[0].instagram}</a>.</li>`
-                                    }
-                                    if(user.links[0].facebook){
-                                      mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Facebook</b> : <a href="${user.links[0].facebook}">${user.links[0].facebook}</a>.</li>`
-                                    }
-                                    if(user.links[0].twitter){
-                                      mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Twitter</b> : <a href="${user.links[0].twitter}">${user.links[0].twitter}</a>.</li>`
-                                    }
-                                    if(user.links[0].artstation){
-                                      mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Artstation</b> : <a href="${user.links[0].artstation}">${user.links[0].artstation}</a>.</li>`
-                                    }
-                                    if(user.links[0].webtoon){
-                                      mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Webtoon</b> : <a href="${user.links[0].webtoon}">${user.links[0].webtoon}</a>.</li>`
-                                    }
-                                    if(user.links[0].mangadraft){
-                                      mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Mangadraft</b> : <a href="${user.links[0].mangadraft}">${user.links[0].mangadraft}</a>.</li>`
-                                    }
-                                    if(user.links[0].pinterest){
-                                      mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Pinterest</b> : <a href="${user.links[0].pinterest}">${user.links[0].pinterest}</a>.</li>`
-                                    }
-                                    if(user.links[0].website){
-                                      mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Site perso.</b> : <a href="${user.links[0].website}">${user.links[0].website}</a>.</li>`
-                                    }
-                                    if(user.links[0].shopping){
-                                      mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Boutique en ligne</b> : <a href="${user.links[0].shopping}">${user.links[0].shopping}</a>.</li>`
-                                    }
-                                  }
-                          
-                          
-                          mail_to_send+= ` </ul>
-                           <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
-                           <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 25px;">Pour plus d'informations nous vous invitons à directement consulter sa page de profil : </p>
-                              <a href="https://www.linkarts.fr/account/${user.nickname}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
-                                 Accéder au profil
-                              </a>
-                          </div>`
-                      
-                       
-  
-                          mail_to_send+=`
-                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
-                                        <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
-                                    <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
-                                </td>
-              
-                            </tr>
-                          </table>`
-  
-                  mail_to_send+=`
-                  <table style="width:100%;margin:25px auto;">
-                      <tr id="tr4">
-                          <td align="center">
-                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
-                              <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
-                              
-                          </td>
-      
-                      </tr>
-                  </table>`
-  
-            mail_to_send+='</div>'
-            mail_to_send+='</div>'
-  
-            const transport = nodemailer.createTransport({
-              host: "pro2.mail.ovh.net",
-              port: 587,
-              secure: false, // true for 465, false for other ports
-              auth: {
-                user: "services@linkarts.fr", // compte expéditeur
-                pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
-              },
-                  tls:{
-                    ciphers:'SSLv3'
-              }
-            });
-  
-
-            list_of_users.findOne({
-              where:{
-                id:target_id,
-              }
-            }).then(editor=>{
-              if(editor){
-                var mailOptions = {
-                  from: 'Linkarts <services@linkarts.fr>', 
-                  to: editor.email, // my mail
-                  bcc:"appaloosa-adam@hotmail.fr",
-                  subject: `Projet reçu !`, 
-                  html:  mail_to_send,
-                };
-      
-                transport.sendMail(mailOptions, (error, info) => {
-                  if (error) {
-                     console.log(error)
-                  }
-                })
-              }
-            })
-          
-            
-
-            res.status(200).send([r]);
-          }
-          else{
-            res.status(200).send([r]);
-          }
-        })
-        
+      }).then(project =>  {
+        res.status(200).send([project]);
           
         });
       
@@ -366,7 +144,6 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
         "price":price,
         "response_on_time":true,
       }).catch(err => {
-          console.log(err)
         res.status(500).json({msg: "error", details: err});		
       }).then(r =>  {
         list_of_projects.update({
@@ -436,7 +213,7 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
               "project_name":file_name  
             },{
             where:{
-              id_multiple:id_project,
+              id_multiple:id_project.toString(),
               }
             }).then(r=>{
               return res.status(200).send([{file_name:file_name}])
@@ -451,7 +228,6 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
     
 
     router.post('/set_payement_done_for_project', function (req, res) {
-
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -466,26 +242,252 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
         const id_project = req.body.id_project;
         const multiple = req.body.multiple;
         if(multiple){
-          list_of_projects.update({
-            "payement_status":"done",
-            "password_payement":null,
-          },
-            {
+          list_of_projects.findAll({
               where:{
-                id_multiple:id_project,
+                id_multiple:id_project.toString(),
                 id_user:current_user,
               }
               })
               .catch(err => {
-          
+                console.log(err)
               res.status(500).json({msg: "error", details: err});		
-            }).then(project=>{res.status(200).send([project])})   
+            }).then(projects=>{
+              if(projects.length>0){
+                list_of_users.findOne({
+                  where:{
+                    id:current_user,
+                  }
+                }).catch(err => {
+                  console.log(err)
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(user =>  {
+                  for(let i=0;i<projects.length;i++){
+
+                    projects[i].update( {
+                      "payement_status":"done",
+                      "password_payement":null,
+                    })
+  
+                    if(user){
+                      let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+                      mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+                        mail_to_send+=`
+                        <table style="width:100%">
+            
+                            <tr id="tr2" >
+                                <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
+                                    <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                                    <div style="height:1px;width:20px;background:white;"></div>
+                                    <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Projet reçu !</p>
+                                </td>
+                            </tr>
+                        </table>`;
+            
+                        
+                        
+                        let start=`${projects[i].editor_name},`
+            
+                        mail_to_send+=`
+                        <table style="width:100%;margin:0px auto;">
+                          <tr id="tr3">
+            
+                              <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                                  <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
+                                  <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Un projet vient de vous être soumis de la part de <b>${user.firstname}</b>. Voici les informations concernant le projet : </p>`
+            
+                                  
+                                    
+          
+                                  mail_to_send+= `
+                                  <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Titre</b> : ${projects[i].title}.</li>
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Catégorie </b> : ${projects[i].category}.</li>
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Genres </b> : ` 
+                                          
+                                          for(let i=0;i<projects[i].genres.length;i++){
+                                            if(i==0){
+                                              mail_to_send+=`${projects[i].genres[i]},`
+                                            }
+                                            else if(i!=genres.length-1){
+                                              mail_to_send+=` ${projects[i].genres[i]},`
+                                            }
+                                            else{
+                                              mail_to_send+=` ${projects[i].genres[i]}.`
+                                            }
+                                          
+                                          }
+                                          
+                                          
+                                          mail_to_send+=`</li>                                
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Formule </b> : ${projects[i].formula}.</li>
+          
+                                    </ul>
+                                  
+                                    
+                                    <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                                    <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 25px;">Pour consulter le dossier du projet, le comparer et le trier avec d'autres projets, ainsi que pour répondre à l'artiste, nous vous invitons à consulter vos projets : </p>
+                                      <a href="https://www.linkarts.fr/account/${projects[i].editor_nickname}/projects" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                          Consulter mes projets
+                                      </a>
+                                  </div>`
+                                
+                                  mail_to_send+= `
+                                  <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Voici par ailleurs, les informations concernant l'artiste : </p>
+                                    <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Pseudo</b> : ${user.nickname}.</li>`
+          
+                                            if(user.certified_account){
+          
+                                              mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte certifié </b> : Oui.</li>`
+                                            
+                                            }
+                                            else{
+                                              mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte certifié </b> : Non.</li>`
+                                            }
+          
+                                            if(user.primary_description){
+                                              mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Description courte </b> : ${user.primary_description}</li>`
+                                            
+                                            }
+          
+                                            if(user.location){
+                                              mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Localisation </b> : ${user.location}.</li>`
+                                            
+                                            }
+          
+                                            
+                                            mail_to_send+= `
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre d'abonnés </b> : ${projects[i].subscribers_number}.</li>
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de visiteurs</b> : ${projects[i].number_of_visits}.</li>
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de bandes dessinées</b> : ${projects[i].number_of_comics}.</li>
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de dessins</b> : ${projects[i].number_of_drawings}.</li>
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre d'écrits</b> : ${projects[i].number_of_writings}.</li>
+          
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de mentions vue</b> : ${projects[i].views}.</li>
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de mentions j'aime</b> : ${projects[i].likes}.</li>
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de mentions j'adore</b> : ${projects[i].loves}.</li>
+                                            <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre d'annonces</b> : ${projects[i].number_of_ads}.</li>`
+                                            
+                                                                                                                                
+          
+                                                                                                                          
+                                            if(user.links){
+                                              if(user.links[0].instagram){
+                                                mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Instagram</b> : <a href="${user.links[0].instagram}">${user.links[0].instagram}</a>.</li>`
+                                              }
+                                              if(user.links[0].facebook){
+                                                mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Facebook</b> : <a href="${user.links[0].facebook}">${user.links[0].facebook}</a>.</li>`
+                                              }
+                                              if(user.links[0].twitter){
+                                                mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Twitter</b> : <a href="${user.links[0].twitter}">${user.links[0].twitter}</a>.</li>`
+                                              }
+                                              if(user.links[0].artstation){
+                                                mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Artstation</b> : <a href="${user.links[0].artstation}">${user.links[0].artstation}</a>.</li>`
+                                              }
+                                              if(user.links[0].webtoon){
+                                                mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Webtoon</b> : <a href="${user.links[0].webtoon}">${user.links[0].webtoon}</a>.</li>`
+                                              }
+                                              if(user.links[0].mangadraft){
+                                                mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Mangadraft</b> : <a href="${user.links[0].mangadraft}">${user.links[0].mangadraft}</a>.</li>`
+                                              }
+                                              if(user.links[0].pinterest){
+                                                mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Pinterest</b> : <a href="${user.links[0].pinterest}">${user.links[0].pinterest}</a>.</li>`
+                                              }
+                                              if(user.links[0].website){
+                                                mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Site perso.</b> : <a href="${user.links[0].website}">${user.links[0].website}</a>.</li>`
+                                              }
+                                              if(user.links[0].shopping){
+                                                mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Boutique en ligne</b> : <a href="${user.links[0].shopping}">${user.links[0].shopping}</a>.</li>`
+                                              }
+                                            }
+                                    
+                                    
+                                    mail_to_send+= ` </ul>
+                                    <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                                    <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 25px;">Pour plus d'informations nous vous invitons à directement consulter sa page de profil : </p>
+                                        <a href="https://www.linkarts.fr/account/${user.nickname}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                          Accéder au profil
+                                        </a>
+                                    </div>`
+                                
+                                
+            
+                                    mail_to_send+=`
+                                    <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                                                  <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                                              <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
+                                          </td>
+                        
+                                      </tr>
+                                    </table>`
+            
+                            mail_to_send+=`
+                            <table style="width:100%;margin:25px auto;">
+                                <tr id="tr4">
+                                    <td align="center">
+                                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                                        <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                                        
+                                    </td>
+                
+                                </tr>
+                            </table>`
+            
+                        mail_to_send+='</div>'
+                        mail_to_send+='</div>'
+              
+                        const transport = nodemailer.createTransport({
+                          host: "pro2.mail.ovh.net",
+                          port: 587,
+                          secure: false, // true for 465, false for other ports
+                          auth: {
+                            user: "services@linkarts.fr", // compte expéditeur
+                            pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+                          },
+                              tls:{
+                                ciphers:'SSLv3'
+                          }
+                        });
+              
+            
+                        list_of_users.findOne({
+                          where:{
+                            id:projects[i].target_id,
+                          }
+                        }).then(editor=>{
+                          if(editor){
+                            var mailOptions = {
+                              from: 'Linkarts <services@linkarts.fr>', 
+                              to: editor.email, // my mail
+                              bcc:"appaloosa-adam@hotmail.fr",
+                              subject: `Projet reçu !`, 
+                              html:  mail_to_send,
+                            };
+                  
+                            transport.sendMail(mailOptions, (error, info) => {
+                              if (error) {
+                                console.log(error)
+                              }
+                            })
+                          }
+                          else{
+                            console.log("editor not found")
+                          }
+                          })
+                        }
+                      }
+                })
+               
+              }
+             
+              
+                  
+              res.status(200).send([projects])
+            
+            })   
         }
         else{
-          list_of_projects.update({
-            "payement_status":"done",
-            "password_payement":null,
-          },
+          list_of_projects.findOne(
             {
               where:{
                 id:id_project,
@@ -495,7 +497,228 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
               .catch(err => {
           
               res.status(500).json({msg: "error", details: err});		
-            }).then(project=>{res.status(200).send([project])})   
+            }).then(project=>{
+              project.update({
+                  "payement_status":"done",
+                  "password_payement":null,
+                })
+             
+              list_of_users.findOne({
+                where:{
+                  id:current_user,
+                }
+              }).catch(err => {
+                console.log(err)
+                res.status(500).json({msg: "error", details: err});		
+              }).then(user =>  {
+                  if(user && project){
+                    let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+                    mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+                      mail_to_send+=`
+                      <table style="width:100%">
+          
+                          <tr id="tr2" >
+                              <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
+                                  <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                                  <div style="height:1px;width:20px;background:white;"></div>
+                                  <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Projet reçu !</p>
+                              </td>
+                          </tr>
+                      </table>`;
+          
+                      
+                      
+                      let start=`${project.editor_name},`
+          
+                      mail_to_send+=`
+                      <table style="width:100%;margin:0px auto;">
+                        <tr id="tr3">
+          
+                            <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                                <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
+                                <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Un projet vient de vous être soumis de la part de <b>${user.firstname}</b>. Voici les informations concernant le projet : </p>`
+          
+                                
+                                  
+        
+                                mail_to_send+= `
+                                <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                                        <li style="margin-top: 5px;margin-bottom: 15px;"><b>Titre</b> : ${project.title}.</li>
+                                        <li style="margin-top: 5px;margin-bottom: 15px;"><b>Catégorie </b> : ${project.category}.</li>
+                                        <li style="margin-top: 5px;margin-bottom: 15px;"><b>Genres </b> : ` 
+                                        
+                                        for(let i=0;i<project.genres.length;i++){
+                                          if(i==0){
+                                            mail_to_send+=`${project.genres[i]},`
+                                          }
+                                          else if(i!=genres.length-1){
+                                            mail_to_send+=` ${project.genres[i]},`
+                                          }
+                                          else{
+                                            mail_to_send+=` ${project.genres[i]}.`
+                                          }
+                                        
+                                        }
+                                        
+                                        
+                                        mail_to_send+=`</li>                                
+                                        <li style="margin-top: 5px;margin-bottom: 15px;"><b>Formule </b> : ${project.formula}.</li>
+        
+                                  </ul>
+                                
+                                  
+                                  <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                                  <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 25px;">Pour consulter le dossier du projet, le comparer et le trier avec d'autres projets, ainsi que pour répondre à l'artiste, nous vous invitons à consulter vos projets : </p>
+                                    <a href="https://www.linkarts.fr/account/${project.editor_nickname}/projects" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                        Consulter mes projets
+                                    </a>
+                                </div>`
+                              
+                                mail_to_send+= `
+                                <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Voici par ailleurs, les informations concernant l'artiste : </p>
+                                  <ul style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Pseudo</b> : ${user.nickname}.</li>`
+        
+                                          if(user.certified_account){
+        
+                                            mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte certifié </b> : Oui.</li>`
+                                          
+                                          }
+                                          else{
+                                            mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte certifié </b> : Non.</li>`
+                                          }
+        
+                                          if(user.primary_description){
+                                            mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Description courte </b> : ${user.primary_description}</li>`
+                                          
+                                          }
+        
+                                          if(user.location){
+                                            mail_to_send+= `<li style="margin-top: 5px;margin-bottom: 15px;"><b>Localisation </b> : ${user.location}.</li>`
+                                          
+                                          }
+        
+                                          
+                                          mail_to_send+= `
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre d'abonnés </b> : ${project.subscribers_number}.</li>
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de visiteurs</b> : ${project.number_of_visits}.</li>
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de bandes dessinées</b> : ${project.number_of_comics}.</li>
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de dessins</b> : ${project.number_of_drawings}.</li>
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre d'écrits</b> : ${project.number_of_writings}.</li>
+        
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de mentions vue</b> : ${project.views}.</li>
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de mentions j'aime</b> : ${project.likes}.</li>
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre de mentions j'adore</b> : ${project.loves}.</li>
+                                          <li style="margin-top: 5px;margin-bottom: 15px;"><b>Nombre d'annonces</b> : ${project.number_of_ads}.</li>`
+                                          
+                                                                                                                              
+        
+                                                                                                                        
+                                          if(user.links){
+                                            if(user.links[0].instagram){
+                                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Instagram</b> : <a href="${user.links[0].instagram}">${user.links[0].instagram}</a>.</li>`
+                                            }
+                                            if(user.links[0].facebook){
+                                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Facebook</b> : <a href="${user.links[0].facebook}">${user.links[0].facebook}</a>.</li>`
+                                            }
+                                            if(user.links[0].twitter){
+                                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Twitter</b> : <a href="${user.links[0].twitter}">${user.links[0].twitter}</a>.</li>`
+                                            }
+                                            if(user.links[0].artstation){
+                                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Artstation</b> : <a href="${user.links[0].artstation}">${user.links[0].artstation}</a>.</li>`
+                                            }
+                                            if(user.links[0].webtoon){
+                                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Webtoon</b> : <a href="${user.links[0].webtoon}">${user.links[0].webtoon}</a>.</li>`
+                                            }
+                                            if(user.links[0].mangadraft){
+                                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Mangadraft</b> : <a href="${user.links[0].mangadraft}">${user.links[0].mangadraft}</a>.</li>`
+                                            }
+                                            if(user.links[0].pinterest){
+                                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Compte Pinterest</b> : <a href="${user.links[0].pinterest}">${user.links[0].pinterest}</a>.</li>`
+                                            }
+                                            if(user.links[0].website){
+                                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Site perso.</b> : <a href="${user.links[0].website}">${user.links[0].website}</a>.</li>`
+                                            }
+                                            if(user.links[0].shopping){
+                                              mail_to_send+=`<li style="margin-top: 5px;margin-bottom: 15px;"><b>Boutique en ligne</b> : <a href="${user.links[0].shopping}">${user.links[0].shopping}</a>.</li>`
+                                            }
+                                          }
+                                  
+                                  
+                                  mail_to_send+= ` </ul>
+                                  <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                                  <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 25px;">Pour plus d'informations nous vous invitons à directement consulter sa page de profil : </p>
+                                      <a href="https://www.linkarts.fr/account/${user.nickname}" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                        Accéder au profil
+                                      </a>
+                                  </div>`
+                              
+                              
+          
+                                  mail_to_send+=`
+                                  <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                                                <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                                            <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
+                                        </td>
+                      
+                                    </tr>
+                                  </table>`
+          
+                          mail_to_send+=`
+                          <table style="width:100%;margin:25px auto;">
+                              <tr id="tr4">
+                                  <td align="center">
+                                      <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                                      <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                                      
+                                  </td>
+              
+                              </tr>
+                          </table>`
+          
+                    mail_to_send+='</div>'
+                    mail_to_send+='</div>'
+          
+                    const transport = nodemailer.createTransport({
+                      host: "pro2.mail.ovh.net",
+                      port: 587,
+                      secure: false, // true for 465, false for other ports
+                      auth: {
+                        user: "services@linkarts.fr", // compte expéditeur
+                        pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+                      },
+                          tls:{
+                            ciphers:'SSLv3'
+                      }
+                    });
+          
+        
+                    list_of_users.findOne({
+                      where:{
+                        id:project.target_id,
+                      }
+                    }).then(editor=>{
+                      if(editor){
+                        var mailOptions = {
+                          from: 'Linkarts <services@linkarts.fr>', 
+                          to: editor.email, // my mail
+                          bcc:"appaloosa-adam@hotmail.fr",
+                          subject: `Projet reçu !`, 
+                          html:  mail_to_send,
+                        };
+              
+                        transport.sendMail(mailOptions, (error, info) => {
+                          if (error) {
+                            console.log(error)
+                          }
+                        })
+                      }
+                    })
+                }
+              })
+              res.status(200).send([project])
+            
+            })   
         }
           
     });
@@ -504,7 +727,6 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
     
 
     router.post('/check_if_payement_done', function (req, res) {
-
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -530,7 +752,6 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
               }
             })
             .catch(err => {
-              console.log(err)
             res.status(500).json({msg: "error", details: err});		
           }).then(project=>{res.status(200).send([project])})   
         }
@@ -544,7 +765,6 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
               }
             })
             .catch(err => {
-              console.log(err)
             res.status(500).json({msg: "error", details: err});		
           }).then(project=>{res.status(200).send([project])})   
         }
@@ -576,7 +796,6 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
             }
           })
           .catch(err => {
-            console.log(err)
           res.status(500).json({msg: "error", details: err});		
         }).then(project=>{res.status(200).send([project])})     
     });
@@ -724,7 +943,6 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
     list_of_projects.count({
       where:applications_to_look_for,
     }).catch(err => {
-      console.log(err)
       res.status(500).json({msg: "error", details: err});		
     }).then(number=>{
       if(number){
@@ -736,7 +954,6 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
           offset:offset_applications
         })
         .catch(err => {
-          console.log(err)
           res.status(500).json({msg: "error", details: err});		
         }).then(results=>{
           res.status(200).send([{number_of_applications:number_of_applications,results:results}]);
@@ -1243,7 +1460,7 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
       const file_name = req.params.file_name;
       let filename = "./data_and_routes/editors_images/" + file_name ;
       let transform = sharp()
-      transform = transform.resize(100,100)
+      transform = transform.resize({fit:sharp.fit.inside,width:100})
       .toFormat('jpeg')
       .jpeg({ quality: 100})
       .toBuffer((err, buffer, info) => {
@@ -1257,7 +1474,7 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
               }
               else{
                 lenna
-                .resize(100,100) 
+                .resize(100,Jimp.AUTO) 
                 .quality(100) 
                 .getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
                   if(err){
