@@ -19,9 +19,10 @@ import { FileUploader } from 'ng2-file-upload';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { ChatService } from '../services/chat.service';
 import { NotificationsService } from '../services/notifications.service';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 declare var Stripe: any;
-const url = 'https://www.linkarts.fr/routes/upload_project_for_editor/'
+const url = 'http://localhost:4600/routes/upload_project_for_editor/'
 
 @Component({
   selector: 'app-popup-apply',
@@ -57,6 +58,7 @@ export class PopupApplyComponent implements OnInit {
     private ConstantsService:ConstantsService,
     private StripeService:StripeService,
     private chatService:ChatService,
+    private deviceService: DeviceDetectorService,
     private NotificationsService:NotificationsService,
     public dialog: MatDialog,
     @Inject(DOCUMENT) private document: Document,
@@ -122,23 +124,39 @@ export class PopupApplyComponent implements OnInit {
   express_delays:any={};
 
   id_multiple:string;
+  device_info='';
   ngOnInit() {
-
+    this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
+    
     this.after_payement=this.data.after_payement;
     if(this.after_payement){
       this.loading_check=true;
       this.step=2;
       this.id_project=this.data.id_project;
       let password=this.data.password;
-      let multiple =this.data.is_multiple
+      let multiple =this.data.is_multiple;
+      this.navbar.add_page_visited_to_history(`/check_if_payement_done_` +multiple.toString(),this.device_info).pipe( first() ).subscribe();
       this.Edtior_Projects.check_if_payement_done(this.id_project,password,multiple).pipe(first() ).subscribe(r=>{
         if(r[0]){
+          this.navbar.add_page_visited_to_history(`/payement_done_`+multiple.toString(),this.device_info).pipe( first() ).subscribe();
           this.Edtior_Projects.set_payement_done_for_project(this.id_project,multiple).pipe(first() ).subscribe(r=>{
+            if(multiple){
+              if(r && r[0] && r[0].length>0){
+                for(let i=0;i<r[0].length;i++){
+                  this.send_email_and_notifs(r[0][i]);
+                }
+              }
+            }
+            else if (r[0]){
+              this.send_email_and_notifs(r[0]);
+            }
+           
             this.loading_check=false;
             this.step=2;
           })
         }
         else{
+          this.navbar.add_page_visited_to_history(`/payement_NOT_done_`+multiple.toString(),this.device_info).pipe( first() ).subscribe();
           this.loading_check=false;
           this.step=3
         }
@@ -369,6 +387,7 @@ export class PopupApplyComponent implements OnInit {
   stripe:any;
 
   submit_single_project(data){
+    this.navbar.add_page_visited_to_history(`/submit_single_project`,this.device_info).pipe( first() ).subscribe();
     this.Edtior_Projects.submit_project_for_editor(data).subscribe(r=>{
       this.NotificationsService.add_notification('apply',this.visitor_id,this.user_name,this.list_of_editors_ids[0],data.formula,'none','none',r[0].id,0,"add",false,0).pipe(first() ).subscribe(l=>{
         let message_to_send ={
@@ -403,7 +422,9 @@ export class PopupApplyComponent implements OnInit {
 
 
   submit_multiple_project(){
-    let compteur=0
+    let compteur=0;
+
+    this.navbar.add_page_visited_to_history(`/submit_multiple_project_before_payement`,this.device_info).pipe( first() ).subscribe();
     for(let i=0;i<this.list_of_editors_ids.length;i++){
 
       let data={
@@ -443,33 +464,13 @@ export class PopupApplyComponent implements OnInit {
       }
 
       this.Edtior_Projects.submit_project_for_editor(data).subscribe(r=>{
-        this.NotificationsService.add_notification('apply',this.visitor_id,this.user_name,this.list_of_editors_ids[0],data.formula,'none','none',r[0].id,0,"add",false,0).pipe(first() ).subscribe(l=>{
-          let message_to_send ={
-            for_notifications:true,
-            type:"apply",
-            id_user_name:this.user_name,
-            id_user:this.visitor_id, 
-            id_receiver:this.list_of_editors_ids[0],
-            publication_category:data.formula,
-            publication_name:'none',
-            format:'none',
-            publication_id:r[0].id,
-            chapter_number:0,
-            information:"add",
-            status:"unchecked",
-            is_comment_answer:false,
-            comment_id:0,
-          }
-          
-          this.chatService.messages.next(message_to_send);
-          compteur+=1;
-          if(compteur==this.list_of_editors_ids.length){
-            let URL = url + `${this.id_multiple}/${this.file_name}/true`;
-            this.uploader.setOptions({ url: URL});
-            this.uploader.queue[0].upload();
-  
-          }
-        })
+        compteur+=1;
+        if(compteur==this.list_of_editors_ids.length){
+          let URL = url + `${this.id_multiple}/${this.file_name}/true`;
+          this.uploader.setOptions({ url: URL});
+          this.uploader.queue[0].upload();
+
+        }
        
       })
     }
@@ -478,14 +479,21 @@ export class PopupApplyComponent implements OnInit {
 
   check_payement_after_project_submited(){
     if(this.multiple_submission){
-
+      this.navbar.add_page_visited_to_history(`/create_checkout_project_submission_multiple`,this.device_info).pipe( first() ).subscribe();
       if(this.total_price==0){
+        this.navbar.add_page_visited_to_history(`/set_payement_done_for_project_multiple_null`,this.device_info).pipe( first() ).subscribe();
         this.Edtior_Projects.set_payement_done_for_project(this.id_multiple,true).pipe(first() ).subscribe(r=>{
           this.step=2;
           this.loading_project=false;
+          if(r && r[0] && r[0].length>0){
+            for(let i=0;i<r[0].length;i++){
+              this.send_email_and_notifs(r[0][i]);
+            }
+          }
         })
       }
       else{
+        this.navbar.add_page_visited_to_history(`/create_checkout_project_submission_multiple_` + this.total_price.toString(),this.device_info).pipe( first() ).subscribe();
         this.StripeService.create_checkout_project_submission(this.total_price*100,this.user_nickname,this.id_multiple,this.registerForm.value.title,this.multiple_submission).pipe(first() ).subscribe(r=>{
           this.stripe=Stripe(r[0].key)
           return this.stripe.redirectToCheckout({ sessionId: r[0].id });
@@ -495,13 +503,17 @@ export class PopupApplyComponent implements OnInit {
      
     }
     else{
+      this.navbar.add_page_visited_to_history(`/create_checkout_project_submission_single`,this.device_info).pipe( first() ).subscribe();
       if(this.total_price==0){
+        this.navbar.add_page_visited_to_history(`/set_payement_done_for_project_single_null`,this.device_info).pipe( first() ).subscribe();
         this.Edtior_Projects.set_payement_done_for_project(this.id_project,false).pipe(first() ).subscribe(r=>{
           this.step=2;
           this.loading_project=false;
+          this.send_email_and_notifs(r)
         })
       }
       else{
+        this.navbar.add_page_visited_to_history(`/create_checkout_project_submission_single` +this.total_price.toString(),this.device_info).pipe( first() ).subscribe();
         this.StripeService.create_checkout_project_submission(this.total_price*100,this.user_nickname,this.id_project,this.registerForm.value.title,this.multiple_submission).pipe(first() ).subscribe(r=>{
           this.stripe=Stripe(r[0].key)
           return this.stripe.redirectToCheckout({ sessionId: r[0].id });
@@ -510,6 +522,33 @@ export class PopupApplyComponent implements OnInit {
     }
   }
 
+
+  send_email_and_notifs(project){
+    this.NotificationsService.add_notification('apply',project.id_user,project.user_name,project.target_id,project.formula,'none','none',project.id,0,"add",false,0).pipe(first() ).subscribe(l=>{
+      let message_to_send ={
+        for_notifications:true,
+        type:"apply",
+        id_user_name:project.user_name,
+        id_user:project.id_user, 
+        id_receiver:project.target_id,
+        publication_category:project.formula,
+        publication_name:'none',
+        format:'none',
+        publication_id:project.id,
+        chapter_number:0,
+        information:"add",
+        status:"unchecked",
+        is_comment_answer:false,
+        comment_id:0,
+      }
+  
+      this.chatService.messages.next(message_to_send);
+    })
+
+    
+   
+   
+  }
 
   /*************************************** FORMS MANAGMENT ***********************************/
   /*************************************** FORMS MANAGMENT ***********************************/

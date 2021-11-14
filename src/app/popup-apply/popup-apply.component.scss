@@ -588,6 +588,16 @@
         &:active {
             transform: scale(0.98);
         }
+
+        ::ng-deep {
+            mat-spinner {
+                circle {
+                    stroke: white !important;
+                }
+            }
+                
+        }
+        
     }
 
     //secured ng-deep
