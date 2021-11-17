@@ -155,7 +155,122 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
           }
          
         }).then(update=>{
+         
+
+          list_of_users.findOne({
+            where:{
+              id:target_id,
+            }
+          }).catch(err => {
+            console.log(err)
+            res.status(500).json({msg: "error", details: err});		
+          }).then(user =>  {
+            if(user){
+              let mail_to_send='<div background-color: #f3f2ef;font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,sans-serif;">';
+              mail_to_send+=`<div style="max-width:550px;margin: 20px auto 0px auto;background:white;border-radius:10px;padding-bottom: 5px;">`;
+                mail_to_send+=`
+                <table style="width:100%">
+    
+                    <tr id="tr2" >
+                        <td  align="center" style="background: rgb(2, 18, 54);border-radius: 12px 12px 6px 6px">
+                            <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:16px;">LinkArts</p>
+                            <div style="height:1px;width:20px;background:white;"></div>
+                            <p style="color:white;font-weight:600;margin-top:10px;margin-bottom:14px;font-size:17px;">Réponse à votre projet !</p>
+                        </td>
+                    </tr>
+                </table>`;
+    
+                
+                
+                let start=`${user.firstname},`
+    
+                mail_to_send+=`
+                <table style="width:100%;margin:0px auto;">
+                  <tr id="tr3">
+    
+                      <td align="center" style="border-radius: 6px 6px 12px 12px;padding: 20px 20px 26px 20px;background:rgb(240, 240, 240);border-top:3px solid rgb(225, 225, 225);">
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">${start}</p>
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Les éditeurs <b>${user_name}</b> viennent de répondre à votre proposition de projet. Découvrez-donc leur réponse en cliquant sur le lien ci-dessous : </p>
+    
+                          
+                        
+                          
+                            
+                            <div style="margin-top:50px;margin-bottom:35px;-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 5px;">
+                  
+                              <a href="https://www.linkarts.fr/account/${user.nickname}/projects" style="color: white ;text-decoration: none;font-size: 16px;margin: 15px auto 15px auto;box-shadow:0px 0px 0px 2px rgb(32,56,100);-webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px;padding: 10px 20px 12px 20px;font-weight: 600;background: rgb(2, 18, 54)">
+                                  Consulter mes projets
+                              </a>
+                          </div>
+                          
+                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 5px;margin-bottom: 15px;">Si, suite à cette réponse, vous désirez entrer en contacte avec les éditeurs, nous vous invitons à vous abonner à leur profil et à directement leur écrire un message au sein de la messagerie.</p>
+                          
+                          `
+                        
+                        
+                            
+                            
+                           
+                        
+    
+                            mail_to_send+=`
+                            <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-top: 50px;margin-bottom: 0px;">Très sincèrement,</p>
+                                          <p style="text-align: left;color: #6d6d6d;font-size: 14px;font-weight: 600;margin-bottom: 15px;margin-top: 0px;">L'équipe LinkArts</p>
+                                      <img src="https://www.linkarts.fr/assets/img/logo_long_1.png" height="40" style="height:40px;max-height: 40px;float: left;margin-left:2px" />
+                                  </td>
+                
+                              </tr>
+                            </table>`
+    
+                    mail_to_send+=`
+                    <table style="width:100%;margin:25px auto;">
+                        <tr id="tr4">
+                            <td align="center">
+                                <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts © 2021</p>
+                                <p style="margin: 10px auto 0px auto;font-size: 13px;color: rgb(32,56,100);max-width: 350px;">LinkArts est un site dédié à la collaboration éditoriale et à la promotion des artistes et des éditeurs.</p>
+                                
+                            </td>
+        
+                        </tr>
+                    </table>`
+    
+                mail_to_send+='</div>'
+                mail_to_send+='</div>'
+      
+                const transport = nodemailer.createTransport({
+                  host: "pro2.mail.ovh.net",
+                  port: 587,
+                  secure: false, // true for 465, false for other ports
+                  auth: {
+                    user: "services@linkarts.fr", // compte expéditeur
+                    pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+                  },
+                      tls:{
+                        ciphers:'SSLv3'
+                  }
+                });
+      
+    
+           
+                  var mailOptions = {
+                    from: 'Linkarts <services@linkarts.fr>', 
+                    to: user.email, // my mail
+                    bcc:"appaloosa-adam@hotmail.fr",
+                    subject: `Réponse à votre projet !`, 
+                    html:  mail_to_send,
+                  };
+        
+                  transport.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                      console.log(error)
+                    }
+                  })
+              }
+            
+          })
+
           res.status(200).send([r]);
+         
         })
        
       });
@@ -1052,11 +1167,11 @@ module.exports = (router,list_of_projects, list_of_projects_responses,list_of_us
       const Op = Sequelize.Op;
       list_of_projects_responses.findOne({
           where:{
-            id_project:project_id,
+            id_project:parseInt(project_id),
           }
       })
       .catch(err => {
-          
+          console.log(err)
         res.status(500).json({msg: "error", details: err});		
       }).then(project=>{res.status(200).send([project])})     
   });
