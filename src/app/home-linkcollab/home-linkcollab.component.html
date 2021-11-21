@@ -86,7 +86,7 @@
 </div>
 
 
-<h1 class="main-title" *ngIf="category_index==0">LinkCollab – Recherche d'éditeurs et d'artistes</h1>
+<h1 class="main-title" *ngIf="category_index==0">LinkCollab – Recherche de collaborateurs pour projets éditoriaux</h1>
 <h1 class="main-title" *ngIf="category_index==1">Annonces de collaborations bénévoles</h1>
 <h1 class="main-title" *ngIf="category_index==2">Annonces de collaborations rémunérées</h1>
 
@@ -562,6 +562,10 @@
                                 </div>
 
                                 <div class="apply-button"   [@enterFromLeftAnimation] *ngIf="item.associate && form_ini">
+                                    <div class="left-side" >
+                                        <span *ngIf="item.standard_price==0">Gratuit</span>
+                                        <span *ngIf="item.standard_price>0">À partir de {{item.standard_price}}€</span>
+                                    </div>
                                     <div class="right-side" [formGroup]="myForms[i]">
                                         <span (click)="selectBox2(i)">Sélectionner</span>
                                         <mat-checkbox class="check-box"  formControlName="checked" (change)="selectBox($event.checked,i)"></mat-checkbox>

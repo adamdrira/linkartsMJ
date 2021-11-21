@@ -349,7 +349,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
   update_meta_data(i : number) {
     if( i==0 ) {
-      this.title.setTitle("LinkCollab – Recherche d'éditeurs et d'artistes");
+      this.title.setTitle('LinkCollab – Recherche de collaborateurs pour projets éditoriaux');
       this.meta.updateTag({ name: 'description', content: "Un espace collaboration pour soumettre votre projet auprès des éditeurs ou chercher le partenaire idéal. Recherchez un dessinateur, scénariste, illustrateur, ou auteur." });
     }
     if( i==1 ) {
@@ -955,12 +955,34 @@ export class HomeLinkcollabComponent implements OnInit {
       associate:true,
       standard_delay:"1s",
       express_delay:"1s",
-      standard_price:5,
+      standard_price:0,
       express_price:10,
       pp:null,
       cover:null,
     },
-    
+    {
+      title:"Editions des Tourments",
+      nickname:"Editions_des_Tourments",
+      categories:["BD","Livres"],
+      website:"http://www.editionsdestourments.fr",
+      page:"https://www.linkarts.fr/account/Editions_des_Tourments",
+      email:"contact@editionsdestourments.fr",
+      description:`Maison d'édition toujours à la recherche de textes, romans ou nouvelles :
+      Fantastique - Horreur / Épouvante - Fantasy - Science Fiction - Roman Noir / Thriller / et BD - Roman Graphique
+      Nous n'éditons ni poésie ni pornographie.
+      Nous sommes une maison d'édition à compte d'éditeur, un auteur retenu ne paie donc rien... Nous éditons du papier et du numérique.`,
+      pp_name:"pp-tourments.png",
+      cover_name:"cover-tourments.png",
+      location:"Sélestat, France",
+      id:8827,
+      associate:true,
+      standard_delay:"4m",
+      express_delay:"1m",
+      standard_price:0,
+      express_price:6,
+      pp:null,
+      cover:null,
+    },
     {
       title:"Éditions Glénat",
       categories:["BD","Comics","Mangas","Livres","Livres jeunesse"],
