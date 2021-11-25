@@ -2066,6 +2066,10 @@ open_notifications(){
     });
     this.navbar.add_page_visited_to_history(`/open-share-maile/${this.type_of_profile}/${this.user_id}/`,this.device_info ).pipe( first()).subscribe();
   }
+  open_articles() {
+    this.location.go("/services/editer-un-livre/")
+    location.reload();
+  }
   open_contact() {
     const dialogRef = this.dialog.open(PopupContactComponent, {
       data:{current_user:this.current_user},

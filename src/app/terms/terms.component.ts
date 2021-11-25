@@ -79,7 +79,8 @@ export class TermsComponent implements OnInit {
     show_icon=false;
     ngOnInit(): void {
       this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
-      let article =this.route.snapshot.paramMap.get('article_number')
+      let article =this.route.snapshot.data['article_number'];
+
 
       if(article=='contact'){
         this.registerForm1 = this.formBuilder.group({
@@ -113,7 +114,7 @@ export class TermsComponent implements OnInit {
       }
 
       this.article_number = parseInt(article);
-      if( ! (this.article_number>0 && this.article_number<6) ) {
+      if( ! (this.article_number>0 && this.article_number<13) ) {
         this.location.go('/home/1');
         this.navbar.add_page_visited_to_history(`/services/${this.article_number}`,this.device_info ).pipe( first()).subscribe();
         this.article_number = 1;

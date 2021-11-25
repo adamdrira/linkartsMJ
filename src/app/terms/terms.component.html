@@ -90,14 +90,29 @@
 <div class="terms-container" *ngIf="!show_contact">
 
     <div class="left-container">
-        <span>Le guide LinkArts</span>
-        <span>(en date du 27 janvier 2021)</span>
-        <!--<a  routerLink="/services/0" [ngClass]="{'opened':article_number==0}">Article 0 : Qui sommes-nous ?</a>-->
-        <a  routerLink="/services/1" [ngClass]="{'opened':article_number==1}">Article 1 : Mentions légales</a>
-        <a  routerLink="/services/2" [ngClass]="{'opened':article_number==2}">Article 2 : Conditions d'utilisation de LinkArts</a>
-        <a  routerLink="/services/3" [ngClass]="{'opened':article_number==3}">Article 3 : Politique d'utilisation des cookies</a>
-        <a  routerLink="/services/4" [ngClass]="{'opened':article_number==4}">Article 4 : Confidentialité et sécurité</a>
-        <a  routerLink="/services/5" [ngClass]="{'opened':article_number==5}">Article 5 : Politique d'utilisation des données</a>
+        
+        <div class="block">
+            <span class="span-title">Articles pratiques</span>
+            
+            <a routerLink="/services/editer-un-livre" [ngClass]="{'opened':article_number==6}">Éditer un livre</a>
+            <a routerLink="/services/envoyer-un-manuscrit" [ngClass]="{'opened':article_number==7}">Envoyer un manuscrit</a>
+            <a routerLink="/services/recherche-illustrateur-auteur-éditeur" [ngClass]="{'opened':article_number==8}">Rechercher un artiste ou un éditeur</a>
+            <a routerLink="/services/publier-une-annonce" [ngClass]="{'opened':article_number==9}">Publier une annonce</a>
+            <a routerLink="/services/publier-une-oeuvre" [ngClass]="{'opened':article_number==10}">Publier une œuvre</a>
+            <a routerLink="/services/mettre-une-oeuvre-en-avant" [ngClass]="{'opened':article_number==11}">Mettre une œuvre en avant</a>
+        </div>
+        <div class="block">
+            <span class="span-title">Le guide LinkArts</span>
+            <span class="span-subtitle">(en date du 27 janvier 2021)</span>
+
+            <!--<a  routerLink="/services/0" [ngClass]="{'opened':article_number==0}">Article 0 : Qui sommes-nous ?</a>-->
+            <a routerLink="/services/mentions-legales" [ngClass]="{'opened':article_number==1}">Article 1 : Mentions légales</a>
+            <a routerLink="/services/conditions-d-utilisation" [ngClass]="{'opened':article_number==2}">Article 2 : Conditions d'utilisation de LinkArts</a>
+            <a routerLink="/services/utilisation-des-cookies" [ngClass]="{'opened':article_number==3}">Article 3 : Politique d'utilisation des cookies</a>
+            <a routerLink="/services/confidentialite-et-securite" [ngClass]="{'opened':article_number==4}">Article 4 : Confidentialité et sécurité</a>
+            <a routerLink="/services/utilisation-des-donnees" [ngClass]="{'opened':article_number==5}">Article 5 : Politique d'utilisation des données</a>
+        </div>
+
     </div>
 
     <div class="right-container">
@@ -128,6 +143,217 @@
             
 
         </ng-container>-->
+
+        
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!--ARTICLE 6-->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <ng-container *ngIf="article_number==6">
+            <h1 class="text-large">Éditer un livre</h1>
+
+            <span class="text-small">
+                Vous êtes auteur et avez terminé l’écriture d’un livre ? L’édition de celui-ci est une étape qui peut s’avérer difficile surtout si c’est votre premier livre ! Voici quelques conseils clés pour vous guider dans vos étapes, et les avantages apportés par LinkArts pour vous faciliter le travail !
+            </span>
+
+            <img class="article-image" src="../../assets/img/articles/livres.jpg" alt="éditer son livre">
+
+
+
+            <h2 class="text-medium">Chez un éditeur ou en auto-édition ?</h2>
+            <span class="text-small">
+                La publication d’un livre peut se faire en passant par un éditeur, ou en auto-édition. L’auto-édition est en général plus difficile, car vous aurez en charge plusieurs missions qui seraient faites par un éditeur (trouver un imprimeur, réaliser la promotion, etc.). Cependant, être édité auprès d’une maison d’édition nécessite de nouer une collaboration avec celle-ci, ce qui demande nécessite plus d’efforts.
+            </span>
+            <span class="text-small">
+                Les créateurs de LinkArts s’étant eux-mêmes confrontés aux difficultés se faire éditer, LinkArts permet aujourd’hui de facilier l’accès au monde de l’édition, via le dépôt de projets auprès d’éditeurs, la publication d’annonces, ou encore le partage d’œuvres !
+            </span>
+
+
+            
+            <h2 class="text-medium">Soumettre son projet auprès d’un éditeur</h2>
+            <span class="text-small">
+                Vous pouvez envoyer votre manuscrit auprès de nos éditeurs partenaires en choisissant la formule qui vous correspond le mieux (généralement une formule gratuite, ainsi qu’une formule payante permettant d’avoir des retours plus complets et plus rapidement). LinkArts garantit les retours sur chacune de vos candidatures, alors, n’hésitez-plus ! 
+                <a routerLink="/services/envoyer-un-manuscrit">Plus de détails sur le dépôt de manuscrits.</a>
+            </span>
+
+
+            <h2 class="text-medium">Annonces de collaborations</h2>
+            <span class="text-small">
+                Pour faciliter le travail collaboratif, LinkArts permet d’accéder à des offres de collaborations bénévoles, ainsi qu’à des offres de collaborations rémunérées.Vous pouvez également publier votre propre annonce, le tout étant gratuit. 
+            </span>
+
+
+            <h2 class="text-medium">Publier une œuvre</h2>
+            <span class="text-small">
+                Vous pouvez maximiser vos chances d’être repéré par un éditeur en publiant des œuvres ou des extraits d’œuvres. Ainsi, vous pourrez exprimer votre talent et mettre en avant leurs compétences ! Avoir un profil avec des œuvres populaires sera un gage de qualité et de popularité qui rassureront vos futurs collaborateurs. Publier vous aidera ainsi à vous démarquer et à montrer que votre profil plaît. 
+                <a routerLink="/services/publier-une-oeuvre">Découvrir comment publier une œuvre.</a>
+            </span>
+
+
+        </ng-container>
+
+
+
+        
+        <ng-container *ngIf="article_number==7">
+            <h1 class="text-large">Envoyer un manuscrit</h1>
+
+            <span class="text-small">
+                Sachant que les envois de documents peuvent parfois être longs et laborieux, LinkArts a été conçu pour rendre cette étape aussi simple que possible. Soumettez vos manuscrits auprès des éditeurs souhaités en quelques clics ! Deux méthodes permettent de postuler et aboutissent au même résultat :                
+            </span>
+
+
+
+            <img class="article-image" src="../../assets/img/articles/bureau.jpg" alt="envoyer un manuscrit">
+
+
+            <h2 class="text-medium">Méthode 1 : La page de dépôt de projets</h2>
+            <span class="text-small">
+                Parmis la liste de nos éditeurs partenaires, vous pourrez réaliser un tri selon la catégorie de votre projet, puis sélectionner « Soumettre mon projet ». Un formulaire rapide vous sera alors proposé avant que le tout ne soit envoyé !
+            </span>
+
+            <img class="article-image max-width" src="../../assets/img/articles/page-depot-projets.jpg" alt="dépôt projet éditeurs">
+
+
+
+            <h2 class="text-medium">Méthode 2 : En postulant via le profil d'un éditeur partenaire</h2>
+            <span class="text-small">
+                La liste de nos éditeurs partenaires se trouve sur <a routerLink="/linkCollab">cette page</a>. Accéder à la page d’un éditeur vous permettra de postuler directement, et de choisir la formule qui correspond le mieux à votre besoin. Certains éditeurs peuvent tout de même donner certaines consignes, les suivre maximisera vos chances de sélection !    
+            </span>
+
+            <img class="article-image max-width" src="../../assets/img/articles/deposer-un-projet.jpg" alt="déposer un profil">
+
+        </ng-container>
+
+
+
+
+        <ng-container *ngIf="article_number==8">
+            <h1 class="text-large">Rechercher un artiste ou un éditeur</h1>
+
+            <span class="text-small">
+                La collaboration est une pratique fréquente entre artistes, ou entre les artistes et des éditeurs. Pour réaliser des œuvres encore plus ambitieuses, elle est souvent la solution à privilégier. Il vous faut avant-tout trouver l’artiste, l’auteur ou l’éditeur qui vous correspond !
+            </span>
+
+
+            <img class="article-image max-width-no-border" src="../../assets/img/articles/collaboration.jpg" alt="collaborer">
+
+
+            <span class="text-small">
+                Dénicher le collaborateur idéal peut ne pas être une mince affaire. Les fondateurs de LinkArts étant eux-mêmes des artistes, le site aspire à faciliter le travail collaboratif. Pour vous aider, plusieurs fonctionnalités sont disponibles sur Linkarts :
+            </span>
+
+            
+            <h2 class="text-medium">Publier une annonce</h2>
+            <span class="text-small">
+                Publiez une annonce qui sera consultable par l’ensemble des membres de la communauté LinkArts, grandissante de jour en jour. Plus votre annonce sera précise (qui vous êtes, qui ciblez-vous, etc.), plus vous éviterez les mauvaises surprises ! 
+                <a routerLink="/services/publier-une-annonce">Découvrir comment publier une annonce.</a>
+            </span>
+            <span class="text-small">
+                N’hésitez pas à répondre aux annonces en cours, peut-être que le collaborateur recherché a pris de l’avance sur vous ! 
+                <a routerLink="/linkcollab/voluntary-collaborations">Découvrir la liste des annonces.</a>
+            </span>
+
+            
+            <h2 class="text-medium">Publier une œuvre</h2>
+            <span class="text-small">
+                Publier une œuvre ou son extrait peut présenter beaucoup d’avantages dans votre recherche ! Si vous développez une communauté sur LinkArts, cela vous aidera à vous démarquer et à montrer que votre profil plaît ! 
+            </span>
+            <span class="text-small">
+                Un autre avantage de publier est œuvres est que celles-ci ont des chances de se retrouver en tendances, en coups de cœur, ou dans le fil d’actualité de vos abonnés, ce qui apporter plus de visibilité et de popularité à votre profil. 
+                <a routerLink="/services/publier-une-oeuvre">Découvrir comment publier une œuvre.</a>
+            </span>
+
+
+
+            <span class="text-small">
+                Vous vous sentez prêt pour soumettre votre manuscrit, ou candidater auprès d’un éditeur ? Sur LinkArts, vous aurez à disposition une liste d’éditeurs partenaires (qui grandit de jour en jour !) chez qui postuler directement, et les coordonnées d’autres éditeurs. 
+                <a routerLink="/services/envoyer-un-manuscrit">Découvrir comment candidater auprès d’un éditeur.</a>
+            </span>
+
+
+        </ng-container>
+
+
+        
+
+        <ng-container *ngIf="article_number==9">
+            <h1 class="text-large">Publier ou répondre à une annonce</h1>
+            
+
+            <span class="text-small">
+                Que vous souhaitiez proposer vos services artistiques ou que vous en recherchez, publier une annonce sur LinkCollab peut s’avérer très utile ! Vous pouvez soumettre votre offre ou votre demande à l’ensemble de la communauté LinkArts.
+            </span>
+
+            <img class="article-image" src="../../assets/img/articles/annonce.jpg" alt="annonce recherche artiste">
+
+            <h2 class="text-medium">Publier une annonce</h2>
+            <span class="text-small">
+                Les annonces permettent de rechercher des collaborations bénévoles ou rémunérées. Afin d’être certain d’avoir des profils qui correspondent à vos attentes, vous pouvez ajouter encore plus de précision à l’annonce ! Par exemple : le thème de l’annonce, votre profil, quelles sont vos cibles, etc.
+            </span>
+
+            <a routerLink="/linkcollab/voluntary-collaborations">• Découvrir les offres de collaborations bénévoles</a>
+            <a routerLink="/linkcollab/remunerated-collaborations">• Découvrir les offres de collaborations rémunérées</a>
+
+            
+            <h2 class="text-medium">Répondre à une annonce</h2>
+            <span class="text-small">
+                N’hésitez pas à répondre aux annonces en cours, peut-être que le collaborateur recherché a pris de l’avance sur vous ! Pour formuler une réponse, vous pouvez ouvrir l’annonce puis cliquer sur « Répondre à l’annonce ». Assurez-vous de créer un compte ou d'être connecté au préalable.
+                <a routerLink="/linkcollab/voluntary-collaborations">Voir les annonces.</a>
+            </span>
+            
+
+
+        </ng-container>
+
+
+
+        
+        <ng-container *ngIf="article_number==10">
+            <h1 class="text-large">Publier une œuvre</h1>
+
+            <span class="text-small">
+                Publier une œuvre ou son extrait peut présenter beaucoup d’avantages dans votre recherche ! Si vous développez une communauté sur LinkArts, cela vous aidera à vous démarquer et à montrer que votre profil plaît.
+            </span>
+
+            <img class="article-image" src="../../assets/img/articles/upload.jpg" alt="publier un dessin">
+
+            <span class="text-small">
+                Pour publier une œuvre, rien de plus simple ! Il vous faudra tout d’abord créer un compte gratuitement, puis 2 options s’offrent à vous :
+            </span>
+            <span class="text-small">
+                • Cliquer sur le « plus » dans la barre de notifications
+                <br>
+                • Depuis votre page de profil, cliquer sur « Publier ».
+            </span>
+
+
+            <span class="text-small">
+                Depuis la page de publication, il est possible d’ajouter des bandes-dessinées, des dessins, des artbooks, des écrits et des annonces.
+            </span>
+
+        </ng-container>
+
+
+        
+        <ng-container *ngIf="article_number==11">
+            <h1 class="text-large">Mettre une œuvre en avant</h1>
+
+            <span class="text-small">
+                Vous avez publié une œuvre qui vous plaît particulièrement ? La mettre en avant la rend visible en premier en arrivant sur votre profil !
+                Vous pouvez mettre une œuvre en avant directement depuis votre œuvre, depuis les options :
+            </span>
+            
+            <img class="article-image max-width" src="../../assets/img/articles/oeuvre_en_avant.png" alt="mettre une oeuvre en avant">
+            
+
+
+        </ng-container>
+
+
 
         <!-------------------------------------------------------->
         <!-------------------------------------------------------->
