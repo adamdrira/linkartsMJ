@@ -5,7 +5,7 @@ import { LinkcolabRoutingModule } from './linkcollab-routing';
 import { HomeLinkcollabComponent } from '../home-linkcollab/home-linkcollab.component';
 import { PopupLinkcollabFiltersComponent } from '../popup-linkcollab-filters/popup-linkcollab-filters.component';
 
-
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule} from '@angular/material/checkbox';
@@ -27,16 +27,18 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
 import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
-
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 
 @NgModule({
   declarations: [
     HomeLinkcollabComponent,
     PopupLinkcollabFiltersComponent,
+    SnackbarComponent
   ],
   imports: [
     CommonModule,
+    MatSnackBarModule,
     LinkcolabRoutingModule,
     CommonComponentsModule,
     ApplyModule,
