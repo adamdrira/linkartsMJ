@@ -92,7 +92,7 @@
     <div class="left-container">
         
         <div class="block">
-            <span class="span-title">Articles pratiques</span>
+            <span class="span-title">Le guide LinkArts</span>
             
             <a routerLink="/services/editer-un-livre" [ngClass]="{'opened':article_number==6}">Éditer un livre</a>
             <a routerLink="/services/envoyer-un-manuscrit" [ngClass]="{'opened':article_number==7}">Envoyer un manuscrit</a>
@@ -102,7 +102,7 @@
             <a routerLink="/services/mettre-une-oeuvre-en-avant" [ngClass]="{'opened':article_number==11}">Mettre une œuvre en avant</a>
         </div>
         <div class="block">
-            <span class="span-title">Le guide LinkArts</span>
+            <span class="span-title">Articles légaux</span>
             <span class="span-subtitle">(en date du 27 janvier 2021)</span>
 
             <!--<a  routerLink="/services/0" [ngClass]="{'opened':article_number==0}">Article 0 : Qui sommes-nous ?</a>-->
@@ -155,7 +155,7 @@
         <ng-container *ngIf="article_number==6">
             <h1 class="text-large">Éditer un livre</h1>
 
-            <span class="text-small">
+            <span class="text-small intro">
                 Vous êtes auteur et avez terminé l’écriture d’un livre ? L’édition de celui-ci est une étape qui peut s’avérer difficile surtout si c’est votre premier livre ! Voici quelques conseils clés pour vous guider dans vos étapes, et les avantages apportés par LinkArts pour vous faciliter le travail !
             </span>
 
@@ -182,7 +182,7 @@
 
             <h2 class="text-medium">Annonces de collaborations</h2>
             <span class="text-small">
-                Pour faciliter le travail collaboratif, LinkArts permet d’accéder à des offres de collaborations bénévoles, ainsi qu’à des offres de collaborations rémunérées.Vous pouvez également publier votre propre annonce, le tout étant gratuit. 
+                Pour faciliter le travail collaboratif, LinkArts permet d’accéder à des offres de collaborations bénévoles, ainsi qu’à des offres de collaborations rémunérées. Vous pouvez également publier votre propre annonce, le tout étant gratuit. 
             </span>
 
 
@@ -201,7 +201,7 @@
         <ng-container *ngIf="article_number==7">
             <h1 class="text-large">Envoyer un manuscrit</h1>
 
-            <span class="text-small">
+            <span class="text-small intro">
                 Sachant que les envois de documents peuvent parfois être longs et laborieux, LinkArts a été conçu pour rendre cette étape aussi simple que possible. Soumettez vos manuscrits auprès des éditeurs souhaités en quelques clics ! Deux méthodes permettent de postuler et aboutissent au même résultat :                
             </span>
 
@@ -234,17 +234,13 @@
         <ng-container *ngIf="article_number==8">
             <h1 class="text-large">Rechercher un artiste ou un éditeur</h1>
 
-            <span class="text-small">
-                La collaboration est une pratique fréquente entre artistes, ou entre les artistes et des éditeurs. Pour réaliser des œuvres encore plus ambitieuses, elle est souvent la solution à privilégier. Il vous faut avant-tout trouver l’artiste, l’auteur ou l’éditeur qui vous correspond !
+            <span class="text-small intro">
+                La collaboration est une pratique fréquente entre artistes, ou entre les artistes et des éditeurs. Pour réaliser des œuvres encore plus ambitieuses, elle est souvent la solution à privilégier.
+                Mais dénicher le collaborateur idéal peut ne pas être une mince affaire. Les fondateurs de LinkArts étant eux-mêmes des artistes, le site aspire à faciliter le travail collaboratif. Pour vous aider, plusieurs fonctionnalités sont disponibles sur Linkarts !
             </span>
 
 
             <img class="article-image max-width-no-border" src="../../assets/img/articles/collaboration.jpg" alt="collaborer">
-
-
-            <span class="text-small">
-                Dénicher le collaborateur idéal peut ne pas être une mince affaire. Les fondateurs de LinkArts étant eux-mêmes des artistes, le site aspire à faciliter le travail collaboratif. Pour vous aider, plusieurs fonctionnalités sont disponibles sur Linkarts :
-            </span>
 
             
             <h2 class="text-medium">Publier une annonce</h2>
@@ -281,10 +277,10 @@
         
 
         <ng-container *ngIf="article_number==9">
-            <h1 class="text-large">Publier ou répondre à une annonce</h1>
+            <h1 class="text-large intro">Publier ou répondre à une annonce</h1>
             
 
-            <span class="text-small">
+            <span class="text-small intro">
                 Que vous souhaitiez proposer vos services artistiques ou que vous en recherchez, publier une annonce sur LinkCollab peut s’avérer très utile ! Vous pouvez soumettre votre offre ou votre demande à l’ensemble de la communauté LinkArts.
             </span>
 
@@ -315,7 +311,7 @@
         <ng-container *ngIf="article_number==10">
             <h1 class="text-large">Publier une œuvre</h1>
 
-            <span class="text-small">
+            <span class="text-small intro">
                 Publier une œuvre ou son extrait peut présenter beaucoup d’avantages dans votre recherche ! Si vous développez une communauté sur LinkArts, cela vous aidera à vous démarquer et à montrer que votre profil plaît.
             </span>
 
@@ -323,8 +319,8 @@
 
             <span class="text-small">
                 Pour publier une œuvre, rien de plus simple ! Il vous faudra tout d’abord créer un compte gratuitement, puis 2 options s’offrent à vous :
-            </span>
-            <span class="text-small">
+                <br>
+                <br>
                 • Cliquer sur le « plus » dans la barre de notifications
                 <br>
                 • Depuis votre page de profil, cliquer sur « Publier ».

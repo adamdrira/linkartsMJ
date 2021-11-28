@@ -148,19 +148,24 @@
             color:rgb(32,56,100);
             text-align: justify;
             &.text-large {
-                font-size: 34px;
+                font-size: 30px;
                 font-weight: 600;
             }
             &.text-medium {
-                font-size: 18px;
+                font-size: 22px;
                 font-weight: 600;
                 margin-top: 30px;
             }
             &.text-small {
-                font-size: 14px;
-                font-weight: unset;
+
                 margin-top: 14px;
-                margin-bottom:14px;
+                margin-bottom: 18px;
+                border-left: 3px solid #203881;
+                font-size: 16px;
+                font-weight: 600;
+                padding: 21px;
+                background: #f7f8f9;
+                border-radius: 4px;
 
                 &.no-margin {
                     margin-top:unset;
@@ -172,6 +177,14 @@
                 &.list-element {
                     margin-left: 16px;
                     margin-top: 8px;
+                }
+
+                &.intro {
+                    border: unset;
+                    font-style: italic;
+                    background: unset;
+                    padding:unset;
+                    margin-top:14px;
                 }
             }
             &.text-very-small {
