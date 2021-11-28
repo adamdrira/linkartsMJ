@@ -8,6 +8,7 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { normalize_to_nfc, pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { first } from 'rxjs/operators';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-terms',
@@ -50,6 +51,8 @@ export class TermsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private deviceService: DeviceDetectorService,
     private router: Router,
+    private meta_title: Title,
+    private meta: Meta,
     ) {
 
       this.router.routeReuseStrategy.shouldReuseRoute = function() {
@@ -121,8 +124,35 @@ export class TermsComponent implements OnInit {
       }
       else{
         this.navbar.add_page_visited_to_history(`/services/${this.article_number}`,this.device_info ).pipe( first()).subscribe();
+        
+
+        if(this.article_number==6) {
+          this.meta_title.setTitle('Éditer un livre - LinkArts');
+        }
+        if(this.article_number==7) {
+          this.meta_title.setTitle('Envoyer un manuscrit - LinkArts');
+        }
+        if(this.article_number==8) {
+          this.meta_title.setTitle('Rechercher un artiste ou un éditeur - LinkArts');
+        }
+        if(this.article_number==9) {
+          this.meta_title.setTitle('Publier une annonce - LinkArts');
+        }
+        if(this.article_number==10) {
+          this.meta_title.setTitle('Publier une œuvre - LinkArts');
+        }
+        if(this.article_number==11) {
+          this.meta_title.setTitle('Mettre une œuvre en avant - LinkArts');
+        }
+        
       }
     }
+
+    
+  ngOnDestroy(): void {
+    this.meta_title.setTitle('LinkArts – Collaboration éditoriale');
+    this.meta.updateTag({ name: 'description', content: "Bienvenue sur LinkArts, le site web dédié à la collaboration éditorale, pour les artistes et les éditeurs." });
+  }
 
     normalize_input(fg: FormGroup, fc: string) {
       if(!fg || !fc) {
