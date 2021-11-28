@@ -258,7 +258,7 @@
                 width: 140px;
                 height: 140px;
                 border-radius: 6px;
-                margin-top: 5px;
+                margin-top: 30px;
                 overflow: hidden;
                 box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%),
                     0px 1px 5px 0px rgb(0 0 0 / 12%);
@@ -480,24 +480,7 @@
                         }
                     }
 
-                    &.opened {
-                        color: white;
-                        background: #020536;
-                        .formula-info-flex {
-                            > div {
-                                border-left: 5px solid white;
-                                .value {
-                                    mat-icon {
-                                        color: white;
-                                    }
-                                }
-                            }
-                        }
-                        .see-more-button {
-                            color: rgb(32, 56, 100) !important;
-                            background: white !important;
-                        }
-                    }
+                    
                 }
                 .subtotal {
                     display: flex;
@@ -604,7 +587,6 @@
     ::ng-deep .form-item {
         position: relative;
         width: 100%;
-        //margin-top:10px;
 
         .first-link-message {
             margin-bottom: 5px;

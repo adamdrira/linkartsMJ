@@ -20,9 +20,10 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { ChatService } from '../services/chat.service';
 import { NotificationsService } from '../services/notifications.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { DomSanitizer } from '@angular/platform-browser';
 
 declare var Stripe: any;
-const url = 'http://localhost:4600/routes/upload_project_for_editor/'
+const url = 'https://www.linkarts.fr/routes/upload_project_for_editor/'
 
 @Component({
   selector: 'app-popup-apply',
@@ -52,6 +53,7 @@ export class PopupApplyComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private cd: ChangeDetectorRef,
+    private sanitizer:DomSanitizer,
     public navbar: NavbarService,
     public dialogRef: MatDialogRef<PopupApplyComponent,any>,
     private Edtior_Projects:Edtior_Projects,
@@ -87,7 +89,8 @@ export class PopupApplyComponent implements OnInit {
 
 
   list_of_editors_ids=[];
-  editor_pictures={};
+  editor_pictures_names={};
+  editor_pictures={}
   editor_names={};
   editor_nicknames={};
   formulas={};
@@ -126,6 +129,7 @@ export class PopupApplyComponent implements OnInit {
   id_multiple:string;
   device_info='';
   ngOnInit() {
+    console.log("data",this.data)
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     
     this.after_payement=this.data.after_payement;
@@ -172,7 +176,15 @@ export class PopupApplyComponent implements OnInit {
     this.multiple_submission=this.data.multiple_submission;
 
     this.list_of_editors_ids=this.data.list_of_editors_ids;
-    this.editor_pictures=this.data.editor_pictures;
+    this.editor_pictures_names=this.data.editor_pictures;
+    for(let i=0;i<this.list_of_editors_ids.length;i++){
+      this.Edtior_Projects.get_editor_pp(this.editor_pictures_names[this.list_of_editors_ids[i]]).subscribe(r=>{
+        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.editor_pictures[this.list_of_editors_ids[i]]=SafeURL;
+      })
+    }
+    console.log("this.editor", this.editor_pictures)
     this.editor_names=this.data.editor_names;
     this.editor_nicknames=this.data.editor_nicknames;
     this.formulas=this.data.formulas;

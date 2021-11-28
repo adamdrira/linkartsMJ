@@ -138,7 +138,7 @@
                 <div class="name">
                     <span>{{editor_names[item]}}</span>
                 </div>
-                <div class="formula-info" [ngClass]="{'opened': list_of_selected_formulas[item]=='standard' }" >
+                <div class="formula-info">
                     <div class="title" >STANDARD</div>
                     <div class="formula-info-flex">
                         <div>
@@ -165,7 +165,7 @@
                         <mat-checkbox class="check-box" [checked]="list_of_selected_formulas[item]=='standard'" (change)="set_formula(item,'standard')"></mat-checkbox>
                     </div>
                 </div>
-                <div class="formula-info" [ngClass]="{'opened': list_of_selected_formulas[item]=='express' }" >
+                <div class="formula-info"  >
                     <div class="title">EXPRESS</div>
                     <div class="formula-info-flex">
                         <div>

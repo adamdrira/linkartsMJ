@@ -488,10 +488,10 @@
 
                         
                         <div class="thumbnail">
-                            <div class="cover-picture"  [ngClass]="{'shiny':!pictures_loaded[item.cover]}" >
+                            <a [href]="open_website(i)" target="_blank" class="cover-picture"  [ngClass]="{'shiny':!pictures_loaded[item.cover]}" >
                                 <img class="background-image" alt="list_of_editors[i].title" [lazyLoad]="item.cover"  [customObservable]="scrollobs? scrollobs : null" loading="lazy" (load)="load_pictures(item.cover)" [ngClass]="{'invisible':!pictures_loaded[item.cover]}" [title]="'photo de couverture de '+item.title">
 
-                            </div>
+                            </a>
                             <div class="data-container"  >
                                 <div class="data-top-container">
                                     <div class="img-container"  [ngClass]="{'shiny':!pictures_loaded[item.pp]}">
@@ -499,7 +499,7 @@
                                     </div>
     
                                     <div class="right-container">
-                                        <a [href]=open_website(i) target="_blank" class="name" [@enterFromLeftAnimation] >
+                                        <a [href]="open_website(i)" target="_blank" class="name" [@enterFromLeftAnimation] >
                                             <h3>{{item.title}}</h3>
                                             
                                         </a>

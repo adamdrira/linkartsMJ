@@ -21,8 +21,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { first } from 'rxjs/operators';
 import { LoginComponent } from '../login/login.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 declare var Swiper: any
+
+
 
 @Component({
   selector: 'app-home-linkcollab',
@@ -106,6 +110,7 @@ declare var Swiper: any
   ],
 })
 
+
 export class HomeLinkcollabComponent implements OnInit {
   
 
@@ -120,6 +125,7 @@ export class HomeLinkcollabComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private router: Router,
     public dialog: MatDialog,
+    private _snackBar: MatSnackBar,
     private constants:ConstantsService,
     private fb: FormBuilder,
     private title: Title,
@@ -1391,6 +1397,12 @@ export class HomeLinkcollabComponent implements OnInit {
   selectBox(checked,i){
     if(!this.visitor_stats_retrieved){
       this.box_checked[i]=false;
+      this.myForms[i].controls['checked'].setValue(false);
+      this.myForms[i].controls['checked'].updateValueAndValidity();
+      this._snackBar.openFromComponent(SnackbarComponent, {
+        duration: 3* 1000,
+      });
+      this.cd.detectChanges();
       return
     }
     
@@ -1587,7 +1599,7 @@ export class HomeLinkcollabComponent implements OnInit {
       for(let i=0;i<this.list_of_editors_selected.length;i++){
 
         list_of_editors_ids.push(this.list_of_editors_selected[i].id);
-        editor_pictures[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].pp;
+        editor_pictures[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].pp_name;
         editor_nicknames[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].nickname;
         editor_names[this.list_of_editors_selected[i].id]=this.list_of_editors_selected[i].title;
 
