@@ -129,7 +129,6 @@ export class PopupApplyComponent implements OnInit {
   id_multiple:string;
   device_info='';
   ngOnInit() {
-    console.log("data",this.data)
     this.device_info = this.deviceService.getDeviceInfo().browser + ' ' + this.deviceService.getDeviceInfo().deviceType + ' ' + this.deviceService.getDeviceInfo().os + ' ' + this.deviceService.getDeviceInfo().os_version;
     
     this.after_payement=this.data.after_payement;
