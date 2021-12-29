@@ -1,0 +1,16 @@
+#!/bin/bash
+
+curl -X POST -d 'password=Le-Site-De-Mokhtar-Le-Pdg-For-Trendings' -d 'email=legroupelinkarts@linkarts.fr' http://localhost:4600/routes/generate_or_get_favorites
+
+
+#!/bin/bash
+
+ curl -X POST -d 'password=Le-Site-De-Mokhtar-Le-Pdg-For-Trendings' -d 'email=legroupelinkarts@linkarts.fr' http://localhost:4600/routes/send_rankings_and_get_trendings_comics;
+ curl -X GET -d 'password=Le-Site-De-Mokhtar-Le-Pdg-For-Trendings' -d 'email=legroupelinkarts@linkarts.fr' http://localhost:4600/routes/get_drawings_trendings;
+ curl -X GET -d 'password=Le-Site-De-Mokhtar-Le-Pdg-For-Trendings' -d 'email=legroupelinkarts@linkarts.fr' http://localhost:4600/routes/get_writings_trendings;
+
+
+
+
+
+
