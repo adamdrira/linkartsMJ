@@ -1,0 +1,8 @@
+#!/bin/bash
+ # Backup quotidien
+ su -c "pg_dump -F c -b -v -f /backup/database/postgresql/linkarts-$(date +"%Y-%m-%d-%H-%M-%S").dump linkarts" adamdrira
+
+ # Suppression des backups de plus de 10 jours
+ su -c "find /backup/database/postgresql/ -type f -mtime +10 -delete" adamdrira
+
+
