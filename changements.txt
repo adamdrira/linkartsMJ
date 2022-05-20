@@ -1,0 +1,979 @@
+nodes-modules:
+
+	ctrl-ngx-emoji-mart.js
+
+	picker.css
+
+	
+
+(async () => { 
+
+        const getCurrentCity = () => {
+
+        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 190px )");
+
+        return Promise.resolve('Lyon');
+
+        };
+
+        await getCurrentCity();
+
+        this.swiper.update();
+
+      })()
+
+
+
+autres:
+
+	télécharger dernière version de python
+
+	mettre les fichiers python dans site-packages
+
+	list_of_views.py
+
+	pip install pandas dans users/utilisateur
+
+	pip install numpy si necessaire
+
+	mettre dans path environnement le directory python38
+
+boucle for postgrsql;
+
+
+
+WRITINGS  WRITINGS 
+
+
+
+
+
+DO
+
+$do$
+
+BEGIN 
+
+   FOR n IN 1..10 LOOP
+
+		   FOR i IN 145..151 LOOP
+
+			   INSERT INTO list_of_views (author_id_who_looks,publication_category,format,style, 
+
+				firsttag,secondtag,thirdtag,publication_id,chapter_number,view_time,author_id_viewed,monetization,status, "createdAt", "updatedAt")
+
+			   VALUES (1, 'writing','unknown',(SELECT category FROM liste_writings WHERE writing_id=i),
+
+					(SELECT firsttag FROM liste_writings WHERE writing_id=i),(SELECT secondtag FROM liste_writings WHERE writing_id=i),
+
+					   (SELECT thirdtag FROM liste_writings WHERE writing_id=i),i,0,30,(SELECT authorid FROM liste_writings WHERE writing_id=i),
+
+					   (SELECT monetization FROM liste_writings WHERE writing_id=i),(SELECT status FROM liste_writings WHERE writing_id=i),'2021-10-30 14:13:52.371+02','2021-10-30 14:13:52.371+02');
+
+		   END LOOP;
+
+   END LOOP;
+
+END
+
+
+
+$do$;
+
+
+
+
+
+DRAWINGS ONE SHOT DRAWINGS 
+
+
+
+select drawing_id,"createdAt",title,authorid from liste_drawings_one_page where status='public' and "createdAt"::date>'2021-09-01 14:13:52.371+02' and authorid>1000 order by drawing_id desc;
+
+
+
+DO
+
+$do$
+
+BEGIN 
+
+   FOR n IN 1..5 LOOP
+
+		   FOR i IN 200..651 LOOP
+
+			   INSERT INTO list_of_views (author_id_who_looks,publication_category,format,style, 
+
+				firsttag,secondtag,thirdtag,publication_id,chapter_number,view_time,author_id_viewed,monetization,status, "createdAt", "updatedAt")
+
+			   VALUES (1, 'drawing','one-shot',(SELECT category FROM liste_drawings_one_page WHERE drawing_id=i),
+
+					(SELECT firsttag FROM liste_drawings_one_page WHERE drawing_id=i),(SELECT secondtag FROM liste_drawings_one_page WHERE drawing_id=i),
+
+					   (SELECT thirdtag FROM liste_drawings_one_page WHERE drawing_id=i),i,0,30,(SELECT authorid FROM liste_drawings_one_page WHERE drawing_id=i),
+
+					   (SELECT monetization FROM liste_drawings_one_page WHERE drawing_id=i),(SELECT status FROM liste_drawings_one_page WHERE drawing_id=i),'2021-11-12 14:13:52.371+02','2021-11-12 14:13:52.371+02');
+
+		   END LOOP;
+
+   END LOOP;
+
+END
+
+
+
+$do$;
+
+
+
+DRAWINGS ARTBOOK DRAWINGS 
+
+
+
+select drawing_id,"createdAt",title,authorid from liste_drawings_artbook where status='public' and "createdAt"::date>'2021-09-01 14:13:52.371+02' and authorid>1000 order by drawing_id desc;
+
+
+
+
+
+DO
+
+$do$
+
+BEGIN 
+
+   FOR n IN 1..5 LOOP
+
+		   FOR i IN 100..259 LOOP
+
+			   INSERT INTO list_of_views (author_id_who_looks,publication_category,format,style, 
+
+				firsttag,secondtag,thirdtag,publication_id,chapter_number,view_time,author_id_viewed,monetization,status, "createdAt", "updatedAt")
+
+			   VALUES (1, 'drawing','artbook',(SELECT category FROM liste_drawings_artbook WHERE drawing_id=i),
+
+					(SELECT firsttag FROM liste_drawings_artbook WHERE drawing_id=i),(SELECT secondtag FROM liste_drawings_artbook WHERE drawing_id=i),
+
+					   (SELECT thirdtag FROM liste_drawings_artbook WHERE drawing_id=i),i,0,30,(SELECT authorid FROM liste_drawings_artbook WHERE drawing_id=i),
+
+					   (SELECT monetization FROM liste_drawings_artbook WHERE drawing_id=i),(SELECT status FROM liste_drawings_artbook WHERE drawing_id=i),'2021-11-12 14:13:52.371+02','2021-11-12 14:13:52.371+02');
+
+		   END LOOP;
+
+   END LOOP;
+
+END
+
+
+
+$do$;
+
+
+
+COMICS ONE SHOT COMICS
+
+
+
+select bd_id,"createdAt",title,authorid from liste_bd_one_shot where status='public' and "createdAt"::date>'2021-09-01 14:13:52.371+02' and authorid>1000 order by bd_id desc;
+
+
+
+DO
+
+$do$
+
+BEGIN 
+
+   FOR n IN 1..5 LOOP
+
+		   FOR i IN 199..246 LOOP
+
+			   INSERT INTO list_of_views (author_id_who_looks,publication_category,format,style, 
+
+				firsttag,secondtag,thirdtag,publication_id,chapter_number,view_time,author_id_viewed,monetization,status, "createdAt", "updatedAt")
+
+			   VALUES (1, 'comic','one-shot',(SELECT category FROM liste_bd_one_shot WHERE bd_id=i),
+
+					(SELECT firsttag FROM liste_bd_one_shot WHERE bd_id=i),(SELECT secondtag FROM liste_bd_one_shot WHERE bd_id=i),
+
+					   (SELECT thirdtag FROM liste_bd_one_shot WHERE bd_id=i),i,0,30,(SELECT authorid FROM liste_bd_one_shot WHERE bd_id=i),
+
+					   (SELECT monetization FROM liste_bd_one_shot WHERE bd_id=i),(SELECT status FROM liste_bd_one_shot WHERE bd_id=i),'2021-11-12 14:13:52.371+02','2021-11-12 14:13:52.371+02');
+
+		   END LOOP;
+
+   END LOOP;
+
+END
+
+
+
+$do$;
+
+
+
+COMICS SERIE COMICS
+
+
+
+select bd_id,"createdAt",title,authorid from liste_bd_serie where status='public' and "createdAt"::date>'2021-09-01 14:13:52.371+02' and authorid>1000 order by bd_id desc;
+
+
+
+DO
+
+$do$
+
+BEGIN 
+
+   FOR n IN 1..5 LOOP
+
+		   FOR i IN 28..47 LOOP
+
+			   INSERT INTO list_of_views (author_id_who_looks,publication_category,format,style, 
+
+				firsttag,secondtag,thirdtag,publication_id,chapter_number,view_time,author_id_viewed,monetization,status, "createdAt", "updatedAt")
+
+			   VALUES (1, 'comic','serie',(SELECT category FROM liste_bd_serie WHERE bd_id=i),
+
+					(SELECT firsttag FROM liste_bd_serie WHERE bd_id=i),(SELECT secondtag FROM liste_bd_serie WHERE bd_id=i),
+
+					   (SELECT thirdtag FROM liste_bd_serie WHERE bd_id=i),i,0,30,(SELECT authorid FROM liste_bd_serie WHERE bd_id=i),
+
+					   (SELECT monetization FROM liste_bd_serie WHERE bd_id=i),(SELECT status FROM liste_bd_serie WHERE bd_id=i),'2021-11-12 14:13:52.371+02','2021-11-12 14:13:52.371+02');
+
+		   END LOOP;
+
+   END LOOP;
+
+END
+
+
+
+$do$;
+
+
+
+
+
+site 36MB
+
+4672ko
+
+
+
+nodejs27%
+
+
+
+2600
+
+mmeghaichi@gmail.com
+
+Le-Site-De-Mokhtar-Le-Pdg
+
+mdp pour cluster : LeSiteDu78Pdg 
+
+mdp dotnettricks :  LeSiteDu78Pdg
+
+ovh mok
+
+
+
+is : 500
+
+papa : 1000
+
+mokhtar : 60
+
+bred  :500
+
+
+
+monespace.sage :M..81 avec @
+
+mdp maxmind : Le-Site-De-Mokhtar-Le-Pdg
+
+mdp browserstack :  Le-Site-De-Mokhtar-Le-Pdg
+
+mdp shuterstock : Le-Site-De-Mokhtar-Le-Pdg
+
+kickstarter : Le-Site-De-Mokhtar-Le-Pdg, 24 fevrier deadline identité, 1 mars deadline projet avec vidéo
+
+pole emploie:A1 avec @ , id: adam.drira
+
+indeed, A1@
+
+ulule: AdUlule81
+
+apec Le-Site-De-Mokhtar-Le-Pdg1
+
+agap : AgaptoAgap1
+
+email ovh site : https://pro2.mail.ovh.net 
+
+email-adam:A1
+
+email-oussam: OussOuss97
+
+email-mok : Mokoko96
+
+https://pro2.mail.ovh.net 
+
+
+
+canva: 
+
+email :zribi.oussama97@gmail.com
+
+mdp : Mdplinkartscanva
+
+
+
+connexion du groupe site :
+
+LeGroupeLinkarts@linkarts.fr
+
+Le-Site-De-Mokhtar-Le-Pdg1
+
+
+
+mdp passpartout : Pass-For-Admin-Le-Pdg@Linkarts
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARAMETRES D'ACCES:
+
+2001:41d0:305:2100::57ce
+
+L'adresse IPv4 du VPS est : 51.77.220.90
+
+
+
+methode ajout certicat let's encryt :  https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-16-04
+
+tuto pour ajouter l'id dns let's encrypt : https://medium.com/slickteam/https-avec-lets-encrypt-sur-un-vps-ovh-d9517b7c5efb
+
+et https://www.digitalocean.com/community/tutorials/how-to-set-up-let-s-encrypt-with-nginx-server-blocks-on-ubuntu-16-04
+
+Le nom du VPS est : vps-e18ff346.vps.ovh.net
+
+fonctionnement nginx :https://www.digitalocean.com/community/tutorials/understanding-nginx-server-and-location-block-selection-algorithms
+
+
+
+Le compte administrateur suivant a été configuré sur le VPS :
+
+Nom d'utilisateur : ubuntu
+
+Mot de passe :      E2s73rnfZt9Q
+
+Nouvau Mot de passe :      E2mokhtar73adamZ9Qvps
+
+vamos extia : Le-Site-De-Mokhtar-Le-Pdg1
+
+adentis :Le-Site-De-Mokhtar-Le-Pdg1
+
+stripe:Le-Site-De-Mokhtar-Stripe12
+
+stripe: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
+
+stripe urgence : gpnp-psgf-wnty-kcbp-wfik
+
+linkedin url :https://www.linkedin.com/developers/apps/verification/92b79df6-d4d7-4325-b521-95461ffec1fd
+
+
+
+
+
+
+
+
+
+
+
+serveur:
+
+(tout)
+
+	pour relancer le serveur automatiquement
+
+	https://stackoverflow.com/questions/2925940/how-can-i-edit-on-my-server-files-without-restarting-nodejs-when-i-want-to-see-t
+
+
+
+
+
+
+
+
+
+
+
+49h15 - 26/10 au 1/11
+
+36h05 - 2/11 au 8/11
+
+42h30 - 9/11 au 15/11
+
+40h20 - 16/11 au 22/11
+
+32h00 - 23/11 au 30/11
+
+29h40 - 01/12 au 06/12
+
+congé - 07/12 au 13/12
+
+45h10 - 14/12 au 20/12
+
+29h40 - 21/12 au 27/12
+
+40h00 - 28/12 au 03/01
+
+40h45 - 04/01 au 10/01 
+
+53h30 - 11/01 au 17/01 (dont 21h en 24h)
+
+59h20 - 19/01 au 24/01
+
+40h40 - 25/01 au 31/01
+
+55h15 - 01/02 au 07/02
+
+48h35 - 08/02 au 14/02
+
+45h40 - 15/02 au 21/02
+
+24h30 - 22/02 au 28/02
+
+33h10 - 01/03 au 07/03
+
+61h30 - 08/03 au 14/03 (12h entretiens)
+
+57h10 - 15/03 au 21/03
+
+63h10 - 22/03 au 28/03 (dont 7h entretiens)
+
+51h10 - 29/03 au 04/03
+
+50h00 - 05/04 au 11/04
+
+43h00 - 12/04 au 18/04
+
+19h50
+
+35h05
+
+52h45
+
+60h25
+
+51h25
+
+10h (out première semaine de taffe)
+
+
+
+
+
+adam-test1@testlinkarts.fr
+
+AdamTest1@ ( 10 comptes comme ca)
+
+
+
+facebook_test@linkarts.fr
+
+Facebook@123
+
+
+
+
+
+discussion micka el :https://www.facebook.com/messages/t/100004726000945
+
+
+
+
+
+
+
+vps: Ip : 51.77.220.90 
+
+
+
+
+
+
+
+compte :
+
+legroupelinkarts@linkarts.fr
+
+Le-Site-De-Mokhtar-Le-Pdg1
+
+
+
+test1@testlinkarts.fr
+
+Testtest1
+
+
+
+test2@testlinkarts.fr
+
+Testtest2
+
+pour groupe :GroupeTesttest2
+
+
+
+adam-test1@testlinkarts.fr
+
+AdamTest1@ ( 10 comptes comme ca)
+
+
+
+mmeghaichi-faux1@linkarts.fr
+
+mmeghaichi-faux501@gmail.com (editeur)
+
+adam-faux510@linkarts.fr (artiste test)
+
+Jvalpamf123
+
+
+
+insta:
+
+meghaichi.mokhtar@gmail.com
+
+Jvalpamf123&
+
+
+
+Samartest1@linkarts.fr
+
+Samartest1
+
+
+
+anonyme-adam@hotmail.fr
+
+Anonyme_Adam@1
+
+
+
+
+
+
+
+
+
+
+
+
+
+alber@alber.fr
+
+Alberto83
+
+
+
+
+
+
+
+vps: Ip : 51.77.220.90 
+
+
+
+server
+
+-problème à long terme avec les recommendations : on réupère les 100 dernières oeuvres vues ce dernier mois
+
+	on peut donc proposer une oeuvre vue il y a plus de 1 mois.
+
+	on en récupère que 100 et peu importe la catégorie. Donc on peut avoir 50 bd, 50 écrits, et 0 dessins alors qu'il en a vu 3. On peut donc lui proposer un dessin qu'il a vu recemment s'il a consultés plus de 100 contenus ce dernier mois
+
+-ajouter certificats ssl 22 avril 2021
+
+-attention aux "p_trendings" et autre p_
+
+-attention aux localhost dans les cookies et les uploaders et le chat et mettre nom de domaine, pareil pour proxy
+
+-empecher de bloquer (bloquer un utilsiateur) la page du site ou de signaler un contenu du site officiel
+
+-changer le nom des tables dans les recommendations (liste_b_one_shot par list, etc.)
+
+-activer l'envoie des mails pour les tendances, et le reset password (mails dant : authentication,trendings.js,favorites.js,profile_edition,ads)
+
+-retirer tous les throw error dans le backend
+
+-changer l'url dans les uploaderss à faire / pareil pour les mails / faire attentions aux noms des tables dans tables.js des nouveaux fichiers
+
+-protéger les requetes posts et gets
+
+-changer fonction block_user dans les components (account, chat) pour mettre id du propriétaire
+
+-changer le nom des tables
+
+-changer nom des ficheirs pythons
+
+
+
+
+
+
+
+-régler les tendances, recommendations et ocup de coeur pour la sortie du site
+
+-ajotuer email pour coup de coeur
+
+-
+
+appaloosa-adam@hotmail.fr
+
+Samarkanoun21@gmail.com
+
+ursaf mdp:A....1
+
+token_insta : IGQVJXRTlORzgyWmxwM0l4bUlaU2ZAiUHdLOXZAhZAWhPMVVlZAl83Y2ZAJdGlwOVBRZAXlGZAHVXSThVVnd0ZATNsNWNWcW1rajhNRWpmQlpUVUQ5ZAkxCbnR5U2xrVElhWUwzeXVpNjRZAUzM4WVBqV05mWW4zaQZDZD
+
+mmeghaichi@gmail.com
+
+Le-Site-De-Mokhtar-Le-Pdg (mdp pour mail ovh)
+
+couleur freelance.com : #f5f7fa
+
+pour couper un port sous écoute :
+
+fuser 8080/tcp
+
+list(map(lambda x:int(x),list(str(125))))
+
+fuser -k 4600/tcp 
+
+
+
+curl -X POST -d 'password=Le-Site-De-Mokhtar-Le-Pdg-For-Trendings' -d 'email=legroupelinkarts@linkarts.fr' http://localhost:4600/routes/generate_or_get_favorites
+
+curl -X POST -d 'password=Le-Site-De-Mokhtar-Le-Pdg-For-Trendings' -d 'email=legroupelinkarts@linkarts.fr' http://localhost:4600/routes/send_rankings_and_get_trendings_comics
+
+curl -X GET -d 'password=Le-Site-De-Mokhtar-Le-Pdg-For-Trendings' -d 'email=legroupelinkarts@linkarts.fr' http://localhost:4600/routes/get_drawings_trendings;
+
+curl -X GET -d 'password=Le-Site-De-Mokhtar-Le-Pdg-For-Trendings' -d 'email=legroupelinkarts@linkarts.fr' http://localhost:4600/routes/get_writings_trendings;
+
+
+
+51.77.220.90 
+
+
+
+vps token : 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
+
+github
+
+
+
+refresh letsenrypt
+
+couper le server (quitte à utiliser fuser -k 80/tcp)
+
+puis lancer la commande : certbot certonly --force-renew -d www.linkarts.fr
+
+	prendre option 2 (standalone)
+
+systemctl start nginx
+
+systemctl reload nginx
+
+
+
+voir uploader thumbnail ad localhost
+
+ad-response att
+
+
+
+bn_one_shot console
+
+
+
+
+
+mv
+
+node --max_old_space_size=10000 node_modules/@angular/cli/bin/ng build --prod --deleteOutputPath=false
+
+
+
+killall screen
+
+screen -L -Logfile log node serversocket.js
+
+
+
+pour voir liste des likes 
+
+select usrs.nickname, tb1.id_user, publication_category, format, publication_id, tb1."createdAt" from list_of_contents as tb1 left join users as usrs on tb1.id_user = usrs.id where tb1.status='ok' order by tb1.id desc;
+
+
+
+
+
+faire reload ssh quand problème time out
+
+
+
+/etc/init.d/sshd reload (et ssh)
+
+
+
+systemctl reload nginx    
+
+node /home/adamdrira/linkartsMJ/serversocket.js
+
+gzip -d file.gz pour dezip
+
+gzip filename pour zip
+
+pour les trendings :
+
+mdp : Le-Site-De-Mokhtar-Le-Pdg-For-Trendings
+
+etc/cron.daily
+
+run-parts -v /etc/cron.daily
+
+
+
+-serveur email cible :mx1.mail.ovh.net.
+
+-vps: Ip : 51.77.220.90 
+
+	-changement mot de passe root (E2mokhtar73adamZ9Qvps) 
+
+	-création d'un nouvel utilisateur car vivement déconseiller de se connecter avec le root 
+
+		nom : adamdrira
+
+		mdp : E273adamZ9Qvps 
+
+	-installation postgrsql (sudo apt install postgresql postgresql-contrib)
+
+		-user : adamdrira
+
+		-mdp : mdp : E273adamZ9Qvps
+
+	-backup :
+
+		/backup/database/postgresql/
+
+DROP SCHEMA public CASCADE;
+
+CREATE SCHEMA public;
+
+
+
+		-ouverture postgresql et lecture des tables : psql linkarts
+
+		table linkarts avec droits donnés pour user adamdrira
+
+	-localisation python : 
+
+		-/usr/local/lib/python3.8/dist-packages
+
+	-mdp github 'A..1'
+
+	- git clone https://github.com/adamdrira/linkartsMJ
+
+C:/Users/Utilisateur/Desktop/Site/linkarts
+
+authentication, ads, trendings, profile_edition
+
+mv /home/linkartsMJ/src/app/uploader-ad-response-attachments /home/adamdrira/linkartsMJ/src/app/
+
+
+
+second github test, mdp : Test83
+
+dossiers pythons dans /usr/local/lib/python3.8/dist-packages/.. list_of_views.py
+
+-empecher de bloquer utilisateur 2
+
+-renommer les lignes new Pool avec
+
+	database :'linkarts'
+
+	user : 'adamdrira
+
+	password 'E273adamZ9Qvps'
+
+	host : 'localhost
+
+-attention au controller navbar
+
+-renommer la ligne python par : const pythonProcess = spawn('
+
+python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
+
+          pythonProcess.stderr.pipe(process.stderr);
+
+          pythonProcess.stdout.on('data', (data) => {
+
+-renommer les localhost en linkarts.fr et test avec https dans les uploaders, service (authentication,chat), chat
+
+-ajout du fichier web-animations.min.js.map
+
+-renommener noms de domaines dans routes.js et serverexpress
+
+-modification de la date des payement, du temps entre les recommendations
+
+	-tendances ok
+
+	-recommendations ramenées aux oeuvres des 30 derniers jours
+
+-activation des emails (ads, trendings, profile_edition
+
+-modification des fichiers pythons
+
+
+
+
+
+pour gérer smtp: https://www.virtualease.fr/postfix-creer-son-propre-smtp-mail-relay/
+
+
+
+
+
+
+
+
+
+
+
+faire https://stackoverflow.com/questions/16280747/sending-message-to-a-specific-connected-users-using-websocket
+
+tuto websocket important
+
+
+
+pour expandable searchbar :https://jsfiddle.net/solodev/0tn5ggLt/
+
+
+
+discount
+
+	max(prices) (récupérer le max)
+
+	list_of_indexes (récupérer la liste des index pour chaque max)
+
+	puis on parcours listedes prices pour savoir si on a le max et récupérer index
+
+	on parcours ensuite à nouveau la liste
+
+		ajoute total+=value*( 1-discount/100) si max sinon ajout normal
+
+pythons noeuds:
+
+	faire liste des noeuds
+
+	on parcour la liste des noeuds de départ
+
+	on met un if, elif et else
+
+	if (l'élement pointe sur un élement déjà trouveé (faire lsite des dejà trouvé))
+
+	elif l'élément pointé n'a pas de valeurs dans le from
+
+	sinon changer d'élement de départ et d'index et ajouter elem dans la liste
+
+
+
+python suite point joint:
+
+	list(map(lambda x:int(x),list(str(125)))) fonction pour sommer
+
+	faire while point joint == 0, une liste de chaque élements selon le point de départ et une comparaison de chacun des elements obtenu avec l'autre liste
+
+
+
+recherche d'un fichier
+
+	def find(filepath, filename):
+
+    	path=""
+
+    	for root, dirs, files in os.walk(filepath):
+
+        	file = root + '/' + filename
+
+        	if os.path.isfile(file):
+
+            		path = file
+
+   	 if path=="":
+
+        	return None
+
+   	 else:
+
+        	return path
+
+
+
+	def locate_universe_formula():
+
+    	# Your code goes here
+
+    	filename="universe-formula"
+
+    	filepath="/tmp/documents"
+
+    	return find(filepath,filename)
+
+
+
+
+
+mailing et sécurité :
+
+-compte valide qu'après validation par mail
+
+- mot de passe oublié, réinitialiser le mot de passe ou redonner l'ancien
+
+
+
+subject differecne avec observable
+
+ovserver observable
+
+
+
+promise.all au lie ude compteurs dans plusieurs thens
+
+rxJS
+
+Questions observable rxJs
+
+behaviorsubject et subjet 
+
+voir les try et catch 
+
+
+
+drive
+
+
